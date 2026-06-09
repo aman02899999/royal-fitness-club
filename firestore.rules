@@ -1,0 +1,44 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper function to check if the authenticated user is an admin
+    function isAdmin() {
+      return request.auth != null &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    // users/{uid} - user profiles
+    match /users/{uid} {
+      allow read, write: if request.auth != null && request.auth.uid == uid;
+      allow read, write: if isAdmin();
+    }
+
+    // subscriptions/{subId} - subscription records
+    match /subscriptions/{subId} {
+      allow read: if request.auth != null && resource.data.uid == request.auth.uid;
+      allow write: if isAdmin();
+    }
+
+    // measurements/{uid}/logs/{logId} - body measurements
+    match /measurements/{uid}/logs/{logId} {
+      allow read, write: if request.auth != null && request.auth.uid == uid;
+    }
+
+    // progress_logs/{uid}/logs/{logId} - calculator results
+    match /progress_logs/{uid}/logs/{logId} {
+      allow read, write: if request.auth != null && request.auth.uid == uid;
+    }
+
+    // activity/{uid} - streak/workout tracking
+    match /activity/{uid} {
+      allow read, write: if request.auth != null && request.auth.uid == uid;
+    }
+
+    // pending_users/{id} - temporary login data
+    match /pending_users/{id} {
+      allow write: if true;
+      allow read: if request.auth != null && request.auth.uid == id;
+    }
+  }
+}

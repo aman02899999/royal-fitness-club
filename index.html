@@ -652,6 +652,13 @@ body{font-size:16px;}
   .elite-steps{grid-template-columns:1fr 1fr!important;}
 }
 
+/* ── AUTH TABS ── */
+.auth-tab{padding:9px 18px;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .2s;display:inline-block;}
+.auth-tab.active{color:var(--red);border-bottom-color:var(--red);}
+.auth-tabs{display:flex;border-bottom:1px solid var(--border);margin:12px 0 18px;}
+.auth-guest-btn{background:none;border:none;color:var(--muted);font-size:11px;cursor:pointer;margin-top:10px;width:100%;letter-spacing:1px;padding:6px;}
+.auth-guest-btn:hover{color:var(--text);}
+
 .muted-text, p, .ssub, .hsub, .cnote, .rdesc, .sbox, .recplan,
 .prof-row span:first-child, .prof-email, .tcsub, .elite-sub,
 .elite-step-d, .wkout-ex, .sd, .pper, .ttxt, .msub, .grocitem,
@@ -695,6 +702,30 @@ body{font-size:16px;}
 .bs2l { color:#b8b8b8 !important; }
 .aleg-val { color:#f0f0f0 !important; }
 </style>
+<!-- Firebase SDK (compat) -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+<script>
+// ── FIREBASE INIT ──
+(function(){
+  if(typeof firebase==='undefined')return;
+  try{
+    firebase.initializeApp({
+      apiKey:"AIzaSyD6AQun59-EJCgA7qzxMxBJj9BmKsWZrPw",
+      authDomain:"royal-fitness-club-7adc1.firebaseapp.com",
+      projectId:"royal-fitness-club-7adc1",
+      storageBucket:"royal-fitness-club-7adc1.firebasestorage.app",
+      messagingSenderId:"116269953135",
+      appId:"1:116269953135:web:e9c815a1e62788fbd05d9a"
+    });
+  }catch(e){}
+})();
+</script>
+<!-- RFC Services -->
+<script src="src/auth.js"></script>
+<script src="src/userService.js"></script>
+<script src="src/subscriptionService.js"></script>
 </head>
 <body>
 <div id="watermark"></div>
@@ -1285,15 +1316,31 @@ body{font-size:16px;}
   <p style="margin-top:4px;font-size:10px;color:#888;">Beast Ecosystem v8.0 — Built for those who refuse to be average.</p>
 </footer>
 <div class="mbg" id="loginmodal">
-  <div class="metbox">
+  <div class="mbox" style="max-width:420px;">
     <div class="mlogo">ROYAL FITNESS CLUB</div>
-    <div class="mtitle">Start Your Transformation</div>
-    <div class="msub">Login required for all features. Your progress is saved automatically.</div>
-    <div class="mwarn">🔒 Login required for all features. Your data is saved securely.</div>
-    <input type="text" class="minp" id="mname" placeholder="Your Full Name">
-    <input type="email" class="minp" id="memail" placeholder="Email Address">
-    <input type="tel" class="minp" id="mphone" placeholder="Mobile / WhatsApp Number">
-    <button class="mbtn" onclick="loginUser()">⚡ LOGIN & START FREE</button>
+    <div class="auth-tabs">
+      <div class="auth-tab active" id="tab-login" onclick="switchAuthTab('login')">Login</div>
+      <div class="auth-tab" id="tab-register" onclick="switchAuthTab('register')">Register Free</div>
+    </div>
+    <!-- LOGIN FORM -->
+    <div id="form-login">
+      <input type="email" class="minp" id="login-email" placeholder="Email Address" autocomplete="email">
+      <input type="password" class="minp" id="login-pass" placeholder="Password" autocomplete="current-password">
+      <button class="mbtn" onclick="loginWithFirebase()">⚡ LOGIN & TRANSFORM</button>
+      <button class="auth-guest-btn" onclick="resetPasswordPrompt()">Forgot password?</button>
+    </div>
+    <!-- REGISTER FORM -->
+    <div id="form-register" style="display:none;">
+      <div class="mwarn">🔒 Free account — no credit card required. Your data is secured.</div>
+      <input type="text" class="minp" id="reg-name" placeholder="Full Name" autocomplete="name">
+      <input type="email" class="minp" id="reg-email" placeholder="Email Address" autocomplete="email">
+      <input type="tel" class="minp" id="reg-phone" placeholder="Mobile / WhatsApp (optional)">
+      <input type="password" class="minp" id="reg-pass" placeholder="Password (min 6 characters)" autocomplete="new-password">
+      <button class="mbtn" onclick="registerWithFirebase()">🔥 CREATE FREE ACCOUNT</button>
+    </div>
+    <div style="text-align:center;margin-top:4px;">
+      <button class="auth-guest-btn" onclick="guestAccess()">Continue without account →</button>
+    </div>
   </div>
 </div>
 <div class="mbg" id="promodal">
@@ -1396,13 +1443,145 @@ let tend=+localStorage.getItem('bm_te')||0;
 if(Date.now()>tend){tend=Date.now()+24*60*60*1000;localStorage.setItem('bm_te',tend);}
 function updT(){const d=tend-Date.now();if(d<=0)return;const h=Math.floor(d/3600000),m=Math.floor((d%3600000)/60000),s=Math.floor((d%60000)/1000);const f=`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;['ptimer2','ntlbl','pmodtime'].forEach(id=>{if($(id))$(id).textContent=f;});$('ntimer').classList.add('on');}
 updT();setInterval(updT,1000);
-// ── AUTH ──
+// ── AUTH (Firebase Production + localStorage Fallback) ──
 let user=null,isPro=false;
-function initUser(){const u=localStorage.getItem('bm_user');if(u){user=JSON.parse(u);isPro=localStorage.getItem('bm_pro')==='true';user.last=new Date().toISOString();localStorage.setItem('bm_user',JSON.stringify(user));applyUser();}else setTimeout(forceLogin,1600);}
+
+function initUser(){
+  if(typeof firebase==='undefined'){
+    // Firebase not loaded — fall back to localStorage
+    const u=localStorage.getItem('bm_user');
+    if(u){user=JSON.parse(u);isPro=localStorage.getItem('bm_pro')==='true';applyUser();}
+    else setTimeout(forceLogin,1600);
+    return;
+  }
+  firebase.auth().onAuthStateChanged(async function(fbUser){
+    if(fbUser){
+      try{
+        const doc=await firebase.firestore().collection('users').doc(fbUser.uid).get();
+        if(doc.exists){
+          const d=doc.data();
+          user={uid:fbUser.uid,name:d.name||fbUser.email.split('@')[0],email:d.email||fbUser.email,phone:d.phone||'',role:d.role||'member',plan:d.plan||'free',since:d.createdAt?.toDate?.()?.toISOString()||new Date().toISOString(),last:new Date().toISOString()};
+          isPro=d.plan==='royal_pro'||d.plan==='royal_elite';
+        }else{
+          // Auth user exists but no Firestore doc — create it
+          user={uid:fbUser.uid,name:fbUser.displayName||fbUser.email.split('@')[0],email:fbUser.email,phone:'',role:'member',plan:'free',since:new Date().toISOString(),last:new Date().toISOString()};
+          isPro=false;
+          await firebase.firestore().collection('users').doc(fbUser.uid).set({uid:fbUser.uid,name:user.name,email:user.email,phone:'',role:'member',plan:'free',status:'active',createdAt:firebase.firestore.FieldValue.serverTimestamp(),updatedAt:firebase.firestore.FieldValue.serverTimestamp(),lastLogin:firebase.firestore.FieldValue.serverTimestamp()});
+        }
+        localStorage.setItem('bm_user',JSON.stringify(user));
+        localStorage.setItem('bm_pro',isPro?'true':'false');
+        // Update last login (fire & forget)
+        firebase.firestore().collection('users').doc(fbUser.uid).update({lastLogin:firebase.firestore.FieldValue.serverTimestamp()}).catch(()=>{});
+        applyUser();
+        if(user.role==='admin')showAdminLink();
+      }catch(err){
+        console.error('Auth state error:',err);
+        const u=localStorage.getItem('bm_user');
+        if(u){user=JSON.parse(u);isPro=localStorage.getItem('bm_pro')==='true';applyUser();}
+        else setTimeout(forceLogin,1600);
+      }
+    }else{
+      const hadUser=!!user;
+      user=null;isPro=false;
+      localStorage.removeItem('bm_user');localStorage.removeItem('bm_pro');
+      if(hadUser){$('upill').classList.remove('on');$('ppro').classList.remove('on');$('navlbtn').style.display='block';$('tracker').classList.remove('pro-on');$('navtr').style.display='none';}
+      else setTimeout(forceLogin,1800);
+    }
+  });
+}
+
 function forceLogin(){openModal('loginmodal');}
-function applyUser(){if(!user)return;$('upill').classList.add('on');$('uname').textContent=user.name||user.email;$('navlbtn').style.display='none';if(isPro){$('ppro').classList.add('on');$('tracker').classList.add('pro-on');$('navtr').style.display='inline';loadPD();}}
-function loginUser(){const name=$('mname').value.trim(),email=$('memail').value.trim(),phone=$('mphone').value.trim();if(!email){toast('Please enter your email!','gold');return;}const existing=JSON.parse(localStorage.getItem('bm_user')||'null');user={name:name||email,email,phone,since:existing&&existing.since?existing.since:new Date().toISOString(),last:new Date().toISOString()};localStorage.setItem('bm_user',JSON.stringify(user));closeModal('loginmodal');applyUser();toast(`Welcome, ${user.name}! 🔥 Your transformation begins!`);}
-$('btnlo').addEventListener('click',()=>{user=null;isPro=false;localStorage.removeItem('bm_user');localStorage.removeItem('bm_pro');$('upill').classList.remove('on');$('ppro').classList.remove('on');$('navlbtn').style.display='block';$('tracker').classList.remove('pro-on');$('navtr').style.display='none';$('rescont').style.display='none';$('emptyst2').style.display='flex';toast('Logged out successfully.');});
+
+function applyUser(){
+  if(!user)return;
+  $('upill').classList.add('on');
+  $('uname').textContent=user.name||user.email;
+  $('navlbtn').style.display='none';
+  if(isPro){$('ppro').classList.add('on');$('tracker').classList.add('pro-on');$('navtr').style.display='inline';loadPD();}
+}
+
+function switchAuthTab(tab){
+  ['login','register'].forEach(function(t){
+    document.getElementById('tab-'+t).classList.toggle('active',t===tab);
+    document.getElementById('form-'+t).style.display=t===tab?'block':'none';
+  });
+}
+
+async function loginWithFirebase(){
+  const email=($('login-email')?.value||'').trim();
+  const pass=$('login-pass')?.value||'';
+  if(!email||!pass){toast('Please enter email and password','gold');return;}
+  if(typeof firebase==='undefined'){toast('Auth service loading… try again.','gold');return;}
+  try{
+    $('login-pass').disabled=true;
+    await firebase.auth().signInWithEmailAndPassword(email,pass);
+    closeModal('loginmodal');
+    toast('Welcome back! 🔥');
+  }catch(err){
+    const msg=err.code==='auth/wrong-password'||err.code==='auth/invalid-credential'?'Wrong password. Try again.':err.code==='auth/user-not-found'?'No account found. Register first.':err.message;
+    toast(msg,'gold');
+  }finally{if($('login-pass'))$('login-pass').disabled=false;}
+}
+
+async function registerWithFirebase(){
+  const name=($('reg-name')?.value||'').trim();
+  const email=($('reg-email')?.value||'').trim();
+  const phone=($('reg-phone')?.value||'').trim();
+  const pass=$('reg-pass')?.value||'';
+  if(!name||!email||!pass){toast('Name, email and password required','gold');return;}
+  if(pass.length<6){toast('Password must be at least 6 characters','gold');return;}
+  if(typeof firebase==='undefined'){toast('Auth service loading… try again.','gold');return;}
+  try{
+    const cred=await firebase.auth().createUserWithEmailAndPassword(email,pass);
+    await firebase.firestore().collection('users').doc(cred.user.uid).set({uid:cred.user.uid,name,email,phone,role:'member',plan:'free',status:'active',createdAt:firebase.firestore.FieldValue.serverTimestamp(),updatedAt:firebase.firestore.FieldValue.serverTimestamp(),lastLogin:firebase.firestore.FieldValue.serverTimestamp()});
+    closeModal('loginmodal');
+    toast('Welcome, '+name+'! 🔥 Your transformation begins!');
+  }catch(err){
+    const msg=err.code==='auth/email-already-in-use'?'Email already registered. Please login instead.':err.message;
+    toast(msg,'gold');
+  }
+}
+
+// Legacy compatibility
+function loginUser(){loginWithFirebase();}
+
+function guestAccess(){
+  const name='Beast';
+  const email='guest@rfc.local';
+  const existing=JSON.parse(localStorage.getItem('bm_user')||'null');
+  user={name,email,phone:'',since:existing?.since||new Date().toISOString(),last:new Date().toISOString()};
+  localStorage.setItem('bm_user',JSON.stringify(user));
+  closeModal('loginmodal');
+  applyUser();
+  toast('Continuing as guest. Data saved locally only.','gold');
+}
+
+function resetPasswordPrompt(){
+  const email=($('login-email')?.value||'').trim();
+  if(!email){toast('Enter your email address first','gold');return;}
+  if(typeof firebase==='undefined'){toast('Auth service loading…','gold');return;}
+  firebase.auth().sendPasswordResetEmail(email).then(function(){toast('Reset link sent! Check your email.','gold');}).catch(function(e){toast(e.message,'gold');});
+}
+
+function showAdminLink(){
+  const nl=$('nlinks');
+  if(nl&&!document.getElementById('nav-admin')){
+    const a=document.createElement('a');
+    a.href='/admin.html';a.id='nav-admin';a.textContent='⚡ Admin';a.style.cssText='color:var(--gold)!important;';
+    nl.insertBefore(a,nl.lastElementChild);
+  }
+}
+
+$('btnlo').addEventListener('click',async function(){
+  try{if(typeof firebase!=='undefined')await firebase.auth().signOut();}catch(e){}
+  user=null;isPro=false;
+  localStorage.removeItem('bm_user');localStorage.removeItem('bm_pro');
+  $('upill').classList.remove('on');$('ppro').classList.remove('on');
+  $('navlbtn').style.display='block';$('tracker').classList.remove('pro-on');$('navtr').style.display='none';
+  $('rescont').style.display='none';
+  if($('emptyst2'))$('emptyst2').style.display='flex';
+  toast('Logged out successfully.');
+});
 // ── PRO ──
 // activatePro moved to currency module below
 // ── GALLERY ──
@@ -2041,10 +2220,18 @@ function buildBeastScore2(){
   $('bs2bars').innerHTML=factors.map(f=>`<div class="bs2bar"><div class="bs2bt"><span>${f.n}</span><span>${f.v}/100</span></div><div class="bs2bg"><div class="bs2bi" style="width:${f.v}%"></div></div></div>`).join('');
 }
 // ── MEASUREMENTS ──
-function saveMeasurements(){if(!user){toast('Please log in first!','gold');forceLogin();return;}
+async function saveMeasurements(){
+  if(!user){toast('Please log in first!','gold');forceLogin();return;}
   const m={date:new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short'}),waist:$('meas-waist').value,chest:$('meas-chest').value,arms:$('meas-arms').value,hips:$('meas-hips').value,thigh:$('meas-thigh').value};
   if(!m.waist&&!m.chest&&!m.arms){toast('Please enter at least one measurement','gold');return;}
-  let arr=JSON.parse(localStorage.getItem('bm_meas')||'[]');arr.push(m);arr=arr.slice(-8);localStorage.setItem('bm_meas',JSON.stringify(arr));renderMeas();toast('💾 Measurements saved!');}
+  let arr=JSON.parse(localStorage.getItem('bm_meas')||'[]');arr.push(m);arr=arr.slice(-8);localStorage.setItem('bm_meas',JSON.stringify(arr));
+  // Sync to Firestore
+  if(user?.uid&&typeof firebase!=='undefined'){
+    try{await firebase.firestore().collection('measurements').doc(user.uid).collection('logs').add({...m,timestamp:firebase.firestore.FieldValue.serverTimestamp()});}
+    catch(e){console.warn('Measurement Firestore sync failed:',e);}
+  }
+  renderMeas();toast('💾 Measurements saved!');
+}
 function renderMeas(){const arr=JSON.parse(localStorage.getItem('bm_meas')||'[]');if(!arr.length){$('measlog').innerHTML='';return;}
   $('measlog').innerHTML='<div class="rctitle">History</div>'+arr.slice().reverse().map(m=>`<div style="display:flex;gap:12px;flex-wrap:wrap;background:var(--card2);border:1px solid var(--border);border-radius:5px;padding:9px 14px;margin-bottom:7px;font-size:12px;"><span style="color:var(--muted);">${m.date}</span>${m.waist?`<span>Waist <strong style="color:var(--red);">${m.waist}</strong></span>`:''}${m.chest?`<span>Chest <strong style="color:var(--red);">${m.chest}</strong></span>`:''}${m.arms?`<span>Arms <strong style="color:var(--red);">${m.arms}</strong></span>`:''}${m.hips?`<span>Hips <strong style="color:var(--red);">${m.hips}</strong></span>`:''}${m.thigh?`<span>Thigh <strong style="color:var(--red);">${m.thigh}</strong></span>`:''}</div>`).join('');}
 // ── GROCERY LIST ──
@@ -2133,8 +2320,31 @@ function renderProfile(){
   $('pa-photos').textContent=photoCount;
 }
 function toggleEdit(){const e=$('ac-edit');if(e.style.display==='none'){$('ed-name').value=user.name||'';$('ed-phone').value=user.phone||'';e.style.display='block';}else e.style.display='none';}
-function saveProfile(){const n=$('ed-name').value.trim(),p=$('ed-phone').value.trim();if(n)user.name=n;if(p)user.phone=p;user.last=new Date().toISOString();localStorage.setItem('bm_user',JSON.stringify(user));$('uname').textContent=user.name||user.email;renderProfile();$('ac-edit').style.display='none';toast('✅ Profile updated!');}
-function cancelPro(){if(!confirm('Cancel Beast Pro subscription? You will lose Pro features.'))return;isPro=false;localStorage.removeItem('bm_pro');localStorage.removeItem('bm_sub');$('ppro').classList.remove('on');$('tracker').classList.remove('pro-on');$('navtr').style.display='none';renderProfile();toast('Subscription cancelled. You are back on the Free plan.','gold');}
+async function saveProfile(){
+  const n=$('ed-name').value.trim(),p=$('ed-phone').value.trim();
+  if(n)user.name=n;if(p)user.phone=p;
+  user.last=new Date().toISOString();
+  localStorage.setItem('bm_user',JSON.stringify(user));
+  // Sync to Firestore
+  if(user?.uid&&typeof firebase!=='undefined'){
+    try{await firebase.firestore().collection('users').doc(user.uid).update({name:user.name,phone:user.phone||'',updatedAt:firebase.firestore.FieldValue.serverTimestamp()});}
+    catch(e){console.warn('Profile Firestore sync failed:',e);}
+  }
+  $('uname').textContent=user.name||user.email;
+  renderProfile();$('ac-edit').style.display='none';toast('✅ Profile updated!');
+}
+async function cancelPro(){
+  if(!confirm('Cancel Royal Pro subscription? You will lose Pro features.'))return;
+  isPro=false;
+  localStorage.removeItem('bm_pro');localStorage.removeItem('bm_sub');
+  // Sync cancellation to Firestore
+  if(user?.uid&&typeof window.SubscriptionService!=='undefined'){
+    try{await window.SubscriptionService.cancelSubscription(user.uid);}
+    catch(e){console.warn('Cancel subscription Firestore sync failed:',e);}
+  }
+  $('ppro').classList.remove('on');$('tracker').classList.remove('pro-on');$('navtr').style.display='none';
+  renderProfile();toast('Subscription cancelled. You are back on the Free plan.','gold');
+}
 
 // ════════ MULTI-CURRENCY SYSTEM ════════
 const CURRENCIES = {
@@ -2186,7 +2396,7 @@ function initCurrency() {
   renderPrices(saved);
 }
 // Also update activatePro to use current currency in billing display
-function activatePro() {
+async function activatePro() {
   if(!user){closeModal('promodal');forceLogin();return;}
   isPro=true;
   localStorage.setItem('bm_pro','true');
@@ -2194,21 +2404,17 @@ function activatePro() {
   const trialEnd=new Date(now.getTime()+7*86400000);
   const c = CURRENCIES[currentCurrency] || CURRENCIES.INR;
   const sub={
-    plan:'Beast Pro',
-    price:c.pro,
-    currency:currentCurrency,
-    status:'trial',
-    started:now.toISOString(),
-    trialEnds:trialEnd.toISOString(),
-    nextBilling:trialEnd.toISOString(),
+    plan:'Royal Pro',price:c.pro,currency:currentCurrency,status:'trial',
+    started:now.toISOString(),trialEnds:trialEnd.toISOString(),nextBilling:trialEnd.toISOString(),
     method:'Card •••• 4242',
-    history:[{
-      date:now.toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}),
-      desc:'Beast Pro — 7-day free trial started',
-      amt:c.sym+'0 (trial)'
-    }]
+    history:[{date:now.toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}),desc:'Royal Pro — 7-day free trial started',amt:c.sym+'0 (trial)'}]
   };
   localStorage.setItem('bm_sub',JSON.stringify(sub));
+  // Sync subscription to Firestore
+  if(user?.uid&&typeof window.SubscriptionService!=='undefined'){
+    try{await window.SubscriptionService.createSubscription(user.uid,'royal_pro',{method:'razorpay'});}
+    catch(e){console.warn('Subscription Firestore sync failed:',e);}
+  }
   closeModal('promodal');
   $('ppro').classList.add('on');
   $('tracker').classList.add('pro-on');
@@ -2216,13 +2422,13 @@ function activatePro() {
   loadPD();
   if(lastRes) buildMealPlan(lastRes.goal,lastRes.targetCals,lastRes.macros,lastRes.diet);
   buildRoadmap(lastRes?lastRes.goal:'maintain');
-  toast('👑 Beast Pro is now active — welcome to the top tier!','gold');
+  toast('👑 Royal Pro is now active — welcome to the top tier!','gold');
   setTimeout(()=>$('tracker').scrollIntoView({behavior:'smooth'}),800);
 }
 
 // ── INIT ──
 restore();renderH();initUser();restorePhotos();initCurrency();
-console.log('🔥 Beast Ecosystem v5.0 — Diet Master + Physio Master loaded!');
+console.log('🔥 Royal Fitness Club SaaS v8.0 — Firebase Auth + Firestore Active!');
 </script>
 </body>
 </html>
