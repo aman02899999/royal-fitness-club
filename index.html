@@ -726,6 +726,9 @@ body{font-size:16px;}
 <script src="src/auth.js"></script>
 <script src="src/userService.js"></script>
 <script src="src/subscriptionService.js"></script>
+<script src="src/razorpayService.js"></script>
+<script src="src/analyticsService.js"></script>
+<script src="src/transformationService.js"></script>
 </head>
 <body>
 <div id="watermark"></div>
@@ -1434,7 +1437,7 @@ setInterval(()=>{const p=document.createElement('div');p.className='pt';const s=
 // ── UTILITY ──
 const $=id=>document.getElementById(id);
 function toast(msg,type='fire'){const t=$('toast');t.textContent=msg;t.className=`toast ${type} show`;setTimeout(()=>{t.className=`toast ${type}`;},3500);}
-function openModal(id){$(id).classList.add('open');}
+function openModal(id){$(id).classList.add('open');if(id==='promodal'&&window.AnalyticsService)window.AnalyticsService.trackEvent('pro_modal_opened').catch(()=>{});}
 function closeModal(id){$(id).classList.remove('open');}
 ['sharemodal','promodal','elitemodal'].forEach(id=>{$(id).addEventListener('click',e=>{if(e.target===$(id))closeModal(id);});});
 function animN(el,target,dec=0,sfx=''){let s=0,d=900;const step=ts=>{if(!s)s=ts;const p=Math.min((ts-s)/d,1);el.textContent=(target*p).toFixed(dec)+sfx;if(p<1)requestAnimationFrame(step);};requestAnimationFrame(step);}
@@ -1498,6 +1501,14 @@ function applyUser(){
   $('uname').textContent=user.name||user.email;
   $('navlbtn').style.display='none';
   if(isPro){$('ppro').classList.add('on');$('tracker').classList.add('pro-on');$('navtr').style.display='inline';loadPD();}
+  if(window.AnalyticsService)window.AnalyticsService.trackEvent('login',{plan:user.plan||'free'}).catch(()=>{});
+  if(user.uid&&window.TransformationService&&!lastRes){
+    window.TransformationService.getLastCalculation(user.uid).then(function(last){
+      if(last&&$('ia')&&!$('ia').value){
+        if(last.age)$('ia').value=last.age;if(last.weight)$('iw').value=last.weight;if(last.height)$('ih').value=last.height;
+      }
+    }).catch(()=>{});
+  }
 }
 
 function switchAuthTab(tab){
@@ -1754,6 +1765,8 @@ function calculate(){
   buildBeastScore2();
   toast('🔥 Your plan is ready! Scroll down to see it.');
   setTimeout(()=>$('rescont').scrollIntoView({behavior:'smooth',block:'nearest'}),400);
+  if(user?.uid&&window.TransformationService)window.TransformationService.saveCalculationResult(user.uid,{bmi,bmr:Math.round(bmr),tdee:Math.round(tdee),bodyFat:bf,beastScore:score,calories:tc,goal,diet,weight}).catch(()=>{});
+  if(window.AnalyticsService)window.AnalyticsService.trackEvent('calculator_used',{goal,diet}).catch(()=>{});
 }
 // ── HEALTH CHECKBOX VISUAL + GOAL→CALORIE AUTO-UPDATE + SPLIT TABS ──
 ['pcos','thyroid','diabetic'].forEach(h=>{const el=$('hc-'+h);if(el)el.addEventListener('change',()=>{el.closest('.hchk').classList.toggle('on',el.checked);});});
@@ -2098,7 +2111,7 @@ let pd={streak:0,lastCI:null,wk:0,hy:0,weights:[]};
 function loadPD(){const s=localStorage.getItem('bm_pd');if(s)pd=JSON.parse(s);renderPD();}
 function savePD(){localStorage.setItem('bm_pd',JSON.stringify(pd));}
 function renderPD(){$('stnum').textContent=pd.streak;$('wkc').textContent=pd.wk;$('hyc').textContent=pd.hy;$('wkb').style.width=Math.min(100,pd.wk/5*100)+'%';$('hyb').style.width=Math.min(100,pd.hy/7*100)+'%';renderWC();}
-$('btncheckin').addEventListener('click',()=>{if(!isPro){openModal('promodal');return;}const today=new Date().toDateString();if(pd.lastCI===today){toast('Already checked in today! 🔥','gold');return;}pd.streak=pd.lastCI===new Date(Date.now()-86400000).toDateString()?pd.streak+1:1;pd.lastCI=today;savePD();renderPD();toast(`🔥 ${pd.streak}-day streak! Keep going!`,'gold');});
+$('btncheckin').addEventListener('click',()=>{if(!isPro){openModal('promodal');return;}const today=new Date().toDateString();if(pd.lastCI===today){toast('Already checked in today! 🔥','gold');return;}pd.streak=pd.lastCI===new Date(Date.now()-86400000).toDateString()?pd.streak+1:1;pd.lastCI=today;savePD();renderPD();toast(`🔥 ${pd.streak}-day streak! Keep going!`,'gold');if(user?.uid&&window.TransformationService)window.TransformationService.saveActivityData(user.uid,{streak:pd.streak,workouts:pd.wk,hydrationDays:pd.hy}).catch(()=>{});if(window.AnalyticsService)window.AnalyticsService.trackEvent('checkin',{streak:pd.streak}).catch(()=>{});});
 function adjG(t,d){if(!isPro){openModal('promodal');return;}if(t==='wk')pd.wk=Math.max(0,Math.min(5,pd.wk+d));if(t==='hy')pd.hy=Math.max(0,Math.min(7,pd.hy+d));savePD();renderPD();}
 $('btnwlog').addEventListener('click',()=>{if(!isPro){openModal('promodal');return;}const v=parseFloat($('wlinp').value);if(!v||v<20||v>400){toast('Please enter a valid weight','gold');return;}pd.weights.push({date:new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short'}),kg:v});if(pd.weights.length>14)pd.weights.shift();savePD();renderWC();$('wlinp').value='';toast(`📈 ${v}kg logged!`);});
 function renderWC(){const c=$('wcht'),e=$('wce');[...c.querySelectorAll('.wcb')].forEach(b=>b.remove());if(!pd.weights.length){e.style.display='flex';return;}e.style.display='none';const vals=pd.weights.map(w=>w.kg),mx=Math.max(...vals),mn=Math.min(...vals),range=mx-mn||1;pd.weights.forEach(w=>{const h=Math.max(10,Math.round(((w.kg-mn)/range)*65+18));const b=document.createElement('div');b.className='wcb';b.style.height=h+'px';b.title=`${w.date}: ${w.kg}kg`;c.appendChild(b);});}
@@ -2200,7 +2213,7 @@ function scoreRecovery(){const sleep=+$('sl-sleep').value,stress=+$('sl-stress')
 }
 // ── SCORE PERSISTENCE ──
 let pdScores=JSON.parse(localStorage.getItem('bm_scores')||'{}');
-function saveScores(){localStorage.setItem('bm_scores',JSON.stringify(pdScores));buildBeastScore2();}
+function saveScores(){localStorage.setItem('bm_scores',JSON.stringify(pdScores));buildBeastScore2();if(user?.uid&&window.TransformationService)window.TransformationService.savePhysioScores(user.uid,pdScores).catch(()=>{});}
 // ── ROYAL SCORE 2.0 ──
 function buildBeastScore2(){
   const factors=[];
@@ -2396,34 +2409,39 @@ function initCurrency() {
   renderPrices(saved);
 }
 // Also update activatePro to use current currency in billing display
+function _activateProUI(){
+  $('ppro').classList.add('on');$('tracker').classList.add('pro-on');$('navtr').style.display='inline';
+  loadPD();if(lastRes)buildMealPlan(lastRes.goal,lastRes.targetCals,lastRes.macros,lastRes.diet);buildRoadmap(lastRes?lastRes.goal:'maintain');
+  setTimeout(()=>$('tracker').scrollIntoView({behavior:'smooth'}),800);
+}
 async function activatePro() {
   if(!user){closeModal('promodal');forceLogin();return;}
-  isPro=true;
-  localStorage.setItem('bm_pro','true');
-  const now=new Date();
-  const trialEnd=new Date(now.getTime()+7*86400000);
-  const c = CURRENCIES[currentCurrency] || CURRENCIES.INR;
-  const sub={
-    plan:'Royal Pro',price:c.pro,currency:currentCurrency,status:'trial',
-    started:now.toISOString(),trialEnds:trialEnd.toISOString(),nextBilling:trialEnd.toISOString(),
-    method:'Card •••• 4242',
-    history:[{date:now.toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}),desc:'Royal Pro — 7-day free trial started',amt:c.sym+'0 (trial)'}]
-  };
-  localStorage.setItem('bm_sub',JSON.stringify(sub));
-  // Sync subscription to Firestore
-  if(user?.uid&&typeof window.SubscriptionService!=='undefined'){
-    try{await window.SubscriptionService.createSubscription(user.uid,'royal_pro',{method:'razorpay'});}
-    catch(e){console.warn('Subscription Firestore sync failed:',e);}
+  const c=CURRENCIES[currentCurrency]||CURRENCIES.INR;
+  const now=new Date();const trialEnd=new Date(now.getTime()+7*86400000);
+  // Razorpay checkout for authenticated Firebase users
+  if(user.uid&&window.RazorpayService){
+    closeModal('promodal');
+    toast('Opening payment...','gold');
+    try{
+      await window.RazorpayService.openCheckout('royal_pro',user.uid,{name:user.name||'',email:user.email||'',phone:user.phone||''});
+      // Payment succeeded — RazorpayService.completePayment already wrote to Firestore
+      isPro=true;localStorage.setItem('bm_pro','true');
+      localStorage.setItem('bm_sub',JSON.stringify({plan:'Royal Pro',price:c.pro,currency:currentCurrency,status:'active',started:now.toISOString(),trialEnds:trialEnd.toISOString(),nextBilling:trialEnd.toISOString(),method:'Razorpay',history:[{date:now.toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}),desc:'Royal Pro — payment successful',amt:c.sym+c.pro}]}));
+      if(window.AnalyticsService)window.AnalyticsService.trackEvent('subscription_started',{plan:'royal_pro'}).catch(()=>{});
+      _activateProUI();
+      toast('👑 Royal Pro is now active — welcome to the top tier!','gold');
+    }catch(e){
+      if(e&&e.message&&e.message.toLowerCase().includes('cancel')){toast('Payment cancelled.','gold');}
+      else{console.error('[activatePro]',e);toast('Payment failed — please try again.','gold');}
+    }
+    return;
   }
+  // Guest / pending-user fallback: 7-day local trial
+  isPro=true;localStorage.setItem('bm_pro','true');
+  localStorage.setItem('bm_sub',JSON.stringify({plan:'Royal Pro',price:c.pro,currency:currentCurrency,status:'trial',started:now.toISOString(),trialEnds:trialEnd.toISOString(),nextBilling:trialEnd.toISOString(),method:'Trial',history:[{date:now.toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}),desc:'Royal Pro — 7-day free trial started',amt:c.sym+'0 (trial)'}]}));
   closeModal('promodal');
-  $('ppro').classList.add('on');
-  $('tracker').classList.add('pro-on');
-  $('navtr').style.display='inline';
-  loadPD();
-  if(lastRes) buildMealPlan(lastRes.goal,lastRes.targetCals,lastRes.macros,lastRes.diet);
-  buildRoadmap(lastRes?lastRes.goal:'maintain');
-  toast('👑 Royal Pro is now active — welcome to the top tier!','gold');
-  setTimeout(()=>$('tracker').scrollIntoView({behavior:'smooth'}),800);
+  _activateProUI();
+  toast('👑 Royal Pro trial is now active — welcome to the top tier!','gold');
 }
 
 // ── INIT ──
