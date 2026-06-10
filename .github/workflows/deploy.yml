@@ -26,12 +26,20 @@ jobs:
       - name: Install Firebase CLI
         run: npm install -g firebase-tools
 
-      - name: Verify Firebase token (list projects)
-        run: firebase projects:list
+      # Authenticate: uses FIREBASE_SERVICE_ACCOUNT (preferred) or falls back to FIREBASE_TOKEN
+      - name: Set up Firebase credentials
+        run: |
+          if [ -n "$FIREBASE_SERVICE_ACCOUNT" ]; then
+            echo "$FIREBASE_SERVICE_ACCOUNT" > /tmp/sa-key.json
+            echo "GOOGLE_APPLICATION_CREDENTIALS=/tmp/sa-key.json" >> $GITHUB_ENV
+            echo "Using service account authentication"
+          else
+            echo "Using FIREBASE_TOKEN (legacy)"
+          fi
         env:
-          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
 
-      - name: Deploy to Firebase (debug)
-        run: firebase deploy --only hosting,firestore,functions --project royal-fitness-club-7adc1 --debug 2>&1 | tee /tmp/firebase-debug.log; exit ${PIPESTATUS[0]}
+      - name: Deploy to Firebase
+        run: firebase deploy --only hosting,firestore,functions --project royal-fitness-club-7adc1
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
