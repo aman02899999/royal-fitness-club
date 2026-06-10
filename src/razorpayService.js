@@ -129,21 +129,17 @@
     // -------------------------------------------------------------------------
 
     /**
-     * Creates a pending payment record in Firestore under
-     * `pending_payments/{orderId}` and returns the order details.
+     * Creates a payment order via the `createRazorpayOrder` Cloud Function.
+     * Razorpay generates the order server-side, so the returned orderId is a
+     * real `order_XXXX` ID that live checkout accepts.
      *
-     * NOTE: This implementation generates a client-side order ID because there
-     * is no backend yet. Once the Firebase Cloud Function `createRazorpayOrder`
-     * is deployed (see functions/index.js), replace this method body with a
-     * call to that function so Razorpay generates a real server-side order ID:
-     *
-     *   const fn = firebase.functions().httpsCallable('createRazorpayOrder');
-     *   const { data } = await fn({ plan, uid });
-     *   return data;
+     * Falls back to a client-side pending_payments record only when the
+     * Functions SDK is unavailable (e.g. offline development).
      *
      * @param {string} plan - 'royal_pro' | 'royal_elite'
      * @param {string} uid  - Firebase Auth UID of the purchasing user
-     * @returns {Promise<{orderId: string, amount: number, currency: string}>}
+     * @returns {Promise<{orderId: string, amount: number, currency: string, keyId: string}>}
+     *   `amount` is in paise (rupees × 100), ready for the checkout modal.
      */
     async createOrder(plan, uid) {
       try {
@@ -152,8 +148,21 @@
           throw new Error(`[RazorpayService] Unknown plan: ${plan}`);
         }
 
-        // Client-side order ID — replace with server-generated ID when backend
-        // Cloud Function is live.
+        // Server-side order via Cloud Function (production path)
+        if (firebase.functions) {
+          const fn = firebase.functions().httpsCallable('createRazorpayOrder');
+          const { data } = await fn({ plan });
+          console.log('[RazorpayService] createOrder (server):', data.orderId, plan);
+          return {
+            orderId: data.orderId,
+            amount: data.amount, // already in paise
+            currency: data.currency,
+            keyId: data.keyId,
+          };
+        }
+
+        // Fallback: local order record (dev only — live checkout rejects this ID)
+        console.warn('[RazorpayService] Functions SDK not loaded — using local order fallback');
         const orderId = `rfc_local_${uid}_${Date.now()}`;
 
         await db().collection('pending_payments').doc(orderId).set({
@@ -166,11 +175,11 @@
           createdAt: serverTimestamp(),
         });
 
-        console.log('[RazorpayService] createOrder:', orderId, plan);
         return {
           orderId,
-          amount: planDetails.amount,
+          amount: planDetails.amount * 100,
           currency: planDetails.currency,
+          keyId: window.RazorpayService.KEY_ID,
         };
       } catch (err) {
         console.error('[RazorpayService] createOrder error:', err);
@@ -209,17 +218,17 @@
           throw new Error('[RazorpayService] Could not load Razorpay checkout script. Check your internet connection.');
         }
 
-        // Step 2: create the order record.
-        const { orderId, amount, currency } = await window.RazorpayService.createOrder(plan, uid);
+        // Step 2: create the order record (server-side via Cloud Function).
+        const { orderId, amount, currency, keyId } = await window.RazorpayService.createOrder(plan, uid);
 
         // Step 3: open the modal and wait for the user's action.
         return new Promise((resolve, reject) => {
           const options = {
-            // ⚠️  KEY_ID must be set to your real Razorpay key — see top of file.
-            key: window.RazorpayService.KEY_ID,
+            // Key is returned by the Cloud Function; KEY_ID is the fallback.
+            key: keyId || window.RazorpayService.KEY_ID,
 
-            // Razorpay expects paise (rupees × 100).
-            amount: amount * 100,
+            // Amount is already in paise from createOrder.
+            amount,
 
             currency,
 
@@ -304,7 +313,24 @@
       try {
         const { razorpay_payment_id, razorpay_order_id, razorpay_signature } = paymentResponse;
 
-        // 1. Update the pending_payments record.
+        // Production path: the verifyRazorpayPayment Cloud Function checks the
+        // HMAC-SHA256 signature server-side, then atomically creates the
+        // subscription, updates users/{uid}, and marks the order paid.
+        if (firebase.functions && razorpay_order_id.indexOf('rfc_local_') !== 0) {
+          const fn = firebase.functions().httpsCallable('verifyRazorpayPayment');
+          const { data } = await fn({
+            orderId: razorpay_order_id,
+            paymentId: razorpay_payment_id,
+            signature: razorpay_signature,
+            plan,
+          });
+
+          console.log('[RazorpayService] completePayment: verified server-side', data.subscriptionId);
+          return { subId: data.subscriptionId, subscription: null, paymentId: razorpay_payment_id };
+        }
+
+        // Fallback (dev / local order IDs): client-side Firestore writes,
+        // no signature verification possible without the key secret.
         await db().collection('pending_payments').doc(razorpay_order_id).update({
           status: 'completed',
           paymentId: razorpay_payment_id,
@@ -312,7 +338,6 @@
           completedAt: serverTimestamp(),
         });
 
-        // 2. Create the subscription document (also syncs plan onto users/{uid}).
         const { subId, subscription } = await window.SubscriptionService.createSubscription(
           uid,
           plan,
@@ -323,8 +348,6 @@
           }
         );
 
-        // 3. The users/{uid}.plan field is already written by createSubscription,
-        //    but we also update the raw payment reference here for auditability.
         await db().collection('users').doc(uid).update({
           plan,
           lastPaymentId: razorpay_payment_id,
@@ -344,30 +367,28 @@
     // -------------------------------------------------------------------------
 
     /**
-     * Stub for client-side payment signature verification.
+     * Verifies a payment signature via the `verifyRazorpayPayment` Cloud
+     * Function (HMAC-SHA256 with the key_secret, server-side only).
      *
-     * Real HMAC-SHA256 signature verification MUST be done server-side
-     * (requires the Razorpay key_secret which must never be exposed to the
-     * browser). This stub logs the IDs and returns true so the client-side
-     * flow is unblocked during development.
-     *
-     * TODO: Replace with a call to the `verifyRazorpayPayment` Cloud Function
-     * once it is deployed:
-     *
-     *   const fn = firebase.functions().httpsCallable('verifyRazorpayPayment');
-     *   const { data } = await fn({ orderId, paymentId, signature, plan });
-     *   return data.success;
+     * Note: completePayment() already calls the same function and activates
+     * the subscription; use this standalone method only when you need a
+     * verification check without subscription side effects already handled.
      *
      * @param {string} paymentId  - razorpay_payment_id from the handler response
      * @param {string} orderId    - razorpay_order_id from the handler response
      * @param {string} signature  - razorpay_signature from the handler response
-     * @returns {Promise<boolean>} Always resolves true in this stub implementation.
+     * @param {string} plan       - 'royal_pro' | 'royal_elite'
+     * @returns {Promise<boolean>}
      */
-    async verifyPayment(paymentId, orderId, signature) {
+    async verifyPayment(paymentId, orderId, signature, plan) {
       try {
-        // TODO: implement via Firebase Function — see functions/index.js
-        console.log('[RazorpayService] verifyPayment (stub):', { paymentId, orderId, signature });
-        return true;
+        if (!firebase.functions) {
+          console.warn('[RazorpayService] verifyPayment: Functions SDK not loaded');
+          return false;
+        }
+        const fn = firebase.functions().httpsCallable('verifyRazorpayPayment');
+        const { data } = await fn({ orderId, paymentId, signature, plan });
+        return !!data.success;
       } catch (err) {
         console.error('[RazorpayService] verifyPayment error:', err);
         return false;
