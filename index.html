@@ -1743,6 +1743,7 @@ function initUser(){
         applyUser();
         if(typeof restoreCloudPhotos==='function')restoreCloudPhotos(doc.data());
         if(user.role==='admin')showAdminLink();
+        initPDFStore();
       }catch(err){
         console.error('Auth state error:',err);
         setTimeout(forceLogin,1600);
@@ -2926,14 +2927,26 @@ async function activatePro() {
 // 3. Format: https://drive.google.com/uc?export=download&id=YOUR_FILE_ID
 const ANABOLIC_PDF_URL = '';
 
-function initPDFStore(){
+async function initPDFStore(){
+  // localStorage fast-path (works before auth resolves)
   const p=JSON.parse(localStorage.getItem('bm_pdf_anabolic')||'null');
   if(p&&p.purchased)showPDFPurchased();
+  // Firestore authoritative check (cross-device persistence)
+  if(user){
+    try{
+      const doc=await firebase.firestore()
+        .collection('pdf_purchases').doc(user.uid)
+        .collection('items').doc('anabolic_full_guide').get();
+      if(doc.exists){
+        localStorage.setItem('bm_pdf_anabolic',JSON.stringify({purchased:true}));
+        showPDFPurchased();
+      }
+    }catch(e){/* CF not deployed yet or offline — localStorage state stands */}
+  }
 }
 
 async function buyPDF(){
   if(!user){forceLogin();return;}
-  toast('Opening secure checkout...','gold');
   const loadRzp=()=>new Promise((res,rej)=>{
     if(window.Razorpay){res();return;}
     const s=document.createElement('script');
@@ -2942,19 +2955,41 @@ async function buyPDF(){
     document.head.appendChild(s);
   });
   try{
+    toast('Preparing secure checkout...','gold');
     await loadRzp();
+
+    // Try to create a server-side order (requires Cloud Functions deployed)
+    let orderData={orderId:null,keyId:'rzp_live_SzivmCT3vTvTAK',amount:29900,currency:'INR'};
+    try{
+      const fn=firebase.functions().httpsCallable('createPDFOrder');
+      const r=await fn({});
+      orderData={...orderData,...r.data};
+    }catch(cfErr){
+      // Cloud Functions not deployed yet — proceed with direct checkout (no sig verification)
+      console.warn('[buyPDF] createPDFOrder unavailable, falling back to direct checkout:',cfErr.message);
+    }
+
     const options={
-      key:'rzp_live_SzivmCT3vTvTAK',
-      amount:29900,
-      currency:'INR',
+      key:orderData.keyId,
+      amount:orderData.amount,
+      currency:orderData.currency,
+      order_id:orderData.orderId||undefined,
       name:'Royal Fitness Club',
       description:'Anabolic Full Guide — Complete PDF',
       prefill:{name:user.name||'',email:user.email||'',contact:user.phone||''},
       theme:{color:'#e8001d'},
-      handler:function(resp){
+      handler:async function(resp){
+        // Persist to localStorage immediately for instant UX
         localStorage.setItem('bm_pdf_anabolic',JSON.stringify({purchased:true,date:new Date().toISOString(),pid:resp.razorpay_payment_id||''}));
         showPDFPurchased();
         toast('📥 Payment successful! Your guide is ready to download.','gold');
+        // Verify & persist in Firestore (background — non-blocking)
+        if(resp.razorpay_order_id&&resp.razorpay_payment_id&&resp.razorpay_signature){
+          try{
+            const vfn=firebase.functions().httpsCallable('recordPDFPurchase');
+            await vfn({orderId:resp.razorpay_order_id,paymentId:resp.razorpay_payment_id,signature:resp.razorpay_signature});
+          }catch(ve){console.warn('[buyPDF] recordPDFPurchase:',ve.message);}
+        }
         if(window.AnalyticsService)window.AnalyticsService.trackEvent('anabolic_guide_purchased').catch(()=>{});
       }
     };

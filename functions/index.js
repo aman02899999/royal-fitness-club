@@ -2,10 +2,12 @@
  * functions/index.js — Firebase Cloud Functions
  * Royal Fitness Club SaaS Platform
  *
- * Backend Razorpay integration providing three endpoints:
+ * Backend Razorpay integration providing five endpoints:
  *
- *   createRazorpayOrder    — HTTPS Callable: creates a server-side Razorpay order
+ *   createRazorpayOrder    — HTTPS Callable: creates a server-side Razorpay order (subscription)
  *   verifyRazorpayPayment  — HTTPS Callable: verifies payment signature and activates subscription
+ *   createPDFOrder         — HTTPS Callable: creates a ₹299 Razorpay order for PDF purchase
+ *   recordPDFPurchase      — HTTPS Callable: verifies payment signature and writes pdf_purchases
  *   razorpayWebhook        — HTTPS Request:  handles Razorpay webhook events
  *
  * Deploy:
@@ -518,6 +520,125 @@ exports.razorpayWebhook = functions.https.onRequest((req, res) => {
  *
  * Only callable by admin users (verified via Firestore role check).
  */
+// ---------------------------------------------------------------------------
+// createPDFOrder — HTTPS Callable
+// ---------------------------------------------------------------------------
+
+/**
+ * Creates a Razorpay order for the Anabolic Full Guide PDF (₹299 one-time).
+ * Returns { orderId, keyId, amount, currency } to the client.
+ * Also creates a payment_orders/{orderId} stub in Firestore (type: 'pdf_purchase').
+ */
+exports.createPDFOrder = functions.https.onCall(async (data, context) => {
+  if (!context.auth) {
+    throw new functions.https.HttpsError('unauthenticated', 'You must be logged in.');
+  }
+
+  const uid = context.auth.uid;
+  const itemId = 'anabolic_full_guide';
+
+  // Idempotency — already purchased
+  const existing = await admin.firestore()
+    .collection('pdf_purchases').doc(uid)
+    .collection('items').doc(itemId).get();
+  if (existing.exists) {
+    throw new functions.https.HttpsError('already-exists', 'You have already purchased this guide.');
+  }
+
+  let order;
+  try {
+    order = await razorpay.orders.create({
+      amount: 29900,
+      currency: 'INR',
+      receipt: `pdf_${uid.slice(-8)}_${Date.now()}`,
+      notes: { uid, itemId },
+    });
+  } catch (err) {
+    console.error('[createPDFOrder] Razorpay order error:', err);
+    throw new functions.https.HttpsError('internal', 'Could not create payment order. Please try again.');
+  }
+
+  await admin.firestore().collection('payment_orders').doc(order.id).set({
+    uid,
+    itemId,
+    type: 'pdf_purchase',
+    amount: 29900,
+    currency: 'INR',
+    status: 'pending',
+    razorpayOrderId: order.id,
+    createdAt: admin.firestore.FieldValue.serverTimestamp(),
+  });
+
+  console.log('[createPDFOrder] Order created:', order.id, uid);
+  return {
+    orderId: order.id,
+    keyId: functions.config().razorpay?.key_id || 'rzp_test_PLACEHOLDER',
+    amount: 29900,
+    currency: 'INR',
+  };
+});
+
+// ---------------------------------------------------------------------------
+// recordPDFPurchase — HTTPS Callable
+// ---------------------------------------------------------------------------
+
+/**
+ * Verifies the Razorpay payment signature for a PDF purchase and, on success:
+ *   1. Writes pdf_purchases/{uid}/items/anabolic_full_guide
+ *   2. Marks payment_orders/{orderId} as paid
+ *
+ * Input:  { orderId, paymentId, signature }
+ * Output: { success: true }
+ */
+exports.recordPDFPurchase = functions.https.onCall(async (data, context) => {
+  if (!context.auth) {
+    throw new functions.https.HttpsError('unauthenticated', 'You must be logged in.');
+  }
+
+  const { orderId, paymentId, signature } = data;
+  const uid = context.auth.uid;
+  const itemId = 'anabolic_full_guide';
+
+  if (!orderId || !paymentId || !signature) {
+    throw new functions.https.HttpsError('invalid-argument', 'orderId, paymentId, and signature are all required.');
+  }
+
+  const keySecret = functions.config().razorpay?.key_secret || 'test_secret_PLACEHOLDER';
+  const expectedSig = crypto
+    .createHmac('sha256', keySecret)
+    .update(`${orderId}|${paymentId}`)
+    .digest('hex');
+
+  if (expectedSig !== signature) {
+    console.warn('[recordPDFPurchase] Signature mismatch — orderId:', orderId);
+    throw new functions.https.HttpsError('invalid-argument', 'Payment signature verification failed.');
+  }
+
+  const db = admin.firestore();
+  const now = admin.firestore.FieldValue.serverTimestamp();
+  const batch = db.batch();
+
+  batch.set(
+    db.collection('pdf_purchases').doc(uid).collection('items').doc(itemId),
+    { uid, itemId, orderId, paymentId, amount: 299, currency: 'INR', purchasedAt: now }
+  );
+
+  batch.update(db.collection('payment_orders').doc(orderId), {
+    status: 'paid',
+    paymentId,
+    verifiedAt: now,
+  });
+
+  await batch.commit();
+
+  console.log('[recordPDFPurchase] PDF purchased and recorded:', uid, itemId, paymentId);
+  return { success: true };
+});
+
+// ---------------------------------------------------------------------------
+// createMember — Admin-only Callable
+// ---------------------------------------------------------------------------
+
 exports.createMember = functions.https.onCall(async (data, context) => {
   // Verify caller is authenticated
   if (!context.auth) {
