@@ -9,19 +9,17 @@ service cloud.firestore {
     }
 
     // users/{uid} - user profiles
-    // Owners may create/update their own doc but can never grant themselves
-    // a role or a paid plan — only downgrading plan to 'free' is permitted
-    // (used by the cancellation flow). Paid plan upgrades are written
-    // exclusively by the Cloud Functions backend (admin SDK bypasses rules).
+    // Owners may read and update their own doc (name, phone, etc.) but cannot
+    // change role, plan (upgrade), or membershipExpiry — those are admin/CF only.
+    // Self-registration is disabled: the createMember Cloud Function creates all
+    // member accounts, so the client create rule is intentionally restrictive.
     match /users/{uid} {
       allow read: if request.auth != null && request.auth.uid == uid;
-      allow create: if request.auth != null && request.auth.uid == uid
-        && request.resource.data.get('role', 'member') == 'member'
-        && request.resource.data.get('plan', 'free') == 'free';
       allow update: if request.auth != null && request.auth.uid == uid
         && request.resource.data.get('role', 'member') == resource.data.get('role', 'member')
         && (request.resource.data.get('plan', 'free') == resource.data.get('plan', 'free')
-            || request.resource.data.get('plan', 'free') == 'free');
+            || request.resource.data.get('plan', 'free') == 'free')
+        && request.resource.data.get('membershipExpiry', null) == resource.data.get('membershipExpiry', null);
       allow read, write: if isAdmin();
     }
 

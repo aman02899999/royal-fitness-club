@@ -8,6 +8,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-functions-compat.js"></script>
 <style>
 :root{--red:#e8001d;--orange:#ff4500;--gold:#ffd000;--dark:#070707;--card:#101010;--card2:#141414;--border:#222;--border2:#2c2c2c;--text:#f0f0f0;--muted:#a0a0a0;--green:#22c55e;--blue:#38bdf8;--pro:linear-gradient(135deg,#ffd000,#ff4500);--fire:linear-gradient(135deg,#e8001d,#ff4500);--sidebar:180px;}
 *{margin:0;padding:0;box-sizing:border-box;}
@@ -245,10 +246,10 @@ tr:hover td{background:rgba(255,255,255,.025);}
       <!-- DASHBOARD SECTION -->
       <div class="section active" id="sec-dashboard">
         <div class="stats-row">
-          <div class="stat-card"><div class="sc-label">Total Members</div><div class="sc-val red" id="stat-total">—</div><div class="sc-sub">All registered users</div></div>
-          <div class="stat-card"><div class="sc-label">Pro Members</div><div class="sc-val gold" id="stat-pro">—</div><div class="sc-sub">Paid subscribers</div></div>
-          <div class="stat-card"><div class="sc-label">New This Month</div><div class="sc-val green" id="stat-new">—</div><div class="sc-sub">Joined in <span id="stat-month">—</span></div></div>
-          <div class="stat-card"><div class="sc-label">Active Today</div><div class="sc-val blue" id="stat-today">—</div><div class="sc-sub">Login in last 24h</div></div>
+          <div class="stat-card"><div class="sc-label">Total Members</div><div class="sc-val red" id="stat-total">—</div><div class="sc-sub">All registered members</div></div>
+          <div class="stat-card"><div class="sc-label">Active Gym Members</div><div class="sc-val green" id="stat-gym-active">—</div><div class="sc-sub">Membership not expired</div></div>
+          <div class="stat-card"><div class="sc-label">Expiring Soon</div><div class="sc-val gold" id="stat-expiring">—</div><div class="sc-sub">Within next 7 days</div></div>
+          <div class="stat-card"><div class="sc-label">Digital Pro/Elite</div><div class="sc-val blue" id="stat-pro">—</div><div class="sc-sub">Paid app subscribers</div></div>
         </div>
         <div class="panel-row">
           <div class="panel" style="grid-column:span 2;">
@@ -286,10 +287,11 @@ tr:hover td{background:rgba(255,255,255,.025);}
           <input type="text" class="search-inp" id="member-search" placeholder="Search by name or email..." oninput="filterMembers()">
           <select class="filter-sel" id="member-filter" onchange="filterMembers()">
             <option value="all">All Members</option>
-            <option value="active">Active</option>
+            <option value="gym-active">Gym Active</option>
+            <option value="gym-expired">Gym Expired</option>
+            <option value="gym-expiring">Expiring (7 days)</option>
+            <option value="pro">Digital Pro/Elite</option>
             <option value="suspended">Suspended</option>
-            <option value="pro">Pro Members</option>
-            <option value="free">Free Members</option>
           </select>
           <button class="btn btn-primary" onclick="openAddMember()">➕ Add Member</button>
           <button class="btn btn-outline" onclick="exportCSV()">📥 Export CSV</button>
@@ -297,8 +299,8 @@ tr:hover td{background:rgba(255,255,255,.025);}
         <div class="panel" style="padding:0;">
           <div class="table-wrap">
             <table>
-              <thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Plan</th><th>Status</th><th>Joined</th><th>Last Active</th><th>Actions</th></tr></thead>
-              <tbody id="members-body"><tr><td colspan="8"><div class="loading"><div class="spinner"></div>Loading members...</div></td></tr></tbody>
+              <thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Gym Membership</th><th>Digital Plan</th><th>Status</th><th>Joined</th><th>Actions</th></tr></thead>
+              <tbody id="members-body"><tr><td colspan="9"><div class="loading"><div class="spinner"></div>Loading members...</div></td></tr></tbody>
             </table>
           </div>
           <div style="padding:12px 16px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
@@ -411,7 +413,17 @@ tr:hover td{background:rgba(255,255,255,.025);}
     <div class="form-row"><label class="form-label">Name</label><input type="text" class="form-inp" id="edit-name"></div>
     <div class="form-row"><label class="form-label">Phone</label><input type="tel" class="form-inp" id="edit-phone"></div>
     <div class="form-row">
-      <label class="form-label">Plan</label>
+      <label class="form-label">Gym Membership Expiry</label>
+      <input type="date" class="form-inp" id="edit-gym-expiry" style="color-scheme:dark;">
+      <div style="display:flex;gap:6px;margin-top:7px;flex-wrap:wrap;">
+        <button class="btn btn-outline btn-sm" onclick="setEditExpiry(30)">+30 days</button>
+        <button class="btn btn-outline btn-sm" onclick="setEditExpiry(90)">+3 months</button>
+        <button class="btn btn-outline btn-sm" onclick="setEditExpiry(180)">+6 months</button>
+        <button class="btn btn-outline btn-sm" onclick="setEditExpiry(365)">+1 year</button>
+      </div>
+    </div>
+    <div class="form-row">
+      <label class="form-label">Digital Plan</label>
       <select class="form-sel" id="edit-plan">
         <option value="free">Free</option>
         <option value="royal_pro">Royal Pro</option>
@@ -419,7 +431,7 @@ tr:hover td{background:rgba(255,255,255,.025);}
       </select>
     </div>
     <div class="form-row">
-      <label class="form-label">Status</label>
+      <label class="form-label">Account Status</label>
       <select class="form-sel" id="edit-status">
         <option value="active">Active</option>
         <option value="suspended">Suspended</option>
@@ -436,22 +448,26 @@ tr:hover td{background:rgba(255,255,255,.025);}
 <div class="modal-bg" id="add-modal">
   <div class="modal">
     <button class="modal-close" onclick="closeModal('add-modal')">✕</button>
-    <div class="modal-title">Add Member</div>
-    <div class="modal-sub">Create a new member account manually.</div>
-    <div class="form-row"><label class="form-label">Full Name</label><input type="text" class="form-inp" id="add-name"></div>
-    <div class="form-row"><label class="form-label">Email</label><input type="email" class="form-inp" id="add-email"></div>
-    <div class="form-row"><label class="form-label">Phone</label><input type="tel" class="form-inp" id="add-phone"></div>
+    <div class="modal-title">Enroll New Member</div>
+    <div class="modal-sub">Creates a Firebase Auth account + membership record.</div>
+    <div class="form-row"><label class="form-label">Full Name</label><input type="text" class="form-inp" id="add-name" placeholder="e.g. Aman Sharma"></div>
+    <div class="form-row"><label class="form-label">Email Address</label><input type="email" class="form-inp" id="add-email" placeholder="member@email.com"></div>
+    <div class="form-row"><label class="form-label">Temporary Password</label><input type="text" class="form-inp" id="add-password" placeholder="Min 6 characters — share with member"></div>
+    <div class="form-row"><label class="form-label">Phone (optional)</label><input type="tel" class="form-inp" id="add-phone" placeholder="+91 XXXXXXXXXX"></div>
     <div class="form-row">
-      <label class="form-label">Plan</label>
-      <select class="form-sel" id="add-plan">
-        <option value="free">Free</option>
-        <option value="royal_pro">Royal Pro</option>
-        <option value="royal_elite">Royal Elite</option>
-      </select>
+      <label class="form-label">Gym Membership Expiry</label>
+      <input type="date" class="form-inp" id="add-gym-expiry" style="color-scheme:dark;">
+      <div style="display:flex;gap:6px;margin-top:7px;flex-wrap:wrap;">
+        <button class="btn btn-outline btn-sm" onclick="setAddExpiry(30)">30 days</button>
+        <button class="btn btn-outline btn-sm" onclick="setAddExpiry(90)">3 months</button>
+        <button class="btn btn-outline btn-sm" onclick="setAddExpiry(180)">6 months</button>
+        <button class="btn btn-outline btn-sm" onclick="setAddExpiry(365)">1 year</button>
+      </div>
     </div>
+    <div id="add-member-status" style="display:none;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.2);border-radius:5px;padding:9px 12px;font-size:12px;color:#4ade80;margin-top:10px;"></div>
     <div class="form-actions">
       <button class="btn btn-outline" onclick="closeModal('add-modal')">Cancel</button>
-      <button class="btn btn-primary" onclick="saveAddMember()">➕ Add Member</button>
+      <button class="btn btn-primary" id="add-member-btn" onclick="saveAddMember()">➕ Enroll Member</button>
     </div>
   </div>
 </div>
@@ -501,6 +517,28 @@ function planBadge(plan) {
 function statusBadge(status) {
   const m = { active: 'badge-active', suspended: 'badge-suspended', trial: 'badge-trial' };
   return `<span class="badge ${m[status] || 'badge-free'}">${status || 'active'}</span>`;
+}
+function gymBadge(membershipExpiry) {
+  if (!membershipExpiry) return '<span class="badge badge-free">Not Set</span>';
+  const exp = membershipExpiry.toDate ? membershipExpiry.toDate() : new Date(membershipExpiry);
+  const now = new Date();
+  const daysLeft = Math.ceil((exp - now) / 86400000);
+  if (daysLeft < 0) return `<span class="badge badge-suspended">Expired ${fmtDate(membershipExpiry)}</span>`;
+  if (daysLeft <= 7) return `<span class="badge badge-trial">${daysLeft}d left</span>`;
+  return `<span class="badge badge-active">${fmtDate(membershipExpiry)}</span>`;
+}
+function dateToInput(ts) {
+  if (!ts) return '';
+  const d = ts.toDate ? ts.toDate() : new Date(ts);
+  return d.toISOString().split('T')[0];
+}
+function setEditExpiry(days) {
+  const d = new Date(); d.setDate(d.getDate() + days);
+  document.getElementById('edit-gym-expiry').value = d.toISOString().split('T')[0];
+}
+function setAddExpiry(days) {
+  const d = new Date(); d.setDate(d.getDate() + days);
+  document.getElementById('add-gym-expiry').value = d.toISOString().split('T')[0];
 }
 
 // ── AUTH ──
@@ -572,17 +610,25 @@ async function loadDashboardStats() {
   try {
     const snap = await db.collection('users').get();
     const users = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    const now = new Date();
+    const in7 = new Date(Date.now() + 7 * 86400000);
     const total = users.length;
     const pro = users.filter(u => u.plan && u.plan !== 'free').length;
-    const monthStart = new Date(); monthStart.setDate(1); monthStart.setHours(0, 0, 0, 0);
-    const newThisMonth = users.filter(u => u.createdAt && u.createdAt.toDate && u.createdAt.toDate() >= monthStart).length;
-    const yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000);
-    const activeToday = users.filter(u => u.lastLogin && u.lastLogin.toDate && u.lastLogin.toDate() >= yesterday).length;
+    const gymActive = users.filter(u => {
+      if (!u.membershipExpiry) return true;
+      const exp = u.membershipExpiry.toDate ? u.membershipExpiry.toDate() : new Date(u.membershipExpiry);
+      return exp >= now;
+    }).length;
+    const expiringSoon = users.filter(u => {
+      if (!u.membershipExpiry) return false;
+      const exp = u.membershipExpiry.toDate ? u.membershipExpiry.toDate() : new Date(u.membershipExpiry);
+      return exp >= now && exp <= in7;
+    }).length;
 
     document.getElementById('stat-total').textContent = total;
+    document.getElementById('stat-gym-active').textContent = gymActive;
+    document.getElementById('stat-expiring').textContent = expiringSoon;
     document.getElementById('stat-pro').textContent = pro;
-    document.getElementById('stat-new').textContent = newThisMonth;
-    document.getElementById('stat-today').textContent = activeToday;
 
     // Recent members table
     const recent = users.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0)).slice(0, 5);
@@ -626,13 +672,17 @@ function filterMembers() {
   const query = (document.getElementById('member-search').value || '').toLowerCase();
   const filter = document.getElementById('member-filter').value;
 
+  const now = new Date();
+  const in7 = new Date(Date.now() + 7 * 86400000);
   filteredMembers = allMembers.filter(u => {
     const matchQ = !query || (u.name || '').toLowerCase().includes(query) || (u.email || '').toLowerCase().includes(query);
     let matchF = true;
-    if (filter === 'active') matchF = u.status === 'active' || !u.status;
-    else if (filter === 'suspended') matchF = u.status === 'suspended';
+    const gymExp = u.membershipExpiry ? (u.membershipExpiry.toDate ? u.membershipExpiry.toDate() : new Date(u.membershipExpiry)) : null;
+    if (filter === 'gym-active') matchF = !gymExp || gymExp >= now;
+    else if (filter === 'gym-expired') matchF = gymExp && gymExp < now;
+    else if (filter === 'gym-expiring') matchF = gymExp && gymExp >= now && gymExp <= in7;
     else if (filter === 'pro') matchF = u.plan && u.plan !== 'free';
-    else if (filter === 'free') matchF = !u.plan || u.plan === 'free';
+    else if (filter === 'suspended') matchF = u.status === 'suspended';
     return matchQ && matchF;
   });
 
@@ -652,7 +702,7 @@ function renderMembers() {
   document.getElementById('next-page').disabled = start + PAGE_SIZE >= total;
 
   if (!pageData.length) {
-    document.getElementById('members-body').innerHTML = '<tr><td colspan="8"><div class="empty-state"><div class="empty-icon">🔍</div><div class="empty-text">No members found</div></div></td></tr>';
+    document.getElementById('members-body').innerHTML = '<tr><td colspan="9"><div class="empty-state"><div class="empty-icon">🔍</div><div class="empty-text">No members found</div></div></td></tr>';
     return;
   }
 
@@ -661,13 +711,14 @@ function renderMembers() {
       <td><div class="td-name">${escHtml(u.name || '—')}</div></td>
       <td><div class="td-email">${escHtml(u.email || '—')}</div></td>
       <td><div class="td-email">${escHtml(u.phone || '—')}</div></td>
+      <td>${gymBadge(u.membershipExpiry)}</td>
       <td>${planBadge(u.plan)}</td>
       <td>${statusBadge(u.status)}</td>
       <td><div class="td-date">${fmtDate(u.createdAt)}</div></td>
-      <td><div class="td-date">${fmtDate(u.lastLogin)}</div></td>
       <td>
         <div style="display:flex;gap:5px;">
           <button class="btn-icon" onclick="openEditMember('${u.id}')" title="Edit">✏️</button>
+          <button class="btn-icon" onclick="quickRenew('${u.id}', '${escHtml(u.name || '')}', 365)" title="Renew 1yr" style="color:var(--green);">🔄</button>
           <button class="btn-icon btn-danger btn-sm" onclick="confirmDelete('${u.id}', '${escHtml(u.email || '')}')" title="Delete">🗑️</button>
         </div>
       </td>
@@ -691,6 +742,7 @@ function openEditMember(uid) {
   document.getElementById('edit-member-email').textContent = u.email || '—';
   document.getElementById('edit-name').value = u.name || '';
   document.getElementById('edit-phone').value = u.phone || '';
+  document.getElementById('edit-gym-expiry').value = dateToInput(u.membershipExpiry);
   document.getElementById('edit-plan').value = u.plan || 'free';
   document.getElementById('edit-status').value = u.status || 'active';
   openModal('edit-modal');
@@ -702,17 +754,35 @@ async function saveEditMember() {
   const phone = document.getElementById('edit-phone').value.trim();
   const plan = document.getElementById('edit-plan').value;
   const status = document.getElementById('edit-status').value;
+  const gymExpiryVal = document.getElementById('edit-gym-expiry').value;
+
+  const updateData = { name, phone, plan, status, updatedAt: firebase.firestore.Timestamp.now() };
+  if (gymExpiryVal) updateData.membershipExpiry = firebase.firestore.Timestamp.fromDate(new Date(gymExpiryVal));
 
   try {
-    await db.collection('users').doc(uid).update({
-      name, phone, plan, status,
-      updatedAt: firebase.firestore.Timestamp.now()
-    });
+    await db.collection('users').doc(uid).update(updateData);
     closeModal('edit-modal');
     toast('✅ Member updated!', 'green');
     await loadMembers();
+    await loadDashboardStats();
   } catch (err) {
     toast('Failed to update member: ' + err.message, 'fire');
+  }
+}
+
+async function quickRenew(uid, name, days) {
+  if (!confirm(`Renew gym membership for ${name} by ${days} days from today?`)) return;
+  const exp = new Date(); exp.setDate(exp.getDate() + days);
+  try {
+    await db.collection('users').doc(uid).update({
+      membershipExpiry: firebase.firestore.Timestamp.fromDate(exp),
+      updatedAt: firebase.firestore.Timestamp.now()
+    });
+    toast(`✅ ${name}'s membership renewed until ${exp.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}`, 'green');
+    await loadMembers();
+    await loadDashboardStats();
+  } catch (err) {
+    toast('Failed to renew: ' + err.message, 'fire');
   }
 }
 
@@ -727,32 +797,47 @@ async function confirmDelete(uid, email) {
   }
 }
 
-function openAddMember() { openModal('add-modal'); }
+function openAddMember() {
+  document.getElementById('add-name').value = '';
+  document.getElementById('add-email').value = '';
+  document.getElementById('add-password').value = '';
+  document.getElementById('add-phone').value = '';
+  document.getElementById('add-gym-expiry').value = '';
+  document.getElementById('add-member-status').style.display = 'none';
+  openModal('add-modal');
+}
 
 async function saveAddMember() {
   const name = document.getElementById('add-name').value.trim();
   const email = document.getElementById('add-email').value.trim();
+  const password = document.getElementById('add-password').value.trim();
   const phone = document.getElementById('add-phone').value.trim();
-  const plan = document.getElementById('add-plan').value;
-  if (!name || !email) { toast('Name and email are required', 'gold'); return; }
+  const gymExpiryVal = document.getElementById('add-gym-expiry').value;
+
+  if (!name || !email || !password) { toast('Name, email and password are required', 'gold'); return; }
+  if (password.length < 6) { toast('Password must be at least 6 characters', 'gold'); return; }
+  if (!gymExpiryVal) { toast('Please set a gym membership expiry date', 'gold'); return; }
+
+  const btn = document.getElementById('add-member-btn');
+  const statusEl = document.getElementById('add-member-status');
+  btn.disabled = true; btn.textContent = 'Creating...';
 
   try {
-    await db.collection('users').add({
-      name, email, phone, plan,
-      role: 'member', status: 'active',
-      createdAt: firebase.firestore.Timestamp.now(),
-      updatedAt: firebase.firestore.Timestamp.now(),
-      lastLogin: firebase.firestore.Timestamp.now()
+    const functions = firebase.functions();
+    const createMember = functions.httpsCallable('createMember');
+    const result = await createMember({
+      name, email, password, phone,
+      membershipExpiry: new Date(gymExpiryVal).toISOString()
     });
-    closeModal('add-modal');
-    document.getElementById('add-name').value = '';
-    document.getElementById('add-email').value = '';
-    document.getElementById('add-phone').value = '';
-    toast('✅ Member added!', 'green');
+    statusEl.textContent = `✅ Member created! UID: ${result.data.uid}. Share login: ${email} / ${password}`;
+    statusEl.style.display = 'block';
+    toast(`✅ ${name} enrolled successfully!`, 'green');
     await loadMembers();
     await loadDashboardStats();
   } catch (err) {
-    toast('Failed to add member: ' + err.message, 'fire');
+    toast('Failed to enroll: ' + (err.message || err), 'fire');
+  } finally {
+    btn.disabled = false; btn.textContent = '➕ Enroll Member';
   }
 }
 

@@ -469,8 +469,73 @@ exports.razorpayWebhook = functions.https.onRequest((req, res) => {
       return res.json({ received: true });
     } catch (err) {
       console.error('[razorpayWebhook] Handler error for event', event, ':', err);
-      // Return 200 so Razorpay doesn't retry indefinitely on our internal errors.
       return res.json({ received: true, error: err.message });
     }
   });
+});
+
+// ---------------------------------------------------------------------------
+// createMember — Admin-only Callable
+// ---------------------------------------------------------------------------
+
+/**
+ * Creates a Firebase Auth user + Firestore member document.
+ * Called from the admin dashboard when enrolling a new gym member.
+ *
+ * Input:  { name, email, password, phone?, membershipExpiry (ISO string) }
+ * Output: { uid }
+ *
+ * Only callable by admin users (verified via Firestore role check).
+ */
+exports.createMember = functions.https.onCall(async (data, context) => {
+  // Verify caller is authenticated
+  if (!context.auth) {
+    throw new functions.https.HttpsError('unauthenticated', 'Must be logged in.');
+  }
+
+  // Verify caller is an admin
+  const callerDoc = await admin.firestore().collection('users').doc(context.auth.uid).get();
+  if (!callerDoc.exists || callerDoc.data().role !== 'admin') {
+    throw new functions.https.HttpsError('permission-denied', 'Admin role required.');
+  }
+
+  const { name, email, password, phone, membershipExpiry } = data;
+
+  if (!name || !email || !password) {
+    throw new functions.https.HttpsError('invalid-argument', 'name, email and password are required.');
+  }
+  if (password.length < 6) {
+    throw new functions.https.HttpsError('invalid-argument', 'Password must be at least 6 characters.');
+  }
+  if (!membershipExpiry) {
+    throw new functions.https.HttpsError('invalid-argument', 'membershipExpiry is required.');
+  }
+
+  // Create Firebase Auth user
+  const userRecord = await admin.auth().createUser({
+    email,
+    password,
+    displayName: name,
+  });
+
+  const uid = userRecord.uid;
+  const expiryDate = new Date(membershipExpiry);
+
+  // Create Firestore member document
+  await admin.firestore().collection('users').doc(uid).set({
+    uid,
+    name,
+    email,
+    phone: phone || '',
+    role: 'member',
+    plan: 'free',
+    status: 'active',
+    membershipExpiry: admin.firestore.Timestamp.fromDate(expiryDate),
+    createdAt: admin.firestore.FieldValue.serverTimestamp(),
+    updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+    lastLogin: admin.firestore.FieldValue.serverTimestamp(),
+  });
+
+  console.log('[createMember] Created member:', uid, email, 'expires:', expiryDate.toISOString());
+  return { uid };
 });

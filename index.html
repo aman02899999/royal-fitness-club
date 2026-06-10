@@ -658,6 +658,18 @@ body{font-size:16px;}
 .auth-tabs{display:flex;border-bottom:1px solid var(--border);margin:12px 0 18px;}
 .auth-guest-btn{background:none;border:none;color:var(--muted);font-size:11px;cursor:pointer;margin-top:10px;width:100%;letter-spacing:1px;padding:6px;}
 .auth-guest-btn:hover{color:var(--text);}
+/* ── GYM MEMBERSHIP GATE ── */
+#gym-gate{position:fixed;inset:0;background:#050505;z-index:99999;display:none;flex-direction:column;align-items:center;justify-content:center;padding:30px;text-align:center;}
+.ggate-logo{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:4px;background:var(--fire);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:28px;}
+.ggate-icon{font-size:64px;margin-bottom:16px;}
+.ggate-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(28px,5vw,48px);letter-spacing:2px;color:var(--text);margin-bottom:10px;}
+.ggate-msg{font-size:14px;color:var(--muted);max-width:440px;line-height:1.75;margin-bottom:6px;}
+.ggate-expiry{color:var(--red);font-weight:700;}
+.ggate-contact{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:16px 24px;margin:20px 0;max-width:380px;width:100%;}
+.ggate-contact p{font-size:12px;color:var(--muted);margin-bottom:4px;}
+.ggate-contact strong{color:var(--text);font-size:13px;}
+.ggate-logout{background:transparent;border:1px solid var(--border2);color:var(--muted);padding:9px 22px;border-radius:4px;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;transition:all .2s;margin-top:8px;}
+.ggate-logout:hover{border-color:var(--red);color:var(--red);}
 .lb-tabs{display:flex;gap:8px;margin:28px 0 18px;align-items:center;}
 .lb-tab{background:var(--card);border:1px solid var(--border2);color:var(--muted);padding:9px 22px;border-radius:3px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all .2s;}
 .lb-tab.active{background:var(--fire);color:#fff;border-color:transparent;}
@@ -751,6 +763,19 @@ body{font-size:16px;}
 <script src="src/communityService.js"></script>
 </head>
 <body>
+<!-- GYM MEMBERSHIP GATE — shown when membership expired or not enrolled -->
+<div id="gym-gate">
+  <div class="ggate-logo">ROYAL FITNESS CLUB</div>
+  <div class="ggate-icon" id="ggate-icon">🔒</div>
+  <div class="ggate-title" id="ggate-title">GYM MEMBERSHIP EXPIRED</div>
+  <div class="ggate-msg">Your Royal Fitness Club gym membership expired on <span class="ggate-expiry" id="ggate-expiry">—</span>.<br>Please visit the gym to renew your membership.</div>
+  <div class="ggate-contact">
+    <p>📍 Visit us at the gym front desk</p>
+    <strong>Royal Fitness Club</strong>
+    <p style="margin-top:6px;font-size:11px;color:#666;">Renew your membership to regain full app access</p>
+  </div>
+  <button class="ggate-logout" onclick="firebase.auth().signOut().then(()=>{document.getElementById('gym-gate').style.display='none';forceLogin();})">← Logout</button>
+</div>
 <div id="watermark"></div>
 <div id="cur"></div><div id="cdot"></div><div id="ptcl"></div>
 <nav>
@@ -791,7 +816,7 @@ body{font-size:16px;}
     </select>
     <div id="ntimer">🔥 <span id="ntlbl">--:--:--</span></div>
     <div id="upill"><span>⚡</span><span id="uname" style="cursor:pointer;" onclick="openProfile()" title="View Profile"></span><span class="ppro" id="ppro">PRO</span><button id="btnlo">logout</button></div>
-    <button class="bnav" id="navlbtn" onclick="forceLogin()">Get Started Free</button>
+    <button class="bnav" id="navlbtn" onclick="forceLogin()">Member Login</button>
     <button class="hamburger" id="hamburger" onclick="toggleNav()" aria-label="Menu">
       <span></span><span></span><span></span>
     </button>
@@ -799,18 +824,18 @@ body{font-size:16px;}
 </nav>
 <section class="hero" id="home">
   <div class="hbg"></div><div class="hgrid"></div>
-  <div class="htag">🔥 Royal Fitness Club — Beast Ecosystem v8.0</div>
-  <h1 class="hh1">ROYAL<br><em>TRANSFORMATION</em></h1>
-  <p class="hsub">The #1 fitness intelligence system. Calculate your exact macros, get a personalised meal plan, and see your 3D body composition analysis. Science-backed. Results-driven.</p>
+  <div class="htag">🏋️ Exclusive Member Portal — Royal Fitness Club</div>
+  <h1 class="hh1">YOUR BEAST<br><em>ECOSYSTEM</em></h1>
+  <p class="hsub">Your all-in-one fitness intelligence platform — exclusively for Royal Fitness Club members. Track macros, meal plans, progress photos, and your Beast Score. Login with your membership credentials.</p>
   <div class="hbtns">
-    <a href="#" class="bfire" onclick="forceLogin();return false;">⚡ Start FREE — Login Required</a>
-    <a href="#plans" class="boutl">View Plans →</a>
+    <a href="#" class="bfire" onclick="forceLogin();return false;">⚡ Member Login</a>
+    <a href="#plans" class="boutl">Upgrade to Pro →</a>
   </div>
   <div class="hstats">
-    <div class="hst"><div class="hst-n">2,500+</div><div class="hst-l">Transformations</div></div>
-    <div class="hst"><div class="hst-n">50+</div><div class="hst-l">Foods in Database</div></div>
-    <div class="hst"><div class="hst-n">12</div><div class="hst-l">Pro Tools</div></div>
-    <div class="hst"><div class="hst-n"><span class="px-pro">₹499</span></div><div class="hst-l">Pro/Month</div></div>
+    <div class="hst"><div class="hst-n">Members</div><div class="hst-l">Only Access</div></div>
+    <div class="hst"><div class="hst-n">12+</div><div class="hst-l">Pro Tools</div></div>
+    <div class="hst"><div class="hst-n">Free</div><div class="hst-l">With Membership</div></div>
+    <div class="hst"><div class="hst-n"><span class="px-pro">₹499</span></div><div class="hst-l">Digital Pro/Month</div></div>
   </div>
 </section>
 <section id="profile">
@@ -900,13 +925,13 @@ body{font-size:16px;}
 <div class="divider"></div>
 <section id="plans">
   <div class="container">
-    <div class="stag">Choose Your Path</div><div class="sh">SELECT YOUR PLAN</div>
-    <p class="ssub">Login required for both plans. Start free and upgrade when you're ready.</p>
+    <div class="stag">Digital Add-Ons For Members</div><div class="sh">MEMBERSHIP BENEFITS</div>
+    <p class="ssub">Included free with your gym membership. Upgrade to unlock premium digital features.</p>
     <div class="plans2">
       <div class="pcard">
-        <div class="pbadge pbfree">⚡ Free Plan</div>
+        <div class="pbadge pbfree">🏋️ Gym Member</div>
         <div class="pprice">FREE</div>
-        <div class="pper">Login required · No credit card</div>
+        <div class="pper">Included with your gym membership</div>
         <ul class="pfeats">
           <li><span class="fi r">✓</span> BMI, BMR & TDEE Calculator</li>
           <li><span class="fi r">✓</span> Calories & Macro Targets</li>
@@ -922,7 +947,7 @@ body{font-size:16px;}
           <li class="flocked"><span class="fi m">🔒</span> Before/After Photo Upload</li>
           <li class="flocked"><span class="fi m">🔒</span> PDF Export & Share Card</li>
         </ul>
-        <button class="bfire" style="width:100%;justify-content:center;" onclick="forceLogin()">Start Free — Login →</button>
+        <button class="bfire" style="width:100%;justify-content:center;" onclick="forceLogin()">Member Login →</button>
       </div>
       <div class="pcard pro">
         <div class="pbadge pbpro">👑 Beast Pro</div>
@@ -1359,28 +1384,16 @@ body{font-size:16px;}
   <div class="mbox" style="max-width:420px;">
     <button class="mclose" onclick="closeModal('loginmodal')">✕</button>
     <div class="mlogo">ROYAL FITNESS CLUB</div>
-    <div class="auth-tabs">
-      <div class="auth-tab active" id="tab-login" onclick="switchAuthTab('login')">Login</div>
-      <div class="auth-tab" id="tab-register" onclick="switchAuthTab('register')">Register Free</div>
-    </div>
-    <!-- LOGIN FORM -->
-    <div id="form-login">
-      <input type="email" class="minp" id="login-email" placeholder="Email Address" autocomplete="email">
-      <input type="password" class="minp" id="login-pass" placeholder="Password" autocomplete="current-password">
-      <button class="mbtn" onclick="loginWithFirebase()">⚡ LOGIN & TRANSFORM</button>
+    <div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--red);margin:4px 0 20px;">Members Portal</div>
+    <div class="mwarn">🏋️ This portal is exclusively for Royal Fitness Club enrolled members.</div>
+    <input type="email" class="minp" id="login-email" placeholder="Email Address" autocomplete="email">
+    <input type="password" class="minp" id="login-pass" placeholder="Password" autocomplete="current-password">
+    <button class="mbtn" onclick="loginWithFirebase()">⚡ LOGIN TO PORTAL</button>
+    <div style="text-align:center;margin-top:12px;">
       <button class="auth-guest-btn" onclick="resetPasswordPrompt()">Forgot password?</button>
     </div>
-    <!-- REGISTER FORM -->
-    <div id="form-register" style="display:none;">
-      <div class="mwarn">🔒 Free account — no credit card required. Your data is secured.</div>
-      <input type="text" class="minp" id="reg-name" placeholder="Full Name" autocomplete="name">
-      <input type="email" class="minp" id="reg-email" placeholder="Email Address" autocomplete="email">
-      <input type="tel" class="minp" id="reg-phone" placeholder="Mobile / WhatsApp (optional)">
-      <input type="password" class="minp" id="reg-pass" placeholder="Password (min 6 characters)" autocomplete="new-password">
-      <button class="mbtn" onclick="registerWithFirebase()">🔥 CREATE FREE ACCOUNT</button>
-    </div>
-    <div style="text-align:center;margin-top:4px;">
-      <button class="auth-guest-btn" onclick="guestAccess()">Continue without account →</button>
+    <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border);text-align:center;">
+      <p style="font-size:11px;color:var(--muted);line-height:1.8;">Not enrolled yet?<br>Visit <strong style="color:var(--text);">Royal Fitness Club</strong> to become a member<br>and get your login credentials from the front desk.</p>
     </div>
   </div>
 </div>
@@ -1501,30 +1514,31 @@ function initUser(){
         const doc=await firebase.firestore().collection('users').doc(fbUser.uid).get();
         if(doc.exists){
           const d=doc.data();
-          // Treat the plan as expired client-side even before the daily
-          // backend sweep runs — expiryDate on the user doc is authoritative.
+          // Check gym membership expiry — if set and expired, block access
+          const gymExpiry=d.membershipExpiry?.toDate?.();
+          if(gymExpiry&&gymExpiry<new Date()){
+            showMembershipGate('expired',gymExpiry);
+            return;
+          }
+          // Check digital subscription expiry
           const planExpired=d.expiryDate?.toDate?.()&&d.expiryDate.toDate()<new Date();
           const effectivePlan=planExpired?'free':(d.plan||'free');
-          user={uid:fbUser.uid,name:d.name||fbUser.email.split('@')[0],email:d.email||fbUser.email,phone:d.phone||'',role:d.role||'member',plan:effectivePlan,since:d.createdAt?.toDate?.()?.toISOString()||new Date().toISOString(),last:new Date().toISOString()};
+          user={uid:fbUser.uid,name:d.name||fbUser.email.split('@')[0],email:d.email||fbUser.email,phone:d.phone||'',role:d.role||'member',plan:effectivePlan,membershipExpiry:gymExpiry?.toISOString()||null,since:d.createdAt?.toDate?.()?.toISOString()||new Date().toISOString(),last:new Date().toISOString()};
           isPro=effectivePlan==='royal_pro'||effectivePlan==='royal_elite';
         }else{
-          // Auth user exists but no Firestore doc — create it
-          user={uid:fbUser.uid,name:fbUser.displayName||fbUser.email.split('@')[0],email:fbUser.email,phone:'',role:'member',plan:'free',since:new Date().toISOString(),last:new Date().toISOString()};
-          isPro=false;
-          await firebase.firestore().collection('users').doc(fbUser.uid).set({uid:fbUser.uid,name:user.name,email:user.email,phone:'',role:'member',plan:'free',status:'active',createdAt:firebase.firestore.FieldValue.serverTimestamp(),updatedAt:firebase.firestore.FieldValue.serverTimestamp(),lastLogin:firebase.firestore.FieldValue.serverTimestamp()});
+          // Auth user exists but no Firestore doc — not a registered member
+          showMembershipGate('notfound',null);
+          return;
         }
         localStorage.setItem('bm_user',JSON.stringify(user));
         localStorage.setItem('bm_pro',isPro?'true':'false');
-        // Update last login (fire & forget)
         firebase.firestore().collection('users').doc(fbUser.uid).update({lastLogin:firebase.firestore.FieldValue.serverTimestamp()}).catch(()=>{});
         applyUser();
-        if(doc.exists&&typeof restoreCloudPhotos==='function')restoreCloudPhotos(doc.data());
+        if(typeof restoreCloudPhotos==='function')restoreCloudPhotos(doc.data());
         if(user.role==='admin')showAdminLink();
       }catch(err){
         console.error('Auth state error:',err);
-        const u=localStorage.getItem('bm_user');
-        if(u){user=JSON.parse(u);isPro=localStorage.getItem('bm_pro')==='true';applyUser();}
-        else setTimeout(forceLogin,1600);
+        setTimeout(forceLogin,1600);
       }
     }else{
       const hadUser=!!user;
@@ -1537,6 +1551,26 @@ function initUser(){
 }
 
 function forceLogin(){openModal('loginmodal');}
+
+function showMembershipGate(type,expDate){
+  const gate=$('gym-gate');
+  const icon=$('ggate-icon');
+  const title=$('ggate-title');
+  const expEl=$('ggate-expiry');
+  const msgEl=gate.querySelector('.ggate-msg');
+  if(type==='expired'){
+    icon.textContent='⏰';
+    title.textContent='MEMBERSHIP EXPIRED';
+    expEl.textContent=expDate?expDate.toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'}):'—';
+    msgEl.innerHTML='Your Royal Fitness Club gym membership expired on <span class="ggate-expiry" id="ggate-expiry">'+expEl.textContent+'</span>.<br>Please visit the gym to renew your membership.';
+  }else if(type==='notfound'){
+    icon.textContent='🚫';
+    title.textContent='NOT ENROLLED';
+    msgEl.innerHTML='Your account is not linked to an active gym membership.<br>Please visit Royal Fitness Club to complete your enrollment.';
+    gate.querySelector('.ggate-contact').style.display='block';
+  }
+  gate.style.display='flex';
+}
 
 function applyUser(){
   if(!user)return;
@@ -1555,17 +1589,10 @@ function applyUser(){
   }
 }
 
-function switchAuthTab(tab){
-  ['login','register'].forEach(function(t){
-    document.getElementById('tab-'+t).classList.toggle('active',t===tab);
-    document.getElementById('form-'+t).style.display=t===tab?'block':'none';
-  });
-}
-
 async function loginWithFirebase(){
   const email=($('login-email')?.value||'').trim();
   const pass=$('login-pass')?.value||'';
-  if(!email||!pass){toast('Please enter email and password','gold');return;}
+  if(!email||!pass){toast('Please enter your email and password','gold');return;}
   if(typeof firebase==='undefined'){toast('Auth service loading… try again.','gold');return;}
   try{
     $('login-pass').disabled=true;
@@ -1573,42 +1600,17 @@ async function loginWithFirebase(){
     closeModal('loginmodal');
     toast('Welcome back! 🔥');
   }catch(err){
-    const msg=err.code==='auth/wrong-password'||err.code==='auth/invalid-credential'?'Wrong password. Try again.':err.code==='auth/user-not-found'?'No account found. Register first.':err.message;
+    const msg=err.code==='auth/wrong-password'||err.code==='auth/invalid-credential'?'Wrong password. Check with the gym front desk.':err.code==='auth/user-not-found'?'Account not found. Please enroll at Royal Fitness Club.':err.message;
     toast(msg,'gold');
   }finally{if($('login-pass'))$('login-pass').disabled=false;}
-}
-
-async function registerWithFirebase(){
-  const name=($('reg-name')?.value||'').trim();
-  const email=($('reg-email')?.value||'').trim();
-  const phone=($('reg-phone')?.value||'').trim();
-  const pass=$('reg-pass')?.value||'';
-  if(!name||!email||!pass){toast('Name, email and password required','gold');return;}
-  if(pass.length<6){toast('Password must be at least 6 characters','gold');return;}
-  if(typeof firebase==='undefined'){toast('Auth service loading… try again.','gold');return;}
-  try{
-    const cred=await firebase.auth().createUserWithEmailAndPassword(email,pass);
-    await firebase.firestore().collection('users').doc(cred.user.uid).set({uid:cred.user.uid,name,email,phone,role:'member',plan:'free',status:'active',createdAt:firebase.firestore.FieldValue.serverTimestamp(),updatedAt:firebase.firestore.FieldValue.serverTimestamp(),lastLogin:firebase.firestore.FieldValue.serverTimestamp()});
-    closeModal('loginmodal');
-    toast('Welcome, '+name+'! 🔥 Your transformation begins!');
-  }catch(err){
-    const msg=err.code==='auth/email-already-in-use'?'Email already registered. Please login instead.':err.message;
-    toast(msg,'gold');
-  }
 }
 
 // Legacy compatibility
 function loginUser(){loginWithFirebase();}
 
 function guestAccess(){
-  const name='Beast';
-  const email='guest@rfc.local';
-  const existing=JSON.parse(localStorage.getItem('bm_user')||'null');
-  user={name,email,phone:'',since:existing?.since||new Date().toISOString(),last:new Date().toISOString()};
-  localStorage.setItem('bm_user',JSON.stringify(user));
-  closeModal('loginmodal');
-  applyUser();
-  toast('Continuing as guest. Data saved locally only.','gold');
+  // Members-only app — no guest access
+  toast('This portal is for Royal Fitness Club members only.','gold');
 }
 
 function resetPasswordPrompt(){
