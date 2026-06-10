@@ -338,9 +338,9 @@ exports.expireSubscriptions = functions.pubsub
  *   firebase functions:config:set razorpay.webhook_secret="XXXXXXXX"
  *
  * Handled events:
- *   payment.captured  — activates/confirms the user's plan
- *   payment.failed    — marks the order as failed
- *   (subscription.cancelled is logged but not yet actioned)
+ *   payment.captured       — activates/confirms the user's plan
+ *   payment.failed         — marks the order as failed
+ *   subscription.cancelled — downgrades user plan to free, marks sub cancelled
  */
 exports.razorpayWebhook = functions.https.onRequest((req, res) => {
   cors(req, res, async () => {
@@ -454,9 +454,40 @@ exports.razorpayWebhook = functions.https.onRequest((req, res) => {
       // subscription.cancelled — Razorpay subscription cancelled
       // -----------------------------------------------------------------------
       else if (event === 'subscription.cancelled') {
-        // TODO: call window.SubscriptionService.cancelSubscription() or replicate
-        // its logic here (update subscriptions/{id} status and downgrade user plan).
-        console.log('[razorpayWebhook] subscription.cancelled received (not yet handled):', payload?.id);
+        const subEntity = payload?.subscription?.entity || payload;
+        const razorSubId = subEntity?.id;
+        if (!razorSubId) {
+          console.warn('[razorpayWebhook] subscription.cancelled: missing subscription id');
+        } else {
+          // Find the matching Firestore subscription doc by Razorpay subscription id
+          const subSnap = await db.collection('subscriptions')
+            .where('razorpaySubscriptionId', '==', razorSubId)
+            .limit(1).get();
+
+          if (!subSnap.empty) {
+            const subDoc = subSnap.docs[0];
+            const uid = subDoc.data().uid;
+            const batch = db.batch();
+
+            batch.update(subDoc.ref, {
+              status: 'cancelled',
+              cancelledAt: admin.firestore.FieldValue.serverTimestamp(),
+              webhookAt: admin.firestore.FieldValue.serverTimestamp(),
+            });
+
+            if (uid) {
+              batch.update(db.collection('users').doc(uid), {
+                plan: 'free',
+                updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+              });
+            }
+
+            await batch.commit();
+            console.log('[razorpayWebhook] subscription.cancelled: downgraded uid', uid, 'sub', razorSubId);
+          } else {
+            console.warn('[razorpayWebhook] subscription.cancelled: no Firestore doc for sub', razorSubId);
+          }
+        }
       }
 
       // -----------------------------------------------------------------------

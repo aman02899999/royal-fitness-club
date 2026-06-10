@@ -98,5 +98,18 @@ service cloud.firestore {
       allow write: if request.auth != null && request.auth.uid == uid;
       allow delete: if isAdmin();
     }
+
+    // pdf_purchases/{uid}/items/{itemId} - one-time digital product purchases
+    // Owner can read their own purchases; only Cloud Functions / admin can write.
+    match /pdf_purchases/{uid}/items/{itemId} {
+      allow read: if request.auth != null && request.auth.uid == uid;
+      allow write: if isAdmin();
+    }
+
+    // pdf_catalog/{itemId} - publicly readable PDF product listings
+    match /pdf_catalog/{itemId} {
+      allow read: if request.auth != null;
+      allow write: if isAdmin();
+    }
   }
 }

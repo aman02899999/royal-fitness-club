@@ -2250,8 +2250,18 @@ const MEALS={
     ]
   }
 };
-// Egget and Keto use nonveg base + veg snacks
-MEALS.egget=JSON.parse(JSON.stringify(MEALS.nonveg));
+// Eggetarian = eggs + veg only (no meat/seafood)
+const _mRe=/chicken|fish|tuna|sardine|prawn|shrimp|mutton|lamb|bacon|pork|rohu|pomfret|surmai|mackerel|keema meat|seekh lamb/i;
+const _ef=m=>!_mRe.test(m.name);
+MEALS.egget={
+  breakfast:[...MEALS.nonveg.breakfast.filter(_ef),...MEALS.veg.breakfast],
+  lunch:[...MEALS.veg.lunch,...MEALS.nonveg.lunch.filter(_ef)],
+  dinner:[...MEALS.veg.dinner,...MEALS.nonveg.dinner.filter(_ef)],
+  snack:[...MEALS.veg.snack,...MEALS.nonveg.snack.filter(_ef)],
+  preworkout:[...MEALS.veg.preworkout,...MEALS.nonveg.preworkout.filter(_ef)],
+  postworkout:[...MEALS.veg.postworkout,...MEALS.nonveg.postworkout.filter(_ef)]
+};
+// Keto = nonveg base + low-carb overrides
 MEALS.keto=JSON.parse(JSON.stringify(MEALS.nonveg));
 // Fix keto meals to be low-carb
 MEALS.keto.breakfast=[
