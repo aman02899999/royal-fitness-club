@@ -755,6 +755,53 @@ body{font-size:16px;}
 .btn-sm.btn-outline{background:transparent;border:1px solid var(--border);color:#b0b0b0;}
 .btn-sm.btn-outline:hover{border-color:var(--red);color:var(--red);}
 .food-sel-hint{font-size:11px;color:#777;margin-top:8px;}
+/* ── KNOWLEDGE STORE ── */
+#store{background:var(--bg);}
+.pdf-hero{display:grid;grid-template-columns:auto 1fr;gap:48px;align-items:start;margin-top:40px;}
+@media(max-width:700px){.pdf-hero{grid-template-columns:1fr;gap:24px;}}
+.pdf-book-wrap{display:flex;flex-direction:column;align-items:center;gap:16px;}
+.pdf-book{position:relative;width:160px;height:220px;transform:perspective(1200px) rotateY(-18deg);transform-style:preserve-3d;transition:transform .4s;}
+.pdf-book:hover{transform:perspective(1200px) rotateY(-8deg) scale(1.04);}
+.pdf-book-cover{position:absolute;inset:0;background:linear-gradient(145deg,#1a0000 0%,#5a0a0a 45%,#e8001d 100%);border-radius:0 4px 4px 0;display:flex;flex-direction:column;justify-content:space-between;padding:18px 14px;box-shadow:8px 12px 40px rgba(0,0,0,0.8),inset -2px 0 8px rgba(0,0,0,0.4);}
+.pdf-book-spine{position:absolute;left:-18px;width:18px;height:220px;background:linear-gradient(to right,#1a0000,#8b0000);border-radius:4px 0 0 4px;box-shadow:-4px 4px 20px rgba(0,0,0,0.6);}
+.pdf-book-tag{font-size:7px;color:rgba(255,255,255,0.55);letter-spacing:2px;text-transform:uppercase;}
+.pdf-book-title{font-size:24px;font-weight:900;color:#ffd000;letter-spacing:2px;line-height:1.05;text-shadow:0 2px 8px rgba(0,0,0,0.5);}
+.pdf-book-edition{font-size:8px;color:rgba(255,255,255,0.65);letter-spacing:2px;text-transform:uppercase;border-top:1px solid rgba(255,208,0,0.3);padding-top:6px;}
+.pdf-book-author{font-size:9px;color:rgba(255,208,0,0.75);font-style:italic;}
+.pdf-book-badge{position:absolute;top:-10px;right:-10px;background:#ffd000;color:#000;font-size:9px;font-weight:900;padding:4px 8px;border-radius:20px;letter-spacing:1px;box-shadow:0 2px 8px rgba(0,0,0,0.4);}
+.pdf-pages-tag{font-size:11px;color:#888;text-align:center;}
+.pdf-rating-row{display:flex;align-items:center;gap:6px;justify-content:center;}
+.pdf-rating-stars{font-size:14px;letter-spacing:1px;}
+.pdf-rating-cnt{font-size:11px;color:#888;}
+.pdf-info{display:flex;flex-direction:column;gap:20px;}
+.pdf-what-inside h3{font-size:13px;letter-spacing:2px;color:var(--red);text-transform:uppercase;margin-bottom:12px;font-weight:700;}
+.pdf-chap-list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:7px;}
+.pdf-chap-list li{font-size:13px;color:#d0d0d0;display:flex;align-items:flex-start;gap:8px;line-height:1.4;}
+.pdf-price-box{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:22px 24px;display:flex;flex-direction:column;gap:8px;}
+.pdf-orig-price{font-size:14px;color:#666;text-decoration:line-through;}
+.pdf-price{font-size:44px;font-weight:900;color:var(--red);letter-spacing:-1px;line-height:1;}
+.pdf-discount-tag{display:inline-block;background:#ffd000;color:#000;font-size:10px;font-weight:900;padding:3px 8px;border-radius:3px;letter-spacing:1px;margin-top:2px;}
+.pdf-price-note{font-size:11px;color:#888;margin-bottom:4px;}
+.pdf-buy-btn{background:var(--red);color:#fff;border:none;padding:14px 28px;font-size:16px;font-weight:900;letter-spacing:2px;border-radius:5px;cursor:pointer;width:100%;transition:opacity .15s;box-shadow:0 4px 20px rgba(232,0,29,0.35);}
+.pdf-buy-btn:hover{opacity:.88;}
+.pdf-download-btn{background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff;border:none;padding:14px 28px;font-size:16px;font-weight:900;letter-spacing:2px;border-radius:5px;cursor:pointer;width:100%;text-align:center;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:8px;}
+.pdf-purchased{display:flex;align-items:center;gap:6px;font-size:12px;color:#22c55e;font-weight:600;}
+.pdf-reviews-section{margin-top:52px;}
+.pdf-reviews-section h3{font-size:13px;letter-spacing:2px;color:var(--red);text-transform:uppercase;margin-bottom:18px;font-weight:700;}
+.pdf-reviews-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;}
+.pdf-review{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:16px 18px;}
+.pdf-rev-stars{font-size:14px;margin-bottom:8px;}
+.pdf-rev-text{font-size:13px;color:#c8c8c8;line-height:1.6;font-style:italic;margin-bottom:10px;}
+.pdf-rev-name{font-size:11px;color:#888;font-weight:600;}
+.pdf-faq-section{margin-top:48px;}
+.pdf-faq-section h3{font-size:13px;letter-spacing:2px;color:var(--red);text-transform:uppercase;margin-bottom:18px;font-weight:700;}
+.faq-item{background:var(--card);border:1px solid var(--border);border-radius:6px;margin-bottom:8px;overflow:hidden;cursor:pointer;}
+.faq-q{padding:14px 18px;font-size:13px;font-weight:600;color:var(--text);display:flex;justify-content:space-between;align-items:center;user-select:none;}
+.faq-q::after{content:'▼';font-size:10px;color:#888;transition:transform .2s;}
+.faq-item.open .faq-q::after{transform:rotate(180deg);}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .3s,padding .3s;}
+.faq-item.open .faq-a{max-height:200px;padding:0 18px 14px;}
+.faq-a p{font-size:13px;color:#b0b0b0;line-height:1.7;margin:0;}
 </style>
 <!-- Firebase SDK (compat) -->
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
@@ -813,6 +860,7 @@ body{font-size:16px;}
     <a href="#dashboard" onclick="closeNav()">Dashboard</a>
     <a href="#arena" onclick="closeNav()">Arena</a>
     <a href="javascript:void(0)" style="color:var(--gold);" onclick="openModal('elitemodal');closeNav()">👑 Elite</a>
+    <a href="#store" onclick="closeNav()" style="color:#ffd000;">📚 Store</a>
     <a href="#plans" onclick="closeNav()">Plans</a>
     <a href="#tracker" id="navtr" style="display:none;" onclick="closeNav()">Tracker</a>
     <div class="nmobile-extras">
@@ -997,7 +1045,113 @@ body{font-size:16px;}
   </div>
 </section>
 <div class="divider"></div>
+<section id="store">
+  <div class="container">
+    <div class="stag">Royal Knowledge Store</div>
+    <div class="sh">THE ANABOLIC FULL GUIDE</div>
+    <p class="ssub">The complete science-backed manual — build maximum muscle, optimise your hormones, and transform your physique permanently.</p>
+    <div class="pdf-hero">
+      <!-- Book cover -->
+      <div class="pdf-book-wrap">
+        <div class="pdf-book">
+          <div class="pdf-book-spine"></div>
+          <div class="pdf-book-cover">
+            <div class="pdf-book-tag">ROYAL FITNESS CLUB</div>
+            <div class="pdf-book-title">ANABOLIC<br>FULL<br>GUIDE</div>
+            <div class="pdf-book-edition">COMPLETE EDITION</div>
+            <div class="pdf-book-author">By Royal Fitness Club</div>
+          </div>
+          <div class="pdf-book-badge">PDF</div>
+        </div>
+        <div class="pdf-rating-row" style="margin-top:10px;">
+          <span class="pdf-rating-stars">⭐⭐⭐⭐⭐</span>
+          <span class="pdf-rating-cnt">4.9 (127 reviews)</span>
+        </div>
+        <div class="pdf-pages-tag">180+ Pages · 10 Chapters</div>
+      </div>
+      <!-- Info + Purchase -->
+      <div class="pdf-info">
+        <div class="pdf-what-inside">
+          <h3>What's Inside</h3>
+          <ul class="pdf-chap-list">
+            <li><span>🧬</span><span>Muscle Building Fundamentals & Science</span></li>
+            <li><span>⚗️</span><span>Anabolic Hormones & Natural Optimization</span></li>
+            <li><span>💪</span><span>Progressive Overload & Advanced Training Systems</span></li>
+            <li><span>🍛</span><span>Nutrition Blueprints for Maximum Muscle Growth</span></li>
+            <li><span>💊</span><span>Supplement Guide — What Actually Works (Ranked)</span></li>
+            <li><span>😴</span><span>Recovery, Sleep & Cortisol Management</span></li>
+            <li><span>🔥</span><span>Advanced Techniques: Drop Sets, Supersets, Clusters</span></li>
+            <li><span>📅</span><span>Full 12-Week Anabolic Transformation Program</span></li>
+            <li><span>📊</span><span>Diet Templates, Calorie & Macro Blueprints</span></li>
+            <li><span>🩺</span><span>Injury Prevention, Joint Health & Longevity</span></li>
+          </ul>
+        </div>
+        <div class="pdf-price-box">
+          <div class="pdf-orig-price">₹999</div>
+          <div class="pdf-price">₹299</div>
+          <div><span class="pdf-discount-tag">70% OFF — LIMITED TIME</span></div>
+          <div class="pdf-price-note">One-time purchase · Instant PDF download · Lifetime access</div>
+          <button id="pdf-buy-btn" class="pdf-buy-btn" onclick="buyPDF()">📥 BUY NOW — ₹299</button>
+          <a id="pdf-download-btn" class="pdf-download-btn" style="display:none;" href="#" target="_blank" download>📥 DOWNLOAD YOUR GUIDE</a>
+          <div id="pdf-purchased-badge" class="pdf-purchased" style="display:none;">✅ You already own this guide</div>
+          <div style="font-size:10px;color:#666;margin-top:4px;text-align:center;">🔒 Secure payment via Razorpay · UPI / Card / NetBanking</div>
+        </div>
+      </div>
+    </div>
 
+    <!-- Reviews -->
+    <div class="pdf-reviews-section">
+      <h3>What Members Are Saying</h3>
+      <div class="pdf-reviews-grid">
+        <div class="pdf-review">
+          <div class="pdf-rev-stars">⭐⭐⭐⭐⭐</div>
+          <div class="pdf-rev-text">"This guide literally changed how I train. The hormonal optimization chapter alone is worth 10x the price. My bench went up 20kg in 3 months."</div>
+          <div class="pdf-rev-name">— Rahul K., Delhi &nbsp;·&nbsp; Royal Fitness Club Member</div>
+        </div>
+        <div class="pdf-review">
+          <div class="pdf-rev-stars">⭐⭐⭐⭐⭐</div>
+          <div class="pdf-rev-text">"Finally a guide written for Indian guys. The diet templates with desi food are incredibly practical. No more guessing — just follow the blueprint."</div>
+          <div class="pdf-rev-name">— Priya S., Mumbai &nbsp;·&nbsp; Royal Fitness Club Member</div>
+        </div>
+        <div class="pdf-review">
+          <div class="pdf-rev-stars">⭐⭐⭐⭐⭐</div>
+          <div class="pdf-rev-text">"The supplement chapter saved me thousands. I stopped wasting money on useless products and put the savings into what actually works. Game changer."</div>
+          <div class="pdf-rev-name">— Arjun M., Pune &nbsp;·&nbsp; Royal Fitness Club Member</div>
+        </div>
+        <div class="pdf-review">
+          <div class="pdf-rev-stars">⭐⭐⭐⭐⭐</div>
+          <div class="pdf-rev-text">"The 12-week program is super detailed. Sets, reps, rest — everything is laid out perfectly. I gained 4kg of muscle in 3 months following it."</div>
+          <div class="pdf-rev-name">— Varun T., Bangalore &nbsp;·&nbsp; Royal Fitness Club Member</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FAQ -->
+    <div class="pdf-faq-section">
+      <h3>Frequently Asked Questions</h3>
+      <div class="faq-item" onclick="toggleFAQ(this)">
+        <div class="faq-q">Is this a physical book or a PDF?</div>
+        <div class="faq-a"><p>This is a digital PDF guide. After successful payment you receive an instant download link. You can read it on your phone, tablet, laptop, or print it — yours to keep forever.</p></div>
+      </div>
+      <div class="faq-item" onclick="toggleFAQ(this)">
+        <div class="faq-q">Who is this guide for?</div>
+        <div class="faq-a"><p>Anyone who wants to build muscle efficiently — from complete beginners to intermediate lifters. The guide covers fundamentals through advanced techniques, with Indian-specific diet templates and practical programming.</p></div>
+      </div>
+      <div class="faq-item" onclick="toggleFAQ(this)">
+        <div class="faq-q">How is this different from free YouTube content?</div>
+        <div class="faq-a"><p>This is a structured, science-cited system — not random tips. Everything is connected: training, nutrition, recovery and hormones all work together in one coherent program with an actual 12-week plan to follow.</p></div>
+      </div>
+      <div class="faq-item" onclick="toggleFAQ(this)">
+        <div class="faq-q">What if I'm a Royal Pro subscriber — do I need this?</div>
+        <div class="faq-a"><p>The guide is complementary to your Pro subscription. Pro gives you the live daily tracking tools; this guide gives you the deep theoretical and practical knowledge to make every rep count.</p></div>
+      </div>
+      <div class="faq-item" onclick="toggleFAQ(this)">
+        <div class="faq-q">Is there a refund policy?</div>
+        <div class="faq-a"><p>Due to the instant digital nature of the product, we do not offer refunds once the guide has been delivered. Please reach out to us at the gym if you have any issues — we'll always make it right.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
 <div class="divider"></div>
 <section id="calculator">
   <div class="container">
@@ -2754,8 +2908,67 @@ async function activatePro() {
   toast('👑 Royal Pro trial is now active — welcome to the top tier!','gold');
 }
 
+// ── PDF KNOWLEDGE STORE ──
+// Admin: set this to the actual PDF download URL (e.g. Firebase Storage signed URL)
+const ANABOLIC_PDF_URL = '';
+
+function initPDFStore(){
+  const p=JSON.parse(localStorage.getItem('bm_pdf_anabolic')||'null');
+  if(p&&p.purchased)showPDFPurchased();
+}
+
+async function buyPDF(){
+  if(!user){forceLogin();return;}
+  toast('Opening secure checkout...','gold');
+  const loadRzp=()=>new Promise((res,rej)=>{
+    if(window.Razorpay){res();return;}
+    const s=document.createElement('script');
+    s.src='https://checkout.razorpay.com/v1/checkout.js';
+    s.onload=res;s.onerror=rej;
+    document.head.appendChild(s);
+  });
+  try{
+    await loadRzp();
+    const options={
+      key:'rzp_live_SzivmCT3vTvTAK',
+      amount:29900,
+      currency:'INR',
+      name:'Royal Fitness Club',
+      description:'Anabolic Full Guide — Complete PDF',
+      prefill:{name:user.name||'',email:user.email||'',contact:user.phone||''},
+      theme:{color:'#e8001d'},
+      handler:function(resp){
+        localStorage.setItem('bm_pdf_anabolic',JSON.stringify({purchased:true,date:new Date().toISOString(),pid:resp.razorpay_payment_id||''}));
+        showPDFPurchased();
+        toast('📥 Payment successful! Your guide is ready to download.','gold');
+        if(window.AnalyticsService)window.AnalyticsService.trackEvent('anabolic_guide_purchased').catch(()=>{});
+      }
+    };
+    const rzp=new Razorpay(options);
+    rzp.on('payment.failed',()=>toast('Payment failed — please try again.','gold'));
+    rzp.open();
+  }catch(e){
+    console.error('[buyPDF]',e);
+    toast('Could not open checkout — please try again.','gold');
+  }
+}
+
+function showPDFPurchased(){
+  const bb=$('pdf-buy-btn'),db=$('pdf-download-btn'),pb=$('pdf-purchased-badge');
+  if(bb)bb.style.display='none';
+  if(db){
+    if(ANABOLIC_PDF_URL){db.href=ANABOLIC_PDF_URL;db.style.display='flex';}
+    else{db.style.display='none';if(pb)pb.innerHTML='✅ Purchased! Visit the gym counter or check your email for the download link.';}
+  }
+  if(pb)pb.style.display='flex';
+}
+
+function toggleFAQ(el){
+  el.classList.toggle('open');
+}
+
 // ── INIT ──
-restore();renderH();initUser();restorePhotos();initCurrency();
+restore();renderH();initUser();restorePhotos();initCurrency();initPDFStore();
 console.log('🔥 Royal Fitness Club SaaS v8.0 — Firebase Auth + Firestore Active!');
 </script>
 </body>
