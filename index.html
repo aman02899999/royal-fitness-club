@@ -1357,6 +1357,7 @@ body{font-size:16px;}
 </footer>
 <div class="mbg" id="loginmodal">
   <div class="mbox" style="max-width:420px;">
+    <button class="mclose" onclick="closeModal('loginmodal')">✕</button>
     <div class="mlogo">ROYAL FITNESS CLUB</div>
     <div class="auth-tabs">
       <div class="auth-tab active" id="tab-login" onclick="switchAuthTab('login')">Login</div>
@@ -1476,7 +1477,7 @@ const $=id=>document.getElementById(id);
 function toast(msg,type='fire'){const t=$('toast');t.textContent=msg;t.className=`toast ${type} show`;setTimeout(()=>{t.className=`toast ${type}`;},3500);}
 function openModal(id){$(id).classList.add('open');if(id==='promodal'&&window.AnalyticsService)window.AnalyticsService.trackEvent('pro_modal_opened').catch(()=>{});}
 function closeModal(id){$(id).classList.remove('open');}
-['sharemodal','promodal','elitemodal'].forEach(id=>{$(id).addEventListener('click',e=>{if(e.target===$(id))closeModal(id);});});
+['loginmodal','sharemodal','promodal','elitemodal'].forEach(id=>{$(id).addEventListener('click',e=>{if(e.target===$(id))closeModal(id);});});
 function animN(el,target,dec=0,sfx=''){let s=0,d=900;const step=ts=>{if(!s)s=ts;const p=Math.min((ts-s)/d,1);el.textContent=(target*p).toFixed(dec)+sfx;if(p<1)requestAnimationFrame(step);};requestAnimationFrame(step);}
 // ── TIMER ──
 let tend=+localStorage.getItem('bm_te')||0;
