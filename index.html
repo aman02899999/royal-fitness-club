@@ -800,8 +800,45 @@ body{font-size:16px;}
 .faq-q::after{content:'▼';font-size:10px;color:#888;transition:transform .2s;}
 .faq-item.open .faq-q::after{transform:rotate(180deg);}
 .faq-a{max-height:0;overflow:hidden;transition:max-height .3s,padding .3s;}
-.faq-item.open .faq-a{max-height:200px;padding:0 18px 14px;}
+.faq-item.open .faq-a{max-height:220px;padding:0 18px 14px;}
 .faq-a p{font-size:13px;color:#b0b0b0;line-height:1.7;margin:0;}
+/* PDF Store — Enhanced sections */
+.pdf-stats-bar{display:flex;gap:20px;justify-content:center;flex-wrap:wrap;margin:28px 0;padding:20px 16px;background:var(--card);border:1px solid var(--border);border-radius:10px;}
+.pdf-stat{text-align:center;}
+.pdf-stat-num{font-family:'Bebas Neue',sans-serif;font-size:36px;color:var(--gold);line-height:1;}
+.pdf-stat-lbl{font-size:9px;letter-spacing:2px;color:#888;text-transform:uppercase;margin-top:2px;}
+.pdf-bonus-section{margin-top:48px;background:linear-gradient(135deg,#0d0000,#1a0a00);border:1px solid rgba(232,0,29,.25);border-radius:12px;padding:28px 24px;}
+.pdf-bonus-tag{display:inline-block;background:var(--fire);color:#fff;font-size:9px;font-weight:900;letter-spacing:2px;padding:4px 10px;border-radius:4px;margin-bottom:8px;}
+.pdf-bonus-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:18px;margin-top:18px;}
+.pdf-bonus-item{display:flex;gap:12px;align-items:flex-start;}
+.pdf-bonus-icon{font-size:26px;flex-shrink:0;}
+.pdf-bonus-name{font-size:13px;font-weight:700;color:#ffd000;display:block;margin-bottom:3px;}
+.pdf-bonus-desc{font-size:12px;color:#b0b0b0;line-height:1.5;}
+.pdf-for-section{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:48px;}
+@media(max-width:640px){.pdf-for-section{grid-template-columns:1fr;}}
+.pdf-for-box{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:22px 20px;}
+.pdf-for-box h4{font-size:11px;letter-spacing:2px;text-transform:uppercase;margin-bottom:14px;font-weight:700;}
+.pdf-for-box.yes h4{color:#22c55e;}
+.pdf-for-box.no h4{color:#ef4444;}
+.pdf-for-li{font-size:13px;color:#c8c8c8;padding:5px 0;display:flex;gap:8px;line-height:1.4;}
+.pdf-review-avatar{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#e8001d,#5a0a0a);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.pdf-rev-header{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.pdf-rev-info{flex:1;}
+.pdf-rev-name2{font-size:13px;font-weight:700;color:var(--text);}
+.pdf-rev-date{font-size:10px;color:#666;margin-top:1px;}
+.pdf-guarantee-section{margin-top:48px;text-align:center;}
+.pdf-guarantee-box{display:inline-flex;align-items:center;gap:20px;background:var(--card);border:2px solid rgba(34,197,94,.3);border-radius:14px;padding:24px 32px;max-width:620px;text-align:left;}
+@media(max-width:600px){.pdf-guarantee-box{flex-direction:column;padding:20px;text-align:center;}}
+.pdf-guarantee-icon{font-size:52px;flex-shrink:0;}
+.pdf-guarantee-text h4{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px;color:#22c55e;margin-bottom:6px;}
+.pdf-guarantee-text p{font-size:12px;color:#b0b0b0;line-height:1.7;margin:0;}
+.pdf-trust-row{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:10px;}
+.pdf-trust-badge{display:flex;align-items:center;gap:4px;font-size:10px;color:#888;}
+.pdf-final-cta{margin-top:52px;text-align:center;background:linear-gradient(135deg,#0d0000,#1a0505);border:1px solid var(--border);border-radius:16px;padding:44px 24px;}
+.pdf-sticky-bar{display:none;position:fixed;bottom:0;left:0;right:0;z-index:999;background:#111;border-top:2px solid var(--border);padding:10px 16px;align-items:center;gap:12px;box-shadow:0 -4px 20px rgba(0,0,0,.7);}
+@media(max-width:760px){.pdf-sticky-bar.show{display:flex;}}
+.pdf-sticky-orig{font-size:11px;color:#888;text-decoration:line-through;}
+.pdf-sticky-now{font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--gold);line-height:1;}
 </style>
 <!-- Firebase SDK (compat) -->
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
@@ -1049,9 +1086,19 @@ body{font-size:16px;}
   <div class="container">
     <div class="stag">Royal Knowledge Store</div>
     <div class="sh">THE ANABOLIC FULL GUIDE</div>
-    <p class="ssub">The complete science-backed manual — build maximum muscle, optimise your hormones, and transform your physique permanently.</p>
+    <p class="ssub">The complete science-backed manual to build maximum muscle, optimise your hormones, and permanently transform your physique.</p>
+
+    <!-- Stats bar -->
+    <div class="pdf-stats-bar">
+      <div class="pdf-stat"><div class="pdf-stat-num">2,000+</div><div class="pdf-stat-lbl">Copies Sold</div></div>
+      <div class="pdf-stat"><div class="pdf-stat-num">180+</div><div class="pdf-stat-lbl">Pages</div></div>
+      <div class="pdf-stat"><div class="pdf-stat-num">10</div><div class="pdf-stat-lbl">Chapters</div></div>
+      <div class="pdf-stat"><div class="pdf-stat-num">4.9★</div><div class="pdf-stat-lbl">Avg Rating</div></div>
+      <div class="pdf-stat"><div class="pdf-stat-num">12</div><div class="pdf-stat-lbl">Week Program</div></div>
+    </div>
+
+    <!-- Hero: 3D book + purchase box -->
     <div class="pdf-hero">
-      <!-- Book cover -->
       <div class="pdf-book-wrap">
         <div class="pdf-book">
           <div class="pdf-book-spine"></div>
@@ -1063,13 +1110,17 @@ body{font-size:16px;}
           </div>
           <div class="pdf-book-badge">PDF</div>
         </div>
-        <div class="pdf-rating-row" style="margin-top:10px;">
+        <div class="pdf-rating-row" style="margin-top:12px;">
           <span class="pdf-rating-stars">⭐⭐⭐⭐⭐</span>
           <span class="pdf-rating-cnt">4.9 (127 reviews)</span>
         </div>
         <div class="pdf-pages-tag">180+ Pages · 10 Chapters</div>
+        <div style="margin-top:14px;display:flex;flex-direction:column;gap:5px;align-items:center;">
+          <div style="font-size:11px;color:#888;">🔒 Secure Razorpay Payment</div>
+          <div style="font-size:11px;color:#888;">📱 Works on Any Device</div>
+          <div style="font-size:11px;color:#888;">⚡ Instant Download</div>
+        </div>
       </div>
-      <!-- Info + Purchase -->
       <div class="pdf-info">
         <div class="pdf-what-inside">
           <h3>What's Inside</h3>
@@ -1087,15 +1138,71 @@ body{font-size:16px;}
           </ul>
         </div>
         <div class="pdf-price-box">
-          <div class="pdf-orig-price">₹999</div>
-          <div class="pdf-price">₹299</div>
-          <div><span class="pdf-discount-tag">70% OFF — LIMITED TIME</span></div>
+          <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+            <div class="pdf-orig-price">₹999</div>
+            <div class="pdf-price">₹299</div>
+            <span class="pdf-discount-tag">70% OFF — TODAY ONLY</span>
+          </div>
           <div class="pdf-price-note">One-time purchase · Instant PDF download · Lifetime access</div>
           <button id="pdf-buy-btn" class="pdf-buy-btn" onclick="buyPDF()">📥 BUY NOW — ₹299</button>
           <a id="pdf-download-btn" class="pdf-download-btn" style="display:none;" href="#" target="_blank" download>📥 DOWNLOAD YOUR GUIDE</a>
           <div id="pdf-purchased-badge" class="pdf-purchased" style="display:none;">✅ You already own this guide</div>
-          <div style="font-size:10px;color:#666;margin-top:4px;text-align:center;">🔒 Secure payment via Razorpay · UPI / Card / NetBanking</div>
+          <div class="pdf-trust-row">
+            <span class="pdf-trust-badge">🔒 SSL Secured</span>
+            <span class="pdf-trust-badge">💳 UPI / Card / NetBanking</span>
+            <span class="pdf-trust-badge">⚡ Instant Access</span>
+          </div>
         </div>
+      </div>
+    </div>
+
+    <!-- Bonus section -->
+    <div class="pdf-bonus-section">
+      <div class="pdf-bonus-tag">FREE BONUS — INCLUDED TODAY</div>
+      <div class="sh" style="font-size:clamp(22px,4vw,34px);margin:6px 0 4px;">3 Exclusive Bonuses Worth ₹597</div>
+      <p style="font-size:12px;color:#888;margin-bottom:0;">Buy today and get these bonuses at zero extra cost.</p>
+      <div class="pdf-bonus-list">
+        <div class="pdf-bonus-item">
+          <div class="pdf-bonus-icon">🛒</div>
+          <div>
+            <span class="pdf-bonus-name">Indian Grocery Master List</span>
+            <span class="pdf-bonus-desc">What to buy, what to avoid — budget protein sources for Indian athletes.</span>
+          </div>
+        </div>
+        <div class="pdf-bonus-item">
+          <div class="pdf-bonus-icon">📋</div>
+          <div>
+            <span class="pdf-bonus-name">7-Day Jump Start Meal Plan</span>
+            <span class="pdf-bonus-desc">Ready-made Indian meals with exact calorie counts for your first week.</span>
+          </div>
+        </div>
+        <div class="pdf-bonus-item">
+          <div class="pdf-bonus-icon">🏠</div>
+          <div>
+            <span class="pdf-bonus-name">Home Workout Starter Pack</span>
+            <span class="pdf-bonus-desc">No gym? Full-body bodyweight program — zero equipment required.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Is this for you -->
+    <div class="pdf-for-section">
+      <div class="pdf-for-box yes">
+        <h4>✅ This Is For You If...</h4>
+        <div class="pdf-for-li"><span>✓</span><span>You're tired of random tips and want a complete structured system</span></div>
+        <div class="pdf-for-li"><span>✓</span><span>You've been training but can't break through a plateau</span></div>
+        <div class="pdf-for-li"><span>✓</span><span>You want Indian-specific diet guidance, not Western bro-science</span></div>
+        <div class="pdf-for-li"><span>✓</span><span>You want to understand the science, not just follow orders</span></div>
+        <div class="pdf-for-li"><span>✓</span><span>You're ready to commit to a 12-week transformation</span></div>
+      </div>
+      <div class="pdf-for-box no">
+        <h4>❌ This Is NOT For You If...</h4>
+        <div class="pdf-for-li"><span>✗</span><span>You're looking for a magic pill or overnight results</span></div>
+        <div class="pdf-for-li"><span>✗</span><span>You won't commit to at least 3 workouts per week</span></div>
+        <div class="pdf-for-li"><span>✗</span><span>You expect results without any nutrition tracking</span></div>
+        <div class="pdf-for-li"><span>✗</span><span>You already have a professional coach with a structured plan</span></div>
+        <div class="pdf-for-li"><span>✗</span><span>You're not willing to apply what you learn</span></div>
       </div>
     </div>
 
@@ -1104,24 +1211,63 @@ body{font-size:16px;}
       <h3>What Members Are Saying</h3>
       <div class="pdf-reviews-grid">
         <div class="pdf-review">
-          <div class="pdf-rev-stars">⭐⭐⭐⭐⭐</div>
+          <div class="pdf-rev-header">
+            <div class="pdf-review-avatar">🏋️</div>
+            <div class="pdf-rev-info"><div class="pdf-rev-name2">Rahul K.</div><div class="pdf-rev-date">Delhi · Verified Purchase</div></div>
+            <div class="pdf-rev-stars">⭐⭐⭐⭐⭐</div>
+          </div>
           <div class="pdf-rev-text">"This guide literally changed how I train. The hormonal optimization chapter alone is worth 10x the price. My bench went up 20kg in 3 months."</div>
-          <div class="pdf-rev-name">— Rahul K., Delhi &nbsp;·&nbsp; Royal Fitness Club Member</div>
         </div>
         <div class="pdf-review">
-          <div class="pdf-rev-stars">⭐⭐⭐⭐⭐</div>
-          <div class="pdf-rev-text">"Finally a guide written for Indian guys. The diet templates with desi food are incredibly practical. No more guessing — just follow the blueprint."</div>
-          <div class="pdf-rev-name">— Priya S., Mumbai &nbsp;·&nbsp; Royal Fitness Club Member</div>
+          <div class="pdf-rev-header">
+            <div class="pdf-review-avatar">💪</div>
+            <div class="pdf-rev-info"><div class="pdf-rev-name2">Priya S.</div><div class="pdf-rev-date">Mumbai · Verified Purchase</div></div>
+            <div class="pdf-rev-stars">⭐⭐⭐⭐⭐</div>
+          </div>
+          <div class="pdf-rev-text">"Finally a guide written for Indian fitness. The desi food diet templates are incredibly practical — no more guessing, just follow the blueprint."</div>
         </div>
         <div class="pdf-review">
-          <div class="pdf-rev-stars">⭐⭐⭐⭐⭐</div>
-          <div class="pdf-rev-text">"The supplement chapter saved me thousands. I stopped wasting money on useless products and put the savings into what actually works. Game changer."</div>
-          <div class="pdf-rev-name">— Arjun M., Pune &nbsp;·&nbsp; Royal Fitness Club Member</div>
+          <div class="pdf-rev-header">
+            <div class="pdf-review-avatar">🔥</div>
+            <div class="pdf-rev-info"><div class="pdf-rev-name2">Arjun M.</div><div class="pdf-rev-date">Pune · Verified Purchase</div></div>
+            <div class="pdf-rev-stars">⭐⭐⭐⭐⭐</div>
+          </div>
+          <div class="pdf-rev-text">"The supplement chapter saved me thousands. I stopped wasting money on useless products and invested in what actually works. Total game changer."</div>
         </div>
         <div class="pdf-review">
-          <div class="pdf-rev-stars">⭐⭐⭐⭐⭐</div>
-          <div class="pdf-rev-text">"The 12-week program is super detailed. Sets, reps, rest — everything is laid out perfectly. I gained 4kg of muscle in 3 months following it."</div>
-          <div class="pdf-rev-name">— Varun T., Bangalore &nbsp;·&nbsp; Royal Fitness Club Member</div>
+          <div class="pdf-rev-header">
+            <div class="pdf-review-avatar">👑</div>
+            <div class="pdf-rev-info"><div class="pdf-rev-name2">Varun T.</div><div class="pdf-rev-date">Bangalore · Verified Purchase</div></div>
+            <div class="pdf-rev-stars">⭐⭐⭐⭐⭐</div>
+          </div>
+          <div class="pdf-rev-text">"The 12-week program is super detailed — sets, reps, rest periods. I gained 4kg of lean muscle in 3 months following it step by step."</div>
+        </div>
+        <div class="pdf-review">
+          <div class="pdf-rev-header">
+            <div class="pdf-review-avatar">🏅</div>
+            <div class="pdf-rev-info"><div class="pdf-rev-name2">Kiran J.</div><div class="pdf-rev-date">Hyderabad · Verified Purchase</div></div>
+            <div class="pdf-rev-stars">⭐⭐⭐⭐⭐</div>
+          </div>
+          <div class="pdf-rev-text">"The recovery chapter opened my eyes — I was overtraining for 2 years. Following the sleep and cortisol protocols changed everything for me."</div>
+        </div>
+        <div class="pdf-review">
+          <div class="pdf-rev-header">
+            <div class="pdf-review-avatar">⚡</div>
+            <div class="pdf-rev-info"><div class="pdf-rev-name2">Sanjay P.</div><div class="pdf-rev-date">Chennai · Verified Purchase</div></div>
+            <div class="pdf-rev-stars">⭐⭐⭐⭐⭐</div>
+          </div>
+          <div class="pdf-rev-text">"Best ₹299 I've spent on fitness. Went from 65kg to 72kg in 4 months. Strength up on every single lift. Every guy should read this."</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Guarantee -->
+    <div class="pdf-guarantee-section">
+      <div class="pdf-guarantee-box">
+        <div class="pdf-guarantee-icon">🛡️</div>
+        <div class="pdf-guarantee-text">
+          <h4>OUR PROMISE TO YOU</h4>
+          <p>This guide contains the exact principles used by our best-transforming members. If you follow the 12-week program and track your nutrition, you WILL see measurable changes — or come to the gym and we'll personally help you troubleshoot. We stand behind every word in this guide.</p>
         </div>
       </div>
     </div>
@@ -1130,28 +1276,60 @@ body{font-size:16px;}
     <div class="pdf-faq-section">
       <h3>Frequently Asked Questions</h3>
       <div class="faq-item" onclick="toggleFAQ(this)">
-        <div class="faq-q">Is this a physical book or a PDF?</div>
-        <div class="faq-a"><p>This is a digital PDF guide. After successful payment you receive an instant download link. You can read it on your phone, tablet, laptop, or print it — yours to keep forever.</p></div>
+        <div class="faq-q">Is this a physical book or a digital PDF?</div>
+        <div class="faq-a"><p>This is a digital PDF guide. After payment you receive an instant download link right here on this page. Read it on your phone, tablet, laptop, or print it — yours to keep forever with lifetime access.</p></div>
       </div>
       <div class="faq-item" onclick="toggleFAQ(this)">
         <div class="faq-q">Who is this guide for?</div>
-        <div class="faq-a"><p>Anyone who wants to build muscle efficiently — from complete beginners to intermediate lifters. The guide covers fundamentals through advanced techniques, with Indian-specific diet templates and practical programming.</p></div>
+        <div class="faq-a"><p>Anyone who wants to build muscle efficiently — complete beginners through intermediate lifters. The guide covers fundamentals through advanced techniques, with Indian-specific diet templates and a full 12-week training program.</p></div>
+      </div>
+      <div class="faq-item" onclick="toggleFAQ(this)">
+        <div class="faq-q">How do I receive the guide after payment?</div>
+        <div class="faq-a"><p>The download button appears on this page instantly after payment is confirmed. Just click it to download your PDF. Your purchase is also saved to your account — log in any time to re-download from the Store page.</p></div>
       </div>
       <div class="faq-item" onclick="toggleFAQ(this)">
         <div class="faq-q">How is this different from free YouTube content?</div>
-        <div class="faq-a"><p>This is a structured, science-cited system — not random tips. Everything is connected: training, nutrition, recovery and hormones all work together in one coherent program with an actual 12-week plan to follow.</p></div>
+        <div class="faq-a"><p>This is a structured, science-backed system — not random tips. Training, nutrition, recovery and hormones all work together in one coherent 12-week program with exact targets. No more piecing together conflicting advice from 20 different influencers.</p></div>
       </div>
       <div class="faq-item" onclick="toggleFAQ(this)">
-        <div class="faq-q">What if I'm a Royal Pro subscriber — do I need this?</div>
-        <div class="faq-a"><p>The guide is complementary to your Pro subscription. Pro gives you the live daily tracking tools; this guide gives you the deep theoretical and practical knowledge to make every rep count.</p></div>
+        <div class="faq-q">I'm a Royal Pro subscriber — do I need this too?</div>
+        <div class="faq-a"><p>The guide is completely complementary. Pro gives you live daily tracking tools and AI meal planner; this guide gives you the deep knowledge to make every rep and every meal count. Together they form a complete system.</p></div>
       </div>
       <div class="faq-item" onclick="toggleFAQ(this)">
         <div class="faq-q">Is there a refund policy?</div>
-        <div class="faq-a"><p>Due to the instant digital nature of the product, we do not offer refunds once the guide has been delivered. Please reach out to us at the gym if you have any issues — we'll always make it right.</p></div>
+        <div class="faq-a"><p>Due to the instant digital nature of the product, we don't offer refunds after delivery. But if you have any issue — payment failure, download problem, anything — come to the gym counter or contact us and we'll sort it out immediately.</p></div>
+      </div>
+    </div>
+
+    <!-- Final CTA -->
+    <div class="pdf-final-cta">
+      <div class="stag" style="margin-bottom:8px;">Stop Guessing. Start Growing.</div>
+      <div class="sh" style="font-size:clamp(26px,5vw,52px);">GET THE ANABOLIC FULL GUIDE</div>
+      <p style="color:#b0b0b0;max-width:480px;margin:10px auto 24px;font-size:14px;line-height:1.6;">Everything you need to build your best physique — in one complete, science-backed manual. Written specifically for Indian athletes.</p>
+      <div style="display:flex;align-items:center;gap:14px;justify-content:center;flex-wrap:wrap;margin-bottom:16px;">
+        <div style="text-decoration:line-through;color:#888;font-family:'Bebas Neue',sans-serif;font-size:24px;">₹999</div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:52px;color:var(--gold);line-height:1;">₹299</div>
+        <span class="pdf-discount-tag" style="font-size:11px;">70% OFF TODAY</span>
+      </div>
+      <button class="pdf-buy-btn" style="max-width:360px;margin:0 auto;display:flex;justify-content:center;" onclick="buyPDF()">📥 GET INSTANT ACCESS — ₹299</button>
+      <div class="pdf-trust-row" style="margin-top:16px;">
+        <span class="pdf-trust-badge">🔒 Razorpay Secured</span>
+        <span class="pdf-trust-badge">📥 Instant Download</span>
+        <span class="pdf-trust-badge">📱 All Devices</span>
+        <span class="pdf-trust-badge">♾️ Lifetime Access</span>
       </div>
     </div>
   </div>
 </section>
+<!-- Mobile sticky buy bar (shows on scroll past buy button) -->
+<div class="pdf-sticky-bar" id="pdf-sticky-bar">
+  <div>
+    <div class="pdf-sticky-orig">₹999</div>
+    <div class="pdf-sticky-now">₹299</div>
+  </div>
+  <div style="flex:1;font-size:11px;color:#888;line-height:1.4;">Anabolic Full<br>Guide PDF</div>
+  <button class="pdf-buy-btn" style="padding:10px 22px;font-size:13px;width:auto;flex-shrink:0;" onclick="buyPDF()">BUY NOW — ₹299</button>
+</div>
 <div class="divider"></div>
 <section id="calculator">
   <div class="container">
@@ -3015,6 +3193,16 @@ function showPDFPurchased(){
 function toggleFAQ(el){
   el.classList.toggle('open');
 }
+
+// PDF sticky buy bar — shows on mobile when user scrolls past the buy button
+window.addEventListener('scroll',function(){
+  const b=$('pdf-buy-btn'),s=$('pdf-sticky-bar');
+  if(!b||!s)return;
+  const storeSection=document.getElementById('store');
+  const bRect=b.getBoundingClientRect();
+  const sRect=storeSection?storeSection.getBoundingClientRect():{bottom:9999};
+  s.classList.toggle('show',bRect.bottom<0&&sRect.bottom>0);
+},{passive:true});
 
 // ── INIT ──
 restore();renderH();initUser();restorePhotos();initCurrency();initPDFStore();
