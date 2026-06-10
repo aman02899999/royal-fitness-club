@@ -868,6 +868,21 @@ body{font-size:16px;}
 .pdf-book-fm .pdf-book-cover{background:linear-gradient(145deg,#00050d 0%,#003080 45%,#0066cc 100%)!important;}
 .pdf-book-spine-fm{background:linear-gradient(to right,#00050d,#003080)!important;}
 .pdf-book-fm .pdf-book-title{color:#38bdf8!important;}
+/* Page reader */
+.pdf-reader-section{margin:36px 0 0;padding-top:32px;border-top:1px solid rgba(255,255,255,.08);}
+.pdf-reader-section h3{font-size:18px;font-weight:700;color:#38bdf8;margin:0 0 6px;}
+.pdf-reader-desc{font-size:13px;color:#888;margin:0 0 18px;}
+.pdf-reader-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(138px,1fr));gap:10px;margin-bottom:18px;}
+@media(max-width:500px){.pdf-reader-grid{grid-template-columns:repeat(2,1fr);}}
+.pdf-reader-page{position:relative;border-radius:8px;overflow:hidden;background:#111;border:1px solid rgba(255,255,255,.1);}
+.pdf-reader-page img{width:100%;display:block;aspect-ratio:3/4;object-fit:cover;}
+.pdf-reader-page .page-num{position:absolute;bottom:4px;right:6px;font-size:10px;color:rgba(255,255,255,.55);background:rgba(0,0,0,.65);padding:1px 5px;border-radius:4px;pointer-events:none;}
+.page-locked img{filter:blur(5px);}
+.page-locked .page-lock-overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(0,0,0,.78);backdrop-filter:blur(2px);gap:5px;cursor:default;}
+.lock-icon{font-size:24px;}
+.lock-label{font-size:10px;color:#999;text-align:center;padding:0 8px;line-height:1.3;}
+.fm-reader-cta{text-align:center;padding:8px 0 4px;}
+.fm-reader-cta p{color:#888;font-size:13px;margin:0 0 12px;}
 </style>
 <!-- Firebase SDK (compat) -->
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
@@ -1207,6 +1222,17 @@ body{font-size:16px;}
               <span class="pdf-trust-badge">⚡ Instant Access</span>
             </div>
           </div>
+        </div>
+      </div>
+
+      <!-- Fitness & Mindset page reader -->
+      <div class="pdf-reader-section">
+        <h3>📖 Free Preview — Read Before You Buy</h3>
+        <p class="pdf-reader-desc">First 5 pages free · Purchase to unlock all 67 pages instantly</p>
+        <div id="fm-reader" class="pdf-reader-grid"></div>
+        <div class="fm-reader-cta" id="fm-reader-cta">
+          <p>🔒 Unlock all 67 pages instantly for just ₹299</p>
+          <button class="pdf-buy-btn" style="background:linear-gradient(135deg,#0050a0,#0080ff);max-width:320px;" onclick="buyPDFProduct('fitness_mindset')">📥 GET FULL ACCESS — ₹299</button>
         </div>
       </div>
 
@@ -3349,9 +3375,11 @@ function showPDFPurchased(productId){
     if(!url)pb.innerHTML='✅ Purchased! Visit the gym counter or check your email for the download link.';
     pb.style.display='flex';
   }
+  if(productId==='fitness_mindset')renderFMReader(true);
 }
 
 async function initPDFStore(){
+  renderFMReader(false); // default: show 5 free pages; upgraded to true if purchased
   // localStorage fast-path
   for(const [id,prod] of Object.entries(PDF_PRODUCTS)){
     const p=JSON.parse(localStorage.getItem(prod.localKey)||'null');
@@ -3429,6 +3457,66 @@ async function buyPDFProduct(productId){
 function buyPDF(){buyPDFProduct('anabolic_full_guide');}
 
 function toggleFAQ(el){el.classList.toggle('open');}
+
+// ── FITNESS & MINDSET PAGE READER ──
+const FITNESS_MINDSET_PAGES=[
+  '17I4VA7Nm0x-Kg40ZwBqZexE51iUP7t3N','11q86tPNtWR8-kR1tQISYS1AdIFqnO6Jq',
+  '1OT7MARZrW0rKk4TfB88UWhwgsal4oqzM','13T446RL2EFgcMV72Sj0lv-6BWEH3niMN',
+  '1N5ysnUiHRjklUC9ym1FPvxV8C9xbJRny','1cpdnlaLxTKx-xG6EGJ-zqv2WEpwyrbZI',
+  '1zdHCFIhBc29dG71_8wNyIU2yRsrPFFw6','1_O0CKFcdIYzLZImWQLbW_TeGbaAvAFAQ',
+  '1fPAdZ99Ed3KgyQD0jdlpevdUyqBHvptL','1L9D199fnJ82nS_ggfQ00RMYylGJB3ql9',
+  '18nxXceFiPX2IOcInWpa3m0UY3_XthuC8','1f35R6Pyr7rukNg_DZKOswLxhEAuOmhUT',
+  '1dGktfbk0zhwQjPn-82KuH4a_u5IGS5Fd','1Xnh8KMqhWRwOal1-eUe6gzfMYKuuIXn_',
+  '1C0B4OB6M4rRIoCD9Kei5fZljfql-M00b','14M5afyz3uqd8NEOgknXoJKoYqk7mnFER',
+  '13t_nrFkvCRKQNMBrrdOrqKV234vYDsWu','16YakN0jbnpLIAejAQ_J5hcifzvFV_N3J',
+  '1hzquQraN-ojAoGcUr1lzwn6znO0ucPM9','1M_JzEXbJ3abPzxJJAFkr8S99uMUozO0v',
+  '1uvnT1_bSWK5MUFYC-eVbU_HEKWZwUFfE','1OA1JVOFoIxAnFSfQdICWBH834w_SyWym',
+  '1Y6i7I3X7QP8q37jWYQyUfE-YYrQjDzKS','1QxjSfMYCcU7z798jqGUuKRcy3dHFFCOi',
+  '148_X3p0OqgwIXcF4IYokQph0ZfIZ8LoR','1CvkbtkFCGvTfNiiw8nbaJHcRdFny37RL',
+  '1pcPhdbvi5p1AflG6xu9YockKF0VSp7KF','18c7Qkg4Aj_RuWMJ54nLhS8aX0LLZyXa1',
+  '1go8JQX3HCBibr4VSsqWjBfBmSPB1WPMG','17-UB4xOKu9QC1w-2KhPQKXMhZDjjZlQ-',
+  '1rptt2P-Sr4qswpgsMHNp6r55jp0oUHUk','1Gs1O74Sxr_PuJO2hzDzbvT9BHOLvbL_c',
+  '1zxa0KEGsMZigbQfXlwy3L7JUavDlC3E6','17_BWlUp6E8aVnXuPmBy4gFnVF5a9I55E',
+  '1nTGcIhcJvDO1RXhH1pVXvBDiVpV71SDc','1MUw0kMKmzS_d91gDPaSPFd40FueybhmA',
+  '1bn9o_3EdzwSq90v96515zUgxm8KBindw','1_KT5N2SrYuv1wjxPcbrKM9GOKM45ZCSO',
+  '1t44D9RiyQOegLgrYqJkEQeFlMhQWQN-a','1KJhfk7LMn2iD4iWfDIuWqf84o8NoWz-p',
+  '1Q5JRNvnfHdixX-ejKG8e7CRCsTzVvMyY','1QltfJLGlkszRDnb7xHTN7AYtdfOgP4Ic',
+  '1LlDpeRcy7LSVsoba7YGdOk-b_QDph_ww','169AtPfpQOIskGK_KZfTiMjRFnZxoPkLS',
+  '1Lc2BgQo444OLw4zdNn9Ul57iFFHGO0Dg','1RjW1fH4HzOT4zGE0IDeH4FQgztbiVkqL',
+  '1jmkALMoiKYV4OvyDlbZyurMs-93FO9Rm','12surNIMmNgQ9JZsjPH5iuB-9c0jrduVd',
+  '1QlHo-SFd8886BDREfB7713eQ8rsXBcur','1Hknhq-cT7haKaeALVgY44JRPZcXwMM-a',
+  '1Y3ALa2Gd_i1KZiFa5YEuG0q3oK-drN_9','10DjYzBINhjExuzGOWiZHwKPijv99k-np',
+  '1kQc8-SHayutmhaKDSpg91pB5lfwK64kC','1e4H6BZ0UWHfT4dtYHh3w3dU-EnL4s_XE',
+  '1a-G4DoaoyeCzoVHk8rprbcu9PejvI5ZO','1jVWI0QwKZWSj_STrAoeZrMB9igAwr01e',
+  '1HusCu0NBrsSwzJCkFfGGH92O01q8hrBz','1BvktgB4hF2YJQgly_rQqaahgSEfmWha9',
+  '1el2Ux1YzLiE7T415QZs1Uh3wxcHcIzOl','1-8RH4HZbZ42zfG5S7tHR6oD2DF4HzubH',
+  '1vaeGuqonUpQHgIIv-DyjBZgofsDtgMQy','18p8Osr2mD-c9_8sU_Ds_Y7f1vVDZuaET',
+  '1htTCgvvNZd-uLG3RTTJ5zqWlgpuyyJZI','1KsTFoiwkVpumr5so9FmjPVamF0PnxMi5',
+  '1VDRkVafO3yhIDrRGmKYf3_2HvF8ZdUYu','1Zt6Twx6lbnJlHslNTKB_eDs7ssChmgdQ',
+  '17dEM3BV3rfv_qyljaXyW9Mt1sqL4CBZZ',
+];
+const FM_FREE_PAGES=5;
+
+function renderFMReader(purchased){
+  const grid=document.getElementById('fm-reader');
+  const cta=document.getElementById('fm-reader-cta');
+  if(!grid)return;
+  grid.innerHTML='';
+  FITNESS_MINDSET_PAGES.forEach(function(id,i){
+    const pageNo=i+1;
+    const unlocked=purchased||(pageNo<=FM_FREE_PAGES);
+    const div=document.createElement('div');
+    div.className='pdf-reader-page'+(unlocked?'':' page-locked');
+    const imgUrl='https://lh3.googleusercontent.com/d/'+id;
+    if(unlocked){
+      div.innerHTML='<img src="'+imgUrl+'" alt="Page '+pageNo+'" loading="lazy"><span class="page-num">'+pageNo+'</span>';
+    }else{
+      div.innerHTML='<img src="'+imgUrl+'" alt="Page '+pageNo+'" loading="lazy"><div class="page-lock-overlay"><span class="lock-icon">🔒</span><span class="lock-label">Page '+pageNo+'<br>Unlock for ₹299</span></div><span class="page-num">'+pageNo+'</span>';
+    }
+    grid.appendChild(div);
+  });
+  if(cta)cta.style.display=purchased?'none':'block';
+}
 
 // Mobile sticky bar — shows when inside the store section
 window.addEventListener('scroll',function(){
