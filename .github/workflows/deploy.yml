@@ -39,7 +39,14 @@ jobs:
         env:
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
 
-      - name: Deploy to Firebase
-        run: firebase deploy --only hosting,firestore,functions --project royal-fitness-club-7adc1
+      - name: Deploy Hosting + Firestore rules
+        run: firebase deploy --only hosting,firestore --project royal-fitness-club-7adc1
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+
+      # Functions require the Blaze plan — don't block hosting deploy if this fails
+      - name: Deploy Functions (requires Blaze plan)
+        continue-on-error: true
+        run: firebase deploy --only functions --project royal-fitness-club-7adc1
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
