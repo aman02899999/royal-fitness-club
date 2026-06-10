@@ -1,0 +1,19 @@
+{
+  "name": "royal-fitness-club-functions",
+  "description": "Firebase Cloud Functions for RFC SaaS",
+  "scripts": {
+    "serve": "firebase emulators:start --only functions",
+    "deploy": "firebase deploy --only functions"
+  },
+  "engines": {
+    "node": "18"
+  },
+  "main": "index.js",
+  "dependencies": {
+    "firebase-functions": "^4.0.0",
+    "firebase-admin": "^11.0.0",
+    "razorpay": "^2.9.0",
+    "cors": "^2.8.5"
+  },
+  "private": true
+}

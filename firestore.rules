@@ -1,0 +1,104 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper function to check if the authenticated user is an admin
+    function isAdmin() {
+      return request.auth != null &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    // users/{uid} - user profiles
+    // Owners may create/update their own doc but can never grant themselves
+    // a role or a paid plan — only downgrading plan to 'free' is permitted
+    // (used by the cancellation flow). Paid plan upgrades are written
+    // exclusively by the Cloud Functions backend (admin SDK bypasses rules).
+    match /users/{uid} {
+      allow read: if request.auth != null && request.auth.uid == uid;
+      allow create: if request.auth != null && request.auth.uid == uid
+        && request.resource.data.get('role', 'member') == 'member'
+        && request.resource.data.get('plan', 'free') == 'free';
+      allow update: if request.auth != null && request.auth.uid == uid
+        && request.resource.data.get('role', 'member') == resource.data.get('role', 'member')
+        && (request.resource.data.get('plan', 'free') == resource.data.get('plan', 'free')
+            || request.resource.data.get('plan', 'free') == 'free');
+      allow read, write: if isAdmin();
+    }
+
+    // subscriptions/{subId} - subscription records
+    // Owners may read their own and cancel (status -> 'cancelled' only,
+    // without touching uid/plan/amount). All other writes are admin/backend.
+    match /subscriptions/{subId} {
+      allow read: if request.auth != null && resource.data.uid == request.auth.uid;
+      allow update: if request.auth != null
+        && resource.data.uid == request.auth.uid
+        && request.resource.data.status == 'cancelled'
+        && request.resource.data.uid == resource.data.uid
+        && request.resource.data.plan == resource.data.plan
+        && request.resource.data.amount == resource.data.amount;
+      allow write: if isAdmin();
+    }
+
+    // measurements/{uid}/logs/{logId} - body measurements
+    match /measurements/{uid}/logs/{logId} {
+      allow read, write: if request.auth != null && request.auth.uid == uid;
+    }
+
+    // progress_logs/{uid}/logs/{logId} - calculator results
+    match /progress_logs/{uid}/logs/{logId} {
+      allow read, write: if request.auth != null && request.auth.uid == uid;
+    }
+
+    // activity/{uid} - streak/workout tracking
+    match /activity/{uid} {
+      allow read, write: if request.auth != null && request.auth.uid == uid;
+    }
+
+    // pending_users/{id} - temporary login data
+    match /pending_users/{id} {
+      allow write: if true;
+      allow read: if request.auth != null && request.auth.uid == id;
+    }
+
+    // analytics/{uid}/events/{eventId} - per-user event stream
+    match /analytics/{uid}/events/{eventId} {
+      allow read, write: if request.auth != null && request.auth.uid == uid;
+    }
+
+    // global_analytics/{eventName} - aggregated event counters (admin read, auth write)
+    match /global_analytics/{eventName} {
+      allow read: if isAdmin();
+      allow write: if request.auth != null;
+    }
+
+    // pending_payments/{orderId} - Razorpay payment records
+    match /pending_payments/{orderId} {
+      allow read: if request.auth != null && resource.data.uid == request.auth.uid;
+      allow create: if request.auth != null && request.resource.data.uid == request.auth.uid;
+      allow update: if isAdmin();
+    }
+
+    // payment_orders/{orderId} - Cloud Function server-side order records
+    match /payment_orders/{orderId} {
+      allow read: if request.auth != null && resource.data.uid == request.auth.uid;
+      allow write: if isAdmin();
+    }
+
+    // physio_logs/{uid}/logs/{logId} - physio assessment history
+    match /physio_logs/{uid}/logs/{logId} {
+      allow read, write: if request.auth != null && request.auth.uid == uid;
+    }
+
+    // physio_summary/{uid} - latest physio scores
+    match /physio_summary/{uid} {
+      allow read, write: if request.auth != null && request.auth.uid == uid;
+    }
+
+    // leaderboard/{uid} - community leaderboard (any member reads, owner writes)
+    match /leaderboard/{uid} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null && request.auth.uid == uid;
+      allow delete: if isAdmin();
+    }
+  }
+}

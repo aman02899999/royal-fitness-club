@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RFC Admin — Royal Fitness Club</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@300;400;600;700;900&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+<style>
+:root{--red:#e8001d;--orange:#ff4500;--gold:#ffd000;--dark:#070707;--card:#101010;--card2:#141414;--border:#222;--border2:#2c2c2c;--text:#f0f0f0;--muted:#a0a0a0;--green:#22c55e;--blue:#38bdf8;--pro:linear-gradient(135deg,#ffd000,#ff4500);--fire:linear-gradient(135deg,#e8001d,#ff4500);--sidebar:180px;}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{background:var(--dark);color:var(--text);font-family:'Barlow',sans-serif;font-size:14px;overflow-x:hidden;}
+::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-track{background:#0a0a0a;}::-webkit-scrollbar-thumb{background:var(--red);}
+
+/* ── AUTH GATE ── */
+#auth-gate{position:fixed;inset:0;background:var(--dark);z-index:9999;display:flex;align-items:center;justify-content:center;}
+.auth-box{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:44px 36px;width:100%;max-width:400px;text-align:center;}
+.auth-logo{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:4px;background:var(--fire);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:6px;}
+.auth-sub{font-size:12px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:28px;}
+.auth-inp{width:100%;background:#0f0f0f;border:1px solid var(--border);border-radius:4px;padding:12px 14px;color:var(--text);font-size:14px;margin-bottom:10px;outline:none;transition:border-color .2s;}
+.auth-inp:focus{border-color:var(--red);}
+.auth-btn{width:100%;background:var(--fire);color:#fff;border:none;border-radius:4px;padding:13px;font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:4px;cursor:pointer;transition:all .2s;margin-top:4px;}
+.auth-btn:hover{transform:translateY(-1px);}
+.auth-err{background:rgba(232,0,29,.1);border:1px solid rgba(232,0,29,.25);border-radius:4px;padding:9px 12px;font-size:12px;color:#ff6b6b;margin-top:10px;display:none;}
+
+/* ── LAYOUT ── */
+#app{display:none;min-height:100vh;}
+.sidebar{position:fixed;top:0;left:0;bottom:0;width:var(--sidebar);background:#0a0a0a;border-right:1px solid var(--border);display:flex;flex-direction:column;z-index:100;transition:transform .3s;}
+.s-logo{padding:20px 16px 16px;border-bottom:1px solid var(--border);}
+.s-logo-text{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:3px;background:var(--fire);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.s-logo-sub{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-top:2px;}
+.s-nav{flex:1;padding:16px 0;overflow-y:auto;}
+.s-item{display:flex;align-items:center;gap:10px;padding:11px 16px;cursor:pointer;transition:all .2s;border-left:3px solid transparent;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase;}
+.s-item:hover{background:rgba(255,255,255,.04);color:var(--text);}
+.s-item.active{border-left-color:var(--red);color:var(--red);background:rgba(232,0,29,.06);}
+.s-item .s-icon{font-size:16px;flex-shrink:0;}
+.s-bottom{padding:16px;border-top:1px solid var(--border);}
+.s-logout{width:100%;background:transparent;border:1px solid var(--border2);color:var(--muted);padding:8px;border-radius:4px;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;transition:all .2s;}
+.s-logout:hover{border-color:var(--red);color:var(--red);}
+
+.main{margin-left:var(--sidebar);min-height:100vh;display:flex;flex-direction:column;}
+.topbar{background:#0a0a0a;border-bottom:1px solid var(--border);padding:0 24px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;}
+.tb-title{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;}
+.tb-right{display:flex;align-items:center;gap:14px;}
+.tb-admin{display:flex;align-items:center;gap:8px;}
+.tb-av{width:30px;height:30px;border-radius:50%;background:var(--fire);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:14px;color:#fff;flex-shrink:0;}
+.tb-name{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;color:var(--gold);}
+.tb-badge{font-size:9px;letter-spacing:2px;text-transform:uppercase;background:rgba(232,0,29,.12);color:var(--red);padding:2px 7px;border-radius:100px;border:1px solid rgba(232,0,29,.2);}
+.content{padding:24px;flex:1;}
+
+/* ── STATS CARDS ── */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px;}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:20px;}
+.stat-card .sc-label{font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
+.stat-card .sc-val{font-family:'Bebas Neue',sans-serif;font-size:42px;line-height:1;}
+.stat-card .sc-sub{font-size:11px;color:var(--muted);margin-top:4px;}
+.sc-val.red{color:var(--red);}.sc-val.gold{color:var(--gold);}.sc-val.green{color:var(--green);}.sc-val.blue{color:var(--blue);}
+
+/* ── GRID PANELS ── */
+.panel-row{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:24px;}
+.panel{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:20px;}
+.panel-title{font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;}
+.panel-full{grid-column:span 2;}
+
+/* ── TABLES ── */
+.table-wrap{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;}
+th{font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);padding:9px 12px;border-bottom:1px solid var(--border);text-align:left;white-space:nowrap;}
+td{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.04);font-size:13px;vertical-align:middle;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:rgba(255,255,255,.025);}
+.td-name{font-weight:600;color:var(--text);}
+.td-email{color:var(--muted);font-size:12px;}
+.td-date{color:var(--muted);font-size:12px;white-space:nowrap;}
+
+/* ── BADGES ── */
+.badge{display:inline-flex;align-items:center;gap:4px;font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:3px 9px;border-radius:100px;}
+.badge-free{background:rgba(160,160,160,.12);color:#aaa;border:1px solid rgba(160,160,160,.2);}
+.badge-pro{background:rgba(255,208,0,.12);color:var(--gold);border:1px solid rgba(255,208,0,.2);}
+.badge-elite{background:var(--pro);color:#000;}
+.badge-active{background:rgba(34,197,94,.12);color:var(--green);border:1px solid rgba(34,197,94,.2);}
+.badge-suspended{background:rgba(232,0,29,.12);color:var(--red);border:1px solid rgba(232,0,29,.2);}
+.badge-trial{background:rgba(56,189,248,.12);color:var(--blue);border:1px solid rgba(56,189,248,.2);}
+
+/* ── BUTTONS ── */
+.btn{padding:7px 14px;border-radius:4px;border:none;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;transition:all .2s;}
+.btn-primary{background:var(--fire);color:#fff;}
+.btn-primary:hover{transform:translateY(-1px);}
+.btn-outline{background:transparent;border:1px solid var(--border2);color:var(--muted);}
+.btn-outline:hover{border-color:var(--red);color:var(--red);}
+.btn-gold{background:var(--pro);color:#000;font-weight:900;}
+.btn-sm{padding:5px 10px;font-size:10px;}
+.btn-icon{background:transparent;border:1px solid var(--border);color:var(--muted);padding:5px 8px;border-radius:4px;cursor:pointer;transition:all .2s;font-size:13px;}
+.btn-icon:hover{border-color:var(--red);color:var(--red);}
+.btn-danger{background:rgba(232,0,29,.12);border:1px solid rgba(232,0,29,.2);color:var(--red);}
+.btn-danger:hover{background:rgba(232,0,29,.25);}
+
+/* ── SEARCH & FILTERS ── */
+.filter-bar{display:flex;gap:10px;align-items:center;margin-bottom:16px;flex-wrap:wrap;}
+.search-inp{flex:1;min-width:200px;background:#0f0f0f;border:1px solid var(--border);border-radius:4px;padding:9px 13px;color:var(--text);font-size:13px;outline:none;transition:border-color .2s;}
+.search-inp:focus{border-color:var(--red);}
+.filter-sel{background:#0f0f0f;border:1px solid var(--border);border-radius:4px;padding:9px 13px;color:var(--text);font-size:12px;outline:none;cursor:pointer;}
+
+/* ── PAGINATION ── */
+.pager{display:flex;align-items:center;gap:8px;margin-top:14px;justify-content:flex-end;font-size:12px;color:var(--muted);}
+.pager-btn{background:var(--card2);border:1px solid var(--border);color:var(--text);padding:5px 12px;border-radius:4px;cursor:pointer;font-size:11px;transition:all .2s;}
+.pager-btn:hover{border-color:var(--red);}
+.pager-btn:disabled{opacity:.4;cursor:default;}
+
+/* ── MODALS ── */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.88);backdrop-filter:blur(10px);z-index:9000;display:none;align-items:center;justify-content:center;padding:20px;}
+.modal-bg.open{display:flex;}
+.modal{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:32px;width:100%;max-width:480px;position:relative;max-height:90vh;overflow-y:auto;}
+.modal-close{position:absolute;top:12px;right:14px;background:none;border:none;color:var(--muted);font-size:18px;cursor:pointer;}
+.modal-close:hover{color:var(--text);}
+.modal-title{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;margin-bottom:4px;}
+.modal-sub{font-size:12px;color:var(--muted);margin-bottom:20px;}
+.form-row{margin-bottom:12px;}
+.form-label{font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:5px;}
+.form-inp,.form-sel{width:100%;background:#0f0f0f;border:1px solid var(--border);border-radius:4px;padding:10px 12px;color:var(--text);font-size:13px;outline:none;transition:border-color .2s;}
+.form-inp:focus,.form-sel:focus{border-color:var(--red);}
+.form-actions{display:flex;gap:8px;margin-top:18px;}
+.form-actions .btn{flex:1;padding:11px;}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:20px;right:20px;z-index:99999;background:var(--card);border:1px solid var(--border);border-radius:5px;padding:11px 16px;font-size:12px;max-width:280px;transform:translateY(70px);opacity:0;transition:all .35s;}
+.toast.show{transform:translateY(0);opacity:1;}
+.toast.fire{border-color:var(--red);}
+.toast.gold{border-color:var(--gold);}
+.toast.green{border-color:var(--green);}
+
+/* ── LOADING ── */
+.loading{display:flex;align-items:center;justify-content:center;padding:40px;color:var(--muted);font-size:12px;letter-spacing:2px;text-transform:uppercase;}
+.spinner{width:18px;height:18px;border:2px solid var(--border);border-top-color:var(--red);border-radius:50%;animation:spin .7s linear infinite;margin-right:10px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* ── SECTIONS ── */
+.section{display:none;}
+.section.active{display:block;}
+
+/* ── ANALYTICS BARS ── */
+.analytics-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+.plan-dist{display:flex;flex-direction:column;gap:8px;margin-top:8px;}
+.plan-row{display:flex;align-items:center;gap:10px;}
+.plan-label{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;width:70px;flex-shrink:0;}
+.plan-bar-bg{flex:1;background:#1a1a1a;border-radius:100px;height:8px;overflow:hidden;}
+.plan-bar-fill{height:100%;border-radius:100px;transition:width .8s ease;}
+.plan-count{font-family:'Bebas Neue',sans-serif;font-size:18px;width:40px;text-align:right;}
+
+.month-bars{display:flex;align-items:flex-end;gap:8px;height:100px;margin-top:12px;}
+.mbar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;}
+.mbar{width:100%;background:var(--red);border-radius:3px 3px 0 0;opacity:.8;transition:height .5s;min-height:4px;}
+.mbar-lbl{font-size:9px;color:var(--muted);letter-spacing:1px;}
+.mbar-val{font-family:'Bebas Neue',sans-serif;font-size:13px;color:var(--text);}
+
+/* ── QUICK ACTIONS ── */
+.quick-actions{display:flex;flex-direction:column;gap:8px;}
+.qa-btn{width:100%;background:var(--card2);border:1px solid var(--border);border-radius:5px;padding:10px 14px;text-align:left;cursor:pointer;display:flex;align-items:center;gap:10px;font-size:12px;color:var(--text);transition:all .2s;}
+.qa-btn:hover{border-color:var(--red);color:var(--red);}
+.qa-icon{font-size:16px;flex-shrink:0;}
+
+/* ── EMPTY STATE ── */
+.empty-state{text-align:center;padding:48px 20px;color:var(--muted);}
+.empty-icon{font-size:36px;margin-bottom:10px;opacity:.4;}
+.empty-text{font-size:12px;letter-spacing:2px;text-transform:uppercase;}
+
+/* ── MOBILE ── */
+.hamburger-admin{display:none;background:none;border:none;cursor:pointer;padding:8px;flex-direction:column;gap:5px;}
+.hamburger-admin span{display:block;width:20px;height:2px;background:var(--text);border-radius:2px;}
+@media(max-width:900px){
+  .stats-row{grid-template-columns:1fr 1fr;}
+  .panel-row{grid-template-columns:1fr;}
+  .panel-full{grid-column:span 1;}
+}
+@media(max-width:768px){
+  :root{--sidebar:240px;}
+  .sidebar{transform:translateX(-100%);}
+  .sidebar.open{transform:translateX(0);}
+  .main{margin-left:0;}
+  .hamburger-admin{display:flex;}
+  .stats-row{grid-template-columns:1fr 1fr;}
+  .analytics-grid{grid-template-columns:1fr;}
+}
+@media(max-width:480px){
+  .stats-row{grid-template-columns:1fr;}
+  .content{padding:16px;}
+}
+</style>
+</head>
+<body>
+
+<!-- AUTH GATE -->
+<div id="auth-gate">
+  <div class="auth-box">
+    <div class="auth-logo">ROYAL FITNESS CLUB</div>
+    <div class="auth-sub">Admin Portal</div>
+    <input type="email" class="auth-inp" id="a-email" placeholder="Admin Email">
+    <input type="password" class="auth-inp" id="a-pass" placeholder="Password">
+    <button class="auth-btn" onclick="adminLogin()">⚡ LOGIN TO ADMIN</button>
+    <div class="auth-err" id="auth-err"></div>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="app">
+  <!-- SIDEBAR -->
+  <div class="sidebar" id="sidebar">
+    <div class="s-logo">
+      <div class="s-logo-text">RFC ADMIN</div>
+      <div class="s-logo-sub">Beast SaaS Platform</div>
+    </div>
+    <nav class="s-nav">
+      <div class="s-item active" onclick="showSection('dashboard')" data-section="dashboard"><span class="s-icon">📊</span>Dashboard</div>
+      <div class="s-item" onclick="showSection('members')" data-section="members"><span class="s-icon">👥</span>Members</div>
+      <div class="s-item" onclick="showSection('subscriptions')" data-section="subscriptions"><span class="s-icon">💳</span>Subscriptions</div>
+      <div class="s-item" onclick="showSection('analytics')" data-section="analytics"><span class="s-icon">📈</span>Analytics</div>
+      <div class="s-item" onclick="showSection('settings')" data-section="settings"><span class="s-icon">⚙️</span>Settings</div>
+    </nav>
+    <div class="s-bottom">
+      <button class="s-logout" onclick="adminLogout()">🚪 Logout</button>
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div class="main">
+    <div class="topbar">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <button class="hamburger-admin" id="ham-admin" onclick="toggleSidebar()"><span></span><span></span><span></span></button>
+        <div class="tb-title" id="page-title">Dashboard</div>
+      </div>
+      <div class="tb-right">
+        <div class="tb-admin">
+          <div class="tb-av" id="admin-av">A</div>
+          <div>
+            <div class="tb-name" id="admin-name">Admin</div>
+            <div class="tb-badge">ADMIN</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="content">
+      <!-- DASHBOARD SECTION -->
+      <div class="section active" id="sec-dashboard">
+        <div class="stats-row">
+          <div class="stat-card"><div class="sc-label">Total Members</div><div class="sc-val red" id="stat-total">—</div><div class="sc-sub">All registered users</div></div>
+          <div class="stat-card"><div class="sc-label">Pro Members</div><div class="sc-val gold" id="stat-pro">—</div><div class="sc-sub">Paid subscribers</div></div>
+          <div class="stat-card"><div class="sc-label">New This Month</div><div class="sc-val green" id="stat-new">—</div><div class="sc-sub">Joined in <span id="stat-month">—</span></div></div>
+          <div class="stat-card"><div class="sc-label">Active Today</div><div class="sc-val blue" id="stat-today">—</div><div class="sc-sub">Login in last 24h</div></div>
+        </div>
+        <div class="panel-row">
+          <div class="panel" style="grid-column:span 2;">
+            <div class="panel-title">Recent Members <button class="btn btn-outline btn-sm" onclick="showSection('members')">View All →</button></div>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Name</th><th>Email</th><th>Plan</th><th>Status</th><th>Joined</th></tr></thead>
+                <tbody id="recent-members-body"><tr><td colspan="5"><div class="loading"><div class="spinner"></div>Loading...</div></td></tr></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="panel-row">
+          <div class="panel">
+            <div class="panel-title">Quick Actions</div>
+            <div class="quick-actions">
+              <button class="qa-btn" onclick="openAddMember()"><span class="qa-icon">➕</span>Add New Member</button>
+              <button class="qa-btn" onclick="exportCSV()"><span class="qa-icon">📥</span>Export Members CSV</button>
+              <button class="qa-btn" onclick="showSection('analytics')"><span class="qa-icon">📈</span>View Analytics</button>
+              <button class="qa-btn" onclick="showSection('subscriptions')"><span class="qa-icon">💳</span>Manage Subscriptions</button>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="panel-title">Plan Distribution</div>
+            <div class="plan-dist" id="plan-dist-dash">
+              <div class="loading"><div class="spinner"></div>Loading...</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MEMBERS SECTION -->
+      <div class="section" id="sec-members">
+        <div class="filter-bar">
+          <input type="text" class="search-inp" id="member-search" placeholder="Search by name or email..." oninput="filterMembers()">
+          <select class="filter-sel" id="member-filter" onchange="filterMembers()">
+            <option value="all">All Members</option>
+            <option value="active">Active</option>
+            <option value="suspended">Suspended</option>
+            <option value="pro">Pro Members</option>
+            <option value="free">Free Members</option>
+          </select>
+          <button class="btn btn-primary" onclick="openAddMember()">➕ Add Member</button>
+          <button class="btn btn-outline" onclick="exportCSV()">📥 Export CSV</button>
+        </div>
+        <div class="panel" style="padding:0;">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Plan</th><th>Status</th><th>Joined</th><th>Last Active</th><th>Actions</th></tr></thead>
+              <tbody id="members-body"><tr><td colspan="8"><div class="loading"><div class="spinner"></div>Loading members...</div></td></tr></tbody>
+            </table>
+          </div>
+          <div style="padding:12px 16px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
+            <div style="font-size:12px;color:var(--muted);">Showing <span id="member-count">0</span> of <span id="member-total">0</span> members</div>
+            <div class="pager">
+              <button class="pager-btn" id="prev-page" onclick="changePage(-1)" disabled>← Prev</button>
+              <span id="page-info">Page 1</span>
+              <button class="pager-btn" id="next-page" onclick="changePage(1)">Next →</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SUBSCRIPTIONS SECTION -->
+      <div class="section" id="sec-subscriptions">
+        <div class="filter-bar">
+          <select class="filter-sel" id="sub-filter" onchange="loadSubscriptions()">
+            <option value="all">All Subscriptions</option>
+            <option value="active">Active</option>
+            <option value="trial">Trial</option>
+            <option value="cancelled">Cancelled</option>
+            <option value="expired">Expired</option>
+          </select>
+        </div>
+        <div class="panel" style="padding:0;">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>User Email</th><th>Plan</th><th>Status</th><th>Amount</th><th>Start Date</th><th>Expiry</th><th>Actions</th></tr></thead>
+              <tbody id="subs-body"><tr><td colspan="7"><div class="loading"><div class="spinner"></div>Loading...</div></td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ANALYTICS SECTION -->
+      <div class="section" id="sec-analytics">
+        <div class="stats-row">
+          <div class="stat-card"><div class="sc-label">Total Revenue</div><div class="sc-val gold" id="an-revenue">₹0</div><div class="sc-sub">All time</div></div>
+          <div class="stat-card"><div class="sc-label">Conversion Rate</div><div class="sc-val green" id="an-conv">0%</div><div class="sc-sub">Free to Pro</div></div>
+          <div class="stat-card"><div class="sc-label">Avg Lifetime</div><div class="sc-val blue" id="an-lifetime">—</div><div class="sc-sub">Days per user</div></div>
+          <div class="stat-card"><div class="sc-label">Churn Rate</div><div class="sc-val red" id="an-churn">—</div><div class="sc-sub">Cancelled / Total Pro</div></div>
+        </div>
+        <div class="stats-row">
+          <div class="stat-card"><div class="sc-label">Active Today (DAU)</div><div class="sc-val green" id="an-dau">—</div><div class="sc-sub">Logged in since midnight</div></div>
+          <div class="stat-card"><div class="sc-label">Active 30 Days (MAU)</div><div class="sc-val blue" id="an-mau">—</div><div class="sc-sub">Logged in last 30 days</div></div>
+          <div class="stat-card"><div class="sc-label">New This Week</div><div class="sc-val gold" id="an-newweek">—</div><div class="sc-sub">Registrations last 7 days</div></div>
+          <div class="stat-card"><div class="sc-label">Stickiness</div><div class="sc-val" id="an-sticky">—</div><div class="sc-sub">DAU / MAU ratio</div></div>
+        </div>
+        <div class="panel-row">
+          <div class="panel">
+            <div class="panel-title">Plan Distribution</div>
+            <div class="plan-dist" id="plan-dist-an">
+              <div class="loading"><div class="spinner"></div>Loading...</div>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="panel-title">Members Joined (Last 6 Months)</div>
+            <div class="month-bars" id="month-bars">
+              <div class="loading"><div class="spinner"></div>Loading...</div>
+            </div>
+          </div>
+        </div>
+        <div class="panel-row">
+          <div class="panel">
+            <div class="panel-title">Top Events (All Time)</div>
+            <div class="plan-dist" id="top-events-an">
+              <div class="loading"><div class="spinner"></div>Loading...</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SETTINGS SECTION -->
+      <div class="section" id="sec-settings">
+        <div class="panel-row">
+          <div class="panel">
+            <div class="panel-title">Admin Profile</div>
+            <div style="display:flex;align-items:center;gap:14px;margin-bottom:18px;">
+              <div style="width:52px;height:52px;border-radius:50%;background:var(--fire);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:24px;color:#fff;" id="set-av">A</div>
+              <div><div style="font-family:'Bebas Neue',sans-serif;font-size:20px;" id="set-name">Admin</div><div style="font-size:12px;color:var(--muted);" id="set-email">—</div></div>
+            </div>
+            <div class="form-row">
+              <label class="form-label">Change Password</label>
+              <input type="password" class="form-inp" id="new-pass" placeholder="New password (min 6 chars)">
+            </div>
+            <button class="btn btn-primary" onclick="changeAdminPassword()">Update Password</button>
+          </div>
+          <div class="panel">
+            <div class="panel-title">Platform Settings</div>
+            <div style="display:flex;flex-direction:column;gap:14px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--border);font-size:13px;"><span>Maintenance Mode</span><span style="color:var(--muted);">Off</span></div>
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--border);font-size:13px;"><span>New User Registration</span><span style="color:var(--green);">On</span></div>
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--border);font-size:13px;"><span>Pro Trial Duration</span><span style="color:var(--gold);">7 days</span></div>
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;font-size:13px;"><span>Firebase Project</span><span style="color:var(--muted);">royal-fitness-club-7adc1</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- EDIT MEMBER MODAL -->
+<div class="modal-bg" id="edit-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('edit-modal')">✕</button>
+    <div class="modal-title">Edit Member</div>
+    <div class="modal-sub" id="edit-member-email">—</div>
+    <input type="hidden" id="edit-uid">
+    <div class="form-row"><label class="form-label">Name</label><input type="text" class="form-inp" id="edit-name"></div>
+    <div class="form-row"><label class="form-label">Phone</label><input type="tel" class="form-inp" id="edit-phone"></div>
+    <div class="form-row">
+      <label class="form-label">Plan</label>
+      <select class="form-sel" id="edit-plan">
+        <option value="free">Free</option>
+        <option value="royal_pro">Royal Pro</option>
+        <option value="royal_elite">Royal Elite</option>
+      </select>
+    </div>
+    <div class="form-row">
+      <label class="form-label">Status</label>
+      <select class="form-sel" id="edit-status">
+        <option value="active">Active</option>
+        <option value="suspended">Suspended</option>
+      </select>
+    </div>
+    <div class="form-actions">
+      <button class="btn btn-outline" onclick="closeModal('edit-modal')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveEditMember()">💾 Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD MEMBER MODAL -->
+<div class="modal-bg" id="add-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('add-modal')">✕</button>
+    <div class="modal-title">Add Member</div>
+    <div class="modal-sub">Create a new member account manually.</div>
+    <div class="form-row"><label class="form-label">Full Name</label><input type="text" class="form-inp" id="add-name"></div>
+    <div class="form-row"><label class="form-label">Email</label><input type="email" class="form-inp" id="add-email"></div>
+    <div class="form-row"><label class="form-label">Phone</label><input type="tel" class="form-inp" id="add-phone"></div>
+    <div class="form-row">
+      <label class="form-label">Plan</label>
+      <select class="form-sel" id="add-plan">
+        <option value="free">Free</option>
+        <option value="royal_pro">Royal Pro</option>
+        <option value="royal_elite">Royal Elite</option>
+      </select>
+    </div>
+    <div class="form-actions">
+      <button class="btn btn-outline" onclick="closeModal('add-modal')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveAddMember()">➕ Add Member</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ── FIREBASE INIT ──
+firebase.initializeApp({
+  apiKey: "AIzaSyD6AQun59-EJCgA7qzxMxBJj9BmKsWZrPw",
+  authDomain: "royal-fitness-club-7adc1.firebaseapp.com",
+  projectId: "royal-fitness-club-7adc1",
+  storageBucket: "royal-fitness-club-7adc1.firebasestorage.app",
+  messagingSenderId: "116269953135",
+  appId: "1:116269953135:web:e9c815a1e62788fbd05d9a"
+});
+const auth = firebase.auth();
+const db = firebase.firestore();
+
+// ── STATE ──
+let adminUser = null;
+let allMembers = [];
+let filteredMembers = [];
+let currentPage = 1;
+const PAGE_SIZE = 20;
+
+// ── UTILS ──
+function toast(msg, type = 'fire') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = `toast ${type} show`;
+  setTimeout(() => { t.className = `toast ${type}`; }, 3500);
+}
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+function fmtDate(ts) {
+  if (!ts) return '—';
+  const d = ts.toDate ? ts.toDate() : new Date(ts);
+  return d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+}
+function planBadge(plan) {
+  const m = { free: 'badge-free', royal_pro: 'badge-pro', royal_elite: 'badge-elite' };
+  const l = { free: 'Free', royal_pro: 'Royal Pro', royal_elite: 'Royal Elite' };
+  return `<span class="badge ${m[plan] || 'badge-free'}">${l[plan] || plan}</span>`;
+}
+function statusBadge(status) {
+  const m = { active: 'badge-active', suspended: 'badge-suspended', trial: 'badge-trial' };
+  return `<span class="badge ${m[status] || 'badge-free'}">${status || 'active'}</span>`;
+}
+
+// ── AUTH ──
+async function adminLogin() {
+  const email = document.getElementById('a-email').value.trim();
+  const pass = document.getElementById('a-pass').value;
+  const errEl = document.getElementById('auth-err');
+  errEl.style.display = 'none';
+
+  if (!email || !pass) { errEl.textContent = 'Please enter email and password.'; errEl.style.display = 'block'; return; }
+
+  try {
+    const cred = await auth.signInWithEmailAndPassword(email, pass);
+    const userDoc = await db.collection('users').doc(cred.user.uid).get();
+    if (!userDoc.exists || userDoc.data().role !== 'admin') {
+      await auth.signOut();
+      errEl.textContent = 'Access denied. Admin role required.';
+      errEl.style.display = 'block';
+      return;
+    }
+    adminUser = { uid: cred.user.uid, email: cred.user.email, ...userDoc.data() };
+    showDashboard();
+  } catch (err) {
+    errEl.textContent = err.message || 'Login failed.';
+    errEl.style.display = 'block';
+  }
+}
+
+function showDashboard() {
+  document.getElementById('auth-gate').style.display = 'none';
+  document.getElementById('app').style.display = 'flex';
+  document.getElementById('admin-name').textContent = adminUser.name || adminUser.email;
+  document.getElementById('admin-av').textContent = (adminUser.name || adminUser.email)[0].toUpperCase();
+  document.getElementById('set-name').textContent = adminUser.name || 'Admin';
+  document.getElementById('set-email').textContent = adminUser.email || '—';
+  document.getElementById('set-av').textContent = (adminUser.name || 'A')[0].toUpperCase();
+  document.getElementById('stat-month').textContent = new Date().toLocaleString('en', { month: 'long' });
+  loadDashboardStats();
+}
+
+async function adminLogout() {
+  await auth.signOut();
+  location.reload();
+}
+
+// ── NAVIGATION ──
+function showSection(name) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.s-item').forEach(i => i.classList.remove('active'));
+  document.getElementById('sec-' + name).classList.add('active');
+  document.querySelector(`.s-item[data-section="${name}"]`).classList.add('active');
+  const titles = { dashboard: 'Dashboard', members: 'Members', subscriptions: 'Subscriptions', analytics: 'Analytics', settings: 'Settings' };
+  document.getElementById('page-title').textContent = titles[name] || name;
+  if (name === 'members') loadMembers();
+  if (name === 'subscriptions') loadSubscriptions();
+  if (name === 'analytics') loadAnalytics();
+  if (window.innerWidth <= 768) closeSidebar();
+}
+
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+}
+
+// ── DASHBOARD STATS ──
+async function loadDashboardStats() {
+  try {
+    const snap = await db.collection('users').get();
+    const users = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    const total = users.length;
+    const pro = users.filter(u => u.plan && u.plan !== 'free').length;
+    const monthStart = new Date(); monthStart.setDate(1); monthStart.setHours(0, 0, 0, 0);
+    const newThisMonth = users.filter(u => u.createdAt && u.createdAt.toDate && u.createdAt.toDate() >= monthStart).length;
+    const yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000);
+    const activeToday = users.filter(u => u.lastLogin && u.lastLogin.toDate && u.lastLogin.toDate() >= yesterday).length;
+
+    document.getElementById('stat-total').textContent = total;
+    document.getElementById('stat-pro').textContent = pro;
+    document.getElementById('stat-new').textContent = newThisMonth;
+    document.getElementById('stat-today').textContent = activeToday;
+
+    // Recent members table
+    const recent = users.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0)).slice(0, 5);
+    document.getElementById('recent-members-body').innerHTML = recent.length ? recent.map(u => `
+      <tr>
+        <td><div class="td-name">${u.name || '—'}</div></td>
+        <td><div class="td-email">${u.email || '—'}</div></td>
+        <td>${planBadge(u.plan)}</td>
+        <td>${statusBadge(u.status)}</td>
+        <td><div class="td-date">${fmtDate(u.createdAt)}</div></td>
+      </tr>
+    `).join('') : '<tr><td colspan="5"><div class="empty-state"><div class="empty-icon">👥</div><div class="empty-text">No members yet</div></div></td></tr>';
+
+    // Plan distribution
+    const free = total - pro;
+    const maxVal = Math.max(total, 1);
+    document.getElementById('plan-dist-dash').innerHTML = `
+      <div class="plan-row"><div class="plan-label" style="color:var(--muted);">Free</div><div class="plan-bar-bg"><div class="plan-bar-fill" style="width:${(free/maxVal*100).toFixed(0)}%;background:#555;"></div></div><div class="plan-count" style="color:var(--muted);">${free}</div></div>
+      <div class="plan-row"><div class="plan-label" style="color:var(--gold);">Pro</div><div class="plan-bar-bg"><div class="plan-bar-fill" style="width:${(pro/maxVal*100).toFixed(0)}%;background:var(--gold);"></div></div><div class="plan-count" style="color:var(--gold);">${pro}</div></div>
+    `;
+  } catch (err) {
+    console.error('loadDashboardStats:', err);
+    toast('Failed to load stats', 'fire');
+  }
+}
+
+// ── MEMBERS ──
+async function loadMembers() {
+  document.getElementById('members-body').innerHTML = '<tr><td colspan="8"><div class="loading"><div class="spinner"></div>Loading members...</div></td></tr>';
+  try {
+    const snap = await db.collection('users').orderBy('createdAt', 'desc').get();
+    allMembers = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    filterMembers();
+  } catch (err) {
+    console.error('loadMembers:', err);
+    document.getElementById('members-body').innerHTML = '<tr><td colspan="8"><div class="empty-state"><div class="empty-icon">⚠️</div><div class="empty-text">Failed to load members</div></div></td></tr>';
+  }
+}
+
+function filterMembers() {
+  const query = (document.getElementById('member-search').value || '').toLowerCase();
+  const filter = document.getElementById('member-filter').value;
+
+  filteredMembers = allMembers.filter(u => {
+    const matchQ = !query || (u.name || '').toLowerCase().includes(query) || (u.email || '').toLowerCase().includes(query);
+    let matchF = true;
+    if (filter === 'active') matchF = u.status === 'active' || !u.status;
+    else if (filter === 'suspended') matchF = u.status === 'suspended';
+    else if (filter === 'pro') matchF = u.plan && u.plan !== 'free';
+    else if (filter === 'free') matchF = !u.plan || u.plan === 'free';
+    return matchQ && matchF;
+  });
+
+  currentPage = 1;
+  renderMembers();
+}
+
+function renderMembers() {
+  const start = (currentPage - 1) * PAGE_SIZE;
+  const pageData = filteredMembers.slice(start, start + PAGE_SIZE);
+  const total = filteredMembers.length;
+
+  document.getElementById('member-count').textContent = pageData.length;
+  document.getElementById('member-total').textContent = total;
+  document.getElementById('page-info').textContent = `Page ${currentPage} of ${Math.max(1, Math.ceil(total / PAGE_SIZE))}`;
+  document.getElementById('prev-page').disabled = currentPage <= 1;
+  document.getElementById('next-page').disabled = start + PAGE_SIZE >= total;
+
+  if (!pageData.length) {
+    document.getElementById('members-body').innerHTML = '<tr><td colspan="8"><div class="empty-state"><div class="empty-icon">🔍</div><div class="empty-text">No members found</div></div></td></tr>';
+    return;
+  }
+
+  document.getElementById('members-body').innerHTML = pageData.map(u => `
+    <tr>
+      <td><div class="td-name">${escHtml(u.name || '—')}</div></td>
+      <td><div class="td-email">${escHtml(u.email || '—')}</div></td>
+      <td><div class="td-email">${escHtml(u.phone || '—')}</div></td>
+      <td>${planBadge(u.plan)}</td>
+      <td>${statusBadge(u.status)}</td>
+      <td><div class="td-date">${fmtDate(u.createdAt)}</div></td>
+      <td><div class="td-date">${fmtDate(u.lastLogin)}</div></td>
+      <td>
+        <div style="display:flex;gap:5px;">
+          <button class="btn-icon" onclick="openEditMember('${u.id}')" title="Edit">✏️</button>
+          <button class="btn-icon btn-danger btn-sm" onclick="confirmDelete('${u.id}', '${escHtml(u.email || '')}')" title="Delete">🗑️</button>
+        </div>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function changePage(dir) {
+  currentPage += dir;
+  renderMembers();
+}
+
+function escHtml(str) {
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function openEditMember(uid) {
+  const u = allMembers.find(m => m.id === uid);
+  if (!u) return;
+  document.getElementById('edit-uid').value = uid;
+  document.getElementById('edit-member-email').textContent = u.email || '—';
+  document.getElementById('edit-name').value = u.name || '';
+  document.getElementById('edit-phone').value = u.phone || '';
+  document.getElementById('edit-plan').value = u.plan || 'free';
+  document.getElementById('edit-status').value = u.status || 'active';
+  openModal('edit-modal');
+}
+
+async function saveEditMember() {
+  const uid = document.getElementById('edit-uid').value;
+  const name = document.getElementById('edit-name').value.trim();
+  const phone = document.getElementById('edit-phone').value.trim();
+  const plan = document.getElementById('edit-plan').value;
+  const status = document.getElementById('edit-status').value;
+
+  try {
+    await db.collection('users').doc(uid).update({
+      name, phone, plan, status,
+      updatedAt: firebase.firestore.Timestamp.now()
+    });
+    closeModal('edit-modal');
+    toast('✅ Member updated!', 'green');
+    await loadMembers();
+  } catch (err) {
+    toast('Failed to update member: ' + err.message, 'fire');
+  }
+}
+
+async function confirmDelete(uid, email) {
+  if (!confirm(`Delete member ${email}?\n\nThis action cannot be undone.`)) return;
+  try {
+    await db.collection('users').doc(uid).delete();
+    toast('🗑️ Member deleted.', 'gold');
+    await loadMembers();
+  } catch (err) {
+    toast('Failed to delete: ' + err.message, 'fire');
+  }
+}
+
+function openAddMember() { openModal('add-modal'); }
+
+async function saveAddMember() {
+  const name = document.getElementById('add-name').value.trim();
+  const email = document.getElementById('add-email').value.trim();
+  const phone = document.getElementById('add-phone').value.trim();
+  const plan = document.getElementById('add-plan').value;
+  if (!name || !email) { toast('Name and email are required', 'gold'); return; }
+
+  try {
+    await db.collection('users').add({
+      name, email, phone, plan,
+      role: 'member', status: 'active',
+      createdAt: firebase.firestore.Timestamp.now(),
+      updatedAt: firebase.firestore.Timestamp.now(),
+      lastLogin: firebase.firestore.Timestamp.now()
+    });
+    closeModal('add-modal');
+    document.getElementById('add-name').value = '';
+    document.getElementById('add-email').value = '';
+    document.getElementById('add-phone').value = '';
+    toast('✅ Member added!', 'green');
+    await loadMembers();
+    await loadDashboardStats();
+  } catch (err) {
+    toast('Failed to add member: ' + err.message, 'fire');
+  }
+}
+
+// ── SUBSCRIPTIONS ──
+async function loadSubscriptions() {
+  document.getElementById('subs-body').innerHTML = '<tr><td colspan="7"><div class="loading"><div class="spinner"></div>Loading...</div></td></tr>';
+  try {
+    const filter = document.getElementById('sub-filter').value;
+    let query = db.collection('subscriptions').orderBy('createdAt', 'desc').limit(100);
+    if (filter !== 'all') query = db.collection('subscriptions').where('status', '==', filter).orderBy('createdAt', 'desc').limit(100);
+    const snap = await query.get();
+    const subs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+
+    if (!subs.length) {
+      document.getElementById('subs-body').innerHTML = '<tr><td colspan="7"><div class="empty-state"><div class="empty-icon">💳</div><div class="empty-text">No subscriptions found</div></div></td></tr>';
+      return;
+    }
+
+    document.getElementById('subs-body').innerHTML = subs.map(s => `
+      <tr>
+        <td><div class="td-email">${escHtml(s.uid || '—')}</div></td>
+        <td>${planBadge(s.plan)}</td>
+        <td>${statusBadge(s.status)}</td>
+        <td><strong style="color:var(--gold);">₹${s.amount || 0}</strong></td>
+        <td><div class="td-date">${fmtDate(s.startDate)}</div></td>
+        <td><div class="td-date">${fmtDate(s.expiryDate)}</div></td>
+        <td>
+          ${s.status === 'active' || s.status === 'trial' ? `<button class="btn btn-danger btn-sm" onclick="cancelSub('${s.id}', '${s.uid}')">Cancel</button>` : '<span style="color:var(--muted);font-size:11px;">' + s.status + '</span>'}
+        </td>
+      </tr>
+    `).join('');
+  } catch (err) {
+    console.error('loadSubscriptions:', err);
+    document.getElementById('subs-body').innerHTML = '<tr><td colspan="7"><div class="empty-state"><div class="empty-icon">⚠️</div><div class="empty-text">Failed to load subscriptions</div></div></td></tr>';
+  }
+}
+
+async function cancelSub(subId, userId) {
+  if (!confirm('Cancel this subscription?')) return;
+  try {
+    await db.collection('subscriptions').doc(subId).update({ status: 'cancelled', updatedAt: firebase.firestore.Timestamp.now() });
+    if (userId) await db.collection('users').doc(userId).update({ plan: 'free', updatedAt: firebase.firestore.Timestamp.now() });
+    toast('Subscription cancelled.', 'gold');
+    loadSubscriptions();
+  } catch (err) {
+    toast('Failed: ' + err.message, 'fire');
+  }
+}
+
+// ── ANALYTICS ──
+async function loadAnalytics() {
+  try {
+    const snap = await db.collection('users').get();
+    const users = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    const total = users.length;
+    const pro = users.filter(u => u.plan && u.plan !== 'free').length;
+    const free = total - pro;
+
+    const convRate = total > 0 ? ((pro / total) * 100).toFixed(1) : 0;
+    document.getElementById('an-conv').textContent = convRate + '%';
+
+    // Revenue from subscriptions
+    const subSnap = await db.collection('subscriptions').where('status', 'in', ['active', 'completed']).get();
+    const revenue = subSnap.docs.reduce((sum, d) => sum + (d.data().amount || 0), 0);
+    document.getElementById('an-revenue').textContent = '₹' + revenue.toLocaleString('en-IN');
+
+    const cancelSnap = await db.collection('subscriptions').where('status', '==', 'cancelled').get();
+    const cancelled = cancelSnap.size;
+    const churn = pro + cancelled > 0 ? ((cancelled / (pro + cancelled)) * 100).toFixed(1) + '%' : '0%';
+    document.getElementById('an-churn').textContent = churn;
+    document.getElementById('an-lifetime').textContent = '—';
+
+    // DAU / MAU / new-this-week (parallel; each failure degrades gracefully)
+    const dayStart = new Date(); dayStart.setHours(0, 0, 0, 0);
+    const d30 = new Date(Date.now() - 30 * 86400000);
+    const d7 = new Date(Date.now() - 7 * 86400000);
+    const ts = d => firebase.firestore.Timestamp.fromDate(d);
+    const [dauR, mauR, newR, evR] = await Promise.allSettled([
+      db.collection('users').where('lastLogin', '>=', ts(dayStart)).get(),
+      db.collection('users').where('lastLogin', '>=', ts(d30)).get(),
+      db.collection('users').where('createdAt', '>=', ts(d7)).get(),
+      db.collection('global_analytics').orderBy('count', 'desc').limit(8).get()
+    ]);
+    const dau = dauR.status === 'fulfilled' ? dauR.value.size : 0;
+    const mau = mauR.status === 'fulfilled' ? mauR.value.size : 0;
+    document.getElementById('an-dau').textContent = dau;
+    document.getElementById('an-mau').textContent = mau;
+    document.getElementById('an-newweek').textContent = newR.status === 'fulfilled' ? newR.value.size : 0;
+    document.getElementById('an-sticky').textContent = mau > 0 ? ((dau / mau) * 100).toFixed(0) + '%' : '—';
+
+    // Top events from global_analytics counters
+    const evBox = document.getElementById('top-events-an');
+    if (evR.status === 'fulfilled' && !evR.value.empty) {
+      const events = evR.value.docs.map(d => ({ name: d.id, count: d.data().count || 0 }));
+      const maxEv = Math.max(...events.map(e => e.count), 1);
+      evBox.innerHTML = events.map(e => `
+        <div class="plan-row"><div class="plan-label" style="color:var(--text);">${e.name.replace(/_/g, ' ')}</div><div class="plan-bar-bg"><div class="plan-bar-fill" style="width:${(e.count / maxEv * 100).toFixed(0)}%;background:var(--blue);"></div></div><div class="plan-count" style="color:var(--blue);">${e.count.toLocaleString('en-IN')}</div></div>
+      `).join('');
+    } else {
+      evBox.innerHTML = '<div style="font-size:12px;color:var(--muted);padding:10px 0;">No events tracked yet — counters appear as members use the app.</div>';
+    }
+
+    // Plan distribution
+    const maxD = Math.max(total, 1);
+    document.getElementById('plan-dist-an').innerHTML = `
+      <div class="plan-row"><div class="plan-label" style="color:var(--muted);">Free</div><div class="plan-bar-bg"><div class="plan-bar-fill" style="width:${(free/maxD*100).toFixed(0)}%;background:#555;"></div></div><div class="plan-count" style="color:var(--muted);">${free}</div></div>
+      <div class="plan-row"><div class="plan-label" style="color:var(--gold);">Pro</div><div class="plan-bar-bg"><div class="plan-bar-fill" style="width:${(pro/maxD*100).toFixed(0)}%;background:var(--gold);"></div></div><div class="plan-count" style="color:var(--gold);">${pro}</div></div>
+      <div style="margin-top:12px;font-size:11px;color:var(--muted);">Conversion Rate: <strong style="color:var(--green);">${convRate}%</strong></div>
+    `;
+
+    // Monthly join bar chart (last 6 months)
+    const months = [];
+    for (let i = 5; i >= 0; i--) {
+      const d = new Date(); d.setMonth(d.getMonth() - i);
+      months.push({ label: d.toLocaleString('en', { month: 'short' }), year: d.getFullYear(), month: d.getMonth() });
+    }
+    const monthCounts = months.map(m => ({
+      ...m,
+      count: users.filter(u => {
+        if (!u.createdAt || !u.createdAt.toDate) return false;
+        const ud = u.createdAt.toDate();
+        return ud.getMonth() === m.month && ud.getFullYear() === m.year;
+      }).length
+    }));
+    const maxCount = Math.max(...monthCounts.map(m => m.count), 1);
+    document.getElementById('month-bars').innerHTML = monthCounts.map(m => `
+      <div class="mbar-wrap">
+        <div class="mbar-val">${m.count}</div>
+        <div class="mbar" style="height:${Math.max(4, (m.count / maxCount) * 80)}px;"></div>
+        <div class="mbar-lbl">${m.label}</div>
+      </div>
+    `).join('');
+  } catch (err) {
+    console.error('loadAnalytics:', err);
+    toast('Failed to load analytics', 'fire');
+  }
+}
+
+// ── EXPORT CSV ──
+async function exportCSV() {
+  try {
+    toast('Generating CSV...', 'gold');
+    const snap = await db.collection('users').get();
+    const users = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    const headers = ['UID', 'Name', 'Email', 'Phone', 'Role', 'Plan', 'Status', 'Joined', 'Last Login'];
+    const rows = users.map(u => [
+      u.id,
+      u.name || '',
+      u.email || '',
+      u.phone || '',
+      u.role || 'member',
+      u.plan || 'free',
+      u.status || 'active',
+      u.createdAt ? u.createdAt.toDate().toISOString().split('T')[0] : '',
+      u.lastLogin ? u.lastLogin.toDate().toISOString().split('T')[0] : ''
+    ].map(v => `"${String(v).replace(/"/g, '""')}"`).join(','));
+    const csv = [headers.join(','), ...rows].join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = `rfc-members-${new Date().toISOString().split('T')[0]}.csv`;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    toast('✅ CSV exported!', 'green');
+  } catch (err) {
+    toast('Export failed: ' + err.message, 'fire');
+  }
+}
+
+// ── SETTINGS ──
+async function changeAdminPassword() {
+  const newPass = document.getElementById('new-pass').value;
+  if (!newPass || newPass.length < 6) { toast('Password must be at least 6 characters', 'gold'); return; }
+  try {
+    await auth.currentUser.updatePassword(newPass);
+    document.getElementById('new-pass').value = '';
+    toast('✅ Password updated!', 'green');
+  } catch (err) {
+    toast('Failed: ' + err.message, 'fire');
+  }
+}
+
+// ── AUTH STATE ──
+auth.onAuthStateChanged(async (user) => {
+  if (user) {
+    try {
+      const doc = await db.collection('users').doc(user.uid).get();
+      if (doc.exists && doc.data().role === 'admin') {
+        adminUser = { uid: user.uid, email: user.email, ...doc.data() };
+        showDashboard();
+      }
+    } catch (e) {}
+  }
+});
+
+// Enter key on login
+document.getElementById('a-pass').addEventListener('keydown', e => {
+  if (e.key === 'Enter') adminLogin();
+});
+</script>
+</body>
+</html>

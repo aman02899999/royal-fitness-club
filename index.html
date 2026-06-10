@@ -652,6 +652,30 @@ body{font-size:16px;}
   .elite-steps{grid-template-columns:1fr 1fr!important;}
 }
 
+/* ── AUTH TABS ── */
+.auth-tab{padding:9px 18px;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .2s;display:inline-block;}
+.auth-tab.active{color:var(--red);border-bottom-color:var(--red);}
+.auth-tabs{display:flex;border-bottom:1px solid var(--border);margin:12px 0 18px;}
+.auth-guest-btn{background:none;border:none;color:var(--muted);font-size:11px;cursor:pointer;margin-top:10px;width:100%;letter-spacing:1px;padding:6px;}
+.auth-guest-btn:hover{color:var(--text);}
+.lb-tabs{display:flex;gap:8px;margin:28px 0 18px;align-items:center;}
+.lb-tab{background:var(--card);border:1px solid var(--border2);color:var(--muted);padding:9px 22px;border-radius:3px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all .2s;}
+.lb-tab.active{background:var(--fire);color:#fff;border-color:transparent;}
+.lb-refresh{background:none;border:1px solid var(--border2);color:var(--muted);width:36px;height:36px;border-radius:3px;cursor:pointer;font-size:16px;margin-left:auto;}
+.lb-refresh:hover{color:var(--red);border-color:var(--red);}
+.lb-myrank{background:rgba(255,208,0,.07);border:1px solid rgba(255,208,0,.2);border-radius:6px;padding:12px 18px;margin-bottom:14px;font-size:13px;color:var(--gold);}
+.lb-list{display:flex;flex-direction:column;gap:7px;max-width:640px;}
+.lb-row{display:flex;align-items:center;gap:14px;background:var(--card);border:1px solid var(--border);border-radius:6px;padding:11px 16px;transition:transform .15s;}
+.lb-row:hover{transform:translateX(3px);}
+.lb-row.me{border-color:rgba(255,208,0,.4);background:rgba(255,208,0,.05);}
+.lb-rank{font-family:'Bebas Neue',sans-serif;font-size:20px;width:38px;color:var(--muted);flex-shrink:0;text-align:center;}
+.lb-rank.top1{color:var(--gold);}.lb-rank.top2{color:#c0c0c0;}.lb-rank.top3{color:#cd7f32;}
+.lb-av{width:34px;height:34px;border-radius:50%;background:var(--fire);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:15px;color:#fff;flex-shrink:0;}
+.lb-name{font-size:14px;font-weight:600;flex:1;display:flex;align-items:center;gap:8px;}
+.lb-pro{font-size:8px;letter-spacing:1.5px;background:var(--pro);color:#000;font-weight:900;padding:2px 6px;border-radius:8px;}
+.lb-val{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--red);flex-shrink:0;}
+.lb-val small{font-size:10px;color:var(--muted);font-family:'Barlow',sans-serif;letter-spacing:1px;}
+
 .muted-text, p, .ssub, .hsub, .cnote, .rdesc, .sbox, .recplan,
 .prof-row span:first-child, .prof-email, .tcsub, .elite-sub,
 .elite-step-d, .wkout-ex, .sd, .pper, .ttxt, .msub, .grocitem,
@@ -695,6 +719,36 @@ body{font-size:16px;}
 .bs2l { color:#b8b8b8 !important; }
 .aleg-val { color:#f0f0f0 !important; }
 </style>
+<!-- Firebase SDK (compat) -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-functions-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js"></script>
+<script>
+// ── FIREBASE INIT ──
+(function(){
+  if(typeof firebase==='undefined')return;
+  try{
+    firebase.initializeApp({
+      apiKey:"AIzaSyD6AQun59-EJCgA7qzxMxBJj9BmKsWZrPw",
+      authDomain:"royal-fitness-club-7adc1.firebaseapp.com",
+      projectId:"royal-fitness-club-7adc1",
+      storageBucket:"royal-fitness-club-7adc1.firebasestorage.app",
+      messagingSenderId:"116269953135",
+      appId:"1:116269953135:web:e9c815a1e62788fbd05d9a"
+    });
+  }catch(e){}
+})();
+</script>
+<!-- RFC Services -->
+<script src="src/auth.js"></script>
+<script src="src/userService.js"></script>
+<script src="src/subscriptionService.js"></script>
+<script src="src/razorpayService.js"></script>
+<script src="src/analyticsService.js"></script>
+<script src="src/transformationService.js"></script>
+<script src="src/communityService.js"></script>
 </head>
 <body>
 <div id="watermark"></div>
@@ -707,6 +761,7 @@ body{font-size:16px;}
     <a href="#calculators" onclick="closeNav()">Tools</a>
     <a href="#physio" onclick="closeNav()">Physio</a>
     <a href="#dashboard" onclick="closeNav()">Dashboard</a>
+    <a href="#arena" onclick="closeNav()">Arena</a>
     <a href="#elite" style="color:var(--gold);" onclick="closeNav()">👑 Elite</a>
     <a href="#plans" onclick="closeNav()">Plans</a>
     <a href="#tracker" id="navtr" style="display:none;" onclick="closeNav()">Tracker</a>
@@ -1249,6 +1304,22 @@ body{font-size:16px;}
     <div style="margin-top:22px;text-align:center;"><button class="bfire" onclick="savePDF()" style="justify-content:center;display:inline-flex;">📄 Export Full PDF Report</button></div>
   </div>
 </section>
+<section id="arena" style="background:var(--card2);">
+  <div class="container">
+    <div class="stag">Community Arena</div>
+    <div class="sh">ROYAL LEADERBOARD</div>
+    <p class="ssub">Where do you stand among the pack? Calculate your Beast Score and check in daily to climb the ranks.</p>
+    <div class="lb-tabs">
+      <button class="lb-tab active" data-board="beastScore" onclick="switchBoard('beastScore',this)">👑 Beast Score</button>
+      <button class="lb-tab" data-board="streak" onclick="switchBoard('streak',this)">🔥 Streak</button>
+      <button class="lb-refresh" onclick="loadLeaderboard()" title="Refresh">⟳</button>
+    </div>
+    <div class="lb-myrank" id="lb-myrank" style="display:none;"></div>
+    <div class="lb-list" id="lb-list">
+      <div style="text-align:center;padding:30px;color:var(--muted);font-size:13px;">Log in to see the leaderboard.</div>
+    </div>
+  </div>
+</section>
 <section style="padding:48px 20px;">
   <div class="container">
     <div class="shopbox">
@@ -1285,15 +1356,31 @@ body{font-size:16px;}
   <p style="margin-top:4px;font-size:10px;color:#888;">Beast Ecosystem v8.0 — Built for those who refuse to be average.</p>
 </footer>
 <div class="mbg" id="loginmodal">
-  <div class="metbox">
+  <div class="mbox" style="max-width:420px;">
     <div class="mlogo">ROYAL FITNESS CLUB</div>
-    <div class="mtitle">Start Your Transformation</div>
-    <div class="msub">Login required for all features. Your progress is saved automatically.</div>
-    <div class="mwarn">🔒 Login required for all features. Your data is saved securely.</div>
-    <input type="text" class="minp" id="mname" placeholder="Your Full Name">
-    <input type="email" class="minp" id="memail" placeholder="Email Address">
-    <input type="tel" class="minp" id="mphone" placeholder="Mobile / WhatsApp Number">
-    <button class="mbtn" onclick="loginUser()">⚡ LOGIN & START FREE</button>
+    <div class="auth-tabs">
+      <div class="auth-tab active" id="tab-login" onclick="switchAuthTab('login')">Login</div>
+      <div class="auth-tab" id="tab-register" onclick="switchAuthTab('register')">Register Free</div>
+    </div>
+    <!-- LOGIN FORM -->
+    <div id="form-login">
+      <input type="email" class="minp" id="login-email" placeholder="Email Address" autocomplete="email">
+      <input type="password" class="minp" id="login-pass" placeholder="Password" autocomplete="current-password">
+      <button class="mbtn" onclick="loginWithFirebase()">⚡ LOGIN & TRANSFORM</button>
+      <button class="auth-guest-btn" onclick="resetPasswordPrompt()">Forgot password?</button>
+    </div>
+    <!-- REGISTER FORM -->
+    <div id="form-register" style="display:none;">
+      <div class="mwarn">🔒 Free account — no credit card required. Your data is secured.</div>
+      <input type="text" class="minp" id="reg-name" placeholder="Full Name" autocomplete="name">
+      <input type="email" class="minp" id="reg-email" placeholder="Email Address" autocomplete="email">
+      <input type="tel" class="minp" id="reg-phone" placeholder="Mobile / WhatsApp (optional)">
+      <input type="password" class="minp" id="reg-pass" placeholder="Password (min 6 characters)" autocomplete="new-password">
+      <button class="mbtn" onclick="registerWithFirebase()">🔥 CREATE FREE ACCOUNT</button>
+    </div>
+    <div style="text-align:center;margin-top:4px;">
+      <button class="auth-guest-btn" onclick="guestAccess()">Continue without account →</button>
+    </div>
   </div>
 </div>
 <div class="mbg" id="promodal">
@@ -1387,7 +1474,7 @@ setInterval(()=>{const p=document.createElement('div');p.className='pt';const s=
 // ── UTILITY ──
 const $=id=>document.getElementById(id);
 function toast(msg,type='fire'){const t=$('toast');t.textContent=msg;t.className=`toast ${type} show`;setTimeout(()=>{t.className=`toast ${type}`;},3500);}
-function openModal(id){$(id).classList.add('open');}
+function openModal(id){$(id).classList.add('open');if(id==='promodal'&&window.AnalyticsService)window.AnalyticsService.trackEvent('pro_modal_opened').catch(()=>{});}
 function closeModal(id){$(id).classList.remove('open');}
 ['sharemodal','promodal','elitemodal'].forEach(id=>{$(id).addEventListener('click',e=>{if(e.target===$(id))closeModal(id);});});
 function animN(el,target,dec=0,sfx=''){let s=0,d=900;const step=ts=>{if(!s)s=ts;const p=Math.min((ts-s)/d,1);el.textContent=(target*p).toFixed(dec)+sfx;if(p<1)requestAnimationFrame(step);};requestAnimationFrame(step);}
@@ -1396,13 +1483,159 @@ let tend=+localStorage.getItem('bm_te')||0;
 if(Date.now()>tend){tend=Date.now()+24*60*60*1000;localStorage.setItem('bm_te',tend);}
 function updT(){const d=tend-Date.now();if(d<=0)return;const h=Math.floor(d/3600000),m=Math.floor((d%3600000)/60000),s=Math.floor((d%60000)/1000);const f=`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;['ptimer2','ntlbl','pmodtime'].forEach(id=>{if($(id))$(id).textContent=f;});$('ntimer').classList.add('on');}
 updT();setInterval(updT,1000);
-// ── AUTH ──
+// ── AUTH (Firebase Production + localStorage Fallback) ──
 let user=null,isPro=false;
-function initUser(){const u=localStorage.getItem('bm_user');if(u){user=JSON.parse(u);isPro=localStorage.getItem('bm_pro')==='true';user.last=new Date().toISOString();localStorage.setItem('bm_user',JSON.stringify(user));applyUser();}else setTimeout(forceLogin,1600);}
+
+function initUser(){
+  if(typeof firebase==='undefined'){
+    // Firebase not loaded — fall back to localStorage
+    const u=localStorage.getItem('bm_user');
+    if(u){user=JSON.parse(u);isPro=localStorage.getItem('bm_pro')==='true';applyUser();}
+    else setTimeout(forceLogin,1600);
+    return;
+  }
+  firebase.auth().onAuthStateChanged(async function(fbUser){
+    if(fbUser){
+      try{
+        const doc=await firebase.firestore().collection('users').doc(fbUser.uid).get();
+        if(doc.exists){
+          const d=doc.data();
+          // Treat the plan as expired client-side even before the daily
+          // backend sweep runs — expiryDate on the user doc is authoritative.
+          const planExpired=d.expiryDate?.toDate?.()&&d.expiryDate.toDate()<new Date();
+          const effectivePlan=planExpired?'free':(d.plan||'free');
+          user={uid:fbUser.uid,name:d.name||fbUser.email.split('@')[0],email:d.email||fbUser.email,phone:d.phone||'',role:d.role||'member',plan:effectivePlan,since:d.createdAt?.toDate?.()?.toISOString()||new Date().toISOString(),last:new Date().toISOString()};
+          isPro=effectivePlan==='royal_pro'||effectivePlan==='royal_elite';
+        }else{
+          // Auth user exists but no Firestore doc — create it
+          user={uid:fbUser.uid,name:fbUser.displayName||fbUser.email.split('@')[0],email:fbUser.email,phone:'',role:'member',plan:'free',since:new Date().toISOString(),last:new Date().toISOString()};
+          isPro=false;
+          await firebase.firestore().collection('users').doc(fbUser.uid).set({uid:fbUser.uid,name:user.name,email:user.email,phone:'',role:'member',plan:'free',status:'active',createdAt:firebase.firestore.FieldValue.serverTimestamp(),updatedAt:firebase.firestore.FieldValue.serverTimestamp(),lastLogin:firebase.firestore.FieldValue.serverTimestamp()});
+        }
+        localStorage.setItem('bm_user',JSON.stringify(user));
+        localStorage.setItem('bm_pro',isPro?'true':'false');
+        // Update last login (fire & forget)
+        firebase.firestore().collection('users').doc(fbUser.uid).update({lastLogin:firebase.firestore.FieldValue.serverTimestamp()}).catch(()=>{});
+        applyUser();
+        if(doc.exists&&typeof restoreCloudPhotos==='function')restoreCloudPhotos(doc.data());
+        if(user.role==='admin')showAdminLink();
+      }catch(err){
+        console.error('Auth state error:',err);
+        const u=localStorage.getItem('bm_user');
+        if(u){user=JSON.parse(u);isPro=localStorage.getItem('bm_pro')==='true';applyUser();}
+        else setTimeout(forceLogin,1600);
+      }
+    }else{
+      const hadUser=!!user;
+      user=null;isPro=false;
+      localStorage.removeItem('bm_user');localStorage.removeItem('bm_pro');
+      if(hadUser){$('upill').classList.remove('on');$('ppro').classList.remove('on');$('navlbtn').style.display='block';$('tracker').classList.remove('pro-on');$('navtr').style.display='none';}
+      else setTimeout(forceLogin,1800);
+    }
+  });
+}
+
 function forceLogin(){openModal('loginmodal');}
-function applyUser(){if(!user)return;$('upill').classList.add('on');$('uname').textContent=user.name||user.email;$('navlbtn').style.display='none';if(isPro){$('ppro').classList.add('on');$('tracker').classList.add('pro-on');$('navtr').style.display='inline';loadPD();}}
-function loginUser(){const name=$('mname').value.trim(),email=$('memail').value.trim(),phone=$('mphone').value.trim();if(!email){toast('Please enter your email!','gold');return;}const existing=JSON.parse(localStorage.getItem('bm_user')||'null');user={name:name||email,email,phone,since:existing&&existing.since?existing.since:new Date().toISOString(),last:new Date().toISOString()};localStorage.setItem('bm_user',JSON.stringify(user));closeModal('loginmodal');applyUser();toast(`Welcome, ${user.name}! 🔥 Your transformation begins!`);}
-$('btnlo').addEventListener('click',()=>{user=null;isPro=false;localStorage.removeItem('bm_user');localStorage.removeItem('bm_pro');$('upill').classList.remove('on');$('ppro').classList.remove('on');$('navlbtn').style.display='block';$('tracker').classList.remove('pro-on');$('navtr').style.display='none';$('rescont').style.display='none';$('emptyst2').style.display='flex';toast('Logged out successfully.');});
+
+function applyUser(){
+  if(!user)return;
+  $('upill').classList.add('on');
+  $('uname').textContent=user.name||user.email;
+  $('navlbtn').style.display='none';
+  if(isPro){$('ppro').classList.add('on');$('tracker').classList.add('pro-on');$('navtr').style.display='inline';loadPD();}
+  if(window.AnalyticsService)window.AnalyticsService.trackEvent('login',{plan:user.plan||'free'}).catch(()=>{});
+  if(user.uid&&typeof loadLeaderboard==='function')loadLeaderboard();
+  if(user.uid&&window.TransformationService&&!lastRes){
+    window.TransformationService.getLastCalculation(user.uid).then(function(last){
+      if(last&&$('ia')&&!$('ia').value){
+        if(last.age)$('ia').value=last.age;if(last.weight)$('iw').value=last.weight;if(last.height)$('ih').value=last.height;
+      }
+    }).catch(()=>{});
+  }
+}
+
+function switchAuthTab(tab){
+  ['login','register'].forEach(function(t){
+    document.getElementById('tab-'+t).classList.toggle('active',t===tab);
+    document.getElementById('form-'+t).style.display=t===tab?'block':'none';
+  });
+}
+
+async function loginWithFirebase(){
+  const email=($('login-email')?.value||'').trim();
+  const pass=$('login-pass')?.value||'';
+  if(!email||!pass){toast('Please enter email and password','gold');return;}
+  if(typeof firebase==='undefined'){toast('Auth service loading… try again.','gold');return;}
+  try{
+    $('login-pass').disabled=true;
+    await firebase.auth().signInWithEmailAndPassword(email,pass);
+    closeModal('loginmodal');
+    toast('Welcome back! 🔥');
+  }catch(err){
+    const msg=err.code==='auth/wrong-password'||err.code==='auth/invalid-credential'?'Wrong password. Try again.':err.code==='auth/user-not-found'?'No account found. Register first.':err.message;
+    toast(msg,'gold');
+  }finally{if($('login-pass'))$('login-pass').disabled=false;}
+}
+
+async function registerWithFirebase(){
+  const name=($('reg-name')?.value||'').trim();
+  const email=($('reg-email')?.value||'').trim();
+  const phone=($('reg-phone')?.value||'').trim();
+  const pass=$('reg-pass')?.value||'';
+  if(!name||!email||!pass){toast('Name, email and password required','gold');return;}
+  if(pass.length<6){toast('Password must be at least 6 characters','gold');return;}
+  if(typeof firebase==='undefined'){toast('Auth service loading… try again.','gold');return;}
+  try{
+    const cred=await firebase.auth().createUserWithEmailAndPassword(email,pass);
+    await firebase.firestore().collection('users').doc(cred.user.uid).set({uid:cred.user.uid,name,email,phone,role:'member',plan:'free',status:'active',createdAt:firebase.firestore.FieldValue.serverTimestamp(),updatedAt:firebase.firestore.FieldValue.serverTimestamp(),lastLogin:firebase.firestore.FieldValue.serverTimestamp()});
+    closeModal('loginmodal');
+    toast('Welcome, '+name+'! 🔥 Your transformation begins!');
+  }catch(err){
+    const msg=err.code==='auth/email-already-in-use'?'Email already registered. Please login instead.':err.message;
+    toast(msg,'gold');
+  }
+}
+
+// Legacy compatibility
+function loginUser(){loginWithFirebase();}
+
+function guestAccess(){
+  const name='Beast';
+  const email='guest@rfc.local';
+  const existing=JSON.parse(localStorage.getItem('bm_user')||'null');
+  user={name,email,phone:'',since:existing?.since||new Date().toISOString(),last:new Date().toISOString()};
+  localStorage.setItem('bm_user',JSON.stringify(user));
+  closeModal('loginmodal');
+  applyUser();
+  toast('Continuing as guest. Data saved locally only.','gold');
+}
+
+function resetPasswordPrompt(){
+  const email=($('login-email')?.value||'').trim();
+  if(!email){toast('Enter your email address first','gold');return;}
+  if(typeof firebase==='undefined'){toast('Auth service loading…','gold');return;}
+  firebase.auth().sendPasswordResetEmail(email).then(function(){toast('Reset link sent! Check your email.','gold');}).catch(function(e){toast(e.message,'gold');});
+}
+
+function showAdminLink(){
+  const nl=$('nlinks');
+  if(nl&&!document.getElementById('nav-admin')){
+    const a=document.createElement('a');
+    a.href='/admin.html';a.id='nav-admin';a.textContent='⚡ Admin';a.style.cssText='color:var(--gold)!important;';
+    nl.insertBefore(a,nl.lastElementChild);
+  }
+}
+
+$('btnlo').addEventListener('click',async function(){
+  try{if(typeof firebase!=='undefined')await firebase.auth().signOut();}catch(e){}
+  user=null;isPro=false;
+  localStorage.removeItem('bm_user');localStorage.removeItem('bm_pro');
+  $('upill').classList.remove('on');$('ppro').classList.remove('on');
+  $('navlbtn').style.display='block';$('tracker').classList.remove('pro-on');$('navtr').style.display='none';
+  $('rescont').style.display='none';
+  if($('emptyst2'))$('emptyst2').style.display='flex';
+  toast('Logged out successfully.');
+});
 // ── PRO ──
 // activatePro moved to currency module below
 // ── GALLERY ──
@@ -1575,6 +1808,8 @@ function calculate(){
   buildBeastScore2();
   toast('🔥 Your plan is ready! Scroll down to see it.');
   setTimeout(()=>$('rescont').scrollIntoView({behavior:'smooth',block:'nearest'}),400);
+  if(user?.uid&&window.TransformationService)window.TransformationService.saveCalculationResult(user.uid,lastRes).catch(()=>{});
+  if(window.AnalyticsService)window.AnalyticsService.trackEvent('calculator_used',{goal,diet}).catch(()=>{});
 }
 // ── HEALTH CHECKBOX VISUAL + GOAL→CALORIE AUTO-UPDATE + SPLIT TABS ──
 ['pcos','thyroid','diabetic'].forEach(h=>{const el=$('hc-'+h);if(el)el.addEventListener('change',()=>{el.closest('.hchk').classList.toggle('on',el.checked);});});
@@ -1912,21 +2147,110 @@ renderH();
 function openShareCard(){if(!user){toast('Please log in first!','gold');forceLogin();return;}if(!isPro){openModal('promodal');return;}if(!lastRes){toast('Please calculate your plan first!','gold');return;}$('scscore').textContent=lastRes.score;$('sclbl').textContent=scoreLbl(lastRes.score);$('scbmi').textContent=lastRes.bmi.toFixed(1);$('sccals').textContent=lastRes.targetCals;$('scgoal').textContent=lastRes.goal.toUpperCase();openModal('sharemodal');}
 
 // ── PDF ──
-function savePDF(){if(!user){toast('Please log in first!','gold');forceLogin();return;}if(!isPro){openModal('promodal');return;}if(!lastRes){toast('Please calculate your plan first!','gold');return;}const r=lastRes;const w=window.open('','_blank');w.document.write(`<!DOCTYPE html><html><head><title>Royal Fitness Club Report</title><style>body{font-family:sans-serif;margin:0;color:#111;}.hdr{background:#e8001d;color:#fff;padding:26px 34px;}.hdr h1{font-size:30px;letter-spacing:4px;margin:0;}.content{padding:26px 34px;}h2{color:#e8001d;font-size:17px;border-bottom:2px solid #e8001d;padding-bottom:6px;margin:22px 0 12px;}table{width:100%;border-collapse:collapse;margin-bottom:14px;}th{background:#e8001d;color:#fff;padding:8px 11px;text-align:left;font-size:12px;}td{padding:8px 11px;border-bottom:1px solid #eee;font-size:13px;}.strat{background:#fafafa;border-left:4px solid #e8001d;padding:13px;border-radius:4px;font-size:13px;line-height:1.7;margin:9px 0;}.score{font-size:52px;font-weight:900;color:#e8001d;text-align:center;padding:14px;}.sg{display:grid;grid-template-columns:1fr 1fr;gap:9px;}.si{background:#f5f5f5;padding:9px;border-radius:4px;font-size:12px;}.content{position:relative;z-index:1;}#pdfwm{position:fixed;inset:0;z-index:0;overflow:hidden;display:flex;flex-wrap:wrap;align-content:center;justify-content:center;gap:50px 70px;transform:rotate(-30deg) scale(1.4);opacity:.05;pointer-events:none;}#pdfwm span{font-size:26px;letter-spacing:4px;color:#e8001d;font-weight:900;white-space:nowrap;}.pdffoot{position:fixed;bottom:8px;left:0;right:0;text-align:center;font-size:10px;color:#aaa;z-index:2;}@media print{button{display:none;}#pdfwm{position:fixed;}}</style></head><body><div id="pdfwm"><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span></div><div class="pdffoot">© Royal Fitness Club — royalmentality.in</div><div class="hdr"><h1>ROYAL FITNESS CLUB</h1><p>Transformation Report — ${new Date().toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'})}</p><p>User: ${user?.name||''} | Goal: ${r.goal.toUpperCase()}</p></div><div class="content"><h2>Beast Score</h2><div class="score">${r.score}/100 — ${scoreLbl(r.score)}</div><h2>Body Metrics</h2><table><tr><th>Metric</th><th>Value</th></tr><tr><td>BMI</td><td>${r.bmi.toFixed(1)} — ${bmiClass(r.bmi)}</td></tr><tr><td>BMR</td><td>${Math.round(r.bmr)} kcal/day</td></tr><tr><td>TDEE</td><td>${Math.round(r.tdee)} kcal/day</td></tr><tr><td>Target Calories</td><td>${r.targetCals} kcal/day</td></tr><tr><td>Daily Water</td><td>${r.water}L</td></tr><tr><td>Body Fat %</td><td>${r.bf.toFixed(1)}% — ${r.bfc}</td></tr><tr><td>Lean Mass</td><td>${(r.weight*(1-r.bf/100)).toFixed(1)}kg</td></tr><tr><td>Muscle Mass (est)</td><td>${(r.weight*(1-r.bf/100)*0.85).toFixed(1)}kg</td></tr></table><h2>Macros</h2><table><tr><th>Macro</th><th>Target</th><th>Calories</th></tr><tr><td>Protein</td><td>${r.macros.prot}g</td><td>${r.macros.prot*4}</td></tr><tr><td>Carbs</td><td>${r.macros.carb}g</td><td>${r.macros.carb*4}</td></tr><tr><td>Fats</td><td>${r.macros.fat}g</td><td>${r.macros.fat*9}</td></tr></table><h2>Strategy</h2><div class="strat">${getStrat(r.goal,r.bmi)}</div><h2>Workout</h2><div class="strat">${getWrk(r.goal)}</div><h2>Supplements</h2><div class="sg">${getSupps(r.goal,r.diet,r.whey,r.health).map(s=>`<div class="si"><strong>${s.n}</strong><br>${s.d}</div>`).join('')}</div>${getHealthNote(r.health)?`<h2>Health Notes</h2><div class="strat">${getHealthNote(r.health)}</div>`:''}<h2>Beast Score 2.0 Factors</h2><div class="strat">Recovery: ${pdScores.recovery||"not logged"}/100 · Posture: ${pdScores.posture||"not assessed"}/100 · Mobility: ${pdScores.mobility||"not assessed"}/100</div><h2>7-Day Workout (${currentSplit.toUpperCase()})</h2>${(WK[currentSplit]||WK.ppl).map((d,i)=>`<div class="strat"><strong>Day ${i+1} — ${d.t}</strong><br>${d.ex}</div>`).join('')}</div><div style="text-align:center;padding:18px;"><button onclick="window.print()" style="background:#e8001d;color:#fff;border:none;padding:11px 32px;font-size:14px;cursor:pointer;border-radius:4px;">🖨️ Print / Save PDF</button></div></body></html>`);w.document.close();}
+function savePDF(){if(!user){toast('Please log in first!','gold');forceLogin();return;}if(!isPro){openModal('promodal');return;}if(!lastRes){toast('Please calculate your plan first!','gold');return;}if(window.AnalyticsService)window.AnalyticsService.trackEvent('pdf_exported').catch(()=>{});const _meas=JSON.parse(localStorage.getItem('bm_meas')||'[]');const _measHTML=_meas.length?`<h2>Measurement History</h2><table><tr><th>Date</th><th>Waist</th><th>Chest</th><th>Arms</th><th>Hips</th><th>Thigh</th></tr>${_meas.slice().reverse().map(m=>`<tr><td>${m.date}</td><td>${m.waist||'—'}</td><td>${m.chest||'—'}</td><td>${m.arms||'—'}</td><td>${m.hips||'—'}</td><td>${m.thigh||'—'}</td></tr>`).join('')}</table>`:'';const r=lastRes;const w=window.open('','_blank');w.document.write(`<!DOCTYPE html><html><head><title>Royal Fitness Club Report</title><style>body{font-family:sans-serif;margin:0;color:#111;}.hdr{background:#e8001d;color:#fff;padding:26px 34px;}.hdr h1{font-size:30px;letter-spacing:4px;margin:0;}.content{padding:26px 34px;}h2{color:#e8001d;font-size:17px;border-bottom:2px solid #e8001d;padding-bottom:6px;margin:22px 0 12px;}table{width:100%;border-collapse:collapse;margin-bottom:14px;}th{background:#e8001d;color:#fff;padding:8px 11px;text-align:left;font-size:12px;}td{padding:8px 11px;border-bottom:1px solid #eee;font-size:13px;}.strat{background:#fafafa;border-left:4px solid #e8001d;padding:13px;border-radius:4px;font-size:13px;line-height:1.7;margin:9px 0;}.score{font-size:52px;font-weight:900;color:#e8001d;text-align:center;padding:14px;}.sg{display:grid;grid-template-columns:1fr 1fr;gap:9px;}.si{background:#f5f5f5;padding:9px;border-radius:4px;font-size:12px;}.content{position:relative;z-index:1;}#pdfwm{position:fixed;inset:0;z-index:0;overflow:hidden;display:flex;flex-wrap:wrap;align-content:center;justify-content:center;gap:50px 70px;transform:rotate(-30deg) scale(1.4);opacity:.05;pointer-events:none;}#pdfwm span{font-size:26px;letter-spacing:4px;color:#e8001d;font-weight:900;white-space:nowrap;}.pdffoot{position:fixed;bottom:8px;left:0;right:0;text-align:center;font-size:10px;color:#aaa;z-index:2;}@media print{button{display:none;}#pdfwm{position:fixed;}}</style></head><body><div id="pdfwm"><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span></div><div class="pdffoot">© Royal Fitness Club — royalmentality.in</div><div class="hdr"><h1>ROYAL FITNESS CLUB</h1><p>Transformation Report — ${new Date().toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'})}</p><p>User: ${user?.name||''} | Goal: ${r.goal.toUpperCase()}</p></div><div class="content"><h2>Beast Score</h2><div class="score">${r.score}/100 — ${scoreLbl(r.score)}</div><h2>Body Metrics</h2><table><tr><th>Metric</th><th>Value</th></tr><tr><td>BMI</td><td>${r.bmi.toFixed(1)} — ${bmiClass(r.bmi)}</td></tr><tr><td>BMR</td><td>${Math.round(r.bmr)} kcal/day</td></tr><tr><td>TDEE</td><td>${Math.round(r.tdee)} kcal/day</td></tr><tr><td>Target Calories</td><td>${r.targetCals} kcal/day</td></tr><tr><td>Daily Water</td><td>${r.water}L</td></tr><tr><td>Body Fat %</td><td>${r.bf.toFixed(1)}% — ${r.bfc}</td></tr><tr><td>Lean Mass</td><td>${(r.weight*(1-r.bf/100)).toFixed(1)}kg</td></tr><tr><td>Muscle Mass (est)</td><td>${(r.weight*(1-r.bf/100)*0.85).toFixed(1)}kg</td></tr></table><h2>Macros</h2><table><tr><th>Macro</th><th>Target</th><th>Calories</th></tr><tr><td>Protein</td><td>${r.macros.prot}g</td><td>${r.macros.prot*4}</td></tr><tr><td>Carbs</td><td>${r.macros.carb}g</td><td>${r.macros.carb*4}</td></tr><tr><td>Fats</td><td>${r.macros.fat}g</td><td>${r.macros.fat*9}</td></tr></table><h2>Strategy</h2><div class="strat">${getStrat(r.goal,r.bmi)}</div><h2>Workout</h2><div class="strat">${getWrk(r.goal)}</div><h2>Supplements</h2><div class="sg">${getSupps(r.goal,r.diet,r.whey,r.health).map(s=>`<div class="si"><strong>${s.n}</strong><br>${s.d}</div>`).join('')}</div>${getHealthNote(r.health)?`<h2>Health Notes</h2><div class="strat">${getHealthNote(r.health)}</div>`:''}<h2>Beast Score 2.0 Factors</h2><div class="strat">Recovery: ${pdScores.recovery||"not logged"}/100 · Posture: ${pdScores.posture||"not assessed"}/100 · Mobility: ${pdScores.mobility||"not assessed"}/100</div><h2>7-Day Workout (${currentSplit.toUpperCase()})</h2>${(WK[currentSplit]||WK.ppl).map((d,i)=>`<div class="strat"><strong>Day ${i+1} — ${d.t}</strong><br>${d.ex}</div>`).join('')}${_measHTML}</div><div style="text-align:center;padding:18px;"><button onclick="window.print()" style="background:#e8001d;color:#fff;border:none;padding:11px 32px;font-size:14px;cursor:pointer;border-radius:4px;">🖨️ Print / Save PDF</button></div></body></html>`);w.document.close();}
 
 // ── PRO TRACKER ──
 let pd={streak:0,lastCI:null,wk:0,hy:0,weights:[]};
 function loadPD(){const s=localStorage.getItem('bm_pd');if(s)pd=JSON.parse(s);renderPD();}
 function savePD(){localStorage.setItem('bm_pd',JSON.stringify(pd));}
 function renderPD(){$('stnum').textContent=pd.streak;$('wkc').textContent=pd.wk;$('hyc').textContent=pd.hy;$('wkb').style.width=Math.min(100,pd.wk/5*100)+'%';$('hyb').style.width=Math.min(100,pd.hy/7*100)+'%';renderWC();}
-$('btncheckin').addEventListener('click',()=>{if(!isPro){openModal('promodal');return;}const today=new Date().toDateString();if(pd.lastCI===today){toast('Already checked in today! 🔥','gold');return;}pd.streak=pd.lastCI===new Date(Date.now()-86400000).toDateString()?pd.streak+1:1;pd.lastCI=today;savePD();renderPD();toast(`🔥 ${pd.streak}-day streak! Keep going!`,'gold');});
+$('btncheckin').addEventListener('click',()=>{if(!isPro){openModal('promodal');return;}const today=new Date().toDateString();if(pd.lastCI===today){toast('Already checked in today! 🔥','gold');return;}pd.streak=pd.lastCI===new Date(Date.now()-86400000).toDateString()?pd.streak+1:1;pd.lastCI=today;savePD();renderPD();toast(`🔥 ${pd.streak}-day streak! Keep going!`,'gold');if(user?.uid&&window.TransformationService)window.TransformationService.saveActivityData(user.uid,{streak:pd.streak,workouts:pd.wk,hydrationDays:pd.hy}).catch(()=>{});if(window.AnalyticsService)window.AnalyticsService.trackEvent('checkin',{streak:pd.streak}).catch(()=>{});syncLeaderboard({streak:pd.streak});});
 function adjG(t,d){if(!isPro){openModal('promodal');return;}if(t==='wk')pd.wk=Math.max(0,Math.min(5,pd.wk+d));if(t==='hy')pd.hy=Math.max(0,Math.min(7,pd.hy+d));savePD();renderPD();}
 $('btnwlog').addEventListener('click',()=>{if(!isPro){openModal('promodal');return;}const v=parseFloat($('wlinp').value);if(!v||v<20||v>400){toast('Please enter a valid weight','gold');return;}pd.weights.push({date:new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short'}),kg:v});if(pd.weights.length>14)pd.weights.shift();savePD();renderWC();$('wlinp').value='';toast(`📈 ${v}kg logged!`);});
 function renderWC(){const c=$('wcht'),e=$('wce');[...c.querySelectorAll('.wcb')].forEach(b=>b.remove());if(!pd.weights.length){e.style.display='flex';return;}e.style.display='none';const vals=pd.weights.map(w=>w.kg),mx=Math.max(...vals),mn=Math.min(...vals),range=mx-mn||1;pd.weights.forEach(w=>{const h=Math.max(10,Math.round(((w.kg-mn)/range)*65+18));const b=document.createElement('div');b.className='wcb';b.style.height=h+'px';b.title=`${w.date}: ${w.kg}kg`;c.appendChild(b);});}
 
-// ── PHOTOS ──
-function handlePhoto(side,input){if(!user){toast('Please log in first!','gold');forceLogin();return;}if(!isPro){openModal('promodal');input.value='';return;}const file=input.files[0];if(!file)return;const reader=new FileReader();reader.onload=e=>{const img=$(`prev${side==='before'?'bef':'aft'}`);img.src=e.target.result;img.style.display='block';const dl=$(`date${side==='before'?'bef':'aft'}`);dl.textContent=`📅 ${new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})}`;dl.style.display='block';$(`phb${side==='before'?'1':'2'}`).querySelector('.phico').style.display='none';$(`phb${side==='before'?'1':'2'}`).querySelector('.phlbl').style.display='none';try{localStorage.setItem(`bm_photo_${side}`,e.target.result);localStorage.setItem(`bm_photodate_${side}`,dl.textContent);}catch(err){}toast(`📸 ${side==='before'?'Before':'After'} photo save ho gaya!`);};reader.readAsDataURL(file);}
-function restorePhotos(){['before','after'].forEach(side=>{const img=localStorage.getItem(`bm_photo_${side}`);if(img){const el=$(`prev${side==='before'?'bef':'aft'}`);el.src=img;el.style.display='block';const dl=$(`date${side==='before'?'bef':'aft'}`);dl.textContent=localStorage.getItem(`bm_photodate_${side}`)||'';dl.style.display='block';$(`phb${side==='before'?'1':'2'}`).querySelector('.phico').style.display='none';$(`phb${side==='before'?'1':'2'}`).querySelector('.phlbl').style.display='none';}});}
+// ── PHOTOS (Firebase Storage + localStorage fallback) ──
+function _showPhoto(side,src,dateText){
+  const img=$(`prev${side==='before'?'bef':'aft'}`);img.src=src;img.style.display='block';
+  const dl=$(`date${side==='before'?'bef':'aft'}`);dl.textContent=dateText||'';dl.style.display='block';
+  const box=$(`phb${side==='before'?'1':'2'}`);box.querySelector('.phico').style.display='none';box.querySelector('.phlbl').style.display='none';
+}
+function handlePhoto(side,input){
+  if(!user){toast('Please log in first!','gold');forceLogin();return;}
+  if(!isPro){openModal('promodal');input.value='';return;}
+  const file=input.files[0];if(!file)return;
+  if(file.size>5*1024*1024){toast('Photo too large — max 5MB','gold');input.value='';return;}
+  const dateText=`📅 ${new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})}`;
+  // Instant local preview
+  const reader=new FileReader();
+  reader.onload=e=>{
+    _showPhoto(side,e.target.result,dateText);
+    try{localStorage.setItem(`bm_photo_${side}`,e.target.result);localStorage.setItem(`bm_photodate_${side}`,dateText);}catch(err){}
+  };
+  reader.readAsDataURL(file);
+  // Cloud upload for Firebase users
+  if(user.uid&&firebase.storage){
+    const ref=firebase.storage().ref(`progress_photos/${user.uid}/${side}.jpg`);
+    ref.put(file).then(snap=>snap.ref.getDownloadURL()).then(url=>{
+      return firebase.firestore().collection('users').doc(user.uid).update({
+        [`photo_${side}`]:url,[`photo_${side}_date`]:dateText,
+        updatedAt:firebase.firestore.FieldValue.serverTimestamp()
+      }).then(()=>{toast(`📸 ${side==='before'?'Before':'After'} photo saved to cloud!`);});
+    }).catch(err=>{console.warn('Photo upload failed:',err);toast(`📸 Photo saved locally (cloud sync failed)`,'gold');});
+    if(window.AnalyticsService)window.AnalyticsService.trackEvent('photo_uploaded',{side}).catch(()=>{});
+  }else{
+    toast(`📸 ${side==='before'?'Before':'After'} photo saved!`);
+  }
+}
+function restorePhotos(){
+  ['before','after'].forEach(side=>{
+    const img=localStorage.getItem(`bm_photo_${side}`);
+    if(img)_showPhoto(side,img,localStorage.getItem(`bm_photodate_${side}`)||'');
+  });
+}
+function restoreCloudPhotos(userData){
+  // Called after Firestore user doc loads — cloud URLs win over local copies
+  ['before','after'].forEach(side=>{
+    const url=userData[`photo_${side}`];
+    if(url)_showPhoto(side,url,userData[`photo_${side}_date`]||'');
+  });
+}
+
+// ── COMMUNITY LEADERBOARD ──
+let currentBoard='beastScore';
+function switchBoard(field,btn){
+  currentBoard=field;
+  document.querySelectorAll('.lb-tab').forEach(t=>t.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  loadLeaderboard();
+}
+async function loadLeaderboard(){
+  const list=$('lb-list');
+  if(!user||!user.uid||!window.CommunityService){
+    list.innerHTML='<div style="text-align:center;padding:30px;color:var(--muted);font-size:13px;">Log in to see the leaderboard.</div>';
+    return;
+  }
+  list.innerHTML='<div style="text-align:center;padding:30px;color:var(--muted);font-size:13px;">Loading the pack...</div>';
+  const entries=await window.CommunityService.getLeaderboard(currentBoard,50);
+  if(!entries.length){
+    list.innerHTML='<div style="text-align:center;padding:30px;color:var(--muted);font-size:13px;">No one on the board yet. Calculate your Beast Score to claim rank #1! 👑</div>';
+    $('lb-myrank').style.display='none';
+    return;
+  }
+  const unit=currentBoard==='streak'?' <small>DAYS</small>':' <small>PTS</small>';
+  list.innerHTML=entries.map((e,i)=>{
+    const rank=i+1;
+    const medal=rank===1?'🥇':rank===2?'🥈':rank===3?'🥉':rank;
+    const rcls=rank===1?'top1':rank===2?'top2':rank===3?'top3':'';
+    const me=e.uid===user.uid?' me':'';
+    const isPr=e.plan==='royal_pro'||e.plan==='royal_elite';
+    const val=currentBoard==='streak'?(e.streak||0):(e.beastScore||0);
+    return `<div class="lb-row${me}"><div class="lb-rank ${rcls}">${medal}</div><div class="lb-av">${(e.name||'B')[0].toUpperCase()}</div><div class="lb-name">${e.name||'Beast'}${isPr?'<span class="lb-pro">PRO</span>':''}${me?' <span style="color:var(--gold);font-size:11px;">(you)</span>':''}</div><div class="lb-val">${val}${unit}</div></div>`;
+  }).join('');
+  // My rank banner (only when I'm not visible in the top list)
+  const myIdx=entries.findIndex(e=>e.uid===user.uid);
+  const banner=$('lb-myrank');
+  if(myIdx===-1){
+    const rank=await window.CommunityService.getUserRank(user.uid,currentBoard);
+    if(rank){banner.textContent=`Your rank: #${rank} — keep pushing to break into the top 50! 🔥`;banner.style.display='block';}
+    else{banner.textContent='You are not on the board yet — calculate your Beast Score to enter the arena!';banner.style.display='block';}
+  }else banner.style.display='none';
+}
+function syncLeaderboard(fields){
+  if(user?.uid&&window.CommunityService){
+    window.CommunityService.updateEntry(user.uid,{name:user.name,plan:user.plan||(isPro?'royal_pro':'free'),...fields});
+  }
+}
 
 // ── NEWSLETTER ──
 function subNews(){const e=$('nemail').value.trim();if(!e){toast('Please enter your email or number','gold');return;}$('nconf').style.display='block';$('nemail').value='';toast('🔥 Welcome! You are in.','gold');}
@@ -2021,7 +2345,7 @@ function scoreRecovery(){const sleep=+$('sl-sleep').value,stress=+$('sl-stress')
 }
 // ── SCORE PERSISTENCE ──
 let pdScores=JSON.parse(localStorage.getItem('bm_scores')||'{}');
-function saveScores(){localStorage.setItem('bm_scores',JSON.stringify(pdScores));buildBeastScore2();}
+function saveScores(){localStorage.setItem('bm_scores',JSON.stringify(pdScores));buildBeastScore2();if(user?.uid&&window.TransformationService)window.TransformationService.savePhysioScores(user.uid,pdScores).catch(()=>{});}
 // ── ROYAL SCORE 2.0 ──
 function buildBeastScore2(){
   const factors=[];
@@ -2035,16 +2359,25 @@ function buildBeastScore2(){
   factors.push({n:'Mobility',v:pdScores.mobility||0});
   const avg=Math.round(factors.reduce((a,f)=>a+f.v,0)/factors.length);
   let lbl='START';if(avg>=85)lbl='💎 ELITE ROYAL';else if(avg>=70)lbl='🔥 ROYAL MODE';else if(avg>=50)lbl='⚡ RISING';else if(avg>=30)lbl='💪 BUILDING';else lbl='😤 BEGIN';
+  if(lastRes&&typeof syncLeaderboard==='function')syncLeaderboard({beastScore:avg});
   setTimeout(()=>{$('bs2ring').style.setProperty('--p',avg+'%');},100);
   let cur=0;const tgt=avg;const it=setInterval(()=>{cur+=Math.ceil(tgt/30)||1;if(cur>=tgt){cur=tgt;clearInterval(it);}$('bs2n').textContent=cur;},25);
   $('bs2l').textContent=lbl;
   $('bs2bars').innerHTML=factors.map(f=>`<div class="bs2bar"><div class="bs2bt"><span>${f.n}</span><span>${f.v}/100</span></div><div class="bs2bg"><div class="bs2bi" style="width:${f.v}%"></div></div></div>`).join('');
 }
 // ── MEASUREMENTS ──
-function saveMeasurements(){if(!user){toast('Please log in first!','gold');forceLogin();return;}
+async function saveMeasurements(){
+  if(!user){toast('Please log in first!','gold');forceLogin();return;}
   const m={date:new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short'}),waist:$('meas-waist').value,chest:$('meas-chest').value,arms:$('meas-arms').value,hips:$('meas-hips').value,thigh:$('meas-thigh').value};
   if(!m.waist&&!m.chest&&!m.arms){toast('Please enter at least one measurement','gold');return;}
-  let arr=JSON.parse(localStorage.getItem('bm_meas')||'[]');arr.push(m);arr=arr.slice(-8);localStorage.setItem('bm_meas',JSON.stringify(arr));renderMeas();toast('💾 Measurements saved!');}
+  let arr=JSON.parse(localStorage.getItem('bm_meas')||'[]');arr.push(m);arr=arr.slice(-8);localStorage.setItem('bm_meas',JSON.stringify(arr));
+  // Sync to Firestore
+  if(user?.uid&&typeof firebase!=='undefined'){
+    try{await firebase.firestore().collection('measurements').doc(user.uid).collection('logs').add({...m,timestamp:firebase.firestore.FieldValue.serverTimestamp()});}
+    catch(e){console.warn('Measurement Firestore sync failed:',e);}
+  }
+  renderMeas();toast('💾 Measurements saved!');
+}
 function renderMeas(){const arr=JSON.parse(localStorage.getItem('bm_meas')||'[]');if(!arr.length){$('measlog').innerHTML='';return;}
   $('measlog').innerHTML='<div class="rctitle">History</div>'+arr.slice().reverse().map(m=>`<div style="display:flex;gap:12px;flex-wrap:wrap;background:var(--card2);border:1px solid var(--border);border-radius:5px;padding:9px 14px;margin-bottom:7px;font-size:12px;"><span style="color:var(--muted);">${m.date}</span>${m.waist?`<span>Waist <strong style="color:var(--red);">${m.waist}</strong></span>`:''}${m.chest?`<span>Chest <strong style="color:var(--red);">${m.chest}</strong></span>`:''}${m.arms?`<span>Arms <strong style="color:var(--red);">${m.arms}</strong></span>`:''}${m.hips?`<span>Hips <strong style="color:var(--red);">${m.hips}</strong></span>`:''}${m.thigh?`<span>Thigh <strong style="color:var(--red);">${m.thigh}</strong></span>`:''}</div>`).join('');}
 // ── GROCERY LIST ──
@@ -2133,8 +2466,31 @@ function renderProfile(){
   $('pa-photos').textContent=photoCount;
 }
 function toggleEdit(){const e=$('ac-edit');if(e.style.display==='none'){$('ed-name').value=user.name||'';$('ed-phone').value=user.phone||'';e.style.display='block';}else e.style.display='none';}
-function saveProfile(){const n=$('ed-name').value.trim(),p=$('ed-phone').value.trim();if(n)user.name=n;if(p)user.phone=p;user.last=new Date().toISOString();localStorage.setItem('bm_user',JSON.stringify(user));$('uname').textContent=user.name||user.email;renderProfile();$('ac-edit').style.display='none';toast('✅ Profile updated!');}
-function cancelPro(){if(!confirm('Cancel Beast Pro subscription? You will lose Pro features.'))return;isPro=false;localStorage.removeItem('bm_pro');localStorage.removeItem('bm_sub');$('ppro').classList.remove('on');$('tracker').classList.remove('pro-on');$('navtr').style.display='none';renderProfile();toast('Subscription cancelled. You are back on the Free plan.','gold');}
+async function saveProfile(){
+  const n=$('ed-name').value.trim(),p=$('ed-phone').value.trim();
+  if(n)user.name=n;if(p)user.phone=p;
+  user.last=new Date().toISOString();
+  localStorage.setItem('bm_user',JSON.stringify(user));
+  // Sync to Firestore
+  if(user?.uid&&typeof firebase!=='undefined'){
+    try{await firebase.firestore().collection('users').doc(user.uid).update({name:user.name,phone:user.phone||'',updatedAt:firebase.firestore.FieldValue.serverTimestamp()});}
+    catch(e){console.warn('Profile Firestore sync failed:',e);}
+  }
+  $('uname').textContent=user.name||user.email;
+  renderProfile();$('ac-edit').style.display='none';toast('✅ Profile updated!');
+}
+async function cancelPro(){
+  if(!confirm('Cancel Royal Pro subscription? You will lose Pro features.'))return;
+  isPro=false;
+  localStorage.removeItem('bm_pro');localStorage.removeItem('bm_sub');
+  // Sync cancellation to Firestore
+  if(user?.uid&&typeof window.SubscriptionService!=='undefined'){
+    try{await window.SubscriptionService.cancelSubscription(user.uid);}
+    catch(e){console.warn('Cancel subscription Firestore sync failed:',e);}
+  }
+  $('ppro').classList.remove('on');$('tracker').classList.remove('pro-on');$('navtr').style.display='none';
+  renderProfile();toast('Subscription cancelled. You are back on the Free plan.','gold');
+}
 
 // ════════ MULTI-CURRENCY SYSTEM ════════
 const CURRENCIES = {
@@ -2186,43 +2542,44 @@ function initCurrency() {
   renderPrices(saved);
 }
 // Also update activatePro to use current currency in billing display
-function activatePro() {
-  if(!user){closeModal('promodal');forceLogin();return;}
-  isPro=true;
-  localStorage.setItem('bm_pro','true');
-  const now=new Date();
-  const trialEnd=new Date(now.getTime()+7*86400000);
-  const c = CURRENCIES[currentCurrency] || CURRENCIES.INR;
-  const sub={
-    plan:'Beast Pro',
-    price:c.pro,
-    currency:currentCurrency,
-    status:'trial',
-    started:now.toISOString(),
-    trialEnds:trialEnd.toISOString(),
-    nextBilling:trialEnd.toISOString(),
-    method:'Card •••• 4242',
-    history:[{
-      date:now.toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}),
-      desc:'Beast Pro — 7-day free trial started',
-      amt:c.sym+'0 (trial)'
-    }]
-  };
-  localStorage.setItem('bm_sub',JSON.stringify(sub));
-  closeModal('promodal');
-  $('ppro').classList.add('on');
-  $('tracker').classList.add('pro-on');
-  $('navtr').style.display='inline';
-  loadPD();
-  if(lastRes) buildMealPlan(lastRes.goal,lastRes.targetCals,lastRes.macros,lastRes.diet);
-  buildRoadmap(lastRes?lastRes.goal:'maintain');
-  toast('👑 Beast Pro is now active — welcome to the top tier!','gold');
+function _activateProUI(){
+  $('ppro').classList.add('on');$('tracker').classList.add('pro-on');$('navtr').style.display='inline';
+  loadPD();if(lastRes)buildMealPlan(lastRes.goal,lastRes.targetCals,lastRes.macros,lastRes.diet);buildRoadmap(lastRes?lastRes.goal:'maintain');
   setTimeout(()=>$('tracker').scrollIntoView({behavior:'smooth'}),800);
+}
+async function activatePro() {
+  if(!user){closeModal('promodal');forceLogin();return;}
+  const c=CURRENCIES[currentCurrency]||CURRENCIES.INR;
+  const now=new Date();const trialEnd=new Date(now.getTime()+7*86400000);
+  // Razorpay checkout for authenticated Firebase users
+  if(user.uid&&window.RazorpayService){
+    closeModal('promodal');
+    toast('Opening payment...','gold');
+    try{
+      await window.RazorpayService.openCheckout('royal_pro',user.uid,{name:user.name||'',email:user.email||'',phone:user.phone||''});
+      // Payment succeeded — RazorpayService.completePayment already wrote to Firestore
+      isPro=true;localStorage.setItem('bm_pro','true');
+      localStorage.setItem('bm_sub',JSON.stringify({plan:'Royal Pro',price:c.pro,currency:currentCurrency,status:'active',started:now.toISOString(),trialEnds:trialEnd.toISOString(),nextBilling:trialEnd.toISOString(),method:'Razorpay',history:[{date:now.toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}),desc:'Royal Pro — payment successful',amt:c.sym+c.pro}]}));
+      if(window.AnalyticsService)window.AnalyticsService.trackEvent('subscription_started',{plan:'royal_pro'}).catch(()=>{});
+      _activateProUI();
+      toast('👑 Royal Pro is now active — welcome to the top tier!','gold');
+    }catch(e){
+      if(e&&e.message&&e.message.toLowerCase().includes('cancel')){toast('Payment cancelled.','gold');}
+      else{console.error('[activatePro]',e);toast('Payment failed — please try again.','gold');}
+    }
+    return;
+  }
+  // Guest / pending-user fallback: 7-day local trial
+  isPro=true;localStorage.setItem('bm_pro','true');
+  localStorage.setItem('bm_sub',JSON.stringify({plan:'Royal Pro',price:c.pro,currency:currentCurrency,status:'trial',started:now.toISOString(),trialEnds:trialEnd.toISOString(),nextBilling:trialEnd.toISOString(),method:'Trial',history:[{date:now.toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}),desc:'Royal Pro — 7-day free trial started',amt:c.sym+'0 (trial)'}]}));
+  closeModal('promodal');
+  _activateProUI();
+  toast('👑 Royal Pro trial is now active — welcome to the top tier!','gold');
 }
 
 // ── INIT ──
 restore();renderH();initUser();restorePhotos();initCurrency();
-console.log('🔥 Beast Ecosystem v5.0 — Diet Master + Physio Master loaded!');
+console.log('🔥 Royal Fitness Club SaaS v8.0 — Firebase Auth + Firestore Active!');
 </script>
 </body>
 </html>
