@@ -521,13 +521,21 @@ exports.razorpayWebhook = functions.https.onRequest((req, res) => {
  * Only callable by admin users (verified via Firestore role check).
  */
 // ---------------------------------------------------------------------------
+// PDF product catalog — shared by createPDFOrder + recordPDFPurchase
+// ---------------------------------------------------------------------------
+const PDF_CATALOG = {
+  anabolic_full_guide:  { amount: 29900, name: 'Anabolic Full Guide' },
+  fitness_mindset:      { amount: 29900, name: 'Fitness & Mindset Guidance' },
+};
+
+// ---------------------------------------------------------------------------
 // createPDFOrder — HTTPS Callable
 // ---------------------------------------------------------------------------
 
 /**
- * Creates a Razorpay order for the Anabolic Full Guide PDF (₹299 one-time).
- * Returns { orderId, keyId, amount, currency } to the client.
- * Also creates a payment_orders/{orderId} stub in Firestore (type: 'pdf_purchase').
+ * Creates a server-side Razorpay order for any PDF product.
+ * Input:  { itemId }  — must be a key in PDF_CATALOG (defaults to anabolic_full_guide)
+ * Output: { orderId, keyId, amount, currency }
  */
 exports.createPDFOrder = functions.https.onCall(async (data, context) => {
   if (!context.auth) {
@@ -535,7 +543,12 @@ exports.createPDFOrder = functions.https.onCall(async (data, context) => {
   }
 
   const uid = context.auth.uid;
-  const itemId = 'anabolic_full_guide';
+  const itemId = data.itemId || 'anabolic_full_guide';
+
+  if (!PDF_CATALOG[itemId]) {
+    throw new functions.https.HttpsError('invalid-argument', `Unknown product: ${itemId}`);
+  }
+  const { amount } = PDF_CATALOG[itemId];
 
   // Idempotency — already purchased
   const existing = await admin.firestore()
@@ -548,7 +561,7 @@ exports.createPDFOrder = functions.https.onCall(async (data, context) => {
   let order;
   try {
     order = await razorpay.orders.create({
-      amount: 29900,
+      amount,
       currency: 'INR',
       receipt: `pdf_${uid.slice(-8)}_${Date.now()}`,
       notes: { uid, itemId },
@@ -562,18 +575,18 @@ exports.createPDFOrder = functions.https.onCall(async (data, context) => {
     uid,
     itemId,
     type: 'pdf_purchase',
-    amount: 29900,
+    amount,
     currency: 'INR',
     status: 'pending',
     razorpayOrderId: order.id,
     createdAt: admin.firestore.FieldValue.serverTimestamp(),
   });
 
-  console.log('[createPDFOrder] Order created:', order.id, uid);
+  console.log('[createPDFOrder] Order created:', order.id, uid, itemId);
   return {
     orderId: order.id,
     keyId: functions.config().razorpay?.key_id || 'rzp_test_PLACEHOLDER',
-    amount: 29900,
+    amount,
     currency: 'INR',
   };
 });
@@ -583,11 +596,11 @@ exports.createPDFOrder = functions.https.onCall(async (data, context) => {
 // ---------------------------------------------------------------------------
 
 /**
- * Verifies the Razorpay payment signature for a PDF purchase and, on success:
- *   1. Writes pdf_purchases/{uid}/items/anabolic_full_guide
+ * Verifies the Razorpay payment signature for any PDF product and, on success:
+ *   1. Writes pdf_purchases/{uid}/items/{itemId}
  *   2. Marks payment_orders/{orderId} as paid
  *
- * Input:  { orderId, paymentId, signature }
+ * Input:  { orderId, paymentId, signature, itemId }
  * Output: { success: true }
  */
 exports.recordPDFPurchase = functions.https.onCall(async (data, context) => {
@@ -596,8 +609,12 @@ exports.recordPDFPurchase = functions.https.onCall(async (data, context) => {
   }
 
   const { orderId, paymentId, signature } = data;
+  const itemId = data.itemId || 'anabolic_full_guide';
   const uid = context.auth.uid;
-  const itemId = 'anabolic_full_guide';
+
+  if (!PDF_CATALOG[itemId]) {
+    throw new functions.https.HttpsError('invalid-argument', `Unknown product: ${itemId}`);
+  }
 
   if (!orderId || !paymentId || !signature) {
     throw new functions.https.HttpsError('invalid-argument', 'orderId, paymentId, and signature are all required.');
@@ -617,10 +634,11 @@ exports.recordPDFPurchase = functions.https.onCall(async (data, context) => {
   const db = admin.firestore();
   const now = admin.firestore.FieldValue.serverTimestamp();
   const batch = db.batch();
+  const amountRupees = Math.round(PDF_CATALOG[itemId].amount / 100);
 
   batch.set(
     db.collection('pdf_purchases').doc(uid).collection('items').doc(itemId),
-    { uid, itemId, orderId, paymentId, amount: 299, currency: 'INR', purchasedAt: now }
+    { uid, itemId, orderId, paymentId, amount: amountRupees, currency: 'INR', purchasedAt: now }
   );
 
   batch.update(db.collection('payment_orders').doc(orderId), {

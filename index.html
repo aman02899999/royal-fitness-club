@@ -755,8 +755,33 @@ body{font-size:16px;}
 .btn-sm.btn-outline{background:transparent;border:1px solid var(--border);color:#b0b0b0;}
 .btn-sm.btn-outline:hover{border-color:var(--red);color:var(--red);}
 .food-sel-hint{font-size:11px;color:#777;margin-top:8px;}
+/* ── NAV DROPDOWN ── */
+.ndrop{position:relative;}
+.ndrop>a{display:flex!important;align-items:center;gap:4px;}
+.ndrop-caret{font-size:8px;opacity:.7;transition:transform .2s;}
+.ndrop:hover .ndrop-caret{transform:rotate(180deg);}
+.ndrop-menu{display:none;position:absolute;top:calc(100% + 4px);left:50%;transform:translateX(-50%);background:rgba(7,7,7,.98);border:1px solid var(--border);border-radius:8px;min-width:220px;z-index:9999;padding:4px 0;backdrop-filter:blur(20px);box-shadow:0 8px 32px rgba(0,0,0,.6);}
+.ndrop:hover .ndrop-menu{display:block;}
+.ndrop-menu a{display:block!important;padding:11px 16px!important;font-size:11px!important;letter-spacing:1.5px;border:none!important;border-bottom:1px solid var(--border)!important;color:#c8c8c8!important;white-space:nowrap;transition:color .15s,background .15s!important;}
+.ndrop-menu a:last-child{border-bottom:none!important;}
+.ndrop-menu a:hover{color:#fff!important;background:rgba(255,255,255,.05)!important;}
+/* Mobile: sub-items shown indented */
+@media(max-width:768px){
+  .ndrop-menu{display:block;position:static;transform:none;background:transparent;border:none;box-shadow:none;padding:0;backdrop-filter:none;}
+  .ndrop-menu a{padding:10px 0 10px 20px!important;font-size:13px!important;border-bottom:1px solid rgba(255,255,255,.06)!important;color:#aaa!important;}
+  .ndrop-caret{display:none;}
+}
 /* ── KNOWLEDGE STORE ── */
 #store{background:var(--bg);}
+/* Store product nav tabs */
+.store-product-tabs{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:28px 0 0;}
+.sptab{background:var(--card);border:2px solid var(--border);border-radius:8px;padding:16px 24px;cursor:pointer;text-align:center;min-width:200px;transition:border-color .2s,background .2s;text-decoration:none;display:block;}
+.sptab:hover,.sptab.active{border-color:var(--red);background:rgba(232,0,29,.06);}
+.sptab-icon{font-size:28px;margin-bottom:6px;}
+.sptab-name{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text);}
+.sptab-price{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--gold);margin-top:4px;}
+.sptab-badge{display:inline-block;background:var(--fire);color:#fff;font-size:9px;font-weight:900;letter-spacing:1.5px;padding:2px 8px;border-radius:4px;margin-bottom:6px;}
+.store-section-sep{border:none;border-top:2px solid var(--border);margin:60px 0;}
 .pdf-hero{display:grid;grid-template-columns:auto 1fr;gap:48px;align-items:start;margin-top:40px;}
 @media(max-width:700px){.pdf-hero{grid-template-columns:1fr;gap:24px;}}
 .pdf-book-wrap{display:flex;flex-direction:column;align-items:center;gap:16px;}
@@ -839,6 +864,10 @@ body{font-size:16px;}
 @media(max-width:760px){.pdf-sticky-bar.show{display:flex;}}
 .pdf-sticky-orig{font-size:11px;color:#888;text-decoration:line-through;}
 .pdf-sticky-now{font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--gold);line-height:1;}
+/* Fitness & Mindset blue book cover */
+.pdf-book-fm .pdf-book-cover{background:linear-gradient(145deg,#00050d 0%,#003080 45%,#0066cc 100%)!important;}
+.pdf-book-spine-fm{background:linear-gradient(to right,#00050d,#003080)!important;}
+.pdf-book-fm .pdf-book-title{color:#38bdf8!important;}
 </style>
 <!-- Firebase SDK (compat) -->
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
@@ -897,7 +926,13 @@ body{font-size:16px;}
     <a href="#dashboard" onclick="closeNav()">Dashboard</a>
     <a href="#arena" onclick="closeNav()">Arena</a>
     <a href="javascript:void(0)" style="color:var(--gold);" onclick="openModal('elitemodal');closeNav()">👑 Elite</a>
-    <a href="#store" onclick="closeNav()" style="color:#ffd000;">📚 Store</a>
+    <div class="ndrop">
+      <a href="#store" onclick="closeNav()" style="color:#ffd000;">📚 Store <span class="ndrop-caret">▼</span></a>
+      <div class="ndrop-menu">
+        <a href="#pdf-fitness-mindset" onclick="closeNav()">🧠 Fitness &amp; Mindset Guide</a>
+        <a href="#pdf-anabolic-advanced" onclick="closeNav()">💪 Anabolic Advanced Guide</a>
+      </div>
+    </div>
     <a href="#plans" onclick="closeNav()">Plans</a>
     <a href="#tracker" id="navtr" style="display:none;" onclick="closeNav()">Tracker</a>
     <div class="nmobile-extras">
@@ -1085,8 +1120,181 @@ body{font-size:16px;}
 <section id="store">
   <div class="container">
     <div class="stag">Royal Knowledge Store</div>
-    <div class="sh">THE ANABOLIC FULL GUIDE</div>
-    <p class="ssub">The complete science-backed manual to build maximum muscle, optimise your hormones, and permanently transform your physique.</p>
+    <div class="sh">KNOWLEDGE GUIDES</div>
+    <p class="ssub">Two comprehensive guides — pick what you need, or get both and build your complete transformation system.</p>
+    <!-- Product selector -->
+    <div class="store-product-tabs">
+      <a class="sptab" href="#pdf-fitness-mindset">
+        <div class="sptab-icon">🧠</div>
+        <div class="sptab-name">Fitness &amp; Mindset Guidance</div>
+        <div class="sptab-price">₹299</div>
+      </a>
+      <a class="sptab" href="#pdf-anabolic-advanced">
+        <div class="sptab-badge">BEST SELLER</div>
+        <div class="sptab-icon">💪</div>
+        <div class="sptab-name">Anabolic Advanced Guide</div>
+        <div class="sptab-price">₹299</div>
+      </a>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!-- PRODUCT 1 — FITNESS & MINDSET GUIDANCE PDF         -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <div id="pdf-fitness-mindset" style="scroll-margin-top:80px;">
+      <div class="stag" style="margin-top:48px;">Guide 1 of 2</div>
+      <div class="sh">FITNESS &amp; MINDSET GUIDANCE</div>
+      <p class="ssub">Master the mental game. Build unbreakable habits, crush limiting beliefs, and develop the discipline that makes your body transformation permanent.</p>
+
+      <div class="pdf-stats-bar">
+        <div class="pdf-stat"><div class="pdf-stat-num">160+</div><div class="pdf-stat-lbl">Pages</div></div>
+        <div class="pdf-stat"><div class="pdf-stat-num">10</div><div class="pdf-stat-lbl">Chapters</div></div>
+        <div class="pdf-stat"><div class="pdf-stat-num">4.9★</div><div class="pdf-stat-lbl">Rating</div></div>
+        <div class="pdf-stat"><div class="pdf-stat-num">1,200+</div><div class="pdf-stat-lbl">Readers</div></div>
+      </div>
+
+      <div class="pdf-hero">
+        <div class="pdf-book-wrap">
+          <div class="pdf-book pdf-book-fm">
+            <div class="pdf-book-spine pdf-book-spine-fm"></div>
+            <div class="pdf-book-cover pdf-book-cover-fm">
+              <div class="pdf-book-tag">ROYAL FITNESS CLUB</div>
+              <div class="pdf-book-title">FITNESS<br>&amp;<br>MINDSET</div>
+              <div class="pdf-book-edition">COMPLETE EDITION</div>
+              <div class="pdf-book-author">By Royal Fitness Club</div>
+            </div>
+            <div class="pdf-book-badge" style="background:#38bdf8;color:#000;">PDF</div>
+          </div>
+          <div class="pdf-rating-row" style="margin-top:12px;">
+            <span class="pdf-rating-stars">⭐⭐⭐⭐⭐</span>
+            <span class="pdf-rating-cnt">4.9 (98 reviews)</span>
+          </div>
+          <div class="pdf-pages-tag">160+ Pages · 10 Chapters</div>
+          <div style="margin-top:14px;display:flex;flex-direction:column;gap:5px;align-items:center;">
+            <div style="font-size:11px;color:#888;">🔒 Secure Razorpay Payment</div>
+            <div style="font-size:11px;color:#888;">📱 Works on Any Device</div>
+            <div style="font-size:11px;color:#888;">⚡ Instant Download</div>
+          </div>
+        </div>
+        <div class="pdf-info">
+          <div class="pdf-what-inside">
+            <h3>What's Inside</h3>
+            <ul class="pdf-chap-list">
+              <li><span>🏆</span><span>The Champion's Mindset — Building Mental Toughness</span></li>
+              <li><span>🔄</span><span>Habit Formation & The Science of Consistency</span></li>
+              <li><span>😤</span><span>Stress Management & Cortisol Control for Athletes</span></li>
+              <li><span>🍽️</span><span>Nutrition Psychology — Ending Emotional Eating</span></li>
+              <li><span>😴</span><span>Sleep Optimization for Peak Mental & Physical Performance</span></li>
+              <li><span>🧘</span><span>Indian Wellness Practices — Yoga, Pranayama & Recovery</span></li>
+              <li><span>🎯</span><span>Goal Architecture — Setting Targets That Actually Stick</span></li>
+              <li><span>📈</span><span>Overcoming Plateaus — Mentally & Physically</span></li>
+              <li><span>👥</span><span>Social Pressure, Peer Influence & The Fitness Lifestyle</span></li>
+              <li><span>⚡</span><span>Building Your Identity as a Lifelong Athlete</span></li>
+            </ul>
+          </div>
+          <div class="pdf-price-box">
+            <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+              <div class="pdf-orig-price">₹799</div>
+              <div class="pdf-price">₹299</div>
+              <span class="pdf-discount-tag">63% OFF — TODAY ONLY</span>
+            </div>
+            <div class="pdf-price-note">One-time purchase · Instant PDF download · Lifetime access</div>
+            <button id="fm-buy-btn" class="pdf-buy-btn" style="background:linear-gradient(135deg,#0050a0,#0080ff);" onclick="buyPDFProduct('fitness_mindset')">📥 BUY NOW — ₹299</button>
+            <a id="fm-download-btn" class="pdf-download-btn" style="display:none;" href="#" target="_blank" download>📥 DOWNLOAD YOUR GUIDE</a>
+            <div id="fm-purchased-badge" class="pdf-purchased" style="display:none;">✅ You already own this guide</div>
+            <div class="pdf-trust-row">
+              <span class="pdf-trust-badge">🔒 SSL Secured</span>
+              <span class="pdf-trust-badge">💳 UPI / Card / NetBanking</span>
+              <span class="pdf-trust-badge">⚡ Instant Access</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pdf-reviews-section">
+        <h3>What Members Are Saying</h3>
+        <div class="pdf-reviews-grid">
+          <div class="pdf-review">
+            <div class="pdf-rev-header">
+              <div class="pdf-review-avatar" style="background:linear-gradient(135deg,#0050a0,#0080ff);">🧠</div>
+              <div class="pdf-rev-info"><div class="pdf-rev-name2">Neha R.</div><div class="pdf-rev-date">Delhi · Verified Purchase</div></div>
+              <div class="pdf-rev-stars">⭐⭐⭐⭐⭐</div>
+            </div>
+            <div class="pdf-rev-text">"I used to quit every fitness routine after 3 weeks. After reading the habit chapter, I've been consistent for 6 months straight. This guide changed my relationship with fitness."</div>
+          </div>
+          <div class="pdf-review">
+            <div class="pdf-rev-header">
+              <div class="pdf-review-avatar" style="background:linear-gradient(135deg,#0050a0,#0080ff);">🎯</div>
+              <div class="pdf-rev-info"><div class="pdf-rev-name2">Rohit S.</div><div class="pdf-rev-date">Bangalore · Verified Purchase</div></div>
+              <div class="pdf-rev-stars">⭐⭐⭐⭐⭐</div>
+            </div>
+            <div class="pdf-rev-text">"The stress management section is gold. I was stress eating and sleeping badly. Following the cortisol protocols literally improved my body composition without changing my workout."</div>
+          </div>
+          <div class="pdf-review">
+            <div class="pdf-rev-header">
+              <div class="pdf-review-avatar" style="background:linear-gradient(135deg,#0050a0,#0080ff);">✨</div>
+              <div class="pdf-rev-info"><div class="pdf-rev-name2">Anjali M.</div><div class="pdf-rev-date">Mumbai · Verified Purchase</div></div>
+              <div class="pdf-rev-stars">⭐⭐⭐⭐⭐</div>
+            </div>
+            <div class="pdf-rev-text">"The yoga and pranayama integration with modern training was unexpected and amazing. First time I've seen someone bridge Indian wellness and gym culture. Outstanding."</div>
+          </div>
+          <div class="pdf-review">
+            <div class="pdf-rev-header">
+              <div class="pdf-review-avatar" style="background:linear-gradient(135deg,#0050a0,#0080ff);">💡</div>
+              <div class="pdf-rev-info"><div class="pdf-rev-name2">Vikas T.</div><div class="pdf-rev-date">Pune · Verified Purchase</div></div>
+              <div class="pdf-rev-stars">⭐⭐⭐⭐⭐</div>
+            </div>
+            <div class="pdf-rev-text">"The identity chapter hit different. I stopped saying 'I'm trying to get fit' and started saying 'I am an athlete.' That mental shift made everything else easier. Must read."</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pdf-faq-section">
+        <h3>Frequently Asked Questions</h3>
+        <div class="faq-item" onclick="toggleFAQ(this)">
+          <div class="faq-q">Is this a beginner guide or for experienced athletes?</div>
+          <div class="faq-a"><p>Both. The mindset principles apply whether you're just starting or you've been training for years. Many experienced athletes find they need this more — bad mental habits build up over time and create plateaus that training changes alone can't fix.</p></div>
+        </div>
+        <div class="faq-item" onclick="toggleFAQ(this)">
+          <div class="faq-q">How does this complement the Anabolic Advanced Guide?</div>
+          <div class="faq-a"><p>The Anabolic guide gives you the physical blueprint (training, nutrition, hormones). This guide gives you the mental operating system to actually follow it consistently. Most people fail not from lack of knowledge but from lack of mental resilience and habit systems. Together they're complete.</p></div>
+        </div>
+        <div class="faq-item" onclick="toggleFAQ(this)">
+          <div class="faq-q">How do I receive the PDF after purchase?</div>
+          <div class="faq-a"><p>The download button appears instantly on this page after payment. Your purchase is also saved to your account — just log in and visit the Store page anytime to re-download.</p></div>
+        </div>
+        <div class="faq-item" onclick="toggleFAQ(this)">
+          <div class="faq-q">Is there a refund policy?</div>
+          <div class="faq-a"><p>Due to the instant digital nature, refunds are not available after delivery. If you have any issue with your download or payment, visit us at the gym counter and we'll resolve it immediately.</p></div>
+        </div>
+      </div>
+
+      <div class="pdf-final-cta" style="background:linear-gradient(135deg,#00050d,#001a3a);">
+        <div class="stag" style="margin-bottom:8px;">Train Your Mind. Transform Your Body.</div>
+        <div class="sh" style="font-size:clamp(26px,5vw,48px);">GET THE MINDSET GUIDE</div>
+        <p style="color:#b0b0b0;max-width:460px;margin:10px auto 24px;font-size:14px;line-height:1.6;">The mental framework used by Royal Fitness Club's top-transforming members. 160+ pages of practical, science-backed guidance.</p>
+        <div style="display:flex;align-items:center;gap:14px;justify-content:center;flex-wrap:wrap;margin-bottom:16px;">
+          <div style="text-decoration:line-through;color:#888;font-family:'Bebas Neue',sans-serif;font-size:24px;">₹799</div>
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:52px;color:#38bdf8;line-height:1;">₹299</div>
+          <span class="pdf-discount-tag" style="font-size:11px;">63% OFF TODAY</span>
+        </div>
+        <button class="pdf-buy-btn" style="max-width:360px;margin:0 auto;display:flex;justify-content:center;background:linear-gradient(135deg,#0050a0,#0080ff);" onclick="buyPDFProduct('fitness_mindset')">📥 GET INSTANT ACCESS — ₹299</button>
+        <div class="pdf-trust-row" style="margin-top:16px;">
+          <span class="pdf-trust-badge">🔒 Razorpay Secured</span>
+          <span class="pdf-trust-badge">📥 Instant Download</span>
+          <span class="pdf-trust-badge">📱 All Devices</span>
+          <span class="pdf-trust-badge">♾️ Lifetime Access</span>
+        </div>
+      </div>
+    </div><!-- /pdf-fitness-mindset -->
+
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!-- PRODUCT 2 — ANABOLIC ADVANCED GUIDE                -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <hr class="store-section-sep">
+    <div id="pdf-anabolic-advanced" style="scroll-margin-top:80px;">
+      <div class="stag" style="margin-top:0;">Guide 2 of 2</div>
+      <div class="sh">ANABOLIC FULL GUIDE</div>
+      <p class="ssub">The complete science-backed manual to build maximum muscle, optimise your hormones, and permanently transform your physique.</p>
 
     <!-- Stats bar -->
     <div class="pdf-stats-bar">
@@ -1319,16 +1527,14 @@ body{font-size:16px;}
         <span class="pdf-trust-badge">♾️ Lifetime Access</span>
       </div>
     </div>
+    </div><!-- /pdf-anabolic-advanced -->
   </div>
 </section>
-<!-- Mobile sticky buy bar (shows on scroll past buy button) -->
+<!-- Mobile sticky buy bar -->
 <div class="pdf-sticky-bar" id="pdf-sticky-bar">
-  <div>
-    <div class="pdf-sticky-orig">₹999</div>
-    <div class="pdf-sticky-now">₹299</div>
-  </div>
-  <div style="flex:1;font-size:11px;color:#888;line-height:1.4;">Anabolic Full<br>Guide PDF</div>
-  <button class="pdf-buy-btn" style="padding:10px 22px;font-size:13px;width:auto;flex-shrink:0;" onclick="buyPDF()">BUY NOW — ₹299</button>
+  <div style="font-size:20px;">📚</div>
+  <div style="flex:1;font-size:11px;color:#ccc;line-height:1.4;font-weight:600;">Royal Guides<br><span style="color:#888;font-weight:400;">from ₹299</span></div>
+  <a class="pdf-buy-btn" style="padding:10px 18px;font-size:12px;width:auto;flex-shrink:0;text-decoration:none;display:flex;align-items:center;" href="#store">VIEW GUIDES ↑</a>
 </div>
 <div class="divider"></div>
 <section id="calculator">
@@ -3098,110 +3304,140 @@ async function activatePro() {
 }
 
 // ── PDF KNOWLEDGE STORE ──
-// Admin: set this to the actual PDF download URL (e.g. Firebase Storage signed URL)
-// Set this to your Google Drive direct download link:
-// 1. Upload PDF to Google Drive → Share → Anyone with link → Viewer
-// 2. Copy the file ID from the share URL
-// 3. Format: https://drive.google.com/uc?export=download&id=YOUR_FILE_ID
+// Set each URL to the Google Drive direct download link:
+// 1. Upload PDF → Share → Anyone with link → Copy link
+// 2. Extract the file ID from: https://drive.google.com/file/d/FILE_ID/view
+// 3. Format: https://drive.google.com/uc?export=download&id=FILE_ID
 const ANABOLIC_PDF_URL = '';
+const FITNESS_MINDSET_PDF_URL = '';
 
-async function initPDFStore(){
-  // localStorage fast-path (works before auth resolves)
-  const p=JSON.parse(localStorage.getItem('bm_pdf_anabolic')||'null');
-  if(p&&p.purchased)showPDFPurchased();
-  // Firestore authoritative check (cross-device persistence)
-  if(user){
-    try{
-      const doc=await firebase.firestore()
-        .collection('pdf_purchases').doc(user.uid)
-        .collection('items').doc('anabolic_full_guide').get();
-      if(doc.exists){
-        localStorage.setItem('bm_pdf_anabolic',JSON.stringify({purchased:true}));
-        showPDFPurchased();
-      }
-    }catch(e){/* CF not deployed yet or offline — localStorage state stands */}
+// Product catalog — mirrors server-side PDF_CATALOG in functions/index.js
+const PDF_PRODUCTS = {
+  anabolic_full_guide: {
+    desc: 'Anabolic Full Guide — Complete PDF',
+    amount: 29900,
+    theme: '#e8001d',
+    localKey: 'bm_pdf_anabolic',
+    buyBtnId: 'pdf-buy-btn',
+    dlBtnId: 'pdf-download-btn',
+    badgeId: 'pdf-purchased-badge',
+    getUrl: ()=>ANABOLIC_PDF_URL,
+  },
+  fitness_mindset: {
+    desc: 'Fitness & Mindset Guidance — Complete PDF',
+    amount: 29900,
+    theme: '#0066cc',
+    localKey: 'bm_pdf_fitness',
+    buyBtnId: 'fm-buy-btn',
+    dlBtnId: 'fm-download-btn',
+    badgeId: 'fm-purchased-badge',
+    getUrl: ()=>FITNESS_MINDSET_PDF_URL,
+  },
+};
+
+function showPDFPurchased(productId){
+  const prod=PDF_PRODUCTS[productId];
+  if(!prod)return;
+  const bb=$(prod.buyBtnId),db=$(prod.dlBtnId),pb=$(prod.badgeId);
+  if(bb)bb.style.display='none';
+  const url=prod.getUrl();
+  if(db){
+    if(url){db.href=url;db.style.display='flex';}
+    else db.style.display='none';
+  }
+  if(pb){
+    if(!url)pb.innerHTML='✅ Purchased! Visit the gym counter or check your email for the download link.';
+    pb.style.display='flex';
   }
 }
 
-async function buyPDF(){
+async function initPDFStore(){
+  // localStorage fast-path
+  for(const [id,prod] of Object.entries(PDF_PRODUCTS)){
+    const p=JSON.parse(localStorage.getItem(prod.localKey)||'null');
+    if(p&&p.purchased)showPDFPurchased(id);
+  }
+  // Firestore authoritative check (cross-device)
+  if(user){
+    try{
+      for(const id of Object.keys(PDF_PRODUCTS)){
+        const doc=await firebase.firestore()
+          .collection('pdf_purchases').doc(user.uid)
+          .collection('items').doc(id).get();
+        if(doc.exists){
+          localStorage.setItem(PDF_PRODUCTS[id].localKey,JSON.stringify({purchased:true}));
+          showPDFPurchased(id);
+        }
+      }
+    }catch(e){/* CF not deployed or offline — localStorage state stands */}
+  }
+}
+
+const _loadRzp=()=>new Promise((res,rej)=>{
+  if(window.Razorpay){res();return;}
+  const s=document.createElement('script');
+  s.src='https://checkout.razorpay.com/v1/checkout.js';
+  s.onload=res;s.onerror=rej;
+  document.head.appendChild(s);
+});
+
+async function buyPDFProduct(productId){
+  const prod=PDF_PRODUCTS[productId];
+  if(!prod){toast('Unknown product.','gold');return;}
   if(!user){forceLogin();return;}
-  const loadRzp=()=>new Promise((res,rej)=>{
-    if(window.Razorpay){res();return;}
-    const s=document.createElement('script');
-    s.src='https://checkout.razorpay.com/v1/checkout.js';
-    s.onload=res;s.onerror=rej;
-    document.head.appendChild(s);
-  });
   try{
     toast('Preparing secure checkout...','gold');
-    await loadRzp();
-
-    // Try to create a server-side order (requires Cloud Functions deployed)
-    let orderData={orderId:null,keyId:'rzp_live_SzivmCT3vTvTAK',amount:29900,currency:'INR'};
+    await _loadRzp();
+    let orderData={orderId:null,keyId:'rzp_live_SzivmCT3vTvTAK',amount:prod.amount,currency:'INR'};
     try{
-      const fn=firebase.functions().httpsCallable('createPDFOrder');
-      const r=await fn({});
+      const r=await firebase.functions().httpsCallable('createPDFOrder')({itemId:productId});
       orderData={...orderData,...r.data};
-    }catch(cfErr){
-      // Cloud Functions not deployed yet — proceed with direct checkout (no sig verification)
-      console.warn('[buyPDF] createPDFOrder unavailable, falling back to direct checkout:',cfErr.message);
-    }
-
-    const options={
+    }catch(cfErr){console.warn('[buyPDFProduct] createPDFOrder unavailable:',cfErr.message);}
+    const rzp=new Razorpay({
       key:orderData.keyId,
       amount:orderData.amount,
       currency:orderData.currency,
       order_id:orderData.orderId||undefined,
       name:'Royal Fitness Club',
-      description:'Anabolic Full Guide — Complete PDF',
+      description:prod.desc,
       prefill:{name:user.name||'',email:user.email||'',contact:user.phone||''},
-      theme:{color:'#e8001d'},
+      theme:{color:prod.theme},
       handler:async function(resp){
-        // Persist to localStorage immediately for instant UX
-        localStorage.setItem('bm_pdf_anabolic',JSON.stringify({purchased:true,date:new Date().toISOString(),pid:resp.razorpay_payment_id||''}));
-        showPDFPurchased();
-        toast('📥 Payment successful! Your guide is ready to download.','gold');
-        // Verify & persist in Firestore (background — non-blocking)
+        localStorage.setItem(prod.localKey,JSON.stringify({purchased:true,date:new Date().toISOString(),pid:resp.razorpay_payment_id||''}));
+        showPDFPurchased(productId);
+        toast('📥 Payment successful! Your guide is ready.','gold');
         if(resp.razorpay_order_id&&resp.razorpay_payment_id&&resp.razorpay_signature){
           try{
-            const vfn=firebase.functions().httpsCallable('recordPDFPurchase');
-            await vfn({orderId:resp.razorpay_order_id,paymentId:resp.razorpay_payment_id,signature:resp.razorpay_signature});
-          }catch(ve){console.warn('[buyPDF] recordPDFPurchase:',ve.message);}
+            await firebase.functions().httpsCallable('recordPDFPurchase')({
+              orderId:resp.razorpay_order_id,paymentId:resp.razorpay_payment_id,
+              signature:resp.razorpay_signature,itemId:productId
+            });
+          }catch(ve){console.warn('[buyPDFProduct] recordPDFPurchase:',ve.message);}
         }
-        if(window.AnalyticsService)window.AnalyticsService.trackEvent('anabolic_guide_purchased').catch(()=>{});
+        if(window.AnalyticsService)window.AnalyticsService.trackEvent('pdf_purchased',{product:productId}).catch(()=>{});
       }
-    };
-    const rzp=new Razorpay(options);
+    });
     rzp.on('payment.failed',()=>toast('Payment failed — please try again.','gold'));
     rzp.open();
   }catch(e){
-    console.error('[buyPDF]',e);
+    console.error('[buyPDFProduct]',e);
     toast('Could not open checkout — please try again.','gold');
   }
 }
 
-function showPDFPurchased(){
-  const bb=$('pdf-buy-btn'),db=$('pdf-download-btn'),pb=$('pdf-purchased-badge');
-  if(bb)bb.style.display='none';
-  if(db){
-    if(ANABOLIC_PDF_URL){db.href=ANABOLIC_PDF_URL;db.style.display='flex';}
-    else{db.style.display='none';if(pb)pb.innerHTML='✅ Purchased! Visit the gym counter or check your email for the download link.';}
-  }
-  if(pb)pb.style.display='flex';
-}
+// Backward-compat alias (used by existing HTML buy buttons in anabolic section)
+function buyPDF(){buyPDFProduct('anabolic_full_guide');}
 
-function toggleFAQ(el){
-  el.classList.toggle('open');
-}
+function toggleFAQ(el){el.classList.toggle('open');}
 
-// PDF sticky buy bar — shows on mobile when user scrolls past the buy button
+// Mobile sticky bar — shows when inside the store section
 window.addEventListener('scroll',function(){
-  const b=$('pdf-buy-btn'),s=$('pdf-sticky-bar');
-  if(!b||!s)return;
-  const storeSection=document.getElementById('store');
-  const bRect=b.getBoundingClientRect();
-  const sRect=storeSection?storeSection.getBoundingClientRect():{bottom:9999};
-  s.classList.toggle('show',bRect.bottom<0&&sRect.bottom>0);
+  const s=$('pdf-sticky-bar');
+  if(!s)return;
+  const sec=document.getElementById('store');
+  if(!sec){s.classList.remove('show');return;}
+  const r=sec.getBoundingClientRect();
+  s.classList.toggle('show',r.top<-120&&r.bottom>100);
 },{passive:true});
 
 // ── INIT ──
