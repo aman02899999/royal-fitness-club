@@ -658,6 +658,23 @@ body{font-size:16px;}
 .auth-tabs{display:flex;border-bottom:1px solid var(--border);margin:12px 0 18px;}
 .auth-guest-btn{background:none;border:none;color:var(--muted);font-size:11px;cursor:pointer;margin-top:10px;width:100%;letter-spacing:1px;padding:6px;}
 .auth-guest-btn:hover{color:var(--text);}
+.lb-tabs{display:flex;gap:8px;margin:28px 0 18px;align-items:center;}
+.lb-tab{background:var(--card);border:1px solid var(--border2);color:var(--muted);padding:9px 22px;border-radius:3px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all .2s;}
+.lb-tab.active{background:var(--fire);color:#fff;border-color:transparent;}
+.lb-refresh{background:none;border:1px solid var(--border2);color:var(--muted);width:36px;height:36px;border-radius:3px;cursor:pointer;font-size:16px;margin-left:auto;}
+.lb-refresh:hover{color:var(--red);border-color:var(--red);}
+.lb-myrank{background:rgba(255,208,0,.07);border:1px solid rgba(255,208,0,.2);border-radius:6px;padding:12px 18px;margin-bottom:14px;font-size:13px;color:var(--gold);}
+.lb-list{display:flex;flex-direction:column;gap:7px;max-width:640px;}
+.lb-row{display:flex;align-items:center;gap:14px;background:var(--card);border:1px solid var(--border);border-radius:6px;padding:11px 16px;transition:transform .15s;}
+.lb-row:hover{transform:translateX(3px);}
+.lb-row.me{border-color:rgba(255,208,0,.4);background:rgba(255,208,0,.05);}
+.lb-rank{font-family:'Bebas Neue',sans-serif;font-size:20px;width:38px;color:var(--muted);flex-shrink:0;text-align:center;}
+.lb-rank.top1{color:var(--gold);}.lb-rank.top2{color:#c0c0c0;}.lb-rank.top3{color:#cd7f32;}
+.lb-av{width:34px;height:34px;border-radius:50%;background:var(--fire);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:15px;color:#fff;flex-shrink:0;}
+.lb-name{font-size:14px;font-weight:600;flex:1;display:flex;align-items:center;gap:8px;}
+.lb-pro{font-size:8px;letter-spacing:1.5px;background:var(--pro);color:#000;font-weight:900;padding:2px 6px;border-radius:8px;}
+.lb-val{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--red);flex-shrink:0;}
+.lb-val small{font-size:10px;color:var(--muted);font-family:'Barlow',sans-serif;letter-spacing:1px;}
 
 .muted-text, p, .ssub, .hsub, .cnote, .rdesc, .sbox, .recplan,
 .prof-row span:first-child, .prof-email, .tcsub, .elite-sub,
@@ -731,6 +748,7 @@ body{font-size:16px;}
 <script src="src/razorpayService.js"></script>
 <script src="src/analyticsService.js"></script>
 <script src="src/transformationService.js"></script>
+<script src="src/communityService.js"></script>
 </head>
 <body>
 <div id="watermark"></div>
@@ -743,6 +761,7 @@ body{font-size:16px;}
     <a href="#calculators" onclick="closeNav()">Tools</a>
     <a href="#physio" onclick="closeNav()">Physio</a>
     <a href="#dashboard" onclick="closeNav()">Dashboard</a>
+    <a href="#arena" onclick="closeNav()">Arena</a>
     <a href="#elite" style="color:var(--gold);" onclick="closeNav()">👑 Elite</a>
     <a href="#plans" onclick="closeNav()">Plans</a>
     <a href="#tracker" id="navtr" style="display:none;" onclick="closeNav()">Tracker</a>
@@ -1285,6 +1304,22 @@ body{font-size:16px;}
     <div style="margin-top:22px;text-align:center;"><button class="bfire" onclick="savePDF()" style="justify-content:center;display:inline-flex;">📄 Export Full PDF Report</button></div>
   </div>
 </section>
+<section id="arena" style="background:var(--card2);">
+  <div class="container">
+    <div class="stag">Community Arena</div>
+    <div class="sh">ROYAL LEADERBOARD</div>
+    <p class="ssub">Where do you stand among the pack? Calculate your Beast Score and check in daily to climb the ranks.</p>
+    <div class="lb-tabs">
+      <button class="lb-tab active" data-board="beastScore" onclick="switchBoard('beastScore',this)">👑 Beast Score</button>
+      <button class="lb-tab" data-board="streak" onclick="switchBoard('streak',this)">🔥 Streak</button>
+      <button class="lb-refresh" onclick="loadLeaderboard()" title="Refresh">⟳</button>
+    </div>
+    <div class="lb-myrank" id="lb-myrank" style="display:none;"></div>
+    <div class="lb-list" id="lb-list">
+      <div style="text-align:center;padding:30px;color:var(--muted);font-size:13px;">Log in to see the leaderboard.</div>
+    </div>
+  </div>
+</section>
 <section style="padding:48px 20px;">
   <div class="container">
     <div class="shopbox">
@@ -1505,6 +1540,7 @@ function applyUser(){
   $('navlbtn').style.display='none';
   if(isPro){$('ppro').classList.add('on');$('tracker').classList.add('pro-on');$('navtr').style.display='inline';loadPD();}
   if(window.AnalyticsService)window.AnalyticsService.trackEvent('login',{plan:user.plan||'free'}).catch(()=>{});
+  if(user.uid&&typeof loadLeaderboard==='function')loadLeaderboard();
   if(user.uid&&window.TransformationService&&!lastRes){
     window.TransformationService.getLastCalculation(user.uid).then(function(last){
       if(last&&$('ia')&&!$('ia').value){
@@ -2114,7 +2150,7 @@ let pd={streak:0,lastCI:null,wk:0,hy:0,weights:[]};
 function loadPD(){const s=localStorage.getItem('bm_pd');if(s)pd=JSON.parse(s);renderPD();}
 function savePD(){localStorage.setItem('bm_pd',JSON.stringify(pd));}
 function renderPD(){$('stnum').textContent=pd.streak;$('wkc').textContent=pd.wk;$('hyc').textContent=pd.hy;$('wkb').style.width=Math.min(100,pd.wk/5*100)+'%';$('hyb').style.width=Math.min(100,pd.hy/7*100)+'%';renderWC();}
-$('btncheckin').addEventListener('click',()=>{if(!isPro){openModal('promodal');return;}const today=new Date().toDateString();if(pd.lastCI===today){toast('Already checked in today! 🔥','gold');return;}pd.streak=pd.lastCI===new Date(Date.now()-86400000).toDateString()?pd.streak+1:1;pd.lastCI=today;savePD();renderPD();toast(`🔥 ${pd.streak}-day streak! Keep going!`,'gold');if(user?.uid&&window.TransformationService)window.TransformationService.saveActivityData(user.uid,{streak:pd.streak,workouts:pd.wk,hydrationDays:pd.hy}).catch(()=>{});if(window.AnalyticsService)window.AnalyticsService.trackEvent('checkin',{streak:pd.streak}).catch(()=>{});});
+$('btncheckin').addEventListener('click',()=>{if(!isPro){openModal('promodal');return;}const today=new Date().toDateString();if(pd.lastCI===today){toast('Already checked in today! 🔥','gold');return;}pd.streak=pd.lastCI===new Date(Date.now()-86400000).toDateString()?pd.streak+1:1;pd.lastCI=today;savePD();renderPD();toast(`🔥 ${pd.streak}-day streak! Keep going!`,'gold');if(user?.uid&&window.TransformationService)window.TransformationService.saveActivityData(user.uid,{streak:pd.streak,workouts:pd.wk,hydrationDays:pd.hy}).catch(()=>{});if(window.AnalyticsService)window.AnalyticsService.trackEvent('checkin',{streak:pd.streak}).catch(()=>{});syncLeaderboard({streak:pd.streak});});
 function adjG(t,d){if(!isPro){openModal('promodal');return;}if(t==='wk')pd.wk=Math.max(0,Math.min(5,pd.wk+d));if(t==='hy')pd.hy=Math.max(0,Math.min(7,pd.hy+d));savePD();renderPD();}
 $('btnwlog').addEventListener('click',()=>{if(!isPro){openModal('promodal');return;}const v=parseFloat($('wlinp').value);if(!v||v<20||v>400){toast('Please enter a valid weight','gold');return;}pd.weights.push({date:new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short'}),kg:v});if(pd.weights.length>14)pd.weights.shift();savePD();renderWC();$('wlinp').value='';toast(`📈 ${v}kg logged!`);});
 function renderWC(){const c=$('wcht'),e=$('wce');[...c.querySelectorAll('.wcb')].forEach(b=>b.remove());if(!pd.weights.length){e.style.display='flex';return;}e.style.display='none';const vals=pd.weights.map(w=>w.kg),mx=Math.max(...vals),mn=Math.min(...vals),range=mx-mn||1;pd.weights.forEach(w=>{const h=Math.max(10,Math.round(((w.kg-mn)/range)*65+18));const b=document.createElement('div');b.className='wcb';b.style.height=h+'px';b.title=`${w.date}: ${w.kg}kg`;c.appendChild(b);});}
@@ -2164,6 +2200,52 @@ function restoreCloudPhotos(userData){
     const url=userData[`photo_${side}`];
     if(url)_showPhoto(side,url,userData[`photo_${side}_date`]||'');
   });
+}
+
+// ── COMMUNITY LEADERBOARD ──
+let currentBoard='beastScore';
+function switchBoard(field,btn){
+  currentBoard=field;
+  document.querySelectorAll('.lb-tab').forEach(t=>t.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  loadLeaderboard();
+}
+async function loadLeaderboard(){
+  const list=$('lb-list');
+  if(!user||!user.uid||!window.CommunityService){
+    list.innerHTML='<div style="text-align:center;padding:30px;color:var(--muted);font-size:13px;">Log in to see the leaderboard.</div>';
+    return;
+  }
+  list.innerHTML='<div style="text-align:center;padding:30px;color:var(--muted);font-size:13px;">Loading the pack...</div>';
+  const entries=await window.CommunityService.getLeaderboard(currentBoard,50);
+  if(!entries.length){
+    list.innerHTML='<div style="text-align:center;padding:30px;color:var(--muted);font-size:13px;">No one on the board yet. Calculate your Beast Score to claim rank #1! 👑</div>';
+    $('lb-myrank').style.display='none';
+    return;
+  }
+  const unit=currentBoard==='streak'?' <small>DAYS</small>':' <small>PTS</small>';
+  list.innerHTML=entries.map((e,i)=>{
+    const rank=i+1;
+    const medal=rank===1?'🥇':rank===2?'🥈':rank===3?'🥉':rank;
+    const rcls=rank===1?'top1':rank===2?'top2':rank===3?'top3':'';
+    const me=e.uid===user.uid?' me':'';
+    const isPr=e.plan==='royal_pro'||e.plan==='royal_elite';
+    const val=currentBoard==='streak'?(e.streak||0):(e.beastScore||0);
+    return `<div class="lb-row${me}"><div class="lb-rank ${rcls}">${medal}</div><div class="lb-av">${(e.name||'B')[0].toUpperCase()}</div><div class="lb-name">${e.name||'Beast'}${isPr?'<span class="lb-pro">PRO</span>':''}${me?' <span style="color:var(--gold);font-size:11px;">(you)</span>':''}</div><div class="lb-val">${val}${unit}</div></div>`;
+  }).join('');
+  // My rank banner (only when I'm not visible in the top list)
+  const myIdx=entries.findIndex(e=>e.uid===user.uid);
+  const banner=$('lb-myrank');
+  if(myIdx===-1){
+    const rank=await window.CommunityService.getUserRank(user.uid,currentBoard);
+    if(rank){banner.textContent=`Your rank: #${rank} — keep pushing to break into the top 50! 🔥`;banner.style.display='block';}
+    else{banner.textContent='You are not on the board yet — calculate your Beast Score to enter the arena!';banner.style.display='block';}
+  }else banner.style.display='none';
+}
+function syncLeaderboard(fields){
+  if(user?.uid&&window.CommunityService){
+    window.CommunityService.updateEntry(user.uid,{name:user.name,plan:user.plan||(isPro?'royal_pro':'free'),...fields});
+  }
 }
 
 // ── NEWSLETTER ──
@@ -2273,6 +2355,7 @@ function buildBeastScore2(){
   factors.push({n:'Mobility',v:pdScores.mobility||0});
   const avg=Math.round(factors.reduce((a,f)=>a+f.v,0)/factors.length);
   let lbl='START';if(avg>=85)lbl='💎 ELITE ROYAL';else if(avg>=70)lbl='🔥 ROYAL MODE';else if(avg>=50)lbl='⚡ RISING';else if(avg>=30)lbl='💪 BUILDING';else lbl='😤 BEGIN';
+  if(lastRes&&typeof syncLeaderboard==='function')syncLeaderboard({beastScore:avg});
   setTimeout(()=>{$('bs2ring').style.setProperty('--p',avg+'%');},100);
   let cur=0;const tgt=avg;const it=setInterval(()=>{cur+=Math.ceil(tgt/30)||1;if(cur>=tgt){cur=tgt;clearInterval(it);}$('bs2n').textContent=cur;},25);
   $('bs2l').textContent=lbl;
