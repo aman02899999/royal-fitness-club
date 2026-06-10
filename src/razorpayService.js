@@ -51,15 +51,11 @@
   window.RazorpayService = {
 
     /**
-     * Razorpay API Key ID.
-     *
-     * ⚠️  REPLACE THIS VALUE with your actual key from:
-     *     https://dashboard.razorpay.com/app/keys
-     *
-     * Test keys  → rzp_test_XXXXXXXXXXXXXXXX  (no real money moved)
-     * Live keys  → rzp_live_XXXXXXXXXXXXXXXX  (real transactions)
+     * Razorpay Live API Key ID (public — safe in client-side JS).
+     * The key secret is set exclusively via Firebase Functions config:
+     *   firebase functions:config:set razorpay.key_secret="<secret>"
      */
-    KEY_ID: 'rzp_test_PLACEHOLDER',
+    KEY_ID: 'rzp_live_SzivmCT3vTvTAK',
 
     /**
      * Plan catalogue — prices in INR, amounts are whole rupees (not paise).
