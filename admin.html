@@ -341,6 +341,12 @@ tr:hover td{background:rgba(255,255,255,.025);}
           <div class="stat-card"><div class="sc-label">Avg Lifetime</div><div class="sc-val blue" id="an-lifetime">—</div><div class="sc-sub">Days per user</div></div>
           <div class="stat-card"><div class="sc-label">Churn Rate</div><div class="sc-val red" id="an-churn">—</div><div class="sc-sub">Cancelled / Total Pro</div></div>
         </div>
+        <div class="stats-row">
+          <div class="stat-card"><div class="sc-label">Active Today (DAU)</div><div class="sc-val green" id="an-dau">—</div><div class="sc-sub">Logged in since midnight</div></div>
+          <div class="stat-card"><div class="sc-label">Active 30 Days (MAU)</div><div class="sc-val blue" id="an-mau">—</div><div class="sc-sub">Logged in last 30 days</div></div>
+          <div class="stat-card"><div class="sc-label">New This Week</div><div class="sc-val gold" id="an-newweek">—</div><div class="sc-sub">Registrations last 7 days</div></div>
+          <div class="stat-card"><div class="sc-label">Stickiness</div><div class="sc-val" id="an-sticky">—</div><div class="sc-sub">DAU / MAU ratio</div></div>
+        </div>
         <div class="panel-row">
           <div class="panel">
             <div class="panel-title">Plan Distribution</div>
@@ -351,6 +357,14 @@ tr:hover td{background:rgba(255,255,255,.025);}
           <div class="panel">
             <div class="panel-title">Members Joined (Last 6 Months)</div>
             <div class="month-bars" id="month-bars">
+              <div class="loading"><div class="spinner"></div>Loading...</div>
+            </div>
+          </div>
+        </div>
+        <div class="panel-row">
+          <div class="panel">
+            <div class="panel-title">Top Events (All Time)</div>
+            <div class="plan-dist" id="top-events-an">
               <div class="loading"><div class="spinner"></div>Loading...</div>
             </div>
           </div>
@@ -810,6 +824,36 @@ async function loadAnalytics() {
     const churn = pro + cancelled > 0 ? ((cancelled / (pro + cancelled)) * 100).toFixed(1) + '%' : '0%';
     document.getElementById('an-churn').textContent = churn;
     document.getElementById('an-lifetime').textContent = '—';
+
+    // DAU / MAU / new-this-week (parallel; each failure degrades gracefully)
+    const dayStart = new Date(); dayStart.setHours(0, 0, 0, 0);
+    const d30 = new Date(Date.now() - 30 * 86400000);
+    const d7 = new Date(Date.now() - 7 * 86400000);
+    const ts = d => firebase.firestore.Timestamp.fromDate(d);
+    const [dauR, mauR, newR, evR] = await Promise.allSettled([
+      db.collection('users').where('lastLogin', '>=', ts(dayStart)).get(),
+      db.collection('users').where('lastLogin', '>=', ts(d30)).get(),
+      db.collection('users').where('createdAt', '>=', ts(d7)).get(),
+      db.collection('global_analytics').orderBy('count', 'desc').limit(8).get()
+    ]);
+    const dau = dauR.status === 'fulfilled' ? dauR.value.size : 0;
+    const mau = mauR.status === 'fulfilled' ? mauR.value.size : 0;
+    document.getElementById('an-dau').textContent = dau;
+    document.getElementById('an-mau').textContent = mau;
+    document.getElementById('an-newweek').textContent = newR.status === 'fulfilled' ? newR.value.size : 0;
+    document.getElementById('an-sticky').textContent = mau > 0 ? ((dau / mau) * 100).toFixed(0) + '%' : '—';
+
+    // Top events from global_analytics counters
+    const evBox = document.getElementById('top-events-an');
+    if (evR.status === 'fulfilled' && !evR.value.empty) {
+      const events = evR.value.docs.map(d => ({ name: d.id, count: d.data().count || 0 }));
+      const maxEv = Math.max(...events.map(e => e.count), 1);
+      evBox.innerHTML = events.map(e => `
+        <div class="plan-row"><div class="plan-label" style="color:var(--text);">${e.name.replace(/_/g, ' ')}</div><div class="plan-bar-bg"><div class="plan-bar-fill" style="width:${(e.count / maxEv * 100).toFixed(0)}%;background:var(--blue);"></div></div><div class="plan-count" style="color:var(--blue);">${e.count.toLocaleString('en-IN')}</div></div>
+      `).join('');
+    } else {
+      evBox.innerHTML = '<div style="font-size:12px;color:var(--muted);padding:10px 0;">No events tracked yet — counters appear as members use the app.</div>';
+    }
 
     // Plan distribution
     const maxD = Math.max(total, 1);
