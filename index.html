@@ -737,6 +737,24 @@ body{font-size:16px;}
 .rweek { color:#b8b8b8 !important; }
 .bs2l { color:#b8b8b8 !important; }
 .aleg-val { color:#f0f0f0 !important; }
+.food-sel-wrap{margin:16px 0;border:1px solid var(--border);border-radius:8px;overflow:hidden;}
+.food-sel-toggle{width:100%;background:var(--card2);border:none;color:var(--text);padding:12px 18px;cursor:pointer;font-size:14px;font-weight:600;text-align:left;display:flex;align-items:center;justify-content:space-between;}
+.food-sel-toggle:hover{background:var(--card);}
+#food-sel-panel{padding:16px;background:var(--card);}
+.food-sel-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;}
+.fst{background:var(--card2);border:1px solid var(--border);color:#b0b0b0;padding:6px 14px;border-radius:4px;cursor:pointer;font-size:12px;transition:all .15s;}
+.fst.active{background:var(--red);color:#fff;border-color:var(--red);}
+.food-sel-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:8px;max-height:260px;overflow-y:auto;padding-right:4px;}
+.food-card{background:var(--card2);border:1.5px solid var(--border);border-radius:6px;padding:9px 12px;cursor:pointer;transition:border-color .15s,background .15s;user-select:none;}
+.food-card:hover{border-color:var(--red);}
+.food-card.selected{border-color:var(--red);background:rgba(232,0,29,0.08);}
+.food-card-name{font-size:11px;font-weight:600;margin-bottom:3px;color:var(--text);line-height:1.3;}
+.food-card-macro{font-size:10px;color:#888;}
+.food-sel-btn-row{display:flex;gap:8px;margin:10px 0;flex-wrap:wrap;}
+.btn-sm{background:var(--red);color:#fff;border:none;padding:6px 14px;border-radius:4px;cursor:pointer;font-size:12px;font-weight:600;}
+.btn-sm.btn-outline{background:transparent;border:1px solid var(--border);color:#b0b0b0;}
+.btn-sm.btn-outline:hover{border-color:var(--red);color:var(--red);}
+.food-sel-hint{font-size:11px;color:#777;margin-top:8px;}
 </style>
 <!-- Firebase SDK (compat) -->
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
@@ -1130,7 +1148,7 @@ body{font-size:16px;}
 <div class="divider"></div>
 <section id="mealplan">
   <div class="container">
-    <div class="stag">200+ Foods Database</div><div class="sh">7-DAY MEAL PLAN</div>
+    <div class="stag">200+ Indian Foods Database</div><div class="sh">7-DAY MEAL PLAN</div>
     <p class="ssub">Vegetarian, Non-Veg, Eggetarian, Keto. Fully personalised to your goal and diet preference.</p>
     <div style="display:flex;gap:16px;flex-wrap:wrap;align-items:center;margin-top:20px;margin-bottom:8px;">
       <div>
@@ -1150,6 +1168,28 @@ body{font-size:16px;}
       </div>
     </div>
     <div id="mealfreq-note" style="font-size:12px;color:#b0b0b0;margin-bottom:12px;">Calories split evenly across your chosen meals.</div>
+    <div class="food-sel-wrap">
+      <button class="food-sel-toggle" onclick="toggleFoodSel()">
+        <span>🍽️ Customize Your Foods &nbsp;<span style="font-size:11px;color:#888;font-weight:400;">Select preferred foods or let engine auto-pick</span></span>
+        <span id="food-sel-chevron" style="font-size:12px;">▼</span>
+      </button>
+      <div id="food-sel-panel" style="display:none;">
+        <div class="food-sel-tabs">
+          <button class="fst active" data-slot="breakfast" onclick="showFoodSlot(this,'breakfast')">Breakfast</button>
+          <button class="fst" data-slot="lunch" onclick="showFoodSlot(this,'lunch')">Lunch</button>
+          <button class="fst" data-slot="dinner" onclick="showFoodSlot(this,'dinner')">Dinner</button>
+          <button class="fst" data-slot="snack" onclick="showFoodSlot(this,'snack')">Snack</button>
+          <button class="fst" data-slot="preworkout" onclick="showFoodSlot(this,'preworkout')">Pre-Workout</button>
+          <button class="fst" data-slot="postworkout" onclick="showFoodSlot(this,'postworkout')">Post-Workout</button>
+        </div>
+        <div class="food-sel-btn-row">
+          <button class="btn-sm" onclick="autoSelectFoods()">🤖 Auto Select All</button>
+          <button class="btn-sm btn-outline" onclick="clearFoodPrefs()">✕ Clear Selections</button>
+        </div>
+        <div id="food-sel-grid" class="food-sel-grid"></div>
+        <div class="food-sel-hint">Checked foods rotate in your 7-day plan. Leave all unchecked for full auto-selection from the 200+ database.</div>
+      </div>
+    </div>
     <div class="mtabs" id="mtabs">
       <div class="mtab active" data-day="0">Mon</div><div class="mtab" data-day="1">Tue</div>
       <div class="mtab" data-day="2">Wed</div><div class="mtab" data-day="3">Thu</div>
@@ -1906,7 +1946,7 @@ function drawAnatomy(bf,bfc,weight,gender){
 function updateBFsec(bf,gender,cat){const pct=Math.min(100,bf);$('bfpd').textContent=pct.toFixed(1)+'%';$('bfcd').textContent=cat;$('bfcirc').style.setProperty('--pct',pct+'%');const sc=gender==='male'?['Essential 2-5%','Athletic 6-13%','Fitness 14-17%','Average 18-24%','Obese 25%+']:['Essential 10-13%','Athletic 14-20%','Fitness 21-24%','Average 25-31%','Obese 32%+'];$('bfscale').innerHTML=sc.map(s=>`<div class="bfsi ${s.toLowerCase().includes(cat.toLowerCase())?'active':''}">${s}</div>`).join('');}
 $('bfscale').innerHTML=['Essential','Athletic','Fitness','Average','Obese'].map(s=>`<div class="bfsi">${s}</div>`).join('');
 
-// ── 50+ INDIAN FOODS DATABASE ──
+// ── 200+ INDIAN FOODS DATABASE ──
 
 // ── INGREDIENT-LEVEL MEAL DATABASE (ICMR/USDA values per 100g) ──
 // Each meal has ingredients with qty(g/ml), name, kcal/100g, p/c/f per 100g
@@ -1915,11 +1955,16 @@ const MEALS={
     breakfast:[
       {name:'Oats Banana Almond Bowl',ingredients:[{n:'Oats (dry)',q:80,u:'g',k:389,p:17,c:66,f:7},{n:'Banana',q:100,u:'g',k:89,p:1,c:23,f:0},{n:'Almonds',q:15,u:'g',k:579,p:21,c:22,f:50},{n:'Milk (low fat)',q:150,u:'ml',k:42,p:3,c:5,f:1}]},
       {name:'Moong Dal Chilla x2',ingredients:[{n:'Moong dal (soaked)',q:80,u:'g',k:347,p:24,c:63,f:1},{n:'Onion',q:30,u:'g',k:40,p:1,c:9,f:0},{n:'Tomato',q:30,u:'g',k:18,p:1,c:4,f:0},{n:'Oil',q:5,u:'g',k:884,p:0,c:0,f:100}]},
-      {name:'Paneer Bhurji',ingredients:[{n:'Paneer',q:150,u:'g',k:265,p:18,c:4,f:20},{n:'Onion',q:50,u:'g',k:40,p:1,c:9,f:0},{n:'Tomato',q:50,u:'g',k:18,p:1,c:4,f:0},{n:'Oil',q:8,u:'g',k:884,p:0,c:0,f:100},{n:'Roti (whole wheat)',q:60,u:'g',k:264,p:9,c:57,f:1}]},
+      {name:'Paneer Bhurji + Roti',ingredients:[{n:'Paneer',q:150,u:'g',k:265,p:18,c:4,f:20},{n:'Onion',q:50,u:'g',k:40,p:1,c:9,f:0},{n:'Tomato',q:50,u:'g',k:18,p:1,c:4,f:0},{n:'Oil',q:8,u:'g',k:884,p:0,c:0,f:100},{n:'Roti (whole wheat)',q:60,u:'g',k:264,p:9,c:57,f:1}]},
       {name:'Poha with Peanuts',ingredients:[{n:'Poha (flattened rice)',q:80,u:'g',k:333,p:6,c:76,f:1},{n:'Peanuts (roasted)',q:20,u:'g',k:567,p:26,c:16,f:49},{n:'Onion',q:30,u:'g',k:40,p:1,c:9,f:0},{n:'Oil',q:5,u:'g',k:884,p:0,c:0,f:100}]},
       {name:'Idli x3 + Sambar',ingredients:[{n:'Idli (steamed)',q:150,u:'g',k:132,p:4,c:28,f:1},{n:'Sambar',q:150,u:'ml',k:55,p:3,c:9,f:1},{n:'Coconut chutney',q:30,u:'g',k:310,p:3,c:6,f:31}]},
       {name:'Greek Yoghurt Bowl',ingredients:[{n:'Greek yoghurt (full fat)',q:200,u:'g',k:97,p:9,c:4,f:5},{n:'Mixed berries / fruit',q:100,u:'g',k:57,p:1,c:14,f:0},{n:'Granola',q:30,u:'g',k:387,p:8,c:60,f:13},{n:'Honey',q:10,u:'g',k:304,p:0,c:82,f:0}]},
-      {name:'Stuffed Paratha + Curd',ingredients:[{n:'Whole wheat flour',q:80,u:'g',k:340,p:12,c:72,f:2},{n:'Aloo / Paneer filling',q:60,u:'g',k:86,p:4,c:12,f:3},{n:'Ghee',q:8,u:'g',k:900,p:0,c:0,f:100},{n:'Low fat curd',q:150,u:'g',k:60,p:3,c:5,f:2}]}
+      {name:'Stuffed Paratha + Curd',ingredients:[{n:'Whole wheat flour',q:80,u:'g',k:340,p:12,c:72,f:2},{n:'Aloo / Paneer filling',q:60,u:'g',k:86,p:4,c:12,f:3},{n:'Ghee',q:8,u:'g',k:900,p:0,c:0,f:100},{n:'Low fat curd',q:150,u:'g',k:60,p:3,c:5,f:2}]},
+      {name:'Upma + Sambar',ingredients:[{n:'Semolina (suji)',q:80,u:'g',k:360,p:10,c:73,f:1},{n:'Mixed veggies',q:60,u:'g',k:35,p:2,c:7,f:0},{n:'Oil',q:6,u:'g',k:884,p:0,c:0,f:100},{n:'Sambar',q:100,u:'ml',k:55,p:3,c:9,f:1}]},
+      {name:'Wheat Dalia + Milk',ingredients:[{n:'Broken wheat (dalia)',q:80,u:'g',k:342,p:12,c:72,f:2},{n:'Milk (full fat)',q:200,u:'ml',k:61,p:3,c:5,f:3},{n:'Banana',q:80,u:'g',k:89,p:1,c:23,f:0},{n:'Jaggery',q:10,u:'g',k:383,p:0,c:98,f:0}]},
+      {name:'Besan Chilla + Chutney',ingredients:[{n:'Besan (chickpea flour)',q:80,u:'g',k:364,p:22,c:58,f:6},{n:'Onion + tomato + coriander',q:50,u:'g',k:35,p:1,c:7,f:0},{n:'Oil',q:5,u:'g',k:884,p:0,c:0,f:100},{n:'Green chutney',q:25,u:'g',k:50,p:1,c:7,f:2}]},
+      {name:'Methi Thepla + Curd',ingredients:[{n:'Whole wheat flour',q:70,u:'g',k:340,p:12,c:72,f:2},{n:'Fenugreek leaves (methi)',q:30,u:'g',k:49,p:4,c:6,f:1},{n:'Oil',q:8,u:'g',k:884,p:0,c:0,f:100},{n:'Low fat curd',q:150,u:'g',k:60,p:3,c:5,f:2}]},
+      {name:'Vermicelli Upma',ingredients:[{n:'Vermicelli (roasted)',q:80,u:'g',k:361,p:11,c:73,f:2},{n:'Mixed veggies',q:60,u:'g',k:35,p:2,c:7,f:0},{n:'Cashews',q:10,u:'g',k:553,p:18,c:30,f:44},{n:'Oil',q:6,u:'g',k:884,p:0,c:0,f:100}]}
     ],
     lunch:[
       {name:'Dal Chawal (Masoor + Rice)',ingredients:[{n:'Masoor dal (cooked)',q:150,u:'g',k:116,p:9,c:20,f:0},{n:'Steamed rice',q:200,u:'g',k:130,p:3,c:28,f:0},{n:'Ghee',q:5,u:'g',k:900,p:0,c:0,f:100},{n:'Mixed veggies (sabzi)',q:100,u:'g',k:35,p:2,c:7,f:0}]},
@@ -1928,7 +1973,12 @@ const MEALS={
       {name:'Chole + 2 Roti',ingredients:[{n:'Chickpeas (cooked)',q:150,u:'g',k:164,p:9,c:27,f:3},{n:'Tomato onion gravy',q:80,u:'g',k:40,p:1,c:6,f:1},{n:'Whole wheat roti x2',q:120,u:'g',k:264,p:9,c:57,f:1},{n:'Oil',q:8,u:'g',k:884,p:0,c:0,f:100}]},
       {name:'Soya Chunk Curry + Rice',ingredients:[{n:'Soya chunks (cooked)',q:100,u:'g',k:95,p:14,c:4,f:1},{n:'Tomato onion gravy',q:80,u:'g',k:40,p:1,c:6,f:1},{n:'Steamed rice',q:200,u:'g',k:130,p:3,c:28,f:0},{n:'Oil',q:8,u:'g',k:884,p:0,c:0,f:100}]},
       {name:'Veg Pulao + Raita',ingredients:[{n:'Basmati rice (cooked)',q:200,u:'g',k:130,p:3,c:28,f:0},{n:'Mixed vegetables',q:120,u:'g',k:35,p:2,c:7,f:0},{n:'Oil / ghee',q:8,u:'g',k:884,p:0,c:0,f:100},{n:'Low fat raita',q:120,u:'g',k:60,p:3,c:5,f:2}]},
-      {name:'Dal Makhani + 2 Roti',ingredients:[{n:'Whole black lentils (cooked)',q:150,u:'g',k:116,p:9,c:20,f:0},{n:'Butter / cream',q:15,u:'g',k:717,p:1,c:1,f:81},{n:'Tomato base',q:60,u:'g',k:18,p:1,c:4,f:0},{n:'Whole wheat roti x2',q:120,u:'g',k:264,p:9,c:57,f:1}]}
+      {name:'Dal Makhani + 2 Roti',ingredients:[{n:'Whole black lentils (cooked)',q:150,u:'g',k:116,p:9,c:20,f:0},{n:'Butter / cream',q:15,u:'g',k:717,p:1,c:1,f:81},{n:'Tomato base',q:60,u:'g',k:18,p:1,c:4,f:0},{n:'Whole wheat roti x2',q:120,u:'g',k:264,p:9,c:57,f:1}]},
+      {name:'Sambar Rice + Papad',ingredients:[{n:'Steamed rice',q:200,u:'g',k:130,p:3,c:28,f:0},{n:'Sambar',q:200,u:'ml',k:55,p:3,c:9,f:1},{n:'Coconut chutney',q:30,u:'g',k:310,p:3,c:6,f:31},{n:'Papad (roasted)',q:15,u:'g',k:350,p:19,c:52,f:8}]},
+      {name:'Bhindi Masala + 2 Roti',ingredients:[{n:'Okra (bhindi)',q:150,u:'g',k:33,p:2,c:7,f:0},{n:'Onion + spices',q:50,u:'g',k:40,p:1,c:9,f:0},{n:'Oil',q:10,u:'g',k:884,p:0,c:0,f:100},{n:'Whole wheat roti x2',q:120,u:'g',k:264,p:9,c:57,f:1}]},
+      {name:'Aloo Matar + Rice',ingredients:[{n:'Potatoes',q:100,u:'g',k:77,p:2,c:17,f:0},{n:'Green peas',q:60,u:'g',k:81,p:5,c:14,f:0},{n:'Tomato onion masala',q:80,u:'g',k:40,p:1,c:7,f:1},{n:'Oil',q:8,u:'g',k:884,p:0,c:0,f:100},{n:'Steamed rice',q:150,u:'g',k:130,p:3,c:28,f:0}]},
+      {name:'Toor Dal + 2 Roti',ingredients:[{n:'Toor dal (cooked)',q:200,u:'g',k:116,p:8,c:21,f:0},{n:'Whole wheat roti x2',q:120,u:'g',k:264,p:9,c:57,f:1},{n:'Ghee',q:5,u:'g',k:900,p:0,c:0,f:100},{n:'Onion + tomato tadka',q:40,u:'g',k:35,p:1,c:7,f:0}]},
+      {name:'Paneer Tikka + Brown Rice',ingredients:[{n:'Paneer',q:150,u:'g',k:265,p:18,c:4,f:20},{n:'Bell pepper + onion',q:60,u:'g',k:31,p:1,c:7,f:0},{n:'Curd marinade',q:50,u:'g',k:60,p:3,c:5,f:2},{n:'Brown rice (cooked)',q:150,u:'g',k:123,p:3,c:26,f:1}]}
     ],
     dinner:[
       {name:'Moong Dal + 2 Roti',ingredients:[{n:'Yellow moong dal (cooked)',q:200,u:'g',k:105,p:7,c:18,f:0},{n:'Whole wheat roti x2',q:120,u:'g',k:264,p:9,c:57,f:1},{n:'Ghee',q:5,u:'g',k:900,p:0,c:0,f:100},{n:'Jeera / spices',q:5,u:'g',k:30,p:1,c:5,f:1}]},
@@ -1937,7 +1987,12 @@ const MEALS={
       {name:'Tofu Stir Fry + Rice',ingredients:[{n:'Firm tofu',q:150,u:'g',k:76,p:8,c:2,f:4},{n:'Broccoli + bell pepper',q:100,u:'g',k:34,p:3,c:7,f:0},{n:'Steamed rice',q:150,u:'g',k:130,p:3,c:28,f:0},{n:'Soy sauce / oil',q:10,u:'g',k:884,p:0,c:0,f:100}]},
       {name:'Chana Masala + Bajra Roti',ingredients:[{n:'Chickpeas (cooked)',q:150,u:'g',k:164,p:9,c:27,f:3},{n:'Tomato gravy',q:80,u:'g',k:25,p:1,c:5,f:0},{n:'Bajra roti x2',q:100,u:'g',k:360,p:11,c:70,f:5},{n:'Oil',q:6,u:'g',k:884,p:0,c:0,f:100}]},
       {name:'Vegetable Soup + Toast',ingredients:[{n:'Mixed vegetable soup',q:300,u:'ml',k:30,p:2,c:5,f:0},{n:'Multigrain bread x2',q:60,u:'g',k:255,p:9,c:48,f:3},{n:'Olive oil (drizzle)',q:5,u:'g',k:884,p:0,c:0,f:100},{n:'Lentils in soup',q:50,u:'g',k:116,p:9,c:20,f:0}]},
-      {name:'Palak Khichdi',ingredients:[{n:'Rice',q:80,u:'g',k:356,p:7,c:79,f:1},{n:'Moong dal',q:50,u:'g',k:347,p:24,c:63,f:1},{n:'Spinach',q:100,u:'g',k:23,p:3,c:4,f:0},{n:'Ghee',q:8,u:'g',k:900,p:0,c:0,f:100}]}
+      {name:'Palak Khichdi',ingredients:[{n:'Rice',q:80,u:'g',k:356,p:7,c:79,f:1},{n:'Moong dal',q:50,u:'g',k:347,p:24,c:63,f:1},{n:'Spinach',q:100,u:'g',k:23,p:3,c:4,f:0},{n:'Ghee',q:8,u:'g',k:900,p:0,c:0,f:100}]},
+      {name:'Dahi Rice + Papad',ingredients:[{n:'Cooked rice',q:200,u:'g',k:130,p:3,c:28,f:0},{n:'Full fat curd',q:150,u:'g',k:60,p:3,c:5,f:2},{n:'Mustard seeds + curry leaves',q:5,u:'g',k:30,p:1,c:5,f:1},{n:'Papad',q:15,u:'g',k:350,p:19,c:52,f:8}]},
+      {name:'Lauki Sabzi + 2 Roti',ingredients:[{n:'Bottle gourd (lauki)',q:200,u:'g',k:14,p:1,c:3,f:0},{n:'Onion + tomato + spices',q:60,u:'g',k:35,p:1,c:7,f:0},{n:'Oil',q:8,u:'g',k:884,p:0,c:0,f:100},{n:'Whole wheat roti x2',q:120,u:'g',k:264,p:9,c:57,f:1}]},
+      {name:'Mixed Dal + Brown Rice',ingredients:[{n:'Mixed lentils (cooked)',q:200,u:'g',k:116,p:9,c:20,f:0},{n:'Brown rice (cooked)',q:150,u:'g',k:123,p:3,c:26,f:1},{n:'Ghee + tadka',q:8,u:'g',k:900,p:0,c:0,f:100}]},
+      {name:'Besan Kadhi + Rice',ingredients:[{n:'Kadhi (curd + besan)',q:200,u:'ml',k:60,p:4,c:6,f:3},{n:'Steamed rice',q:200,u:'g',k:130,p:3,c:28,f:0},{n:'Papad',q:15,u:'g',k:350,p:19,c:52,f:8}]},
+      {name:'Matar Paneer + Jowar Roti',ingredients:[{n:'Paneer',q:120,u:'g',k:265,p:18,c:4,f:20},{n:'Green peas',q:60,u:'g',k:81,p:5,c:14,f:0},{n:'Tomato onion gravy',q:80,u:'g',k:40,p:1,c:7,f:1},{n:'Jowar roti x2',q:100,u:'g',k:349,p:10,c:72,f:3}]}
     ],
     snack:[
       {name:'Roasted Makhana + Nuts',ingredients:[{n:'Fox nuts (makhana)',q:30,u:'g',k:347,p:9,c:77,f:0},{n:'Mixed nuts',q:20,u:'g',k:607,p:20,c:21,f:54}]},
@@ -1946,17 +2001,26 @@ const MEALS={
       {name:'Peanut Butter Toast',ingredients:[{n:'Multigrain bread x1',q:35,u:'g',k:255,p:9,c:48,f:3},{n:'Peanut butter',q:20,u:'g',k:588,p:25,c:20,f:50}]},
       {name:'Sattu Drink',ingredients:[{n:'Sattu powder',q:40,u:'g',k:400,p:23,c:60,f:6},{n:'Water / lemon',q:250,u:'ml',k:0,p:0,c:0,f:0}]},
       {name:'Paneer Cubes + Cucumber',ingredients:[{n:'Paneer',q:100,u:'g',k:265,p:18,c:4,f:20},{n:'Cucumber',q:100,u:'g',k:16,p:1,c:4,f:0}]},
-      {name:'Dhokla x4 pieces',ingredients:[{n:'Dhokla',q:120,u:'g',k:145,p:6,c:28,f:2},{n:'Green chutney',q:20,u:'g',k:50,p:1,c:7,f:2}]}
+      {name:'Dhokla x4 pieces',ingredients:[{n:'Dhokla',q:120,u:'g',k:145,p:6,c:28,f:2},{n:'Green chutney',q:20,u:'g',k:50,p:1,c:7,f:2}]},
+      {name:'Moong Dal Chaat',ingredients:[{n:'Boiled moong dal',q:80,u:'g',k:105,p:7,c:18,f:0},{n:'Onion + tomato + lemon',q:50,u:'g',k:30,p:1,c:6,f:0},{n:'Sev',q:10,u:'g',k:500,p:13,c:55,f:27}]},
+      {name:'Fruit Chaat',ingredients:[{n:'Mixed seasonal fruits',q:200,u:'g',k:65,p:1,c:16,f:0},{n:'Chaat masala + lemon',q:5,u:'g',k:15,p:0,c:3,f:0}]},
+      {name:'Sprouts Bhel',ingredients:[{n:'Mixed sprouts',q:80,u:'g',k:62,p:5,c:11,f:1},{n:'Onion + tomato',q:50,u:'g',k:30,p:1,c:6,f:0},{n:'Sev + chutney',q:15,u:'g',k:250,p:7,c:28,f:14}]}
     ],
     preworkout:[
       {name:'Banana + Black Coffee',ingredients:[{n:'Banana',q:120,u:'g',k:89,p:1,c:23,f:0},{n:'Black coffee',q:200,u:'ml',k:2,p:0,c:0,f:0}]},
       {name:'Dates + Almonds',ingredients:[{n:'Dates',q:50,u:'g',k:282,p:2,c:75,f:0},{n:'Almonds',q:20,u:'g',k:579,p:21,c:22,f:50}]},
-      {name:'Oats + Honey',ingredients:[{n:'Oats (dry)',q:50,u:'g',k:389,p:17,c:66,f:7},{n:'Honey',q:15,u:'g',k:304,p:0,c:82,f:0},{n:'Water',q:150,u:'ml',k:0,p:0,c:0,f:0}]}
+      {name:'Oats + Honey',ingredients:[{n:'Oats (dry)',q:50,u:'g',k:389,p:17,c:66,f:7},{n:'Honey',q:15,u:'g',k:304,p:0,c:82,f:0},{n:'Water',q:150,u:'ml',k:0,p:0,c:0,f:0}]},
+      {name:'Apple + Peanut Butter',ingredients:[{n:'Apple',q:150,u:'g',k:52,p:0,c:14,f:0},{n:'Peanut butter',q:20,u:'g',k:588,p:25,c:20,f:50}]},
+      {name:'Coconut Water + Banana',ingredients:[{n:'Coconut water',q:300,u:'ml',k:19,p:0,c:4,f:0},{n:'Banana',q:100,u:'g',k:89,p:1,c:23,f:0}]},
+      {name:'Mango + Milk (seasonal)',ingredients:[{n:'Mango',q:150,u:'g',k:60,p:1,c:15,f:0},{n:'Full fat milk',q:200,u:'ml',k:61,p:3,c:5,f:3}]}
     ],
     postworkout:[
       {name:'Paneer + Banana',ingredients:[{n:'Paneer',q:150,u:'g',k:265,p:18,c:4,f:20},{n:'Banana',q:100,u:'g',k:89,p:1,c:23,f:0}]},
       {name:'Greek Yoghurt + Berries',ingredients:[{n:'Greek yoghurt',q:200,u:'g',k:97,p:9,c:4,f:5},{n:'Mixed berries',q:80,u:'g',k:57,p:1,c:14,f:0}]},
-      {name:'Milk + Banana Shake',ingredients:[{n:'Full fat milk',q:300,u:'ml',k:61,p:3,c:5,f:3},{n:'Banana',q:100,u:'g',k:89,p:1,c:23,f:0},{n:'Peanut butter',q:10,u:'g',k:588,p:25,c:20,f:50}]}
+      {name:'Milk + Banana Shake',ingredients:[{n:'Full fat milk',q:300,u:'ml',k:61,p:3,c:5,f:3},{n:'Banana',q:100,u:'g',k:89,p:1,c:23,f:0},{n:'Peanut butter',q:10,u:'g',k:588,p:25,c:20,f:50}]},
+      {name:'Soya Protein Shake',ingredients:[{n:'Soya milk',q:300,u:'ml',k:33,p:3,c:2,f:2},{n:'Banana',q:100,u:'g',k:89,p:1,c:23,f:0},{n:'Dates x2',q:20,u:'g',k:282,p:2,c:75,f:0}]},
+      {name:'Curd Rice (recovery)',ingredients:[{n:'Cooked rice',q:150,u:'g',k:130,p:3,c:28,f:0},{n:'Full fat curd',q:150,u:'g',k:60,p:3,c:5,f:2},{n:'Mustard seeds',q:2,u:'g',k:508,p:26,c:28,f:36}]},
+      {name:'Paneer + Seasonal Fruits',ingredients:[{n:'Paneer',q:100,u:'g',k:265,p:18,c:4,f:20},{n:'Mixed seasonal fruits',q:150,u:'g',k:65,p:1,c:16,f:0}]}
     ]
   },
   nonveg:{
@@ -1967,7 +2031,12 @@ const MEALS={
       {name:'Chicken Keema Paratha',ingredients:[{n:'Chicken mince (keema)',q:100,u:'g',k:172,p:26,c:0,f:7},{n:'Whole wheat flour',q:80,u:'g',k:340,p:12,c:72,f:2},{n:'Onion + spices',q:40,u:'g',k:40,p:1,c:9,f:0},{n:'Oil',q:8,u:'g',k:884,p:0,c:0,f:100}]},
       {name:'Egg White Bhurji (5 whites)',ingredients:[{n:'Egg whites',q:175,u:'g',k:52,p:11,c:1,f:0},{n:'Vegetables',q:60,u:'g',k:30,p:1,c:6,f:0},{n:'Oil',q:5,u:'g',k:884,p:0,c:0,f:100},{n:'Multigrain toast x2',q:60,u:'g',k:255,p:9,c:48,f:3}]},
       {name:'Egg + Poha',ingredients:[{n:'Poha',q:80,u:'g',k:333,p:6,c:76,f:1},{n:'Eggs x2',q:100,u:'g',k:155,p:13,c:1,f:11},{n:'Peanuts',q:20,u:'g',k:567,p:26,c:16,f:49},{n:'Oil',q:5,u:'g',k:884,p:0,c:0,f:100}]},
-      {name:'Chicken + Oats Bowl',ingredients:[{n:'Chicken breast (boiled)',q:100,u:'g',k:165,p:31,c:0,f:4},{n:'Oats',q:70,u:'g',k:389,p:17,c:66,f:7},{n:'Milk',q:150,u:'ml',k:61,p:3,c:5,f:3}]}
+      {name:'Chicken + Oats Bowl',ingredients:[{n:'Chicken breast (boiled)',q:100,u:'g',k:165,p:31,c:0,f:4},{n:'Oats',q:70,u:'g',k:389,p:17,c:66,f:7},{n:'Milk',q:150,u:'ml',k:61,p:3,c:5,f:3}]},
+      {name:'Scrambled Eggs + Paneer Toast',ingredients:[{n:'Eggs x2',q:100,u:'g',k:155,p:13,c:1,f:11},{n:'Paneer',q:50,u:'g',k:265,p:18,c:4,f:20},{n:'Multigrain bread x2',q:60,u:'g',k:255,p:9,c:48,f:3},{n:'Oil',q:5,u:'g',k:884,p:0,c:0,f:100}]},
+      {name:'Sardine Toast',ingredients:[{n:'Sardines (canned)',q:80,u:'g',k:208,p:25,c:0,f:12},{n:'Multigrain bread x2',q:70,u:'g',k:255,p:9,c:48,f:3},{n:'Cucumber + lemon',q:50,u:'g',k:16,p:1,c:4,f:0}]},
+      {name:'Chicken Upma',ingredients:[{n:'Semolina (suji)',q:70,u:'g',k:360,p:10,c:73,f:1},{n:'Chicken breast (shredded)',q:80,u:'g',k:165,p:31,c:0,f:4},{n:'Mixed veggies',q:50,u:'g',k:35,p:2,c:7,f:0},{n:'Oil',q:6,u:'g',k:884,p:0,c:0,f:100}]},
+      {name:'Egg + Dalia Bowl',ingredients:[{n:'Broken wheat (dalia)',q:70,u:'g',k:342,p:12,c:72,f:2},{n:'Eggs x2',q:100,u:'g',k:155,p:13,c:1,f:11},{n:'Milk',q:150,u:'ml',k:61,p:3,c:5,f:3}]},
+      {name:'Tuna + Brown Rice Breakfast',ingredients:[{n:'Canned tuna',q:80,u:'g',k:116,p:26,c:0,f:1},{n:'Brown rice (cooked)',q:150,u:'g',k:123,p:3,c:26,f:1},{n:'Lemon + olive oil',q:8,u:'g',k:884,p:0,c:0,f:100}]}
     ],
     lunch:[
       {name:'Chicken Curry + Rice',ingredients:[{n:'Chicken breast',q:150,u:'g',k:165,p:31,c:0,f:4},{n:'Tomato onion gravy',q:100,u:'g',k:40,p:1,c:7,f:1},{n:'Oil',q:10,u:'g',k:884,p:0,c:0,f:100},{n:'Steamed rice',q:200,u:'g',k:130,p:3,c:28,f:0}]},
@@ -1976,7 +2045,12 @@ const MEALS={
       {name:'Tandoori Chicken + Dal',ingredients:[{n:'Chicken (tandoori, skinless)',q:200,u:'g',k:165,p:31,c:0,f:4},{n:'Dal (any)',q:150,u:'g',k:116,p:9,c:20,f:0},{n:'Roti',q:60,u:'g',k:264,p:9,c:57,f:1}]},
       {name:'Chicken Biryani',ingredients:[{n:'Chicken (bone-in)',q:150,u:'g',k:215,p:29,c:0,f:10},{n:'Basmati rice (cooked)',q:200,u:'g',k:130,p:3,c:28,f:0},{n:'Oil + spices',q:12,u:'g',k:884,p:0,c:0,f:100},{n:'Onion (fried)',q:30,u:'g',k:40,p:1,c:9,f:0}]},
       {name:'Grilled Fish + Brown Rice',ingredients:[{n:'Grilled fish (any)',q:150,u:'g',k:97,p:17,c:0,f:3},{n:'Brown rice (cooked)',q:200,u:'g',k:123,p:3,c:26,f:1},{n:'Olive oil + lemon',q:8,u:'g',k:884,p:0,c:0,f:100},{n:'Mixed vegetables',q:80,u:'g',k:35,p:2,c:7,f:0}]},
-      {name:'Prawn Masala + Rice',ingredients:[{n:'Prawns',q:150,u:'g',k:99,p:24,c:1,f:1},{n:'Coconut tomato gravy',q:80,u:'g',k:50,p:1,c:5,f:3},{n:'Oil',q:10,u:'g',k:884,p:0,c:0,f:100},{n:'Steamed rice',q:200,u:'g',k:130,p:3,c:28,f:0}]}
+      {name:'Prawn Masala + Rice',ingredients:[{n:'Prawns',q:150,u:'g',k:99,p:24,c:1,f:1},{n:'Coconut tomato gravy',q:80,u:'g',k:50,p:1,c:5,f:3},{n:'Oil',q:10,u:'g',k:884,p:0,c:0,f:100},{n:'Steamed rice',q:200,u:'g',k:130,p:3,c:28,f:0}]},
+      {name:'Mutton Rogan Josh + Rice',ingredients:[{n:'Mutton (bone-in)',q:120,u:'g',k:218,p:26,c:0,f:13},{n:'Kashmiri gravy',q:80,u:'g',k:45,p:2,c:6,f:2},{n:'Oil',q:10,u:'g',k:884,p:0,c:0,f:100},{n:'Steamed rice',q:200,u:'g',k:130,p:3,c:28,f:0}]},
+      {name:'Chicken Dal + Roti',ingredients:[{n:'Chicken breast (shredded)',q:100,u:'g',k:165,p:31,c:0,f:4},{n:'Masoor dal (cooked)',q:150,u:'g',k:116,p:9,c:20,f:0},{n:'Whole wheat roti x2',q:120,u:'g',k:264,p:9,c:57,f:1},{n:'Oil',q:8,u:'g',k:884,p:0,c:0,f:100}]},
+      {name:'Lamb Chops + Salad',ingredients:[{n:'Lamb chops (grilled)',q:150,u:'g',k:250,p:28,c:0,f:16},{n:'Mixed greens + tomato',q:100,u:'g',k:25,p:2,c:5,f:0},{n:'Olive oil + lemon',q:8,u:'g',k:884,p:0,c:0,f:100},{n:'Brown rice (cooked)',q:100,u:'g',k:123,p:3,c:26,f:1}]},
+      {name:'Chicken Seekh + Rice',ingredients:[{n:'Chicken seekh kebab',q:150,u:'g',k:172,p:26,c:0,f:7},{n:'Mint chutney',q:20,u:'g',k:30,p:1,c:5,f:0},{n:'Basmati rice (cooked)',q:200,u:'g',k:130,p:3,c:28,f:0}]},
+      {name:'Fish Head Dal + Rice',ingredients:[{n:'Rohu fish (cooked)',q:100,u:'g',k:97,p:17,c:0,f:3},{n:'Masoor dal (cooked)',q:150,u:'g',k:116,p:9,c:20,f:0},{n:'Steamed rice',q:200,u:'g',k:130,p:3,c:28,f:0},{n:'Mustard oil + spices',q:8,u:'g',k:884,p:0,c:0,f:100}]}
     ],
     dinner:[
       {name:'Grilled Chicken + Vegetables',ingredients:[{n:'Chicken breast (grilled)',q:180,u:'g',k:165,p:31,c:0,f:4},{n:'Broccoli + bell pepper',q:120,u:'g',k:34,p:3,c:7,f:0},{n:'Olive oil',q:8,u:'g',k:884,p:0,c:0,f:100},{n:'Brown rice',q:100,u:'g',k:123,p:3,c:26,f:1}]},
@@ -1985,26 +2059,40 @@ const MEALS={
       {name:'Egg Bhurji + Brown Rice',ingredients:[{n:'Eggs x3',q:150,u:'g',k:155,p:13,c:1,f:11},{n:'Onion + tomato',q:60,u:'g',k:30,p:1,c:6,f:0},{n:'Brown rice (cooked)',q:150,u:'g',k:123,p:3,c:26,f:1},{n:'Oil',q:8,u:'g',k:884,p:0,c:0,f:100}]},
       {name:'Baked Pomfret + Veggies',ingredients:[{n:'Pomfret fish (baked)',q:180,u:'g',k:96,p:20,c:0,f:2},{n:'Mixed vegetables (roasted)',q:150,u:'g',k:35,p:2,c:7,f:0},{n:'Lemon + olive oil',q:8,u:'g',k:884,p:0,c:0,f:100}]},
       {name:'Chicken Soup + Toast',ingredients:[{n:'Chicken breast (clear soup)',q:150,u:'g',k:165,p:31,c:0,f:4},{n:'Mixed veggies in soup',q:100,u:'g',k:35,p:2,c:7,f:0},{n:'Multigrain toast x2',q:60,u:'g',k:255,p:9,c:48,f:3}]},
-      {name:'Mutton Keema + Roti',ingredients:[{n:'Mutton mince (keema)',q:120,u:'g',k:218,p:26,c:0,f:13},{n:'Green peas',q:50,u:'g',k:81,p:5,c:14,f:0},{n:'Whole wheat roti x2',q:120,u:'g',k:264,p:9,c:57,f:1},{n:'Oil',q:8,u:'g',k:884,p:0,c:0,f:100}]}
+      {name:'Mutton Keema + Roti',ingredients:[{n:'Mutton mince (keema)',q:120,u:'g',k:218,p:26,c:0,f:13},{n:'Green peas',q:50,u:'g',k:81,p:5,c:14,f:0},{n:'Whole wheat roti x2',q:120,u:'g',k:264,p:9,c:57,f:1},{n:'Oil',q:8,u:'g',k:884,p:0,c:0,f:100}]},
+      {name:'Prawn Stir Fry + Rice',ingredients:[{n:'Prawns',q:150,u:'g',k:99,p:24,c:1,f:1},{n:'Bell pepper + broccoli',q:100,u:'g',k:34,p:3,c:7,f:0},{n:'Soy sauce + oil',q:10,u:'g',k:884,p:0,c:0,f:100},{n:'Steamed rice',q:150,u:'g',k:130,p:3,c:28,f:0}]},
+      {name:'Chicken Tikka + Roti',ingredients:[{n:'Chicken tikka (grilled)',q:180,u:'g',k:165,p:31,c:0,f:4},{n:'Whole wheat roti x2',q:120,u:'g',k:264,p:9,c:57,f:1},{n:'Mint chutney + onion',q:30,u:'g',k:35,p:1,c:6,f:0}]},
+      {name:'Fish Masala + Brown Rice',ingredients:[{n:'Surmai fish (masala)',q:150,u:'g',k:97,p:17,c:0,f:3},{n:'Coconut onion gravy',q:80,u:'g',k:60,p:1,c:5,f:4},{n:'Brown rice (cooked)',q:150,u:'g',k:123,p:3,c:26,f:1},{n:'Oil',q:8,u:'g',k:884,p:0,c:0,f:100}]},
+      {name:'Lamb Seekh + Salad',ingredients:[{n:'Lamb seekh kebab',q:150,u:'g',k:250,p:28,c:0,f:16},{n:'Mixed greens',q:100,u:'g',k:25,p:2,c:5,f:0},{n:'Olive oil + lemon',q:8,u:'g',k:884,p:0,c:0,f:100}]},
+      {name:'Butter Chicken + Roti',ingredients:[{n:'Chicken breast',q:150,u:'g',k:165,p:31,c:0,f:4},{n:'Butter + cream tomato sauce',q:80,u:'g',k:120,p:2,c:5,f:11},{n:'Whole wheat roti x2',q:120,u:'g',k:264,p:9,c:57,f:1}]}
     ],
     snack:[
       {name:'Boiled Eggs x2 + Makhana',ingredients:[{n:'Boiled eggs x2',q:100,u:'g',k:155,p:13,c:1,f:11},{n:'Makhana (fox nuts)',q:25,u:'g',k:347,p:9,c:77,f:0}]},
       {name:'Chicken Tikka (small)',ingredients:[{n:'Chicken tikka (grilled)',q:100,u:'g',k:165,p:31,c:0,f:4},{n:'Mint chutney',q:20,u:'g',k:30,p:1,c:5,f:0}]},
       {name:'Tuna Salad',ingredients:[{n:'Canned tuna (in water)',q:100,u:'g',k:116,p:26,c:0,f:1},{n:'Cucumber + lettuce',q:80,u:'g',k:16,p:1,c:4,f:0},{n:'Olive oil + lemon',q:5,u:'g',k:884,p:0,c:0,f:100}]},
-      {name:'Protein Shake',ingredients:[{n:'Whey protein (1 scoop)',q:30,u:'g',k:120,p:24,c:3,f:1},{n:'Milk (low fat)',q:200,u:'ml',k:42,p:3,c:5,f:1}]},
-      {name:'Greek Yoghurt',ingredients:[{n:'Greek yoghurt',q:200,u:'g',k:97,p:9,c:4,f:5},{n:'Almonds (10)',q:15,u:'g',k:579,p:21,c:22,f:50}]},
+      {name:'Whey Protein Shake',ingredients:[{n:'Whey protein (1 scoop)',q:30,u:'g',k:120,p:24,c:3,f:1},{n:'Milk (low fat)',q:200,u:'ml',k:42,p:3,c:5,f:1}]},
+      {name:'Greek Yoghurt + Almonds',ingredients:[{n:'Greek yoghurt',q:200,u:'g',k:97,p:9,c:4,f:5},{n:'Almonds (10)',q:15,u:'g',k:579,p:21,c:22,f:50}]},
       {name:'Egg White Omelette',ingredients:[{n:'Egg whites x4',q:140,u:'g',k:52,p:11,c:1,f:0},{n:'Spinach + cheese',q:40,u:'g',k:50,p:4,c:2,f:3},{n:'Oil',q:3,u:'g',k:884,p:0,c:0,f:100}]},
-      {name:'Fish Cutlet x1',ingredients:[{n:'Fish cutlet (grilled)',q:80,u:'g',k:97,p:17,c:0,f:3},{n:'Cucumber + lemon',q:60,u:'g',k:16,p:1,c:4,f:0}]}
+      {name:'Fish Cutlet x1',ingredients:[{n:'Fish cutlet (grilled)',q:80,u:'g',k:97,p:17,c:0,f:3},{n:'Cucumber + lemon',q:60,u:'g',k:16,p:1,c:4,f:0}]},
+      {name:'Chicken Clear Soup',ingredients:[{n:'Chicken clear soup',q:300,u:'ml',k:15,p:3,c:1,f:0},{n:'Boiled egg x1',q:50,u:'g',k:155,p:13,c:1,f:11}]},
+      {name:'Egg + Cheese Toast',ingredients:[{n:'Egg x1',q:50,u:'g',k:155,p:13,c:1,f:11},{n:'Cheese slice',q:20,u:'g',k:402,p:25,c:1,f:33},{n:'Multigrain bread x1',q:35,u:'g',k:255,p:9,c:48,f:3}]},
+      {name:'Prawn Cutlet',ingredients:[{n:'Prawns (grilled)',q:80,u:'g',k:99,p:24,c:1,f:1},{n:'Cucumber + lemon',q:60,u:'g',k:16,p:1,c:4,f:0}]}
     ],
     preworkout:[
       {name:'Banana + Boiled Egg',ingredients:[{n:'Banana',q:120,u:'g',k:89,p:1,c:23,f:0},{n:'Boiled egg x1',q:50,u:'g',k:155,p:13,c:1,f:11}]},
       {name:'Toast + Egg + Coffee',ingredients:[{n:'Multigrain toast x1',q:35,u:'g',k:255,p:9,c:48,f:3},{n:'Egg x1',q:50,u:'g',k:155,p:13,c:1,f:11},{n:'Black coffee',q:200,u:'ml',k:2,p:0,c:0,f:0}]},
-      {name:'Oats + Honey',ingredients:[{n:'Oats',q:50,u:'g',k:389,p:17,c:66,f:7},{n:'Honey',q:15,u:'g',k:304,p:0,c:82,f:0}]}
+      {name:'Oats + Honey',ingredients:[{n:'Oats',q:50,u:'g',k:389,p:17,c:66,f:7},{n:'Honey',q:15,u:'g',k:304,p:0,c:82,f:0}]},
+      {name:'Chicken + Banana',ingredients:[{n:'Grilled chicken (small)',q:80,u:'g',k:165,p:31,c:0,f:4},{n:'Banana',q:100,u:'g',k:89,p:1,c:23,f:0}]},
+      {name:'Tuna + Rice Cake',ingredients:[{n:'Canned tuna',q:60,u:'g',k:116,p:26,c:0,f:1},{n:'Rice cakes x2',q:30,u:'g',k:384,p:8,c:81,f:3}]},
+      {name:'Hard Boiled Eggs + Dates',ingredients:[{n:'Boiled eggs x2',q:100,u:'g',k:155,p:13,c:1,f:11},{n:'Dates x3',q:30,u:'g',k:282,p:2,c:75,f:0}]}
     ],
     postworkout:[
       {name:'Whey Protein + Milk',ingredients:[{n:'Whey protein (1 scoop)',q:30,u:'g',k:120,p:24,c:3,f:1},{n:'Milk (full fat)',q:300,u:'ml',k:61,p:3,c:5,f:3}]},
       {name:'Eggs x3 + Toast',ingredients:[{n:'Eggs x3',q:150,u:'g',k:155,p:13,c:1,f:11},{n:'Multigrain toast x2',q:60,u:'g',k:255,p:9,c:48,f:3}]},
-      {name:'Chicken + Banana',ingredients:[{n:'Grilled chicken breast',q:150,u:'g',k:165,p:31,c:0,f:4},{n:'Banana',q:100,u:'g',k:89,p:1,c:23,f:0}]}
+      {name:'Chicken + Banana',ingredients:[{n:'Grilled chicken breast',q:150,u:'g',k:165,p:31,c:0,f:4},{n:'Banana',q:100,u:'g',k:89,p:1,c:23,f:0}]},
+      {name:'Tuna + Banana',ingredients:[{n:'Canned tuna',q:100,u:'g',k:116,p:26,c:0,f:1},{n:'Banana',q:100,u:'g',k:89,p:1,c:23,f:0},{n:'Milk',q:200,u:'ml',k:61,p:3,c:5,f:3}]},
+      {name:'Fish + Sweet Potato',ingredients:[{n:'Grilled fish',q:150,u:'g',k:97,p:17,c:0,f:3},{n:'Sweet potato (boiled)',q:150,u:'g',k:86,p:2,c:20,f:0}]},
+      {name:'Egg + Curd + Banana',ingredients:[{n:'Boiled eggs x2',q:100,u:'g',k:155,p:13,c:1,f:11},{n:'Greek yoghurt',q:150,u:'g',k:97,p:9,c:4,f:5},{n:'Banana',q:80,u:'g',k:89,p:1,c:23,f:0}]}
     ]
   }
 };
@@ -2016,17 +2104,27 @@ MEALS.keto.breakfast=[
   {name:'Cheese Omelette x3 eggs',ingredients:[{n:'Eggs x3',q:150,u:'g',k:155,p:13,c:1,f:11},{n:'Cheese (cheddar)',q:30,u:'g',k:402,p:25,c:1,f:33},{n:'Butter',q:8,u:'g',k:717,p:1,c:1,f:81},{n:'Spinach',q:50,u:'g',k:23,p:3,c:4,f:0}]},
   {name:'Paneer Bhurji (keto)',ingredients:[{n:'Paneer',q:150,u:'g',k:265,p:18,c:4,f:20},{n:'Eggs x2',q:100,u:'g',k:155,p:13,c:1,f:11},{n:'Bell pepper + onion',q:50,u:'g',k:31,p:1,c:7,f:0},{n:'Butter',q:8,u:'g',k:717,p:1,c:1,f:81}]},
   {name:'Bulletproof Coffee + Eggs',ingredients:[{n:'Coffee',q:200,u:'ml',k:2,p:0,c:0,f:0},{n:'MCT oil',q:15,u:'g',k:884,p:0,c:0,f:100},{n:'Butter',q:10,u:'g',k:717,p:1,c:1,f:81},{n:'Boiled eggs x2',q:100,u:'g',k:155,p:13,c:1,f:11}]},
-  {name:'Nuts + Seed Bowl',ingredients:[{n:'Almonds',q:30,u:'g',k:579,p:21,c:22,f:50},{n:'Walnuts',q:20,u:'g',k:654,p:15,c:14,f:65},{n:'Pumpkin seeds',q:20,u:'g',k:559,p:30,c:11,f:49},{n:'Full fat yoghurt',q:100,u:'g',k:97,p:9,c:4,f:5}]}
+  {name:'Nuts + Seed Bowl',ingredients:[{n:'Almonds',q:30,u:'g',k:579,p:21,c:22,f:50},{n:'Walnuts',q:20,u:'g',k:654,p:15,c:14,f:65},{n:'Pumpkin seeds',q:20,u:'g',k:559,p:30,c:11,f:49},{n:'Full fat yoghurt',q:100,u:'g',k:97,p:9,c:4,f:5}]},
+  {name:'Avocado + Egg Bowl',ingredients:[{n:'Avocado',q:100,u:'g',k:160,p:2,c:9,f:15},{n:'Boiled eggs x2',q:100,u:'g',k:155,p:13,c:1,f:11},{n:'Olive oil + lemon',q:8,u:'g',k:884,p:0,c:0,f:100}]},
+  {name:'Chicken + Cheese Wrap (lettuce)',ingredients:[{n:'Chicken breast',q:120,u:'g',k:165,p:31,c:0,f:4},{n:'Cheese',q:30,u:'g',k:402,p:25,c:1,f:33},{n:'Lettuce leaves',q:50,u:'g',k:17,p:1,c:3,f:0},{n:'Butter',q:8,u:'g',k:717,p:1,c:1,f:81}]},
+  {name:'Cream Cheese Egg Scramble',ingredients:[{n:'Eggs x3',q:150,u:'g',k:155,p:13,c:1,f:11},{n:'Cream cheese',q:40,u:'g',k:342,p:6,c:4,f:34},{n:'Butter',q:8,u:'g',k:717,p:1,c:1,f:81},{n:'Spinach',q:30,u:'g',k:23,p:3,c:4,f:0}]},
+  {name:'Egg + Bacon Bowl',ingredients:[{n:'Eggs x3',q:150,u:'g',k:155,p:13,c:1,f:11},{n:'Bacon (pork belly)',q:50,u:'g',k:541,p:37,c:1,f:42},{n:'Butter',q:5,u:'g',k:717,p:1,c:1,f:81}]}
 ];
 MEALS.keto.lunch=[
   {name:'Grilled Chicken + Greens',ingredients:[{n:'Chicken breast (grilled)',q:200,u:'g',k:165,p:31,c:0,f:4},{n:'Broccoli + spinach',q:150,u:'g',k:28,p:3,c:5,f:0},{n:'Olive oil',q:15,u:'g',k:884,p:0,c:0,f:100},{n:'Avocado (half)',q:80,u:'g',k:160,p:2,c:9,f:15}]},
   {name:'Mutton Seekh Kebab',ingredients:[{n:'Mutton mince',q:150,u:'g',k:218,p:26,c:0,f:13},{n:'Onion + spices',q:30,u:'g',k:40,p:1,c:9,f:0},{n:'Mint chutney (low sugar)',q:20,u:'g',k:30,p:1,c:3,f:0}]},
-  {name:'Paneer Tikka + Salad',ingredients:[{n:'Paneer',q:200,u:'g',k:265,p:18,c:4,f:20},{n:'Bell pepper + onion',q:60,u:'g',k:31,p:1,c:7,f:0},{n:'Curd marinade',q:50,u:'g',k:60,p:3,c:5,f:2},{n:'Oil',q:8,u:'g',k:884,p:0,c:0,f:100}]}
+  {name:'Paneer Tikka + Salad',ingredients:[{n:'Paneer',q:200,u:'g',k:265,p:18,c:4,f:20},{n:'Bell pepper + onion',q:60,u:'g',k:31,p:1,c:7,f:0},{n:'Curd marinade',q:50,u:'g',k:60,p:3,c:5,f:2},{n:'Oil',q:8,u:'g',k:884,p:0,c:0,f:100}]},
+  {name:'Tuna + Avocado Salad',ingredients:[{n:'Canned tuna',q:120,u:'g',k:116,p:26,c:0,f:1},{n:'Avocado',q:100,u:'g',k:160,p:2,c:9,f:15},{n:'Olive oil + lemon',q:10,u:'g',k:884,p:0,c:0,f:100},{n:'Mixed greens',q:80,u:'g',k:25,p:2,c:5,f:0}]},
+  {name:'Lamb Chops + Sauteed Greens',ingredients:[{n:'Lamb chops (grilled)',q:180,u:'g',k:250,p:28,c:0,f:16},{n:'Spinach + garlic',q:100,u:'g',k:23,p:3,c:4,f:0},{n:'Butter',q:10,u:'g',k:717,p:1,c:1,f:81}]},
+  {name:'Chicken Tikka + Raita (keto)',ingredients:[{n:'Chicken tikka',q:200,u:'g',k:165,p:31,c:0,f:4},{n:'Full fat curd',q:100,u:'g',k:60,p:3,c:5,f:2},{n:'Cucumber + mint',q:50,u:'g',k:16,p:1,c:4,f:0}]}
 ];
 MEALS.keto.dinner=[
   {name:'Butter Chicken (no rice)',ingredients:[{n:'Chicken breast',q:180,u:'g',k:165,p:31,c:0,f:4},{n:'Cream + tomato base',q:80,u:'g',k:120,p:2,c:5,f:11},{n:'Butter',q:10,u:'g',k:717,p:1,c:1,f:81}]},
   {name:'Baked Fish + Avocado',ingredients:[{n:'Fish (any, baked)',q:180,u:'g',k:97,p:17,c:0,f:3},{n:'Avocado',q:100,u:'g',k:160,p:2,c:9,f:15},{n:'Olive oil + lemon',q:8,u:'g',k:884,p:0,c:0,f:100}]},
-  {name:'Paneer + Mushroom Sabzi',ingredients:[{n:'Paneer',q:150,u:'g',k:265,p:18,c:4,f:20},{n:'Mushrooms',q:100,u:'g',k:22,p:3,c:3,f:0},{n:'Cream',q:30,u:'g',k:195,p:2,c:3,f:20},{n:'Butter',q:8,u:'g',k:717,p:1,c:1,f:81}]}
+  {name:'Paneer + Mushroom Sabzi',ingredients:[{n:'Paneer',q:150,u:'g',k:265,p:18,c:4,f:20},{n:'Mushrooms',q:100,u:'g',k:22,p:3,c:3,f:0},{n:'Cream',q:30,u:'g',k:195,p:2,c:3,f:20},{n:'Butter',q:8,u:'g',k:717,p:1,c:1,f:81}]},
+  {name:'Egg Bhurji (keto)',ingredients:[{n:'Eggs x4',q:200,u:'g',k:155,p:13,c:1,f:11},{n:'Onion + tomato',q:50,u:'g',k:30,p:1,c:6,f:0},{n:'Butter',q:10,u:'g',k:717,p:1,c:1,f:81},{n:'Cheese',q:20,u:'g',k:402,p:25,c:1,f:33}]},
+  {name:'Grilled Mutton + Asparagus',ingredients:[{n:'Mutton chops (grilled)',q:150,u:'g',k:250,p:28,c:0,f:16},{n:'Asparagus / broccoli',q:100,u:'g',k:20,p:2,c:4,f:0},{n:'Olive oil',q:10,u:'g',k:884,p:0,c:0,f:100}]},
+  {name:'Prawn + Spinach Stir Fry',ingredients:[{n:'Prawns',q:150,u:'g',k:99,p:24,c:1,f:1},{n:'Spinach + garlic',q:120,u:'g',k:23,p:3,c:4,f:0},{n:'Butter + olive oil',q:12,u:'g',k:717,p:1,c:1,f:81}]}
 ];
 
 // ── SALAD DATABASE (daily recommended) ──
@@ -2071,6 +2169,52 @@ function scaleMeal(meal, targetKcal){
 
 function getMealFreq(){const r=document.querySelector('input[name="mealfreq"]:checked');return r?parseInt(r.value):3;}
 function hasSalad(){const c=$('inclSalad');return c&&c.checked;}
+
+// ── FOOD SELECTION PANEL ──
+let userFoodPrefs={};
+let curFoodSlot='breakfast';
+
+function toggleFoodSel(){
+  const p=$('food-sel-panel'),ch=$('food-sel-chevron');
+  if(p.style.display==='none'){p.style.display='block';ch.textContent='▲';renderFoodSelGrid(curFoodSlot);}
+  else{p.style.display='none';ch.textContent='▼';}
+}
+
+function getCurDiet(){return lastRes?lastRes.diet:'nonveg';}
+
+function showFoodSlot(btn,slot){
+  curFoodSlot=slot;
+  document.querySelectorAll('.fst').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderFoodSelGrid(slot);
+}
+
+function renderFoodSelGrid(slot){
+  const diet=getCurDiet();
+  const db=MEALS[diet]||MEALS.nonveg;
+  const arr=db[slot]||[];
+  const key=diet+'.'+slot;
+  const sel=userFoodPrefs[key]||[];
+  const g=$('food-sel-grid');
+  if(!g)return;
+  g.innerHTML=arr.map(food=>{
+    const tot=calcIngredients(food.ingredients);
+    const checked=sel.includes(food.name);
+    const safeName=food.name.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+    return `<label class="food-card${checked?' selected':''}"><input type="checkbox" style="display:none" ${checked?'checked':''} onchange="toggleFoodPref('${key}','${safeName}',this)"><div class="food-card-name">${food.name}</div><div class="food-card-macro">${tot.k} kcal &middot; ${tot.p}g P</div></label>`;
+  }).join('');
+}
+
+function toggleFoodPref(key,name,cb){
+  if(!userFoodPrefs[key])userFoodPrefs[key]=[];
+  if(cb.checked){if(!userFoodPrefs[key].includes(name))userFoodPrefs[key].push(name);cb.closest('.food-card').classList.add('selected');}
+  else{userFoodPrefs[key]=userFoodPrefs[key].filter(n=>n!==name);cb.closest('.food-card').classList.remove('selected');}
+  rebuildMeal();
+}
+
+function autoSelectFoods(){userFoodPrefs={};renderFoodSelGrid(curFoodSlot);rebuildMeal();toast('Auto mode: engine picks from full 200+ database');}
+function clearFoodPrefs(){userFoodPrefs={};renderFoodSelGrid(curFoodSlot);rebuildMeal();toast('Food preferences cleared');}
+function rebuildMeal(){if(lastRes)buildMealPlan(lastRes.goal,lastRes.targetCals,lastRes.macros,lastRes.diet);else buildMealPlan('gain',2200,{prot:165,carb:220,fat:73},'nonveg');}
 
 function buildMealPlan(goal,totalCals,macros,diet){
   const db=MEALS[diet]||MEALS.nonveg;
@@ -2117,7 +2261,11 @@ function buildMealPlan(goal,totalCals,macros,diet){
     slots.forEach((slot,si)=>{
       const mealCalTarget=Math.round(totalCals*ratios[si]);
       const arr=db[slot.k]||db.snack||db.dinner;
-      const mealDef=arr[d%arr.length];
+      const prefKey=(diet||'nonveg')+'.'+slot.k;
+      const prefNames=userFoodPrefs[prefKey];
+      const prefPool=prefNames&&prefNames.length>0?arr.filter(m=>prefNames.includes(m.name)):null;
+      const mealPool=prefPool&&prefPool.length>0?prefPool:arr;
+      const mealDef=mealPool[d%mealPool.length];
       const scaledIngs=scaleMeal(mealDef,mealCalTarget);
       const tot=calcIngredients(scaledIngs);
       html+=`<div class="meal-block${lk?' locked-meal':''}">`;
@@ -2146,7 +2294,8 @@ function buildMealPlan(goal,totalCals,macros,diet){
     </div>`;
   }
   $('mealcont').innerHTML=html;
-  if($('mealfreq-note')&&totalCals)$('mealfreq-note').textContent=`${freq} meals/day • calories split proportionally — always totals ${totalCals} kcal regardless of meal count`;
+  if($('mealfreq-note')&&totalCals)$('mealfreq-note').textContent=`${freq} meals/day • calories split proportionally — always totals ${totalCals} kcal`;
+  if($('food-sel-panel')&&$('food-sel-panel').style.display!=='none')renderFoodSelGrid(curFoodSlot);
   document.querySelectorAll('.mtab').forEach(tab=>{tab.addEventListener('click',()=>{document.querySelectorAll('.mtab').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.mday').forEach(d=>d.classList.remove('active'));tab.classList.add('active');document.querySelector(`.mday[data-day="${tab.dataset.day}"]`).classList.add('active');});});
 }
 // Live updates
