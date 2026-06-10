@@ -185,7 +185,14 @@ section{padding:68px 20px;position:relative;z-index:1;}
 .rweek{font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:4px;}
 .rtitle{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1px;margin-bottom:5px;}
 .rdesc{font-size:12px;color:var(--muted);line-height:1.7;max-width:540px;}
-#tracker{display:none;}#tracker.pro-on{display:block;}
+#tracker{display:none;}#tracker.member-on{display:block;position:relative;}
+.psg-wrap{position:absolute;inset:0;background:rgba(5,5,5,0.9);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);z-index:50;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 20px;min-height:320px;}
+.psg-icon{font-size:52px;margin-bottom:14px;}
+.psg-title{font-family:'Bebas Neue',sans-serif;font-size:38px;letter-spacing:3px;color:var(--text);margin-bottom:6px;}
+.psg-sub{font-size:13px;color:var(--muted);max-width:360px;line-height:1.8;margin-bottom:22px;}
+.psg-btn{background:var(--red);color:#fff;border:none;border-radius:5px;padding:13px 32px;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:background .2s;}
+.psg-btn:hover{background:var(--orange);}
+.nav-pro-lock{font-size:8px;background:var(--red);color:#fff;border-radius:3px;padding:1px 5px;letter-spacing:1px;vertical-align:middle;margin-left:4px;font-family:'Barlow Condensed',sans-serif;font-weight:700;}
 .tr3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:32px;}
 @media(max-width:720px){.tr3{grid-template-columns:1fr;}}
 .trc{background:var(--card);border:1px solid var(--border);border-radius:7px;padding:22px 18px;}
@@ -787,7 +794,7 @@ body{font-size:16px;}
     <a href="#physio" onclick="closeNav()">Physio</a>
     <a href="#dashboard" onclick="closeNav()">Dashboard</a>
     <a href="#arena" onclick="closeNav()">Arena</a>
-    <a href="#elite" style="color:var(--gold);" onclick="closeNav()">👑 Elite</a>
+    <a href="javascript:void(0)" style="color:var(--gold);" onclick="openModal('elitemodal');closeNav()">👑 Elite</a>
     <a href="#plans" onclick="closeNav()">Plans</a>
     <a href="#tracker" id="navtr" style="display:none;" onclick="closeNav()">Tracker</a>
     <div class="nmobile-extras">
@@ -1292,6 +1299,12 @@ body{font-size:16px;}
 </section>
 <div class="divider"></div>
 <section id="tracker">
+  <div id="tracker-gate" class="psg-wrap" style="display:none;">
+    <div class="psg-icon">🔒</div>
+    <div class="psg-title">PRO MEMBERS ONLY</div>
+    <p class="psg-sub">Beast Streak, Weight Chart, Weekly Goals, Before/After Photos and PDF Export are exclusive to Royal Pro members.</p>
+    <button class="psg-btn" onclick="openModal('promodal')">⚡ Unlock Royal Pro — <span class="px-pro">₹499</span>/mo</button>
+  </div>
   <div class="container">
     <div class="stag">Beast Pro Exclusive</div><div class="sh">PROGRESS COMMAND CENTER</div>
     <p class="ssub">Every streak, every drop, every rep — track and visualise your progress.</p>
@@ -1577,7 +1590,19 @@ function applyUser(){
   $('upill').classList.add('on');
   $('uname').textContent=user.name||user.email;
   $('navlbtn').style.display='none';
-  if(isPro){$('ppro').classList.add('on');$('tracker').classList.add('pro-on');$('navtr').style.display='inline';loadPD();}
+  // Show tracker section for all logged-in members
+  $('tracker').classList.add('member-on');
+  $('navtr').style.display='inline';
+  if(isPro){
+    $('ppro').classList.add('on');
+    $('tracker').classList.add('pro-on');
+    const tg=$('tracker-gate');if(tg)tg.style.display='none';
+    loadPD();
+  }else{
+    // Free member — show tracker UI but with lock overlay
+    const tg=$('tracker-gate');if(tg)tg.style.display='flex';
+    if($('navtr'))$('navtr').innerHTML='TRACKER&nbsp;<span class="nav-pro-lock">PRO</span>';
+  }
   if(window.AnalyticsService)window.AnalyticsService.trackEvent('login',{plan:user.plan||'free'}).catch(()=>{});
   if(user.uid&&typeof loadLeaderboard==='function')loadLeaderboard();
   if(user.uid&&window.TransformationService&&!lastRes){
@@ -2407,7 +2432,7 @@ function openProfile(){
 }
 function closeProfile(){
   $('profile').classList.remove('show');$('profile').style.display='none';
-  document.querySelectorAll('section,.gallery,.testis,.divider,footer').forEach(s=>{if(s.id==='tracker'){s.style.display=isPro?'block':'none';}else if(s.id==='profile'){s.style.display='none';}else{s.style.display='';}});
+  document.querySelectorAll('section,.gallery,.testis,.divider,footer').forEach(s=>{if(s.id==='profile'){s.style.display='none';}else{s.style.display='';}});
   window.scrollTo({top:0,behavior:'smooth'});
 }
 // Close profile when nav links clicked, also handled by closeNav() inline
