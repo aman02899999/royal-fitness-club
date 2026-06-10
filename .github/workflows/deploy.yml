@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - claude/royal-fitness-saas-refactor-87s2ul
+  workflow_dispatch:
 
 jobs:
   deploy:
@@ -26,27 +27,28 @@ jobs:
       - name: Install Firebase CLI
         run: npm install -g firebase-tools
 
-      # Authenticate: uses FIREBASE_SERVICE_ACCOUNT (preferred) or falls back to FIREBASE_TOKEN
-      - name: Set up Firebase credentials
+      # Service account auth — non-expiring, the recommended method.
+      # Create the key: Firebase Console > Project settings > Service accounts
+      # > Generate new private key, then save the JSON as the
+      # FIREBASE_SERVICE_ACCOUNT repository secret.
+      - name: Set up Firebase service account
         run: |
-          if [ -n "$FIREBASE_SERVICE_ACCOUNT" ]; then
-            echo "$FIREBASE_SERVICE_ACCOUNT" > /tmp/sa-key.json
-            echo "GOOGLE_APPLICATION_CREDENTIALS=/tmp/sa-key.json" >> $GITHUB_ENV
-            echo "Using service account authentication"
-          else
-            echo "Using FIREBASE_TOKEN (legacy)"
+          if [ -z "$FIREBASE_SERVICE_ACCOUNT" ]; then
+            echo "::error::FIREBASE_SERVICE_ACCOUNT secret is not set. Generate a key in Firebase Console > Project settings > Service accounts > Generate new private key, and add the JSON as a repository secret named FIREBASE_SERVICE_ACCOUNT."
+            exit 1
           fi
+          echo "$FIREBASE_SERVICE_ACCOUNT" > "$RUNNER_TEMP/sa-key.json"
+          echo "GOOGLE_APPLICATION_CREDENTIALS=$RUNNER_TEMP/sa-key.json" >> "$GITHUB_ENV"
         env:
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
 
+      - name: Verify credentials
+        run: firebase projects:list
+
       - name: Deploy Hosting + Firestore rules
         run: firebase deploy --only hosting,firestore --project royal-fitness-club-7adc1
-        env:
-          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
 
       # Functions require the Blaze plan — don't block hosting deploy if this fails
       - name: Deploy Functions (requires Blaze plan)
         continue-on-error: true
         run: firebase deploy --only functions --project royal-fitness-club-7adc1
-        env:
-          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
