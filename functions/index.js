@@ -260,6 +260,70 @@ exports.verifyRazorpayPayment = functions.https.onCall(async (data, context) => 
 });
 
 // ---------------------------------------------------------------------------
+// expireSubscriptions — Scheduled (daily)
+// ---------------------------------------------------------------------------
+
+/**
+ * Daily sweep that downgrades expired subscriptions.
+ *
+ * Finds subscriptions with status 'active' or 'trial' whose expiryDate has
+ * passed, marks each 'expired', and resets the owning user's plan to 'free'.
+ * Without this, a single payment would grant the plan indefinitely — the
+ * client derives isPro from users/{uid}.plan and nothing else flips it.
+ *
+ * Requires composite index: subscriptions (status ASC, expiryDate ASC).
+ */
+exports.expireSubscriptions = functions.pubsub
+  .schedule('every 24 hours')
+  .timeZone('Asia/Kolkata')
+  .onRun(async () => {
+    const db = admin.firestore();
+    const now = admin.firestore.Timestamp.now();
+
+    const snap = await db
+      .collection('subscriptions')
+      .where('status', 'in', ['active', 'trial'])
+      .where('expiryDate', '<=', now)
+      .get();
+
+    if (snap.empty) {
+      console.log('[expireSubscriptions] No expired subscriptions.');
+      return null;
+    }
+
+    // Batches cap at 500 ops; each expiry uses 2 (subscription + user).
+    let batch = db.batch();
+    let ops = 0;
+    const commits = [];
+
+    for (const doc of snap.docs) {
+      const { uid } = doc.data();
+
+      batch.update(doc.ref, {
+        status: 'expired',
+        updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+      });
+      batch.update(db.collection('users').doc(uid), {
+        plan: 'free',
+        subscriptionId: null,
+        updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+      });
+
+      ops += 2;
+      if (ops >= 450) {
+        commits.push(batch.commit());
+        batch = db.batch();
+        ops = 0;
+      }
+    }
+    if (ops > 0) commits.push(batch.commit());
+    await Promise.all(commits);
+
+    console.log('[expireSubscriptions] Expired', snap.size, 'subscriptions.');
+    return null;
+  });
+
+// ---------------------------------------------------------------------------
 // razorpayWebhook — HTTPS Request
 // ---------------------------------------------------------------------------
 
@@ -332,14 +396,22 @@ exports.razorpayWebhook = functions.https.onRequest((req, res) => {
         const orderDoc = await db.collection('payment_orders').doc(orderId).get();
 
         if (orderDoc.exists) {
-          const { uid, plan } = orderDoc.data();
+          const { uid, plan, status } = orderDoc.data();
+          const webhookAt = admin.firestore.FieldValue.serverTimestamp();
+
+          // Idempotency: verifyRazorpayPayment already activated this order
+          // ('paid'), or a previous webhook delivery handled it ('captured').
+          // Record the delivery but do not re-apply the plan or regress status.
+          if (status === 'paid' || status === 'captured') {
+            await db.collection('payment_orders').doc(orderId).update({ webhookAt });
+            console.log('[razorpayWebhook] payment.captured: order already processed, skipping:', orderId);
+            return res.json({ received: true });
+          }
 
           // Recalculate expiry from capture time
           const expiryDate = new Date();
           expiryDate.setDate(expiryDate.getDate() + 30);
           const expiryTimestamp = admin.firestore.Timestamp.fromDate(expiryDate);
-
-          const webhookAt = admin.firestore.FieldValue.serverTimestamp();
 
           // Update user plan
           await db.collection('users').doc(uid).update({

@@ -109,11 +109,18 @@
         const mySnap = await db().collection('leaderboard').doc(uid).get();
         if (!mySnap.exists || typeof mySnap.data()[orderField] !== 'number') return null;
 
-        const higher = await db()
+        const higherQuery = db()
           .collection('leaderboard')
-          .where(orderField, '>', mySnap.data()[orderField])
-          .get();
+          .where(orderField, '>', mySnap.data()[orderField]);
 
+        // count() aggregate costs 1 read per 1000 matching docs instead of
+        // fetching every higher-ranked document.
+        if (typeof higherQuery.count === 'function') {
+          const agg = await higherQuery.count().get();
+          return agg.data().count + 1;
+        }
+
+        const higher = await higherQuery.get();
         return higher.size + 1;
       } catch (err) {
         console.error('[CommunityService] getUserRank error:', err);

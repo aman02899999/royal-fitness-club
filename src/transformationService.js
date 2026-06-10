@@ -307,10 +307,10 @@
      * moment the streak advanced.
      *
      * @param {string} uid
-     * @param {{streak: number, wk: number, hy: number}} data
-     *   streak — current streak in days
-     *   wk     — workout sessions completed
-     *   hy     — hydration-goal days met
+     * @param {{streak: number, workouts?: number, hydrationDays?: number, wk?: number, hy?: number}} data
+     *   streak                 — current streak in days
+     *   workouts (or wk)       — workout sessions completed
+     *   hydrationDays (or hy)  — hydration-goal days met
      * @returns {Promise<void>}
      */
     async saveActivityData(uid, data) {
@@ -326,9 +326,9 @@
           : 0;
 
         var payload = {
-          streak:        data.streak      || 0,
-          workouts:      data.wk          || 0,
-          hydrationDays: data.hy          || 0,
+          streak:        data.streak || 0,
+          workouts:      data.workouts !== undefined ? data.workouts : (data.wk || 0),
+          hydrationDays: data.hydrationDays !== undefined ? data.hydrationDays : (data.hy || 0),
           updatedAt:     serverTimestamp(),
         };
 

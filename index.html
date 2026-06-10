@@ -1500,8 +1500,12 @@ function initUser(){
         const doc=await firebase.firestore().collection('users').doc(fbUser.uid).get();
         if(doc.exists){
           const d=doc.data();
-          user={uid:fbUser.uid,name:d.name||fbUser.email.split('@')[0],email:d.email||fbUser.email,phone:d.phone||'',role:d.role||'member',plan:d.plan||'free',since:d.createdAt?.toDate?.()?.toISOString()||new Date().toISOString(),last:new Date().toISOString()};
-          isPro=d.plan==='royal_pro'||d.plan==='royal_elite';
+          // Treat the plan as expired client-side even before the daily
+          // backend sweep runs — expiryDate on the user doc is authoritative.
+          const planExpired=d.expiryDate?.toDate?.()&&d.expiryDate.toDate()<new Date();
+          const effectivePlan=planExpired?'free':(d.plan||'free');
+          user={uid:fbUser.uid,name:d.name||fbUser.email.split('@')[0],email:d.email||fbUser.email,phone:d.phone||'',role:d.role||'member',plan:effectivePlan,since:d.createdAt?.toDate?.()?.toISOString()||new Date().toISOString(),last:new Date().toISOString()};
+          isPro=effectivePlan==='royal_pro'||effectivePlan==='royal_elite';
         }else{
           // Auth user exists but no Firestore doc — create it
           user={uid:fbUser.uid,name:fbUser.displayName||fbUser.email.split('@')[0],email:fbUser.email,phone:'',role:'member',plan:'free',since:new Date().toISOString(),last:new Date().toISOString()};
@@ -1804,7 +1808,7 @@ function calculate(){
   buildBeastScore2();
   toast('🔥 Your plan is ready! Scroll down to see it.');
   setTimeout(()=>$('rescont').scrollIntoView({behavior:'smooth',block:'nearest'}),400);
-  if(user?.uid&&window.TransformationService)window.TransformationService.saveCalculationResult(user.uid,{bmi,bmr:Math.round(bmr),tdee:Math.round(tdee),bodyFat:bf,beastScore:score,calories:tc,goal,diet,weight}).catch(()=>{});
+  if(user?.uid&&window.TransformationService)window.TransformationService.saveCalculationResult(user.uid,lastRes).catch(()=>{});
   if(window.AnalyticsService)window.AnalyticsService.trackEvent('calculator_used',{goal,diet}).catch(()=>{});
 }
 // ── HEALTH CHECKBOX VISUAL + GOAL→CALORIE AUTO-UPDATE + SPLIT TABS ──
