@@ -1,5 +1,6 @@
 {
   "hosting": {
+    "site": "royal-fitness-club-7adc1",
     "public": ".",
     "ignore": ["firebase.json", "**/.*", "**/node_modules/**", "src/**", "README.md"],
     "rewrites": [
