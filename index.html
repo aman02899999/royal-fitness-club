@@ -2920,6 +2920,10 @@ async function activatePro() {
 
 // ── PDF KNOWLEDGE STORE ──
 // Admin: set this to the actual PDF download URL (e.g. Firebase Storage signed URL)
+// Set this to your Google Drive direct download link:
+// 1. Upload PDF to Google Drive → Share → Anyone with link → Viewer
+// 2. Copy the file ID from the share URL
+// 3. Format: https://drive.google.com/uc?export=download&id=YOUR_FILE_ID
 const ANABOLIC_PDF_URL = '';
 
 function initPDFStore(){
