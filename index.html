@@ -257,6 +257,8 @@ section{padding:68px 20px;position:relative;z-index:1;}
 .mbtn{width:100%;background:var(--fire);color:#fff;border:none;border-radius:4px;padding:13px;font-family:'Bebas Neue',sans-serif;font-size:19px;letter-spacing:5px;cursor:pointer;transition:all .2s;margin-top:4px;}
 .mbtn:hover{transform:translateY(-1px);}
 .mwarn{background:rgba(232,0,29,.06);border:1px solid rgba(232,0,29,.15);border-radius:5px;padding:9px 13px;font-size:11px;color:var(--muted);margin-bottom:14px;line-height:1.6;}
+#reg-code{font-family:monospace!important;letter-spacing:3px!important;font-size:16px!important;}
+#reg-code::placeholder{letter-spacing:0;font-size:12px;font-family:'Inter',sans-serif;}
 .probox{background:linear-gradient(160deg,#120e07,#0e0b07);border-color:rgba(255,208,0,.22);text-align:center;max-width:480px;}
 .probox h2{font-family:'Bebas Neue',sans-serif;font-size:46px;letter-spacing:3px;background:var(--pro);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:4px;}
 .profl{list-style:none;margin:16px 0;text-align:left;display:flex;flex-direction:column;gap:9px;}
@@ -2703,16 +2705,31 @@ img{loading:lazy;}
   <div class="mbox" style="max-width:420px;">
     <button class="mclose" onclick="closeLoginModal()">✕</button>
     <div class="mlogo">ROYAL FITNESS CLUB</div>
-    <div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--red);margin:4px 0 20px;">Members Portal</div>
-    <div class="mwarn">🏋️ This portal is exclusively for Royal Fitness Club enrolled members.</div>
-    <input type="email" class="minp" id="login-email" placeholder="Email Address" autocomplete="email">
-    <input type="password" class="minp" id="login-pass" placeholder="Password" autocomplete="current-password">
-    <button class="mbtn" onclick="loginWithFirebase()">⚡ LOGIN TO PORTAL</button>
-    <div style="text-align:center;margin-top:12px;">
-      <button class="auth-guest-btn" onclick="resetPasswordPrompt()">Forgot password?</button>
+    <div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--red);margin:4px 0 16px;">Members Portal</div>
+    <!-- Tab switcher -->
+    <div style="display:flex;gap:0;border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:18px;">
+      <button id="tab-login" onclick="switchAuthTab('login')" style="flex:1;padding:9px;background:var(--red);color:#fff;border:none;font-family:'Barlow Condensed',sans-serif;font-size:13px;letter-spacing:1.5px;cursor:pointer;transition:all .18s;">LOGIN</button>
+      <button id="tab-register" onclick="switchAuthTab('register')" style="flex:1;padding:9px;background:transparent;color:var(--muted);border:none;font-family:'Barlow Condensed',sans-serif;font-size:13px;letter-spacing:1.5px;cursor:pointer;transition:all .18s;">NEW MEMBER</button>
     </div>
-    <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border);text-align:center;">
-      <p style="font-size:11px;color:var(--muted);line-height:1.8;">Not enrolled yet?<br>Visit <strong style="color:var(--text);">Royal Fitness Club</strong> to become a member<br>and get your login credentials from the front desk.</p>
+    <!-- LOGIN PANEL -->
+    <div id="auth-login-panel">
+      <div class="mwarn">🏋️ This portal is exclusively for Royal Fitness Club enrolled members.</div>
+      <input type="email" class="minp" id="login-email" placeholder="Email Address" autocomplete="email">
+      <input type="password" class="minp" id="login-pass" placeholder="Password" autocomplete="current-password">
+      <button class="mbtn" onclick="loginWithFirebase()">⚡ LOGIN TO PORTAL</button>
+      <div style="text-align:center;margin-top:12px;">
+        <button class="auth-guest-btn" onclick="resetPasswordPrompt()">Forgot password?</button>
+      </div>
+    </div>
+    <!-- REGISTER PANEL -->
+    <div id="auth-register-panel" style="display:none;">
+      <div class="mwarn" style="background:rgba(34,197,94,.08);border-color:rgba(34,197,94,.25);color:#86efac;">🎟️ Enter your membership code from the gym to create your account.</div>
+      <input type="text" class="minp" id="reg-code" placeholder="Membership Code (e.g. RFC-A3K9P2)" autocomplete="off" style="text-transform:uppercase;letter-spacing:2px;font-family:monospace;font-size:15px;">
+      <input type="text" class="minp" id="reg-name" placeholder="Your Full Name">
+      <input type="email" class="minp" id="reg-email" placeholder="Email Address" autocomplete="email">
+      <input type="password" class="minp" id="reg-pass" placeholder="Create Password (min 6 chars)" autocomplete="new-password">
+      <div id="reg-err" style="font-size:12px;color:#f87171;margin:-4px 0 8px;min-height:16px;"></div>
+      <button class="mbtn" style="background:linear-gradient(135deg,#16a34a,#15803d);" onclick="registerWithCode()">✅ CREATE MY ACCOUNT</button>
     </div>
   </div>
 </div>
@@ -2943,6 +2960,72 @@ async function loginWithFirebase(){
 
 // Legacy compatibility
 function loginUser(){loginWithFirebase();}
+
+// ── AUTH TAB SWITCH ──
+function switchAuthTab(tab){
+  const loginPanel=$('auth-login-panel');
+  const regPanel=$('auth-register-panel');
+  const tabLogin=$('tab-login');
+  const tabReg=$('tab-register');
+  if(tab==='login'){
+    loginPanel.style.display='block';regPanel.style.display='none';
+    tabLogin.style.background='var(--red)';tabLogin.style.color='#fff';
+    tabReg.style.background='transparent';tabReg.style.color='var(--muted)';
+  }else{
+    loginPanel.style.display='none';regPanel.style.display='block';
+    tabReg.style.background='var(--red)';tabReg.style.color='#fff';
+    tabLogin.style.background='transparent';tabLogin.style.color='var(--muted)';
+    setTimeout(()=>$('reg-code')?.focus(),100);
+  }
+}
+
+// ── REGISTER WITH MEMBERSHIP CODE ──
+async function registerWithCode(){
+  const code=($('reg-code')?.value||'').trim().toUpperCase();
+  const name=($('reg-name')?.value||'').trim();
+  const email=($('reg-email')?.value||'').trim();
+  const pass=$('reg-pass')?.value||'';
+  const errEl=$('reg-err');
+  errEl.textContent='';
+  if(!code){errEl.textContent='Please enter your membership code.';return;}
+  if(!name){errEl.textContent='Please enter your full name.';return;}
+  if(!email||!email.includes('@')){errEl.textContent='Please enter a valid email.';return;}
+  if(pass.length<6){errEl.textContent='Password must be at least 6 characters.';return;}
+  if(typeof firebase==='undefined'){errEl.textContent='Service loading, please try again.';return;}
+  const btn=document.querySelector('#auth-register-panel .mbtn');
+  btn.disabled=true;btn.textContent='Verifying code...';
+  try{
+    // 1. Validate code
+    const codeDoc=await firebase.firestore().collection('codes').doc(code).get();
+    if(!codeDoc.exists){errEl.textContent='❌ Invalid code. Check with the gym front desk.';return;}
+    const codeData=codeDoc.data();
+    if(codeData.used){errEl.textContent='❌ This code has already been used. Please contact the gym.';return;}
+    if(codeData.expiryDate&&new Date(codeData.expiryDate)<new Date()){errEl.textContent='❌ This code has expired. Please contact the gym for a new one.';return;}
+    // 2. Create Firebase Auth account
+    btn.textContent='Creating account...';
+    const cred=await firebase.auth().createUserWithEmailAndPassword(email,pass);
+    const uid=cred.user.uid;
+    const expiryTs=firebase.firestore.Timestamp.fromDate(new Date(codeData.expiryDate));
+    const joinTs=firebase.firestore.Timestamp.fromDate(new Date(codeData.joinDate));
+    // 3. Create Firestore user document
+    await firebase.firestore().collection('users').doc(uid).set({
+      name,email,plan:codeData.plan,role:'member',gymMember:true,
+      memberCode:code,joinDate:codeData.joinDate,
+      membershipExpiry:expiryTs,
+      createdAt:firebase.firestore.FieldValue.serverTimestamp(),
+      lastLogin:firebase.firestore.FieldValue.serverTimestamp()
+    });
+    // 4. Mark code as used
+    await firebase.firestore().collection('codes').doc(code).update({
+      used:true,usedBy:uid,usedAt:firebase.firestore.FieldValue.serverTimestamp()
+    });
+    closeLoginModal();
+    toast('Welcome to Royal Fitness Club! 🏋️🔥');
+  }catch(err){
+    if(err.code==='auth/email-already-in-use'){errEl.textContent='An account with this email already exists. Please login instead.';}
+    else{errEl.textContent=err.message||'Registration failed. Please try again.';}
+  }finally{btn.disabled=false;btn.textContent='✅ CREATE MY ACCOUNT';}
+}
 
 function guestAccess(){
   // Members-only app — no guest access
