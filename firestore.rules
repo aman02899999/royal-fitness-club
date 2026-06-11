@@ -138,5 +138,11 @@ service cloud.firestore {
       allow read: if request.auth != null;
       allow write: if isAdmin();
     }
+
+    // ai_rate_limits/{uid_date} - per-user daily AI usage counter; Cloud Function writes via admin SDK
+    match /ai_rate_limits/{docId} {
+      allow read: if request.auth != null && docId.matches(request.auth.uid + '_.*');
+      allow write: if false;
+    }
   }
 }
