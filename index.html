@@ -2,8 +2,14 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="theme-color" content="#070707">
+<meta name="theme-color" content="#e8001d">
 <meta name="description" content="Royal Fitness Club — India's most advanced gym ecosystem. AI-powered meal plans, body calculators, anabolic guides, and pro coaching.">
+<link rel="manifest" href="/manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="RFC">
+<link rel="apple-touch-icon" href="/icons/icon-152x152.png">
+<meta name="mobile-web-app-capable" content="yes">
 <link rel="dns-prefetch" href="https://www.gstatic.com">
 <link rel="dns-prefetch" href="https://firestore.googleapis.com">
 <link rel="dns-prefetch" href="https://checkout.razorpay.com">
@@ -1910,6 +1916,24 @@ img{loading:lazy;}
       <button class="bcalc" style="font-size:14px;letter-spacing:2px;margin-top:14px;padding:12px;" onclick="saveMeasurements()">💾 SAVE MEASUREMENTS</button>
       <div id="measlog" style="margin-top:16px;"></div>
     </div>
+    <!-- ── WATER INTAKE TRACKER ─────────────────── -->
+    <div style="margin-top:24px;">
+      <div class="rctitle">💧 Daily Water Intake</div>
+      <div class="rcard" id="water-card">
+        <div style="text-align:center;margin-bottom:14px;">
+          <span style="font-family:'Bebas Neue',sans-serif;font-size:42px;color:var(--green);" id="water-ml">0</span>
+          <span style="font-size:14px;color:var(--muted);margin-left:4px;">ml</span>
+          <span style="font-size:13px;color:var(--muted);margin-left:8px;">/ 2500 ml</span>
+        </div>
+        <div id="water-cups" style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:14px;"></div>
+        <div style="display:flex;gap:8px;justify-content:center;align-items:center;">
+          <button onclick="logWater(-250)" style="background:var(--card);border:1px solid var(--border);color:var(--muted);padding:6px 16px;border-radius:6px;cursor:pointer;font-size:18px;">−</button>
+          <span style="font-size:12px;color:var(--muted);">250 ml per tap</span>
+          <button onclick="logWater(250)" style="background:linear-gradient(135deg,#0284c7,#0ea5e9);border:none;color:#fff;padding:6px 16px;border-radius:6px;cursor:pointer;font-size:18px;">+</button>
+        </div>
+        <p style="text-align:center;font-size:11px;color:var(--muted);margin-top:10px;" id="water-msg">Start logging your water. Goal: 2500 ml/day.</p>
+      </div>
+    </div>
     <div style="margin-top:24px;">
       <div class="rctitle">🛒 Weekly Grocery List (from your meal plan)</div>
       <div class="rcard" id="grocerybox"><p style="font-size:13px;color:var(--muted);">Calculate your plan above to generate your grocery list.</p></div>
@@ -2769,16 +2793,49 @@ img{loading:lazy;}
 </div>
 <div class="divider"></div>
 
-<footer style="background:#050505;border-top:2px solid var(--border);padding:40px 20px;text-align:center;">
-  <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:5px;background:var(--fire);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:7px;">ROYAL FITNESS CLUB</div>
-  <div style="display:flex;gap:18px;justify-content:center;margin:12px 0;flex-wrap:wrap;">
-    <a href="#home" style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);text-decoration:none;">Home</a>
-    <a href="#calculator" style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);text-decoration:none;">Calculator</a>
-    <a href="#mealplan" style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);text-decoration:none;">Meal Plan</a>
-    <a href="#plans" style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);text-decoration:none;">Plans</a>
+<footer style="background:#050505;border-top:2px solid var(--border);padding:48px 20px 32px;">
+  <div class="container" style="max-width:900px;margin:0 auto;">
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:32px;margin-bottom:36px;flex-wrap:wrap;">
+      <!-- Brand col -->
+      <div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:4px;background:var(--fire);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px;">ROYAL FITNESS CLUB</div>
+        <p style="font-size:11px;color:var(--muted);line-height:1.6;margin-bottom:14px;">India's most advanced gym ecosystem. AI meal plans, expert guides & community for serious members.</p>
+        <!-- Social links -->
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <a href="https://instagram.com/royalfitnessclub" target="_blank" rel="noopener" style="background:linear-gradient(135deg,#833ab4,#fd1d1d,#fcb045);color:#fff;width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;text-decoration:none;">📸</a>
+          <a href="https://wa.me/919999999999" target="_blank" rel="noopener" style="background:#25d366;color:#fff;width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;text-decoration:none;">💬</a>
+          <a href="https://youtube.com/@royalfitnessclub" target="_blank" rel="noopener" style="background:#ff0000;color:#fff;width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;text-decoration:none;">▶</a>
+          <a href="https://facebook.com/royalfitnessclub" target="_blank" rel="noopener" style="background:#1877f2;color:#fff;width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;text-decoration:none;">f</a>
+        </div>
+      </div>
+      <!-- Quick links -->
+      <div>
+        <div style="font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--red);margin-bottom:12px;font-weight:700;">Quick Links</div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <a href="#calculator" style="font-size:12px;color:var(--muted);text-decoration:none;">⚡ Beast Score Calculator</a>
+          <a href="#mealplan" style="font-size:12px;color:var(--muted);text-decoration:none;">🤖 AI Meal Planner</a>
+          <a href="#store" style="font-size:12px;color:var(--muted);text-decoration:none;">📚 Knowledge Store</a>
+          <a href="#arena" style="font-size:12px;color:var(--muted);text-decoration:none;">🏆 Leaderboard</a>
+          <a href="#physio" style="font-size:12px;color:var(--muted);text-decoration:none;">🦴 Physio Assessment</a>
+          <a href="#dashboard" style="font-size:12px;color:var(--muted);text-decoration:none;">📊 Dashboard</a>
+        </div>
+      </div>
+      <!-- Contact / Install -->
+      <div>
+        <div style="font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--red);margin-bottom:12px;font-weight:700;">Contact Us</div>
+        <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px;">
+          <a href="https://wa.me/919999999999" target="_blank" rel="noopener" style="font-size:12px;color:var(--muted);text-decoration:none;">💬 WhatsApp Support</a>
+          <span style="font-size:12px;color:var(--muted);">📍 Royal Fitness Club, India</span>
+          <span style="font-size:12px;color:var(--muted);">🕐 Mon–Sat: 6am – 10pm</span>
+        </div>
+        <button id="pwa-install-btn" onclick="triggerPWAInstall()" style="display:none;background:linear-gradient(135deg,var(--red),#ff4444);color:#fff;border:none;border-radius:8px;padding:10px 16px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;width:100%;">📲 Install App on Phone</button>
+      </div>
+    </div>
+    <div style="border-top:1px solid var(--border);padding-top:20px;text-align:center;">
+      <p style="font-size:10px;color:#555;">© 2025 Royal Fitness Club. All rights reserved.</p>
+      <p style="margin-top:4px;font-size:10px;color:#444;">Beast Ecosystem v8.0 — Built for those who refuse to be average.</p>
+    </div>
   </div>
-  <p style="font-size:10px;color:#888;">© 2025 Royal Fitness Club. All rights reserved.</p>
-  <p style="margin-top:4px;font-size:10px;color:#888;">Beast Ecosystem v8.0 — Built for those who refuse to be average.</p>
 </footer>
 <div class="mbg" id="loginmodal">
   <div class="mbox" style="max-width:420px;">
@@ -4696,6 +4753,92 @@ window.addEventListener('scroll',function(){
 // ── INIT ──
 restore();renderH();initUser();restorePhotos();initCurrency();initPDFStore();
 console.log('🔥 Royal Fitness Club SaaS v8.0 — Firebase Auth + Firestore Active!');
+
+// ── SERVICE WORKER REGISTRATION ──────────────────────────────────────────────
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>{
+    navigator.serviceWorker.register('/sw.js')
+      .then(r=>console.log('[SW] Registered, scope:',r.scope))
+      .catch(e=>console.warn('[SW] Registration failed:',e));
+  });
+}
+
+// ── PWA INSTALL PROMPT ────────────────────────────────────────────────────────
+let _deferredInstall=null;
+window.addEventListener('beforeinstallprompt',e=>{
+  e.preventDefault();
+  _deferredInstall=e;
+  const btn=document.getElementById('pwa-install-btn');
+  if(btn){btn.style.display='block';}
+  // Show toast nudge once per session
+  if(!sessionStorage.getItem('pwa_nudge')){
+    sessionStorage.setItem('pwa_nudge','1');
+    setTimeout(()=>toast('📲 Add Royal Fitness Club to your home screen for quick access!','gold'),4000);
+  }
+});
+function triggerPWAInstall(){
+  if(!_deferredInstall){toast('Open this site in Chrome/Safari to install','gold');return;}
+  _deferredInstall.prompt();
+  _deferredInstall.userChoice.then(r=>{
+    if(r.outcome==='accepted') toast('✅ App installed! Find RFC on your home screen.','fire');
+    _deferredInstall=null;
+    const btn=document.getElementById('pwa-install-btn');
+    if(btn) btn.style.display='none';
+  });
+}
+
+// ── WATER INTAKE TRACKER ──────────────────────────────────────────────────────
+const WATER_KEY='rfc_water_'+new Date().toDateString(); // resets daily
+let _waterMl=parseInt(localStorage.getItem(WATER_KEY)||'0');
+
+function renderWaterCups(){
+  const wrap=document.getElementById('water-cups');
+  if(!wrap)return;
+  const cups=10; const perCup=250; const goal=2500;
+  const filled=Math.min(Math.floor(_waterMl/perCup),cups);
+  wrap.innerHTML=Array.from({length:cups},(_,i)=>`
+    <div onclick="logWater(${i<filled?-250:250})" title="${(i+1)*perCup} ml" style="cursor:pointer;font-size:26px;filter:${i<filled?'none':'grayscale(1) opacity(.25)'};transition:filter .2s;">💧</div>
+  `).join('');
+  const ml=document.getElementById('water-ml');
+  if(ml) ml.textContent=_waterMl;
+  const msg=document.getElementById('water-msg');
+  if(msg){
+    if(_waterMl>=goal) msg.textContent='🎉 Daily goal reached! Great hydration today.';
+    else if(_waterMl>=goal*.75) msg.textContent=`Almost there! ${goal-_waterMl} ml to go.`;
+    else msg.textContent=`Keep going! ${goal-_waterMl} ml left to reach your 2500 ml goal.`;
+    msg.style.color=_waterMl>=goal?'var(--green)':'var(--muted)';
+  }
+}
+function logWater(delta){
+  _waterMl=Math.max(0,Math.min(5000,_waterMl+delta));
+  localStorage.setItem(WATER_KEY,_waterMl);
+  renderWaterCups();
+  if(delta>0 && _waterMl>0 && _waterMl%1000===0) toast(`💧 ${_waterMl/1000}L logged! Stay hydrated.`,'gold');
+}
+// Init water tracker when DOM ready
+document.addEventListener('DOMContentLoaded',()=>renderWaterCups());
 </script>
+
+<!-- ── WHATSAPP FLOATING BUTTON ──────────────────────────────────────────── -->
+<a href="https://wa.me/919999999999?text=Hi%20Royal%20Fitness%20Club%2C%20I%20need%20help%20with%20my%20membership." target="_blank" rel="noopener" id="wa-fab" aria-label="Chat on WhatsApp" style="
+  position:fixed;bottom:24px;right:24px;z-index:9999;
+  width:58px;height:58px;border-radius:50%;
+  background:linear-gradient(135deg,#25d366,#128c7e);
+  display:flex;align-items:center;justify-content:center;
+  font-size:28px;text-decoration:none;
+  box-shadow:0 4px 20px rgba(37,211,102,.4);
+  animation:waFabPulse 2.5s infinite;
+  transition:transform .2s,box-shadow .2s;
+" onmouseover="this.style.transform='scale(1.12)'" onmouseout="this.style.transform='scale(1)'">💬</a>
+<style>
+@keyframes waFabPulse{
+  0%,100%{box-shadow:0 4px 20px rgba(37,211,102,.4),0 0 0 0 rgba(37,211,102,.35);}
+  50%{box-shadow:0 4px 20px rgba(37,211,102,.4),0 0 0 12px rgba(37,211,102,0);}
+}
+/* Responsive footer grid */
+@media(max-width:640px){
+  footer .container>div:first-child{grid-template-columns:1fr!important;}
+}
+</style>
 </body>
 </html>
