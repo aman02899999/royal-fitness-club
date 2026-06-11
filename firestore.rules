@@ -126,5 +126,11 @@ service cloud.firestore {
       allow read: if request.auth != null;
       allow write: if isAdmin();
     }
+
+    // announcements/{aid} - gym-wide messages posted by admin, read by all members
+    match /announcements/{aid} {
+      allow read: if request.auth != null;
+      allow write: if isAdmin();
+    }
   }
 }

@@ -1259,6 +1259,13 @@ img{loading:lazy;}
   </div>
   <button class="ggate-logout" onclick="firebase.auth().signOut().then(()=>{document.getElementById('gym-gate').style.display='none';forceLogin();})">← Logout</button>
 </div>
+<!-- GYM ANNOUNCEMENT BANNER -->
+<div id="ann-banner" style="display:none;position:relative;z-index:92;background:linear-gradient(135deg,#1e3a5f,#172554);border-bottom:2px solid rgba(59,130,246,.3);padding:10px 48px 10px 20px;">
+  <div style="text-align:center;font-family:'Barlow Condensed',sans-serif;font-size:15px;letter-spacing:.8px;color:#bfdbfe;">
+    📢 <span id="ann-banner-text"></span>
+  </div>
+  <button onclick="this.parentElement.style.display='none'" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);background:transparent;border:none;color:#bfdbfe;font-size:18px;cursor:pointer;line-height:1;opacity:.75;">✕</button>
+</div>
 <!-- MEMBERSHIP EXPIRY WARNING BAR -->
 <div id="expiry-warn-bar" style="display:none;position:relative;z-index:91;background:linear-gradient(135deg,#92400e,#78350f);border-bottom:2px solid rgba(245,158,11,.35);padding:10px 48px 10px 20px;">
   <div style="text-align:center;font-family:'Barlow Condensed',sans-serif;font-size:15px;letter-spacing:.8px;color:#fde68a;">
@@ -1335,6 +1342,31 @@ img{loading:lazy;}
     <div class="hst"><div class="hst-n"><span class="px-pro">₹499</span></div><div class="hst-l">Digital Pro/Month</div></div>
   </div>
 </section>
+<!-- MEMBERSHIP STATUS STRIP (shown when logged in as gym member) -->
+<div id="member-status-strip" style="display:none;background:var(--card);border-top:2px solid var(--red);border-bottom:1px solid var(--border);position:relative;z-index:80;">
+  <div class="container" style="padding:12px 20px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;">
+    <div style="display:flex;align-items:center;gap:10px;">
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:32px;line-height:1;color:var(--green);" id="mss-days">—</div>
+      <div>
+        <div style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);">days remaining</div>
+        <div style="font-size:11px;color:var(--muted);" id="mss-expiry">—</div>
+      </div>
+    </div>
+    <div style="width:1px;height:32px;background:var(--border);flex-shrink:0;"></div>
+    <div>
+      <div style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);">Plan</div>
+      <div style="font-size:13px;font-weight:600;color:var(--text);" id="mss-plan">—</div>
+    </div>
+    <div style="width:1px;height:32px;background:var(--border);flex-shrink:0;"></div>
+    <div>
+      <div style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);">Member</div>
+      <div style="font-size:13px;font-weight:600;color:var(--text);" id="mss-name">—</div>
+    </div>
+    <div style="margin-left:auto;">
+      <button class="bsm" onclick="openProfile()" style="font-size:11px;padding:6px 14px;">👤 My Profile</button>
+    </div>
+  </div>
+</div>
 <section id="profile">
   <div class="container">
     <div class="prof-head">
@@ -2943,15 +2975,36 @@ function applyUser(){
     const pg=$('physio-gate');if(pg)pg.style.display='flex';
     if($('navtr'))$('navtr').innerHTML='TRACKER&nbsp;<span class="nav-pro-lock">PRO</span>';
   }
-  // Expiry warning bar
+  // Membership status strip + expiry warning bar
   if(user.membershipExpiry){
     const _exp=new Date(user.membershipExpiry);const _td=new Date();_td.setHours(0,0,0,0);
     const _dl=Math.ceil((_exp-_td)/86400000);
-    if(_dl>0&&_dl<=14){
+    const _expired=_dl<=0;
+    const PLAN_SS={'royal_elite':'👑 Royal Elite','royal_pro':'⚡ Royal Pro','basic':'🏋 Basic'};
+    // Status strip
+    const _strip=$('member-status-strip');
+    if(_strip){
+      $('mss-days').textContent=_expired?'EXP':_dl;
+      $('mss-days').style.color=_expired?'var(--red)':_dl<=14?'var(--gold)':'var(--green)';
+      $('mss-expiry').textContent=_expired?'Expired':'Expires '+_exp.toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'});
+      $('mss-plan').textContent=PLAN_SS[user.plan]||'Member';
+      $('mss-name').textContent=user.name||'—';
+      _strip.style.display='block';
+    }
+    // Warning bar
+    if(!_expired&&_dl<=14){
       $('expiry-warn-days').textContent=_dl;
       $('expiry-warn-date').textContent=_exp.toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'});
       $('expiry-warn-bar').style.display='block';
     }
+  }
+  // Load latest gym announcement
+  if(typeof firebase!=='undefined'){
+    firebase.firestore().collection('announcements')
+      .where('expiresAt','>',firebase.firestore.Timestamp.now())
+      .orderBy('expiresAt','desc').limit(1).get()
+      .then(snap=>{if(!snap.empty){const t=snap.docs[0].data().text;if(t){$('ann-banner-text').textContent=t;$('ann-banner').style.display='block';}}})
+      .catch(()=>{});
   }
   if(window.AnalyticsService)window.AnalyticsService.trackEvent('login',{plan:user.plan||'free'}).catch(()=>{});
   if(user.uid&&typeof loadLeaderboard==='function')loadLeaderboard();

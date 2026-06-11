@@ -222,6 +222,25 @@ tr:hover td{background:rgba(255,255,255,.02);}
       </div>
     </div>
 
+    <!-- ANNOUNCEMENTS -->
+    <div class="panel" style="margin-bottom:20px;">
+      <div class="panel-title">&#128226; Gym Announcements</div>
+      <div style="display:flex;gap:10px;align-items:flex-start;">
+        <textarea class="inp" id="ann-text" placeholder="Post a message to all members (e.g. Gym closed Sunday · New equipment arrived · Holiday schedule...)" style="resize:vertical;min-height:62px;flex:1;font-family:'Inter',sans-serif;font-size:13px;"></textarea>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <select class="sel" id="ann-duration" style="width:120px;">
+            <option value="1">1 day</option>
+            <option value="3" selected>3 days</option>
+            <option value="7">1 week</option>
+            <option value="14">2 weeks</option>
+            <option value="30">1 month</option>
+          </select>
+          <button class="btn-gen" style="font-size:14px;padding:10px 16px;margin-top:0;width:120px;" onclick="postAnnouncement()">&#128226; POST</button>
+        </div>
+      </div>
+      <div id="ann-list" style="margin-top:14px;display:flex;flex-direction:column;gap:8px;"></div>
+    </div>
+
     <!-- CODES TABLE -->
     <div class="table-section">
       <div class="table-header">
@@ -255,6 +274,7 @@ tr:hover td{background:rgba(255,255,255,.02);}
             <button class="tf-btn" onclick="filterMembers('expired',this)">Expired</button>
           </div>
           <input class="table-search" id="member-search" placeholder="Search name / email..." oninput="renderMembers()">
+          <button class="btn-sm" onclick="exportMembersCSV()" title="Download members as spreadsheet" style="border-color:rgba(34,197,94,.35);color:var(--green);padding:6px 12px;font-size:12px;">&#11015; Export CSV</button>
         </div>
       </div>
       <div id="members-loading" class="loading"><span class="spin"></span>Loading...</div>
@@ -418,7 +438,7 @@ function shareWhatsApp(){
 }
 
 // ── LOAD DATA ──
-function loadAll(){loadCodes();loadMembers();}
+function loadAll(){loadCodes();loadMembers();loadAnnouncements();}
 
 async function loadCodes(){
   document.getElementById('codes-loading').style.display='block';
@@ -687,6 +707,73 @@ function filterCodes(f,btn){codeFilter=f;document.querySelectorAll('.tf-btn').fo
 function copyCodeStr(c){navigator.clipboard.writeText(c).then(()=>toast('Copied!'));}
 async function delCode(c){if(!confirm('Delete code '+c+'?'))return;await db.collection('codes').doc(c).delete();toast('Deleted');loadAll();}
 document.getElementById('adm-pass').addEventListener('keydown',e=>{if(e.key==='Enter')adminLogin();});
+
+// ── CSV EXPORT ──
+function exportMembersCSV(){
+  const today=new Date();
+  const PLAN={'royal_elite':'Royal Elite','royal_pro':'Royal Pro','basic':'Basic'};
+  const rows=[['Name','Email','Phone','Plan','Join Date','Expiry','Status','Renewals','Member Code']];
+  allMembers.forEach(m=>{
+    const exp=getMemberExpiry(m);
+    rows.push([
+      m.name||'',m.email||'',m.phone||'',
+      PLAN[m.plan]||m.plan||'',
+      m.joinDate||'',
+      exp?exp.toLocaleDateString('en-IN'):'',
+      exp&&exp<today?'Expired':'Active',
+      m.renewalCount||0,
+      m.memberCode||''
+    ]);
+  });
+  const csv=rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(',')).join('\n');
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
+  a.download='rfc-members-'+new Date().toISOString().slice(0,10)+'.csv';
+  a.click();
+  toast('Members list downloaded!');
+}
+
+// ── ANNOUNCEMENTS ──
+async function loadAnnouncements(){
+  const now=firebase.firestore.Timestamp.now();
+  const snap=await db.collection('announcements').where('expiresAt','>',now).orderBy('expiresAt','desc').limit(10).get().catch(()=>null);
+  const list=document.getElementById('ann-list');
+  if(!snap||snap.empty){list.innerHTML='<div style="font-size:12px;color:var(--muted);">No active announcements.</div>';return;}
+  list.innerHTML=snap.docs.map(d=>{
+    const r=d.data();
+    const exp=r.expiresAt?.toDate?.();
+    const posted=r.createdAt?.toDate?.();
+    return `<div style="display:flex;align-items:flex-start;gap:10px;background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:10px 14px;">
+      <div style="flex:1;">
+        <div style="font-size:13px;color:var(--text);line-height:1.5;">${r.text||''}</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:4px;">Posted ${posted?posted.toLocaleDateString('en-IN',{day:'numeric',month:'short'}):'—'} · Expires ${exp?exp.toLocaleDateString('en-IN',{day:'numeric',month:'short'}):'—'}</div>
+      </div>
+      <button class="btn-del" onclick="deleteAnnouncement('${d.id}')">Del</button>
+    </div>`;
+  }).join('');
+}
+
+async function postAnnouncement(){
+  const text=document.getElementById('ann-text').value.trim();
+  const days=parseInt(document.getElementById('ann-duration').value)||3;
+  if(!text){toast('Enter a message first','gold');return;}
+  const expiresAt=new Date();expiresAt.setDate(expiresAt.getDate()+days);
+  await db.collection('announcements').add({
+    text,days,
+    expiresAt:firebase.firestore.Timestamp.fromDate(expiresAt),
+    createdAt:firebase.firestore.FieldValue.serverTimestamp(),
+    createdBy:adminUid
+  });
+  document.getElementById('ann-text').value='';
+  toast('Announcement posted!');
+  loadAnnouncements();
+}
+
+async function deleteAnnouncement(id){
+  await db.collection('announcements').doc(id).delete();
+  toast('Deleted');
+  loadAnnouncements();
+}
 </script>
 </body>
 </html>
