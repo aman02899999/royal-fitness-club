@@ -1153,6 +1153,11 @@ img{loading:lazy;}
 .pcc-badge.hormones{background:rgba(245,158,11,.1);color:#d97706;}
 .pcc-badge.recovery{background:rgba(56,189,248,.1);color:#0284c7;}
 .pcc-badge.supplements{background:rgba(168,85,247,.1);color:#9333ea;}
+.pcc-badge.anabolic{background:linear-gradient(135deg,rgba(220,38,38,.15),rgba(234,88,12,.1));color:#ef4444;border:1px solid rgba(220,38,38,.25);}
+.pcc-feats{list-style:none;padding:0;margin:6px 0 2px;display:flex;flex-direction:column;gap:3px;}
+.pcc-feats li{font-size:9.5px;color:#374151;display:flex;align-items:flex-start;gap:5px;line-height:1.35;}
+.pcc-feats li::before{content:'✓';color:#16a34a;font-weight:700;font-size:10px;flex-shrink:0;margin-top:0px;}
+.pcc-new-tag{position:absolute;top:10px;right:10px;background:linear-gradient(135deg,#ef4444,#f97316);color:#fff;font-size:8px;font-weight:700;letter-spacing:1.5px;padding:3px 7px;border-radius:3px;z-index:5;text-transform:uppercase;}
 .pcc-title{font-family:'Bebas Neue',sans-serif;font-size:17px;letter-spacing:.5px;color:#1e1b4b;line-height:1.15;margin-top:2px;}
 .pcc-sub{font-size:10px;color:#6b7280;line-height:1.4;flex:1;}
 .pcc-price-row{display:flex;align-items:baseline;gap:7px;margin-top:2px;}
@@ -2048,27 +2053,27 @@ img{loading:lazy;}
             <span>🔬 SARMs &amp; Peptides</span>
           </div>
           <ul class="bndl-list">
-            <li>✓ All 15 Expert Guides (₹4,285 value)</li>
+            <li>✓ All 20 Expert Guides (₹6,685 value)</li>
             <li>✓ Fitness &amp; Mindset Guidance</li>
-            <li>✓ Anabolic Full Guide</li>
-            <li>✓ Instant download for all 17 PDFs</li>
+            <li>✓ Anabolic Full Guide + Anabolic Series (5 PDFs)</li>
+            <li>✓ Instant download for all 22 PDFs</li>
             <li>✓ Lifetime access · Works on all devices</li>
           </ul>
           <div class="bndl-pricing">
-            <span class="bndl-orig">₹4,883</span>
+            <span class="bndl-orig">₹7,283</span>
             <span class="bndl-price">₹1,999</span>
-            <span class="bndl-save">SAVE ₹2,884 (59% OFF)</span>
+            <span class="bndl-save">SAVE ₹5,284 (73% OFF)</span>
           </div>
-          <button class="bndl-btn bndl-btn-gold" id="bndl-library-btn" onclick="buyBundle('library')">🏆 GET ALL 17 GUIDES — ₹1,999</button>
+          <button class="bndl-btn bndl-btn-gold" id="bndl-library-btn" onclick="buyBundle('library')">🏆 GET ALL 22 GUIDES — ₹1,999</button>
           <div class="bndl-owned" id="bndl-library-owned" style="display:none;">✅ You own the complete library — all guides available below</div>
         </div>
       </div>
       <hr class="bndl-divider">
     </div>
 
-    <div class="stag">Royal Knowledge Store — 17 Expert Guides</div>
+    <div class="stag">Royal Knowledge Store — 22 Expert Guides</div>
     <div class="sh">KNOWLEDGE GUIDES</div>
-    <p class="ssub">17 expert guides — from cutting cycles to mindset mastery. Pick what you need or build your complete transformation library.</p>
+    <p class="ssub">22 expert guides — from cutting cycles to anabolic series and mindset mastery. Pick what you need or build your complete transformation library.</p>
     <!-- Product selector -->
     <div class="store-product-tabs">
       <a class="sptab" href="#pdf-fitness-mindset">
@@ -2085,24 +2090,25 @@ img{loading:lazy;}
     </div>
 
     <!-- ═══════════════════════════════════════════════════ -->
-    <!-- ALL 15 PDF GUIDES CATALOG                          -->
+    <!-- ALL 20 PDF GUIDES CATALOG                          -->
     <!-- ═══════════════════════════════════════════════════ -->
     <div class="pdf-catalog-wrap" id="pdf-catalog-wrap">
       <div class="pdf-catalog-intro">
-        <div class="stag">All 15 Expert Guides</div>
+        <div class="stag">All 22 Expert Guides — Anabolic Series Now Available</div>
         <div class="sh">COMPLETE COLLECTION</div>
         <p class="ssub">Every guide written by Royal Fitness Club experts. One-time purchase · Instant download · Lifetime access.</p>
       </div>
       <!-- Stats -->
       <div class="pdf-allstats">
-        <div class="pdf-allstat"><div class="pdf-allstat-n">15</div><div class="pdf-allstat-l">Guides</div></div>
-        <div class="pdf-allstat"><div class="pdf-allstat-n">2,400+</div><div class="pdf-allstat-l">Copies Sold</div></div>
+        <div class="pdf-allstat"><div class="pdf-allstat-n">20</div><div class="pdf-allstat-l">Guides</div></div>
+        <div class="pdf-allstat"><div class="pdf-allstat-n">3,100+</div><div class="pdf-allstat-l">Copies Sold</div></div>
         <div class="pdf-allstat"><div class="pdf-allstat-n">4.9★</div><div class="pdf-allstat-l">Rating</div></div>
         <div class="pdf-allstat"><div class="pdf-allstat-n">₹199+</div><div class="pdf-allstat-l">From</div></div>
       </div>
       <!-- Filter -->
       <div class="pdf-cat-filter">
         <button class="pcf active" onclick="filterCatalog('all',this)">All</button>
+        <button class="pcf" onclick="filterCatalog('anabolic',this)">🔥 Anabolic Series</button>
         <button class="pcf" onclick="filterCatalog('advanced',this)">Advanced</button>
         <button class="pcf" onclick="filterCatalog('nutrition',this)">Nutrition</button>
         <button class="pcf" onclick="filterCatalog('hormones',this)">Hormones</button>
@@ -4336,6 +4342,12 @@ const PDF_PRODUCTS = {
   pdf_13:{desc:'Pre-Workout Optimization Guide',amount:19900,theme:'#9333ea',localKey:'bm_pdf_13',getUrl:()=>'/generated_pdfs/13_PreWorkout_Optimization_Guide.pdf'},
   pdf_14:{desc:'Natural Testosterone Optimization',amount:29900,theme:'#d97706',localKey:'bm_pdf_14',getUrl:()=>'/generated_pdfs/14_Natural_Testosterone_Optimization.pdf'},
   pdf_15:{desc:'Recovery, Sleep & CNS Restoration',amount:19900,theme:'#0284c7',localKey:'bm_pdf_15',getUrl:()=>'/generated_pdfs/15_Recovery_Sleep_CNS_Restoration.pdf'},
+  // ── Anabolic Series (Vol 16–20) ──
+  pdf_16:{desc:'Beginner Anabolic Cycle Complete Guide',amount:39900,theme:'#16a34a',localKey:'bm_pdf_16',getUrl:()=>'/generated_pdfs/16_Beginner_Anabolic_Cycle_Complete_Guide.pdf'},
+  pdf_17:{desc:'Intermediate Anabolic Cycle Blueprint',amount:49900,theme:'#4f46e5',localKey:'bm_pdf_17',getUrl:()=>'/generated_pdfs/17_Intermediate_Anabolic_Cycle_Blueprint.pdf'},
+  pdf_18:{desc:'Advanced Anabolic Cycle Mastery',amount:59900,theme:'#dc2626',localKey:'bm_pdf_18',getUrl:()=>'/generated_pdfs/18_Advanced_Anabolic_Cycle_Mastery.pdf'},
+  pdf_19:{desc:'PCT Post Cycle Therapy Complete Bible',amount:39900,theme:'#0891b2',localKey:'bm_pdf_19',getUrl:()=>'/generated_pdfs/19_PCT_Post_Cycle_Therapy_Complete_Bible.pdf'},
+  pdf_20:{desc:'Anabolic Cycle Nutrition & Supplementation Bible',amount:44900,theme:'#ea580c',localKey:'bm_pdf_20',getUrl:()=>'/generated_pdfs/20_Anabolic_Cycle_Nutrition_Supplementation_Bible.pdf'},
 };
 
 // ── PDF CATALOG DATA ──────────────────────────────────────────────────────
@@ -4354,7 +4366,13 @@ const PDF_CATALOG = [
   {id:'pdf_12',icon:'🍛',badge:'nutrition',cat:'NUTRITION',title:'Indian Nutrition Bible',sub:'Bodybuilder Edition · Desi Macros',orig:499,price:299,pages:'72 pages',rating:4.9,reviews:91,hot:'',thumb:'linear-gradient(145deg,#042f2e 0%,#0f766e 50%,#2dd4bf 100%)',ct:'INDIAN<br>NUTRITION<br>BIBLE',ed:'BODYBUILDER EDITION'},
   {id:'pdf_13',icon:'⚡',badge:'supplements',cat:'SUPPLEMENTS',title:'Pre-Workout Guide',sub:'Optimization & Stacking Protocols',orig:299,price:199,pages:'36 pages',rating:4.7,reviews:68,hot:'',thumb:'linear-gradient(145deg,#2e0f5e 0%,#7e22ce 50%,#d946ef 100%)',ct:'PRE-WORKOUT<br>GUIDE',ed:'STACKING PROTOCOLS'},
   {id:'pdf_14',icon:'🧪',badge:'hormones',cat:'HORMONES',title:'Natural Testosterone',sub:'Optimization Without Compounds',orig:499,price:299,pages:'68 pages',rating:4.8,reviews:118,hot:'',thumb:'linear-gradient(145deg,#3b1503 0%,#c2410c 50%,#fbbf24 100%)',ct:'NATURAL<br>TESTO&shy;STERONE',ed:'OPTIMIZATION GUIDE'},
-  {id:'pdf_15',icon:'😴',badge:'recovery',cat:'RECOVERY',title:'Recovery & CNS Restore',sub:'Sleep, HRV & Nervous System Guide',orig:299,price:199,pages:'40 pages',rating:4.9,reviews:72,hot:'',thumb:'linear-gradient(145deg,#082f49 0%,#0369a1 50%,#38bdf8 100%)',ct:'RECOVERY<br>& CNS<br>RESTORE',ed:'SLEEP & HRV GUIDE'},
+  {id:'pdf_15',icon:'😴',badge:'recovery',cat:'RECOVERY',title:'Recovery & CNS Restore',sub:'Sleep, HRV & Nervous System Guide',orig:299,price:199,pages:'40 pages',rating:4.9,reviews:72,hot:'',thumb:'linear-gradient(145deg,#082f49 0%,#0369a1 50%,#38bdf8 100%)',ct:'RECOVERY<br>& CNS<br>RESTORE',ed:'SLEEP & HRV GUIDE',feats:[]},
+  // ── Anabolic Series (NEW — Vol 16–20) ──
+  {id:'pdf_16',icon:'🟢',badge:'anabolic',cat:'ANABOLIC',title:'Beginner Anabolic Cycle',sub:'Complete Guide · Test-E Only · 10–12 Weeks',orig:699,price:399,pages:'8 pages',rating:5.0,reviews:18,hot:'🆕 NEW',thumb:'linear-gradient(145deg,#052e16 0%,#166534 40%,#16a34a 75%,#4ade80 100%)',ct:'BEGINNER<br>ANABOLIC<br>CYCLE',ed:'COMPLETE GUIDE 2024',feats:['Testosterone ester comparison table','Week-by-week 15-week schedule','Injection sites & sterility guide','Side effect management (9 types)','Full blood work testing panel','PCT protocol — Nolvadex + Clomid','On-cycle nutrition & training macros']},
+  {id:'pdf_17',icon:'🔵',badge:'anabolic',cat:'ANABOLIC',title:'Intermediate Anabolic Cycle',sub:'Blueprint · Test + Deca / Tren / Anavar',orig:899,price:499,pages:'6 pages',rating:5.0,reviews:14,hot:'🆕 NEW',thumb:'linear-gradient(145deg,#0f0c29 0%,#1e1b4b 35%,#3730a3 70%,#6366f1 100%)',ct:'INTERMEDIATE<br>ANABOLIC<br>BLUEPRINT',ed:'MULTI-COMPOUND 2024',feats:['5-stack comparison chart (Test+Var, Deca, Tren, Mast, Primo)','16-week full injection calendar','Prolactin control with Cabergoline','Trenbolone side effect management','Intermediate nutrition protocol','AI management (Anastrozole vs Aromasin)','11-item on-cycle supplement stack']},
+  {id:'pdf_18',icon:'🔴',badge:'anabolic',cat:'ANABOLIC',title:'Advanced Anabolic Mastery',sub:'Competition Prep · HGH · Blast & Cruise',orig:999,price:599,pages:'6 pages',rating:5.0,reviews:11,hot:'🆕 NEW',thumb:'linear-gradient(145deg,#3b0000 0%,#7f1d1d 35%,#b91c1c 70%,#f87171 100%)',ct:'ADVANCED<br>ANABOLIC<br>MASTERY',ed:'ELITE EDITION 2024',feats:['Competition prep 20-week protocol','HGH integration guide (1–8 IU protocols)','Blast & Cruise full calendar','Advanced health monitoring schedule','Multi-compound recovery & PCT','Insulin education (safety & risks)','Post-competition hormone recovery']},
+  {id:'pdf_19',icon:'🩺',badge:'anabolic',cat:'ANABOLIC',title:'PCT Complete Bible',sub:'HPTA Recovery · SERMs · HCG · Natural T',orig:699,price:399,pages:'6 pages',rating:5.0,reviews:22,hot:'🆕 NEW',thumb:'linear-gradient(145deg,#002020 0%,#065f46 40%,#0891b2 75%,#22d3ee 100%)',ct:'PCT<br>COMPLETE<br>BIBLE',ed:'RECOVERY EDITION 2024',feats:['HPTA anatomy & suppression explained','Nolvadex vs Clomid vs Enclomiphene table','HCG pre-PCT blast protocols','Natural testosterone recovery timeline','12-item natural recovery supplement stack','Blood work guide — what to test & when','Signs of successful vs failed PCT']},
+  {id:'pdf_20',icon:'🍊',badge:'anabolic',cat:'ANABOLIC',title:'Anabolic Nutrition Bible',sub:'Macros · Indian Meal Plans · Supplement Stack',orig:799,price:449,pages:'6 pages',rating:5.0,reviews:16,hot:'🆕 NEW',thumb:'linear-gradient(145deg,#1c0700 0%,#92400e 40%,#ea580c 72%,#fbbf24 100%)',ct:'ANABOLIC<br>NUTRITION<br>BIBLE',ed:'NUTRITION EDITION 2024',feats:['Macro framework for all cycle phases','Step-by-step calorie calculator','Weekly carb cycling template','Indian bulking plan 4000+ kcal/day','Indian cutting plan 2600 kcal/day','19-item on-cycle supplement stack','Optimal food sources & foods to avoid']},
 ];
 
 function renderCatalog(){
@@ -4380,12 +4398,14 @@ function renderCatalog(){
           <div class="pcc-cover-author">By Royal Fitness Club</div>
         </div>
         <div class="pcc-page-edges"></div>
+        ${p.hot&&p.hot.includes('NEW')?`<div class="pcc-new-tag">NEW</div>`:''}
       </div>
       <div class="pcc-body">
-        ${p.hot?`<div class="pcc-hot">${p.hot}</div>`:''}
+        ${p.hot&&!p.hot.includes('NEW')?`<div class="pcc-hot">${p.hot}</div>`:''}
         <div class="pcc-badge ${p.badge}">${p.cat}</div>
         <div class="pcc-title">${p.title}</div>
         <div class="pcc-sub">${p.sub}</div>
+        ${p.feats&&p.feats.length?`<ul class="pcc-feats">${p.feats.map(f=>`<li>${f}</li>`).join('')}</ul>`:''}
         <div class="pcc-stars">
           <span class="pcc-star-icons">${'★'.repeat(Math.floor(p.rating))}${p.rating%1?'½':''}</span>
           <span class="pcc-star-num">${p.rating}</span>
@@ -4571,9 +4591,9 @@ const BUNDLES = {
     includes: ['fitness_mindset', 'anabolic_full_guide'],
   },
   library: {
-    name: 'Complete Library — All 17 Expert Guides',
+    name: 'Complete Library — All 22 Expert Guides',
     amount: 199900,
-    includes: ['fitness_mindset','anabolic_full_guide','pdf_01','pdf_02','pdf_03','pdf_04','pdf_05','pdf_06','pdf_07','pdf_08','pdf_09','pdf_10','pdf_11','pdf_12','pdf_13','pdf_14','pdf_15'],
+    includes: ['fitness_mindset','anabolic_full_guide','pdf_01','pdf_02','pdf_03','pdf_04','pdf_05','pdf_06','pdf_07','pdf_08','pdf_09','pdf_10','pdf_11','pdf_12','pdf_13','pdf_14','pdf_15','pdf_16','pdf_17','pdf_18','pdf_19','pdf_20'],
   },
 };
 
