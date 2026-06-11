@@ -2008,7 +2008,7 @@ img{loading:lazy;}
     <!-- BUNDLE DEALS SECTION                               -->
     <!-- ═══════════════════════════════════════════════════ -->
     <div class="bundle-section" id="bundle-section">
-      <div class="bundle-eyebrow">⚡ LIMITED TIME OFFER — SAVE UP TO 59%</div>
+      <div class="bundle-eyebrow">⚡ LIMITED TIME OFFER — SAVE UP TO 73%</div>
       <div class="sh bundle-h">BUNDLE DEALS</div>
       <p class="bundle-sub">Get more guides, pay less. Biggest savings when you buy together.</p>
 
@@ -2037,11 +2037,40 @@ img{loading:lazy;}
           <div class="bndl-owned" id="bndl-duo-owned" style="display:none;">✅ You own both guides — check below to download</div>
         </div>
 
-        <!-- Bundle 2: Complete Library -->
+        <!-- Bundle 2: Anabolic Series -->
+        <div class="bndl-card" id="bndl-anabolic-card" style="border-color:rgba(220,38,38,.3);background:linear-gradient(160deg,#fff 60%,rgba(220,38,38,.03) 100%);">
+          <div class="bndl-badge" style="background:linear-gradient(135deg,#dc2626,#ea580c);">🔥 NEW SERIES</div>
+          <div class="bndl-name" style="color:#dc2626;">ANABOLIC SERIES BUNDLE</div>
+          <div class="bndl-count" style="color:#dc2626;">ALL 5 ANABOLIC GUIDES</div>
+          <div class="bndl-cats">
+            <span>🟢 Beginner Cycle</span>
+            <span>🔵 Intermediate</span>
+            <span>🔴 Advanced</span>
+            <span>🩵 PCT Protocol</span>
+            <span>🟠 Cycle Nutrition</span>
+          </div>
+          <ul class="bndl-list">
+            <li>✓ Beginner Anabolic Cycle Complete Guide</li>
+            <li>✓ Intermediate Anabolic Cycle Blueprint</li>
+            <li>✓ Advanced Anabolic Cycle Mastery</li>
+            <li>✓ PCT Post Cycle Therapy Bible</li>
+            <li>✓ Anabolic Nutrition &amp; Supplementation Bible</li>
+            <li>✓ Instant download for all 5 PDFs</li>
+          </ul>
+          <div class="bndl-pricing">
+            <span class="bndl-orig">₹2,345</span>
+            <span class="bndl-price" style="color:#dc2626;">₹999</span>
+            <span class="bndl-save" style="background:#dc2626;">SAVE ₹1,346 (57% OFF)</span>
+          </div>
+          <button class="bndl-btn" id="bndl-anabolic-btn" onclick="buyBundle('anabolic')" style="background:linear-gradient(135deg,#dc2626,#ea580c);">🔥 GET ANABOLIC SERIES — ₹999</button>
+          <div class="bndl-owned" id="bndl-anabolic-owned" style="display:none;">✅ You own the Anabolic Series — all 5 guides available below</div>
+        </div>
+
+        <!-- Bundle 3: Complete Library -->
         <div class="bndl-card bndl-best" id="bndl-library-card">
           <div class="bndl-badge bndl-badge-gold">🏆 BEST VALUE</div>
           <div class="bndl-name">THE COMPLETE LIBRARY</div>
-          <div class="bndl-count">ALL 17 EXPERT GUIDES</div>
+          <div class="bndl-count">ALL 22 EXPERT GUIDES</div>
           <div class="bndl-cats">
             <span>💪 Muscle Building</span>
             <span>🔥 Fat Loss</span>
@@ -2100,7 +2129,7 @@ img{loading:lazy;}
       </div>
       <!-- Stats -->
       <div class="pdf-allstats">
-        <div class="pdf-allstat"><div class="pdf-allstat-n">20</div><div class="pdf-allstat-l">Guides</div></div>
+        <div class="pdf-allstat"><div class="pdf-allstat-n">22</div><div class="pdf-allstat-l">Guides</div></div>
         <div class="pdf-allstat"><div class="pdf-allstat-n">3,100+</div><div class="pdf-allstat-l">Copies Sold</div></div>
         <div class="pdf-allstat"><div class="pdf-allstat-n">4.9★</div><div class="pdf-allstat-l">Rating</div></div>
         <div class="pdf-allstat"><div class="pdf-allstat-n">₹199+</div><div class="pdf-allstat-l">From</div></div>
@@ -4589,6 +4618,11 @@ const BUNDLES = {
     name: 'Transformation Duo (Both Flagship Guides)',
     amount: 44900,
     includes: ['fitness_mindset', 'anabolic_full_guide'],
+  },
+  anabolic: {
+    name: 'Anabolic Series Bundle — All 5 Guides',
+    amount: 99900,
+    includes: ['pdf_16','pdf_17','pdf_18','pdf_19','pdf_20'],
   },
   library: {
     name: 'Complete Library — All 22 Expert Guides',
