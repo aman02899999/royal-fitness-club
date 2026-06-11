@@ -1294,6 +1294,7 @@ img{loading:lazy;}
     <a href="#calculators" onclick="closeNav()">Tools</a>
     <a href="#physio" onclick="closeNav()">Physio</a>
     <a href="#dashboard" onclick="closeNav()">Dashboard</a>
+    <a href="#workoutlog" onclick="closeNav()">Log</a>
     <a href="#arena" onclick="closeNav()">Arena</a>
     <a href="javascript:void(0)" style="color:var(--gold);" onclick="openModal('elitemodal');closeNav()">👑 Elite</a>
     <div class="ndrop">
@@ -1406,6 +1407,11 @@ img{loading:lazy;}
         <div class="prof-pay-row"><span id="pp-method-label">Payment Method</span><span id="pp-method">—</span></div>
         <button class="prof-btn upgrade" id="pp-action" onclick="openModal('promodal')">⬆ UPGRADE TO PRO — <span class="px-pro">₹499</span>/mo</button>
         <button class="prof-btn cancel" id="pp-cancel" onclick="cancelPro()" style="display:none;">Cancel Subscription</button>
+        <!-- Digital Membership Card -->
+        <div style="margin-top:16px;">
+          <canvas id="member-card-canvas" width="340" height="200" style="width:100%;max-width:340px;border-radius:12px;display:block;box-shadow:0 8px 32px rgba(0,0,0,.4);"></canvas>
+          <button onclick="downloadMemberCard()" style="width:100%;margin-top:8px;background:transparent;border:1px solid var(--border);color:var(--muted);padding:8px;border-radius:6px;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:1.5px;cursor:pointer;">📲 SAVE CARD TO PHONE</button>
+        </div>
       </div>
       <!-- Account details -->
       <div class="prof-card">
@@ -1934,6 +1940,17 @@ img{loading:lazy;}
         <p style="text-align:center;font-size:11px;color:var(--muted);margin-top:10px;" id="water-msg">Start logging your water. Goal: 2500 ml/day.</p>
       </div>
     </div>
+    <!-- ── SUPPLEMENT TRACKER ──────────────────────── -->
+    <div style="margin-top:24px;">
+      <div class="rctitle">💊 Daily Supplement Tracker</div>
+      <div class="rcard" id="supp-card">
+        <div id="supp-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;"></div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding-top:12px;border-top:1px solid var(--border);">
+          <span style="font-size:12px;color:var(--muted);">Taken today: <strong id="supp-count" style="color:var(--green);">0</strong> / <span id="supp-total">0</span></span>
+          <button onclick="resetSupplements()" style="background:transparent;border:1px solid var(--border);color:var(--muted);padding:5px 12px;border-radius:6px;font-size:11px;cursor:pointer;">Reset</button>
+        </div>
+      </div>
+    </div>
     <div style="margin-top:24px;">
       <div class="rctitle">🛒 Weekly Grocery List (from your meal plan)</div>
       <div class="rcard" id="grocerybox"><p style="font-size:13px;color:var(--muted);">Calculate your plan above to generate your grocery list.</p></div>
@@ -1985,6 +2002,46 @@ img{loading:lazy;}
     <div style="margin-top:22px;text-align:center;"><button class="bfire" onclick="savePDF()" style="justify-content:center;display:inline-flex;">📄 Export Full PDF Report</button></div>
   </div>
 </section>
+<div class="divider"></div>
+<!-- ══════════════════════════════════════════════════════ -->
+<!-- WORKOUT LOGGER                                        -->
+<!-- ══════════════════════════════════════════════════════ -->
+<section id="workoutlog">
+  <div class="container">
+    <div class="stag">Daily Training Log</div>
+    <div class="sh">LOG TODAY'S SESSION</div>
+    <p class="ssub">Track every set, every rep. Build an unbreakable record of your progress.</p>
+
+    <!-- Muscle focus pills -->
+    <div id="wl-focus-row" style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:24px 0 0;"></div>
+    <p style="text-align:center;font-size:11px;color:var(--muted);margin-top:8px;" id="wl-focus-label">Select today's muscle focus</p>
+
+    <!-- Exercise rows -->
+    <div class="rcard" style="margin-top:20px;padding:20px;">
+      <div class="rctitle" style="margin-bottom:14px;">Exercises</div>
+      <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr 32px;gap:6px;margin-bottom:8px;padding:0 4px;">
+        <div style="font-size:10px;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;">Exercise</div>
+        <div style="font-size:10px;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;text-align:center;">Sets</div>
+        <div style="font-size:10px;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;text-align:center;">Reps</div>
+        <div style="font-size:10px;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;text-align:center;">Kg</div>
+        <div></div>
+      </div>
+      <div id="wl-rows"></div>
+      <button onclick="addExerciseRow()" style="background:transparent;border:1px dashed var(--border);color:var(--muted);width:100%;padding:10px;border-radius:8px;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:1.5px;margin-top:10px;transition:border-color .2s;" onmouseover="this.style.borderColor='var(--red)'" onmouseout="this.style.borderColor='var(--border)'">+ ADD EXERCISE</button>
+    </div>
+
+    <!-- Notes -->
+    <div style="margin-top:14px;">
+      <textarea id="wl-notes" placeholder="Session notes — how did it feel? PRs? Injuries?" style="width:100%;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px;color:var(--text);font-family:'Barlow',sans-serif;font-size:13px;resize:vertical;min-height:72px;"></textarea>
+    </div>
+
+    <button onclick="saveWorkout()" class="bfire" style="width:100%;justify-content:center;margin-top:12px;font-size:15px;letter-spacing:2px;">💾 SAVE WORKOUT SESSION</button>
+
+    <!-- History -->
+    <div id="wl-history" style="margin-top:28px;"></div>
+  </div>
+</section>
+<div class="divider"></div>
 <section id="arena" style="background:var(--card2);">
   <div class="container">
     <div class="stag">Community Arena</div>
@@ -4270,6 +4327,8 @@ function renderProfile(){
   $('pa-reports').textContent=(JSON.parse(localStorage.getItem('bm_hist')||'[]')).length;
   let photoCount=0;if(localStorage.getItem('bm_photo_before'))photoCount++;if(localStorage.getItem('bm_photo_after'))photoCount++;
   $('pa-photos').textContent=photoCount;
+  // Draw digital membership card
+  setTimeout(drawMemberCard, 100);
 }
 function toggleEdit(){const e=$('ac-edit');if(e.style.display==='none'){$('ed-name').value=user.name||'';$('ed-phone').value=user.phone||'';e.style.display='block';}else e.style.display='none';}
 async function saveProfile(){
@@ -4754,6 +4813,278 @@ window.addEventListener('scroll',function(){
 restore();renderH();initUser();restorePhotos();initCurrency();initPDFStore();
 console.log('🔥 Royal Fitness Club SaaS v8.0 — Firebase Auth + Firestore Active!');
 
+// ════════ WORKOUT LOGGER ════════════════════════════════════════════════════
+const WL_MUSCLES=[
+  {label:'💪 Chest',val:'chest'},
+  {label:'🔙 Back',val:'back'},
+  {label:'🔼 Shoulders',val:'shoulders'},
+  {label:'💪 Arms',val:'arms'},
+  {label:'🦵 Legs',val:'legs'},
+  {label:'🎯 Core',val:'core'},
+  {label:'🏃 Cardio',val:'cardio'},
+  {label:'⚡ Full Body',val:'fullbody'},
+];
+let _wlFocus='';
+
+function initWorkoutLogger(){
+  const row=document.getElementById('wl-focus-row');
+  if(!row)return;
+  row.innerHTML=WL_MUSCLES.map(m=>`
+    <button onclick="selectMuscle('${m.val}',this)" style="
+      background:var(--card);border:1px solid var(--border);color:var(--muted);
+      padding:7px 14px;border-radius:20px;font-family:'Barlow Condensed',sans-serif;
+      font-size:12px;font-weight:700;letter-spacing:1px;cursor:pointer;transition:all .15s;
+    ">${m.label}</button>
+  `).join('');
+  // Add first exercise row
+  addExerciseRow();
+  loadWorkoutHistory();
+}
+
+function selectMuscle(val,btn){
+  _wlFocus=val;
+  document.querySelectorAll('#wl-focus-row button').forEach(b=>{
+    b.style.background='var(--card)';b.style.borderColor='var(--border)';b.style.color='var(--muted)';
+  });
+  btn.style.background='var(--red)';btn.style.borderColor='var(--red)';btn.style.color='#fff';
+  document.getElementById('wl-focus-label').textContent='Focus: '+btn.textContent;
+}
+
+function addExerciseRow(){
+  const wrap=document.getElementById('wl-rows');if(!wrap)return;
+  const idx=wrap.children.length;
+  const row=document.createElement('div');
+  row.style.cssText='display:grid;grid-template-columns:2fr 1fr 1fr 1fr 32px;gap:6px;margin-bottom:6px;align-items:center;';
+  row.innerHTML=`
+    <input placeholder="e.g. Bench Press" style="background:var(--bg);border:1px solid var(--border);color:var(--text);padding:8px 10px;border-radius:6px;font-family:'Barlow',sans-serif;font-size:13px;">
+    <input type="number" placeholder="4" min="1" max="20" style="background:var(--bg);border:1px solid var(--border);color:var(--text);padding:8px;border-radius:6px;text-align:center;font-size:13px;">
+    <input type="number" placeholder="12" min="1" max="100" style="background:var(--bg);border:1px solid var(--border);color:var(--text);padding:8px;border-radius:6px;text-align:center;font-size:13px;">
+    <input type="number" placeholder="60" min="0" step="2.5" style="background:var(--bg);border:1px solid var(--border);color:var(--text);padding:8px;border-radius:6px;text-align:center;font-size:13px;">
+    <button onclick="this.parentElement.remove()" style="background:transparent;border:none;color:var(--muted);font-size:18px;cursor:pointer;padding:0;line-height:1;">✕</button>
+  `;
+  wrap.appendChild(row);
+}
+
+async function saveWorkout(){
+  if(!user){toast('Please log in first','gold');forceLogin();return;}
+  const rows=[...document.querySelectorAll('#wl-rows>div')];
+  const exercises=rows.map(r=>{
+    const inputs=r.querySelectorAll('input');
+    return{name:inputs[0].value.trim(),sets:inputs[1].value||'—',reps:inputs[2].value||'—',kg:inputs[3].value||'—'};
+  }).filter(e=>e.name);
+  if(!exercises.length){toast('Add at least one exercise','gold');return;}
+  const session={
+    date:new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}),
+    ts:Date.now(),
+    focus:_wlFocus,
+    exercises,
+    notes:document.getElementById('wl-notes').value.trim(),
+  };
+  // Save to localStorage immediately
+  const key='rfc_workouts_'+user.uid;
+  let logs=[];try{logs=JSON.parse(localStorage.getItem(key)||'[]');}catch(e){}
+  logs.unshift(session);logs=logs.slice(0,20);
+  localStorage.setItem(key,JSON.stringify(logs));
+  // Persist to Firestore (merge into activity doc)
+  try{
+    await firebase.firestore().collection('activity').doc(user.uid).set(
+      {workoutLog:logs.slice(0,10)},{merge:true}
+    );
+  }catch(e){}
+  // Reset form
+  document.getElementById('wl-rows').innerHTML='';
+  document.getElementById('wl-notes').value='';
+  _wlFocus='';
+  document.querySelectorAll('#wl-focus-row button').forEach(b=>{
+    b.style.background='var(--card)';b.style.borderColor='var(--border)';b.style.color='var(--muted)';
+  });
+  document.getElementById('wl-focus-label').textContent='Select today\'s muscle focus';
+  addExerciseRow();
+  loadWorkoutHistory();
+  toast('💪 Session saved! Keep grinding.','fire');
+}
+
+function loadWorkoutHistory(){
+  const wrap=document.getElementById('wl-history');if(!wrap)return;
+  const key=user?'rfc_workouts_'+user.uid:null;
+  let logs=[];
+  if(key){try{logs=JSON.parse(localStorage.getItem(key)||'[]');}catch(e){}}
+  if(!logs.length){wrap.innerHTML='<p style="text-align:center;font-size:13px;color:var(--muted);">No sessions logged yet. Start your first session above.</p>';return;}
+  wrap.innerHTML=`
+    <div class="rctitle" style="margin-bottom:14px;">Recent Sessions</div>
+    ${logs.slice(0,5).map(s=>`
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:10px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--text);letter-spacing:.5px;">${s.date}</div>
+          ${s.focus?`<span style="background:var(--red);color:#fff;font-size:9px;font-weight:700;letter-spacing:1.5px;padding:3px 8px;border-radius:3px;text-transform:uppercase;">${s.focus}</span>`:''}
+        </div>
+        <div style="display:flex;flex-direction:column;gap:4px;">
+          ${s.exercises.map(e=>`
+            <div style="display:flex;gap:10px;font-size:12px;color:var(--muted);">
+              <span style="color:var(--text);font-weight:600;min-width:130px;">${e.name}</span>
+              <span>${e.sets} sets</span>
+              <span>×</span>
+              <span>${e.reps} reps</span>
+              ${e.kg&&e.kg!=='—'?`<span>@ ${e.kg} kg</span>`:''}
+            </div>
+          `).join('')}
+        </div>
+        ${s.notes?`<div style="margin-top:8px;font-size:11px;color:var(--muted);font-style:italic;">"${s.notes}"</div>`:''}
+      </div>
+    `).join('')}
+  `;
+}
+
+// Init workout logger when section scrolled into view
+const _wlObs=new IntersectionObserver(entries=>{
+  if(entries[0].isIntersecting){initWorkoutLogger();_wlObs.disconnect();}
+},{threshold:.1});
+const _wlSec=document.getElementById('workoutlog');
+if(_wlSec) _wlObs.observe(_wlSec);
+
+// ════════ SUPPLEMENT TRACKER ═════════════════════════════════════════════════
+const SUPPS=[
+  {id:'protein',name:'Protein Powder',icon:'🥛'},
+  {id:'creatine',name:'Creatine (5g)',icon:'⚡'},
+  {id:'multivit',name:'Multivitamin',icon:'💊'},
+  {id:'fishoil',name:'Fish Oil / Omega-3',icon:'🐟'},
+  {id:'vitd',name:'Vitamin D3',icon:'☀️'},
+  {id:'zinc',name:'Zinc + Magnesium',icon:'🔋'},
+  {id:'preworkout',name:'Pre-Workout',icon:'🔥'},
+  {id:'melatonin',name:'Melatonin (sleep)',icon:'🌙'},
+];
+const SUPP_KEY='rfc_supps_'+new Date().toDateString();
+
+function initSuppTracker(){
+  const grid=document.getElementById('supp-grid');if(!grid)return;
+  let taken={};try{taken=JSON.parse(localStorage.getItem(SUPP_KEY)||'{}');}catch(e){}
+  grid.innerHTML=SUPPS.map(s=>`
+    <label style="display:flex;align-items:center;gap:8px;padding:10px 12px;background:${taken[s.id]?'rgba(34,197,94,.08)':'var(--bg)'};border:1px solid ${taken[s.id]?'rgba(34,197,94,.25)':'var(--border)'};border-radius:8px;cursor:pointer;transition:all .15s;">
+      <input type="checkbox" ${taken[s.id]?'checked':''} onchange="toggleSupp('${s.id}',this)" style="accent-color:var(--green);width:15px;height:15px;cursor:pointer;">
+      <span style="font-size:15px;">${s.icon}</span>
+      <span style="font-size:12px;color:var(--text);font-weight:600;">${s.name}</span>
+    </label>
+  `).join('');
+  updateSuppCount(taken);
+}
+
+function toggleSupp(id,cb){
+  let taken={};try{taken=JSON.parse(localStorage.getItem(SUPP_KEY)||'{}');}catch(e){}
+  if(cb.checked) taken[id]=true; else delete taken[id];
+  localStorage.setItem(SUPP_KEY,JSON.stringify(taken));
+  // Restyle the label
+  const lbl=cb.parentElement;
+  lbl.style.background=cb.checked?'rgba(34,197,94,.08)':'var(--bg)';
+  lbl.style.borderColor=cb.checked?'rgba(34,197,94,.25)':'var(--border)';
+  updateSuppCount(taken);
+  if(Object.keys(taken).length===SUPPS.length) toast('🌟 All supplements taken today! Excellent.','fire');
+}
+
+function updateSuppCount(taken){
+  const n=Object.keys(taken).length;
+  const el=document.getElementById('supp-count');if(el) el.textContent=n;
+  const t=document.getElementById('supp-total');if(t) t.textContent=SUPPS.length;
+  el&&(el.style.color=n===SUPPS.length?'var(--green)':n>SUPPS.length/2?'var(--gold)':'var(--muted)');
+}
+
+function resetSupplements(){
+  localStorage.removeItem(SUPP_KEY);
+  initSuppTracker();
+  toast('Supplement log reset','gold');
+}
+
+// ════════ DIGITAL MEMBERSHIP CARD ═══════════════════════════════════════════
+function drawMemberCard(){
+  const canvas=document.getElementById('member-card-canvas');
+  if(!canvas||!user)return;
+  const ctx=canvas.getContext('2d');
+  const W=340,H=200;
+
+  // Background gradient
+  const bg=ctx.createLinearGradient(0,0,W,H);
+  bg.addColorStop(0,'#0a0a0a');bg.addColorStop(.6,'#1a0505');bg.addColorStop(1,'#0f0000');
+  ctx.fillStyle=bg;ctx.beginPath();ctx.roundRect(0,0,W,H,12);ctx.fill();
+
+  // Decorative circle glow
+  const glow=ctx.createRadialGradient(W*.85,H*.2,5,W*.85,H*.2,120);
+  glow.addColorStop(0,'rgba(232,0,29,.25)');glow.addColorStop(1,'rgba(0,0,0,0)');
+  ctx.fillStyle=glow;ctx.fillRect(0,0,W,H);
+
+  // Top red stripe
+  const stripe=ctx.createLinearGradient(0,0,W,0);
+  stripe.addColorStop(0,'#e8001d');stripe.addColorStop(.5,'#ff4444');stripe.addColorStop(1,'#e8001d');
+  ctx.fillStyle=stripe;ctx.fillRect(0,0,W,4);
+
+  // Subtle grid lines
+  ctx.strokeStyle='rgba(232,0,29,.06)';ctx.lineWidth=1;
+  for(let x=0;x<W;x+=30){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();}
+  for(let y=0;y<H;y+=30){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
+
+  // Brand name
+  ctx.fillStyle='rgba(255,255,255,.9)';ctx.font='bold 11px "Arial Narrow",Arial,sans-serif';
+  ctx.letterSpacing='4px';ctx.fillText('ROYAL  FITNESS  CLUB',18,30);
+  ctx.letterSpacing='0px';
+
+  // "MEMBERS CARD" label
+  ctx.fillStyle='rgba(232,0,29,.8)';ctx.font='bold 8px Arial';
+  ctx.fillText('● MEMBERS CARD',18,45);
+
+  // Member name (large)
+  ctx.fillStyle='#ffffff';ctx.font='bold 22px "Arial Narrow",Arial,sans-serif';
+  const name=(user.name||'Member').toUpperCase();
+  ctx.fillText(name,18,90);
+
+  // Plan badge
+  const plan=(user.plan||'Member').toUpperCase();
+  const planW=ctx.measureText(plan).width+16;
+  const planGrad=ctx.createLinearGradient(18,95,18+planW,110);
+  planGrad.addColorStop(0,'#e8001d');planGrad.addColorStop(1,'#ff4444');
+  ctx.fillStyle=planGrad;ctx.beginPath();ctx.roundRect(18,98,planW,18,4);ctx.fill();
+  ctx.fillStyle='#fff';ctx.font='bold 9px Arial';ctx.fillText(plan,26,110);
+
+  // Days remaining
+  if(user.membershipExpiry){
+    const exp=new Date(user.membershipExpiry);
+    const today=new Date();today.setHours(0,0,0,0);
+    const days=Math.ceil((exp-today)/86400000);
+    const expired=days<=0;
+    ctx.font='bold 36px "Arial Narrow",Arial,sans-serif';
+    ctx.fillStyle=expired?'#ef4444':days<=14?'#f59e0b':'#22c55e';
+    ctx.fillText(expired?'EXP':days,W-80,90);
+    ctx.fillStyle='rgba(255,255,255,.4)';ctx.font='9px Arial';
+    ctx.fillText(expired?'EXPIRED':'DAYS LEFT',W-80,104);
+    ctx.fillStyle='rgba(255,255,255,.35)';ctx.font='9px Arial';
+    ctx.fillText('Expires '+exp.toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}),18,145);
+  }
+
+  // Member code
+  if(user.memberCode){
+    ctx.fillStyle='rgba(255,255,255,.2)';ctx.font='10px "Courier New",monospace';
+    ctx.fillText('CODE: '+user.memberCode,18,160);
+  }
+
+  // Since date
+  if(user.since){
+    ctx.fillStyle='rgba(255,255,255,.2)';ctx.font='9px Arial';
+    ctx.fillText('Member since '+user.since,18,175);
+  }
+
+  // Bottom stripe
+  const bot=ctx.createLinearGradient(0,H-4,W,H-4);
+  bot.addColorStop(0,'#e8001d');bot.addColorStop(.5,'#ff4444');bot.addColorStop(1,'#e8001d');
+  ctx.fillStyle=bot;ctx.fillRect(0,H-4,W,4);
+}
+
+function downloadMemberCard(){
+  const canvas=document.getElementById('member-card-canvas');
+  if(!canvas)return;
+  const link=document.createElement('a');
+  link.download='RFC-Member-Card.png';
+  link.href=canvas.toDataURL('image/png');
+  link.click();
+  toast('📲 Card saved! Add it to your photos.','fire');
+}
+
 // ── SERVICE WORKER REGISTRATION ──────────────────────────────────────────────
 if('serviceWorker' in navigator){
   window.addEventListener('load',()=>{
@@ -4815,8 +5146,11 @@ function logWater(delta){
   renderWaterCups();
   if(delta>0 && _waterMl>0 && _waterMl%1000===0) toast(`💧 ${_waterMl/1000}L logged! Stay hydrated.`,'gold');
 }
-// Init water tracker when DOM ready
-document.addEventListener('DOMContentLoaded',()=>renderWaterCups());
+// Init water tracker + supplement tracker when DOM ready
+document.addEventListener('DOMContentLoaded',()=>{
+  renderWaterCups();
+  initSuppTracker();
+});
 </script>
 
 <!-- ── WHATSAPP FLOATING BUTTON ──────────────────────────────────────────── -->
