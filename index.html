@@ -917,22 +917,29 @@ img{loading:lazy;}
 #store .pdf-stat-lbl{color:var(--sm);}
 
 /* Hero / book area */
-#store .pdf-pages-tag{color:var(--sm);}
-#store .pdf-rating-cnt{color:var(--sm);}
+/* ── Force all text readable on white/violet store bg (override global p !important) ── */
+#store p{color:#374151 !important;}
+#store .ssub{color:var(--sm)!important;}
+
+#store .pdf-pages-tag{color:var(--sm)!important;}
+#store .pdf-rating-cnt{color:var(--sm)!important;}
 
 /* What's inside */
-#store .pdf-what-inside h3{color:var(--sv);}
-#store .pdf-chap-list li{color:#374151;}
+#store .pdf-what-inside h3{color:var(--sv)!important;}
+#store .pdf-chap-list li{color:#374151 !important;}
 
 /* Price box */
 #store .pdf-price-box{background:#fff;border:1.5px solid var(--sb);box-shadow:0 4px 20px rgba(124,58,237,.08);}
-#store .pdf-orig-price{color:#9ca3af;}
-#store .pdf-price{color:var(--sv);}
-#store .pdf-discount-tag{background:var(--sv);color:#fff;}
-#store .pdf-price-note{color:var(--sm);}
-#store .pdf-trust-badge{color:var(--sm);}
+#store .pdf-orig-price{color:#9ca3af !important;}
+#store .pdf-price{color:var(--sv)!important;}
+#store .pdf-discount-tag{background:var(--sv);color:#fff !important;}
+#store .pdf-price-note{color:var(--sm)!important;}
+#store .pdf-trust-badge{color:var(--sm)!important;}
 
-/* Buy button — violet gradient */
+/* FM buy button keeps blue (overrides violet !important above) */
+#store #fm-buy-btn{background:linear-gradient(135deg,#0050a0,#0080ff)!important;}
+
+/* Buy button — violet gradient for Anabolic */
 #store .pdf-buy-btn{
   background:linear-gradient(135deg,var(--sv),var(--sv2))!important;
   box-shadow:0 4px 20px rgba(124,58,237,.35)!important;
@@ -945,35 +952,35 @@ img{loading:lazy;}
 #store .pdf-reviews-section h3{color:var(--sv);}
 #store .pdf-review{background:#fff;border:1px solid var(--sb);box-shadow:0 2px 8px rgba(124,58,237,.05);}
 #store .pdf-rev-name2{color:var(--st);}
-#store .pdf-rev-date{color:var(--sm);}
-#store .pdf-rev-text{color:#4b5563;}
+#store .pdf-rev-date{color:var(--sm)!important;}
+#store .pdf-rev-text{color:#4b5563 !important;}
 #store .pdf-review-avatar{background:linear-gradient(135deg,var(--sv),var(--sv2))!important;}
 
 /* FAQ */
-#store .pdf-faq-section h3{color:var(--sv);}
+#store .pdf-faq-section h3{color:var(--sv)!important;}
 #store .faq-item{background:#fff;border:1px solid var(--sb);}
-#store .faq-q{color:var(--st);}
-#store .faq-a p{color:#6b7280;}
+#store .faq-q{color:var(--st)!important;}
+#store .faq-a p{color:#4b5563 !important;}
 #store .faq-q::after{color:var(--sv);}
 
 /* Bonus section */
 #store .pdf-bonus-section{
-  background:linear-gradient(135deg,rgba(124,58,237,.06),rgba(168,85,247,.04));
-  border:1px solid rgba(124,58,237,.2);
+  background:linear-gradient(135deg,rgba(124,58,237,.08),rgba(168,85,247,.05));
+  border:1px solid rgba(124,58,237,.25);
 }
 #store .pdf-bonus-tag{background:linear-gradient(135deg,var(--sv),var(--sv2));}
 #store .pdf-bonus-name{color:var(--sv)!important;}
-#store .pdf-bonus-desc{color:#6b7280;}
+#store .pdf-bonus-desc{color:#4b5563 !important;}
 #store .sh{color:#1e1b4b!important;}
 
 /* For/not-for */
 #store .pdf-for-box{background:#fff;border:1px solid var(--sb);box-shadow:0 2px 8px rgba(124,58,237,.05);}
-#store .pdf-for-li{color:#4b5563;}
+#store .pdf-for-li{color:#374151 !important;}
 
 /* Guarantee */
 #store .pdf-guarantee-box{background:#fff;border:2px solid rgba(34,197,94,.3);box-shadow:0 4px 16px rgba(34,197,94,.08);}
-#store .pdf-guarantee-text h4{color:#16a34a;}
-#store .pdf-guarantee-text p{color:#6b7280;}
+#store .pdf-guarantee-text h4{color:#16a34a !important;}
+#store .pdf-guarantee-text p{color:#4b5563 !important;}
 
 /* Final CTA */
 #store .pdf-final-cta{
@@ -2216,24 +2223,6 @@ img{loading:lazy;}
         </div>
       </div>
 
-      <!-- Final CTA -->
-      <div class="pdf-final-cta" style="background:linear-gradient(135deg,#00050d,#001a3a);">
-        <div class="stag" style="margin-bottom:8px;">Train Your Mind. Transform Your Body.</div>
-        <div class="sh" style="font-size:clamp(26px,5vw,48px);">GET THE MINDSET GUIDE</div>
-        <p style="color:#b0b0b0;max-width:480px;margin:10px auto 24px;font-size:14px;line-height:1.6;">The mental framework used by Royal Fitness Club's top-transforming members. 160+ pages of practical, science-backed guidance built for Indian athletes.</p>
-        <div style="display:flex;align-items:center;gap:14px;justify-content:center;flex-wrap:wrap;margin-bottom:16px;">
-          <div style="text-decoration:line-through;color:#888;font-family:'Bebas Neue',sans-serif;font-size:24px;">₹799</div>
-          <div style="font-family:'Bebas Neue',sans-serif;font-size:52px;color:#38bdf8;line-height:1;">₹299</div>
-          <span class="pdf-discount-tag" style="font-size:11px;">63% OFF TODAY</span>
-        </div>
-        <button class="pdf-buy-btn" style="max-width:360px;margin:0 auto;display:flex;justify-content:center;background:linear-gradient(135deg,#0050a0,#0080ff);" onclick="buyPDFProduct('fitness_mindset')">📥 GET INSTANT ACCESS — ₹299</button>
-        <div class="pdf-trust-row" style="margin-top:16px;">
-          <span class="pdf-trust-badge">🔒 Razorpay Secured</span>
-          <span class="pdf-trust-badge">📥 Instant Download</span>
-          <span class="pdf-trust-badge">📱 All Devices</span>
-          <span class="pdf-trust-badge">♾️ Lifetime Access</span>
-        </div>
-      </div>
     </div><!-- /pdf-fitness-mindset -->
 
     <!-- ═══════════════════════════════════════════════════ -->
