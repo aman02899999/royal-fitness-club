@@ -3,7 +3,25 @@
 <head>
 <meta charset="UTF-8">
 <meta name="theme-color" content="#e8001d">
-<meta name="description" content="Royal Fitness Club — India's most advanced gym ecosystem. AI-powered meal plans, body calculators, anabolic guides, and pro coaching.">
+<meta name="description" content="Royal Fitness Club — India's most advanced gym ecosystem. AI-powered meal plans, Beast Score calculator, anabolic guides, and pro coaching.">
+<meta name="keywords" content="gym membership, fitness app, AI meal plan, body fat calculator, beast score, anabolic guide, Indian diet plan, workout tracker, Royal Fitness Club">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://royal-fitness-club-7adc1.web.app/">
+<!-- Open Graph / Facebook / WhatsApp -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://royal-fitness-club-7adc1.web.app/">
+<meta property="og:title" content="Royal Fitness Club — India's Ultimate Beast Ecosystem">
+<meta property="og:description" content="AI meal plans · Beast Score calculator · 22 expert guides · Digital membership · Body composition analysis. Join India's most advanced gym platform.">
+<meta property="og:image" content="https://royal-fitness-club-7adc1.web.app/icons/icon-512x512.png">
+<meta property="og:image:width" content="512">
+<meta property="og:image:height" content="512">
+<meta property="og:locale" content="en_IN">
+<meta property="og:site_name" content="Royal Fitness Club">
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Royal Fitness Club — India's Ultimate Beast Ecosystem">
+<meta name="twitter:description" content="AI meal plans · Beast Score · 22 expert guides · Digital membership. India's most advanced gym platform.">
+<meta name="twitter:image" content="https://royal-fitness-club-7adc1.web.app/icons/icon-512x512.png">
 <link rel="manifest" href="/manifest.json">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -1540,7 +1558,7 @@ img{loading:lazy;}
         </div>
         <div class="row2">
           <div><label class="flbl">Neck (cm) <span style="font-size:10px;color:var(--muted);">for accurate BF%</span></label><input type="number" class="fi2" id="ineck" placeholder="37" min="20" max="65"></div>
-          <div id="hip-field" style="display:none;"><label class="flbl">Hip (cm) <span style="font-size:10px;color:var(--muted);">females only</span></label><input type="number" class="fi2" id="ihip" placeholder="95" min="50" max="160"></div>
+          <div id="hip-field" style="visibility:hidden;pointer-events:none;"><label class="flbl">Hip (cm) <span style="font-size:10px;color:var(--muted);">females only</span></label><input type="number" class="fi2" id="ihip" placeholder="95" min="50" max="160"></div>
         </div>
         <div><label class="flbl">Activity Level</label>
           <select class="fsel" id="iact">
@@ -3522,7 +3540,7 @@ function calculate(){
   if(window.AnalyticsService)window.AnalyticsService.trackEvent('calculator_used',{goal,diet}).catch(()=>{});
 }
 // ── HEALTH CHECKBOX VISUAL + GOAL→CALORIE AUTO-UPDATE + SPLIT TABS ──
-function toggleHipField(){const hf=$('hip-field');if(hf)hf.style.display=getGender()==='female'?'block':'none';}
+function toggleHipField(){const hf=$('hip-field');if(!hf)return;const f=getGender()==='female';hf.style.visibility=f?'visible':'hidden';hf.style.pointerEvents=f?'auto':'none';}
 document.querySelectorAll('input[name="gender"]').forEach(r=>r.addEventListener('change',toggleHipField));
 ['pcos','thyroid','diabetic'].forEach(h=>{const el=$('hc-'+h);if(el)el.addEventListener('change',()=>{el.closest('.hchk').classList.toggle('on',el.checked);});});
 function updateCalAdj(){const goal=getGoal();const note=$('caladj-note');if(goal==='loss'){$('icaladj').value=500;note.textContent='Auto-set to 500 kcal deficit for Fat Loss.';}else if(goal==='gain'){$('icaladj').value=350;note.textContent='Auto-set to 350 kcal surplus for Muscle Gain.';}else{$('icaladj').value=0;note.textContent='Maintenance — eating at your TDEE (no deficit/surplus).';}}

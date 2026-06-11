@@ -1,8 +1,9 @@
-const CACHE = 'rfc-v1';
+const CACHE = 'rfc-v2';
 const STATIC = [
   '/',
   '/index.html',
   '/admin.html',
+  '/404.html',
   '/manifest.json',
   '/icons/icon-192x192.png',
   '/icons/icon-512x512.png',
