@@ -84,24 +84,29 @@ def mk(tk):
 
 def tbl(headers, rows, tk, cw=None):
     t = THEMES[tk]
-    data = [headers] + rows
+    hdr_ps = ParagraphStyle('_th', fontName="Helvetica-Bold", fontSize=7.5,
+                            textColor=colors.white, alignment=TA_CENTER,
+                            leading=9, spaceAfter=0, spaceBefore=0)
+    cell_ps = ParagraphStyle('_td', fontName="Helvetica", fontSize=7.5,
+                             textColor=hx(t["text"]), alignment=TA_CENTER,
+                             leading=9, spaceAfter=0, spaceBefore=0)
+    def to_p(text, ps):
+        if isinstance(text, str):
+            return Paragraph(text.replace('\n', '<br/>'), ps)
+        return text
+    data = [[to_p(h, hdr_ps) for h in headers]] + \
+           [[to_p(c, cell_ps) for c in row] for row in rows]
     tb = Table(data, colWidths=cw, repeatRows=1)
     tb.setStyle(TableStyle([
-        ("BACKGROUND",   (0,0),(-1,0),  hx(t["hdr"])),
-        ("TEXTCOLOR",    (0,0),(-1,0),  colors.white),
-        ("FONTNAME",     (0,0),(-1,0),  "Helvetica-Bold"),
-        ("FONTSIZE",     (0,0),(-1,0),  8),
-        ("ALIGN",        (0,0),(-1,-1), "CENTER"),
-        ("VALIGN",       (0,0),(-1,-1), "MIDDLE"),
-        ("GRID",         (0,0),(-1,-1), 0.3, colors.HexColor("#2A2A2A")),
-        ("ROWBACKGROUNDS",(0,1),(-1,-1),[hx(t["row_odd"]),hx(t["row_even"])]),
-        ("TEXTCOLOR",    (0,1),(-1,-1), hx(t["text"])),
-        ("FONTNAME",     (0,1),(-1,-1), "Helvetica"),
-        ("FONTSIZE",     (0,1),(-1,-1), 7.5),
-        ("TOPPADDING",   (0,0),(-1,-1), 4),
-        ("BOTTOMPADDING",(0,0),(-1,-1), 4),
-        ("LEFTPADDING",  (0,0),(-1,-1), 5),
-        ("RIGHTPADDING", (0,0),(-1,-1), 5),
+        ("BACKGROUND",    (0,0),(-1,0),  hx(t["hdr"])),
+        ("ALIGN",         (0,0),(-1,-1), "CENTER"),
+        ("VALIGN",        (0,0),(-1,-1), "MIDDLE"),
+        ("GRID",          (0,0),(-1,-1), 0.3, colors.HexColor("#2A2A2A")),
+        ("ROWBACKGROUNDS",(0,1),(-1,-1), [hx(t["row_odd"]),hx(t["row_even"])]),
+        ("TOPPADDING",    (0,0),(-1,-1), 4),
+        ("BOTTOMPADDING", (0,0),(-1,-1), 4),
+        ("LEFTPADDING",   (0,0),(-1,-1), 5),
+        ("RIGHTPADDING",  (0,0),(-1,-1), 5),
     ]))
     return tb
 
@@ -222,17 +227,26 @@ def pdf_cutting(path):
     cw=[(W-72)*f for f in [0.18,0.09,0.13,0.12,0.48]]
     items.append(tbl(headers,[[c[0],c[1],c[2],c[3],c[4]] for c in compounds],TK,cw))
 
-    items += sh("3. 12-WEEK DOSAGE SCHEDULE", TK, s, "📅")
-    items.append(Paragraph("The protocol is divided into three distinct phases: <b>Foundation (Wks 1–3)</b> — establishing blood levels and tolerability; <b>Loading (Wks 4–8)</b> — full anabolic effect; <b>Peak & Finisher (Wks 9–12)</b> — maximum conditioning with oral finisher swap.", s["B"]))
-    sched=[["Phase","Wks","Test P\n(EOD)","Tren A\n(EOD)","Mast P\n(EOD)","Primo\n(Wk)","Anavar\n(Day)","Winny\n(Day)","Notes"],
-           ["Foundation","1–3","100mg","75mg","100mg","600mg","50mg","—","Assess tolerability; run AI proactively"],
-           ["Foundation","4","100mg","75mg","100mg","600mg","50mg","—","Begin Clen/T3 if desired"],
-           ["Loading","5–6","150mg","100mg","100mg","600mg","50mg","—","Peak compound loading"],
-           ["Loading","7–8","150mg","100mg","100mg","600mg","50mg","—","Monitor E2, prolactin, BP"],
-           ["Finisher","9–10","150mg","100mg","100mg","600mg","—","50mg","Switch to Winstrol"],
-           ["Finisher","11–12","150mg","100mg","100mg","600mg","—","50mg","Final peak conditioning"]]
-    cw2=[(W-72)*f for f in [0.13,0.06,0.09,0.09,0.09,0.09,0.09,0.09,0.27]]
-    items.append(tbl(sched[0],[r for r in sched[1:]],TK,cw2))
+    items += sh("3. 12-WEEK DOSAGE SCHEDULE — PHASE BREAKDOWN", TK, s, "📅")
+    items.append(Paragraph("Three distinct phases: <b>Foundation (Wks 1–4)</b> — establishing blood levels; <b>Loading (Wks 5–8)</b> — peak anabolic environment; <b>Finisher (Wks 9–12)</b> — maximum conditioning with oral compound swap. All short-ester injectables (Test P, Tren A, Mast P) are dosed <b>Every Other Day (EOD)</b>. Primo is split into two equal injections weekly.", s["B"]))
+    ph=[["Phase","Weeks","EOD Injectables (per pin)","Primobolan (wk)","Oral Compound"],
+        ["Foundation","1–4","Test P 100mg + Tren A 75mg + Mast P 100mg","2 × 300mg = 600mg","Anavar 50mg/day"],
+        ["Loading",   "5–8","Test P 150mg + Tren A 100mg + Mast P 100mg","2 × 300mg = 600mg","Anavar 50mg/day"],
+        ["Finisher",  "9–12","Test P 150mg + Tren A 100mg + Mast P 100mg","2 × 300mg = 600mg","Winstrol 50mg/day"]]
+    items.append(tbl(ph[0],[r for r in ph[1:]],TK,[(W-72)*f for f in [0.13,0.09,0.38,0.22,0.18]]))
+    items.append(Spacer(1,6))
+    items.append(Paragraph("<b>Day-Wise Weekly Injection Schedule (EOD Rotation — Foundation Phase Wks 1–4):</b>", s["SSH"]))
+    day=[["Day","Injectables (EOD Pin)","Dose Per Compound","Primo + Oral","AI / Ancillary"],
+         ["Monday","Test P + Tren A + Mast P","100mg + 75mg + 100mg","Primo 300mg · Anavar 25mg AM","Arimidex 0.5mg"],
+         ["Tuesday","— No injection —","—","Anavar 25mg PM","Cabergoline 0.25mg"],
+         ["Wednesday","Test P + Tren A + Mast P","100mg + 75mg + 100mg","Anavar 25mg AM","Arimidex 0.5mg"],
+         ["Thursday","— No injection —","—","Anavar 25mg PM","—"],
+         ["Friday","Test P + Tren A + Mast P","100mg + 75mg + 100mg","Primo 300mg · Anavar 25mg AM","Arimidex 0.5mg"],
+         ["Saturday","— No injection —","—","Anavar 25mg PM","Cabergoline 0.25mg"],
+         ["Sunday","Test P + Tren A + Mast P","100mg + 75mg + 100mg","Anavar 25mg AM","—"],
+    ]
+    items.append(tbl(day[0],[r for r in day[1:]],TK,[(W-72)*f for f in [0.13,0.23,0.22,0.24,0.18]]))
+    items.append(Paragraph("<i>Loading Phase (Wks 5–8): Increase Test P → 150mg, Tren A → 100mg per EOD pin. Finisher Phase (Wks 9–12): Swap Anavar → Winstrol 50mg/day split AM/PM.</i>", s["DIS"]))
     items.append(PageBreak())
 
     items += sh("4. ESTROGEN MANAGEMENT — AI PROTOCOL", TK, s, "🛡")
@@ -414,15 +428,26 @@ def pdf_bulking(path):
 
     items += sh("3. 12–16 WEEK DOSAGE TIMELINE", TK, s, "📅")
     items.append(Paragraph("The protocol divides into 3 phases. The <b>Kick-Start Phase (Wks 1–6)</b> uses Dbol to rapidly elevate anabolic state while long esters build up. The <b>Main Mass Phase (Wks 7–12)</b> achieves peak anabolic environment. The optional <b>Extension Phase (Wks 13–16)</b> is for athletes aiming for maximum gains.", s["B"]))
-    sched=[["Phase","Wks","Test E/C\n(Wk)","Deca\n(Wk)","Dbol\n(Day)","AI\n(EOD)","Caber\n(2×/wk)","Notes"],
-           ["Kick-Start","1–2","500 mg","400 mg","30 mg","0.5 mg","0.25 mg","Begin at lower dose; assess tolerability"],
-           ["Kick-Start","3–4","500 mg","400 mg","40 mg","0.5 mg","0.25 mg","Strength should noticeably increase"],
-           ["Kick-Start","5–6","750 mg","600 mg","50 mg","0.5 mg","0.25 mg","Peak Dbol phase; monitor liver"],
-           ["Main Mass","7–8","750 mg","600 mg","—","0.5 mg","0.25 mg","Dbol discontinued; liver relief"],
-           ["Main Mass","9–12","750 mg","600 mg","—","0.5 mg","0.25 mg","Peak anabolic window"],
-           ["Extension*","13–14","500 mg","400 mg","—","0.25 mg","0.25 mg","Optional — taper down"],
-           ["Extension*","15–16","500 mg","—","—","0.25 mg","0.25 mg","Pre-PCT clearance"]]
-    items.append(tbl(sched[0],[r for r in sched[1:]],TK,[(W-72)*f for f in [0.14,0.07,0.09,0.09,0.08,0.08,0.10,0.35]]))
+    sched=[["Phase","Weeks","Test E/C (per wk)","Deca (per wk)","Oral Dbol + AI Protocol"],
+           ["Kick-Start","1–2","500mg (250mg Mon+Thu)","400mg (Mon)","Dbol 30mg/day · Arimidex 0.5mg EOD · Caber 0.25mg Tue+Fri"],
+           ["Kick-Start","3–4","500mg (250mg Mon+Thu)","400mg (Mon)","Dbol 40mg/day · same AI · strength rises rapidly"],
+           ["Kick-Start","5–6","750mg (375mg Mon+Thu)","600mg (Mon)","Dbol 50mg/day · same AI · monitor liver (TUDCA mandatory)"],
+           ["Main Mass","7–12","750mg (375mg Mon+Thu)","600mg (Mon)","Dbol stopped · Arimidex 0.5mg EOD · Caber 0.25mg Tue+Fri"],
+           ["Extension*","13–14","500mg (250mg Mon+Thu)","400mg (Mon)","Arimidex 0.25mg EOD · Caber 0.25mg Tue+Fri · taper phase"],
+           ["Extension*","15–16","500mg (250mg Mon+Thu)","— stopped","Arimidex 0.25mg EOD · Deca clearing · pre-PCT prep"]]
+    items.append(tbl(sched[0],[r for r in sched[1:]],TK,[(W-72)*f for f in [0.14,0.09,0.20,0.18,0.39]]))
+    items.append(Spacer(1,6))
+    items.append(Paragraph("<b>Day-Wise Weekly Injection & Dosing Schedule:</b>", s["SSH"]))
+    day=[["Day","Test E/C","Deca","AI & Ancillary","Oral (Kick-Start Wks 1–6)"],
+         ["Monday","375mg (Main) / 250mg (Kick)","400–600mg","Arimidex 0.5mg","Dbol 15–25mg with meal"],
+         ["Tuesday","—","—","Cabergoline 0.25mg","Dbol 15–25mg with meal"],
+         ["Wednesday","—","—","—","Dbol 15–25mg with meal"],
+         ["Thursday","375mg (Main) / 250mg (Kick)","—","Arimidex 0.5mg","Dbol 15–25mg with meal"],
+         ["Friday","—","—","Cabergoline 0.25mg","Dbol 15–25mg with meal"],
+         ["Saturday","—","—","—","Dbol 15–25mg with meal"],
+         ["Sunday","—","—","—","Dbol 15–25mg with meal"]]
+    items.append(tbl(day[0],[r for r in day[1:]],TK,[(W-72)*f for f in [0.13,0.20,0.18,0.25,0.24]]))
+    items.append(Paragraph("<i>After Wks 1–6: Remove Dbol. Continue Test E/C + Deca with same AI protocol through the main mass phase.</i>", s["DIS"]))
     items.append(PageBreak())
 
     items += sh("4. PEPTIDE PROTOCOL", TK, s, "🧬")
@@ -587,13 +612,26 @@ def pdf_beginner(path):
                ["10-Week (Recommended)","400–500mg Test E, optional Dbol wks 1–6","14–16 days after last injection","Best balance of results vs recovery; recommended for most"],
                ["12-Week (Extended)","400–500mg Test E, optional Dbol wks 1–6","14–18 days after last injection","Maximum gains; longer recovery needed; experienced beginners"]]
     items.append(tbl(prot_rows[0],[r for r in prot_rows[1:]],TK,[(W-72)*f for f in [0.19,0.35,0.21,0.25]]))
-    sched=[["Week","Test E/C","Dbol (if added)","AI (Arimidex)","Notes"],
-           ["1–2","300–500 mg","20 mg/day","0.5 mg EOD","Begin AI from day 1"],
-           ["3–4","300–500 mg","30 mg/day","0.5 mg EOD","Blood work Week 4 optional"],
-           ["5–6","300–500 mg","30 mg/day","0.5 mg EOD","Stop Dbol at Week 6"],
-           ["7–10","300–500 mg","—","0.5 mg EOD","Core training weeks; maximize diet"],
-           ["11–12","300–500 mg","—","0.5 mg EOD","Final weeks; prep for PCT"]]
-    items.append(tbl(sched[0],[r for r in sched[1:]],TK,[(W-72)*f for f in [0.10,0.16,0.18,0.16,0.40]]))
+    items.append(Spacer(1,4))
+    sched=[["Weeks","Test E/C (2×/wk)","Dbol (optional)","Arimidex (EOD)","Notes"],
+           ["1–2","150–250mg Mon + 150–250mg Thu","20mg/day with meals","0.5mg every other day","Start AI from day 1; assess tolerance"],
+           ["3–4","150–250mg Mon + 150–250mg Thu","30mg/day with meals","0.5mg every other day","Blood work optional at Wk 4; note any symptoms"],
+           ["5–6","150–250mg Mon + 150–250mg Thu","30mg/day with meals","0.5mg every other day","Stop Dbol end of Wk 6; liver enzymes normalise"],
+           ["7–10","150–250mg Mon + 150–250mg Thu","— stopped","0.5mg every other day","Core training weeks; prioritise progressive overload"],
+           ["11–12","150–250mg Mon + 150–250mg Thu","—","0.5mg every other day","Final weeks; prepare nutrition + PCT supplies"]]
+    items.append(tbl(sched[0],[r for r in sched[1:]],TK,[(W-72)*f for f in [0.09,0.25,0.20,0.18,0.28]]))
+    items.append(Spacer(1,6))
+    items.append(Paragraph("<b>Day-Wise Weekly Dosing Schedule (Testosterone Twice-Weekly Protocol):</b>", s["SSH"]))
+    day=[["Day","Test E/C Injection","AI (Arimidex)","Oral Dbol (if using)","Notes"],
+         ["Monday","YES — 150–250mg (Pin 1 of 2)","0.5mg (take with meal)","15mg with breakfast","Inject glute or quad; rotate sites"],
+         ["Tuesday","—","—","15mg with breakfast","Rest or cardio day"],
+         ["Wednesday","—","0.5mg (EOD from Mon)","15mg with breakfast","AI dose falls here if EOD"],
+         ["Thursday","YES — 150–250mg (Pin 2 of 2)","0.5mg (take with meal)","15mg with breakfast","Second injection; maintain 3–4 day gap"],
+         ["Friday","—","—","15mg with breakfast","Training day — strength should be elevated"],
+         ["Saturday","—","0.5mg (EOD from Thu)","15mg with breakfast","AI dose; active recovery"],
+         ["Sunday","—","—","—","Rest day; prep food and supplements for week"]]
+    items.append(tbl(day[0],[r for r in day[1:]],TK,[(W-72)*f for f in [0.12,0.22,0.18,0.20,0.28]]))
+    items.append(Paragraph("<i>Tip: Set phone reminders for injection days (Mon + Thu) and AI days (Mon, Wed, Fri, Sun for EOD) to avoid missed doses.</i>", s["DIS"]))
     items.append(PageBreak())
 
     items += sh("6. AROMATASE INHIBITOR — COMPLETE GUIDE", TK, s, "🛡")
