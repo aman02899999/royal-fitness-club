@@ -1082,18 +1082,33 @@ img{loading:lazy;}
 .pdf-catalog-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;margin-top:28px;}
 .pcc{background:#fff;border:1.5px solid #e2d4f8;border-radius:12px;padding:0;display:flex;flex-direction:column;gap:0;transition:transform .2s,box-shadow .2s;position:relative;overflow:hidden;}
 .pcc:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(124,58,237,.18);}
-.pcc:hover .pcc-thumb-icon{transform:scale(1.1);}
-/* — thumbnail cover — */
-.pcc-thumb{position:relative;width:100%;height:128px;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;}
-.pcc-thumb::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.05) 0,rgba(255,255,255,.05) 1px,transparent 1px,transparent 14px);pointer-events:none;}
-.pcc-thumb::after{content:'';position:absolute;top:-40%;right:-15%;width:70%;height:170%;background:radial-gradient(ellipse,rgba(255,255,255,.18),transparent 65%);pointer-events:none;}
-.pcc-thumb-brand{position:absolute;top:9px;left:10px;font-family:'Barlow Condensed',sans-serif;font-size:7px;font-weight:700;letter-spacing:2.5px;color:rgba(255,255,255,.65);text-transform:uppercase;}
-.pcc-thumb-icon{font-size:46px;line-height:1;position:relative;z-index:1;filter:drop-shadow(0 3px 10px rgba(0,0,0,.35));transition:transform .25s ease;}
-.pcc-thumb-label{position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,.28);backdrop-filter:blur(2px);padding:4px 10px;display:flex;align-items:center;justify-content:space-between;}
-.pcc-thumb-cat-txt{font-family:'Bebas Neue',sans-serif;font-size:9px;letter-spacing:2px;color:rgba(255,255,255,.8);}
-.pcc-thumb-pages{font-family:'Barlow Condensed',sans-serif;font-size:8px;font-weight:600;color:rgba(255,255,255,.55);letter-spacing:.5px;}
-/* — card body — */
-.pcc-body{padding:13px 14px 14px;display:flex;flex-direction:column;gap:7px;flex:1;}
+.pcc:hover .pcc-cover-title{opacity:.85;}
+/* ── BOOK COVER THUMBNAIL ─────────────────────────────── */
+.pcc-thumb{position:relative;width:100%;height:156px;display:flex;flex-direction:row;overflow:hidden;flex-shrink:0;}
+/* diagonal gloss shimmer */
+.pcc-thumb::after{content:'';position:absolute;top:-60%;left:25%;width:40%;height:220%;background:linear-gradient(105deg,transparent 40%,rgba(255,255,255,.1) 50%,transparent 60%);pointer-events:none;z-index:4;}
+/* book spine — left dark strip */
+.pcc-book-spine{width:14px;flex-shrink:0;background:rgba(0,0,0,.38);position:relative;z-index:3;}
+.pcc-book-spine::after{content:'';position:absolute;right:0;top:0;bottom:0;width:1.5px;background:rgba(255,255,255,.18);}
+/* cover face */
+.pcc-cover-face{flex:1;display:flex;flex-direction:column;position:relative;overflow:hidden;padding:10px 22px 10px 12px;}
+/* subtle noise texture overlay */
+.pcc-cover-face::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(0,0,0,.04) 0,rgba(0,0,0,.04) 1px,transparent 1px,transparent 3px);pointer-events:none;z-index:1;}
+/* radial glow top-right */
+.pcc-cover-face::after{content:'';position:absolute;top:-30%;right:-10%;width:80%;height:130%;background:radial-gradient(ellipse,rgba(255,255,255,.15),transparent 65%);pointer-events:none;z-index:1;}
+/* PDF badge */
+.pcc-pdf-tag{position:absolute;top:8px;right:8px;background:rgba(255,255,255,.92);color:#111;font-family:'Bebas Neue',sans-serif;font-size:9px;letter-spacing:2.5px;padding:2px 7px;border-radius:3px;z-index:5;line-height:1.6;}
+/* cover text stack */
+.pcc-cover-inner{position:relative;z-index:2;flex:1;display:flex;flex-direction:column;justify-content:center;gap:0;}
+.pcc-cover-brand{font-family:'Barlow Condensed',sans-serif;font-size:6.5px;font-weight:700;letter-spacing:3px;color:rgba(255,255,255,.6);text-transform:uppercase;margin-bottom:5px;}
+.pcc-cover-rule{width:100%;height:1px;background:rgba(255,255,255,.28);margin:4px 0;}
+.pcc-cover-title{font-family:'Bebas Neue',sans-serif;font-size:20px;color:#fff;line-height:1.05;letter-spacing:.5px;text-shadow:0 2px 10px rgba(0,0,0,.45);transition:opacity .2s;}
+.pcc-cover-edition{font-family:'Barlow Condensed',sans-serif;font-size:7.5px;letter-spacing:2.5px;color:rgba(255,255,255,.55);text-transform:uppercase;margin-top:4px;}
+.pcc-cover-author{font-family:'Barlow Condensed',sans-serif;font-size:8px;font-style:italic;color:rgba(255,255,255,.55);margin-top:auto;padding-top:6px;position:relative;z-index:2;}
+/* right-side stacked pages effect */
+.pcc-page-edges{position:absolute;right:0;top:6px;bottom:6px;width:7px;z-index:3;background:repeating-linear-gradient(to bottom,rgba(255,255,255,.22) 0,rgba(255,255,255,.22) 1px,rgba(0,0,0,.08) 1px,rgba(0,0,0,.08) 3px);}
+/* ── card body ────────────────────────────────────────── */
+.pcc-body{padding:12px 14px 14px;display:flex;flex-direction:column;gap:7px;flex:1;}
 .pcc-icon{display:none;}
 .pcc-badge{font-size:8px;letter-spacing:2px;text-transform:uppercase;background:rgba(124,58,237,.1);color:#7c3aed;padding:2px 8px;border-radius:3px;display:inline-block;width:fit-content;}
 .pcc-badge.advanced{background:rgba(232,0,29,.1);color:#e8001d;}
@@ -3943,21 +3958,21 @@ const PDF_PRODUCTS = {
 
 // ── PDF CATALOG DATA ──────────────────────────────────────────────────────
 const PDF_CATALOG = [
-  {id:'pdf_01',icon:'🔥',badge:'advanced',cat:'ADVANCED',title:'Advanced Cutting Cycle',sub:'12-Week Complete Protocol · Steroid + Cardio',orig:599,price:299,pages:'52 pages',thumb:'linear-gradient(145deg,#7f1d1d 0%,#b91c1c 50%,#dc2626 100%)'},
-  {id:'pdf_02',icon:'💪',badge:'advanced',cat:'ADVANCED',title:'Advanced Bulking Cycle',sub:'With Peptides · Mass Building Protocol',orig:599,price:299,pages:'58 pages',thumb:'linear-gradient(145deg,#1e1b4b 0%,#4c1d95 50%,#7c3aed 100%)'},
-  {id:'pdf_03',icon:'🧬',badge:'advanced',cat:'ADVANCED',title:'Beginner Steroid Cycle',sub:'Full Guide · Safe Entry-Level Protocol',orig:499,price:299,pages:'44 pages',thumb:'linear-gradient(145deg,#431407 0%,#9a3412 50%,#ea580c 100%)'},
-  {id:'pdf_04',icon:'🥗',badge:'nutrition',cat:'NUTRITION',title:'30-Day Keto Indian Plan',sub:'Vegetarian · Desi-Friendly Meal Templates',orig:399,price:249,pages:'60 pages',thumb:'linear-gradient(145deg,#052e16 0%,#15803d 50%,#22c55e 100%)'},
-  {id:'pdf_05',icon:'👩',badge:'women',cat:'WOMEN',title:'Female Weight Loss Plan',sub:'Vegetarian · Hormone-Safe Protocol',orig:399,price:249,pages:'48 pages',thumb:'linear-gradient(145deg,#500724 0%,#be185d 50%,#ec4899 100%)'},
-  {id:'pdf_06',icon:'⚗️',badge:'hormones',cat:'HORMONES',title:'Peptide Protocol Bible',sub:'Complete Scientific Reference Guide',orig:699,price:349,pages:'96 pages',thumb:'linear-gradient(145deg,#0f0b35 0%,#3730a3 50%,#818cf8 100%)'},
-  {id:'pdf_07',icon:'🔬',badge:'hormones',cat:'HORMONES',title:'SARMs Scientific Handbook',sub:'Complete Research-Backed Edition',orig:699,price:349,pages:'88 pages',thumb:'linear-gradient(145deg,#1e1b4b 0%,#4338ca 50%,#6366f1 100%)'},
-  {id:'pdf_08',icon:'⚡',badge:'hormones',cat:'HORMONES',title:'TRT Hormone Guide',sub:'Optimization & Monitoring Protocols',orig:699,price:349,pages:'80 pages',thumb:'linear-gradient(145deg,#422006 0%,#b45309 50%,#f59e0b 100%)'},
-  {id:'pdf_09',icon:'🏋️',badge:'training',cat:'TRAINING',title:'Science of Hypertrophy',sub:'Muscle Growth Mechanisms & Methods',orig:499,price:299,pages:'64 pages',thumb:'linear-gradient(145deg,#0c1445 0%,#1d4ed8 50%,#60a5fa 100%)'},
-  {id:'pdf_10',icon:'🎯',badge:'training',cat:'TRAINING',title:'Fat Loss Masterclass',sub:'Ultimate Evidence-Based Protocol',orig:499,price:299,pages:'56 pages',thumb:'linear-gradient(145deg,#1c0a04 0%,#b91c1c 50%,#f87171 100%)'},
-  {id:'pdf_11',icon:'💃',badge:'women',cat:'WOMEN',title:"Women's Transformation",sub:'Complete Body Recomposition Guide',orig:399,price:249,pages:'52 pages',thumb:'linear-gradient(145deg,#2d0a3e 0%,#9333ea 50%,#f0abfc 100%)'},
-  {id:'pdf_12',icon:'🍛',badge:'nutrition',cat:'NUTRITION',title:'Indian Nutrition Bible',sub:'Bodybuilder Edition · Desi Macros',orig:499,price:299,pages:'72 pages',thumb:'linear-gradient(145deg,#042f2e 0%,#0f766e 50%,#2dd4bf 100%)'},
-  {id:'pdf_13',icon:'⚡',badge:'supplements',cat:'SUPPLEMENTS',title:'Pre-Workout Guide',sub:'Optimization & Stacking Protocols',orig:299,price:199,pages:'36 pages',thumb:'linear-gradient(145deg,#2e0f5e 0%,#7e22ce 50%,#d946ef 100%)'},
-  {id:'pdf_14',icon:'🧪',badge:'hormones',cat:'HORMONES',title:'Natural Testosterone',sub:'Optimization Without Compounds',orig:499,price:299,pages:'68 pages',thumb:'linear-gradient(145deg,#3b1503 0%,#c2410c 50%,#fbbf24 100%)'},
-  {id:'pdf_15',icon:'😴',badge:'recovery',cat:'RECOVERY',title:'Recovery & CNS Restore',sub:'Sleep, HRV & Nervous System Guide',orig:299,price:199,pages:'40 pages',thumb:'linear-gradient(145deg,#082f49 0%,#0369a1 50%,#38bdf8 100%)'},
+  {id:'pdf_01',icon:'🔥',badge:'advanced',cat:'ADVANCED',title:'Advanced Cutting Cycle',sub:'12-Week Complete Protocol · Steroid + Cardio',orig:599,price:299,pages:'52 pages',thumb:'linear-gradient(145deg,#7f1d1d 0%,#b91c1c 50%,#dc2626 100%)',ct:'ADVANCED<br>CUTTING<br>CYCLE',ed:'12-WEEK PROTOCOL'},
+  {id:'pdf_02',icon:'💪',badge:'advanced',cat:'ADVANCED',title:'Advanced Bulking Cycle',sub:'With Peptides · Mass Building Protocol',orig:599,price:299,pages:'58 pages',thumb:'linear-gradient(145deg,#1e1b4b 0%,#4c1d95 50%,#7c3aed 100%)',ct:'ADVANCED<br>BULKING<br>CYCLE',ed:'MASS BUILDING EDITION'},
+  {id:'pdf_03',icon:'🧬',badge:'advanced',cat:'ADVANCED',title:'Beginner Steroid Cycle',sub:'Full Guide · Safe Entry-Level Protocol',orig:499,price:299,pages:'44 pages',thumb:'linear-gradient(145deg,#431407 0%,#9a3412 50%,#ea580c 100%)',ct:'BEGINNER<br>STEROID<br>CYCLE',ed:'ENTRY-LEVEL GUIDE'},
+  {id:'pdf_04',icon:'🥗',badge:'nutrition',cat:'NUTRITION',title:'30-Day Keto Indian Plan',sub:'Vegetarian · Desi-Friendly Meal Templates',orig:399,price:249,pages:'60 pages',thumb:'linear-gradient(145deg,#052e16 0%,#15803d 50%,#22c55e 100%)',ct:'30-DAY<br>KETO<br>INDIAN PLAN',ed:'VEGETARIAN EDITION'},
+  {id:'pdf_05',icon:'👩',badge:'women',cat:'WOMEN',title:'Female Weight Loss Plan',sub:'Vegetarian · Hormone-Safe Protocol',orig:399,price:249,pages:'48 pages',thumb:'linear-gradient(145deg,#500724 0%,#be185d 50%,#ec4899 100%)',ct:'FEMALE<br>WEIGHT LOSS<br>PLAN',ed:'HORMONE-SAFE PROTOCOL'},
+  {id:'pdf_06',icon:'⚗️',badge:'hormones',cat:'HORMONES',title:'Peptide Protocol Bible',sub:'Complete Scientific Reference Guide',orig:699,price:349,pages:'96 pages',thumb:'linear-gradient(145deg,#0f0b35 0%,#3730a3 50%,#818cf8 100%)',ct:'PEPTIDE<br>PROTOCOL<br>BIBLE',ed:'COMPLETE REFERENCE'},
+  {id:'pdf_07',icon:'🔬',badge:'hormones',cat:'HORMONES',title:'SARMs Scientific Handbook',sub:'Complete Research-Backed Edition',orig:699,price:349,pages:'88 pages',thumb:'linear-gradient(145deg,#1e1b4b 0%,#4338ca 50%,#6366f1 100%)',ct:'SARMs<br>SCIENTIFIC<br>HANDBOOK',ed:'RESEARCH EDITION'},
+  {id:'pdf_08',icon:'⚡',badge:'hormones',cat:'HORMONES',title:'TRT Hormone Guide',sub:'Optimization & Monitoring Protocols',orig:699,price:349,pages:'80 pages',thumb:'linear-gradient(145deg,#422006 0%,#b45309 50%,#f59e0b 100%)',ct:'TRT<br>HORMONE<br>GUIDE',ed:'OPTIMIZATION PROTOCOL'},
+  {id:'pdf_09',icon:'🏋️',badge:'training',cat:'TRAINING',title:'Science of Hypertrophy',sub:'Muscle Growth Mechanisms & Methods',orig:499,price:299,pages:'64 pages',thumb:'linear-gradient(145deg,#0c1445 0%,#1d4ed8 50%,#60a5fa 100%)',ct:'SCIENCE OF<br>HYPER&shy;TROPHY',ed:'TRAINING MANUAL'},
+  {id:'pdf_10',icon:'🎯',badge:'training',cat:'TRAINING',title:'Fat Loss Masterclass',sub:'Ultimate Evidence-Based Protocol',orig:499,price:299,pages:'56 pages',thumb:'linear-gradient(145deg,#1c0a04 0%,#b91c1c 50%,#f87171 100%)',ct:'FAT LOSS<br>MASTER<br>CLASS',ed:'EVIDENCE-BASED EDITION'},
+  {id:'pdf_11',icon:'💃',badge:'women',cat:'WOMEN',title:"Women's Transformation",sub:'Complete Body Recomposition Guide',orig:399,price:249,pages:'52 pages',thumb:'linear-gradient(145deg,#2d0a3e 0%,#9333ea 50%,#f0abfc 100%)',ct:"WOMEN'S<br>TRANS&shy;FORMATION",ed:'BODY RECOMPOSITION'},
+  {id:'pdf_12',icon:'🍛',badge:'nutrition',cat:'NUTRITION',title:'Indian Nutrition Bible',sub:'Bodybuilder Edition · Desi Macros',orig:499,price:299,pages:'72 pages',thumb:'linear-gradient(145deg,#042f2e 0%,#0f766e 50%,#2dd4bf 100%)',ct:'INDIAN<br>NUTRITION<br>BIBLE',ed:'BODYBUILDER EDITION'},
+  {id:'pdf_13',icon:'⚡',badge:'supplements',cat:'SUPPLEMENTS',title:'Pre-Workout Guide',sub:'Optimization & Stacking Protocols',orig:299,price:199,pages:'36 pages',thumb:'linear-gradient(145deg,#2e0f5e 0%,#7e22ce 50%,#d946ef 100%)',ct:'PRE-WORKOUT<br>GUIDE',ed:'STACKING PROTOCOLS'},
+  {id:'pdf_14',icon:'🧪',badge:'hormones',cat:'HORMONES',title:'Natural Testosterone',sub:'Optimization Without Compounds',orig:499,price:299,pages:'68 pages',thumb:'linear-gradient(145deg,#3b1503 0%,#c2410c 50%,#fbbf24 100%)',ct:'NATURAL<br>TESTO&shy;STERONE',ed:'OPTIMIZATION GUIDE'},
+  {id:'pdf_15',icon:'😴',badge:'recovery',cat:'RECOVERY',title:'Recovery & CNS Restore',sub:'Sleep, HRV & Nervous System Guide',orig:299,price:199,pages:'40 pages',thumb:'linear-gradient(145deg,#082f49 0%,#0369a1 50%,#38bdf8 100%)',ct:'RECOVERY<br>& CNS<br>RESTORE',ed:'SLEEP & HRV GUIDE'},
 ];
 
 function renderCatalog(){
@@ -3970,12 +3985,19 @@ function renderCatalog(){
     const tc=prod?.theme||'#7c3aed';
     return `<div class="pcc" data-cat="${p.badge}">
       <div class="pcc-thumb" style="background:${p.thumb};">
-        <div class="pcc-thumb-brand">Royal Fitness Club</div>
-        <div class="pcc-thumb-icon">${p.icon}</div>
-        <div class="pcc-thumb-label">
-          <span class="pcc-thumb-cat-txt">${p.cat}</span>
-          <span class="pcc-thumb-pages">${p.pages}</span>
+        <div class="pcc-book-spine"></div>
+        <div class="pcc-cover-face">
+          <span class="pcc-pdf-tag">PDF</span>
+          <div class="pcc-cover-inner">
+            <div class="pcc-cover-brand">Royal Fitness Club</div>
+            <div class="pcc-cover-rule"></div>
+            <div class="pcc-cover-title">${p.ct}</div>
+            <div class="pcc-cover-rule"></div>
+            <div class="pcc-cover-edition">${p.ed}</div>
+          </div>
+          <div class="pcc-cover-author">By Royal Fitness Club</div>
         </div>
+        <div class="pcc-page-edges"></div>
       </div>
       <div class="pcc-body">
         <div class="pcc-badge ${p.badge}">${p.cat}</div>
