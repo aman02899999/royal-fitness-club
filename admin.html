@@ -539,7 +539,7 @@ function renderCodes(){
       <td style="font-size:12px;">${c.joinDate||'—'}</td>
       <td>${expCell}</td>
       <td>${status}</td>
-      <td><button class="btn-sm" onclick="copyCodeStr('${c.code}')">Copy</button>${!c.used?' <button class="btn-del" onclick="delCode(\''+c.code+'\')">Del</button>':''}</td>
+      <td><button class="btn-sm" onclick="copyCodeStr('${c.code}')">Copy</button>${!c.used?` <button class="btn-del" onclick="delCode('${c.code}')">Del</button>`:''}</td>
     </tr>`;
   }).join('');
 }
