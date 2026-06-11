@@ -337,6 +337,24 @@ section{padding:68px 20px;position:relative;z-index:1;}
 .pain-intro-title{font-family:'Bebas Neue',sans-serif;font-size:21px;letter-spacing:1px;color:var(--text);margin-bottom:5px;}
 .pain-cause-row{font-size:12.5px;color:var(--text);margin-bottom:4px;}
 .pain-warn-row{font-size:11px;color:var(--gold);padding-top:6px;border-top:1px solid var(--border);}
+.wu-types{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:4px;}
+.wu-type-btn{padding:9px 18px;border-radius:8px;background:var(--card);border:1.5px solid var(--border);color:var(--text);font-size:13px;font-weight:600;cursor:pointer;letter-spacing:.5px;transition:all .18s;}
+.wu-type-btn:hover,.wu-type-btn.sel{background:var(--red);border-color:var(--red);color:#fff;}
+.wu-steps{display:flex;flex-direction:column;gap:10px;}
+.wu-step{display:flex;align-items:flex-start;gap:12px;background:var(--card2);border-radius:10px;padding:11px 14px;}
+.wu-step-num{font-family:'Bebas Neue',sans-serif;font-size:24px;color:var(--red);line-height:1;min-width:26px;}
+.wu-step-body{}
+.wu-step-name{font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:.5px;color:var(--text);}
+.wu-step-detail{font-size:11.5px;color:var(--muted);margin-top:2px;}
+.wu-step-sets{font-size:10px;font-weight:700;letter-spacing:1.5px;color:var(--gold);margin-top:4px;text-transform:uppercase;}
+.fr-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;}
+@media(max-width:580px){.fr-grid{grid-template-columns:1fr;}}
+.fr-card{background:var(--card2);border-radius:12px;padding:14px 16px;}
+.fr-icon{font-size:24px;margin-bottom:6px;}
+.fr-title{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:.5px;color:var(--text);margin-bottom:4px;}
+.fr-detail{font-size:12px;color:var(--muted);line-height:1.5;}
+.fr-time{font-size:11px;font-weight:700;color:var(--gold);margin-top:8px;letter-spacing:1px;}
+.fr-tip{margin-top:16px;background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.25);border-radius:8px;padding:12px 14px;font-size:12.5px;color:var(--text);line-height:1.6;}
 
 .qrow{display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--border);font-size:13px;gap:12px;}
 .qrow:last-child{border-bottom:none;}
@@ -1716,6 +1734,8 @@ img{loading:lazy;}
       <div class="ptab" data-panel="posture">🧍 Posture</div>
       <div class="ptab" data-panel="mobility">🤸 Mobility</div>
       <div class="ptab" data-panel="recovery">😴 Recovery</div>
+      <div class="ptab" data-panel="warmup">🔥 Warm-Up</div>
+      <div class="ptab" data-panel="foamroll">🫀 Foam Roll</div>
     </div>
     <!-- PAIN -->
     <div class="ppanel active" data-panel="pain">
@@ -1724,7 +1744,9 @@ img{loading:lazy;}
         <div class="painbtn" data-pain="shoulder"><div class="pbi">💪</div><div class="pbl">Shoulder</div></div>
         <div class="painbtn" data-pain="back"><div class="pbi">🔙</div><div class="pbl">Lower Back</div></div>
         <div class="painbtn" data-pain="knee"><div class="pbi">🦵</div><div class="pbl">Knee</div></div>
+        <div class="painbtn" data-pain="hip"><div class="pbi">🍑</div><div class="pbl">Hip</div></div>
         <div class="painbtn" data-pain="elbow"><div class="pbi">💢</div><div class="pbl">Elbow</div></div>
+        <div class="painbtn" data-pain="ankle"><div class="pbi">🦶</div><div class="pbl">Ankle</div></div>
       </div>
       <div class="recplan" id="painplan" style="display:none;"></div>
     </div>
@@ -1749,6 +1771,68 @@ img{loading:lazy;}
         <div class="slrow"><div class="sltop"><strong>💧 Hydration</strong><span class="slval" id="sl-hydra-v">5</span>/10</div><input type="range" class="slider" id="sl-hydra" min="0" max="10" value="5"></div>
         <button class="bcalc" style="font-size:14px;letter-spacing:2px;padding:12px;" onclick="scoreRecovery()">📊 GET RECOVERY SCORE</button>
         <div id="recoveryresult"></div>
+      </div>
+    </div>
+    <!-- WARM-UP BUILDER -->
+    <div class="ppanel" data-panel="warmup">
+      <div class="rcard">
+        <div class="rctitle">🔥 Dynamic Warm-Up Builder</div>
+        <p style="font-size:13px;color:var(--muted);margin:6px 0 16px;">Select your workout type to get a tailored 5-minute warm-up routine.</p>
+        <div class="wu-types" id="wu-types">
+          <div class="wu-type-btn" data-wu="upper">Upper Body</div>
+          <div class="wu-type-btn" data-wu="lower">Lower Body</div>
+          <div class="wu-type-btn" data-wu="full">Full Body</div>
+          <div class="wu-type-btn" data-wu="cardio">Cardio/Run</div>
+        </div>
+        <div id="wu-plan" style="display:none;margin-top:18px;"></div>
+      </div>
+    </div>
+    <!-- FOAM ROLL -->
+    <div class="ppanel" data-panel="foamroll">
+      <div class="rcard">
+        <div class="rctitle">🫀 Foam Rolling Protocol</div>
+        <p style="font-size:13px;color:var(--muted);margin:6px 0 16px;">Roll each area for 30–60 sec. Pause on tight spots. Breathe through it.</p>
+        <div class="fr-grid" id="fr-grid">
+          <div class="fr-card">
+            <div class="fr-icon">🦵</div>
+            <div class="fr-title">Quads / IT Band</div>
+            <div class="fr-detail">Lie face down. Roll from hip to knee. Pause on knots 10–20 sec. Rotate leg in/out.</div>
+            <div class="fr-time">⏱ 60 sec each side</div>
+          </div>
+          <div class="fr-card">
+            <div class="fr-icon">🍑</div>
+            <div class="fr-title">Glutes / Piriformis</div>
+            <div class="fr-detail">Sit on roller with one ankle over opposite knee. Lean into glute. Small circles.</div>
+            <div class="fr-time">⏱ 45 sec each side</div>
+          </div>
+          <div class="fr-card">
+            <div class="fr-icon">🔙</div>
+            <div class="fr-title">Upper Back (Thoracic)</div>
+            <div class="fr-detail">Roller across mid-back. Arms crossed or hands behind head. Extend back over roller.</div>
+            <div class="fr-time">⏱ 60 sec total</div>
+          </div>
+          <div class="fr-card">
+            <div class="fr-icon">🦶</div>
+            <div class="fr-title">Calves</div>
+            <div class="fr-detail">Sit with roller under calf. Lift hips. Roll from ankle to knee. Flex/point foot.</div>
+            <div class="fr-time">⏱ 45 sec each side</div>
+          </div>
+          <div class="fr-card">
+            <div class="fr-icon">💪</div>
+            <div class="fr-title">Lats / Thoracic</div>
+            <div class="fr-detail">Side-lying with arm extended overhead. Roll from armpit down to mid-back.</div>
+            <div class="fr-time">⏱ 45 sec each side</div>
+          </div>
+          <div class="fr-card">
+            <div class="fr-icon">🦴</div>
+            <div class="fr-title">Hip Flexors</div>
+            <div class="fr-detail">Face down, roller at front of hip. Rock slowly side to side. Lift knee to intensify.</div>
+            <div class="fr-time">⏱ 45 sec each side</div>
+          </div>
+        </div>
+        <div class="fr-tip">
+          <strong>Pro tip:</strong> Roll <em>before</em> training to warm up and increase range. Roll <em>after</em> training for recovery. Never roll directly on a joint or the lower spine.
+        </div>
       </div>
     </div>
   </div>
@@ -3682,6 +3766,16 @@ const painData={
     {num:2,name:'Eccentric Wrist Curl',sets:'3 × 15 reps',hold:'3-second lowering phase',cue:'Forearm on table, palm up. Lift wrist with other hand, then SLOWLY lower with affected arm only. Eccentric focus.',svg:'wristCurl'},
     {num:3,name:'Forearm Supination',sets:'3 × 20 reps',hold:'Both directions',cue:"Elbow at 90°, hold light weight or hammer. Rotate palm slowly from down to up and back. Full range.",svg:'supination'},
   ]},
+  hip:{title:'Hip Pain Recovery',cause:'Tight hip flexors · Weak glutes · Hip impingement · Prolonged sitting',warning:'See a physio if pain is deep in the groin or occurs with clicking/locking.',exercises:[
+    {num:1,name:'90/90 Hip Stretch',sets:'3 × 60 sec',hold:'Each side',cue:'Sit with both knees at 90°. Lean forward over front shin keeping chest tall. Switch sides. Breathe into the stretch.'},
+    {num:2,name:'Hip Flexor Lunge Stretch',sets:'3 × 45 sec',hold:'Each side',cue:'Kneel on one knee, other foot forward. Shift hips forward until you feel a stretch in front of hip. Tuck pelvis under.'},
+    {num:3,name:'Banded Hip Abduction',sets:'3 × 15 reps',hold:'Each side',cue:'Stand with resistance band above knees. Lift one leg out to side keeping hips level. Control the return. Squeeze glute at top.'},
+  ]},
+  ankle:{title:'Ankle Pain & Stiffness',cause:'Previous sprain · Tight calves · Restricted dorsiflexion · Overuse',warning:'See a physio if ankle is swollen, bruised or unable to bear weight.',exercises:[
+    {num:1,name:'Ankle Alphabet',sets:'2 × full alphabet',hold:'Each ankle',cue:'Seated or lying. Trace the full alphabet in the air with your big toe. Move only the ankle — keep the leg still. Both directions.'},
+    {num:2,name:'Calf Raise (Eccentric)',sets:'3 × 15 reps',hold:'3-sec lowering phase',cue:'Rise on both feet, then lower on one foot slowly over 3 seconds. Use a step edge for full range. Builds tendon strength.'},
+    {num:3,name:'Banded Dorsiflexion',sets:'3 × 10 reps',hold:'Each ankle',cue:'Band anchored behind ankle. Lunge foot forward, keeping heel down. Drive knee forward over toes. Improves dorsiflexion range.'},
+  ]},
 };
 
 function renderPainPlan(key){
@@ -3691,6 +3785,38 @@ function renderPainPlan(key){
 }
 
 document.querySelectorAll('.painbtn').forEach(b=>{b.addEventListener('click',()=>{if(!isPro){openModal('promodal');return;}document.querySelectorAll('.painbtn').forEach(x=>x.classList.remove('sel'));b.classList.add('sel');renderPainPlan(b.dataset.pain);});});
+// ── WARM-UP BUILDER ──
+const WU_DATA={
+  upper:[
+    {name:'Arm Circles',detail:'Both directions — small to large.',sets:'30 sec each direction'},
+    {name:'Band Pull-Aparts',detail:'Arms straight, pull band to chest, control return.',sets:'2 × 15 reps'},
+    {name:'Shoulder Dislocates',detail:'Hands wide on band, pass overhead and behind back.',sets:'2 × 10 reps'},
+    {name:'Wall Slides',detail:'Back and arms flat on wall, slide arms overhead.',sets:'2 × 12 reps'},
+    {name:'Thoracic Rotations',detail:'Seated, arms crossed. Rotate upper back left and right.',sets:'10 each side'},
+  ],
+  lower:[
+    {name:'Leg Swings (Front/Back)',detail:'Hold wall for balance, swing leg forward and back through full range.',sets:'15 each side'},
+    {name:'Lateral Leg Swings',detail:'Hold wall, swing leg across body and out to side.',sets:'15 each side'},
+    {name:'Hip Circles',detail:'Feet shoulder-width, hands on hips. Large slow circles.',sets:'10 each direction'},
+    {name:'Bodyweight Squat (Slow)',detail:'3-sec descent, pause at bottom, drive up through heels.',sets:'2 × 10 reps'},
+    {name:'Walking Lunge with Rotation',detail:'Step into lunge, rotate torso toward front leg, step through.',sets:'10 each side'},
+  ],
+  full:[
+    {name:'Jumping Jacks',detail:'Full range arms and legs. Warm core temp.',sets:'60 sec'},
+    {name:'World\'s Greatest Stretch',detail:'Lunge forward, elbow to floor, rotate arm up to sky. Step through.',sets:'5 each side'},
+    {name:'Inchworm',detail:'Stand, hinge to floor, walk hands out to plank, walk back, stand.',sets:'8 reps'},
+    {name:'Hip Circles',detail:'Large slow circles in both directions.',sets:'10 each direction'},
+    {name:'High Knees (Moderate)',detail:'Drive knees to hip height, pump arms, controlled pace.',sets:'30 sec'},
+  ],
+  cardio:[
+    {name:'March on Spot',detail:'Exaggerated march, drive knees up, pump arms.',sets:'60 sec'},
+    {name:'Leg Swings',detail:'Front/back and lateral — both legs.',sets:'12 each direction'},
+    {name:'Ankle Rotations',detail:'Seated or standing. Full circles both directions.',sets:'10 each direction'},
+    {name:'Calf Raises',detail:'Rise fully onto toes, lower slowly. Warm the Achilles.',sets:'2 × 15 reps'},
+    {name:'High Knees (Build Up)',detail:'Start slow, build to 80% effort over 30 sec.',sets:'60 sec total'},
+  ],
+};
+document.querySelectorAll('.wu-type-btn').forEach(b=>{b.addEventListener('click',()=>{document.querySelectorAll('.wu-type-btn').forEach(x=>x.classList.remove('sel'));b.classList.add('sel');const steps=WU_DATA[b.dataset.wu];const el=$('wu-plan');el.style.display='block';el.innerHTML='<div class="wu-steps">'+steps.map((s,i)=>`<div class="wu-step"><div class="wu-step-num">0${i+1}</div><div class="wu-step-body"><div class="wu-step-name">${s.name}</div><div class="wu-step-detail">${s.detail}</div><div class="wu-step-sets">${s.sets}</div></div></div>`).join('')+'</div>';});});
 // ── PHYSIO TABS ──
 document.querySelectorAll('.ptab').forEach(t=>{t.addEventListener('click',()=>{document.querySelectorAll('.ptab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.ppanel').forEach(x=>x.classList.remove('active'));t.classList.add('active');document.querySelector('.ppanel[data-panel="'+t.dataset.panel+'"]').classList.add('active');});});
 // ── POSTURE QUESTIONNAIRE ──
