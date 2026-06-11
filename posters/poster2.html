@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@400;500&display=swap');
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{width:1080px;height:1350px;overflow:hidden;background:#000;font-family:'Barlow Condensed',sans-serif;}
+
+  .poster{
+    width:1080px;height:1350px;position:relative;overflow:hidden;
+    background:linear-gradient(170deg,#03061a 0%,#050d24 35%,#0a0a14 70%,#0d0508 100%);
+  }
+
+  /* BG elements */
+  .bg-dots{
+    position:absolute;inset:0;
+    background-image:radial-gradient(rgba(99,102,241,.12) 1px, transparent 1px);
+    background-size:40px 40px;
+  }
+  .bg-glow-top{
+    position:absolute;top:-100px;left:50%;transform:translateX(-50%);
+    width:800px;height:400px;
+    background:radial-gradient(ellipse,rgba(99,102,241,.15) 0%,transparent 70%);
+  }
+  .bg-glow-bottom{
+    position:absolute;bottom:0;right:-100px;
+    width:500px;height:500px;border-radius:50%;
+    background:radial-gradient(circle,rgba(168,85,247,.08) 0%,transparent 70%);
+  }
+
+  /* Top banner */
+  .top-banner{
+    position:relative;z-index:10;
+    background:linear-gradient(90deg,#4f46e5,#7c3aed,#a855f7);
+    padding:14px 72px;
+    display:flex;align-items:center;justify-content:space-between;
+  }
+  .top-banner-logo{
+    font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:3px;color:#fff;
+  }
+  .top-banner-tag{
+    font-size:12px;letter-spacing:3px;text-transform:uppercase;
+    color:rgba(255,255,255,.75);font-weight:700;
+  }
+
+  /* Hero */
+  .hero{position:relative;z-index:10;padding:60px 72px 0;text-align:center;}
+  .hero-eyebrow{
+    display:inline-flex;align-items:center;gap:8px;
+    background:rgba(99,102,241,.12);border:1px solid rgba(99,102,241,.3);
+    padding:8px 22px;border-radius:30px;margin-bottom:24px;
+    font-size:13px;font-weight:700;letter-spacing:3px;text-transform:uppercase;
+    color:#a5b4fc;
+  }
+  .hero-title{
+    font-family:'Bebas Neue',sans-serif;font-size:88px;line-height:.9;
+    letter-spacing:2px;color:#fff;margin-bottom:20px;
+  }
+  .hero-title .gradient{
+    background:linear-gradient(135deg,#818cf8,#c084fc,#f472b6);
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  }
+  .hero-desc{
+    font-size:18px;color:rgba(255,255,255,.5);line-height:1.55;
+    font-family:'Barlow',sans-serif;max-width:660px;margin:0 auto 40px;
+  }
+
+  /* AI Tools showcase */
+  .tools-section{position:relative;z-index:10;padding:0 60px;}
+  .tools-row{display:flex;gap:14px;margin-bottom:14px;}
+  .tool-card{
+    flex:1;background:rgba(255,255,255,.04);
+    border:1px solid rgba(99,102,241,.2);border-radius:14px;
+    padding:22px 20px;position:relative;overflow:hidden;
+  }
+  .tool-card::before{
+    content:'';position:absolute;top:0;left:0;right:0;height:3px;
+    background:var(--accent);
+  }
+  .tool-card.purple{--accent:linear-gradient(90deg,#4f46e5,#7c3aed);}
+  .tool-card.pink{--accent:linear-gradient(90deg,#db2777,#f472b6);}
+  .tool-card.teal{--accent:linear-gradient(90deg,#0891b2,#06b6d4);}
+  .tool-card.green{--accent:linear-gradient(90deg,#16a34a,#22c55e);}
+  .tool-card.orange{--accent:linear-gradient(90deg,#c2410c,#f97316);}
+  .tool-card.gold{--accent:linear-gradient(90deg,#b45309,#f59e0b);}
+
+  .tool-icon{font-size:30px;margin-bottom:10px;display:block;}
+  .tool-name{font-size:16px;font-weight:700;letter-spacing:.5px;color:#fff;margin-bottom:5px;text-transform:uppercase;}
+  .tool-feature{font-size:11px;color:rgba(255,255,255,.4);line-height:1.4;font-family:'Barlow',sans-serif;}
+  .tool-tag{
+    display:inline-block;margin-top:8px;
+    background:rgba(99,102,241,.15);border:1px solid rgba(99,102,241,.25);
+    color:#a5b4fc;font-size:9px;letter-spacing:1.5px;
+    padding:3px 8px;border-radius:20px;text-transform:uppercase;font-weight:700;
+  }
+  .tool-tag.free{background:rgba(34,197,94,.12);border-color:rgba(34,197,94,.25);color:#86efac;}
+
+  /* Divider */
+  .divider{height:1px;background:linear-gradient(90deg,transparent,rgba(99,102,241,.3),transparent);margin:24px 72px;}
+
+  /* Bottom CTA */
+  .bottom-cta{
+    position:absolute;bottom:0;left:0;right:0;
+    padding:28px 72px 40px;
+    display:flex;align-items:center;justify-content:space-between;
+    background:linear-gradient(to top,rgba(3,6,26,.95) 0%,transparent 100%);
+    z-index:20;
+  }
+  .cta-left h3{
+    font-family:'Bebas Neue',sans-serif;font-size:44px;letter-spacing:2px;
+    color:#fff;line-height:.95;margin-bottom:6px;
+  }
+  .cta-left p{font-size:14px;color:rgba(255,255,255,.4);font-family:'Barlow',sans-serif;margin-bottom:12px;}
+  .scan-label{
+    font-size:12px;letter-spacing:3px;color:#818cf8;font-weight:700;
+    text-transform:uppercase;display:flex;align-items:center;gap:6px;
+  }
+  .scan-label::before{content:'▶';font-size:10px;}
+  .qr-box{
+    background:#fff;border-radius:14px;padding:10px;
+    box-shadow:0 0 50px rgba(99,102,241,.3);
+    width:152px;height:152px;flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .qr-box img{width:132px;height:132px;}
+
+  /* Bottom border */
+  .bottom-line{
+    position:absolute;bottom:0;left:0;right:0;height:4px;
+    background:linear-gradient(90deg,#4f46e5,#7c3aed,#a855f7,#ec4899);z-index:30;
+  }
+</style>
+</head>
+<body>
+<div class="poster">
+  <div class="bg-dots"></div>
+  <div class="bg-glow-top"></div>
+  <div class="bg-glow-bottom"></div>
+
+  <!-- Top Banner -->
+  <div class="top-banner">
+    <div class="top-banner-logo">ROYAL FITNESS CLUB</div>
+    <div class="top-banner-tag">⚙️ AI-Powered Platform</div>
+  </div>
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-eyebrow">🤖 Powered by Artificial Intelligence</div>
+    <div class="hero-title">
+      YOUR PERSONAL<br><span class="gradient">AI FITNESS</span><br>COACH
+    </div>
+    <div class="hero-desc">Ten intelligent tools that work around the clock to calculate, plan, and optimize your body transformation — all free with your membership.</div>
+  </div>
+
+  <!-- Tools Grid -->
+  <div class="tools-section">
+    <div class="tools-row">
+      <div class="tool-card purple">
+        <span class="tool-icon">🤖</span>
+        <div class="tool-name">AI Meal Planner</div>
+        <div class="tool-feature">Generates personalized daily meal plans in seconds. Indian diet, your macros, your goals.</div>
+        <span class="tool-tag free">FREE</span>
+      </div>
+      <div class="tool-card teal">
+        <span class="tool-icon">⚡</span>
+        <div class="tool-name">Beast Score Calculator</div>
+        <div class="tool-feature">Advanced fitness scoring — BMI, TDEE, macro splits, calorie targets in one tap.</div>
+        <span class="tool-tag free">FREE</span>
+      </div>
+      <div class="tool-card pink">
+        <span class="tool-icon">📸</span>
+        <div class="tool-name">Progress Photos</div>
+        <div class="tool-feature">Front, side, back comparisons. Side-by-side before/after visual journey tracker.</div>
+        <span class="tool-tag free">FREE</span>
+      </div>
+    </div>
+    <div class="tools-row">
+      <div class="tool-card green">
+        <span class="tool-icon">🦴</span>
+        <div class="tool-name">Physio Assessment</div>
+        <div class="tool-feature">Digital screening for mobility, posture, and injury risk. Personalised physiotherapy score.</div>
+        <span class="tool-tag free">FREE</span>
+      </div>
+      <div class="tool-card orange">
+        <span class="tool-icon">📏</span>
+        <div class="tool-name">Body Measurements</div>
+        <div class="tool-feature">Log waist, chest, arms, thighs over time. See exactly where your body is changing.</div>
+        <span class="tool-tag free">FREE</span>
+      </div>
+      <div class="tool-card gold">
+        <span class="tool-icon">🏆</span>
+        <div class="tool-name">Live Leaderboard</div>
+        <div class="tool-feature">Your Beast Score ranked against all members in real-time. Compete and dominate.</div>
+        <span class="tool-tag free">FREE</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- Bottom CTA -->
+  <div class="bottom-cta">
+    <div class="cta-left">
+      <h3>ACCESS ALL<br>TOOLS FREE</h3>
+      <p>Members only. Open your camera and scan.</p>
+      <div class="scan-label">Scan to get started instantly</div>
+    </div>
+    <div class="qr-box">
+      <img src="../qr-code.png" alt="QR Code">
+    </div>
+  </div>
+
+  <div class="bottom-line"></div>
+</div>
+</body>
+</html>

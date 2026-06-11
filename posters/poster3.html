@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@400;500&display=swap');
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{width:1080px;height:1350px;overflow:hidden;background:#000;font-family:'Barlow Condensed',sans-serif;}
+
+  .poster{
+    width:1080px;height:1350px;position:relative;overflow:hidden;
+    background:linear-gradient(160deg,#0a0005 0%,#0f0308 40%,#0a0010 100%);
+  }
+
+  /* Background */
+  .bg-lines{
+    position:absolute;inset:0;
+    background:repeating-linear-gradient(
+      -45deg,
+      transparent,transparent 60px,
+      rgba(220,38,38,.018) 60px,rgba(220,38,38,.018) 61px
+    );
+  }
+  .bg-glow-red{
+    position:absolute;top:-200px;left:50%;transform:translateX(-50%);
+    width:900px;height:600px;
+    background:radial-gradient(ellipse,rgba(220,38,38,.1) 0%,transparent 65%);
+  }
+
+  /* Hero section — full bleed dark red */
+  .hero-section{
+    position:relative;z-index:10;
+    background:linear-gradient(160deg,rgba(180,0,0,.18) 0%,rgba(120,0,0,.08) 60%,transparent 100%);
+    padding:48px 72px 40px;
+    border-bottom:1px solid rgba(220,38,38,.15);
+  }
+  .brand-row{
+    display:flex;align-items:center;justify-content:space-between;
+    margin-bottom:36px;
+  }
+  .brand-name{
+    font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:5px;
+    color:rgba(255,255,255,.5);
+  }
+  .new-badge{
+    background:linear-gradient(135deg,#dc2626,#ef4444);
+    color:#fff;font-size:10px;font-weight:800;letter-spacing:3px;
+    text-transform:uppercase;padding:6px 16px;border-radius:30px;
+  }
+
+  .hero-tag{
+    font-size:13px;font-weight:700;letter-spacing:4px;text-transform:uppercase;
+    color:rgba(220,38,38,.9);margin-bottom:14px;
+    display:flex;align-items:center;gap:8px;
+  }
+  .hero-title{
+    font-family:'Bebas Neue',sans-serif;
+    font-size:82px;line-height:.9;letter-spacing:1px;
+    color:#fff;margin-bottom:16px;
+  }
+  .hero-title .fire{color:#ef4444;}
+  .hero-subtitle{
+    font-size:19px;color:rgba(255,255,255,.5);line-height:1.5;
+    font-family:'Barlow',sans-serif;max-width:600px;
+  }
+
+  /* Books showcase */
+  .books-section{position:relative;z-index:10;padding:36px 72px 0;}
+  .books-label{
+    font-size:11px;letter-spacing:4px;text-transform:uppercase;
+    color:rgba(220,38,38,.7);margin-bottom:20px;
+    display:flex;align-items:center;gap:10px;
+  }
+  .books-label::after{content:'';flex:1;height:1px;background:rgba(220,38,38,.2);}
+  .books-row{display:flex;gap:12px;margin-bottom:12px;}
+
+  .book{
+    flex:1;border-radius:10px;position:relative;overflow:hidden;
+    height:130px;display:flex;flex-direction:column;justify-content:flex-end;
+    padding:12px;
+  }
+  .book::before{content:'';position:absolute;inset:0;background:rgba(0,0,0,.35);}
+  .book-label{position:relative;z-index:2;}
+  .book-cat{
+    font-size:9px;letter-spacing:2px;text-transform:uppercase;
+    color:rgba(255,255,255,.6);margin-bottom:2px;font-weight:700;
+  }
+  .book-title{font-size:14px;font-weight:700;color:#fff;line-height:1.2;text-transform:uppercase;}
+  .book-price{
+    position:absolute;top:10px;right:10px;z-index:2;
+    background:rgba(0,0,0,.5);color:#fff;
+    font-family:'Bebas Neue',sans-serif;font-size:16px;
+    padding:3px 8px;border-radius:4px;
+  }
+  .book-new{
+    position:absolute;top:10px;left:10px;z-index:2;
+    background:linear-gradient(135deg,#dc2626,#f97316);
+    color:#fff;font-size:8px;font-weight:800;letter-spacing:1.5px;
+    padding:3px 7px;border-radius:3px;text-transform:uppercase;
+  }
+
+  /* Series list */
+  .series-list{
+    background:rgba(220,38,38,.05);border:1px solid rgba(220,38,38,.12);
+    border-radius:14px;padding:22px 24px;
+    display:grid;grid-template-columns:1fr 1fr;gap:10px;
+    margin-top:4px;
+  }
+  .series-item{
+    display:flex;align-items:center;gap:10px;
+  }
+  .series-dot{
+    width:8px;height:8px;border-radius:50%;flex-shrink:0;
+  }
+  .series-name{font-size:13px;color:rgba(255,255,255,.7);font-weight:600;}
+  .series-pages{font-size:11px;color:rgba(255,255,255,.3);margin-left:auto;}
+
+  /* Pricing strip */
+  .pricing-strip{
+    margin:24px 72px 0;
+    background:linear-gradient(135deg,rgba(220,38,38,.12),rgba(220,38,38,.05));
+    border:1px solid rgba(220,38,38,.2);border-radius:12px;
+    display:flex;align-items:center;padding:18px 24px;gap:20px;
+  }
+  .pricing-fire{font-size:32px;}
+  .pricing-text h4{
+    font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:1px;color:#fff;
+  }
+  .pricing-text p{font-size:12px;color:rgba(255,255,255,.4);font-family:'Barlow',sans-serif;}
+  .pricing-value{
+    margin-left:auto;text-align:right;
+  }
+  .pricing-value .from{font-size:11px;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:1px;}
+  .pricing-value .amount{font-family:'Bebas Neue',sans-serif;font-size:44px;color:#ef4444;line-height:1;}
+
+  /* Bottom CTA */
+  .bottom-cta{
+    position:absolute;bottom:0;left:0;right:0;
+    padding:24px 72px 38px;
+    background:linear-gradient(to top,rgba(10,0,5,.95) 0%,transparent 100%);
+    display:flex;align-items:center;justify-content:space-between;z-index:20;
+  }
+  .cta-left h3{
+    font-family:'Bebas Neue',sans-serif;font-size:36px;letter-spacing:2px;
+    color:#fff;line-height:1;margin-bottom:4px;
+  }
+  .cta-left p{font-size:13px;color:rgba(255,255,255,.4);font-family:'Barlow',sans-serif;margin-bottom:10px;}
+  .scan-cta{
+    font-size:12px;letter-spacing:3px;color:#f87171;font-weight:700;
+    text-transform:uppercase;display:flex;align-items:center;gap:6px;
+  }
+  .scan-cta::before{content:'📱';font-size:14px;}
+  .qr-box{
+    background:#fff;border-radius:14px;padding:10px;
+    box-shadow:0 0 50px rgba(220,38,38,.25);
+    width:148px;height:148px;flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .qr-box img{width:128px;height:128px;}
+  .bottom-line{
+    position:absolute;bottom:0;left:0;right:0;height:4px;
+    background:linear-gradient(90deg,#dc2626,#ef4444,#f97316,#ef4444,#dc2626);z-index:30;
+  }
+</style>
+</head>
+<body>
+<div class="poster">
+  <div class="bg-lines"></div>
+  <div class="bg-glow-red"></div>
+
+  <!-- Hero -->
+  <div class="hero-section">
+    <div class="brand-row">
+      <div class="brand-name">ROYAL FITNESS CLUB</div>
+      <div class="new-badge">🔥 Anabolic Series — NEW</div>
+    </div>
+    <div class="hero-tag">📚 Knowledge Store — Expert Guides</div>
+    <div class="hero-title">
+      22 GUIDES.<br>ONE <span class="fire">BEAST</span><br>LIBRARY.
+    </div>
+    <div class="hero-subtitle">From beginner anabolic cycles to advanced hormone optimization — every guide written by Royal Fitness Club experts.</div>
+  </div>
+
+  <!-- Books showcase -->
+  <div class="books-section">
+    <div class="books-label">🔥 NEW — Anabolic Series (5 Guides)</div>
+    <div class="books-row">
+      <div class="book" style="background:linear-gradient(145deg,#052e16,#166534,#16a34a);">
+        <div class="book-new">NEW</div>
+        <div class="book-price">₹399</div>
+        <div class="book-label">
+          <div class="book-cat">ANABOLIC · BEGINNER</div>
+          <div class="book-title">Beginner Anabolic Cycle</div>
+        </div>
+      </div>
+      <div class="book" style="background:linear-gradient(145deg,#1e1b4b,#3730a3,#4f46e5);">
+        <div class="book-new">NEW</div>
+        <div class="book-price">₹499</div>
+        <div class="book-label">
+          <div class="book-cat">ANABOLIC · INTERMEDIATE</div>
+          <div class="book-title">Intermediate Blueprint</div>
+        </div>
+      </div>
+      <div class="book" style="background:linear-gradient(145deg,#450a0a,#991b1b,#dc2626);">
+        <div class="book-new">NEW</div>
+        <div class="book-price">₹599</div>
+        <div class="book-label">
+          <div class="book-cat">ANABOLIC · ADVANCED</div>
+          <div class="book-title">Advanced Mastery</div>
+        </div>
+      </div>
+      <div class="book" style="background:linear-gradient(145deg,#042f2e,#115e59,#0d9488);">
+        <div class="book-new">NEW</div>
+        <div class="book-price">₹399</div>
+        <div class="book-label">
+          <div class="book-cat">PCT · RECOVERY</div>
+          <div class="book-title">PCT Complete Bible</div>
+        </div>
+      </div>
+      <div class="book" style="background:linear-gradient(145deg,#431407,#9a3412,#ea580c);">
+        <div class="book-new">NEW</div>
+        <div class="book-price">₹449</div>
+        <div class="book-label">
+          <div class="book-cat">NUTRITION</div>
+          <div class="book-title">Cycle Nutrition Bible</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- More series -->
+    <div class="books-label" style="margin-top:20px;">Plus 17 More Expert Guides Including</div>
+    <div class="series-list">
+      <div class="series-item">
+        <div class="series-dot" style="background:#e8001d;"></div>
+        <div class="series-name">Advanced Cutting Cycle</div>
+        <div class="series-pages">₹299</div>
+      </div>
+      <div class="series-item">
+        <div class="series-dot" style="background:#7c3aed;"></div>
+        <div class="series-name">SARMs Scientific Handbook</div>
+        <div class="series-pages">₹349</div>
+      </div>
+      <div class="series-item">
+        <div class="series-dot" style="background:#0891b2;"></div>
+        <div class="series-name">TRT Hormone Guide</div>
+        <div class="series-pages">₹349</div>
+      </div>
+      <div class="series-item">
+        <div class="series-dot" style="background:#16a34a;"></div>
+        <div class="series-name">Indian Nutrition Bible</div>
+        <div class="series-pages">₹299</div>
+      </div>
+      <div class="series-item">
+        <div class="series-dot" style="background:#db2777;"></div>
+        <div class="series-name">Women's Transformation</div>
+        <div class="series-pages">₹249</div>
+      </div>
+      <div class="series-item">
+        <div class="series-dot" style="background:#d97706;"></div>
+        <div class="series-name">Natural Testosterone Guide</div>
+        <div class="series-pages">₹299</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pricing strip -->
+  <div class="pricing-strip">
+    <div class="pricing-fire">📦</div>
+    <div class="pricing-text">
+      <h4>Complete Library Bundle</h4>
+      <p>All 22 guides — one-time payment, lifetime access</p>
+    </div>
+    <div class="pricing-value">
+      <div class="from">From</div>
+      <div class="amount">₹1,999</div>
+    </div>
+  </div>
+
+  <!-- Bottom CTA -->
+  <div class="bottom-cta">
+    <div class="cta-left">
+      <h3>BROWSE THE<br>FULL LIBRARY</h3>
+      <p>One-time purchase · Instant PDF download · Lifetime access</p>
+      <div class="scan-cta">Scan to explore all guides</div>
+    </div>
+    <div class="qr-box">
+      <img src="../qr-code.png" alt="QR Code">
+    </div>
+  </div>
+
+  <div class="bottom-line"></div>
+</div>
+</body>
+</html>
