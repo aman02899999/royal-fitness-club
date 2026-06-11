@@ -1538,6 +1538,10 @@ img{loading:lazy;}
           <div><label class="flbl">Height (cm)</label><input type="number" class="fi2" id="ih" placeholder="170" min="100" max="250"></div>
           <div><label class="flbl">Waist (cm)</label><input type="number" class="fi2" id="iwa" placeholder="85" min="50" max="200"></div>
         </div>
+        <div class="row2">
+          <div><label class="flbl">Neck (cm) <span style="font-size:10px;color:var(--muted);">for accurate BF%</span></label><input type="number" class="fi2" id="ineck" placeholder="37" min="20" max="65"></div>
+          <div id="hip-field" style="display:none;"><label class="flbl">Hip (cm) <span style="font-size:10px;color:var(--muted);">females only</span></label><input type="number" class="fi2" id="ihip" placeholder="95" min="50" max="160"></div>
+        </div>
         <div><label class="flbl">Activity Level</label>
           <select class="fsel" id="iact">
             <option value="1.2">Sedentary — Little to no exercise</option>
@@ -1606,9 +1610,13 @@ img{loading:lazy;}
           <div class="rcard"><div class="rctitle">Body Metrics</div>
             <div class="m4">
               <div class="metbox"><div class="mv" id="rbmi">—</div><div class="ml">BMI</div></div>
-              <div class="metbox"><div class="mv" id="rbmic" style="font-size:13px;padding-top:9px;">—</div><div class="ml">Classification</div></div>
+              <div class="metbox"><div class="mv" id="rbmic" style="font-size:11px;padding-top:9px;">—</div><div class="ml">BMI Class</div></div>
               <div class="metbox"><div class="mv" id="rbmr">—</div><div class="ml">BMR kcal</div></div>
               <div class="metbox"><div class="mv" id="rtdee">—</div><div class="ml">TDEE kcal</div></div>
+              <div class="metbox"><div class="mv blue" id="ribw">—</div><div class="ml">Ideal Weight</div></div>
+              <div class="metbox"><div class="mv" id="rwhtR">—</div><div class="ml">Waist/Height</div></div>
+              <div class="metbox"><div class="mv" id="rwhtRcat" style="font-size:11px;padding-top:9px;">—</div><div class="ml">WHtR Risk</div></div>
+              <div class="metbox"><div class="mv green" id="rffmi">—</div><div class="ml">FFMI</div></div>
             </div>
           </div>
           <div class="anatomy-wrap"><div class="rctitle">Body Composition Anatomy — 3D Visual</div>
@@ -1632,7 +1640,7 @@ img{loading:lazy;}
           </div>
           <div class="rcard"><div class="rctitle">Macro Breakdown</div>
             <div class="macstack">
-              <div class="macrow"><div class="mactop"><span class="macname" style="color:var(--red);">Protein</span><span class="macamt" id="rprot">—g</span></div><div class="macbarbg"><div class="mbi p" id="mbp" style="width:0%"></div></div></div>
+              <div class="macrow"><div class="mactop"><span class="macname" style="color:var(--red);">Protein</span><span class="macamt"><span id="rprot">—g</span> <span id="rprotkg" style="font-size:10px;color:var(--muted);"></span></span></div><div class="macbarbg"><div class="mbi p" id="mbp" style="width:0%"></div></div></div>
               <div class="macrow"><div class="mactop"><span class="macname" style="color:var(--gold);">Carbs</span><span class="macamt" id="rcarb">—g</span></div><div class="macbarbg"><div class="mbi c" id="mbc" style="width:0%"></div></div></div>
               <div class="macrow"><div class="mactop"><span class="macname" style="color:var(--blue);">Fats</span><span class="macamt" id="rfat">—g</span></div><div class="macbarbg"><div class="mbi f" id="mbf" style="width:0%"></div></div></div>
             </div>
@@ -3316,11 +3324,41 @@ let lastRes=null;
 const getGoal=()=>document.querySelector('input[name="goal"]:checked').value;
 const getGender=()=>document.querySelector('input[name="gender"]:checked').value;
 function calcBMR(g,w,h,a){return g==='male'?10*w+6.25*h-5*a+5:10*w+6.25*h-5*a-161;}
-function bmiClass(b){if(b<18.5)return'📉 Underweight';if(b<25)return'✅ Normal';if(b<30)return'⚠️ Overweight';return'🔴 Obese';}
-function calcBF(gender,waist,height){const neck=waist*.43;if(gender==='male')return Math.max(3,(495/(1.0324-0.19077*Math.log10(Math.max(1,waist-neck))+0.15456*Math.log10(height)))-450);const hip=waist*1.15;return Math.max(8,(495/(1.29579-0.35004*Math.log10(Math.max(1,waist+hip-neck))+0.22100*Math.log10(height)))-450);}
-function bfCat(bf,g){if(g==='male'){if(bf<6)return'Essential';if(bf<14)return'Athletic';if(bf<18)return'Fitness';if(bf<25)return'Average';return'Obese';}else{if(bf<14)return'Essential';if(bf<21)return'Athletic';if(bf<25)return'Fitness';if(bf<32)return'Average';return'Obese';}}
-function getMacros(cals,goal,diet){let pP,cP,fP;if(diet==='keto'){pP=.30;cP=.05;fP=.65;}else if(goal==='loss'){pP=.35;cP=.40;fP=.25;}else if(goal==='gain'){pP=.30;cP=.50;fP=.20;}else{pP=.25;cP=.50;fP=.25;}return{prot:Math.round(cals*pP/4),carb:Math.round(cals*cP/4),fat:Math.round(cals*fP/9),pP,cP,fP};}
-function getBScore(bmi,goal,act){let s=50;if(bmi>=18.5&&bmi<25)s+=20;else if(bmi>=25&&bmi<30)s+=8;const a=parseFloat(act);if(a>=1.725)s+=20;else if(a>=1.55)s+=12;else if(a>=1.375)s+=5;if(goal==='gain')s+=10;return Math.min(100,Math.round(s));}
+function bmiClass(b){if(b<16)return'🚨 Severely Underweight';if(b<18.5)return'📉 Underweight';if(b<25)return'✅ Normal';if(b<30)return'⚠️ Overweight';if(b<35)return'🔴 Obese Class I';if(b<40)return'🔴 Obese Class II';return'🔴 Obese Class III';}
+// US Navy Body Fat method (Hodgdon & Beckett 1984) — uses actual neck & hip measurements
+// Falls back to proportional estimates when not provided
+function calcBF(gender,waist,neckIn,hipIn,height){
+  const neck=neckIn>0?neckIn:waist*0.43;
+  const hip=hipIn>0?hipIn:waist*1.15;
+  if(gender==='male'){const diff=Math.max(1,waist-neck);return Math.max(3,Math.round((495/(1.0324-0.19077*Math.log10(diff)+0.15456*Math.log10(height)))-450);}
+  const sum=Math.max(1,waist+hip-neck);return Math.max(10,Math.round((495/(1.29579-0.35004*Math.log10(sum)+0.22100*Math.log10(height)))-450));
+}
+// ACE (American Council on Exercise) body fat classification
+function bfCat(bf,g){if(g==='male'){if(bf<2)return'⚠️ Critically Low';if(bf<6)return'Essential Fat';if(bf<14)return'Athletic';if(bf<18)return'Fitness';if(bf<25)return'Acceptable';return'Obese';}else{if(bf<10)return'⚠️ Critically Low';if(bf<14)return'Essential Fat';if(bf<21)return'Athletic';if(bf<25)return'Fitness';if(bf<32)return'Acceptable';return'Obese';}}
+// ISSN 2017 weight-based protein targets; remaining cals split between carbs & fat
+function getMacros(cals,goal,diet,weight){
+  if(diet==='keto'){const pP=0.30,cP=0.05,fP=0.65;return{prot:Math.round(cals*pP/4),carb:Math.round(cals*cP/4),fat:Math.round(cals*fP/9),pP,cP,fP,gPerKg:null};}
+  const gPerKg=goal==='loss'?2.0:goal==='gain'?1.8:1.6;
+  let prot=Math.round((weight||70)*gPerKg);
+  prot=Math.max(Math.round(cals*0.20/4),Math.min(Math.round(cals*0.42/4),prot));
+  const protCals=prot*4,left=cals-protCals;
+  const fatCals=Math.max(cals*0.20,left*(goal==='gain'?0.30:0.38));
+  const fat=Math.round(fatCals/9);
+  const carb=Math.max(50,Math.round((left-fat*9)/4));
+  const tot=prot*4+carb*4+fat*9;
+  return{prot,carb,fat,pP:prot*4/tot,cP:carb*4/tot,fP:fat*9/tot,gPerKg};
+}
+// Beast Score 2.0 — weighted composite: BF%×35, Activity×30, BMI×20, Age×15
+function getBScore(bmi,bf,goal,act,gender,age){
+  const bmiPts=bmi>=18.5&&bmi<25?100:bmi>=17&&bmi<18.5||bmi>=25&&bmi<27.5?72:bmi>=27.5&&bmi<30?52:28;
+  let bfPts;
+  if(gender==='male'){bfPts=bf<6?45:bf<12?100:bf<15?92:bf<18?78:bf<22?58:bf<25?38:18;}
+  else{bfPts=bf<14?45:bf<18?100:bf<21?90:bf<25?74:bf<28?55:bf<32?35:18;}
+  const a=parseFloat(act);
+  const actPts=a>=1.9?100:a>=1.725?82:a>=1.55?62:a>=1.375?42:18;
+  const agePts=age<=22?95:age<=30?100:age<=40?90:age<=50?82:age<=60?75:68;
+  return Math.min(100,Math.round(bmiPts*0.20+bfPts*0.35+actPts*0.30+agePts*0.15));
+}
 function scoreLbl(s){if(s>=90)return'💎 ROYAL ELITE';if(s>=75)return'🔥 ROYAL MODE';if(s>=60)return'⚡ RISING';if(s>=45)return'💪 BUILDING';return'😤 JUST STARTED';}
 function getStrat(goal,bmi){const m={loss:`Aggressive fat loss: ${bmi>30?'750':'500'}-kcal daily deficit. Protein in every meal. 3-4 resistance + 2-3 HIIT sessions per week. 7-9 hours of sleep. Track everything for the first 30 days. Expect 0.5-1kg loss per week.`,maintain:`Maintenance mode — hit your TDEE daily. Progressive overload in the gym. Never miss your protein target. Take body measurements every 2 weeks. Body recomposition happens gradually.`,gain:`Lean bulk: 300–400 kcal surplus. Protein every single day — no excuses. Hypertrophy program 4-5 days per week. Track monthly measurements. Expect 0.5-1kg of lean mass per month.`};return m[goal];}
 function getWrk(goal){const m={loss:'4x/wk compound lifting + 3x/wk HIIT (20 min). Rest <60s. 10,000 steps daily. 1 refeed day per week.',maintain:'4x/wk PPL ya full body split. Progressive overload. 2x/wk moderate cardio. 10 min daily mobility work.',gain:'5x/wk hypertrophy — PPL + Upper/Lower. 8–12 reps, 3–4 sets. 90s rest. Minimal cardio. 8-9 hours sleep is essential.'};return m[goal];}
@@ -3417,6 +3455,8 @@ $('calcbtn').addEventListener('click',()=>{if(!user){toast('⚠️ Please log in
 function calculate(){
   const age=parseFloat($('ia').value),weight=parseFloat($('iw').value),height=parseFloat($('ih').value);
   const waist=parseFloat($('iwa').value)||weight*0.52;
+  const neck=parseFloat($('ineck').value)||0;
+  const hip=parseFloat($('ihip').value)||0;
   const act=parseFloat($('iact').value),goal=getGoal(),gender=getGender(),diet=$('idiet').value;
   const dietStyle=$('idietstyle').value;
   const whey=document.querySelector('input[name="whey"]:checked').value;
@@ -3424,16 +3464,32 @@ function calculate(){
   const caladj=parseFloat($('icaladj').value)||(goal==='loss'?500:goal==='gain'?350:0);
   const ormW=parseFloat($('iorw').value)||0,ormR=parseFloat($('iorr').value)||0;
   if(!age||!weight||!height||age<13||weight<30||height<100){toast('⚠️ Please enter valid details!','gold');return;}
-  localStorage.setItem('bm_inp',JSON.stringify({age,weight,height,waist,act,goal,gender,diet,dietStyle,whey,health,caladj}));
+  localStorage.setItem('bm_inp',JSON.stringify({age,weight,height,waist,neck,hip,act,goal,gender,diet,dietStyle,whey,health,caladj}));
   const bmr=calcBMR(gender,weight,height,age),tdee=bmr*act,bmi=weight/((height/100)**2);
-  let tc=goal==='loss'?tdee-caladj:goal==='gain'?tdee+caladj:tdee;tc=Math.max(1200,Math.round(tc));
-  const macros=getMacros(tc,goal,diet),water=(weight*.033).toFixed(1),score=getBScore(bmi,goal,act);
-  const bf=calcBF(gender,waist,height),bfc=bfCat(bf,gender);
-  lastRes={age,weight,height,waist,act,goal,gender,diet,dietStyle,whey,health,caladj,bmr,tdee,bmi,targetCals:tc,macros,water,score,bf,bfc};
+  const minCals=gender==='female'?1200:1500;
+  let tc=goal==='loss'?tdee-caladj:goal==='gain'?tdee+caladj:tdee;tc=Math.max(minCals,Math.round(tc));
+  const bf=calcBF(gender,waist,neck,hip,height),bfc=bfCat(bf,gender);
+  const macros=getMacros(tc,goal,diet,weight),water=(weight*.033).toFixed(1);
+  const score=getBScore(bmi,bf,goal,act,gender,age);
+  // Additional metrics
+  const whtR=(waist/height).toFixed(2);
+  const whtRCat=parseFloat(whtR)<0.4?'Underweight':parseFloat(whtR)<0.5?'✅ Healthy':parseFloat(whtR)<0.6?'⚠️ Overweight':'🔴 High Risk';
+  const leanMass=weight*(1-bf/100),heightM=height/100;
+  const ffmi=parseFloat((leanMass/(heightM*heightM)).toFixed(1));
+  const ffmiCat=ffmi>=26?'Enhanced+':ffmi>=23?'Superior':ffmi>=20?'Above Avg':ffmi>=18?'Average':'Below Avg';
+  // Ideal Body Weight — Devine formula
+  const heightInch=height/2.54;
+  const ibw=Math.round(gender==='male'?50+2.3*Math.max(0,heightInch-60):45.5+2.3*Math.max(0,heightInch-60));
+  lastRes={age,weight,height,waist,neck,hip,act,goal,gender,diet,dietStyle,whey,health,caladj,bmr,tdee,bmi,targetCals:tc,macros,water,score,bf,bfc,whtR,ffmi,ibw};
   $('emptyst2').style.display='none';$('rescont').style.display='flex';
   animN($('rbmi'),bmi,1);animN($('rbmr'),Math.round(bmr));animN($('rtdee'),Math.round(tdee));animN($('rcals'),tc);
   $('rbmic').textContent=bmiClass(bmi);$('rwater').textContent=water+'L';
   animN($('rbf'),bf,1,'%');$('rbfcat').textContent=bfc;
+  if($('ribw'))$('ribw').textContent=ibw+'kg';
+  if($('rwhtR'))$('rwhtR').textContent=whtR;
+  if($('rwhtRcat'))$('rwhtRcat').textContent=whtRCat;
+  if($('rffmi')){animN($('rffmi'),ffmi,1);}
+  if($('rprotkg'))$('rprotkg').textContent=macros.gPerKg?'('+macros.gPerKg+'g/kg)':'';
   setTimeout(()=>{animN($('rscore'),score);$('rscl').textContent=scoreLbl(score);$('rbbi').style.width=score+'%';$('mbp').style.width=(macros.pP*100)+'%';$('mbc').style.width=(macros.cP*100)+'%';$('mbf').style.width=(macros.fP*100)+'%';},200);
   $('rprot').textContent=macros.prot+'g';$('rcarb').textContent=macros.carb+'g';$('rfat').textContent=macros.fat+'g';
   $('rstrat').textContent=getStrat(goal,bmi);$('rwrk').textContent=getWrk(goal);
@@ -3454,6 +3510,8 @@ function calculate(){
   if(window.AnalyticsService)window.AnalyticsService.trackEvent('calculator_used',{goal,diet}).catch(()=>{});
 }
 // ── HEALTH CHECKBOX VISUAL + GOAL→CALORIE AUTO-UPDATE + SPLIT TABS ──
+function toggleHipField(){const hf=$('hip-field');if(hf)hf.style.display=getGender()==='female'?'block':'none';}
+document.querySelectorAll('input[name="gender"]').forEach(r=>r.addEventListener('change',toggleHipField));
 ['pcos','thyroid','diabetic'].forEach(h=>{const el=$('hc-'+h);if(el)el.addEventListener('change',()=>{el.closest('.hchk').classList.toggle('on',el.checked);});});
 function updateCalAdj(){const goal=getGoal();const note=$('caladj-note');if(goal==='loss'){$('icaladj').value=500;note.textContent='Auto-set to 500 kcal deficit for Fat Loss.';}else if(goal==='gain'){$('icaladj').value=350;note.textContent='Auto-set to 350 kcal surplus for Muscle Gain.';}else{$('icaladj').value=0;note.textContent='Maintenance — eating at your TDEE (no deficit/surplus).';}}
 document.querySelectorAll('input[name="goal"]').forEach(r=>r.addEventListener('change',updateCalAdj));
@@ -3517,8 +3575,14 @@ function drawAnatomy(bf,bfc,weight,gender){
 }
 
 // ── BF SECTION ──
-function updateBFsec(bf,gender,cat){const pct=Math.min(100,bf);$('bfpd').textContent=pct.toFixed(1)+'%';$('bfcd').textContent=cat;$('bfcirc').style.setProperty('--pct',pct+'%');const sc=gender==='male'?['Essential 2-5%','Athletic 6-13%','Fitness 14-17%','Average 18-24%','Obese 25%+']:['Essential 10-13%','Athletic 14-20%','Fitness 21-24%','Average 25-31%','Obese 32%+'];$('bfscale').innerHTML=sc.map(s=>`<div class="bfsi ${s.toLowerCase().includes(cat.toLowerCase())?'active':''}">${s}</div>`).join('');}
-$('bfscale').innerHTML=['Essential','Athletic','Fitness','Average','Obese'].map(s=>`<div class="bfsi">${s}</div>`).join('');
+function updateBFsec(bf,gender,cat){
+  const pct=Math.min(100,bf);$('bfpd').textContent=pct.toFixed(1)+'%';$('bfcd').textContent=cat;$('bfcirc').style.setProperty('--pct',pct+'%');
+  const sc=gender==='male'
+    ?['Essential 2–5%','Athletic 6–13%','Fitness 14–17%','Acceptable 18–24%','Obese 25%+']
+    :['Essential 10–13%','Athletic 14–20%','Fitness 21–24%','Acceptable 25–31%','Obese 32%+'];
+  $('bfscale').innerHTML=sc.map(s=>`<div class="bfsi ${cat&&s.toLowerCase().includes(cat.toLowerCase().split(' ')[0])?'active':''}">${s}</div>`).join('');
+}
+$('bfscale').innerHTML=['Essential Fat','Athletic','Fitness','Acceptable','Obese'].map(s=>`<div class="bfsi">${s}</div>`).join('');
 
 // ── 200+ INDIAN FOODS DATABASE ──
 
