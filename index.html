@@ -1450,6 +1450,11 @@ img{loading:lazy;}
         <div class="prof-row"><span>Saved Reports</span><span id="pa-reports">0</span></div>
         <div class="prof-row"><span>Photos Uploaded</span><span id="pa-photos">0</span></div>
       </div>
+      <!-- Achievements -->
+      <div class="prof-card" style="grid-column:span 2;">
+        <h4>🏅 Achievements</h4>
+        <div id="badges-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;margin-top:10px;"></div>
+      </div>
       <!-- Quick actions -->
       <div class="prof-card">
         <h4>⚡ Quick Actions</h4>
@@ -3165,6 +3170,7 @@ function applyUser(){
       }
     }).catch(()=>{});
   }
+  setTimeout(checkAndUnlockBadges, 800);
 }
 
 async function loginWithFirebase(){
@@ -4329,6 +4335,8 @@ function renderProfile(){
   $('pa-photos').textContent=photoCount;
   // Draw digital membership card
   setTimeout(drawMemberCard, 100);
+  // Render achievement badges
+  renderBadges();
 }
 function toggleEdit(){const e=$('ac-edit');if(e.style.display==='none'){$('ed-name').value=user.name||'';$('ed-phone').value=user.phone||'';e.style.display='block';}else e.style.display='none';}
 async function saveProfile(){
@@ -5083,6 +5091,69 @@ function downloadMemberCard(){
   link.href=canvas.toDataURL('image/png');
   link.click();
   toast('📲 Card saved! Add it to your photos.','fire');
+}
+
+// ════════ ACHIEVEMENT BADGE SYSTEM ══════════════════════════════════════════
+const BADGES=[
+  {id:'first_login',   icon:'🔥', name:'First Warrior',     desc:'Logged into the portal for the first time',          check:()=>true},
+  {id:'calculator',    icon:'⚡', name:'Calculator Master',  desc:'Used the Beast Score calculator',                    check:()=>(JSON.parse(localStorage.getItem('bm_hist')||'[]')).length>=1},
+  {id:'meal_plan',     icon:'🤖', name:'AI Nutritionist',   desc:'Generated your first AI meal plan',                  check:()=>!!localStorage.getItem('bm_meal')},
+  {id:'weight_log',    icon:'📈', name:'Weight Tracker',    desc:'Logged your body weight 3 times',                    check:()=>{const p=JSON.parse(localStorage.getItem('bm_pd')||'{}');return(p.weights||[]).length>=3;}},
+  {id:'workout_5',     icon:'💪', name:'Iron Addict',       desc:'Logged 5 workout sessions',                          check:()=>{try{const k='rfc_workouts_'+(user?.uid||'');return(JSON.parse(localStorage.getItem(k)||'[]')).length>=5;}catch(e){return false;}}},
+  {id:'hydration',     icon:'💧', name:'Hydration Hero',    desc:'Reached 2500ml water intake in a single day',        check:()=>Object.keys(localStorage).some(k=>k.startsWith('rfc_water_')&&parseInt(localStorage.getItem(k))>=2500)},
+  {id:'supplements',   icon:'💊', name:'Supplement King',   desc:'Took all supplements in a single day',               check:()=>Object.keys(localStorage).some(k=>k.startsWith('rfc_supps_')&&Object.keys(JSON.parse(localStorage.getItem(k)||'{}')).length>=8)},
+  {id:'measurement',   icon:'📏', name:'Body Analyst',      desc:'Logged body measurements',                           check:()=>{try{const pd=JSON.parse(localStorage.getItem('bm_pd')||'{}');return(pd.measurements||pd.meas||[]).length>=1;}catch(e){return false;}}},
+  {id:'pdf_purchase',  icon:'📚', name:'Knowledge Seeker',  desc:'Purchased an expert PDF guide',                      check:()=>Object.keys(localStorage).some(k=>k.startsWith('bm_pdf')&&JSON.parse(localStorage.getItem(k)||'{}').purchased)},
+  {id:'leaderboard',   icon:'🏆', name:'Leaderboard Legend',desc:'Submitted your score to the community leaderboard', check:()=>!!localStorage.getItem('bm_lb_submitted')},
+  {id:'streak_7',      icon:'🔥', name:'7-Day Streak',      desc:'Visited the app 7 days in a row',                   check:()=>{try{const pd=JSON.parse(localStorage.getItem('bm_pd')||'{}');return(pd.streak||0)>=7;}catch(e){return false;}}},
+  {id:'profile_photo', icon:'📸', name:'Visual Proof',      desc:'Uploaded a progress photo',                          check:()=>!!localStorage.getItem('bm_photo_before')||!!localStorage.getItem('bm_photo_side')},
+];
+
+const BADGES_KEY=()=>user?'rfc_badges_'+user.uid:'';
+
+function checkAndUnlockBadges(){
+  if(!user) return;
+  const key=BADGES_KEY();
+  let unlocked={};try{unlocked=JSON.parse(localStorage.getItem(key)||'{}');}catch(e){}
+  let newlyUnlocked=[];
+  BADGES.forEach(b=>{
+    if(!unlocked[b.id]&&b.check()){
+      unlocked[b.id]=Date.now();
+      newlyUnlocked.push(b);
+    }
+  });
+  if(newlyUnlocked.length){
+    localStorage.setItem(key,JSON.stringify(unlocked));
+    // Show toast for each new badge (staggered)
+    newlyUnlocked.forEach((b,i)=>{
+      setTimeout(()=>toast(`${b.icon} Badge unlocked: ${b.name}!`,'fire'),i*1800+800);
+    });
+    // Persist to Firestore
+    firebase.firestore().collection('activity').doc(user.uid)
+      .set({badges:unlocked},{merge:true}).catch(()=>{});
+  }
+  return unlocked;
+}
+
+function renderBadges(){
+  const grid=document.getElementById('badges-grid');if(!grid)return;
+  const key=BADGES_KEY();
+  let unlocked={};try{unlocked=JSON.parse(localStorage.getItem(key)||'{}');}catch(e){}
+  grid.innerHTML=BADGES.map(b=>{
+    const got=!!unlocked[b.id];
+    const dt=got?new Date(unlocked[b.id]).toLocaleDateString('en-IN',{day:'numeric',month:'short'}):'';
+    return `<div title="${b.desc}${dt?' — earned '+dt:''}" style="
+      background:${got?'rgba(232,0,29,.08)':'rgba(255,255,255,.02)'};
+      border:1px solid ${got?'rgba(232,0,29,.25)':'var(--border)'};
+      border-radius:10px;padding:12px 10px;text-align:center;
+      filter:${got?'none':'grayscale(1) opacity(.3)'};
+      transition:all .2s;cursor:default;
+    ">
+      <div style="font-size:26px;margin-bottom:6px;">${b.icon}</div>
+      <div style="font-size:11px;font-weight:700;color:${got?'var(--text)':'var(--muted)'};line-height:1.25;">${b.name}</div>
+      ${got?`<div style="font-size:9px;color:var(--red);margin-top:3px;letter-spacing:.5px;">${dt}</div>`:`<div style="font-size:9px;color:var(--muted);margin-top:3px;">Locked</div>`}
+    </div>`;
+  }).join('');
 }
 
 // ── SERVICE WORKER REGISTRATION ──────────────────────────────────────────────

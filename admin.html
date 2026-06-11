@@ -167,12 +167,57 @@ tr:hover td{background:rgba(255,255,255,.02);}
     </div>
   </header>
   <main>
-    <!-- STATS -->
+    <!-- STATS ROW 1 -->
     <div class="stats-row">
       <div class="stat-card green"><div class="stat-val" id="st-active">—</div><div class="stat-lbl">Registered Members</div></div>
       <div class="stat-card gold"><div class="stat-val" id="st-unused">—</div><div class="stat-lbl">Unused Codes</div></div>
       <div class="stat-card red" style="cursor:pointer;" title="Click to filter expiring members" onclick="jumpToExpiring()"><div class="stat-val" id="st-expiring">—</div><div class="stat-lbl">Expiring in 7 Days ↓</div></div>
       <div class="stat-card blue"><div class="stat-val" id="st-total">—</div><div class="stat-lbl">Total Codes Generated</div></div>
+    </div>
+
+    <!-- REVENUE ANALYTICS PANEL -->
+    <div class="panels" style="margin-top:0;margin-bottom:20px;">
+      <div class="panel" style="padding:20px 24px;">
+        <div class="panel-title" style="margin-bottom:16px;">📊 Revenue & Member Analytics</div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;">
+          <div style="background:#0a0a0a;border:1px solid #1a1a1a;border-radius:10px;padding:16px;text-align:center;">
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:30px;color:#22c55e;" id="rev-total">₹—</div>
+            <div style="font-size:10px;letter-spacing:1.5px;color:#555;text-transform:uppercase;margin-top:2px;">Est. Monthly Revenue</div>
+          </div>
+          <div style="background:#0a0a0a;border:1px solid #1a1a1a;border-radius:10px;padding:16px;text-align:center;">
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:30px;color:#f59e0b;" id="rev-new">—</div>
+            <div style="font-size:10px;letter-spacing:1.5px;color:#555;text-transform:uppercase;margin-top:2px;">New Members (30d)</div>
+          </div>
+          <div style="background:#0a0a0a;border:1px solid #1a1a1a;border-radius:10px;padding:16px;text-align:center;">
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:30px;color:#e8001d;" id="rev-expired">—</div>
+            <div style="font-size:10px;letter-spacing:1.5px;color:#555;text-transform:uppercase;margin-top:2px;">Expired Members</div>
+          </div>
+          <div style="background:#0a0a0a;border:1px solid #1a1a1a;border-radius:10px;padding:16px;text-align:center;">
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:30px;color:#818cf8;" id="rev-retention">—%</div>
+            <div style="font-size:10px;letter-spacing:1.5px;color:#555;text-transform:uppercase;margin-top:2px;">Active Retention</div>
+          </div>
+        </div>
+        <!-- Plan breakdown bar -->
+        <div style="margin-bottom:8px;">
+          <div style="font-size:10px;letter-spacing:2px;color:#555;text-transform:uppercase;margin-bottom:10px;">Plan Distribution</div>
+          <div id="plan-bars" style="display:flex;flex-direction:column;gap:8px;"></div>
+        </div>
+        <!-- Revenue breakdown -->
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:16px;padding-top:16px;border-top:1px solid #111;">
+          <div>
+            <div style="font-size:10px;color:#555;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Elite Members</div>
+            <div style="font-size:18px;font-family:'Bebas Neue',sans-serif;color:#f59e0b;" id="rd-elite">0 × ₹0</div>
+          </div>
+          <div>
+            <div style="font-size:10px;color:#555;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Pro Members</div>
+            <div style="font-size:18px;font-family:'Bebas Neue',sans-serif;color:#818cf8;" id="rd-pro">0 × ₹0</div>
+          </div>
+          <div>
+            <div style="font-size:10px;color:#555;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Basic Members</div>
+            <div style="font-size:18px;font-family:'Bebas Neue',sans-serif;color:#22c55e;" id="rd-basic">0 × ₹0</div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- GENERATE + HOW IT WORKS -->
@@ -570,14 +615,69 @@ function remindWhatsApp(uid,name,phone){
 }
 
 // ── STATS ──
+// Plan pricing for revenue estimate
+const PLAN_PRICE={royal_elite:1999,royal_pro:999,basic:299};
+const PLAN_LABEL={royal_elite:'Royal Elite',royal_pro:'Royal Pro',basic:'Basic'};
+const PLAN_COLOR={royal_elite:'#f59e0b',royal_pro:'#818cf8',basic:'#22c55e'};
+
 function updateStats(){
   const today=new Date();const week=new Date(today.getTime()+7*86400000);
+  const thirtyDaysAgo=new Date(today.getTime()-30*86400000);
+
   document.getElementById('st-active').textContent=allMembers.length;
   document.getElementById('st-unused').textContent=allCodes.filter(c=>!c.used&&(!c.expiryDate||new Date(c.expiryDate)>today)).length;
   document.getElementById('st-expiring').textContent=allMembers.filter(m=>{
     const e=getMemberExpiry(m);return e&&e>today&&e<=week;
   }).length;
   document.getElementById('st-total').textContent=allCodes.length;
+
+  // ── Revenue Analytics ──────────────────────────────────
+  const activeMem=allMembers.filter(m=>{const e=getMemberExpiry(m);return e&&e>today;});
+  const expiredMem=allMembers.filter(m=>{const e=getMemberExpiry(m);return !e||e<=today;});
+  const newMem=allMembers.filter(m=>{
+    try{
+      const ca=m.createdAt?.toDate?m.createdAt.toDate():m.createdAt?new Date(m.createdAt):null;
+      return ca&&ca>=thirtyDaysAgo;
+    }catch(e){return false;}
+  });
+
+  // Plan counts
+  const planCount={royal_elite:0,royal_pro:0,basic:0};
+  activeMem.forEach(m=>{const p=m.plan||'basic';planCount[p]=(planCount[p]||0)+1;});
+
+  // Estimated monthly revenue
+  const totalRev=Object.entries(planCount).reduce((sum,[plan,cnt])=>sum+(PLAN_PRICE[plan]||0)*cnt,0);
+
+  // Retention rate
+  const retention=allMembers.length?Math.round((activeMem.length/allMembers.length)*100):0;
+
+  // Update revenue cards
+  document.getElementById('rev-total').textContent='₹'+totalRev.toLocaleString('en-IN');
+  document.getElementById('rev-new').textContent=newMem.length;
+  document.getElementById('rev-expired').textContent=expiredMem.length;
+  document.getElementById('rev-retention').textContent=retention+'%';
+
+  // Plan breakdown row details
+  document.getElementById('rd-elite').textContent=planCount.royal_elite+' × ₹'+PLAN_PRICE.royal_elite;
+  document.getElementById('rd-pro').textContent=planCount.royal_pro+' × ₹'+PLAN_PRICE.royal_pro;
+  document.getElementById('rd-basic').textContent=planCount.basic+' × ₹'+PLAN_PRICE.basic;
+
+  // Plan distribution bars
+  const barsWrap=document.getElementById('plan-bars');
+  if(barsWrap){
+    const total=Math.max(1,activeMem.length);
+    barsWrap.innerHTML=['royal_elite','royal_pro','basic'].map(plan=>{
+      const cnt=planCount[plan];
+      const pct=Math.round((cnt/total)*100);
+      return `<div style="display:flex;align-items:center;gap:10px;">
+        <div style="font-size:11px;color:#888;width:90px;flex-shrink:0;">${PLAN_LABEL[plan]}</div>
+        <div style="flex:1;background:#111;border-radius:4px;height:8px;overflow:hidden;">
+          <div style="height:100%;width:${pct}%;background:${PLAN_COLOR[plan]};border-radius:4px;transition:width .5s;"></div>
+        </div>
+        <div style="font-size:11px;color:#666;width:50px;text-align:right;">${cnt} (${pct}%)</div>
+      </div>`;
+    }).join('');
+  }
 }
 
 // ── RENEW MODAL ──
