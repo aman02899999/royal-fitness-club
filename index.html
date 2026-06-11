@@ -243,6 +243,9 @@ section{padding:68px 20px;position:relative;z-index:1;}
 .bfsi.active{border-color:var(--red);color:var(--red);background:rgba(232,0,29,.08);}
 .mbg{position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:9000;display:none;align-items:center;justify-content:center;backdrop-filter:blur(12px);padding:20px;}
 .mbg.open{display:flex;}
+/* Login modal — visitors see the website features but can't access without logging in */
+#loginmodal{background:rgba(7,7,7,.52);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);}
+#loginmodal .mbox{box-shadow:0 24px 80px rgba(0,0,0,.7),0 0 0 1px rgba(232,0,29,.18);}
 .mbox{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:40px 34px;width:100%;max-width:420px;position:relative;}
 .mclose{position:absolute;top:13px;right:14px;background:none;border:none;color:var(--muted);font-size:19px;cursor:pointer;transition:color .2s;}
 .mclose:hover{color:var(--text);}
@@ -2466,7 +2469,7 @@ img{loading:lazy;}
 </footer>
 <div class="mbg" id="loginmodal">
   <div class="mbox" style="max-width:420px;">
-    <button class="mclose" onclick="closeModal('loginmodal')">✕</button>
+    <button class="mclose" onclick="closeLoginModal()">✕</button>
     <div class="mlogo">ROYAL FITNESS CLUB</div>
     <div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--red);margin:4px 0 20px;">Members Portal</div>
     <div class="mwarn">🏋️ This portal is exclusively for Royal Fitness Club enrolled members.</div>
@@ -2574,7 +2577,8 @@ const $=id=>document.getElementById(id);
 function toast(msg,type='fire'){const t=$('toast');t.textContent=msg;t.className=`toast ${type} show`;setTimeout(()=>{t.className=`toast ${type}`;},3500);}
 function openModal(id){$(id).classList.add('open');if(id==='promodal'&&window.AnalyticsService)window.AnalyticsService.trackEvent('pro_modal_opened').catch(()=>{});}
 function closeModal(id){$(id).classList.remove('open');}
-['loginmodal','sharemodal','promodal','elitemodal'].forEach(id=>{$(id).addEventListener('click',e=>{if(e.target===$(id))closeModal(id);});});
+['sharemodal','promodal','elitemodal'].forEach(id=>{$(id).addEventListener('click',e=>{if(e.target===$(id))closeModal(id);});});
+$('loginmodal').addEventListener('click',e=>{if(e.target===$('loginmodal'))closeLoginModal();});
 function animN(el,target,dec=0,sfx=''){let s=0,d=900;const step=ts=>{if(!s)s=ts;const p=Math.min((ts-s)/d,1);el.textContent=(target*p).toFixed(dec)+sfx;if(p<1)requestAnimationFrame(step);};requestAnimationFrame(step);}
 // ── TIMER ──
 let tend=+localStorage.getItem('bm_te')||0;
@@ -2635,7 +2639,8 @@ function initUser(){
   });
 }
 
-function forceLogin(){openModal('loginmodal');}
+function forceLogin(){document.body.style.overflow='hidden';openModal('loginmodal');}
+function closeLoginModal(){document.body.style.overflow='';closeModal('loginmodal');}
 
 function showMembershipGate(type,expDate){
   const gate=$('gym-gate');
@@ -2694,7 +2699,7 @@ async function loginWithFirebase(){
   try{
     $('login-pass').disabled=true;
     await firebase.auth().signInWithEmailAndPassword(email,pass);
-    closeModal('loginmodal');
+    closeLoginModal();
     toast('Welcome back! 🔥');
   }catch(err){
     const msg=err.code==='auth/wrong-password'||err.code==='auth/invalid-credential'?'Wrong password. Check with the gym front desk.':err.code==='auth/user-not-found'?'Account not found. Please enroll at Royal Fitness Club.':err.message;
