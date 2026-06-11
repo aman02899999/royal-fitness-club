@@ -36,6 +36,12 @@ service cloud.firestore {
             || request.resource.data.get('plan', 'free') == 'free')
         && request.resource.data.get('membershipExpiry', null) == resource.data.get('membershipExpiry', null);
       allow read, write: if isAdmin();
+
+      // renewals subcollection — written by admin when renewing membership
+      match /renewals/{renewalId} {
+        allow read: if request.auth != null && request.auth.uid == uid;
+        allow write: if isAdmin();
+      }
     }
 
     // subscriptions/{subId} - subscription records

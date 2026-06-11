@@ -65,7 +65,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:ce
 
 
 
-.testis{padding:16px 20px 56px;overflow:hidden;position:relative;z-index:1;}
+.testimonials{padding:16px 20px 56px;overflow:hidden;position:relative;z-index:1;}
 .ttrack{display:flex;gap:14px;animation:marqueeL 42s linear infinite;}
 .ttrack:hover{animation-play-state:paused;}
 .tcard{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:20px;min-width:260px;max-width:260px;flex-shrink:0;}
@@ -1456,7 +1456,7 @@ img{loading:lazy;}
   </div>
 </section>
 
-<div class="testis"><div class="ttrack" id="ttrack"></div></div>
+<div class="testimonials"><div class="ttrack" id="ttrack"></div></div>
 <div class="divider"></div>
 <section id="plans">
   <div class="container">
@@ -2144,6 +2144,7 @@ img{loading:lazy;}
         <button class="pcf" onclick="filterCatalog('women',this)">Women</button>
         <button class="pcf" onclick="filterCatalog('training',this)">Training</button>
         <button class="pcf" onclick="filterCatalog('recovery',this)">Recovery</button>
+        <button class="pcf" onclick="filterCatalog('supplements',this)">Supplements</button>
       </div>
       <!-- Cards rendered by JS -->
       <div class="pdf-catalog-grid" id="pdf-catalog-grid"></div>
@@ -4109,13 +4110,13 @@ buildPostureQ();buildMobilityQ();buildBeastScore2();renderMeas();
 function openProfile(){
   if(!user){forceLogin();return;}
   renderProfile();
-  document.querySelectorAll('section,.testis,.divider,footer').forEach(s=>{if(s.id!=='profile')s.style.display='none';});
+  document.querySelectorAll('section,.testimonials,.divider,footer').forEach(s=>{if(s.id!=='profile')s.style.display='none';});
   $('profile').classList.add('show');$('profile').style.display='block';
   window.scrollTo({top:0,behavior:'smooth'});
 }
 function closeProfile(){
   $('profile').classList.remove('show');$('profile').style.display='none';
-  document.querySelectorAll('section,.testis,.divider,footer').forEach(s=>{if(s.id==='profile'){s.style.display='none';}else{s.style.display='';}});
+  document.querySelectorAll('section,.testimonials,.divider,footer').forEach(s=>{if(s.id==='profile'){s.style.display='none';}else{s.style.display='';}});
   window.scrollTo({top:0,behavior:'smooth'});
 }
 // Close profile when nav links clicked, also handled by closeNav() inline
