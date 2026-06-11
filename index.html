@@ -1016,6 +1016,19 @@ img{loading:lazy;}
 /* Sub-section stags & sh inside store */
 #store [class="stag"]{color:var(--sv)!important;}
 
+/* Features Banner — store palette */
+#store .pfb-tag{color:var(--sv);}
+#store .pfb-hl{color:var(--st);}
+#store .pfb-card{background:#fff;border-color:var(--sb);}
+#store .pfb-card:hover{border-color:var(--sv);}
+#store .pfb-title{color:var(--st);}
+#store .pfb-desc{color:var(--sm);}
+#store .pfb-outcomes{background:linear-gradient(135deg,rgba(124,58,237,.05),rgba(168,85,247,.03));border-color:rgba(124,58,237,.15);}
+#store .pfb-out-label{color:var(--sm);}
+#store .pfb-out-item{background:rgba(124,58,237,.04);}
+#store .pfb-out-num{color:var(--sv);}
+#store .pfb-out-desc{color:var(--sm);}
+
 /* Anabolic book keeps its red cover — no override */
 /* FM book keeps blue cover — no override */
 
@@ -1080,6 +1093,29 @@ img{loading:lazy;}
 @media(max-width:380px){
   .pdf-catalog-grid{grid-template-columns:1fr;}
 }
+
+/* PDF Features Banner */
+.pdf-features-banner{margin:32px 0;}
+.pfb-header{text-align:center;margin-bottom:20px;}
+.pfb-tag{font-size:10px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--red);margin-bottom:6px;}
+.pfb-hl{font-size:clamp(16px,3vw,22px);font-weight:700;color:var(--text);line-height:1.3;}
+.pfb-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:18px;}
+.pfb-card{display:flex;gap:10px;align-items:flex-start;padding:15px 13px;background:var(--card);border:1px solid var(--border);border-radius:12px;transition:border-color .2s,transform .2s;}
+.pfb-card:hover{border-color:var(--red);transform:translateY(-2px);}
+.pfb-ico{font-size:22px;flex-shrink:0;line-height:1;margin-top:1px;}
+.pfb-title{font-size:11px;font-weight:700;color:var(--text);margin-bottom:3px;text-transform:uppercase;letter-spacing:.4px;}
+.pfb-desc{font-size:11px;color:var(--muted);line-height:1.5;}
+.pfb-outcomes{padding:18px 22px;background:linear-gradient(135deg,rgba(232,0,29,.06),rgba(255,69,0,.03));border:1px solid rgba(232,0,29,.15);border-radius:12px;}
+.pfb-out-label{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted2);text-align:center;margin-bottom:14px;}
+.pfb-out-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+.pfb-out-item{text-align:center;padding:10px 6px;background:rgba(0,0,0,.2);border-radius:8px;}
+.pfb-out-num{font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--red);line-height:1;margin-bottom:3px;}
+.pfb-out-desc{font-size:10px;color:var(--muted);line-height:1.4;}
+@media(max-width:768px){
+  .pfb-grid{grid-template-columns:1fr 1fr;}
+  .pfb-out-grid{grid-template-columns:1fr 1fr;}
+}
+@media(max-width:480px){.pfb-grid{grid-template-columns:1fr;}}
 </style>
 <!-- Firebase SDK (compat) -->
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
@@ -1809,10 +1845,11 @@ img{loading:lazy;}
       <p class="ssub">Master the mental game. Build unbreakable habits, crush limiting beliefs, and develop the discipline that makes your body transformation permanent.</p>
 
       <div class="pdf-stats-bar">
+        <div class="pdf-stat"><div class="pdf-stat-num">1,200+</div><div class="pdf-stat-lbl">Readers</div></div>
         <div class="pdf-stat"><div class="pdf-stat-num">160+</div><div class="pdf-stat-lbl">Pages</div></div>
         <div class="pdf-stat"><div class="pdf-stat-num">10</div><div class="pdf-stat-lbl">Chapters</div></div>
-        <div class="pdf-stat"><div class="pdf-stat-num">4.9★</div><div class="pdf-stat-lbl">Rating</div></div>
-        <div class="pdf-stat"><div class="pdf-stat-num">1,200+</div><div class="pdf-stat-lbl">Readers</div></div>
+        <div class="pdf-stat"><div class="pdf-stat-num">4.9★</div><div class="pdf-stat-lbl">Avg Rating</div></div>
+        <div class="pdf-stat"><div class="pdf-stat-num">8</div><div class="pdf-stat-lbl">Week Program</div></div>
       </div>
 
       <div class="pdf-hero">
@@ -1843,14 +1880,14 @@ img{loading:lazy;}
             <h3>What's Inside</h3>
             <ul class="pdf-chap-list">
               <li><span>🏆</span><span>The Champion's Mindset — Building Mental Toughness</span></li>
-              <li><span>🔄</span><span>Habit Formation & The Science of Consistency</span></li>
-              <li><span>😤</span><span>Stress Management & Cortisol Control for Athletes</span></li>
+              <li><span>🔄</span><span>Habit Formation &amp; The Science of Consistency</span></li>
+              <li><span>😤</span><span>Stress Management &amp; Cortisol Control for Athletes</span></li>
               <li><span>🍽️</span><span>Nutrition Psychology — Ending Emotional Eating</span></li>
-              <li><span>😴</span><span>Sleep Optimization for Peak Mental & Physical Performance</span></li>
-              <li><span>🧘</span><span>Indian Wellness Practices — Yoga, Pranayama & Recovery</span></li>
+              <li><span>😴</span><span>Sleep Optimization for Peak Mental &amp; Physical Performance</span></li>
+              <li><span>🧘</span><span>Indian Wellness Practices — Yoga, Pranayama &amp; Recovery</span></li>
               <li><span>🎯</span><span>Goal Architecture — Setting Targets That Actually Stick</span></li>
-              <li><span>📈</span><span>Overcoming Plateaus — Mentally & Physically</span></li>
-              <li><span>👥</span><span>Social Pressure, Peer Influence & The Fitness Lifestyle</span></li>
+              <li><span>📈</span><span>Overcoming Plateaus — Mentally &amp; Physically</span></li>
+              <li><span>👥</span><span>Social Pressure, Peer Influence &amp; The Fitness Lifestyle</span></li>
               <li><span>⚡</span><span>Building Your Identity as a Lifelong Athlete</span></li>
             </ul>
           </div>
@@ -1873,17 +1910,130 @@ img{loading:lazy;}
         </div>
       </div>
 
-      <!-- Fitness & Mindset page reader -->
-      <div class="pdf-reader-section">
-        <h3>📖 Free Preview — Read Before You Buy</h3>
-        <p class="pdf-reader-desc">First 5 pages free · Purchase to unlock all 67 pages instantly</p>
-        <div id="fm-reader" class="pdf-reader-grid"></div>
-        <div class="fm-reader-cta" id="fm-reader-cta">
-          <p>🔒 Unlock all 67 pages instantly for just ₹299</p>
-          <button class="pdf-buy-btn" style="background:linear-gradient(135deg,#0050a0,#0080ff);max-width:320px;" onclick="buyPDFProduct('fitness_mindset')">📥 GET FULL ACCESS — ₹299</button>
+      <!-- Features & Benefits Hero Banner -->
+      <div class="pdf-features-banner">
+        <div class="pfb-header">
+          <div class="pfb-tag">Why This Guide Works</div>
+          <div class="pfb-hl">6 Reasons 1,200+ Members Trust This Over Free Content</div>
+        </div>
+        <div class="pfb-grid">
+          <div class="pfb-card">
+            <span class="pfb-ico">🧠</span>
+            <div>
+              <div class="pfb-title">Psychology-First</div>
+              <div class="pfb-desc">Tackles the #1 reason people fail — mental barriers, not lack of knowledge or motivation</div>
+            </div>
+          </div>
+          <div class="pfb-card">
+            <span class="pfb-ico">🇮🇳</span>
+            <div>
+              <div class="pfb-title">India-Specific</div>
+              <div class="pfb-desc">Integrates yoga, pranayama, Indian stress patterns and desi wellness wisdom — not Western templates</div>
+            </div>
+          </div>
+          <div class="pfb-card">
+            <span class="pfb-ico">📐</span>
+            <div>
+              <div class="pfb-title">Complete System</div>
+              <div class="pfb-desc">10 structured chapters that build on each other — not random tips from 20 different YouTube videos</div>
+            </div>
+          </div>
+          <div class="pfb-card">
+            <span class="pfb-ico">⚡</span>
+            <div>
+              <div class="pfb-title">Instant Application</div>
+              <div class="pfb-desc">Every chapter ends with actionable exercises you can start the same day — no theory without action</div>
+            </div>
+          </div>
+          <div class="pfb-card">
+            <span class="pfb-ico">🔬</span>
+            <div>
+              <div class="pfb-title">Science-Backed</div>
+              <div class="pfb-desc">Habit loops, cortisol science, sleep architecture — explained simply and applied practically</div>
+            </div>
+          </div>
+          <div class="pfb-card">
+            <span class="pfb-ico">💼</span>
+            <div>
+              <div class="pfb-title">Real-Life Friendly</div>
+              <div class="pfb-desc">Built for Indian work culture, family obligations, and social pressure — not a Western lifestyle</div>
+            </div>
+          </div>
+        </div>
+        <div class="pfb-outcomes">
+          <div class="pfb-out-label">Results Our Members Report</div>
+          <div class="pfb-out-grid">
+            <div class="pfb-out-item">
+              <div class="pfb-out-num">6mo+</div>
+              <div class="pfb-out-desc">Average consistency streak after applying the habit chapter</div>
+            </div>
+            <div class="pfb-out-item">
+              <div class="pfb-out-num">87%</div>
+              <div class="pfb-out-desc">Report measurable stress reduction within the first week</div>
+            </div>
+            <div class="pfb-out-item">
+              <div class="pfb-out-num">3×</div>
+              <div class="pfb-out-desc">More members hit 90-day streaks vs those without the guide</div>
+            </div>
+            <div class="pfb-out-item">
+              <div class="pfb-out-num">4.9★</div>
+              <div class="pfb-out-desc">Average rating from 1,200+ verified readers across India</div>
+            </div>
+          </div>
         </div>
       </div>
 
+      <!-- Bonus section -->
+      <div class="pdf-bonus-section">
+        <div class="pdf-bonus-tag">FREE BONUS — INCLUDED TODAY</div>
+        <div class="sh" style="font-size:clamp(22px,4vw,34px);margin:6px 0 4px;">3 Exclusive Bonuses Worth ₹497</div>
+        <p style="font-size:12px;color:#888;margin-bottom:0;">Buy today and unlock these at zero extra cost.</p>
+        <div class="pdf-bonus-list">
+          <div class="pdf-bonus-item">
+            <div class="pdf-bonus-icon">📋</div>
+            <div>
+              <span class="pdf-bonus-name">21-Day Habit Tracker</span>
+              <span class="pdf-bonus-desc">Printable day-by-day worksheet with implementation prompts and consistency scoring.</span>
+            </div>
+          </div>
+          <div class="pdf-bonus-item">
+            <div class="pdf-bonus-icon">🧘</div>
+            <div>
+              <span class="pdf-bonus-name">5-Minute Daily Pranayama Protocol</span>
+              <span class="pdf-bonus-desc">Quick breathwork routine proven to reduce cortisol before training — fits any schedule.</span>
+            </div>
+          </div>
+          <div class="pdf-bonus-item">
+            <div class="pdf-bonus-icon">😴</div>
+            <div>
+              <span class="pdf-bonus-name">Sleep Optimization Checklist</span>
+              <span class="pdf-bonus-desc">12-point bedtime routine to maximize GH release, recovery, and next-day performance.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Is this for you -->
+      <div class="pdf-for-section">
+        <div class="pdf-for-box yes">
+          <h4>✅ This Is For You If...</h4>
+          <div class="pdf-for-li"><span>✓</span><span>You start strong but always quit after a few weeks</span></div>
+          <div class="pdf-for-li"><span>✓</span><span>You know what to do but can't make yourself do it consistently</span></div>
+          <div class="pdf-for-li"><span>✓</span><span>Stress eating or bad sleep is quietly ruining your progress</span></div>
+          <div class="pdf-for-li"><span>✓</span><span>You want a system that works even when motivation disappears</span></div>
+          <div class="pdf-for-li"><span>✓</span><span>You want the mental edge that separates good physiques from great ones</span></div>
+        </div>
+        <div class="pdf-for-box no">
+          <h4>❌ This Is NOT For You If...</h4>
+          <div class="pdf-for-li"><span>✗</span><span>You're looking for a quick-fix or overnight transformation</span></div>
+          <div class="pdf-for-li"><span>✗</span><span>You're unwilling to do daily 5-minute reflections or habit work</span></div>
+          <div class="pdf-for-li"><span>✗</span><span>You already have a professional psychologist or coach guiding you</span></div>
+          <div class="pdf-for-li"><span>✗</span><span>You believe willpower alone is enough — no systems needed</span></div>
+          <div class="pdf-for-li"><span>✗</span><span>You won't apply the frameworks from each chapter</span></div>
+        </div>
+      </div>
+
+      <!-- Reviews -->
       <div class="pdf-reviews-section">
         <h3>What Members Are Saying</h3>
         <div class="pdf-reviews-grid">
@@ -1893,7 +2043,7 @@ img{loading:lazy;}
               <div class="pdf-rev-info"><div class="pdf-rev-name2">Neha R.</div><div class="pdf-rev-date">Delhi · Verified Purchase</div></div>
               <div class="pdf-rev-stars">⭐⭐⭐⭐⭐</div>
             </div>
-            <div class="pdf-rev-text">"I used to quit every fitness routine after 3 weeks. After reading the habit chapter, I've been consistent for 6 months straight. This guide changed my relationship with fitness."</div>
+            <div class="pdf-rev-text">"I used to quit every routine after 3 weeks. After the habit chapter I've been consistent for 6 months straight. This guide changed my relationship with fitness forever."</div>
           </div>
           <div class="pdf-review">
             <div class="pdf-rev-header">
@@ -1901,7 +2051,7 @@ img{loading:lazy;}
               <div class="pdf-rev-info"><div class="pdf-rev-name2">Rohit S.</div><div class="pdf-rev-date">Bangalore · Verified Purchase</div></div>
               <div class="pdf-rev-stars">⭐⭐⭐⭐⭐</div>
             </div>
-            <div class="pdf-rev-text">"The stress management section is gold. I was stress eating and sleeping badly. Following the cortisol protocols literally improved my body composition without changing my workout."</div>
+            <div class="pdf-rev-text">"The stress and cortisol section is gold. I stopped stress eating, started sleeping better, and my body composition improved without changing my training at all."</div>
           </div>
           <div class="pdf-review">
             <div class="pdf-rev-header">
@@ -1909,7 +2059,7 @@ img{loading:lazy;}
               <div class="pdf-rev-info"><div class="pdf-rev-name2">Anjali M.</div><div class="pdf-rev-date">Mumbai · Verified Purchase</div></div>
               <div class="pdf-rev-stars">⭐⭐⭐⭐⭐</div>
             </div>
-            <div class="pdf-rev-text">"The yoga and pranayama integration with modern training was unexpected and amazing. First time I've seen someone bridge Indian wellness and gym culture. Outstanding."</div>
+            <div class="pdf-rev-text">"The yoga and pranayama integration with modern training was unexpected and amazing. First time I've seen someone properly bridge Indian wellness and gym culture."</div>
           </div>
           <div class="pdf-review">
             <div class="pdf-rev-header">
@@ -1917,35 +2067,72 @@ img{loading:lazy;}
               <div class="pdf-rev-info"><div class="pdf-rev-name2">Vikas T.</div><div class="pdf-rev-date">Pune · Verified Purchase</div></div>
               <div class="pdf-rev-stars">⭐⭐⭐⭐⭐</div>
             </div>
-            <div class="pdf-rev-text">"The identity chapter hit different. I stopped saying 'I'm trying to get fit' and started saying 'I am an athlete.' That mental shift made everything else easier. Must read."</div>
+            <div class="pdf-rev-text">"The identity chapter hit different. I stopped saying 'I'm trying to get fit' and started saying 'I am an athlete.' That one mental shift changed everything."</div>
+          </div>
+          <div class="pdf-review">
+            <div class="pdf-rev-header">
+              <div class="pdf-review-avatar" style="background:linear-gradient(135deg,#0050a0,#0080ff);">🔥</div>
+              <div class="pdf-rev-info"><div class="pdf-rev-name2">Priya K.</div><div class="pdf-rev-date">Hyderabad · Verified Purchase</div></div>
+              <div class="pdf-rev-stars">⭐⭐⭐⭐⭐</div>
+            </div>
+            <div class="pdf-rev-text">"I read it with my partner. We both improved. The social pressure chapter helped us navigate family dinners and festival eating without guilt or derailing progress."</div>
+          </div>
+          <div class="pdf-review">
+            <div class="pdf-rev-header">
+              <div class="pdf-review-avatar" style="background:linear-gradient(135deg,#0050a0,#0080ff);">🏅</div>
+              <div class="pdf-rev-info"><div class="pdf-rev-name2">Aakash D.</div><div class="pdf-rev-date">Chennai · Verified Purchase</div></div>
+              <div class="pdf-rev-stars">⭐⭐⭐⭐⭐</div>
+            </div>
+            <div class="pdf-rev-text">"Best ₹299 I've spent. The goal architecture chapter transformed how I approach everything in life. This is a life guide disguised as a fitness guide."</div>
           </div>
         </div>
       </div>
 
+      <!-- Guarantee -->
+      <div class="pdf-guarantee-section">
+        <div class="pdf-guarantee-box">
+          <div class="pdf-guarantee-icon">🛡️</div>
+          <div class="pdf-guarantee-text">
+            <h4>OUR PROMISE TO YOU</h4>
+            <p>If you read this guide and apply even 3 of the 10 chapters, you will think and act differently within 30 days. These are the same mental frameworks our top-transforming members use every day. We stand behind every word — if you have any concern, walk into Royal Fitness Club and we'll personally address it.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- FAQ -->
       <div class="pdf-faq-section">
         <h3>Frequently Asked Questions</h3>
         <div class="faq-item" onclick="toggleFAQ(this)">
           <div class="faq-q">Is this a beginner guide or for experienced athletes?</div>
-          <div class="faq-a"><p>Both. The mindset principles apply whether you're just starting or you've been training for years. Many experienced athletes find they need this more — bad mental habits build up over time and create plateaus that training changes alone can't fix.</p></div>
+          <div class="faq-a"><p>Both. Mindset principles apply whether you're just starting or have trained for years. Many experienced athletes need this more — bad mental habits compound over time and create plateaus that training changes alone can't fix.</p></div>
         </div>
         <div class="faq-item" onclick="toggleFAQ(this)">
-          <div class="faq-q">How does this complement the Anabolic Advanced Guide?</div>
-          <div class="faq-a"><p>The Anabolic guide gives you the physical blueprint (training, nutrition, hormones). This guide gives you the mental operating system to actually follow it consistently. Most people fail not from lack of knowledge but from lack of mental resilience and habit systems. Together they're complete.</p></div>
+          <div class="faq-q">How does this complement the Anabolic Full Guide?</div>
+          <div class="faq-a"><p>The Anabolic guide gives you the physical blueprint. This guide gives you the mental operating system to actually follow it. Most people fail not from lack of knowledge but from lack of mental resilience and habit systems. Together they're a complete transformation package.</p></div>
         </div>
         <div class="faq-item" onclick="toggleFAQ(this)">
           <div class="faq-q">How do I receive the PDF after purchase?</div>
-          <div class="faq-a"><p>The download button appears instantly on this page after payment. Your purchase is also saved to your account — just log in and visit the Store page anytime to re-download.</p></div>
+          <div class="faq-a"><p>The download button appears instantly on this page after payment. Your purchase is also saved to your account — just log in and revisit the Store page anytime to re-download.</p></div>
+        </div>
+        <div class="faq-item" onclick="toggleFAQ(this)">
+          <div class="faq-q">How is this different from free YouTube content?</div>
+          <div class="faq-a"><p>Free content gives you fragmented tips. This guide gives you a structured system — 10 chapters that build on each other with actionable exercises at the end of each one. No conflicting advice, no ads, no interruptions.</p></div>
+        </div>
+        <div class="faq-item" onclick="toggleFAQ(this)">
+          <div class="faq-q">I'm a Royal Pro subscriber — do I need this too?</div>
+          <div class="faq-a"><p>Pro gives you live tracking tools and AI meal plans. This guide gives you the deep mental frameworks to make every rep and meal count. Together they form a complete system.</p></div>
         </div>
         <div class="faq-item" onclick="toggleFAQ(this)">
           <div class="faq-q">Is there a refund policy?</div>
-          <div class="faq-a"><p>Due to the instant digital nature, refunds are not available after delivery. If you have any issue with your download or payment, visit us at the gym counter and we'll resolve it immediately.</p></div>
+          <div class="faq-a"><p>Due to the instant digital nature, refunds aren't available after delivery. If you have any issue with payment or download, come to the gym counter or contact us — we'll resolve it immediately.</p></div>
         </div>
       </div>
 
+      <!-- Final CTA -->
       <div class="pdf-final-cta" style="background:linear-gradient(135deg,#00050d,#001a3a);">
         <div class="stag" style="margin-bottom:8px;">Train Your Mind. Transform Your Body.</div>
         <div class="sh" style="font-size:clamp(26px,5vw,48px);">GET THE MINDSET GUIDE</div>
-        <p style="color:#b0b0b0;max-width:460px;margin:10px auto 24px;font-size:14px;line-height:1.6;">The mental framework used by Royal Fitness Club's top-transforming members. 160+ pages of practical, science-backed guidance.</p>
+        <p style="color:#b0b0b0;max-width:480px;margin:10px auto 24px;font-size:14px;line-height:1.6;">The mental framework used by Royal Fitness Club's top-transforming members. 160+ pages of practical, science-backed guidance built for Indian athletes.</p>
         <div style="display:flex;align-items:center;gap:14px;justify-content:center;flex-wrap:wrap;margin-bottom:16px;">
           <div style="text-decoration:line-through;color:#888;font-family:'Bebas Neue',sans-serif;font-size:24px;">₹799</div>
           <div style="font-family:'Bebas Neue',sans-serif;font-size:52px;color:#38bdf8;line-height:1;">₹299</div>
@@ -2033,6 +2220,79 @@ img{loading:lazy;}
             <span class="pdf-trust-badge">🔒 SSL Secured</span>
             <span class="pdf-trust-badge">💳 UPI / Card / NetBanking</span>
             <span class="pdf-trust-badge">⚡ Instant Access</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Features & Benefits Hero Banner -->
+    <div class="pdf-features-banner">
+      <div class="pfb-header">
+        <div class="pfb-tag">Why This Guide Is Different</div>
+        <div class="pfb-hl">6 Reasons 2,000+ Members Choose This Over Free Fitness Content</div>
+      </div>
+      <div class="pfb-grid">
+        <div class="pfb-card">
+          <span class="pfb-ico">🧬</span>
+          <div>
+            <div class="pfb-title">Real Science</div>
+            <div class="pfb-desc">Hormone optimization and muscle physiology explained accurately — no bro-science, no influencer myths</div>
+          </div>
+        </div>
+        <div class="pfb-card">
+          <span class="pfb-ico">🇮🇳</span>
+          <div>
+            <div class="pfb-title">Indian Diet Templates</div>
+            <div class="pfb-desc">Dal, paneer, chicken curry, rajma — every meal has macros calculated for the foods you actually eat</div>
+          </div>
+        </div>
+        <div class="pfb-card">
+          <span class="pfb-ico">📅</span>
+          <div>
+            <div class="pfb-title">12-Week Program</div>
+            <div class="pfb-desc">Complete blueprint with exact sets, reps, rest periods, and week-by-week progression rules — no guessing</div>
+          </div>
+        </div>
+        <div class="pfb-card">
+          <span class="pfb-ico">💊</span>
+          <div>
+            <div class="pfb-title">Supplement Truth</div>
+            <div class="pfb-desc">Ranked list of what actually works, what's useless, and what's just expensive marketing you can skip</div>
+          </div>
+        </div>
+        <div class="pfb-card">
+          <span class="pfb-ico">😴</span>
+          <div>
+            <div class="pfb-title">Recovery Blueprint</div>
+            <div class="pfb-desc">Sleep protocols, cortisol management, and CNS reset methods most lifters completely ignore</div>
+          </div>
+        </div>
+        <div class="pfb-card">
+          <span class="pfb-ico">📊</span>
+          <div>
+            <div class="pfb-title">Track Everything</div>
+            <div class="pfb-desc">Calorie calculators, macro templates, and progress tracking sheets — included and ready to use</div>
+          </div>
+        </div>
+      </div>
+      <div class="pfb-outcomes">
+        <div class="pfb-out-label">Results Our Members Report</div>
+        <div class="pfb-out-grid">
+          <div class="pfb-out-item">
+            <div class="pfb-out-num">4 kg</div>
+            <div class="pfb-out-desc">Average lean muscle gained in 12 weeks following the program</div>
+          </div>
+          <div class="pfb-out-item">
+            <div class="pfb-out-num">+20 kg</div>
+            <div class="pfb-out-desc">Average bench press increase reported after completing the full guide</div>
+          </div>
+          <div class="pfb-out-item">
+            <div class="pfb-out-num">2,000+</div>
+            <div class="pfb-out-desc">Copies sold across India — most popular guide in the club</div>
+          </div>
+          <div class="pfb-out-item">
+            <div class="pfb-out-num">4.9★</div>
+            <div class="pfb-out-desc">Average rating from 127 verified buyers — highest-rated guide</div>
           </div>
         </div>
       </div>
