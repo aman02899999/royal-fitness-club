@@ -2,7 +2,7 @@
   "name": "Royal Fitness Club",
   "short_name": "RFC",
   "description": "India's Most Advanced Gym Ecosystem — AI Meal Plans, Beast Score, Expert Guides",
-  "start_url": "/index.html",
+  "start_url": "/",
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait-primary",

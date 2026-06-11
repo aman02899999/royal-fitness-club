@@ -556,7 +556,7 @@ async function loadLeaderboardAdmin(){
   wrap.style.display='block';
   tbody.innerHTML=snap.docs.map((doc,i)=>{
     const d=doc.data();
-    const planBadge={'royal_elite':'<span class="pbadge pe">Elite</span>','royal_pro':'<span class="pbadge pp">Pro</span>','basic':'<span class="pbadge pb">Basic</span>'}[d.plan]||'<span class="pbadge pb">Free</span>';
+    const planBadge={'royal_elite':'<span class="badge badge-elite">Elite</span>','royal_pro':'<span class="badge badge-pro">Pro</span>','basic':'<span class="badge badge-basic">Basic</span>'}[d.plan]||'<span class="badge badge-basic">Free</span>';
     const upd=d.updatedAt?.toDate?.()?d.updatedAt.toDate().toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}):'—';
     return `<tr>
       <td>${i+1}</td>
@@ -896,7 +896,7 @@ document.getElementById('renew-modal').addEventListener('click',e=>{if(e.target=
 document.getElementById('hist-modal').addEventListener('click',e=>{if(e.target===document.getElementById('hist-modal'))closeHistModal();});
 
 // ── OTHER ACTIONS ──
-function filterCodes(f,btn){codeFilter=f;document.querySelectorAll('.tf-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderCodes();}
+function filterCodes(f,btn){codeFilter=f;btn.closest('.tabs-filter').querySelectorAll('.tf-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderCodes();}
 function copyCodeStr(c){navigator.clipboard.writeText(c).then(()=>toast('Copied!'));}
 async function delCode(c){if(!confirm('Delete code '+c+'?'))return;await db.collection('codes').doc(c).delete();toast('Deleted');loadAll();}
 document.getElementById('adm-pass').addEventListener('keydown',e=>{if(e.key==='Enter')adminLogin();});
