@@ -1340,16 +1340,20 @@ img{loading:lazy;}
       <button class="bsm" style="flex:0 0 auto;padding:9px 16px;" onclick="closeProfile()">← Back to Site</button>
     </div>
     <div class="prof-grid">
-      <!-- Plan & Payment -->
+      <!-- Plan & Membership -->
       <div class="prof-card prof-plan-box" style="grid-column:span 1;">
         <div class="prof-plan-title" id="pp-title">ROYAL ULTIMATE</div>
         <div class="prof-plan-price" id="pp-price">₹499<small>/mo</small></div>
-        <div style="margin:10px 0;"><span class="prof-status none" id="pp-status">● Active Subscription</span></div>
+        <div style="margin:10px 0;"><span class="prof-status none" id="pp-status">● Active</span></div>
+        <div id="pp-days-display" style="display:none;margin:10px 0;padding:10px 14px;border-radius:8px;text-align:center;border:1px solid rgba(34,197,94,.2);background:rgba(34,197,94,.06);">
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:34px;line-height:1;color:var(--green);" id="pp-days-num">—</div>
+          <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-top:2px;" id="pp-days-label">days remaining</div>
+        </div>
         <div class="prof-pay-row"><span>Plan</span><span id="pp-plan">Beast Ultimate</span></div>
         <div class="prof-pay-row"><span>Status</span><span id="pp-statustext">Active</span></div>
         <div class="prof-pay-row"><span>Started</span><span id="pp-started">—</span></div>
-        <div class="prof-pay-row"><span>Next Billing</span><span id="pp-next">—</span></div>
-        <div class="prof-pay-row"><span>Payment Method</span><span id="pp-method">—</span></div>
+        <div class="prof-pay-row"><span id="pp-next-label">Next Billing</span><span id="pp-next">—</span></div>
+        <div class="prof-pay-row"><span id="pp-method-label">Payment Method</span><span id="pp-method">—</span></div>
         <button class="prof-btn upgrade" id="pp-action" onclick="openModal('promodal')">⬆ UPGRADE TO PRO — <span class="px-pro">₹499</span>/mo</button>
         <button class="prof-btn cancel" id="pp-cancel" onclick="cancelPro()" style="display:none;">Cancel Subscription</button>
       </div>
@@ -2726,6 +2730,7 @@ img{loading:lazy;}
       <div class="mwarn" style="background:rgba(34,197,94,.08);border-color:rgba(34,197,94,.25);color:#86efac;">🎟️ Enter your membership code from the gym to create your account.</div>
       <input type="text" class="minp" id="reg-code" placeholder="Membership Code (e.g. RFC-A3K9P2)" autocomplete="off" style="text-transform:uppercase;letter-spacing:2px;font-family:monospace;font-size:15px;">
       <input type="text" class="minp" id="reg-name" placeholder="Your Full Name">
+      <input type="tel" class="minp" id="reg-phone" placeholder="Mobile Number (optional)">
       <input type="email" class="minp" id="reg-email" placeholder="Email Address" autocomplete="email">
       <input type="password" class="minp" id="reg-pass" placeholder="Create Password (min 6 chars)" autocomplete="new-password">
       <div id="reg-err" style="font-size:12px;color:#f87171;margin:-4px 0 8px;min-height:16px;"></div>
@@ -2860,7 +2865,7 @@ function initUser(){
           // Check digital subscription expiry
           const planExpired=d.expiryDate?.toDate?.()&&d.expiryDate.toDate()<new Date();
           const effectivePlan=planExpired?'free':(d.plan||'free');
-          user={uid:fbUser.uid,name:d.name||fbUser.email.split('@')[0],email:d.email||fbUser.email,phone:d.phone||'',role:d.role||'member',plan:effectivePlan,membershipExpiry:gymExpiry?.toISOString()||null,since:d.createdAt?.toDate?.()?.toISOString()||new Date().toISOString(),last:new Date().toISOString()};
+          user={uid:fbUser.uid,name:d.name||fbUser.email.split('@')[0],email:d.email||fbUser.email,phone:d.phone||'',role:d.role||'member',plan:effectivePlan,membershipExpiry:gymExpiry?.toISOString()||null,memberCode:d.memberCode||null,since:d.createdAt?.toDate?.()?.toISOString()||new Date().toISOString(),last:new Date().toISOString()};
           isPro=effectivePlan==='royal_pro'||effectivePlan==='royal_elite';
         }else{
           // Auth user exists but no Firestore doc — not a registered member
@@ -2983,6 +2988,7 @@ function switchAuthTab(tab){
 async function registerWithCode(){
   const code=($('reg-code')?.value||'').trim().toUpperCase();
   const name=($('reg-name')?.value||'').trim();
+  const phone=($('reg-phone')?.value||'').trim();
   const email=($('reg-email')?.value||'').trim();
   const pass=$('reg-pass')?.value||'';
   const errEl=$('reg-err');
@@ -3009,7 +3015,7 @@ async function registerWithCode(){
     const joinTs=firebase.firestore.Timestamp.fromDate(new Date(codeData.joinDate));
     // 3. Create Firestore user document
     await firebase.firestore().collection('users').doc(uid).set({
-      name,email,plan:codeData.plan,role:'member',gymMember:true,
+      name,email,phone:phone||'',plan:codeData.plan,role:'member',gymMember:true,
       memberCode:code,joinDate:codeData.joinDate,
       membershipExpiry:expiryTs,
       createdAt:firebase.firestore.FieldValue.serverTimestamp(),
@@ -4018,7 +4024,9 @@ function renderProfile(){
   $('prof-email').textContent=user.email||'—';
   // badge
   const badge=$('prof-badge');
-  if(isPro){badge.className='prof-plan-badge pro';badge.textContent='👑 Beast Pro';}
+  const GYM_PLAN_LABELS={'royal_elite':'👑 Royal Elite','royal_pro':'⚡ Royal Pro','basic':'🏋 Basic Member'};
+  if(user.membershipExpiry){badge.className='prof-plan-badge '+(isPro?'pro':'free');badge.textContent=GYM_PLAN_LABELS[user.plan]||'🏋 Member';}
+  else if(isPro){badge.className='prof-plan-badge pro';badge.textContent='👑 Beast Pro';}
   else{badge.className='prof-plan-badge free';badge.textContent='⚡ Free Plan';}
   // account
   $('ac-name').textContent=user.name||'—';
@@ -4026,9 +4034,44 @@ function renderProfile(){
   $('ac-phone').textContent=user.phone||'Not added';
   $('ac-since').textContent=user.since?new Date(user.since).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}):'—';
   $('ac-last').textContent=user.last?new Date(user.last).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}):'Today';
-  // plan & payment
+  // plan & membership
   const sub=JSON.parse(localStorage.getItem('bm_sub')||'null');
-  if(isPro&&sub){
+  if(user.membershipExpiry){
+    // Gym membership card
+    const exp=new Date(user.membershipExpiry);
+    const today=new Date();today.setHours(0,0,0,0);
+    const daysLeft=Math.ceil((exp-today)/86400000);
+    const expired=daysLeft<=0;
+    const expiringSoon=!expired&&daysLeft<=14;
+    const PLAN_LABELS={'royal_elite':'Royal Elite','royal_pro':'Royal Pro','basic':'Basic'};
+    $('pp-title').textContent=(PLAN_LABELS[user.plan]||'GYM MEMBER').toUpperCase();
+    $('pp-price').innerHTML='<small style="font-size:10px;letter-spacing:2px;color:var(--muted);">GYM MEMBERSHIP</small>';
+    $('pp-status').className='prof-status '+(expired?'none':expiringSoon?'trial':'active');
+    $('pp-status').textContent=expired?'● Membership Expired':expiringSoon?'● Expiring Soon':'● Active';
+    $('pp-plan').textContent=PLAN_LABELS[user.plan]||user.plan||'Member';
+    $('pp-statustext').textContent=expired?'Expired':expiringSoon?'Expiring in '+daysLeft+' days':'Active';
+    $('pp-started').textContent=user.since?new Date(user.since).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}):'—';
+    // Days display
+    const dEl=$('pp-days-display'),dNum=$('pp-days-num'),dLbl=$('pp-days-label');
+    dEl.style.display='block';
+    if(expired){
+      dNum.textContent='EXPIRED';dNum.style.color='var(--red)';dNum.style.fontSize='22px';
+      dLbl.textContent='renew at the gym front desk';
+      dEl.style.borderColor='rgba(239,68,68,.25)';dEl.style.background='rgba(239,68,68,.06)';
+    }else{
+      dNum.textContent=daysLeft;dNum.style.fontSize='34px';
+      dNum.style.color=expiringSoon?'var(--gold)':'var(--green)';
+      dLbl.textContent='days remaining';
+      dEl.style.borderColor=expiringSoon?'rgba(245,158,11,.25)':'rgba(34,197,94,.2)';
+      dEl.style.background=expiringSoon?'rgba(245,158,11,.06)':'rgba(34,197,94,.06)';
+    }
+    if($('pp-next-label'))$('pp-next-label').textContent='Expires On';
+    $('pp-next').textContent=exp.toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'});
+    if($('pp-method-label'))$('pp-method-label').textContent='Member Code';
+    $('pp-method').textContent=user.memberCode||'—';
+    $('pp-action').style.display='none';$('pp-cancel').style.display='none';
+    $('pp-history').innerHTML='<p style="font-size:12px;color:var(--muted);">Visit the gym front desk or contact admin to renew your membership.</p>';
+  }else if(isPro&&sub){
     $('pp-title').textContent='ROYAL PRO';
     const _c=CURRENCIES[currentCurrency]||CURRENCIES.INR;$('pp-price').innerHTML=_c.sym+_c.pro+'<small>/mo</small>';
     const isTrial=sub.status==='trial'&&new Date(sub.trialEnds)>new Date();
@@ -4045,7 +4088,7 @@ function renderProfile(){
   }else{
     $('pp-title').textContent='ROYAL ULTIMATE';
     const _cf=CURRENCIES[currentCurrency]||CURRENCIES.INR;$('pp-price').innerHTML=_cf.sym+'0<small>/mo</small>';
-    $('pp-status').className='prof-status none';$('pp-status').textContent='● Active Subscription';
+    $('pp-status').className='prof-status none';$('pp-status').textContent='● Active';
     $('pp-plan').textContent='Free';$('pp-statustext').textContent='Active';
     $('pp-started').textContent=user.since?new Date(user.since).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}):'—';
     $('pp-next').textContent='—';$('pp-method').textContent='None';
