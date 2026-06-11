@@ -425,3 +425,31 @@ exports.createMember = functions.https.onCall(async (data, context) => {
   console.log('[createMember] Created member:', uid, email);
   return { uid };
 });
+
+// ---------------------------------------------------------------------------
+// deleteMember — Admin-only Callable
+// Deletes the Firebase Auth user AND the Firestore user document
+// ---------------------------------------------------------------------------
+exports.deleteMember = functions.https.onCall(async (data, context) => {
+  if (!context.auth) throw new functions.https.HttpsError('unauthenticated', 'Must be logged in.');
+
+  const callerDoc = await admin.firestore().collection('users').doc(context.auth.uid).get();
+  if (!callerDoc.exists || callerDoc.data().role !== 'admin') {
+    throw new functions.https.HttpsError('permission-denied', 'Admin role required.');
+  }
+
+  const { uid } = data;
+  if (!uid) throw new functions.https.HttpsError('invalid-argument', 'uid is required.');
+  if (uid === context.auth.uid) throw new functions.https.HttpsError('invalid-argument', 'Cannot delete your own account.');
+
+  // Delete Firebase Auth user (ignore if already gone)
+  try { await admin.auth().deleteUser(uid); } catch (e) {
+    if (e.code !== 'auth/user-not-found') throw e;
+  }
+
+  // Delete Firestore document
+  await admin.firestore().collection('users').doc(uid).delete();
+
+  console.log('[deleteMember] Deleted member:', uid);
+  return { success: true };
+});

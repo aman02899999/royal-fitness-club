@@ -243,6 +243,9 @@ tr:hover td{background:rgba(255,255,255,.025);}
     </div>
 
     <div class="content">
+      <!-- SETUP ISSUES BANNER -->
+      <div id="admin-setup-issues" style="display:none;background:rgba(232,0,29,.1);border:1px solid rgba(232,0,29,.3);border-radius:6px;padding:10px 14px;margin-bottom:16px;font-size:12px;color:#ff6b6b;line-height:1.8;"></div>
+
       <!-- DASHBOARD SECTION -->
       <div class="section active" id="sec-dashboard">
         <div class="stats-row">
@@ -577,6 +580,34 @@ function showDashboard() {
   document.getElementById('set-av').textContent = (adminUser.name || 'A')[0].toUpperCase();
   document.getElementById('stat-month').textContent = new Date().toLocaleString('en', { month: 'long' });
   loadDashboardStats();
+  checkAdminSetup();
+}
+
+async function checkAdminSetup() {
+  const issues = [];
+  // 1. Verify admin role in Firestore
+  try {
+    const doc = await db.collection('users').doc(adminUser.uid).get();
+    if (!doc.exists) issues.push('⚠️ Your user document is missing in Firestore — member creation may fail.');
+    else if (doc.data().role !== 'admin') issues.push('⚠️ Your Firestore document does not have role:"admin" — Cloud Function calls will fail.');
+  } catch (e) { issues.push('⚠️ Could not verify admin role: ' + e.message); }
+
+  // 2. Test Cloud Function reachability (lightweight ping)
+  try {
+    const fn = firebase.functions().httpsCallable('createMember');
+    // Call with empty data — expected to fail with invalid-argument, NOT not-found/internal
+    await fn({}).catch(e => {
+      if (e.code === 'functions/not-found') issues.push('⚠️ createMember Cloud Function is NOT deployed — will use fallback method for member creation.');
+      else if (e.code === 'functions/internal') issues.push('⚠️ createMember Cloud Function has an error — check Firebase logs.');
+      // invalid-argument / permission-denied means it IS deployed (normal expected response)
+    });
+  } catch (e) { /* network error — ignore in diagnostic */ }
+
+  if (issues.length) {
+    const el = document.getElementById('admin-setup-issues');
+    if (el) { el.innerHTML = issues.join('<br>'); el.style.display = 'block'; }
+    else console.warn('[admin setup]', issues);
+  }
 }
 
 async function adminLogout() {
@@ -612,14 +643,17 @@ async function loadDashboardStats() {
     const users = snap.docs.map(d => ({ id: d.id, ...d.data() }));
     const now = new Date();
     const in7 = new Date(Date.now() + 7 * 86400000);
-    const total = users.length;
-    const pro = users.filter(u => u.plan && u.plan !== 'free').length;
-    const gymActive = users.filter(u => {
-      if (!u.membershipExpiry) return true;
+    // Exclude admin accounts from member stats
+    const members = users.filter(u => u.role !== 'admin');
+    const total = members.length;
+    const pro = members.filter(u => u.plan && u.plan !== 'free').length;
+    const gymActive = members.filter(u => {
+      // Only count members WITH an expiry set that hasn't passed
+      if (!u.membershipExpiry) return false;
       const exp = u.membershipExpiry.toDate ? u.membershipExpiry.toDate() : new Date(u.membershipExpiry);
       return exp >= now;
     }).length;
-    const expiringSoon = users.filter(u => {
+    const expiringSoon = members.filter(u => {
       if (!u.membershipExpiry) return false;
       const exp = u.membershipExpiry.toDate ? u.membershipExpiry.toDate() : new Date(u.membershipExpiry);
       return exp >= now && exp <= in7;
@@ -630,8 +664,8 @@ async function loadDashboardStats() {
     document.getElementById('stat-expiring').textContent = expiringSoon;
     document.getElementById('stat-pro').textContent = pro;
 
-    // Recent members table
-    const recent = users.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0)).slice(0, 5);
+    // Recent members table — exclude admins
+    const recent = members.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0)).slice(0, 5);
     document.getElementById('recent-members-body').innerHTML = recent.length ? recent.map(u => `
       <tr>
         <td><div class="td-name">${u.name || '—'}</div></td>
@@ -659,12 +693,24 @@ async function loadDashboardStats() {
 async function loadMembers() {
   document.getElementById('members-body').innerHTML = '<tr><td colspan="8"><div class="loading"><div class="spinner"></div>Loading members...</div></td></tr>';
   try {
-    const snap = await db.collection('users').orderBy('createdAt', 'desc').get();
-    allMembers = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    let snap;
+    try {
+      snap = await db.collection('users').orderBy('createdAt', 'desc').get();
+    } catch (idxErr) {
+      // Firestore index may not be built yet — fall back to unordered query
+      console.warn('loadMembers: orderBy failed (index missing?), using unordered query:', idxErr.message);
+      snap = await db.collection('users').get();
+    }
+    allMembers = snap.docs.map(d => ({ id: d.id, ...d.data() }))
+                         .filter(u => u.role !== 'admin')  // hide admin accounts from member list
+                         .sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
     filterMembers();
   } catch (err) {
     console.error('loadMembers:', err);
-    document.getElementById('members-body').innerHTML = '<tr><td colspan="8"><div class="empty-state"><div class="empty-icon">⚠️</div><div class="empty-text">Failed to load members</div></div></td></tr>';
+    const detail = err.code === 'permission-denied'
+      ? 'Permission denied — check Firestore rules are deployed.'
+      : err.message;
+    document.getElementById('members-body').innerHTML = `<tr><td colspan="8"><div class="empty-state"><div class="empty-icon">⚠️</div><div class="empty-text">Failed to load members: ${detail}</div></div></td></tr>`;
   }
 }
 
@@ -787,14 +833,49 @@ async function quickRenew(uid, name, days) {
 }
 
 async function confirmDelete(uid, email) {
-  if (!confirm(`Delete member ${email}?\n\nThis action cannot be undone.`)) return;
+  if (!confirm(`Delete member: ${email}\n\nThis will:\n• Remove their profile from the database\n• Revoke login access\n\nThis cannot be undone. Continue?`)) return;
   try {
-    await db.collection('users').doc(uid).delete();
-    toast('🗑️ Member deleted.', 'gold');
+    // Try Cloud Function first — deletes both Auth user and Firestore doc
+    let authDeleted = false;
+    try {
+      const fn = firebase.functions().httpsCallable('deleteMember');
+      await fn({ uid });
+      authDeleted = true;
+    } catch (fnErr) {
+      // Fallback: delete Firestore doc only (Auth account remains but is unusable without a profile)
+      console.warn('[deleteMember] CF unavailable, deleting Firestore doc only:', fnErr.message);
+      await db.collection('users').doc(uid).delete();
+    }
+    toast(`🗑️ Member deleted${authDeleted ? ' (Auth + DB)' : ' (DB only — Auth account may remain)'}.`, 'gold');
     await loadMembers();
+    await loadDashboardStats();
   } catch (err) {
     toast('Failed to delete: ' + err.message, 'fire');
   }
+}
+
+// Secondary Firebase app — creates Auth users without logging out the admin
+let _secApp = null;
+function getSecApp() {
+  if (_secApp) return _secApp;
+  try { _secApp = firebase.initializeApp(firebase.app().options, 'memberCreator'); }
+  catch(e) { _secApp = firebase.app('memberCreator'); }
+  return _secApp;
+}
+
+function friendlyAuthError(err) {
+  const map = {
+    'auth/email-already-in-use': 'Email already registered — this member already exists.',
+    'auth/invalid-email': 'Invalid email address format.',
+    'auth/weak-password': 'Password too weak — use at least 6 characters.',
+    'auth/operation-not-allowed': 'Email/password accounts are disabled in Firebase Console.',
+    'permission-denied': 'Permission denied — Firestore rules may not be deployed.',
+    'functions/permission-denied': 'Admin role not found in Firestore — set role:"admin" on your user document.',
+    'functions/not-found': 'Cloud Function not deployed — used direct fallback instead.',
+    'functions/internal': 'Cloud Function error — used direct fallback.',
+    'functions/unauthenticated': 'Session expired — please log out and log in again.',
+  };
+  return map[err.code] || map[err.message] || err.message || 'Unknown error';
 }
 
 function openAddMember() {
@@ -809,33 +890,66 @@ function openAddMember() {
 
 async function saveAddMember() {
   const name = document.getElementById('add-name').value.trim();
-  const email = document.getElementById('add-email').value.trim();
+  const email = document.getElementById('add-email').value.trim().toLowerCase();
   const password = document.getElementById('add-password').value.trim();
   const phone = document.getElementById('add-phone').value.trim();
   const gymExpiryVal = document.getElementById('add-gym-expiry').value;
 
   if (!name || !email || !password) { toast('Name, email and password are required', 'gold'); return; }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { toast('Please enter a valid email address', 'gold'); return; }
   if (password.length < 6) { toast('Password must be at least 6 characters', 'gold'); return; }
   if (!gymExpiryVal) { toast('Please set a gym membership expiry date', 'gold'); return; }
 
   const btn = document.getElementById('add-member-btn');
   const statusEl = document.getElementById('add-member-status');
-  btn.disabled = true; btn.textContent = 'Creating...';
+  btn.disabled = true; btn.textContent = '⏳ Creating...';
+  statusEl.style.display = 'none';
+
+  let uid = null;
+  let method = '';
 
   try {
-    const functions = firebase.functions();
-    const createMember = functions.httpsCallable('createMember');
-    const result = await createMember({
-      name, email, password, phone,
-      membershipExpiry: new Date(gymExpiryVal).toISOString()
-    });
-    statusEl.textContent = `✅ Member created! UID: ${result.data.uid}. Share login: ${email} / ${password}`;
+    // ── METHOD 1: Cloud Function (preferred — atomic Auth + Firestore creation) ──
+    try {
+      const fn = firebase.functions().httpsCallable('createMember');
+      const result = await fn({ name, email, password, phone, membershipExpiry: new Date(gymExpiryVal).toISOString() });
+      uid = result.data.uid;
+      method = 'Cloud Function';
+    } catch (fnErr) {
+      // ── METHOD 2: Secondary app fallback (works without Cloud Functions) ──
+      console.warn('[createMember] CF unavailable (' + (fnErr.code || fnErr.message) + '), using fallback.');
+      const secAuth = getSecApp().auth();
+      const cred = await secAuth.createUserWithEmailAndPassword(email, password);
+      uid = cred.user.uid;
+      await cred.user.updateProfile({ displayName: name });
+      await secAuth.signOut();
+      // Admin writes Firestore doc directly (Firestore rules allow admin write)
+      await db.collection('users').doc(uid).set({
+        uid, name, email, phone: phone || '',
+        role: 'member', plan: 'free', status: 'active',
+        membershipExpiry: firebase.firestore.Timestamp.fromDate(new Date(gymExpiryVal)),
+        createdAt: firebase.firestore.Timestamp.now(),
+        updatedAt: firebase.firestore.Timestamp.now(),
+        lastLogin: null,
+      });
+      method = 'Direct (CF unavailable)';
+    }
+
+    statusEl.innerHTML =
+      `<strong>✅ Member enrolled!</strong> <span style="color:var(--muted);font-size:11px;">${method}</span><br>` +
+      `<span style="font-size:12px;">Share login — Email: <b>${escHtml(email)}</b> &nbsp;/&nbsp; Password: <b>${escHtml(password)}</b></span>`;
+    statusEl.style.color = 'var(--green)';
     statusEl.style.display = 'block';
-    toast(`✅ ${name} enrolled successfully!`, 'green');
+    toast(`✅ ${name} enrolled!`, 'green');
     await loadMembers();
     await loadDashboardStats();
   } catch (err) {
-    toast('Failed to enroll: ' + (err.message || err), 'fire');
+    console.error('[saveAddMember]', err.code, err.message);
+    const msg = friendlyAuthError(err);
+    statusEl.textContent = '❌ ' + msg;
+    statusEl.style.color = 'var(--red)';
+    statusEl.style.display = 'block';
+    toast('❌ ' + msg, 'fire');
   } finally {
     btn.disabled = false; btn.textContent = '➕ Enroll Member';
   }
