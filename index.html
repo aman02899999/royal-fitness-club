@@ -1128,6 +1128,13 @@ img{loading:lazy;}
 .pcc-dl{width:100%;background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff;border:none;border-radius:6px;padding:9px 8px;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;text-align:center;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:5px;margin-top:4px;}
 .pcc-owned{display:flex;align-items:center;gap:5px;font-size:11px;color:#16a34a;font-weight:600;margin-top:4px;padding:7px 0;}
 .pcc-owned::before{content:'✅';}
+/* star rating row */
+.pcc-stars{display:flex;align-items:center;gap:4px;}
+.pcc-star-icons{color:#f59e0b;font-size:11px;letter-spacing:.5px;line-height:1;}
+.pcc-star-num{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;color:#1e1b4b;}
+.pcc-star-cnt{font-size:10px;color:#9ca3af;}
+/* hotness badge (BESTSELLER / HOT) */
+.pcc-hot{display:inline-block;font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;letter-spacing:1.5px;padding:2px 8px;border-radius:3px;background:linear-gradient(135deg,#f59e0b,#ef4444);color:#fff;text-transform:uppercase;width:fit-content;margin-bottom:2px;}
 /* All Products stats bar */
 .pdf-allstats{display:flex;gap:0;background:#fff;border:1px solid #e2d4f8;border-radius:10px;overflow:hidden;margin-bottom:28px;box-shadow:0 2px 10px rgba(124,58,237,.06);}
 .pdf-allstat{flex:1;text-align:center;padding:14px 8px;border-right:1px solid #e2d4f8;}
@@ -3958,21 +3965,21 @@ const PDF_PRODUCTS = {
 
 // ── PDF CATALOG DATA ──────────────────────────────────────────────────────
 const PDF_CATALOG = [
-  {id:'pdf_01',icon:'🔥',badge:'advanced',cat:'ADVANCED',title:'Advanced Cutting Cycle',sub:'12-Week Complete Protocol · Steroid + Cardio',orig:599,price:299,pages:'52 pages',thumb:'linear-gradient(145deg,#7f1d1d 0%,#b91c1c 50%,#dc2626 100%)',ct:'ADVANCED<br>CUTTING<br>CYCLE',ed:'12-WEEK PROTOCOL'},
-  {id:'pdf_02',icon:'💪',badge:'advanced',cat:'ADVANCED',title:'Advanced Bulking Cycle',sub:'With Peptides · Mass Building Protocol',orig:599,price:299,pages:'58 pages',thumb:'linear-gradient(145deg,#1e1b4b 0%,#4c1d95 50%,#7c3aed 100%)',ct:'ADVANCED<br>BULKING<br>CYCLE',ed:'MASS BUILDING EDITION'},
-  {id:'pdf_03',icon:'🧬',badge:'advanced',cat:'ADVANCED',title:'Beginner Steroid Cycle',sub:'Full Guide · Safe Entry-Level Protocol',orig:499,price:299,pages:'44 pages',thumb:'linear-gradient(145deg,#431407 0%,#9a3412 50%,#ea580c 100%)',ct:'BEGINNER<br>STEROID<br>CYCLE',ed:'ENTRY-LEVEL GUIDE'},
-  {id:'pdf_04',icon:'🥗',badge:'nutrition',cat:'NUTRITION',title:'30-Day Keto Indian Plan',sub:'Vegetarian · Desi-Friendly Meal Templates',orig:399,price:249,pages:'60 pages',thumb:'linear-gradient(145deg,#052e16 0%,#15803d 50%,#22c55e 100%)',ct:'30-DAY<br>KETO<br>INDIAN PLAN',ed:'VEGETARIAN EDITION'},
-  {id:'pdf_05',icon:'👩',badge:'women',cat:'WOMEN',title:'Female Weight Loss Plan',sub:'Vegetarian · Hormone-Safe Protocol',orig:399,price:249,pages:'48 pages',thumb:'linear-gradient(145deg,#500724 0%,#be185d 50%,#ec4899 100%)',ct:'FEMALE<br>WEIGHT LOSS<br>PLAN',ed:'HORMONE-SAFE PROTOCOL'},
-  {id:'pdf_06',icon:'⚗️',badge:'hormones',cat:'HORMONES',title:'Peptide Protocol Bible',sub:'Complete Scientific Reference Guide',orig:699,price:349,pages:'96 pages',thumb:'linear-gradient(145deg,#0f0b35 0%,#3730a3 50%,#818cf8 100%)',ct:'PEPTIDE<br>PROTOCOL<br>BIBLE',ed:'COMPLETE REFERENCE'},
-  {id:'pdf_07',icon:'🔬',badge:'hormones',cat:'HORMONES',title:'SARMs Scientific Handbook',sub:'Complete Research-Backed Edition',orig:699,price:349,pages:'88 pages',thumb:'linear-gradient(145deg,#1e1b4b 0%,#4338ca 50%,#6366f1 100%)',ct:'SARMs<br>SCIENTIFIC<br>HANDBOOK',ed:'RESEARCH EDITION'},
-  {id:'pdf_08',icon:'⚡',badge:'hormones',cat:'HORMONES',title:'TRT Hormone Guide',sub:'Optimization & Monitoring Protocols',orig:699,price:349,pages:'80 pages',thumb:'linear-gradient(145deg,#422006 0%,#b45309 50%,#f59e0b 100%)',ct:'TRT<br>HORMONE<br>GUIDE',ed:'OPTIMIZATION PROTOCOL'},
-  {id:'pdf_09',icon:'🏋️',badge:'training',cat:'TRAINING',title:'Science of Hypertrophy',sub:'Muscle Growth Mechanisms & Methods',orig:499,price:299,pages:'64 pages',thumb:'linear-gradient(145deg,#0c1445 0%,#1d4ed8 50%,#60a5fa 100%)',ct:'SCIENCE OF<br>HYPER&shy;TROPHY',ed:'TRAINING MANUAL'},
-  {id:'pdf_10',icon:'🎯',badge:'training',cat:'TRAINING',title:'Fat Loss Masterclass',sub:'Ultimate Evidence-Based Protocol',orig:499,price:299,pages:'56 pages',thumb:'linear-gradient(145deg,#1c0a04 0%,#b91c1c 50%,#f87171 100%)',ct:'FAT LOSS<br>MASTER<br>CLASS',ed:'EVIDENCE-BASED EDITION'},
-  {id:'pdf_11',icon:'💃',badge:'women',cat:'WOMEN',title:"Women's Transformation",sub:'Complete Body Recomposition Guide',orig:399,price:249,pages:'52 pages',thumb:'linear-gradient(145deg,#2d0a3e 0%,#9333ea 50%,#f0abfc 100%)',ct:"WOMEN'S<br>TRANS&shy;FORMATION",ed:'BODY RECOMPOSITION'},
-  {id:'pdf_12',icon:'🍛',badge:'nutrition',cat:'NUTRITION',title:'Indian Nutrition Bible',sub:'Bodybuilder Edition · Desi Macros',orig:499,price:299,pages:'72 pages',thumb:'linear-gradient(145deg,#042f2e 0%,#0f766e 50%,#2dd4bf 100%)',ct:'INDIAN<br>NUTRITION<br>BIBLE',ed:'BODYBUILDER EDITION'},
-  {id:'pdf_13',icon:'⚡',badge:'supplements',cat:'SUPPLEMENTS',title:'Pre-Workout Guide',sub:'Optimization & Stacking Protocols',orig:299,price:199,pages:'36 pages',thumb:'linear-gradient(145deg,#2e0f5e 0%,#7e22ce 50%,#d946ef 100%)',ct:'PRE-WORKOUT<br>GUIDE',ed:'STACKING PROTOCOLS'},
-  {id:'pdf_14',icon:'🧪',badge:'hormones',cat:'HORMONES',title:'Natural Testosterone',sub:'Optimization Without Compounds',orig:499,price:299,pages:'68 pages',thumb:'linear-gradient(145deg,#3b1503 0%,#c2410c 50%,#fbbf24 100%)',ct:'NATURAL<br>TESTO&shy;STERONE',ed:'OPTIMIZATION GUIDE'},
-  {id:'pdf_15',icon:'😴',badge:'recovery',cat:'RECOVERY',title:'Recovery & CNS Restore',sub:'Sleep, HRV & Nervous System Guide',orig:299,price:199,pages:'40 pages',thumb:'linear-gradient(145deg,#082f49 0%,#0369a1 50%,#38bdf8 100%)',ct:'RECOVERY<br>& CNS<br>RESTORE',ed:'SLEEP & HRV GUIDE'},
+  {id:'pdf_01',icon:'🔥',badge:'advanced',cat:'ADVANCED',title:'Advanced Cutting Cycle',sub:'12-Week Complete Protocol · Steroid + Cardio',orig:599,price:299,pages:'52 pages',rating:4.8,reviews:124,hot:'',thumb:'linear-gradient(145deg,#7f1d1d 0%,#b91c1c 50%,#dc2626 100%)',ct:'ADVANCED<br>CUTTING<br>CYCLE',ed:'12-WEEK PROTOCOL'},
+  {id:'pdf_02',icon:'💪',badge:'advanced',cat:'ADVANCED',title:'Advanced Bulking Cycle',sub:'With Peptides · Mass Building Protocol',orig:599,price:299,pages:'58 pages',rating:4.9,reviews:98,hot:'',thumb:'linear-gradient(145deg,#1e1b4b 0%,#4c1d95 50%,#7c3aed 100%)',ct:'ADVANCED<br>BULKING<br>CYCLE',ed:'MASS BUILDING EDITION'},
+  {id:'pdf_03',icon:'🧬',badge:'advanced',cat:'ADVANCED',title:'Beginner Steroid Cycle',sub:'Full Guide · Safe Entry-Level Protocol',orig:499,price:299,pages:'44 pages',rating:4.7,reviews:156,hot:'🔥 HOT',thumb:'linear-gradient(145deg,#431407 0%,#9a3412 50%,#ea580c 100%)',ct:'BEGINNER<br>STEROID<br>CYCLE',ed:'ENTRY-LEVEL GUIDE'},
+  {id:'pdf_04',icon:'🥗',badge:'nutrition',cat:'NUTRITION',title:'30-Day Keto Indian Plan',sub:'Vegetarian · Desi-Friendly Meal Templates',orig:399,price:249,pages:'60 pages',rating:4.8,reviews:89,hot:'',thumb:'linear-gradient(145deg,#052e16 0%,#15803d 50%,#22c55e 100%)',ct:'30-DAY<br>KETO<br>INDIAN PLAN',ed:'VEGETARIAN EDITION'},
+  {id:'pdf_05',icon:'👩',badge:'women',cat:'WOMEN',title:'Female Weight Loss Plan',sub:'Vegetarian · Hormone-Safe Protocol',orig:399,price:249,pages:'48 pages',rating:4.9,reviews:112,hot:'',thumb:'linear-gradient(145deg,#500724 0%,#be185d 50%,#ec4899 100%)',ct:'FEMALE<br>WEIGHT LOSS<br>PLAN',ed:'HORMONE-SAFE PROTOCOL'},
+  {id:'pdf_06',icon:'⚗️',badge:'hormones',cat:'HORMONES',title:'Peptide Protocol Bible',sub:'Complete Scientific Reference Guide',orig:699,price:349,pages:'96 pages',rating:4.7,reviews:76,hot:'',thumb:'linear-gradient(145deg,#0f0b35 0%,#3730a3 50%,#818cf8 100%)',ct:'PEPTIDE<br>PROTOCOL<br>BIBLE',ed:'COMPLETE REFERENCE'},
+  {id:'pdf_07',icon:'🔬',badge:'hormones',cat:'HORMONES',title:'SARMs Scientific Handbook',sub:'Complete Research-Backed Edition',orig:699,price:349,pages:'88 pages',rating:4.8,reviews:94,hot:'',thumb:'linear-gradient(145deg,#1e1b4b 0%,#4338ca 50%,#6366f1 100%)',ct:'SARMs<br>SCIENTIFIC<br>HANDBOOK',ed:'RESEARCH EDITION'},
+  {id:'pdf_08',icon:'⚡',badge:'hormones',cat:'HORMONES',title:'TRT Hormone Guide',sub:'Optimization & Monitoring Protocols',orig:699,price:349,pages:'80 pages',rating:4.9,reviews:87,hot:'',thumb:'linear-gradient(145deg,#422006 0%,#b45309 50%,#f59e0b 100%)',ct:'TRT<br>HORMONE<br>GUIDE',ed:'OPTIMIZATION PROTOCOL'},
+  {id:'pdf_09',icon:'🏋️',badge:'training',cat:'TRAINING',title:'Science of Hypertrophy',sub:'Muscle Growth Mechanisms & Methods',orig:499,price:299,pages:'64 pages',rating:4.8,reviews:143,hot:'',thumb:'linear-gradient(145deg,#0c1445 0%,#1d4ed8 50%,#60a5fa 100%)',ct:'SCIENCE OF<br>HYPER&shy;TROPHY',ed:'TRAINING MANUAL'},
+  {id:'pdf_10',icon:'🎯',badge:'training',cat:'TRAINING',title:'Fat Loss Masterclass',sub:'Ultimate Evidence-Based Protocol',orig:499,price:299,pages:'56 pages',rating:4.9,reviews:167,hot:'⭐ BESTSELLER',thumb:'linear-gradient(145deg,#1c0a04 0%,#b91c1c 50%,#f87171 100%)',ct:'FAT LOSS<br>MASTER<br>CLASS',ed:'EVIDENCE-BASED EDITION'},
+  {id:'pdf_11',icon:'💃',badge:'women',cat:'WOMEN',title:"Women's Transformation",sub:'Complete Body Recomposition Guide',orig:399,price:249,pages:'52 pages',rating:4.8,reviews:103,hot:'',thumb:'linear-gradient(145deg,#2d0a3e 0%,#9333ea 50%,#f0abfc 100%)',ct:"WOMEN'S<br>TRANS&shy;FORMATION",ed:'BODY RECOMPOSITION'},
+  {id:'pdf_12',icon:'🍛',badge:'nutrition',cat:'NUTRITION',title:'Indian Nutrition Bible',sub:'Bodybuilder Edition · Desi Macros',orig:499,price:299,pages:'72 pages',rating:4.9,reviews:91,hot:'',thumb:'linear-gradient(145deg,#042f2e 0%,#0f766e 50%,#2dd4bf 100%)',ct:'INDIAN<br>NUTRITION<br>BIBLE',ed:'BODYBUILDER EDITION'},
+  {id:'pdf_13',icon:'⚡',badge:'supplements',cat:'SUPPLEMENTS',title:'Pre-Workout Guide',sub:'Optimization & Stacking Protocols',orig:299,price:199,pages:'36 pages',rating:4.7,reviews:68,hot:'',thumb:'linear-gradient(145deg,#2e0f5e 0%,#7e22ce 50%,#d946ef 100%)',ct:'PRE-WORKOUT<br>GUIDE',ed:'STACKING PROTOCOLS'},
+  {id:'pdf_14',icon:'🧪',badge:'hormones',cat:'HORMONES',title:'Natural Testosterone',sub:'Optimization Without Compounds',orig:499,price:299,pages:'68 pages',rating:4.8,reviews:118,hot:'',thumb:'linear-gradient(145deg,#3b1503 0%,#c2410c 50%,#fbbf24 100%)',ct:'NATURAL<br>TESTO&shy;STERONE',ed:'OPTIMIZATION GUIDE'},
+  {id:'pdf_15',icon:'😴',badge:'recovery',cat:'RECOVERY',title:'Recovery & CNS Restore',sub:'Sleep, HRV & Nervous System Guide',orig:299,price:199,pages:'40 pages',rating:4.9,reviews:72,hot:'',thumb:'linear-gradient(145deg,#082f49 0%,#0369a1 50%,#38bdf8 100%)',ct:'RECOVERY<br>& CNS<br>RESTORE',ed:'SLEEP & HRV GUIDE'},
 ];
 
 function renderCatalog(){
@@ -4000,9 +4007,15 @@ function renderCatalog(){
         <div class="pcc-page-edges"></div>
       </div>
       <div class="pcc-body">
+        ${p.hot?`<div class="pcc-hot">${p.hot}</div>`:''}
         <div class="pcc-badge ${p.badge}">${p.cat}</div>
         <div class="pcc-title">${p.title}</div>
         <div class="pcc-sub">${p.sub}</div>
+        <div class="pcc-stars">
+          <span class="pcc-star-icons">${'★'.repeat(Math.floor(p.rating))}${p.rating%1?'½':''}</span>
+          <span class="pcc-star-num">${p.rating}</span>
+          <span class="pcc-star-cnt">(${p.reviews})</span>
+        </div>
         <div class="pcc-price-row">
           <div class="pcc-price" style="color:${tc};">₹${p.price}</div>
           <div class="pcc-orig">₹${p.orig}</div>
