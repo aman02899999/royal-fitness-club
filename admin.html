@@ -245,14 +245,25 @@ tr:hover td{background:rgba(255,255,255,.02);}
             </select>
           </div>
         </div>
-        <div class="field"><label class="inp-label">Join Date</label><input type="date" class="inp" id="g-joindate"></div>
-        <button class="btn-gen" onclick="generateCode()">&#9889; GENERATE CODE</button>
+        <div class="form-row">
+          <div><label class="inp-label">Join Date</label><input type="date" class="inp" id="g-joindate"></div>
+          <div><label class="inp-label">Quantity <span style="color:var(--muted);font-size:11px;">(bulk 1–50)</span></label><input type="number" class="inp" id="g-qty" value="1" min="1" max="50" style="width:80px;"></div>
+        </div>
+        <button class="btn-gen" onclick="generateCode()">&#9889; GENERATE CODE(S)</button>
         <div class="code-result" id="code-result">
           <div class="code-generated" id="code-display"></div>
           <div class="code-meta" id="code-meta"></div>
           <div class="code-actions">
             <button class="btn-copy" onclick="copyCode()">&#128203; Copy Code</button>
             <button class="btn-wa" onclick="shareWhatsApp()">&#128241; Send on WhatsApp</button>
+          </div>
+          <!-- Bulk results list -->
+          <div id="bulk-result" style="display:none;margin-top:12px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+              <span style="font-size:12px;color:var(--muted);letter-spacing:1px;">BULK CODES GENERATED</span>
+              <button class="btn-sm" onclick="downloadBulkCSV()">&#8659; Download CSV</button>
+            </div>
+            <div id="bulk-codes-list" style="display:flex;flex-direction:column;gap:6px;max-height:260px;overflow-y:auto;"></div>
           </div>
         </div>
       </div>
@@ -284,6 +295,21 @@ tr:hover td{background:rgba(255,255,255,.02);}
         </div>
       </div>
       <div id="ann-list" style="margin-top:14px;display:flex;flex-direction:column;gap:8px;"></div>
+    </div>
+
+    <!-- LEADERBOARD MODERATION -->
+    <div class="table-section" style="margin-bottom:20px;">
+      <div class="table-header">
+        <div class="panel-title" style="margin:0;">🏆 Leaderboard Moderation</div>
+        <button class="btn-sm" onclick="loadLeaderboardAdmin()">↻ Refresh</button>
+      </div>
+      <div id="lb-loading" style="text-align:center;padding:20px;color:var(--muted);font-size:13px;">Loading leaderboard…</div>
+      <div id="lb-table-wrap" style="display:none;overflow-x:auto;">
+        <table class="tbl">
+          <thead><tr><th>#</th><th>Name</th><th>Plan</th><th>Beast Score</th><th>Streak</th><th>Updated</th><th>Action</th></tr></thead>
+          <tbody id="lb-tbody"></tbody>
+        </table>
+      </div>
     </div>
 
     <!-- CODES TABLE -->
@@ -450,31 +476,64 @@ auth.onAuthStateChanged(async u=>{
 // ── GENERATE CODE ──
 function randCode(){const c='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';let s='RFC-';for(let i=0;i<6;i++)s+=c[Math.floor(Math.random()*c.length)];return s;}
 
+let bulkGeneratedCodes=[];
 async function generateCode(){
   const name=document.getElementById('g-name').value.trim();
   const phone=document.getElementById('g-phone').value.trim();
   const plan=document.getElementById('g-plan').value;
   const dur=parseInt(document.getElementById('g-duration').value);
   const joinStr=document.getElementById('g-joindate').value;
+  const qty=Math.min(50,Math.max(1,parseInt(document.getElementById('g-qty').value)||1));
   if(!joinStr){toast('Set a join date','gold');return;}
   const join=new Date(joinStr);
   const expiry=new Date(join);expiry.setMonth(expiry.getMonth()+dur);
-  let code;
-  for(let i=0;i<10;i++){code=randCode();const ex=await db.collection('codes').doc(code).get();if(!ex.exists)break;}
-  await db.collection('codes').doc(code).set({
-    code,plan,durationMonths:dur,memberName:name||'—',memberPhone:phone||'—',
-    joinDate:joinStr,expiryDate:expiry.toISOString().slice(0,10),
-    used:false,usedBy:null,usedAt:null,
-    createdAt:firebase.firestore.FieldValue.serverTimestamp()
-  });
-  lastCode=code;lastPhone=phone;
+  const expiryStr=expiry.toISOString().slice(0,10);
   const planLabel={'basic':'Basic','royal_pro':'Royal Pro','royal_elite':'Royal Elite'}[plan]||plan;
-  document.getElementById('code-display').textContent=code;
-  document.getElementById('code-meta').textContent=`${name||'Member'} · ${planLabel} · ${dur} month${dur>1?'s':''} · Expires ${expiry.toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})}`;
+  const expiryDisp=expiry.toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'});
+  const btn=document.querySelector('.btn-gen');btn.disabled=true;btn.textContent='Generating…';
+  const batch=db.batch();
+  bulkGeneratedCodes=[];
+  for(let i=0;i<qty;i++){
+    let code;
+    for(let j=0;j<10;j++){code=randCode();const ex=await db.collection('codes').doc(code).get();if(!ex.exists)break;}
+    batch.set(db.collection('codes').doc(code),{
+      code,plan,durationMonths:dur,memberName:name||'—',memberPhone:phone||'—',
+      joinDate:joinStr,expiryDate:expiryStr,
+      used:false,usedBy:null,usedAt:null,
+      createdAt:firebase.firestore.FieldValue.serverTimestamp()
+    });
+    bulkGeneratedCodes.push({code,plan:planLabel,duration:dur,expiry:expiryStr,name:name||'—',phone:phone||'—'});
+  }
+  await batch.commit();
+  lastCode=bulkGeneratedCodes[0].code;lastPhone=phone;
   document.getElementById('code-result').style.display='block';
-  toast('Code generated!');
+  if(qty===1){
+    document.getElementById('code-display').textContent=lastCode;
+    document.getElementById('code-meta').textContent=`${name||'Member'} · ${planLabel} · ${dur} month${dur>1?'s':''} · Expires ${expiryDisp}`;
+    document.getElementById('bulk-result').style.display='none';
+  }else{
+    document.getElementById('code-display').textContent=`${qty} codes created`;
+    document.getElementById('code-meta').textContent=`${planLabel} · ${dur} month${dur>1?'s':''} · Expires ${expiryDisp}`;
+    document.getElementById('bulk-result').style.display='block';
+    document.getElementById('bulk-codes-list').innerHTML=bulkGeneratedCodes.map((c,i)=>`
+      <div style="display:flex;justify-content:space-between;align-items:center;background:rgba(255,255,255,0.04);border-radius:6px;padding:8px 12px;font-size:12px;">
+        <span style="font-family:monospace;font-size:14px;color:var(--green);letter-spacing:2px;">${c.code}</span>
+        <span style="color:var(--muted);">#${i+1} · ${c.plan}</span>
+        <button class="btn-sm" style="padding:4px 10px;" onclick="navigator.clipboard.writeText('${c.code}').then(()=>toast('Copied!'))">Copy</button>
+      </div>`).join('');
+  }
+  toast(qty===1?'Code generated!':qty+' codes generated!');
+  btn.disabled=false;btn.textContent='⚡ GENERATE CODE(S)';
   loadAll();
   document.getElementById('g-name').value='';document.getElementById('g-phone').value='';
+}
+function downloadBulkCSV(){
+  if(!bulkGeneratedCodes.length)return;
+  const rows=[['Code','Plan','Duration(months)','Expiry','Member Name','Phone'],...bulkGeneratedCodes.map(c=>[c.code,c.plan,c.duration,c.expiry,c.name,c.phone])];
+  const csv=rows.map(r=>r.join(',')).join('\n');
+  const a=document.createElement('a');a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);
+  a.download=`RFC_codes_${new Date().toISOString().slice(0,10)}.csv`;a.click();
+  toast('CSV downloaded!');
 }
 function copyCode(){navigator.clipboard.writeText(lastCode).then(()=>toast('Copied!'));}
 function shareWhatsApp(){
@@ -483,7 +542,41 @@ function shareWhatsApp(){
 }
 
 // ── LOAD DATA ──
-function loadAll(){loadCodes();loadMembers();loadAnnouncements();}
+function loadAll(){loadCodes();loadMembers();loadAnnouncements();loadLeaderboardAdmin();}
+
+async function loadLeaderboardAdmin(){
+  const loading=document.getElementById('lb-loading');
+  const wrap=document.getElementById('lb-table-wrap');
+  const tbody=document.getElementById('lb-tbody');
+  if(!loading||!tbody)return;
+  loading.style.display='block';wrap.style.display='none';
+  const snap=await db.collection('leaderboard').orderBy('beastScore','desc').limit(100).get().catch(()=>null);
+  loading.style.display='none';
+  if(!snap||snap.empty){loading.textContent='No leaderboard entries.';loading.style.display='block';return;}
+  wrap.style.display='block';
+  tbody.innerHTML=snap.docs.map((doc,i)=>{
+    const d=doc.data();
+    const planBadge={'royal_elite':'<span class="pbadge pe">Elite</span>','royal_pro':'<span class="pbadge pp">Pro</span>','basic':'<span class="pbadge pb">Basic</span>'}[d.plan]||'<span class="pbadge pb">Free</span>';
+    const upd=d.updatedAt?.toDate?.()?d.updatedAt.toDate().toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}):'—';
+    return `<tr>
+      <td>${i+1}</td>
+      <td>${d.name||'Anonymous'}</td>
+      <td>${planBadge}</td>
+      <td style="color:var(--red);font-weight:700;">${d.beastScore||'—'}</td>
+      <td>${d.streak||0} days</td>
+      <td style="color:var(--muted);">${upd}</td>
+      <td><button class="btn-del" onclick="deleteLeaderboardEntry('${doc.id}',this)">Remove</button></td>
+    </tr>`;
+  }).join('');
+}
+
+async function deleteLeaderboardEntry(uid, btn){
+  if(!confirm('Remove this entry from the leaderboard?'))return;
+  btn.disabled=true;btn.textContent='…';
+  await db.collection('leaderboard').doc(uid).delete().catch(e=>{toast('Error: '+e.message,'gold');btn.disabled=false;btn.textContent='Remove';return;});
+  btn.closest('tr').remove();
+  toast('Entry removed from leaderboard.');
+}
 
 async function loadCodes(){
   document.getElementById('codes-loading').style.display='block';
