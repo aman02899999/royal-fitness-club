@@ -1016,6 +1016,42 @@ img{loading:lazy;}
 /* Anabolic book keeps its red cover — no override */
 /* FM book keeps blue cover — no override */
 
+/* Bundle Deals */
+#store .bundle-section{padding:8px 0 28px;text-align:center;}
+#store .bundle-eyebrow{display:inline-block;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#fff;background:linear-gradient(135deg,var(--sv),var(--sv2));border-radius:20px;padding:6px 18px;margin-bottom:12px;}
+#store .bundle-h{font-size:clamp(28px,5vw,42px)!important;color:var(--st)!important;margin-bottom:6px!important;}
+#store .bundle-sub{font-size:13px;color:var(--sm);margin-bottom:24px;}
+#store .bundle-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+#store .bndl-card{position:relative;background:#fff;border:2px solid var(--sb);border-radius:18px;padding:28px 20px 22px;display:flex;flex-direction:column;gap:13px;box-shadow:0 6px 28px rgba(124,58,237,.07);text-align:left;}
+#store .bndl-popular{border-color:var(--sv);box-shadow:0 8px 32px rgba(124,58,237,.14);}
+#store .bndl-best{border-color:#d97706;background:linear-gradient(160deg,#fffcf0,#fffae8);}
+#store .bndl-badge{position:absolute;top:-13px;left:50%;transform:translateX(-50%);font-size:9px;font-weight:700;letter-spacing:1.5px;padding:4px 16px;border-radius:20px;text-transform:uppercase;white-space:nowrap;color:#fff;background:linear-gradient(135deg,var(--sv),var(--sv2));}
+#store .bndl-badge-gold{background:linear-gradient(135deg,#f59e0b,#d97706);color:#000;}
+#store .bndl-name{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px;color:var(--st);text-align:center;margin-top:4px;}
+#store .bndl-count{text-align:center;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--sv);}
+#store .bndl-includes{display:flex;align-items:center;gap:8px;justify-content:center;}
+#store .bndl-book{padding:7px 10px;border-radius:7px;font-size:9px;font-weight:700;letter-spacing:.3px;text-transform:uppercase;text-align:center;line-height:1.3;}
+#store .bndl-book-fm{background:linear-gradient(135deg,#00050d,#003080);color:#38bdf8;}
+#store .bndl-book-ab{background:linear-gradient(135deg,#1a0000,#4a0000);color:#ffd000;}
+#store .bndl-plus{font-size:18px;font-weight:900;color:var(--sv);}
+#store .bndl-cats{display:flex;flex-wrap:wrap;gap:4px;justify-content:center;}
+#store .bndl-cats span{background:rgba(124,58,237,.07);border:1px solid rgba(124,58,237,.12);border-radius:20px;padding:3px 9px;font-size:10px;color:#6b7280;}
+#store .bndl-list{list-style:none;display:flex;flex-direction:column;gap:5px;margin:0;padding:0;}
+#store .bndl-list li{font-size:12px;color:#374151;display:flex;align-items:center;gap:6px;}
+#store .bndl-pricing{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:center;padding:12px;background:rgba(124,58,237,.04);border:1px solid rgba(124,58,237,.1);border-radius:10px;}
+#store .bndl-best .bndl-pricing{background:rgba(217,119,6,.04);border-color:rgba(217,119,6,.15);}
+#store .bndl-orig{font-family:'Bebas Neue',sans-serif;font-size:18px;text-decoration:line-through;color:#9ca3af;}
+#store .bndl-price{font-family:'Bebas Neue',sans-serif;font-size:38px;color:var(--sv);line-height:1;}
+#store .bndl-best .bndl-price{color:#d97706;}
+#store .bndl-save{font-size:10px;font-weight:700;padding:3px 10px;border-radius:4px;background:rgba(124,58,237,.12);color:var(--sv);}
+#store .bndl-best .bndl-save{background:rgba(217,119,6,.12);color:#d97706;}
+#store .bndl-btn{width:100%;padding:14px;background:linear-gradient(135deg,var(--sv),var(--sv2));color:#fff;border:none;border-radius:10px;font-family:'Bebas Neue',sans-serif;font-size:17px;letter-spacing:2px;cursor:pointer;transition:all .2s;box-shadow:0 4px 16px rgba(124,58,237,.28);}
+#store .bndl-btn:hover{transform:translateY(-2px);box-shadow:0 6px 22px rgba(124,58,237,.38);}
+#store .bndl-btn-gold{background:linear-gradient(135deg,#f59e0b,#d97706)!important;color:#000!important;box-shadow:0 4px 16px rgba(245,158,11,.3)!important;}
+#store .bndl-btn-gold:hover{box-shadow:0 6px 22px rgba(245,158,11,.42)!important;}
+#store .bndl-owned{text-align:center;font-size:12px;color:#16a34a;font-weight:600;padding:8px;background:rgba(34,197,94,.07);border:1px solid rgba(34,197,94,.18);border-radius:8px;}
+#store .bndl-divider{margin:10px 0 28px;border:none;border-top:1px solid var(--sb);}
+
 /* Mobile */
 @media(max-width:768px){
   #store .store-product-tabs{flex-direction:column;align-items:center;}
@@ -1024,6 +1060,7 @@ img{loading:lazy;}
   #store .pdf-for-section{grid-template-columns:1fr;}
   #store .pdf-bonus-list{grid-template-columns:1fr;}
   #store .pdf-reviews-grid{grid-template-columns:1fr;}
+  #store .bundle-grid{grid-template-columns:1fr;}
 }
 
 
@@ -1771,6 +1808,73 @@ img{loading:lazy;}
 <div class="divider"></div>
 <section id="store">
   <div class="container">
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!-- BUNDLE DEALS SECTION                               -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <div class="bundle-section" id="bundle-section">
+      <div class="bundle-eyebrow">⚡ LIMITED TIME OFFER — SAVE UP TO 59%</div>
+      <div class="sh bundle-h">BUNDLE DEALS</div>
+      <p class="bundle-sub">Get more guides, pay less. Biggest savings when you buy together.</p>
+
+      <div class="bundle-grid">
+        <!-- Bundle 1: The Duo -->
+        <div class="bndl-card bndl-popular" id="bndl-duo-card">
+          <div class="bndl-badge">MOST POPULAR</div>
+          <div class="bndl-name">THE TRANSFORMATION DUO</div>
+          <div class="bndl-includes">
+            <div class="bndl-book bndl-book-fm">FITNESS<br>&amp;<br>MINDSET</div>
+            <div class="bndl-plus">+</div>
+            <div class="bndl-book bndl-book-ab">ANABOLIC<br>FULL<br>GUIDE</div>
+          </div>
+          <ul class="bndl-list">
+            <li>✓ Fitness &amp; Mindset Guidance (160+ pages)</li>
+            <li>✓ Anabolic Full Guide (180+ pages)</li>
+            <li>✓ 6 Bonus resources worth ₹1,094</li>
+            <li>✓ Instant PDF download · Lifetime access</li>
+          </ul>
+          <div class="bndl-pricing">
+            <span class="bndl-orig">₹598</span>
+            <span class="bndl-price">₹449</span>
+            <span class="bndl-save">SAVE ₹149</span>
+          </div>
+          <button class="bndl-btn" id="bndl-duo-btn" onclick="buyBundle('duo')">📦 GET THE DUO — ₹449</button>
+          <div class="bndl-owned" id="bndl-duo-owned" style="display:none;">✅ You own both guides — check below to download</div>
+        </div>
+
+        <!-- Bundle 2: Complete Library -->
+        <div class="bndl-card bndl-best" id="bndl-library-card">
+          <div class="bndl-badge bndl-badge-gold">🏆 BEST VALUE</div>
+          <div class="bndl-name">THE COMPLETE LIBRARY</div>
+          <div class="bndl-count">ALL 17 EXPERT GUIDES</div>
+          <div class="bndl-cats">
+            <span>💪 Muscle Building</span>
+            <span>🔥 Fat Loss</span>
+            <span>🧠 Mindset</span>
+            <span>🇮🇳 Indian Nutrition</span>
+            <span>⚗️ Hormones &amp; TRT</span>
+            <span>👩 Women's Health</span>
+            <span>😴 Recovery</span>
+            <span>🔬 SARMs &amp; Peptides</span>
+          </div>
+          <ul class="bndl-list">
+            <li>✓ All 15 Expert Guides (₹4,285 value)</li>
+            <li>✓ Fitness &amp; Mindset Guidance</li>
+            <li>✓ Anabolic Full Guide</li>
+            <li>✓ Instant download for all 17 PDFs</li>
+            <li>✓ Lifetime access · Works on all devices</li>
+          </ul>
+          <div class="bndl-pricing">
+            <span class="bndl-orig">₹4,883</span>
+            <span class="bndl-price">₹1,999</span>
+            <span class="bndl-save">SAVE ₹2,884 (59% OFF)</span>
+          </div>
+          <button class="bndl-btn bndl-btn-gold" id="bndl-library-btn" onclick="buyBundle('library')">🏆 GET ALL 17 GUIDES — ₹1,999</button>
+          <div class="bndl-owned" id="bndl-library-owned" style="display:none;">✅ You own the complete library — all guides available below</div>
+        </div>
+      </div>
+      <hr class="bndl-divider">
+    </div>
+
     <div class="stag">Royal Knowledge Store — 17 Expert Guides</div>
     <div class="sh">KNOWLEDGE GUIDES</div>
     <p class="ssub">17 expert guides — from cutting cycles to mindset mastery. Pick what you need or build your complete transformation library.</p>
@@ -3957,6 +4061,7 @@ function showPDFPurchased(productId){
 
 async function initPDFStore(){
   renderCatalog();
+  initBundles();
   // localStorage fast-path
   for(const [id,prod] of Object.entries(PDF_PRODUCTS)){
     const p=JSON.parse(localStorage.getItem(prod.localKey)||'null');
@@ -3975,6 +4080,7 @@ async function initPDFStore(){
           renderCatalog();
         }
       }
+    initBundles();
     }catch(e){/* CF not deployed or offline — localStorage state stands */}
   }
 }
@@ -4035,6 +4141,71 @@ async function buyPDFProduct(productId){
 function buyPDF(){buyPDFProduct('anabolic_full_guide');}
 
 function toggleFAQ(el){el.classList.toggle('open');}
+
+// ── BUNDLE DEALS ──────────────────────────────────────────────────────────
+const BUNDLES = {
+  duo: {
+    name: 'Transformation Duo (Both Flagship Guides)',
+    amount: 44900,
+    includes: ['fitness_mindset', 'anabolic_full_guide'],
+  },
+  library: {
+    name: 'Complete Library — All 17 Expert Guides',
+    amount: 199900,
+    includes: ['fitness_mindset','anabolic_full_guide','pdf_01','pdf_02','pdf_03','pdf_04','pdf_05','pdf_06','pdf_07','pdf_08','pdf_09','pdf_10','pdf_11','pdf_12','pdf_13','pdf_14','pdf_15'],
+  },
+};
+
+function updateBundleUI(bundleId) {
+  const btn=document.getElementById('bndl-'+bundleId+'-btn');
+  const owned=document.getElementById('bndl-'+bundleId+'-owned');
+  if(btn)btn.style.display='none';
+  if(owned)owned.style.display='block';
+}
+
+function initBundles() {
+  for(const [id,b] of Object.entries(BUNDLES)){
+    if(b.includes.every(pid=>isOwnedPDF(pid)))updateBundleUI(id);
+  }
+}
+
+async function buyBundle(bundleId) {
+  if(!user){forceLogin();return;}
+  const bundle=BUNDLES[bundleId];
+  if(!bundle)return;
+  try{
+    await _loadRzp();
+    const options={
+      key:'rzp_live_SzivmCT3vTvTAK',
+      amount:bundle.amount,
+      currency:'INR',
+      name:'Royal Fitness Club',
+      description:bundle.name,
+      prefill:{name:user.name,email:user.email},
+      theme:{color:'#7c3aed'},
+      handler:async function(response){
+        for(const pid of bundle.includes){
+          const prod=PDF_PRODUCTS[pid];
+          if(prod)localStorage.setItem(prod.localKey,JSON.stringify({purchased:true,bundleId,paymentId:response.razorpay_payment_id}));
+          showPDFPurchased(pid);
+        }
+        updateBundleUI(bundleId);
+        renderCatalog();
+        toast('🎉 Bundle unlocked! All guides ready to download.','fire');
+        if(user){
+          try{
+            const base=firebase.firestore().collection('pdf_purchases').doc(user.uid).collection('items');
+            for(const pid of bundle.includes){
+              await base.doc(pid).set({purchased:true,bundleId,paymentId:response.razorpay_payment_id,date:firebase.firestore.FieldValue.serverTimestamp()});
+            }
+          }catch(e){}
+        }
+      }
+    };
+    const rzp=new window.Razorpay(options);
+    rzp.open();
+  }catch(e){toast('Payment service loading… try again.','gold');}
+}
 
 // Mobile sticky bar — shows when inside the store section
 window.addEventListener('scroll',function(){
