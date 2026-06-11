@@ -1259,6 +1259,13 @@ img{loading:lazy;}
   </div>
   <button class="ggate-logout" onclick="firebase.auth().signOut().then(()=>{document.getElementById('gym-gate').style.display='none';forceLogin();})">← Logout</button>
 </div>
+<!-- MEMBERSHIP EXPIRY WARNING BAR -->
+<div id="expiry-warn-bar" style="display:none;position:relative;z-index:91;background:linear-gradient(135deg,#92400e,#78350f);border-bottom:2px solid rgba(245,158,11,.35);padding:10px 48px 10px 20px;">
+  <div style="text-align:center;font-family:'Barlow Condensed',sans-serif;font-size:15px;letter-spacing:.8px;color:#fde68a;">
+    ⚠️ Your membership expires in <strong id="expiry-warn-days">—</strong> days &mdash; <span id="expiry-warn-date" style="opacity:.85;"></span> &mdash; Visit the gym front desk to renew.
+  </div>
+  <button onclick="this.parentElement.style.display='none'" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);background:transparent;border:none;color:#fde68a;font-size:18px;cursor:pointer;line-height:1;opacity:.75;">✕</button>
+</div>
 <div id="watermark"></div>
 <div id="cur"></div><div id="cdot"></div><div id="ptcl"></div>
 <nav>
@@ -2935,6 +2942,16 @@ function applyUser(){
     const tg=$('tracker-gate');if(tg)tg.style.display='flex';
     const pg=$('physio-gate');if(pg)pg.style.display='flex';
     if($('navtr'))$('navtr').innerHTML='TRACKER&nbsp;<span class="nav-pro-lock">PRO</span>';
+  }
+  // Expiry warning bar
+  if(user.membershipExpiry){
+    const _exp=new Date(user.membershipExpiry);const _td=new Date();_td.setHours(0,0,0,0);
+    const _dl=Math.ceil((_exp-_td)/86400000);
+    if(_dl>0&&_dl<=14){
+      $('expiry-warn-days').textContent=_dl;
+      $('expiry-warn-date').textContent=_exp.toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'});
+      $('expiry-warn-bar').style.display='block';
+    }
   }
   if(window.AnalyticsService)window.AnalyticsService.trackEvent('login',{plan:user.plan||'free'}).catch(()=>{});
   if(user.uid&&typeof loadLeaderboard==='function')loadLeaderboard();

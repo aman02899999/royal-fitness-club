@@ -171,7 +171,7 @@ tr:hover td{background:rgba(255,255,255,.02);}
     <div class="stats-row">
       <div class="stat-card green"><div class="stat-val" id="st-active">—</div><div class="stat-lbl">Registered Members</div></div>
       <div class="stat-card gold"><div class="stat-val" id="st-unused">—</div><div class="stat-lbl">Unused Codes</div></div>
-      <div class="stat-card red"><div class="stat-val" id="st-expiring">—</div><div class="stat-lbl">Expiring in 7 Days</div></div>
+      <div class="stat-card red" style="cursor:pointer;" title="Click to filter expiring members" onclick="jumpToExpiring()"><div class="stat-val" id="st-expiring">—</div><div class="stat-lbl">Expiring in 7 Days ↓</div></div>
       <div class="stat-card blue"><div class="stat-val" id="st-total">—</div><div class="stat-lbl">Total Codes Generated</div></div>
     </div>
 
@@ -244,16 +244,24 @@ tr:hover td{background:rgba(255,255,255,.02);}
     </div>
 
     <!-- MEMBERS TABLE -->
-    <div class="table-section">
+    <div class="table-section" id="members-section">
       <div class="table-header">
         <div class="panel-title" style="margin:0;">&#128101; Registered Members</div>
-        <input class="table-search" id="member-search" placeholder="Search name / email..." oninput="renderMembers()">
+        <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+          <div class="tabs-filter" id="member-filter-tabs">
+            <button class="tf-btn active" onclick="filterMembers('all',this)">All</button>
+            <button class="tf-btn" onclick="filterMembers('active',this)">Active</button>
+            <button class="tf-btn" id="tf-expiring" onclick="filterMembers('expiring',this)">Expiring</button>
+            <button class="tf-btn" onclick="filterMembers('expired',this)">Expired</button>
+          </div>
+          <input class="table-search" id="member-search" placeholder="Search name / email..." oninput="renderMembers()">
+        </div>
       </div>
       <div id="members-loading" class="loading"><span class="spin"></span>Loading...</div>
       <div id="members-table-wrap" style="display:none;overflow-x:auto;">
         <table><thead><tr><th>Name</th><th>Email / Phone</th><th>Plan</th><th>Joined</th><th>Expiry</th><th>Status</th><th>Actions</th></tr></thead>
         <tbody id="members-tbody"></tbody></table>
-        <div class="empty-state" id="members-empty" style="display:none;">No registered members yet.</div>
+        <div class="empty-state" id="members-empty" style="display:none;">No members found.</div>
       </div>
     </div>
   </main>
@@ -336,7 +344,7 @@ firebase.initializeApp({
 });
 const db=firebase.firestore();
 const auth=firebase.auth();
-let allCodes=[],allMembers=[],codeFilter='all',lastCode='',lastPhone='';
+let allCodes=[],allMembers=[],codeFilter='all',memberFilter='all',lastCode='',lastPhone='';
 let renewMember=null,extendFrom='expiry',adminUid='';
 
 // ── TOAST ──
@@ -472,23 +480,46 @@ function renderCodes(){
 }
 
 // ── RENDER MEMBERS ──
+function filterMembers(f,btn){
+  memberFilter=f;
+  document.querySelectorAll('#member-filter-tabs .tf-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderMembers();
+}
+function jumpToExpiring(){
+  memberFilter='expiring';
+  document.querySelectorAll('#member-filter-tabs .tf-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tf-expiring').classList.add('active');
+  renderMembers();
+  document.getElementById('members-section').scrollIntoView({behavior:'smooth'});
+}
+
 function renderMembers(){
   const search=document.getElementById('member-search').value.toLowerCase();
-  const list=allMembers.filter(m=>!search||(m.name||'').toLowerCase().includes(search)||(m.email||'').toLowerCase().includes(search));
+  const today=new Date();const week=new Date(today.getTime()+7*86400000);
+  const list=allMembers.filter(m=>{
+    const exp=getMemberExpiry(m);
+    const over=exp&&exp<today;const soon=exp&&!over&&exp<=week;
+    if(memberFilter==='active'&&over)return false;
+    if(memberFilter==='expiring'&&!soon)return false;
+    if(memberFilter==='expired'&&!over)return false;
+    return !search||(m.name||'').toLowerCase().includes(search)||(m.email||'').toLowerCase().includes(search)||(m.phone||'').includes(search);
+  });
   document.getElementById('members-loading').style.display='none';
   document.getElementById('members-table-wrap').style.display='block';
   document.getElementById('members-empty').style.display=list.length?'none':'block';
-  const today=new Date();
   document.getElementById('members-tbody').innerHTML=list.map(m=>{
     const exp=getMemberExpiry(m);
-    const over=exp&&exp<today;const soon=exp&&!over&&(exp-today)<7*86400000;
-    const expCell=exp?`<span class="${over?'expiry-over':soon?'expiry-soon':''}">${fmtDate(exp)}</span>`:'—';
-    const status=over?'<span class="badge badge-expired">Expired</span>':'<span class="badge badge-active">Active</span>';
+    const over=exp&&exp<today;const soon=exp&&!over&&exp<=week;
+    const daysLeft=exp?Math.ceil((exp-today)/86400000):null;
+    const expCell=exp?`<span class="${over?'expiry-over':soon?'expiry-soon':''}">${fmtDate(exp)}${daysLeft!==null&&!over?`<br><span style="font-size:10px;opacity:.7;">${daysLeft}d left</span>`:`<br><span style="font-size:10px;opacity:.7;">expired</span>`}</span>`:'—';
+    const status=over?'<span class="badge badge-expired">Expired</span>':soon?'<span class="badge" style="background:rgba(245,158,11,.12);color:var(--gold);">Soon</span>':'<span class="badge badge-active">Active</span>';
     const renewCount=m.renewalCount||0;
     const renewTag=renewCount>0?`<span class="renewals-count">&#x21BA; ${renewCount}x</span>`:'';
     const safeUid=m.uid.replace(/['"]/g,'');
     const safeName=(m.name||'Member').replace(/'/g,"\\'");
     const safePhone=(m.phone||'').replace(/'/g,"\\'");
+    const remindBtn=(soon||over)&&(m.phone||'')?`<button class="btn-sm" style="margin-left:4px;border-color:rgba(37,211,102,.3);color:#25D366;" onclick="remindWhatsApp('${safeUid}','${safeName}','${safePhone}')">&#128241; Remind</button>`:'';
     return `<tr>
       <td><strong>${m.name||'—'}</strong>${renewTag}</td>
       <td style="font-size:12px;">${m.email||'—'}<br><span style="color:var(--muted);">${m.phone||''}</span></td>
@@ -498,10 +529,24 @@ function renderMembers(){
       <td>${status}</td>
       <td style="white-space:nowrap;">
         <button class="btn-renew" onclick="openRenewModal('${safeUid}','${safeName}','${safePhone}')">&#x21BA; Renew</button>
-        <button class="btn-hist" onclick="openHistModal('${safeUid}','${safeName}')" style="margin-left:4px;">History</button>
+        <button class="btn-hist" onclick="openHistModal('${safeUid}','${safeName}')" style="margin-left:4px;">History</button>${remindBtn}
       </td>
     </tr>`;
   }).join('');
+}
+
+function remindWhatsApp(uid,name,phone){
+  const m=allMembers.find(x=>x.uid===uid);
+  if(!m)return;
+  const exp=getMemberExpiry(m);
+  const today=new Date();
+  const daysLeft=exp?Math.ceil((exp-today)/86400000):null;
+  const expText=exp?exp.toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}):'—';
+  const expired=daysLeft!==null&&daysLeft<=0;
+  const msg=expired
+    ?`Hi ${name}! 👋\n\n⚠️ Your *Royal Fitness Club* membership has *expired* (${expText}).\n\nVisit the gym front desk to renew and keep your portal access going! 💪\n\n— Royal Fitness Club`
+    :`Hi ${name}! 👋\n\n⏰ Friendly reminder — your *Royal Fitness Club* membership expires in *${daysLeft} day${daysLeft===1?'':'s'}* (${expText}).\n\nRenew now at the gym front desk to avoid any interruption to your portal access! 💪🔥\n\n— Royal Fitness Club`;
+  window.open('https://wa.me/'+phone.replace(/\D/g,'')+'?text='+encodeURIComponent(msg),'_blank');
 }
 
 // ── STATS ──
