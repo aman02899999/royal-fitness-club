@@ -12,13 +12,11 @@
  *   razorpayWebhook        — handles Razorpay webhook events
  *   expireSubscriptions    — daily sweep to downgrade expired subscriptions
  *   createMember           — admin-only: creates Auth user + Firestore member doc
- *   generateAIMealPlan     — AI-powered Indian meal plan via ChatGPT (OpenAI)
  *
  * Secrets (set once via Firebase CLI, stored in Google Secret Manager):
  *   firebase functions:secrets:set RAZORPAY_KEY_ID
  *   firebase functions:secrets:set RAZORPAY_KEY_SECRET
  *   firebase functions:secrets:set RAZORPAY_WEBHOOK_SECRET
- *   firebase functions:secrets:set OPENAI_API_KEY
  *
  * ⚠️  NEVER commit real credentials to source control.
  */
@@ -29,8 +27,6 @@ const admin = require('firebase-admin');
 const Razorpay = require('razorpay');
 const crypto = require('crypto');
 const cors = require('cors')({ origin: true });
-const OpenAI = require('openai');
-
 admin.initializeApp();
 
 // ---------------------------------------------------------------------------
@@ -39,7 +35,6 @@ admin.initializeApp();
 const RZP_KEY_ID = defineSecret('RAZORPAY_KEY_ID');
 const RZP_KEY_SECRET = defineSecret('RAZORPAY_KEY_SECRET');
 const RZP_WEBHOOK_SECRET = defineSecret('RAZORPAY_WEBHOOK_SECRET');
-const OPENAI_API_KEY = defineSecret('OPENAI_API_KEY');
 
 // Lazily creates a Razorpay instance inside a function invocation where
 // secrets are available. Must NOT be called at module load time.
@@ -429,112 +424,6 @@ exports.createMember = functions.https.onCall(async (data, context) => {
   console.log('[createMember] Created member:', uid, email);
   return { uid };
 });
-
-// ---------------------------------------------------------------------------
-// generateAIMealPlan — Authenticated Callable
-// Calls ChatGPT (gpt-4o-mini) to generate a personalised Indian meal plan.
-// Requires OPENAI_API_KEY secret (set via: firebase functions:secrets:set OPENAI_API_KEY)
-// Rate-limited: max 5 AI plans per user per day via Firestore counter.
-// ---------------------------------------------------------------------------
-exports.generateAIMealPlan = functions
-  .runWith({ secrets: [OPENAI_API_KEY], timeoutSeconds: 60, memory: '256MB' })
-  .https.onCall(async (data, context) => {
-    if (!context.auth) {
-      throw new functions.https.HttpsError('unauthenticated', 'You must be logged in to generate a meal plan.');
-    }
-
-    const uid = context.auth.uid;
-    const { targetCals, macros, goal, diet, dietStyle, healthConditions, age, weight, gender, mealFreq } = data;
-
-    if (!targetCals || !macros || !goal || !diet) {
-      throw new functions.https.HttpsError('invalid-argument', 'targetCals, macros, goal, and diet are required.');
-    }
-
-    // Rate limit: max 5 AI plans per user per day
-    const db = admin.firestore();
-    const today = new Date().toISOString().slice(0, 10);
-    const rateLimitRef = db.collection('ai_rate_limits').doc(`${uid}_${today}`);
-    const rateLimitDoc = await rateLimitRef.get();
-    const usageCount = rateLimitDoc.exists ? (rateLimitDoc.data().count || 0) : 0;
-
-    if (usageCount >= 5) {
-      throw new functions.https.HttpsError('resource-exhausted', 'You have reached the daily limit of 5 AI meal plans. Please try again tomorrow.');
-    }
-
-    const DIET_LABELS = { veg: 'Pure Vegetarian (no eggs, no meat)', nonveg: 'Non-Vegetarian (includes chicken, fish, eggs)', egget: 'Eggetarian (eggs, dairy, no meat)', keto: 'Ketogenic (very low carb, high fat)' };
-    const GOAL_LABELS = { loss: 'Fat Loss — calorie deficit', gain: 'Muscle Gain — lean bulk', maintain: 'Maintenance / Body Recomposition' };
-    const healthNote = Array.isArray(healthConditions) && healthConditions.length ? `Health conditions: ${healthConditions.join(', ')}.` : '';
-    const meals = mealFreq || 3;
-
-    const prompt = `You are a certified Indian sports nutritionist creating a personalised single-day meal plan.
-
-CLIENT PROFILE:
-- Gender: ${gender || 'not specified'}, Age: ${age || '—'}, Weight: ${weight || '—'} kg
-- Goal: ${GOAL_LABELS[goal] || goal}
-- Diet: ${DIET_LABELS[diet] || diet}
-- Diet style: ${dietStyle || 'balanced'}
-- ${healthNote}
-- Daily targets: ${targetCals} kcal | ${macros.prot}g protein | ${macros.carb}g carbs | ${macros.fat}g fat
-- Meals per day: ${meals}
-
-INSTRUCTIONS:
-1. Use only authentic Indian foods and dishes (dal, roti, rice, sabzi, paneer, chicken, eggs, etc.)
-2. Each meal must include: meal name, 2-4 specific ingredients with quantities, macros, and a one-line reason
-3. Total calories must sum within ±80 kcal of ${targetCals}
-4. Strictly respect the diet type — no meat for veg/egget, very low carbs for keto
-5. If health conditions are present, adjust accordingly (e.g. no refined sugar for diabetic, no soy for thyroid)
-6. Return ONLY a JSON array — no markdown, no extra text
-
-JSON format (array of ${meals} meal objects):
-[
-  {
-    "meal": "Breakfast",
-    "time": "7:30 AM",
-    "name": "Dish name",
-    "items": [{"name": "Ingredient", "qty": "80g"}],
-    "kcal": 450,
-    "prot": 35,
-    "carb": 40,
-    "fat": 12,
-    "reason": "One-line reason this meal fits the goal"
-  }
-]`;
-
-    try {
-      const client = new OpenAI({ apiKey: OPENAI_API_KEY.value() });
-      const response = await client.chat.completions.create({
-        model: 'gpt-4o-mini',
-        max_tokens: 1500,
-        messages: [{ role: 'user', content: prompt }],
-      });
-
-      const raw = response.choices[0]?.message?.content || '[]';
-      // Strip any accidental markdown fences
-      const jsonStr = raw.replace(/```json?\n?/gi, '').replace(/```/g, '').trim();
-      let plan;
-      try {
-        plan = JSON.parse(jsonStr);
-      } catch {
-        console.error('[generateAIMealPlan] JSON parse error. Raw response:', raw);
-        throw new functions.https.HttpsError('internal', 'AI returned invalid JSON. Please try again.');
-      }
-
-      if (!Array.isArray(plan) || plan.length === 0) {
-        throw new functions.https.HttpsError('internal', 'AI returned an empty meal plan. Please try again.');
-      }
-
-      // Persist rate limit counter
-      await rateLimitRef.set({ uid, date: today, count: usageCount + 1, updatedAt: admin.firestore.FieldValue.serverTimestamp() }, { merge: true });
-
-      console.log('[generateAIMealPlan] Generated plan for', uid, '— meals:', plan.length);
-      return { plan, generatedAt: Date.now() };
-
-    } catch (err) {
-      if (err instanceof functions.https.HttpsError) throw err;
-      console.error('[generateAIMealPlan] OpenAI API error:', err.message);
-      throw new functions.https.HttpsError('internal', 'AI service temporarily unavailable. Your database plan is still active.');
-    }
-  });
 
 // ---------------------------------------------------------------------------
 // deleteMember — Admin-only Callable

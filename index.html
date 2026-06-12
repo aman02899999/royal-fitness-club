@@ -1698,8 +1698,8 @@ img{loading:lazy;}
 <div class="divider"></div>
 <section id="mealplan">
   <div class="container">
-    <div class="stag">AI-Powered · 200+ Indian Foods</div><div class="sh">7-DAY MEAL PLAN</div>
-    <p class="ssub">Vegetarian, Non-Veg, Eggetarian, Keto — calorie-scaled daily plans. Hit <strong>✨ Generate AI Plan</strong> for a Claude AI-personalised one-day menu tailored to your exact macros and health conditions.</p>
+    <div class="stag">200+ Indian Foods · Calorie-Scaled</div><div class="sh">7-DAY MEAL PLAN</div>
+    <p class="ssub">Vegetarian, Non-Veg, Eggetarian, Keto — daily meal plans automatically built from your Beast Score calculator results. Adjust meal frequency, include salad, and customise your food preferences.</p>
     <div style="display:flex;gap:16px;flex-wrap:wrap;align-items:center;margin-top:20px;margin-bottom:8px;">
       <div>
         <label class="flbl" style="margin-bottom:6px;display:block;">How many meals per day?</label>
@@ -1718,17 +1718,7 @@ img{loading:lazy;}
       </div>
     </div>
     <div id="mealfreq-note" style="font-size:12px;color:#b0b0b0;margin-bottom:12px;">Calories split evenly across your chosen meals.</div>
-    <!-- AI Meal Plan Panel -->
-    <div id="ai-meal-panel" style="background:linear-gradient(135deg,rgba(232,0,29,0.08),rgba(139,0,0,0.12));border:1px solid rgba(232,0,29,0.25);border-radius:10px;padding:16px;margin-bottom:16px;">
-      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
-        <div>
-          <div style="font-size:14px;font-weight:700;letter-spacing:1px;">🤖 AI PERSONALISE</div>
-          <div style="font-size:11px;color:var(--muted);margin-top:3px;">Claude AI generates a one-day Indian meal plan tailored to your exact macros &amp; health conditions.</div>
-        </div>
-        <button id="ai-meal-btn" onclick="callAIMealPlan()" style="background:var(--red);color:#fff;border:none;border-radius:6px;padding:10px 18px;font-size:12px;font-weight:700;letter-spacing:1px;cursor:pointer;white-space:nowrap;">✨ Generate AI Plan</button>
-      </div>
-      <div id="ai-meal-result" style="display:none;margin-top:14px;"></div>
-    </div>
+
     <div class="food-sel-wrap">
       <button class="food-sel-toggle" onclick="toggleFoodSel()">
         <span>🍽️ Customize Your Foods &nbsp;<span style="font-size:11px;color:#888;font-weight:400;">Select preferred foods or let engine auto-pick</span></span>
@@ -3529,6 +3519,7 @@ function calculate(){
   drawAnatomy(bf,bfc,weight,gender);
   updateBFsec(bf,gender,bfc);
   buildMealPlan(goal,tc,macros,diet);
+  localStorage.setItem('bm_meal','1');
   buildRoadmap(goal);
   buildCalculators(lastRes);
   buildGrocery(diet);
@@ -3974,51 +3965,6 @@ function buildMealPlan(goal,totalCals,macros,diet){
   if($('mealfreq-note')&&totalCals)$('mealfreq-note').textContent=`${freq} meals/day • calories split proportionally — always totals ${totalCals} kcal`;
   if($('food-sel-panel')&&$('food-sel-panel').style.display!=='none')renderFoodSelGrid(curFoodSlot);
   document.querySelectorAll('.mtab').forEach(tab=>{tab.addEventListener('click',()=>{document.querySelectorAll('.mtab').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.mday').forEach(d=>d.classList.remove('active'));tab.classList.add('active');document.querySelector(`.mday[data-day="${tab.dataset.day}"]`).classList.add('active');});});
-}
-// ── AI MEAL PLAN GENERATOR ──
-async function callAIMealPlan(){
-  if(!user){toast('⚠️ Please log in first!','gold');forceLogin();return;}
-  if(!lastRes){toast('⚠️ Run the calculator first to get your targets.','gold');document.getElementById('calculator').scrollIntoView({behavior:'smooth'});return;}
-  const btn=document.getElementById('ai-meal-btn');
-  const res=document.getElementById('ai-meal-result');
-  btn.disabled=true;btn.textContent='⏳ Generating...';res.style.display='none';
-  try{
-    const fn=firebase.functions().httpsCallable('generateAIMealPlan');
-    const {data}=await fn({
-      targetCals:lastRes.targetCals,
-      macros:{prot:lastRes.macros.prot,carb:lastRes.macros.carb,fat:lastRes.macros.fat},
-      goal:lastRes.goal,diet:lastRes.diet,dietStyle:lastRes.dietStyle,
-      healthConditions:lastRes.health,age:lastRes.age,weight:lastRes.weight,
-      gender:lastRes.gender,mealFreq:getMealFreq()
-    });
-    const plan=data.plan||[];
-    if(!plan.length){toast('AI returned an empty plan — try again.','gold');return;}
-    localStorage.setItem('bm_meal','1'); // unlock AI Nutritionist badge
-    res.style.display='block';
-    res.innerHTML=`<div style="font-size:11px;color:var(--muted);margin-bottom:10px;letter-spacing:1px;">✨ AI-GENERATED · ONE-DAY PERSONALISED PLAN</div>`+
-      plan.map(m=>`<div style="background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px;">
-        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;">
-          <div>
-            <span style="font-size:11px;color:var(--muted);letter-spacing:1px;">${m.meal||''} · ${m.time||''}</span>
-            <div style="font-size:14px;font-weight:700;margin-top:2px;">${m.name||''}</div>
-          </div>
-          <div style="text-align:right;font-size:11px;">
-            <span style="color:var(--red);font-weight:700;">${m.kcal||'—'} kcal</span><br>
-            <span style="color:#888;">${m.prot||0}g P · ${m.carb||0}g C · ${m.fat||0}g F</span>
-          </div>
-        </div>
-        <div style="font-size:11px;color:#aaa;margin-top:8px;">${(m.items||[]).map(i=>`<span style="background:rgba(255,255,255,0.05);border-radius:4px;padding:2px 7px;margin:2px;display:inline-block;">${i.name} ${i.qty||''}</span>`).join('')}</div>
-        ${m.reason?`<div style="font-size:11px;color:var(--muted);margin-top:8px;border-top:1px solid var(--border);padding-top:6px;">💡 ${m.reason}</div>`:''}
-      </div>`).join('');
-    toast('🤖 AI Meal Plan ready! Scroll up to see it.');
-    if(typeof checkAndUnlockBadges==='function')checkAndUnlockBadges();
-  }catch(err){
-    const msg=(err.code==='resource-exhausted')?'Daily AI limit reached (5/day). Try again tomorrow.':(err.message||'AI service error. Try again.');
-    toast('⚠️ '+msg,'gold');
-    console.warn('[AI Meal Plan]',err);
-  }finally{
-    btn.disabled=false;btn.textContent='✨ Generate AI Plan';
-  }
 }
 
 // Live updates
@@ -5245,7 +5191,7 @@ function downloadMemberCard(){
 const BADGES=[
   {id:'first_login',   icon:'🔥', name:'First Warrior',     desc:'Logged into the portal for the first time',          check:()=>true},
   {id:'calculator',    icon:'⚡', name:'Calculator Master',  desc:'Used the Beast Score calculator',                    check:()=>(JSON.parse(localStorage.getItem('bm_hist')||'[]')).length>=1},
-  {id:'meal_plan',     icon:'🤖', name:'AI Nutritionist',   desc:'Generated your first AI meal plan',                  check:()=>!!localStorage.getItem('bm_meal')},
+  {id:'meal_plan',     icon:'🍛', name:'Meal Planner',       desc:'Generated your first meal plan from the calculator',  check:()=>!!localStorage.getItem('bm_meal')},
   {id:'weight_log',    icon:'📈', name:'Weight Tracker',    desc:'Logged your body weight 3 times',                    check:()=>{const p=JSON.parse(localStorage.getItem('bm_pd')||'{}');return(p.weights||[]).length>=3;}},
   {id:'workout_5',     icon:'💪', name:'Iron Addict',       desc:'Logged 5 workout sessions',                          check:()=>{try{const k='rfc_workouts_'+(user?.uid||'');return(JSON.parse(localStorage.getItem(k)||'[]')).length>=5;}catch(e){return false;}}},
   {id:'hydration',     icon:'💧', name:'Hydration Hero',    desc:'Reached 2500ml water intake in a single day',        check:()=>Object.keys(localStorage).some(k=>k.startsWith('rfc_water_')&&parseInt(localStorage.getItem(k))>=2500)},
