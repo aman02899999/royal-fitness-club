@@ -3489,7 +3489,7 @@ function bmiClass(b){if(b<16)return'🚨 Severely Underweight';if(b<18.5)return'
 function calcBF(gender,waist,neckIn,hipIn,height){
   const neck=neckIn>0?neckIn:waist*0.43;
   const hip=hipIn>0?hipIn:waist*1.15;
-  if(gender==='male'){const diff=Math.max(1,waist-neck);return Math.max(3,Math.round((495/(1.0324-0.19077*Math.log10(diff)+0.15456*Math.log10(height)))-450);}
+  if(gender==='male'){const diff=Math.max(1,waist-neck);return Math.max(3,Math.round((495/(1.0324-0.19077*Math.log10(diff)+0.15456*Math.log10(height)))-450));}
   const sum=Math.max(1,waist+hip-neck);return Math.max(10,Math.round((495/(1.29579-0.35004*Math.log10(sum)+0.22100*Math.log10(height)))-450));
 }
 // ACE (American Council on Exercise) body fat classification
