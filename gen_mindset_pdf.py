@@ -8,6 +8,13 @@ from reportlab.lib.enums import TA_CENTER, TA_JUSTIFY
 import os
 
 OUT = '/home/user/royal-fitness-club/generated_pdfs'
+W, H = A4
+
+def dark_bg(canvas, doc):
+    canvas.saveState()
+    canvas.setFillColor(colors.HexColor('#020b18'))
+    canvas.rect(0, 0, W, H, fill=1, stroke=0)
+    canvas.restoreState()
 BLUE = colors.HexColor('#0066cc')
 GOLD = colors.HexColor('#ffd000')
 LGREY = colors.HexColor('#cccccc')
@@ -504,7 +511,7 @@ def build():
     story.append(Paragraph('ROYAL FITNESS CLUB — MASTER YOUR MIND · MASTER YOUR BODY', s['Cover2']))
     story.append(Paragraph('© Royal Fitness Club. All rights reserved. royalfitnessclub.in', s['Cover3']))
 
-    doc.build(story)
+    doc.build(story, onFirstPage=dark_bg, onLaterPages=dark_bg)
     from PyPDF2 import PdfReader
     total = len(PdfReader(path).pages)
     print(f'✅ Fitness Mindset Guidance: {total} pages')
