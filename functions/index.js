@@ -12,13 +12,13 @@
  *   razorpayWebhook        — handles Razorpay webhook events
  *   expireSubscriptions    — daily sweep to downgrade expired subscriptions
  *   createMember           — admin-only: creates Auth user + Firestore member doc
- *   generateAIMealPlan     — AI-powered Indian meal plan via Claude (Anthropic)
+ *   generateAIMealPlan     — AI-powered Indian meal plan via ChatGPT (OpenAI)
  *
  * Secrets (set once via Firebase CLI, stored in Google Secret Manager):
  *   firebase functions:secrets:set RAZORPAY_KEY_ID
  *   firebase functions:secrets:set RAZORPAY_KEY_SECRET
  *   firebase functions:secrets:set RAZORPAY_WEBHOOK_SECRET
- *   firebase functions:secrets:set ANTHROPIC_API_KEY
+ *   firebase functions:secrets:set OPENAI_API_KEY
  *
  * ⚠️  NEVER commit real credentials to source control.
  */
@@ -29,7 +29,7 @@ const admin = require('firebase-admin');
 const Razorpay = require('razorpay');
 const crypto = require('crypto');
 const cors = require('cors')({ origin: true });
-const Anthropic = require('@anthropic-ai/sdk');
+const OpenAI = require('openai');
 
 admin.initializeApp();
 
@@ -39,7 +39,7 @@ admin.initializeApp();
 const RZP_KEY_ID = defineSecret('RAZORPAY_KEY_ID');
 const RZP_KEY_SECRET = defineSecret('RAZORPAY_KEY_SECRET');
 const RZP_WEBHOOK_SECRET = defineSecret('RAZORPAY_WEBHOOK_SECRET');
-const ANTHROPIC_API_KEY = defineSecret('ANTHROPIC_API_KEY');
+const OPENAI_API_KEY = defineSecret('OPENAI_API_KEY');
 
 // Lazily creates a Razorpay instance inside a function invocation where
 // secrets are available. Must NOT be called at module load time.
@@ -432,12 +432,12 @@ exports.createMember = functions.https.onCall(async (data, context) => {
 
 // ---------------------------------------------------------------------------
 // generateAIMealPlan — Authenticated Callable
-// Calls Claude claude-haiku-4-5 to generate a personalised Indian meal plan.
-// Requires ANTHROPIC_API_KEY secret (set via: firebase functions:secrets:set ANTHROPIC_API_KEY)
+// Calls ChatGPT (gpt-4o-mini) to generate a personalised Indian meal plan.
+// Requires OPENAI_API_KEY secret (set via: firebase functions:secrets:set OPENAI_API_KEY)
 // Rate-limited: max 5 AI plans per user per day via Firestore counter.
 // ---------------------------------------------------------------------------
 exports.generateAIMealPlan = functions
-  .runWith({ secrets: [ANTHROPIC_API_KEY], timeoutSeconds: 60, memory: '256MB' })
+  .runWith({ secrets: [OPENAI_API_KEY], timeoutSeconds: 60, memory: '256MB' })
   .https.onCall(async (data, context) => {
     if (!context.auth) {
       throw new functions.https.HttpsError('unauthenticated', 'You must be logged in to generate a meal plan.');
@@ -501,14 +501,14 @@ JSON format (array of ${meals} meal objects):
 ]`;
 
     try {
-      const client = new Anthropic.default({ apiKey: ANTHROPIC_API_KEY.value() });
-      const message = await client.messages.create({
-        model: 'claude-haiku-4-5',
+      const client = new OpenAI({ apiKey: OPENAI_API_KEY.value() });
+      const response = await client.chat.completions.create({
+        model: 'gpt-4o-mini',
         max_tokens: 1500,
         messages: [{ role: 'user', content: prompt }],
       });
 
-      const raw = message.content[0]?.text || '[]';
+      const raw = response.choices[0]?.message?.content || '[]';
       // Strip any accidental markdown fences
       const jsonStr = raw.replace(/```json?\n?/gi, '').replace(/```/g, '').trim();
       let plan;
@@ -531,7 +531,7 @@ JSON format (array of ${meals} meal objects):
 
     } catch (err) {
       if (err instanceof functions.https.HttpsError) throw err;
-      console.error('[generateAIMealPlan] Anthropic API error:', err.message);
+      console.error('[generateAIMealPlan] OpenAI API error:', err.message);
       throw new functions.https.HttpsError('internal', 'AI service temporarily unavailable. Your database plan is still active.');
     }
   });

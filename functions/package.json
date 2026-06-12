@@ -14,7 +14,7 @@
     "firebase-admin": "^11.0.0",
     "razorpay": "^2.9.0",
     "cors": "^2.8.5",
-    "@anthropic-ai/sdk": "^0.36.3"
+    "openai": "^4.77.0"
   },
   "private": true
 }
