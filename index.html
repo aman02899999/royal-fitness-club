@@ -3209,7 +3209,7 @@ function initUser(){
     // Firebase not loaded — fall back to localStorage
     const u=localStorage.getItem('bm_user');
     if(u){user=JSON.parse(u);isPro=localStorage.getItem('bm_pro')==='true';applyUser();}
-    else setTimeout(forceLogin,1600);
+    // No auto-popup — user can browse freely; login triggered by tool use
     return;
   }
   firebase.auth().onAuthStateChanged(async function(fbUser){
@@ -3250,7 +3250,7 @@ function initUser(){
       user=null;isPro=false;
       localStorage.removeItem('bm_user');localStorage.removeItem('bm_pro');
       if(hadUser){$('upill').classList.remove('on');$('ppro').classList.remove('on');$('navlbtn').style.display='block';$('tracker').classList.remove('pro-on');$('navtr').style.display='none';}
-      else setTimeout(forceLogin,1800);
+      // No auto-popup on first load — user can browse freely
     }
   });
 }
