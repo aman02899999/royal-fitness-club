@@ -490,6 +490,122 @@ section{padding:68px 20px;position:relative;z-index:1;}
 }
 /* ── WALLET & REFERRAL ── */
 .wallet-card{background:linear-gradient(135deg,#080f1e,#0d1f3c);border:1px solid rgba(255,208,0,.25);border-radius:12px;padding:20px;position:relative;overflow:hidden;}
+
+/* ══════════════════════════════════════════════
+   SIDEBAR LAYOUT SYSTEM
+══════════════════════════════════════════════ */
+#rfc-sidebar{
+  position:fixed;left:0;top:0;bottom:0;width:240px;
+  background:#0d0d14;border-right:1px solid rgba(255,255,255,.06);
+  display:flex;flex-direction:column;z-index:500;
+  overflow:hidden;transition:transform .28s cubic-bezier(.4,0,.2,1);
+}
+#rfc-sidebar.sb-collapsed{transform:translateX(-240px);}
+.sb-brand{padding:20px 18px 16px;border-bottom:1px solid rgba(255,255,255,.06);flex-shrink:0;}
+.sb-logo-row{display:flex;align-items:center;gap:10px;}
+.sb-logo-mark{width:36px;height:36px;border-radius:8px;background:var(--red);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1px;color:#fff;flex-shrink:0;}
+.sb-logo-text{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:3px;color:var(--text);}
+.sb-logo-sub{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-top:1px;}
+.sb-nav{flex:1;padding:10px 0;overflow-y:auto;scrollbar-width:none;}
+.sb-nav::-webkit-scrollbar{display:none;}
+.sb-section-lbl{font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:rgba(136,136,136,.4);padding:12px 18px 5px;}
+.sb-item{display:flex;align-items:center;gap:11px;padding:9px 18px;font-size:13px;color:var(--muted);cursor:pointer;border-left:3px solid transparent;transition:all .15s;text-decoration:none;user-select:none;white-space:nowrap;}
+.sb-item:hover{color:var(--text);background:rgba(255,255,255,.03);border-left-color:rgba(255,255,255,.1);}
+.sb-item.active{color:#fff;background:rgba(232,0,29,.1);border-left-color:var(--red);}
+.sb-item.active .sb-icon{filter:none;}
+.sb-icon{font-size:16px;width:22px;text-align:center;flex-shrink:0;}
+.sb-badge-pill{margin-left:auto;font-size:9px;background:rgba(232,0,29,.2);color:var(--red);padding:2px 6px;border-radius:10px;font-weight:700;letter-spacing:.5px;}
+.sb-badge-pill.new{background:rgba(34,197,94,.2);color:var(--green);}
+.sb-divider{height:1px;background:rgba(255,255,255,.05);margin:8px 18px;}
+.sb-user{padding:14px 18px;border-top:1px solid rgba(255,255,255,.06);flex-shrink:0;}
+.sb-user-row{display:flex;align-items:center;gap:10px;}
+.sb-user-av{width:34px;height:34px;border-radius:50%;background:var(--fire);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:15px;color:#fff;flex-shrink:0;cursor:pointer;}
+.sb-user-info{flex:1;min-width:0;}
+.sb-user-name{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sb-user-email{font-size:10px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sb-user-plan{font-size:8px;letter-spacing:1px;text-transform:uppercase;background:var(--pro);color:#000;padding:1px 6px;border-radius:4px;font-weight:700;display:inline-block;margin-top:3px;}
+.sb-user-plan.free{background:rgba(136,136,136,.2);color:var(--muted);}
+.sb-sign-out{background:none;border:none;color:var(--muted);font-size:11px;cursor:pointer;padding:6px 0 0;display:block;transition:color .15s;}
+.sb-sign-out:hover{color:var(--red);}
+/* Collapsed toggle button */
+#sb-toggle{position:fixed;top:14px;left:252px;z-index:1100;background:var(--card);border:1px solid var(--border);border-radius:6px;width:28px;height:28px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:13px;transition:left .28s cubic-bezier(.4,0,.2,1);color:var(--muted);}
+#sb-toggle:hover{color:var(--text);border-color:var(--red);}
+#sb-toggle.collapsed{left:10px;}
+/* Overlay for mobile */
+#rfc-sb-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:490;}
+#rfc-sb-overlay.show{display:block;}
+
+/* Body shift when sidebar open */
+body.sb-open > *:not(#rfc-sidebar):not(#sb-toggle):not(#rfc-sb-overlay){
+  margin-left:240px;transition:margin-left .28s cubic-bezier(.4,0,.2,1);
+}
+body.sb-open > nav{display:none!important;}
+
+/* Screen system */
+.rfc-screen{display:none!important;}
+.rfc-screen.sc-active{display:block!important;}
+
+/* ── DASHBOARD SCREEN ── */
+.dash-wrap{padding:28px 32px;min-height:100vh;}
+@media(max-width:700px){.dash-wrap{padding:16px;}}
+.dash-topbar{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px;}
+.dash-greeting{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:4px;}
+.dash-name{font-family:'Bebas Neue',sans-serif;font-size:clamp(30px,4vw,44px);letter-spacing:1px;line-height:1.1;}
+.dash-date{font-size:12px;color:var(--muted);margin-top:4px;}
+.dash-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px;}
+@media(max-width:900px){.dash-stats{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:500px){.dash-stats{grid-template-columns:1fr 1fr;}}
+.dash-stat-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;transition:border-color .2s;}
+.dash-stat-card:hover{border-color:rgba(255,255,255,.15);}
+.dash-stat-lbl{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:7px;}
+.dash-stat-val{font-family:'Bebas Neue',sans-serif;font-size:32px;line-height:1;}
+.dash-stat-sub{font-size:10px;color:var(--muted);margin-top:2px;}
+.dash-stat-icon{font-size:28px;opacity:.65;flex-shrink:0;}
+.dash-grid{display:grid;grid-template-columns:1fr 340px;gap:20px;align-items:start;}
+@media(max-width:1000px){.dash-grid{grid-template-columns:1fr;}}
+.dash-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;}
+.dash-card-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+.dash-card-title{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);}
+.dash-card-tag{font-size:10px;letter-spacing:1px;text-transform:uppercase;font-weight:700;padding:3px 9px;border-radius:20px;}
+.dash-card-tag.ai{background:rgba(139,92,246,.2);color:#a78bfa;}
+.dash-task{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.04);}
+.dash-task:last-child{border-bottom:none;}
+.dash-task-icon{font-size:22px;flex-shrink:0;}
+.dash-task-body{flex:1;min-width:0;}
+.dash-task-name{font-size:13px;font-weight:500;}
+.dash-task-name.done{text-decoration:line-through;color:var(--muted);}
+.dash-task-time{font-size:11px;color:var(--muted);margin-top:1px;}
+.dash-task-check{width:22px;height:22px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;transition:all .15s;}
+.dash-task-check.checked{background:var(--red);border-color:var(--red);}
+.dash-bc-row{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:13px;}
+.dash-bc-row:last-child{border-bottom:none;}
+.dash-bc-row span:first-child{color:var(--muted);}
+.dash-bc-row span:last-child{font-weight:600;}
+.dash-goal-bar{height:6px;background:rgba(255,255,255,.06);border-radius:3px;margin:10px 0 5px;overflow:hidden;}
+.dash-goal-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--red),#ff8c00);transition:width .6s ease;}
+.dash-quick-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px;}
+.dash-quick-btn{background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:12px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:border-color .15s;font-size:13px;}
+.dash-quick-btn:hover{border-color:rgba(255,255,255,.2);}
+.dash-quick-btn .dq-icon{font-size:20px;}
+.dash-activity-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:3px;}
+.dash-activity-row{display:flex;gap:10px;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.04);font-size:12px;}
+.dash-activity-row:last-child{border-bottom:none;}
+
+/* Screen container shared padding */
+.sc-wrap{padding:32px;min-height:100vh;}
+@media(max-width:700px){.sc-wrap{padding:16px;}}
+.sc-hdr{margin-bottom:24px;}
+.sc-hdr-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(26px,4vw,38px);letter-spacing:1px;}
+.sc-hdr-sub{font-size:13px;color:var(--muted);margin-top:4px;}
+
+/* Mobile sidebar */
+@media(max-width:900px){
+  #rfc-sidebar{transform:translateX(-240px);}
+  #rfc-sidebar.sb-open-mobile{transform:translateX(0);}
+  body.sb-open > *:not(#rfc-sidebar):not(#sb-toggle):not(#rfc-sb-overlay){margin-left:0;}
+  body.sb-open > nav{display:flex!important;}
+  #sb-toggle{left:10px;}
+}
 .wallet-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#ffd000,#ff8c00);}
 .wallet-bal{font-family:'Bebas Neue',sans-serif;font-size:46px;line-height:1;color:#ffd000;letter-spacing:1px;}
 .wallet-lbl{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-top:2px;}
@@ -1468,6 +1584,169 @@ img{loading:lazy;}
 </div>
 <div id="watermark"></div>
 <div id="cur"></div><div id="cdot"></div><div id="ptcl"></div>
+
+<!-- ═══════════════════ RFC SIDEBAR ═══════════════════ -->
+<div id="rfc-sb-overlay" onclick="sbClose()"></div>
+<button id="sb-toggle" onclick="sbToggle()" title="Toggle sidebar">☰</button>
+
+<aside id="rfc-sidebar">
+  <!-- Brand -->
+  <div class="sb-brand">
+    <div class="sb-logo-row">
+      <div class="sb-logo-mark">RFC</div>
+      <div>
+        <div class="sb-logo-text">ROYAL FITNESS</div>
+        <div class="sb-logo-sub">Club — Beast Ecosystem</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="sb-nav" id="sb-nav">
+    <div class="sb-section-lbl">MAIN</div>
+    <div class="sb-item active" data-screen="dashboard" onclick="switchScreen('dashboard',this)"><span class="sb-icon">📊</span><span>Dashboard</span></div>
+
+    <div class="sb-section-lbl">FITNESS</div>
+    <div class="sb-item" data-screen="workouts" onclick="switchScreen('workouts',this)"><span class="sb-icon">🏋️</span><span>Workouts</span></div>
+    <div class="sb-item" data-screen="nutrition" onclick="switchScreen('nutrition',this)"><span class="sb-icon">🥗</span><span>Nutrition</span></div>
+    <div class="sb-item" data-screen="toolbox" onclick="switchScreen('toolbox',this)"><span class="sb-icon">🧮</span><span>Toolbox</span></div>
+    <div class="sb-item" data-screen="roadmap" onclick="switchScreen('roadmap',this)"><span class="sb-icon">🗺️</span><span>Roadmap</span></div>
+    <div class="sb-item" data-screen="physio" onclick="switchScreen('physio',this)"><span class="sb-icon">🩺</span><span>Physio</span></div>
+
+    <div class="sb-section-lbl">COMPETE</div>
+    <div class="sb-item" data-screen="challenges" onclick="switchScreen('challenges',this)"><span class="sb-icon">🏆</span><span>Challenges</span><span class="sb-badge-pill">LIVE</span></div>
+    <div class="sb-item" data-screen="leaderboard" onclick="switchScreen('leaderboard',this)"><span class="sb-icon">🐯</span><span>Leaderboard</span></div>
+    <div class="sb-item" data-screen="transform" onclick="switchScreen('transform',this)"><span class="sb-icon">📈</span><span>Progress</span></div>
+
+    <div class="sb-section-lbl">HEALTH</div>
+    <div class="sb-item" data-screen="bloodai" onclick="switchScreen('bloodai',this)"><span class="sb-icon">🩸</span><span>Blood AI</span><span class="sb-badge-pill new">NEW</span></div>
+
+    <div class="sb-section-lbl">EARN & LEARN</div>
+    <div class="sb-item" data-screen="referrals" onclick="switchScreen('referrals',this)"><span class="sb-icon">💰</span><span>Wallet & Referrals</span></div>
+    <div class="sb-item" data-screen="courses" onclick="switchScreen('courses',this)"><span class="sb-icon">🎓</span><span>Courses</span></div>
+
+    <div class="sb-section-lbl">STORE</div>
+    <div class="sb-item" data-screen="store" onclick="switchScreen('store',this)"><span class="sb-icon">📚</span><span>Knowledge Store</span></div>
+    <div class="sb-item" data-screen="plans" onclick="switchScreen('plans',this)"><span class="sb-icon">💳</span><span>Plans & Pricing</span></div>
+
+    <div class="sb-divider"></div>
+    <div class="sb-item" id="sb-profile-btn" data-screen="profile" onclick="switchScreen('profile',this)"><span class="sb-icon">👤</span><span>My Profile</span></div>
+  </nav>
+
+  <!-- User info -->
+  <div class="sb-user" id="sb-user-area">
+    <div id="sb-guest">
+      <button class="bfire" style="width:100%;padding:10px;font-size:13px;" onclick="forceLogin()">🔒 Member Login</button>
+    </div>
+    <div id="sb-member" style="display:none;">
+      <div class="sb-user-row">
+        <div class="sb-user-av" id="sb-av" onclick="switchScreen('profile',document.querySelector('[data-screen=profile]'))">DU</div>
+        <div class="sb-user-info">
+          <div class="sb-user-name" id="sb-uname">Demo User</div>
+          <div class="sb-user-email" id="sb-uemail">demo@rfc.in</div>
+          <span class="sb-user-plan" id="sb-uplan">FREE</span>
+        </div>
+      </div>
+      <button class="sb-sign-out" onclick="logout()">Sign Out</button>
+    </div>
+  </div>
+</aside>
+
+<!-- ═══════════════════ SCREENS WRAPPER ═══════════════════ -->
+
+<!-- DASHBOARD SCREEN (injected before sections, replaces hero for logged-in) -->
+<div id="screen-dashboard" class="rfc-screen">
+  <div class="dash-wrap" id="dash-inner">
+    <div class="dash-topbar">
+      <div>
+        <div class="dash-greeting" id="dash-greeting">Good morning,</div>
+        <div class="dash-name" id="dash-name">Welcome 👋</div>
+        <div class="dash-date" id="dash-date"></div>
+      </div>
+      <button class="bsm" onclick="switchScreen('toolbox',document.querySelector('[data-screen=toolbox]'))">🧮 Open Toolbox →</button>
+    </div>
+
+    <!-- Stat cards -->
+    <div class="dash-stats" id="dash-stat-cards">
+      <div class="dash-stat-card">
+        <div><div class="dash-stat-lbl">Tiger Score</div><div class="dash-stat-val" id="ds-tiger" style="color:var(--gold);">--</div><div class="dash-stat-sub">This month</div></div>
+        <div class="dash-stat-icon">🐯</div>
+      </div>
+      <div class="dash-stat-card">
+        <div><div class="dash-stat-lbl">Streak</div><div class="dash-stat-val" id="ds-streak" style="color:var(--red);">-- days</div><div class="dash-stat-sub">Keep going!</div></div>
+        <div class="dash-stat-icon">🔥</div>
+      </div>
+      <div class="dash-stat-card">
+        <div><div class="dash-stat-lbl">Wallet Balance</div><div class="dash-stat-val" id="ds-wallet" style="color:var(--green);">₹--</div><div class="dash-stat-sub">Available</div></div>
+        <div class="dash-stat-icon">💰</div>
+      </div>
+      <div class="dash-stat-card">
+        <div><div class="dash-stat-lbl">Workouts</div><div class="dash-stat-val" id="ds-workouts" style="color:#60a5fa;">--</div><div class="dash-stat-sub">This month</div></div>
+        <div class="dash-stat-icon">🏋️</div>
+      </div>
+    </div>
+
+    <!-- Main grid -->
+    <div class="dash-grid">
+      <!-- Left: Today's Plan + Quick Actions -->
+      <div>
+        <div class="dash-card" style="margin-bottom:16px;">
+          <div class="dash-card-hdr">
+            <span class="dash-card-title">Today's Plan</span>
+            <span class="dash-card-tag ai">AI GENERATED</span>
+          </div>
+          <div id="dash-tasks">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+
+        <div class="dash-card">
+          <div class="dash-card-hdr"><span class="dash-card-title">Quick Actions</span></div>
+          <div class="dash-quick-grid">
+            <div class="dash-quick-btn" onclick="switchScreen('toolbox',document.querySelector('[data-screen=toolbox]'))"><span class="dq-icon">🧮</span><span>Calculator</span></div>
+            <div class="dash-quick-btn" onclick="switchScreen('nutrition',document.querySelector('[data-screen=nutrition]'))"><span class="dq-icon">🥗</span><span>Meal Plan</span></div>
+            <div class="dash-quick-btn" onclick="switchScreen('workouts',document.querySelector('[data-screen=workouts]'))"><span class="dq-icon">📝</span><span>Log Workout</span></div>
+            <div class="dash-quick-btn" onclick="switchScreen('bloodai',document.querySelector('[data-screen=bloodai]'))"><span class="dq-icon">🩸</span><span>Blood AI</span></div>
+            <div class="dash-quick-btn" onclick="switchScreen('challenges',document.querySelector('[data-screen=challenges]'))"><span class="dq-icon">🏆</span><span>Challenges</span></div>
+            <div class="dash-quick-btn" onclick="switchScreen('courses',document.querySelector('[data-screen=courses]'))"><span class="dq-icon">🎓</span><span>Courses</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Body Composition + Activity + Leaderboard rank -->
+      <div>
+        <div class="dash-card" style="margin-bottom:16px;" id="dash-body-comp">
+          <div class="dash-card-hdr"><span class="dash-card-title">Body Composition</span></div>
+          <div class="dash-bc-row"><span>BMI</span><span id="db-bmi" style="color:var(--gold);">-- (--)</span></div>
+          <div class="dash-bc-row"><span>Weight</span><span id="db-weight">-- kg</span></div>
+          <div class="dash-bc-row"><span>Body Fat</span><span id="db-bf">--%</span></div>
+          <div class="dash-bc-row"><span>TDEE</span><span id="db-tdee">-- kcal</span></div>
+          <div style="margin-top:14px;">
+            <button class="bsm" style="width:100%;font-size:12px;" onclick="switchScreen('toolbox',document.querySelector('[data-screen=toolbox]'))">📊 Update Metrics →</button>
+          </div>
+        </div>
+
+        <div class="dash-card" style="margin-bottom:16px;">
+          <div class="dash-card-hdr"><span class="dash-card-title">Leaderboard Rank</span></div>
+          <div style="text-align:center;padding:8px 0;">
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:52px;color:var(--gold);line-height:1;" id="db-rank">--</div>
+            <div style="font-size:11px;color:var(--muted);">Your position this month</div>
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--red);margin-top:6px;" id="db-tiger-score">Score: --</div>
+          </div>
+          <button class="bsm" style="width:100%;font-size:12px;margin-top:8px;" onclick="switchScreen('leaderboard',document.querySelector('[data-screen=leaderboard]'))">🏆 Full Leaderboard →</button>
+        </div>
+
+        <div class="dash-card">
+          <div class="dash-card-hdr"><span class="dash-card-title">Recent Activity</span></div>
+          <div id="dash-activity-feed">
+            <div style="text-align:center;padding:20px;color:var(--muted);font-size:12px;">No recent activity. Start logging!</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <nav>
   <div class="nlogo" onclick="scrollTo(0,0)">ROYAL FITNESS CLUB</div>
   <div class="nlinks" id="nlinks">
@@ -6677,6 +6956,327 @@ function closeCourseModal() {
 // Init new sections
 renderChallenges();
 renderCourses();
+
+// ════════════════════════════════════════════════════════════════════════════
+// SIDEBAR NAVIGATION SYSTEM
+// ════════════════════════════════════════════════════════════════════════════
+
+// Maps sidebar screen names → element IDs to show
+const SCREEN_MAP = {
+  dashboard:   ['screen-dashboard'],
+  workouts:    ['tracker','workoutlog'],
+  nutrition:   ['mealplan','calculators'],
+  toolbox:     ['calculator','bodyfat'],
+  roadmap:     ['roadmap'],
+  physio:      ['physio'],
+  challenges:  ['challenges'],
+  leaderboard: ['arena'],
+  transform:   ['dashboard','bodyfat'],
+  bloodai:     ['bloodreport'],
+  referrals:   ['profile'],
+  courses:     ['courses'],
+  store:       ['store'],
+  plans:       ['plans'],
+  profile:     ['profile'],
+};
+
+// All element IDs managed by the screen system (hidden/shown by JS)
+const ALL_MANAGED_IDS = ['screen-dashboard','home','profile','plans','calculator',
+  'mealplan','roadmap','bodyfat','calculators','physio','tracker','workoutlog',
+  'arena','challenges','bloodreport','courses','store','dashboard'];
+
+let currentScreen = 'dashboard';
+
+function switchScreen(name, navEl) {
+  // Hide all managed sections
+  ALL_MANAGED_IDS.forEach(function(id) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    if (id === 'screen-dashboard') {
+      el.classList.remove('sc-active');
+    } else {
+      el.style.display = 'none';
+    }
+  });
+
+  // Show sections for this screen
+  var ids = SCREEN_MAP[name] || ['home'];
+  ids.forEach(function(id) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    if (id === 'screen-dashboard') {
+      el.classList.add('sc-active');
+    } else {
+      el.style.display = '';
+    }
+  });
+
+  // Update active nav item
+  document.querySelectorAll('.sb-item').forEach(function(item) { item.classList.remove('active'); });
+  var target = navEl || document.querySelector('[data-screen="' + name + '"]');
+  if (target) target.classList.add('active');
+
+  // Scroll to top
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  // Trigger dynamic renders
+  if (name === 'challenges') renderChallenges();
+  if (name === 'courses') renderCourses();
+  if (name === 'leaderboard') renderLeaderboard(currentLbBoard || 'tiger', null);
+  if (name === 'dashboard') populateDashboard();
+
+  // Close mobile sidebar on nav
+  if (window.innerWidth < 900) {
+    document.getElementById('rfc-sidebar').classList.remove('sb-open-mobile');
+  }
+
+  currentScreen = name;
+}
+
+function sbToggle() {
+  if (window.innerWidth < 900) {
+    document.getElementById('rfc-sidebar').classList.toggle('sb-open-mobile');
+  } else {
+    document.body.classList.toggle('sb-open');
+  }
+}
+
+function sbClose() {
+  document.getElementById('rfc-sidebar').classList.remove('sb-open-mobile');
+}
+
+// ─── Dashboard population ────────────────────────────────────────────────────
+
+function populateDashboard() {
+  // Greeting + date
+  var h = new Date().getHours();
+  var greet = h < 12 ? 'Good morning,' : h < 17 ? 'Good afternoon,' : 'Good evening,';
+  var gEl = document.getElementById('dash-greeting');
+  if (gEl) gEl.textContent = greet;
+
+  var nameEl = document.getElementById('dash-name');
+  if (nameEl) nameEl.textContent = user ? ('Welcome back, ' + (user.displayName || user.email.split('@')[0]) + ' 💪') : 'Welcome, Champion 👋';
+
+  var dateEl = document.getElementById('dash-date');
+  if (dateEl) dateEl.textContent = new Date().toLocaleDateString('en-IN', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
+
+  // Tiger score
+  var score = calcTigerScore();
+  var scoreEl = document.getElementById('ds-tiger');
+  if (scoreEl) scoreEl.textContent = score;
+  var dbScore = document.getElementById('db-tiger-score');
+  if (dbScore) dbScore.textContent = 'Score: ' + score;
+
+  // Streak
+  var streak = parseInt(localStorage.getItem('bm_streak') || '0');
+  var streakEl = document.getElementById('ds-streak');
+  if (streakEl) streakEl.textContent = streak + (streak === 1 ? ' day' : ' days');
+
+  // Wallet balance
+  var walletEl = document.getElementById('ds-wallet');
+  if (walletEl) {
+    var w = user ? getWallet() : { balance: 0 };
+    walletEl.textContent = '₹' + (w.balance || 0).toFixed(0);
+  }
+
+  // Workouts this month
+  var wkEl = document.getElementById('ds-workouts');
+  if (wkEl) {
+    try {
+      var logs = JSON.parse(localStorage.getItem('bm_wklogs') || '[]');
+      var monthStart = new Date(); monthStart.setDate(1); monthStart.setHours(0,0,0,0);
+      var thisMonth = logs.filter(function(l) { return l.ts && l.ts > monthStart.getTime(); }).length;
+      wkEl.textContent = thisMonth;
+    } catch(e) { wkEl.textContent = '0'; }
+  }
+
+  // Body composition from last calculator run
+  var bmiEl = document.getElementById('db-bmi');
+  var wgtEl = document.getElementById('db-weight');
+  var bfEl  = document.getElementById('db-bf');
+  var tdeeEl = document.getElementById('db-tdee');
+  try {
+    var lastMeas = JSON.parse(localStorage.getItem('bm_last_result') || 'null');
+    if (lastMeas) {
+      if (bmiEl) bmiEl.textContent = lastMeas.bmi ? lastMeas.bmi.toFixed(1) : '--';
+      if (wgtEl && lastMeas.weight) wgtEl.textContent = lastMeas.weight + ' kg';
+      if (bfEl  && lastMeas.bf)    bfEl.textContent   = lastMeas.bf.toFixed(1) + '%';
+      if (tdeeEl && lastMeas.tdee) tdeeEl.textContent = Math.round(lastMeas.tdee) + ' kcal';
+    }
+  } catch(e) {}
+
+  // Leaderboard rank
+  var rankEl = document.getElementById('db-rank');
+  if (rankEl) {
+    try {
+      var board = buildLeaderboardData('tiger');
+      var idx = user ? board.findIndex(function(e) { return e.uid === user.uid; }) : -1;
+      rankEl.textContent = idx >= 0 ? '#' + (idx + 1) : (user ? '#' + board.length : '--');
+    } catch(e) { rankEl.textContent = '--'; }
+  }
+
+  // Today's tasks
+  _populateDashTasks();
+
+  // Recent activity
+  _populateDashActivity();
+}
+
+function _populateDashTasks() {
+  var container = document.getElementById('dash-tasks');
+  if (!container) return;
+  var todayKey = 'bm_dtasks_' + new Date().toDateString();
+  var done = JSON.parse(localStorage.getItem(todayKey) || '[]');
+
+  var tasks = [
+    { id:'morning', icon:'🌅', name:'Morning Check-in', time:'Tap to complete', action:"switchScreen('workouts',document.querySelector('[data-screen=workouts]'))" },
+    { id:'workout', icon:'🏋️', name:'Log Today\'s Workout', time:'Strength / Cardio', action:"switchScreen('workouts',document.querySelector('[data-screen=workouts]'))" },
+    { id:'calories', icon:'🥗', name:'Track Calories', time:'Macro targets', action:"switchScreen('nutrition',document.querySelector('[data-screen=nutrition]'))" },
+    { id:'water', icon:'💧', name:'Drink 3L Water', time:'Stay hydrated', action:'' },
+    { id:'sleep', icon:'😴', name:'8 Hours Sleep Target', time:'Recovery is growth', action:'' },
+  ];
+
+  container.innerHTML = tasks.map(function(t) {
+    var isDone = done.includes(t.id);
+    return '<div class="dash-task" data-task="' + t.id + '" onclick="_dashTaskToggle(this)">' +
+      '<div class="dash-task-icon">' + t.icon + '</div>' +
+      '<div class="dash-task-body">' +
+        '<div class="dash-task-name' + (isDone ? ' done' : '') + '">' + t.name + '</div>' +
+        '<div class="dash-task-time">' + t.time + '</div>' +
+      '</div>' +
+      '<div class="dash-task-check' + (isDone ? ' checked' : '') + '">' + (isDone ? '✓' : '') + '</div>' +
+    '</div>';
+  }).join('');
+}
+
+function _dashTaskToggle(el) {
+  el.classList.toggle('done-task');
+  var nameEl = el.querySelector('.dash-task-name');
+  var checkEl = el.querySelector('.dash-task-check');
+  var isNowDone = !nameEl.classList.contains('done');
+  nameEl.classList.toggle('done', isNowDone);
+  if (checkEl) { checkEl.classList.toggle('checked', isNowDone); checkEl.textContent = isNowDone ? '✓' : ''; }
+
+  var todayKey = 'bm_dtasks_' + new Date().toDateString();
+  var done = JSON.parse(localStorage.getItem(todayKey) || '[]');
+  var taskId = el.dataset.task;
+  if (isNowDone && !done.includes(taskId)) done.push(taskId);
+  else done = done.filter(function(d) { return d !== taskId; });
+  localStorage.setItem(todayKey, JSON.stringify(done));
+}
+
+function _populateDashActivity() {
+  var feed = document.getElementById('dash-activity-feed');
+  if (!feed) return;
+
+  var activities = [];
+  // Pull from wallet transaction history
+  try {
+    var w = user ? getWallet() : null;
+    if (w && w.txns) {
+      w.txns.slice(0, 4).forEach(function(t) {
+        activities.push({
+          ts: t.ts,
+          icon: t.type === 'credit' ? '💰' : '📤',
+          text: (t.desc || 'Transaction') + ' ' + (t.type === 'credit' ? '+₹' + t.amount : '-₹' + t.amount)
+        });
+      });
+    }
+  } catch(e) {}
+
+  // Pull joined challenges
+  try {
+    var joined = user ? getMyJoinedChallenges() : [];
+    joined.forEach(function(chId) {
+      var ch = getChallenges().find(function(c) { return c.id === chId; });
+      if (ch) activities.push({ icon: '🏆', text: 'Joined ' + ch.name });
+    });
+  } catch(e) {}
+
+  activities.sort(function(a, b) { return (b.ts || 0) - (a.ts || 0); });
+
+  if (activities.length === 0) {
+    activities = [
+      { icon:'🏋️', text:'Complete your first workout to see activity here' },
+      { icon:'📊', text:'Use the BMI calculator to track your fitness metrics' },
+      { icon:'🩸', text:'Try Blood AI — upload your blood report for insights' }
+    ];
+  }
+
+  feed.innerHTML = activities.slice(0, 5).map(function(a) {
+    return '<div class="dash-activity-row">' +
+      '<span style="font-size:16px;flex-shrink:0;">' + a.icon + '</span>' +
+      '<span style="flex:1;font-size:12px;color:var(--muted);">' + a.text + '</span>' +
+      (a.ts ? '<span style="font-size:10px;color:var(--muted);white-space:nowrap;">' + _timeAgo(a.ts) + '</span>' : '') +
+    '</div>';
+  }).join('');
+}
+
+function _timeAgo(ts) {
+  var diff = Date.now() - ts;
+  var m = Math.floor(diff / 60000);
+  if (m < 1) return 'just now';
+  if (m < 60) return m + 'm ago';
+  var h2 = Math.floor(m / 60);
+  if (h2 < 24) return h2 + 'h ago';
+  return Math.floor(h2 / 24) + 'd ago';
+}
+
+// ─── Patch applyUser to sync sidebar user area ───────────────────────────────
+
+const _sbApply = applyUser;
+applyUser = function() {
+  _sbApply();
+  var sbAv    = document.getElementById('sb-av');
+  var sbUname = document.getElementById('sb-uname');
+  var sbUemail= document.getElementById('sb-uemail');
+  var sbUplan = document.getElementById('sb-uplan');
+  var sbMember= document.getElementById('sb-member');
+  var sbGuest = document.getElementById('sb-guest');
+
+  if (user) {
+    var initials = ((user.displayName || user.email || 'U')
+      .split(' ').map(function(w){ return w[0] || ''; }).join('').substring(0,2).toUpperCase()) || 'M';
+    if (sbAv)     { sbAv.textContent = initials; }
+    if (sbUname)  sbUname.textContent  = user.displayName || (user.email ? user.email.split('@')[0] : 'Member');
+    if (sbUemail) sbUemail.textContent = user.email || '';
+    if (sbUplan)  {
+      sbUplan.textContent = isPro ? 'PRO' : 'FREE';
+      sbUplan.style.background = isPro ? 'var(--gold)' : 'rgba(255,255,255,.12)';
+      sbUplan.style.color = isPro ? '#000' : 'var(--text)';
+    }
+    if (sbMember) sbMember.style.display = 'flex';
+    if (sbGuest)  sbGuest.style.display  = 'none';
+  } else {
+    if (sbAv)     sbAv.textContent = 'G';
+    if (sbMember) sbMember.style.display = 'none';
+    if (sbGuest)  sbGuest.style.display  = 'flex';
+  }
+
+  // Refresh dashboard stats if currently on dashboard
+  if (currentScreen === 'dashboard') populateDashboard();
+};
+
+// ─── Initialize layout ───────────────────────────────────────────────────────
+
+(function initSidebarLayout() {
+  // Open sidebar on desktop
+  document.body.classList.add('sb-open');
+
+  // Hide all managed sections; JS will reveal the active screen
+  ALL_MANAGED_IDS.forEach(function(id) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    if (id === 'screen-dashboard') {
+      el.classList.remove('sc-active');
+    } else {
+      el.style.display = 'none';
+    }
+  });
+
+  // Show dashboard as the landing screen
+  switchScreen('dashboard', document.querySelector('[data-screen="dashboard"]'));
+})();
 </script>
 
 <!-- ── WHATSAPP FLOATING BUTTON ──────────────────────────────────────────── -->
