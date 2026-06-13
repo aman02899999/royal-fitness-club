@@ -535,14 +535,20 @@ section{padding:68px 20px;position:relative;z-index:1;}
 #rfc-sb-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:490;}
 #rfc-sb-overlay.show{display:block;}
 
-/* Hide decorative dividers in SaaS mode */
+/* Hide decorative dividers + stray promo strips in SaaS mode */
 body.sb-open .divider{display:none!important;}
+body.sb-open .saas-hide{display:none!important;}
+body.sb-open #member-status-strip{display:none!important;}
+
+/* Force sidebar inner nav to stay vertical (defends against global nav{} rule) */
+.sb-nav{position:static!important;display:block!important;flex:1;padding:10px 0;overflow-y:auto;width:auto;height:auto;}
 
 /* Body shift when sidebar open */
 body.sb-open > *:not(#rfc-sidebar):not(#sb-toggle):not(#rfc-sb-overlay){
   margin-left:240px;transition:margin-left .28s cubic-bezier(.4,0,.2,1);
 }
-body.sb-open > nav{display:none!important;}
+/* Slim top header in SaaS mode — stays visible, shifted right of sidebar via margin rule above */
+@media(min-width:901px){body.sb-open > nav .nlinks{display:flex!important;gap:6px;}}
 
 /* Screen system */
 .rfc-screen{display:none!important;}
@@ -603,13 +609,16 @@ body.sb-open > nav{display:none!important;}
 
 /* Sections shown as SaaS screens: reduce nav-era top padding */
 body.sb-open section.sb-active-screen{padding-top:24px!important;}
+/* First visible section / dashboard clears the fixed 54px top header */
+body.sb-open .sb-screen-first{padding-top:54px!important;}
+body.sb-open #screen-dashboard .dash-wrap{padding-top:78px;}
 
 /* Injected screen title bar */
 .sb-page-hdr{
   display:flex;align-items:center;justify-content:space-between;
   padding:18px 20px 16px;border-bottom:1px solid rgba(255,255,255,.05);
-  background:rgba(13,13,20,.6);backdrop-filter:blur(8px);
-  position:sticky;top:0;z-index:50;margin-bottom:0;
+  background:rgba(13,13,20,.85);backdrop-filter:blur(8px);
+  position:sticky;top:54px;z-index:50;margin-bottom:0;
 }
 .sb-page-hdr-left{display:flex;align-items:center;gap:12px;}
 .sb-page-hdr-icon{font-size:22px;line-height:1;}
@@ -1625,7 +1634,7 @@ img{loading:lazy;}
   </div>
 
   <!-- Navigation -->
-  <nav class="sb-nav" id="sb-nav">
+  <div class="sb-nav" id="sb-nav">
     <div class="sb-section-lbl">MAIN</div>
     <div class="sb-item active" data-screen="dashboard" onclick="switchScreen('dashboard',this)"><span class="sb-icon">📊</span><span>Dashboard</span></div>
 
@@ -1654,7 +1663,7 @@ img{loading:lazy;}
 
     <div class="sb-divider"></div>
     <div class="sb-item" id="sb-profile-btn" data-screen="profile" onclick="switchScreen('profile',this)"><span class="sb-icon">👤</span><span>My Profile</span></div>
-  </nav>
+  </div>
 
   <!-- User info -->
   <div class="sb-user" id="sb-user-area">
@@ -1771,28 +1780,13 @@ img{loading:lazy;}
 </div>
 
 <nav>
-  <div class="nlogo" onclick="scrollTo(0,0)">ROYAL FITNESS CLUB</div>
+  <div class="nlogo" onclick="switchScreen('dashboard',document.querySelector('[data-screen=dashboard]'))">ROYAL FITNESS CLUB</div>
   <div class="nlinks" id="nlinks">
-    <a href="#calculator" onclick="closeNav()">Calculator</a>
-    <a href="#mealplan" onclick="closeNav()">Meals</a>
-    <a href="#calculators" onclick="closeNav()">Tools</a>
-    <a href="#physio" onclick="closeNav()">Physio</a>
-    <a href="#dashboard" onclick="closeNav()">Dashboard</a>
-    <a href="#workoutlog" onclick="closeNav()">Log</a>
-    <a href="#arena" onclick="closeNav()">Arena</a>
-    <a href="#challenges" onclick="closeNav()">🏆 Challenges</a>
-    <a href="#courses" onclick="closeNav()">🎓 Courses</a>
-    <a href="#bloodreport" onclick="closeNav()">🩸 Blood AI</a>
-    <a href="javascript:void(0)" style="color:var(--gold);" onclick="openModal('elitemodal');closeNav()">👑 Elite</a>
-    <div class="ndrop">
-      <a href="#store" onclick="closeNav()" style="color:#ffd000;">📚 Store <span class="ndrop-caret">▼</span></a>
-      <div class="ndrop-menu">
-        <a href="#pdf-fitness-mindset" onclick="closeNav()">🧠 Fitness &amp; Mindset Guide</a>
-        <a href="#pdf-anabolic-advanced" onclick="closeNav()">💪 Anabolic Advanced Guide</a>
-      </div>
-    </div>
-    <a href="#plans" onclick="closeNav()">Plans</a>
-    <a href="#tracker" id="navtr" style="display:none;" onclick="closeNav()">Tracker</a>
+    <a href="javascript:void(0)" onclick="switchScreen('transform',null);closeNav()">⚡ Beast Score</a>
+    <a href="javascript:void(0)" onclick="switchScreen('challenges',null);closeNav()">🏆 Challenges</a>
+    <a href="javascript:void(0)" onclick="switchScreen('leaderboard',null);closeNav()">🐯 Leaderboard</a>
+    <a href="javascript:void(0)" onclick="switchScreen('plans',null);closeNav()">💳 Membership</a>
+    <a href="javascript:void(0)" onclick="switchScreen('profile',null);closeNav()">👤 Profile</a>
     <div class="nmobile-extras">
       <select class="cur-sel" id="cursel-m" onchange="changeCurrency(this.value);closeNav();" title="Currency">
         <option value="INR">🇮🇳 INR</option>
@@ -1883,7 +1877,7 @@ img{loading:lazy;}
 </section>
 
 <!-- Hero feature ticker -->
-<div class="h-ticker">
+<div class="h-ticker saas-hide">
   <div class="h-ticker-inner" id="h-ticker-track">
     <div class="h-tick"><span class="sep">⚡</span> Macro Tracker</div>
     <div class="h-tick"><span class="sep">🍽️</span> AI Meal Plans</div>
@@ -2084,7 +2078,6 @@ img{loading:lazy;}
   </div>
 </section>
 
-<div class="testimonials"><div class="ttrack" id="ttrack"></div></div>
 <div class="divider"></div>
 <section id="plans">
   <div class="container">
@@ -2869,7 +2862,7 @@ img{loading:lazy;}
   </div>
 </div>
 
-<section style="padding:48px 20px;">
+<section class="saas-hide" style="padding:48px 20px;">
   <div class="container">
     <div class="shopbox">
       <div class="stag" style="margin-bottom:10px;">Free Beast Knowledge</div>
@@ -2883,7 +2876,7 @@ img{loading:lazy;}
     </div>
   </div>
 </section>
-<section style="padding:0 20px 68px;">
+<section class="saas-hide" style="padding:0 20px 68px;">
   <div class="container">
     <div class="shopbox">
       <div class="stag">Royal Fitness Club</div>
@@ -3660,6 +3653,13 @@ img{loading:lazy;}
   <a class="pdf-buy-btn" style="padding:10px 18px;font-size:12px;width:auto;flex-shrink:0;text-decoration:none;display:flex;align-items:center;" href="#store">VIEW GUIDES ↑</a>
 </div>
 <div class="divider"></div>
+
+<!-- ── MEMBER REVIEWS MARQUEE (moved to bottom) ───────────────────────────── -->
+<div style="text-align:center;padding:32px 20px 6px;">
+  <div class="stag">Real Member Transformations</div>
+  <div class="sh" style="font-size:clamp(24px,4vw,34px);">WHAT OUR BEASTS SAY</div>
+</div>
+<div class="testimonials"><div class="ttrack" id="ttrack"></div></div>
 
 <footer style="background:#050505;border-top:2px solid var(--border);padding:48px 20px 32px;">
   <div class="container" style="max-width:900px;margin:0 auto;">
@@ -7038,6 +7038,7 @@ function switchScreen(name, navEl) {
     } else {
       el.style.display = 'none';
       el.classList.remove('sb-active-screen');
+      el.classList.remove('sb-screen-first');
     }
   });
 
@@ -7056,7 +7057,7 @@ function switchScreen(name, navEl) {
     } else {
       el.style.setProperty('display', 'block', 'important');
       el.classList.add('sb-active-screen');
-      if (!firstEl) firstEl = el;
+      if (!firstEl) { firstEl = el; el.classList.add('sb-screen-first'); }
     }
   });
 
