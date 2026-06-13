@@ -488,6 +488,49 @@ section{padding:68px 20px;position:relative;z-index:1;}
   .meal-block-header{flex-direction:column;align-items:flex-start;gap:4px;}
   .day-total-bar{gap:8px;}
 }
+/* ── WALLET & REFERRAL ── */
+.wallet-card{background:linear-gradient(135deg,#080f1e,#0d1f3c);border:1px solid rgba(255,208,0,.25);border-radius:12px;padding:20px;position:relative;overflow:hidden;}
+.wallet-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#ffd000,#ff8c00);}
+.wallet-bal{font-family:'Bebas Neue',sans-serif;font-size:46px;line-height:1;color:#ffd000;letter-spacing:1px;}
+.wallet-lbl{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-top:2px;}
+.wallet-ref-code{font-family:monospace;font-size:16px;letter-spacing:4px;color:#38bdf8;background:rgba(56,189,248,.08);border:1px solid rgba(56,189,248,.2);padding:7px 12px;border-radius:6px;display:inline-block;cursor:pointer;transition:background .15s;}
+.wallet-ref-code:hover{background:rgba(56,189,248,.16);}
+.wtx-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:12px;}
+.wtx-row:last-child{border-bottom:none;}
+.wtx-plus{color:var(--green);font-weight:700;}
+.wtx-minus{color:#f87171;font-weight:700;}
+.wtx-pend{color:#fbbf24;font-weight:700;}
+.wallet-redeem-form{margin-top:14px;padding-top:14px;border-top:1px solid rgba(255,255,255,.06);}
+/* ── TIGER LEADERBOARD ── */
+.lb-prize-bar{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:18px 0;}
+.lb-prize{border-radius:10px;padding:14px 10px;text-align:center;border:1px solid;}
+.lb-prize.gold-p{background:linear-gradient(135deg,rgba(255,208,0,.1),rgba(255,140,0,.05));border-color:rgba(255,208,0,.3);}
+.lb-prize.silver-p{background:linear-gradient(135deg,rgba(148,163,184,.08),rgba(100,116,139,.04));border-color:rgba(148,163,184,.25);}
+.lb-prize.bronze-p{background:linear-gradient(135deg,rgba(180,83,9,.08),rgba(120,53,15,.04));border-color:rgba(180,83,9,.25);}
+.lb-prize-medal{font-size:28px;line-height:1;}
+.lb-prize-reward{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-top:4px;}
+.lb-prize-val{font-family:'Bebas Neue',sans-serif;font-size:16px;color:#ffd000;margin-top:2px;}
+.lb-row{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;margin-bottom:4px;background:rgba(255,255,255,.02);transition:background .15s;}
+.lb-row:hover{background:rgba(255,255,255,.04);}
+.lb-row.lb-me{background:rgba(232,0,29,.07);border:1px solid rgba(232,0,29,.2);}
+.lb-row.lb-t1{background:linear-gradient(90deg,rgba(255,208,0,.08),transparent);border:1px solid rgba(255,208,0,.18);}
+.lb-row.lb-t2{background:rgba(148,163,184,.04);}
+.lb-row.lb-t3{background:rgba(180,83,9,.04);}
+.lb-rn{font-family:'Bebas Neue',sans-serif;font-size:20px;width:26px;text-align:center;color:var(--muted);flex-shrink:0;}
+.lb-rn.g{color:#ffd000;}.lb-rn.s{color:#94a3b8;}.lb-rn.b{color:#b45309;}
+.lb-av{width:34px;height:34px;border-radius:50%;background:var(--fire);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:15px;color:#fff;flex-shrink:0;}
+.lb-info{flex:1;min-width:0;}
+.lb-nm{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.lb-ct{font-size:10px;color:var(--muted);}
+.lb-sc{text-align:right;flex-shrink:0;}
+.lb-sc-val{font-family:'Bebas Neue',sans-serif;font-size:18px;color:#ffd000;display:block;}
+.lb-sc-lbl{font-size:9px;letter-spacing:1px;color:var(--muted);}
+.tiger-factors{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:14px;}
+@media(max-width:600px){.tiger-factors{grid-template-columns:repeat(3,1fr);}.lb-prize-bar{grid-template-columns:1fr;}}
+.tf-box{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:6px;padding:8px 6px;text-align:center;}
+.tf-val{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--red);}
+.tf-lbl{font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);}
+.lb-myrank-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(232,0,29,.08);border:1px solid rgba(232,0,29,.2);border-radius:8px;padding:10px 16px;margin-bottom:14px;font-size:13px;}
 /* ── PROFILE DASHBOARD ── */
 #profile{display:none;}#profile.show{display:block;}
 .prof-head{display:flex;align-items:center;gap:18px;flex-wrap:wrap;background:linear-gradient(135deg,rgba(232,0,29,.07),rgba(255,69,0,.03));border:1px solid var(--border);border-radius:12px;padding:24px;margin-top:32px;}
@@ -1595,6 +1638,59 @@ img{loading:lazy;}
         <h4>🧾 Billing History</h4>
         <div id="pp-history"><p style="font-size:12px;color:var(--muted);">No transactions yet. Upgrade to Pro to view billing history.</p></div>
       </div>
+      <!-- Wallet Card -->
+      <div class="prof-card wallet-card" id="wallet-card">
+        <h4 style="color:#ffd000;">💰 Referral Wallet</h4>
+        <div style="margin:12px 0;">
+          <div class="wallet-bal" id="wallet-bal">₹0</div>
+          <div class="wallet-lbl">Available Balance</div>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:14px;">
+          <div>
+            <div style="font-size:10px;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;margin-bottom:5px;">Your Referral Code</div>
+            <span class="wallet-ref-code" id="wallet-ref-code" onclick="copyRefCode()" title="Click to copy">—</span>
+          </div>
+          <div style="margin-left:auto;text-align:right;">
+            <div style="font-size:10px;color:var(--muted);letter-spacing:1px;">REFERRALS</div>
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:30px;color:var(--green);" id="wallet-ref-count">0</div>
+          </div>
+        </div>
+        <div style="font-size:11px;color:var(--muted);background:rgba(255,255,255,.03);border-radius:6px;padding:8px 12px;margin-bottom:12px;line-height:1.7;">
+          💡 Share your code · Earn <strong style="color:#ffd000;">₹100</strong> per signup · Min ₹500 to redeem via UPI
+        </div>
+        <!-- Wallet share link -->
+        <button class="bsm" style="width:100%;margin-bottom:12px;border-color:#25D366;color:#25D366;" onclick="shareReferralWhatsApp()">📲 Share on WhatsApp</button>
+        <!-- Transaction History -->
+        <div style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;">Transaction History</div>
+        <div id="wallet-txns" style="max-height:160px;overflow-y:auto;">
+          <div style="font-size:12px;color:var(--muted);text-align:center;padding:12px;">No transactions yet.</div>
+        </div>
+        <!-- Redeem form -->
+        <div class="wallet-redeem-form">
+          <div style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;">Redeem to UPI <span style="color:var(--muted);font-size:10px;text-transform:none;">(min ₹500)</span></div>
+          <input type="text" class="minp" id="redeem-upi" placeholder="Your UPI ID (e.g. name@upi)" style="margin-bottom:7px;">
+          <input type="number" class="minp" id="redeem-amount" placeholder="Amount (₹500 minimum)" min="500" style="margin-bottom:7px;">
+          <button class="bsm" style="width:100%;border-color:var(--gold);color:var(--gold);" onclick="requestRedeem()">💸 Request Payout</button>
+          <div id="redeem-msg" style="font-size:11px;margin-top:6px;min-height:14px;"></div>
+        </div>
+      </div>
+      <!-- Referral Stats Card -->
+      <div class="prof-card">
+        <h4>🏆 Your Tiger Score</h4>
+        <div style="text-align:center;margin:10px 0;">
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:52px;color:var(--gold);line-height:1;" id="my-tiger-score">0</div>
+          <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);">Tiger Points</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:6px;">Rank: <strong style="color:var(--text);" id="my-tiger-rank">#—</strong> this month</div>
+        </div>
+        <div class="tiger-factors">
+          <div class="tf-box"><div class="tf-val" id="tf-streak">0</div><div class="tf-lbl">Streak×10</div></div>
+          <div class="tf-box"><div class="tf-val" id="tf-workouts">0</div><div class="tf-lbl">Workouts×5</div></div>
+          <div class="tf-box"><div class="tf-val" id="tf-checkins">0</div><div class="tf-lbl">Check-ins×8</div></div>
+          <div class="tf-box"><div class="tf-val" id="tf-refs">0</div><div class="tf-lbl">Referrals×50</div></div>
+          <div class="tf-box"><div class="tf-val" id="tf-photos">0</div><div class="tf-lbl">Photos×20</div></div>
+        </div>
+        <button class="bsm" style="width:100%;margin-top:12px;" onclick="closeProfile();document.getElementById('arena').scrollIntoView({behavior:'smooth'})">🏆 View Full Leaderboard</button>
+      </div>
     </div>
   </div>
 </section>
@@ -2185,16 +2281,46 @@ img{loading:lazy;}
 <section id="arena" style="background:var(--card2);">
   <div class="container">
     <div class="stag">Community Arena</div>
-    <div class="sh">ROYAL LEADERBOARD</div>
-    <p class="ssub">Where do you stand among the pack? Calculate your Beast Score and check in daily to climb the ranks.</p>
-    <div class="lb-tabs">
-      <button class="lb-tab active" data-board="beastScore" onclick="switchBoard('beastScore',this)">👑 Beast Score</button>
-      <button class="lb-tab" data-board="streak" onclick="switchBoard('streak',this)">🔥 Streak</button>
-      <button class="lb-refresh" onclick="loadLeaderboard()" title="Refresh">⟳</button>
+    <div class="sh">🐯 TIGER LEADERBOARD</div>
+    <p class="ssub">Monthly rankings powered by Tiger Score — streak, workouts, check-ins, referrals &amp; transformations. Top 3 win ₹15,000 supplement stack!</p>
+
+    <!-- Prize bar -->
+    <div class="lb-prize-bar">
+      <div class="lb-prize gold-p">
+        <div class="lb-prize-medal">🥇</div>
+        <div class="lb-prize-reward">1st Place</div>
+        <div class="lb-prize-val">₹8,000 Supps</div>
+      </div>
+      <div class="lb-prize silver-p">
+        <div class="lb-prize-medal">🥈</div>
+        <div class="lb-prize-reward">2nd Place</div>
+        <div class="lb-prize-val">₹4,500 Supps</div>
+      </div>
+      <div class="lb-prize bronze-p">
+        <div class="lb-prize-medal">🥉</div>
+        <div class="lb-prize-reward">3rd Place</div>
+        <div class="lb-prize-val">₹2,500 Supps</div>
+      </div>
     </div>
-    <div class="lb-myrank" id="lb-myrank" style="display:none;"></div>
-    <div class="lb-list" id="lb-list">
-      <div style="text-align:center;padding:30px;color:var(--muted);font-size:13px;">Log in to see the leaderboard.</div>
+
+    <!-- My rank badge (shown when logged in) -->
+    <div id="lb-myrank-badge" style="display:none;" class="lb-myrank-badge">
+      <span style="font-size:18px;">🐯</span>
+      <span>Your rank: <strong id="lb-my-rank-num" style="color:var(--gold);">#—</strong> &nbsp;|&nbsp; Tiger Score: <strong id="lb-my-score-top" style="color:var(--gold);">0</strong></span>
+      <span style="margin-left:auto;font-size:11px;color:var(--muted);">Resets monthly</span>
+    </div>
+
+    <!-- Tabs -->
+    <div class="lb-tabs" style="margin-bottom:16px;">
+      <button class="lb-tab active" onclick="renderLeaderboard('tiger',this)">🐯 Tiger Score</button>
+      <button class="lb-tab" onclick="renderLeaderboard('streak',this)">🔥 Streak</button>
+      <button class="lb-tab" onclick="renderLeaderboard('referrals',this)">💰 Referrals</button>
+      <button class="lb-refresh" onclick="renderLeaderboard(currentLbBoard,null)" title="Refresh">⟳</button>
+    </div>
+
+    <div id="lb-list"></div>
+    <div style="text-align:center;margin-top:14px;">
+      <button class="bsm" onclick="if(!user){forceLogin();return;}openProfile();">👤 My Profile &amp; Tiger Score</button>
     </div>
   </div>
 </section>
@@ -3062,6 +3188,7 @@ img{loading:lazy;}
       <input type="tel" class="minp" id="reg-phone" placeholder="Mobile Number (optional)">
       <input type="email" class="minp" id="reg-email" placeholder="Email Address" autocomplete="email">
       <input type="password" class="minp" id="reg-pass" placeholder="Create Password (min 6 chars)" autocomplete="new-password">
+      <input type="text" class="minp" id="reg-referral" placeholder="Referral Code (optional — earn ₹20 bonus)" autocomplete="off" style="letter-spacing:1px;">
       <div id="reg-err" style="font-size:12px;color:#f87171;margin:-4px 0 8px;min-height:16px;"></div>
       <button class="mbtn" style="background:linear-gradient(135deg,#16a34a,#15803d);" onclick="registerWithCode()">✅ CREATE MY ACCOUNT</button>
     </div>
@@ -5457,6 +5584,275 @@ document.addEventListener('DOMContentLoaded',()=>{
   renderWaterCups();
   initSuppTracker();
 });
+
+// ════════ WALLET & REFERRAL SYSTEM ══════════════════════════════════════════
+
+function _wKey(k){return user?`rfc_wallet_${user.uid}_${k}`:null;}
+
+function getWallet(){
+  if(!user)return{balance:0,transactions:[]};
+  try{return JSON.parse(localStorage.getItem(_wKey('data'))||'{"balance":0,"transactions":[]}');}
+  catch(e){return{balance:0,transactions:[]};}
+}
+
+function saveWallet(w){
+  if(!user)return;
+  localStorage.setItem(_wKey('data'),JSON.stringify(w));
+}
+
+function walletCredit(amount,desc,type='credit'){
+  const w=getWallet();
+  w.balance=Math.round((w.balance||0)+amount);
+  w.transactions.unshift({id:Date.now(),type,amount,desc,date:new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})});
+  if(w.transactions.length>50)w.transactions=w.transactions.slice(0,50);
+  saveWallet(w);
+  renderWallet();
+}
+
+function walletDebit(amount,desc){
+  const w=getWallet();
+  if(w.balance<amount)return false;
+  w.balance=Math.round(w.balance-amount);
+  w.transactions.unshift({id:Date.now(),type:'debit',amount:-amount,desc,date:new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})});
+  saveWallet(w);
+  renderWallet();
+  return true;
+}
+
+function getRefCode(){
+  if(!user)return'—';
+  const k=`rfc_refcode_${user.uid}`;
+  let code=localStorage.getItem(k);
+  if(!code){
+    const chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    code='RFC-'+(user.uid||Math.random().toString(36)).slice(0,6).toUpperCase().split('').map(c=>chars.includes(c)?c:chars[Math.floor(Math.random()*chars.length)]).join('');
+    localStorage.setItem(k,code);
+  }
+  return code;
+}
+
+function getRefCount(){
+  if(!user)return 0;
+  return parseInt(localStorage.getItem(`rfc_ref_count_${user.uid}`)||'0');
+}
+
+function checkLoginBonus(){
+  if(!user)return;
+  const key=`rfc_lb_date_${user.uid}`;
+  const today=new Date().toDateString();
+  if(localStorage.getItem(key)===today)return;
+  localStorage.setItem(key,today);
+  walletCredit(20,'Daily login bonus','login_bonus');
+  setTimeout(()=>toast('💰 +₹20 daily login bonus added to your wallet!','gold'),1200);
+}
+
+function renderWallet(){
+  if(!user)return;
+  const w=getWallet();
+  const balEl=$('wallet-bal');if(balEl)balEl.textContent='₹'+w.balance;
+  const rcEl=$('wallet-ref-code');if(rcEl)rcEl.textContent=getRefCode();
+  const rcntEl=$('wallet-ref-count');if(rcntEl)rcntEl.textContent=getRefCount();
+  const txEl=$('wallet-txns');
+  if(txEl){
+    if(!w.transactions.length){
+      txEl.innerHTML='<div style="font-size:12px;color:var(--muted);text-align:center;padding:12px;">No transactions yet. Share your referral code to earn!</div>';
+    }else{
+      txEl.innerHTML=w.transactions.slice(0,15).map(t=>`
+        <div class="wtx-row">
+          <div>
+            <div style="font-size:12px;">${t.desc}</div>
+            <div style="font-size:10px;color:var(--muted);">${t.date}</div>
+          </div>
+          <div class="${t.amount>0?'wtx-plus':t.type==='pending'?'wtx-pend':'wtx-minus'}">${t.amount>0?'+':''}₹${Math.abs(t.amount)}</div>
+        </div>`).join('');
+    }
+  }
+  // Tiger score factors
+  const pd=JSON.parse(localStorage.getItem('bm_pd')||'{}');
+  const wkKey='rfc_workouts_'+(user.uid||'');
+  const wks=(JSON.parse(localStorage.getItem(wkKey)||'[]')).length;
+  const streak=pd.streak||0;
+  const checkins=pd.checkins||pd.streak||0;
+  const refs=getRefCount();
+  const photos=(pd.photos||[]).length;
+  const score=calcTigerScore(streak,wks,checkins,refs,photos);
+  if($('my-tiger-score'))$('my-tiger-score').textContent=score;
+  if($('tf-streak'))$('tf-streak').textContent=streak*10;
+  if($('tf-workouts'))$('tf-workouts').textContent=wks*5;
+  if($('tf-checkins'))$('tf-checkins').textContent=checkins*8;
+  if($('tf-refs'))$('tf-refs').textContent=refs*50;
+  if($('tf-photos'))$('tf-photos').textContent=photos*20;
+  // rank
+  const board=buildLeaderboardData();
+  const myEntry=board.find(e=>e.isMe);
+  const rank=myEntry?myEntry.rank:'—';
+  if($('my-tiger-rank'))$('my-tiger-rank').textContent='#'+rank;
+  if($('lb-my-rank-num'))$('lb-my-rank-num').textContent='#'+rank;
+  if($('lb-my-score-top'))$('lb-my-score-top').textContent=score;
+  const badge=$('lb-myrank-badge');
+  if(badge)badge.style.display='flex';
+}
+
+function copyRefCode(){
+  const code=getRefCode();
+  navigator.clipboard?.writeText(code).catch(()=>{});
+  toast('📋 Referral code copied: '+code,'gold');
+}
+
+function shareReferralWhatsApp(){
+  const code=getRefCode();
+  const msg=`Join Royal Fitness Club — the ultimate gym member portal! 🏋️🔥\n\nUse my referral code *${code}* when registering to get started.\n\nTrack workouts, nutrition, body stats & more → royalmentality.in`;
+  window.open('https://wa.me/?text='+encodeURIComponent(msg),'_blank');
+}
+
+function requestRedeem(){
+  if(!user){forceLogin();return;}
+  const upi=($('redeem-upi')?.value||'').trim();
+  const amount=parseInt($('redeem-amount')?.value||'0');
+  const msg=$('redeem-msg');
+  if(!upi||!upi.includes('@')){if(msg)msg.style.color='#f87171',msg.textContent='Enter a valid UPI ID (e.g. name@upi)';return;}
+  if(amount<500){if(msg)msg.style.color='#f87171',msg.textContent='Minimum redemption amount is ₹500';return;}
+  const w=getWallet();
+  if(w.balance<amount){if(msg)msg.style.color='#f87171',msg.textContent='Insufficient balance (need ₹'+amount+', have ₹'+w.balance+')';return;}
+  if(!walletDebit(amount,'Payout request – '+upi)){return;}
+  // Save request to localStorage for admin
+  const reqs=JSON.parse(localStorage.getItem('rfc_redeem_reqs')||'[]');
+  reqs.unshift({id:Date.now(),uid:user.uid,name:user.name,email:user.email,upi,amount,status:'pending',date:new Date().toISOString()});
+  localStorage.setItem('rfc_redeem_reqs',JSON.stringify(reqs));
+  if(msg)msg.style.color='var(--green)',msg.textContent='✅ Request submitted! Admin will process within 24-48 hours.';
+  if($('redeem-upi'))$('redeem-upi').value='';
+  if($('redeem-amount'))$('redeem-amount').value='';
+  toast('💸 Payout request submitted for ₹'+amount,'gold');
+}
+
+// Called after registration when referral code was used
+function creditReferrer(refCode){
+  if(!refCode)return;
+  // Save referral event for admin tracking
+  const refs=JSON.parse(localStorage.getItem('rfc_referrals')||'[]');
+  refs.unshift({id:Date.now(),refCode,newUser:user?.name||'',newUserEmail:user?.email||'',date:new Date().toISOString(),credited:false,amount:100});
+  localStorage.setItem('rfc_referrals',JSON.stringify(refs));
+  // Credit referrer if they are the current device (demo mode — in prod, this would be server-side)
+  const ownerKey=Object.keys(localStorage).find(k=>k.startsWith('rfc_refcode_')&&localStorage.getItem(k)===refCode);
+  if(ownerKey){
+    const ownerUid=ownerKey.replace('rfc_refcode_','');
+    const ownerWalletKey=`rfc_wallet_${ownerUid}_data`;
+    const ow=JSON.parse(localStorage.getItem(ownerWalletKey)||'{"balance":0,"transactions":[]}');
+    ow.balance=(ow.balance||0)+100;
+    ow.transactions.unshift({id:Date.now(),type:'referral',amount:100,desc:`Referral bonus — ${user?.name||'New member'} joined`,date:new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})});
+    localStorage.setItem(ownerWalletKey,JSON.stringify(ow));
+    // Increment ref count
+    const cntKey=`rfc_ref_count_${ownerUid}`;
+    localStorage.setItem(cntKey,String((parseInt(localStorage.getItem(cntKey)||'0')+1)));
+  }
+  // Bonus for new registrant
+  setTimeout(()=>walletCredit(50,'Welcome bonus — new member!','signup_bonus'),500);
+}
+
+// ════════ TIGER LEADERBOARD ════════════════════════════════════════════════
+
+const DUMMY_LEADERS=[
+  {name:'Rohit S.',city:'Mumbai',streak:42,workouts:38,checkins:40,refs:3,photos:2},
+  {name:'Vikram T.',city:'Delhi',streak:38,workouts:45,checkins:35,refs:5,photos:3},
+  {name:'Ananya K.',city:'Pune',streak:35,workouts:30,checkins:32,refs:2,photos:4},
+  {name:'Siddharth M.',city:'Bangalore',streak:30,workouts:28,checkins:30,refs:4,photos:1},
+  {name:'Deepika R.',city:'Hyderabad',streak:28,workouts:22,checkins:26,refs:1,photos:3},
+  {name:'Amit P.',city:'Chennai',streak:25,workouts:20,checkins:24,refs:2,photos:0},
+  {name:'Priya N.',city:'Kolkata',streak:22,workouts:18,checkins:20,refs:3,photos:2},
+  {name:'Kartik B.',city:'Jaipur',streak:20,workouts:25,checkins:18,refs:0,photos:1},
+  {name:'Meera T.',city:'Ahmedabad',streak:18,workouts:15,checkins:16,refs:1,photos:2},
+  {name:'Vijay G.',city:'Surat',streak:15,workouts:12,checkins:14,refs:2,photos:1},
+  {name:'Pooja S.',city:'Lucknow',streak:14,workouts:10,checkins:13,refs:0,photos:0},
+  {name:'Manish D.',city:'Bhopal',streak:12,workouts:14,checkins:12,refs:1,photos:1},
+  {name:'Sana K.',city:'Nagpur',streak:10,workouts:8,checkins:10,refs:0,photos:0},
+  {name:'Rajan V.',city:'Indore',streak:9,workouts:7,checkins:9,refs:1,photos:0},
+  {name:'Divya M.',city:'Chandigarh',streak:8,workouts:6,checkins:8,refs:0,photos:1},
+];
+
+function calcTigerScore(streak,workouts,checkins,refs,photos){
+  return (streak*10)+(workouts*5)+(checkins*8)+(refs*50)+(photos*20);
+}
+
+let currentLbBoard='tiger';
+
+function buildLeaderboardData(){
+  // Seed daily shuffle for fairness
+  const dayNum=Math.floor(Date.now()/86400000);
+  const entries=DUMMY_LEADERS.map((d,i)=>{
+    const base=calcTigerScore(d.streak,d.workouts,d.checkins,d.refs,d.photos);
+    const shuffle=Math.abs(Math.sin(dayNum*1.618+i*2.718)*8)|0;
+    return{...d,tigerScore:base+shuffle,isMe:false};
+  });
+  // Insert current user if logged in
+  if(user){
+    const pd=JSON.parse(localStorage.getItem('bm_pd')||'{}');
+    const wkKey='rfc_workouts_'+(user.uid||'');
+    const wks=(JSON.parse(localStorage.getItem(wkKey)||'[]')).length;
+    const streak=pd.streak||0;
+    const checkins=pd.checkins||pd.streak||0;
+    const refs=getRefCount();
+    const photos=(pd.photos||[]).length;
+    const shuffle2=Math.abs(Math.sin(dayNum*1.414)*5)|0;
+    const myScore=calcTigerScore(streak,wks,checkins,refs,photos)+shuffle2;
+    entries.push({name:user.name||'You',city:'Member',streak,workouts:wks,checkins,refs,photos,tigerScore:myScore,isMe:true});
+  }
+  entries.sort((a,b)=>b.tigerScore-a.tigerScore);
+  entries.forEach((e,i)=>e.rank=i+1);
+  return entries;
+}
+
+function renderLeaderboard(board,btnEl){
+  currentLbBoard=board||'tiger';
+  if(btnEl){document.querySelectorAll('.lb-tab').forEach(b=>b.classList.remove('active'));btnEl.classList.add('active');}
+  const data=buildLeaderboardData();
+  const sorted=[...data].sort((a,b)=>{
+    if(board==='streak')return b.streak-a.streak;
+    if(board==='referrals')return b.refs-a.refs;
+    return b.tigerScore-a.tigerScore;
+  });
+  sorted.forEach((e,i)=>e.rank=i+1);
+  const list=$('lb-list');
+  if(!list)return;
+  list.innerHTML=sorted.slice(0,15).map(e=>{
+    const val=board==='streak'?e.streak+(e.streak===1?' day':' days'):board==='referrals'?e.refs+' referrals':e.tigerScore+' pts';
+    const cls=e.isMe?'lb-me':e.rank===1?'lb-t1':e.rank===2?'lb-t2':e.rank===3?'lb-t3':'';
+    const rnCls=e.rank===1?'g':e.rank===2?'s':e.rank===3?'b':'';
+    const medal=e.rank===1?'🥇':e.rank===2?'🥈':e.rank===3?'🥉':'';
+    return`<div class="lb-row ${cls}">
+      <div class="lb-rn ${rnCls}">${medal||e.rank}</div>
+      <div class="lb-av">${(e.name||'?')[0].toUpperCase()}</div>
+      <div class="lb-info">
+        <div class="lb-nm">${e.isMe?'<strong>You — '+e.name+'</strong>':e.name}${e.isMe?' 👈':''}</div>
+        <div class="lb-ct">${e.city}</div>
+      </div>
+      <div class="lb-sc">
+        <span class="lb-sc-val">${board==='tiger'?e.tigerScore:board==='streak'?e.streak:e.refs}</span>
+        <span class="lb-sc-lbl">${board==='tiger'?'pts':board==='streak'?'days':'refs'}</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ════════ PATCH registerWithCode TO HANDLE REFERRAL ══════════════════════
+const _origRegister=registerWithCode;
+registerWithCode=async function(){
+  const refInput=($('reg-referral')?.value||'').trim().toUpperCase();
+  await _origRegister();
+  // After registration succeeds (user is set), credit referrer
+  if(user&&refInput)creditReferrer(refInput);
+};
+
+// Patch applyUser to trigger login bonus + wallet render
+const _origApply=applyUser;
+applyUser=function(){
+  _origApply();
+  checkLoginBonus();
+  renderWallet();
+  setTimeout(()=>renderLeaderboard(currentLbBoard,null),300);
+};
+
+// Init leaderboard on load (for non-logged-in visitors, show dummy data)
+renderLeaderboard('tiger',null);
 </script>
 
 <!-- ── WHATSAPP FLOATING BUTTON ──────────────────────────────────────────── -->
