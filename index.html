@@ -535,6 +535,9 @@ section{padding:68px 20px;position:relative;z-index:1;}
 #rfc-sb-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:490;}
 #rfc-sb-overlay.show{display:block;}
 
+/* Hide decorative dividers in SaaS mode */
+body.sb-open .divider{display:none!important;}
+
 /* Body shift when sidebar open */
 body.sb-open > *:not(#rfc-sidebar):not(#sb-toggle):not(#rfc-sb-overlay){
   margin-left:240px;transition:margin-left .28s cubic-bezier(.4,0,.2,1);
@@ -597,6 +600,26 @@ body.sb-open > nav{display:none!important;}
 .sc-hdr{margin-bottom:24px;}
 .sc-hdr-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(26px,4vw,38px);letter-spacing:1px;}
 .sc-hdr-sub{font-size:13px;color:var(--muted);margin-top:4px;}
+
+/* Sections shown as SaaS screens: reduce nav-era top padding */
+body.sb-open section.sb-active-screen{padding-top:24px!important;}
+
+/* Injected screen title bar */
+.sb-page-hdr{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:18px 20px 16px;border-bottom:1px solid rgba(255,255,255,.05);
+  background:rgba(13,13,20,.6);backdrop-filter:blur(8px);
+  position:sticky;top:0;z-index:50;margin-bottom:0;
+}
+.sb-page-hdr-left{display:flex;align-items:center;gap:12px;}
+.sb-page-hdr-icon{font-size:22px;line-height:1;}
+.sb-page-hdr-title{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1.5px;line-height:1;}
+.sb-page-hdr-sub{font-size:11px;color:var(--muted);letter-spacing:.5px;margin-top:1px;}
+.sb-page-hdr-actions{display:flex;gap:8px;align-items:center;}
+.sb-page-hdr-btn{background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:6px;color:var(--muted);font-size:11px;padding:5px 10px;cursor:pointer;font-family:'Barlow Condensed',sans-serif;letter-spacing:1px;text-transform:uppercase;transition:all .15s;}
+.sb-page-hdr-btn:hover{color:var(--text);border-color:rgba(255,255,255,.2);}
+.sb-page-hdr-btn.primary{background:rgba(232,0,29,.12);border-color:rgba(232,0,29,.3);color:var(--red);}
+.sb-page-hdr-btn.primary:hover{background:rgba(232,0,29,.2);}
 
 /* Mobile sidebar */
 @media(max-width:900px){
@@ -6961,6 +6984,24 @@ renderCourses();
 // SIDEBAR NAVIGATION SYSTEM
 // ════════════════════════════════════════════════════════════════════════════
 
+// Screen metadata for injected headers
+const SCREEN_META = {
+  workouts:    { icon:'🏋️', title:'Workouts', sub:'Log your training & track streaks' },
+  nutrition:   { icon:'🥗', title:'Nutrition & Meal Plans', sub:'Your personalized macro targets' },
+  toolbox:     { icon:'🧮', title:'Fitness Toolbox', sub:'BMI, TDEE, body fat calculators' },
+  roadmap:     { icon:'🗺️', title:'12-Week Roadmap', sub:'Your personalized transformation path' },
+  physio:      { icon:'🩺', title:'Physio & Recovery', sub:'Injury prevention & mobility' },
+  challenges:  { icon:'🏆', title:'Fitness Challenges', sub:'Compete, win, earn rewards' },
+  leaderboard: { icon:'🐯', title:'Tiger Leaderboard', sub:'Top performers this month' },
+  transform:   { icon:'📈', title:'Progress Tracking', sub:'Body composition & measurements' },
+  bloodai:     { icon:'🩸', title:'Blood Report AI', sub:'Upload & analyse your blood panel' },
+  referrals:   { icon:'💰', title:'Wallet & Referrals', sub:'Earnings, referrals & redemptions' },
+  courses:     { icon:'🎓', title:'Certification Courses', sub:'Learn, earn your RFC certificate' },
+  store:       { icon:'📚', title:'Knowledge Store', sub:'Expert guides & programs' },
+  plans:       { icon:'💳', title:'Plans & Pricing', sub:'Upgrade to PRO for full access' },
+  profile:     { icon:'👤', title:'My Profile', sub:'Account settings & fitness stats' },
+};
+
 // Maps sidebar screen names → element IDs to show
 const SCREEN_MAP = {
   dashboard:   ['screen-dashboard'],
@@ -6988,7 +7029,7 @@ const ALL_MANAGED_IDS = ['screen-dashboard','home','profile','plans','calculator
 let currentScreen = 'dashboard';
 
 function switchScreen(name, navEl) {
-  // Hide all managed sections
+  // Hide all managed sections, remove screen class
   ALL_MANAGED_IDS.forEach(function(id) {
     var el = document.getElementById(id);
     if (!el) return;
@@ -6996,20 +7037,44 @@ function switchScreen(name, navEl) {
       el.classList.remove('sc-active');
     } else {
       el.style.display = 'none';
+      el.classList.remove('sb-active-screen');
     }
   });
 
+  // Remove any previously injected page headers
+  document.querySelectorAll('.sb-page-hdr').forEach(function(h) { h.remove(); });
+
   // Show sections for this screen
   var ids = SCREEN_MAP[name] || ['home'];
+  var meta = SCREEN_META[name];
+  var firstEl = null;
   ids.forEach(function(id) {
     var el = document.getElementById(id);
     if (!el) return;
     if (id === 'screen-dashboard') {
       el.classList.add('sc-active');
     } else {
-      el.style.display = '';
+      el.style.setProperty('display', 'block', 'important');
+      el.classList.add('sb-active-screen');
+      if (!firstEl) firstEl = el;
     }
   });
+
+  // Inject sticky screen header into first visible section
+  if (firstEl && meta) {
+    var hdr = document.createElement('div');
+    hdr.className = 'sb-page-hdr';
+    hdr.innerHTML =
+      '<div class="sb-page-hdr-left">' +
+        '<span class="sb-page-hdr-icon">' + meta.icon + '</span>' +
+        '<div><div class="sb-page-hdr-title">' + meta.title + '</div>' +
+        '<div class="sb-page-hdr-sub">' + meta.sub + '</div></div>' +
+      '</div>' +
+      '<div class="sb-page-hdr-actions">' +
+        '<button class="sb-page-hdr-btn" onclick="switchScreen(\'dashboard\',document.querySelector(\'[data-screen=dashboard]\'))">← Dashboard</button>' +
+      '</div>';
+    firstEl.insertBefore(hdr, firstEl.firstChild);
+  }
 
   // Update active nav item
   document.querySelectorAll('.sb-item').forEach(function(item) { item.classList.remove('active'); });
