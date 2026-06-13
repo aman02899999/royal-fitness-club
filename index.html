@@ -762,8 +762,9 @@ body.sb-open #screen-dashboard .dash-wrap{padding-top:78px;}
 .cr-card{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;transition:transform .18s,box-shadow .18s;}
 .cr-card:hover{transform:translateY(-4px);box-shadow:0 16px 48px rgba(0,0,0,.45);}
 .cr-card.hidden-by-filter{display:none!important;}
-.cr-banner{height:130px;display:flex;align-items:center;justify-content:center;position:relative;}
-.cr-enrolled-badge{position:absolute;top:10px;right:10px;font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:3px 9px;border-radius:20px;background:rgba(34,197,94,.2);color:#22c55e;border:1px solid rgba(34,197,94,.4);}
+.cr-banner{height:180px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
+.cr-banner-overlay{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.25) 0%,rgba(0,0,0,.6) 100%);z-index:1;}
+.cr-enrolled-badge{position:absolute;top:10px;right:10px;font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:3px 9px;border-radius:20px;background:rgba(34,197,94,.85);color:#fff;border:1px solid rgba(34,197,94,.9);z-index:2;}
 .cr-body{padding:18px;flex:1;display:flex;flex-direction:column;}
 .cr-name{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:1px;margin-bottom:6px;line-height:1.15;}
 .cr-desc{font-size:11px;color:var(--muted);margin-bottom:12px;line-height:1.55;flex:1;}
@@ -6902,6 +6903,7 @@ const DEFAULT_COURSES = [
     level:'beginner',
     desc:'Build an unshakeable base. Learn how the body moves, adapts, and grows. Master the fundamentals of exercise science, recovery, and healthy habits that every elite athlete relies on.',
     price:999, origPrice:2499, duration:'4 Weeks', students:2340, rating:4.9,
+    img:'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=900&q=90&fit=crop',
     banner:'linear-gradient(135deg,#065f46,#059669)',
     mods:[
       { title:'How the Body Works — Anatomy Essentials', dur:'45 min',
@@ -6935,6 +6937,7 @@ const DEFAULT_COURSES = [
     level:'beginner',
     desc:'Understand food at a molecular level. Build meal plans, decode labels, and learn the Indian diet science that powers elite athletes. Become the expert everyone turns to for nutrition advice.',
     price:1299, origPrice:2999, duration:'4 Weeks', students:1870, rating:4.8,
+    img:'https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=900&q=90&fit=crop',
     banner:'linear-gradient(135deg,#1d4ed8,#0ea5e9)',
     mods:[
       { title:'Macronutrients Deep Dive', dur:'60 min',
@@ -6968,6 +6971,7 @@ const DEFAULT_COURSES = [
     level:'beginner',
     desc:'The complete A-to-Z guide for transforming your body in 90 days. Fat loss, muscle building, and body recomposition strategies designed for real Indian lifestyles.',
     price:1499, origPrice:3499, duration:'6 Weeks', students:1560, rating:4.9,
+    img:'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=900&q=90&fit=crop',
     banner:'linear-gradient(135deg,#7c3aed,#db2777)',
     mods:[
       { title:'Body Composition: Understanding What You\'re Working With', dur:'40 min',
@@ -7003,6 +7007,7 @@ const DEFAULT_COURSES = [
     level:'advanced',
     desc:'Become a professional-grade personal trainer. 12 deep modules covering anatomy, biomechanics, periodization, client assessment, corrective exercise, and the business of fitness. India\'s most comprehensive online CPT program.',
     price:3999, origPrice:8999, duration:'10 Weeks', students:1140, rating:4.9,
+    img:'https://images.unsplash.com/photo-1571388208497-71bedc66e932?w=900&q=90&fit=crop',
     banner:'linear-gradient(135deg,#e8001d,#7c3aed)',
     mods:[
       { title:'Advanced Anatomy & Biomechanics', dur:'75 min',
@@ -7048,6 +7053,7 @@ const DEFAULT_COURSES = [
     level:'advanced',
     desc:'Go beyond basic macros. This diploma covers clinical nutrition science, sports dietetics, gut health, blood markers, and how to build evidence-based nutrition plans for athletes and general populations.',
     price:4499, origPrice:9999, duration:'10 Weeks', students:890, rating:4.8,
+    img:'https://images.unsplash.com/photo-1547496502-affa22d38842?w=900&q=90&fit=crop',
     banner:'linear-gradient(135deg,#059669,#065f46)',
     mods:[
       { title:'Advanced Macronutrient Science', dur:'70 min',
@@ -7093,6 +7099,7 @@ const DEFAULT_COURSES = [
     level:'advanced',
     desc:'Learn to prevent, assess, and rehabilitate the injuries that stop athletes in their tracks. Covers physiotherapy principles, manual therapy basics, exercise rehab, and return-to-sport protocols.',
     price:3499, origPrice:7999, duration:'8 Weeks', students:650, rating:4.8,
+    img:'https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=900&q=90&fit=crop',
     banner:'linear-gradient(135deg,#0369a1,#0ea5e9)',
     mods:[
       { title:'Musculoskeletal Anatomy for Rehab Specialists', dur:'75 min',
@@ -7132,6 +7139,7 @@ const DEFAULT_COURSES = [
     level:'advanced',
     desc:'Master the complete science of fat loss — hormones, metabolism, dieting strategies, training protocols, and client psychology. Become the coach who actually gets results when others fail.',
     price:2999, origPrice:6999, duration:'6 Weeks', students:1380, rating:4.9,
+    img:'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=900&q=90&fit=crop',
     banner:'linear-gradient(135deg,#f59e0b,#e8001d)',
     mods:[
       { title:'Hormonal Architecture of Fat Loss', dur:'70 min',
@@ -7167,6 +7175,7 @@ const DEFAULT_COURSES = [
     level:'master',
     desc:'The pinnacle of fitness education. 14 modules covering elite athlete programming, advanced physiology, performance nutrition, coaching systems, periodization science, and the complete business of high-performance coaching.',
     price:11999, origPrice:24999, duration:'16 Weeks', students:380, rating:4.9,
+    img:'https://images.unsplash.com/photo-1552674605-db6ffd4facb5?w=900&q=90&fit=crop',
     banner:'linear-gradient(135deg,#92400e,#f59e0b)',
     mods:[
       { title:'Elite Athlete Physiology & Genetic Factors', dur:'80 min',
@@ -7218,6 +7227,7 @@ const DEFAULT_COURSES = [
     level:'master', isPharma:true,
     desc:'[18+ EDUCATIONAL COURSE] The most comprehensive harm-reduction and performance pharmacology course available. Covers the science, pharmacokinetics, protocols, and health monitoring of anabolic steroids, SARMs, peptides, prohormones, and PCT. For educational and harm-reduction purposes only.',
     price:14999, origPrice:29999, duration:'14 Weeks', students:290, rating:4.9,
+    img:'https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?w=900&q=90&fit=crop',
     banner:'linear-gradient(135deg,#1e1b4b,#7c3aed)',
     mods:[
       { title:'Endocrinology & the Hormonal Axis', dur:'90 min',
@@ -7275,6 +7285,7 @@ const DEFAULT_COURSES = [
     level:'master',
     desc:'The master-level fusion of sports medicine, rehabilitation science, and elite physical therapy. Prepare for the highest-level injury management, surgery decision-making, and return-to-sport direction for elite athletes.',
     price:9999, origPrice:19999, duration:'12 Weeks', students:220, rating:4.8,
+    img:'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=900&q=90&fit=crop',
     banner:'linear-gradient(135deg,#064e3b,#059669)',
     mods:[
       { title:'Sports Medicine: Scope, Principles & Clinical Thinking', dur:'70 min',
@@ -7365,10 +7376,11 @@ function renderCourses() {
     const hidden = _courseFilter !== 'all' && c.level !== _courseFilter ? ' hidden-by-filter' : '';
     const pharmaWarn = c.isPharma ? `<div style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);border-radius:6px;padding:8px 12px;font-size:11px;color:#f87171;margin-bottom:10px;">⚠️ 18+ Educational Course — Pharmaceutical Science (Harm Reduction)</div>` : '';
     return `<div class="cr-card${hidden}" data-level="${c.level}">
-      <div class="cr-banner" style="background:${c.banner};">
-        <span style="font-size:60px;">${c.emoji}</span>
-        <span class="cr-lvl-badge" style="background:${LVL_COLOR[c.level]||'#444'};">${LVL_LABEL[c.level]||c.level}</span>
-        ${purchased ? '<span class="cr-enrolled-badge">✓ ENROLLED</span>' : ''}
+      <div class="cr-banner" style="${c.img ? `background:url('${c.img}') center/cover no-repeat;` : `background:${c.banner};`}">
+        <div class="cr-banner-overlay"></div>
+        <span style="font-size:58px;position:relative;z-index:2;filter:drop-shadow(0 2px 8px rgba(0,0,0,.7));">${c.emoji}</span>
+        <span class="cr-lvl-badge" style="background:${LVL_COLOR[c.level]||'#444'};position:relative;z-index:2;">${LVL_LABEL[c.level]||c.level}</span>
+        ${purchased ? '<span class="cr-enrolled-badge" style="position:relative;z-index:2;">✓ ENROLLED</span>' : ''}
       </div>
       <div class="cr-body">
         ${pharmaWarn}
@@ -7414,11 +7426,20 @@ function _renderCourseDetails(c) {
   const pharmaNote = c.isPharma ? `<div style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.35);border-radius:8px;padding:14px;margin-bottom:16px;font-size:12px;color:#fca5a5;line-height:1.6;">
     ⚠️ <strong>18+ Educational Course</strong> — This course covers pharmaceutical performance science for educational and harm-reduction purposes only. All content is strictly educational. The use of controlled substances may be illegal in your jurisdiction. By enrolling you confirm you are 18+ and understand this is educational content only.
   </div>` : '';
-  return `
+  const heroImg = c.img ? `
+    <div style="position:relative;height:220px;margin:-20px -20px 20px;overflow:hidden;border-radius:10px 10px 0 0;">
+      <img src="${c.img}" alt="${c.name}" style="width:100%;height:100%;object-fit:cover;display:block;" loading="lazy">
+      <div style="position:absolute;inset:0;background:linear-gradient(0deg,rgba(9,9,16,.9) 0%,rgba(9,9,16,.2) 60%,transparent 100%);"></div>
+      <div style="position:absolute;bottom:16px;left:16px;right:16px;">
+        <div style="font-size:42px;filter:drop-shadow(0 2px 12px rgba(0,0,0,.8));">${c.emoji}</div>
+        <span style="background:${LVL_COLOR[c.level]||'#444'};color:#fff;font-size:10px;font-weight:700;letter-spacing:1px;padding:2px 10px;border-radius:20px;">${LVL_LABEL[c.level]||c.level}</span>
+      </div>
+    </div>` : `
     <div style="text-align:center;padding:16px 0 20px;">
       <div style="font-size:72px;margin-bottom:8px;">${c.emoji}</div>
       <span style="background:${LVL_COLOR[c.level]||'#444'};color:#fff;font-size:11px;font-weight:700;letter-spacing:1px;padding:3px 12px;border-radius:20px;">${LVL_LABEL[c.level]||c.level}</span>
-    </div>
+    </div>`;
+  return `${heroImg}
     ${pharmaNote}
     <div style="font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:18px;">${c.desc}</div>
     <div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:18px;">
@@ -7522,7 +7543,20 @@ function _renderCourseViewer(c) {
       <div style="font-size:13px;color:var(--muted);">${done}/${total} modules complete</div>
     </div>`;
 
-  return `
+  const viewerHero = c.img ? `
+    <div style="position:relative;height:160px;margin:-20px -20px 16px;overflow:hidden;border-radius:10px 10px 0 0;">
+      <img src="${c.img}" alt="${c.name}" style="width:100%;height:100%;object-fit:cover;display:block;" loading="lazy">
+      <div style="position:absolute;inset:0;background:linear-gradient(0deg,rgba(9,9,16,.85) 0%,transparent 60%);"></div>
+      <div style="position:absolute;bottom:12px;left:14px;display:flex;align-items:center;gap:10px;">
+        <span style="font-size:32px;filter:drop-shadow(0 2px 8px rgba(0,0,0,.9));">${c.emoji}</span>
+        <div>
+          <div style="font-size:11px;color:#22c55e;font-weight:700;">✅ ENROLLED</div>
+          <div style="font-size:13px;font-weight:700;">${c.name}</div>
+        </div>
+      </div>
+    </div>` : '';
+
+  return `${viewerHero}
     <div class="cv-progress-strip">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
         <span style="font-size:12px;color:var(--green);font-weight:700;">✅ Enrolled — Full Access</span>
