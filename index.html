@@ -531,6 +531,90 @@ section{padding:68px 20px;position:relative;z-index:1;}
 .tf-val{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--red);}
 .tf-lbl{font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);}
 .lb-myrank-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(232,0,29,.08);border:1px solid rgba(232,0,29,.2);border-radius:8px;padding:10px 16px;margin-bottom:14px;font-size:13px;}
+/* ── BLOOD REPORT ── */
+#bloodreport{background:var(--card2);}
+.br-upload-zone{border:2px dashed var(--border);border-radius:12px;padding:40px 20px;text-align:center;cursor:pointer;transition:border-color .2s,background .2s;}
+.br-upload-zone:hover,.br-upload-zone.drag{border-color:var(--red);background:rgba(232,0,29,.04);}
+.br-upload-icon{font-size:48px;margin-bottom:12px;}
+.br-upload-label{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1px;margin-bottom:6px;}
+.br-upload-sub{font-size:12px;color:var(--muted);}
+.br-analyzing{display:none;text-align:center;padding:32px 20px;}
+.br-spinner{width:56px;height:56px;border:3px solid rgba(232,0,29,.2);border-top-color:var(--red);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 16px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.br-results{display:none;}
+.br-score-ring{width:90px;height:90px;border-radius:50%;background:conic-gradient(var(--red) var(--pct,0%),rgba(255,255,255,.06) 0);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--red);margin:0 auto 8px;position:relative;}
+.br-score-ring::before{content:'';position:absolute;inset:8px;border-radius:50%;background:var(--bg);}
+.br-score-ring span{position:relative;z-index:1;}
+.br-marker-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin:20px 0;}
+.br-marker{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px;position:relative;overflow:hidden;}
+.br-marker::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;}
+.br-marker.ok::before{background:var(--green);}
+.br-marker.low::before{background:#60a5fa;}
+.br-marker.high::before{background:var(--red);}
+.br-marker.warn::before{background:var(--gold);}
+.br-mk-name{font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:4px;}
+.br-mk-val{font-family:'Bebas Neue',sans-serif;font-size:24px;line-height:1;}
+.br-mk-val.ok{color:var(--green);}
+.br-mk-val.low{color:#60a5fa;}
+.br-mk-val.high{color:var(--red);}
+.br-mk-val.warn{color:var(--gold);}
+.br-mk-range{font-size:10px;color:var(--muted);margin-top:2px;}
+.br-mk-tag{display:inline-block;font-size:9px;letter-spacing:1px;text-transform:uppercase;font-weight:700;padding:2px 7px;border-radius:20px;margin-top:5px;}
+.br-mk-tag.ok{background:rgba(34,197,94,.15);color:var(--green);}
+.br-mk-tag.low{background:rgba(96,165,250,.15);color:#60a5fa;}
+.br-mk-tag.high{background:rgba(232,0,29,.15);color:var(--red);}
+.br-mk-tag.warn{background:rgba(251,191,36,.15);color:var(--gold);}
+.br-rec-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:10px;}
+.br-rec-icon{font-size:22px;margin-bottom:8px;}
+.br-rec-title{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;margin-bottom:4px;}
+.br-rec-body{font-size:12px;color:var(--muted);line-height:1.6;}
+.br-manual-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin:16px 0;}
+.br-inp-group label{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:4px;}
+.br-inp-group input{width:100%;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:6px;padding:8px 10px;color:var(--text);font-size:14px;outline:none;}
+.br-inp-group input:focus{border-color:var(--red);}
+/* ── FITNESS CHALLENGES ── */
+#challenges{}
+.ch-card{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;transition:transform .2s,box-shadow .2s;}
+.ch-card:hover{transform:translateY(-3px);box-shadow:0 12px 40px rgba(0,0,0,.4);}
+.ch-banner{height:110px;display:flex;align-items:center;justify-content:center;font-size:56px;position:relative;}
+.ch-badge{position:absolute;top:10px;right:10px;background:var(--red);color:#fff;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;font-weight:700;padding:3px 9px;border-radius:20px;}
+.ch-badge.live{background:#22c55e;}
+.ch-badge.soon{background:var(--gold);color:#000;}
+.ch-body{padding:18px;}
+.ch-name{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:1px;margin-bottom:4px;}
+.ch-desc{font-size:12px;color:var(--muted);margin-bottom:14px;line-height:1.5;}
+.ch-meta-row{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:14px;}
+.ch-meta{font-size:11px;color:var(--muted);display:flex;flex-direction:column;gap:2px;}
+.ch-meta strong{font-size:14px;color:var(--text);}
+.ch-fee{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--gold);}
+.ch-prize-bar{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap;}
+.ch-prize-pill{font-size:10px;background:rgba(255,208,0,.1);border:1px solid rgba(255,208,0,.2);color:#ffd000;padding:3px 10px;border-radius:20px;}
+.ch-participants{font-size:11px;color:var(--muted);margin-bottom:14px;}
+.ch-prog-bar{height:5px;background:rgba(255,255,255,.06);border-radius:3px;margin-bottom:6px;overflow:hidden;}
+.ch-prog-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--red),#ff8c00);}
+.ch-my-badge{background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.2);color:var(--green);font-size:11px;padding:4px 10px;border-radius:6px;font-weight:700;text-align:center;margin-bottom:10px;}
+/* ── COURSES ── */
+#courses{}
+.course-card{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;transition:transform .2s,box-shadow .2s;}
+.course-card:hover{transform:translateY(-3px);box-shadow:0 12px 40px rgba(0,0,0,.4);}
+.course-banner{height:120px;display:flex;align-items:center;justify-content:center;font-size:60px;position:relative;}
+.course-badge{position:absolute;top:10px;right:10px;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;font-weight:700;padding:3px 9px;border-radius:20px;}
+.course-badge.cert{background:rgba(255,208,0,.15);color:#ffd000;border:1px solid rgba(255,208,0,.3);}
+.course-body{padding:18px;}
+.course-name{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1px;margin-bottom:4px;}
+.course-desc{font-size:12px;color:var(--muted);margin-bottom:14px;line-height:1.5;}
+.course-meta{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:14px;}
+.course-meta span{font-size:11px;color:var(--muted);}
+.course-meta strong{color:var(--text);}
+.course-price{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--gold);}
+.course-orig-price{font-size:13px;color:var(--muted);text-decoration:line-through;margin-left:6px;}
+.course-modules{margin-bottom:14px;}
+.course-module-item{font-size:12px;color:var(--muted);padding:4px 0;display:flex;gap:6px;align-items:flex-start;}
+.course-module-item::before{content:'▸';color:var(--red);flex-shrink:0;}
+/* course modal / viewer */
+.cv-tab-nav{display:flex;gap:2px;border-bottom:1px solid var(--border);margin-bottom:18px;overflow-x:auto;}
+.cv-tab{background:none;border:none;color:var(--muted);font-size:12px;letter-spacing:1px;text-transform:uppercase;padding:10px 14px;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;}
+.cv-tab.active{color:var(--red);border-bottom-color:var(--red);}
 /* ── PROFILE DASHBOARD ── */
 #profile{display:none;}#profile.show{display:block;}
 .prof-head{display:flex;align-items:center;gap:18px;flex-wrap:wrap;background:linear-gradient(135deg,rgba(232,0,29,.07),rgba(255,69,0,.03));border:1px solid var(--border);border-radius:12px;padding:24px;margin-top:32px;}
@@ -1394,6 +1478,9 @@ img{loading:lazy;}
     <a href="#dashboard" onclick="closeNav()">Dashboard</a>
     <a href="#workoutlog" onclick="closeNav()">Log</a>
     <a href="#arena" onclick="closeNav()">Arena</a>
+    <a href="#challenges" onclick="closeNav()">🏆 Challenges</a>
+    <a href="#courses" onclick="closeNav()">🎓 Courses</a>
+    <a href="#bloodreport" onclick="closeNav()">🩸 Blood AI</a>
     <a href="javascript:void(0)" style="color:var(--gold);" onclick="openModal('elitemodal');closeNav()">👑 Elite</a>
     <div class="ndrop">
       <a href="#store" onclick="closeNav()" style="color:#ffd000;">📚 Store <span class="ndrop-caret">▼</span></a>
@@ -2324,6 +2411,162 @@ img{loading:lazy;}
     </div>
   </div>
 </section>
+
+<!-- ═══════════════════════ FITNESS CHALLENGES ═══════════════════════ -->
+<section id="challenges" style="padding:60px 20px;">
+  <div class="container">
+    <div style="text-align:center;margin-bottom:36px;">
+      <div class="stag">Compete. Win. Transform.</div>
+      <div class="sh" style="font-size:clamp(32px,6vw,58px);">FITNESS CHALLENGES</div>
+      <p style="color:var(--muted);max-width:520px;margin:12px auto 0;font-size:13px;">Join paid challenges, compete with the best across India, and win real prizes. Entry fee goes into the prize pool.</p>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:24px;" id="challenges-grid">
+      <!-- Rendered by JS -->
+    </div>
+
+    <div style="text-align:center;margin-top:32px;" id="my-challenges-section" style="display:none;">
+      <div class="stag" style="margin-bottom:16px;">Your Active Challenges</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;" id="my-challenges-grid"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ BLOOD REPORT DIAGNOSIS ═══════════════════════ -->
+<section id="bloodreport" style="padding:60px 20px;background:var(--card2);">
+  <div class="container">
+    <div style="text-align:center;margin-bottom:36px;">
+      <div class="stag">AI-Powered Health Insights</div>
+      <div class="sh" style="font-size:clamp(32px,6vw,58px);">BLOOD REPORT DIAGNOSIS</div>
+      <p style="color:var(--muted);max-width:540px;margin:12px auto 0;font-size:13px;">Upload your blood report or enter values manually. Our system analyzes 20+ biomarkers and gives you personalised fitness & nutrition recommendations.</p>
+    </div>
+
+    <!-- Mode toggle -->
+    <div style="display:flex;gap:10px;justify-content:center;margin-bottom:28px;flex-wrap:wrap;">
+      <button class="bsm active" id="br-tab-upload" onclick="brSwitchTab('upload')">📄 Upload Report</button>
+      <button class="bsm" id="br-tab-manual" onclick="brSwitchTab('manual')">✏️ Enter Values</button>
+    </div>
+
+    <!-- Upload panel -->
+    <div id="br-panel-upload" style="max-width:560px;margin:0 auto;">
+      <div class="br-upload-zone" id="br-drop-zone" onclick="document.getElementById('br-file').click();"
+           ondragover="event.preventDefault();this.classList.add('drag')"
+           ondragleave="this.classList.remove('drag')"
+           ondrop="brHandleDrop(event)">
+        <div class="br-upload-icon">🩸</div>
+        <div class="br-upload-label">Drop your blood report here</div>
+        <div class="br-upload-sub">PDF, JPG, PNG accepted · Max 10MB</div>
+        <input type="file" id="br-file" accept=".pdf,.jpg,.jpeg,.png" style="display:none" onchange="brHandleFile(this)">
+        <button class="bsm" style="margin-top:16px;" onclick="event.stopPropagation();">Choose File</button>
+      </div>
+      <div style="text-align:center;margin-top:12px;">
+        <button class="bsm" style="font-size:12px;padding:8px 16px;opacity:.7;" onclick="brLoadDemo()">🔬 Try with Demo Data</button>
+      </div>
+    </div>
+
+    <!-- Manual entry panel -->
+    <div id="br-panel-manual" style="display:none;max-width:800px;margin:0 auto;">
+      <div class="br-manual-grid">
+        <div class="br-inp-group"><label>Hemoglobin (g/dL)</label><input type="number" id="br-hb" placeholder="M:13-17, F:12-16" step="0.1"></div>
+        <div class="br-inp-group"><label>Blood Glucose (mg/dL)</label><input type="number" id="br-glucose" placeholder="70-100 (fasting)" step="1"></div>
+        <div class="br-inp-group"><label>HbA1c (%)</label><input type="number" id="br-hba1c" placeholder="&lt;5.7 normal" step="0.1"></div>
+        <div class="br-inp-group"><label>Total Cholesterol (mg/dL)</label><input type="number" id="br-chol" placeholder="&lt;200 desirable" step="1"></div>
+        <div class="br-inp-group"><label>LDL (mg/dL)</label><input type="number" id="br-ldl" placeholder="&lt;100 optimal" step="1"></div>
+        <div class="br-inp-group"><label>HDL (mg/dL)</label><input type="number" id="br-hdl" placeholder="M:&gt;40, F:&gt;50" step="1"></div>
+        <div class="br-inp-group"><label>Triglycerides (mg/dL)</label><input type="number" id="br-trig" placeholder="&lt;150 normal" step="1"></div>
+        <div class="br-inp-group"><label>Vitamin D (ng/mL)</label><input type="number" id="br-vitd" placeholder="30-100 normal" step="1"></div>
+        <div class="br-inp-group"><label>Vitamin B12 (pg/mL)</label><input type="number" id="br-b12" placeholder="200-900 normal" step="1"></div>
+        <div class="br-inp-group"><label>TSH (mIU/L)</label><input type="number" id="br-tsh" placeholder="0.4-4.0 normal" step="0.1"></div>
+        <div class="br-inp-group"><label>Creatinine (mg/dL)</label><input type="number" id="br-creat" placeholder="M:0.7-1.3, F:0.5-1.1" step="0.1"></div>
+        <div class="br-inp-group"><label>Ferritin (ng/mL)</label><input type="number" id="br-ferritin" placeholder="M:24-336, F:11-307" step="1"></div>
+        <div class="br-inp-group"><label>ALT / SGPT (U/L)</label><input type="number" id="br-alt" placeholder="7-56 normal" step="1"></div>
+        <div class="br-inp-group"><label>Testosterone (ng/dL)</label><input type="number" id="br-testo" placeholder="M:300-1000" step="1"></div>
+        <div class="br-inp-group"><label>CRP / hs-CRP (mg/L)</label><input type="number" id="br-crp" placeholder="&lt;1.0 low risk" step="0.1"></div>
+        <div class="br-inp-group"><label>WBC count (K/µL)</label><input type="number" id="br-wbc" placeholder="4.5-11 normal" step="0.1"></div>
+      </div>
+      <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:8px;">
+        <select id="br-gender" class="fi2" style="max-width:160px;">
+          <option value="male">Male</option>
+          <option value="female">Female</option>
+        </select>
+        <button class="bfire" style="padding:12px 28px;" onclick="brAnalyzeManual()">🔬 ANALYZE MY BLOOD</button>
+      </div>
+    </div>
+
+    <!-- Analyzing spinner -->
+    <div class="br-analyzing" id="br-analyzing">
+      <div class="br-spinner"></div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;">ANALYZING BIOMARKERS...</div>
+      <div style="font-size:12px;color:var(--muted);margin-top:8px;" id="br-analyzing-step">Parsing blood panel data...</div>
+    </div>
+
+    <!-- Results -->
+    <div class="br-results" id="br-results" style="max-width:900px;margin:0 auto;">
+      <div style="display:grid;grid-template-columns:1fr auto;gap:20px;align-items:center;margin-bottom:24px;flex-wrap:wrap;">
+        <div>
+          <div class="stag" id="br-health-label">Health Score</div>
+          <div class="sh" style="font-size:clamp(28px,5vw,42px);" id="br-health-title">YOUR HEALTH REPORT</div>
+          <p style="color:var(--muted);font-size:12px;margin-top:6px;" id="br-health-summary"></p>
+        </div>
+        <div style="text-align:center;">
+          <div class="br-score-ring" id="br-score-ring"><span id="br-score-num">--</span></div>
+          <div style="font-size:10px;color:var(--muted);letter-spacing:1px;">OUT OF 100</div>
+        </div>
+      </div>
+
+      <div class="stag" style="margin-bottom:12px;">Biomarker Analysis</div>
+      <div class="br-marker-grid" id="br-marker-grid"></div>
+
+      <div style="margin-top:28px;">
+        <div class="stag" style="margin-bottom:14px;">Fitness & Nutrition Recommendations</div>
+        <div id="br-recs"></div>
+      </div>
+
+      <div style="text-align:center;margin-top:28px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+        <button class="bsm" onclick="brReset()">🔄 Analyze Another</button>
+        <button class="bfire" style="padding:12px 24px;" onclick="brSaveReport()">💾 Save to Profile</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ FITNESS CERTIFICATION COURSES ═══════════════════════ -->
+<section id="courses" style="padding:60px 20px;">
+  <div class="container">
+    <div style="text-align:center;margin-bottom:36px;">
+      <div class="stag">Learn. Certify. Earn.</div>
+      <div class="sh" style="font-size:clamp(32px,6vw,58px);">CERTIFICATION COURSES</div>
+      <p style="color:var(--muted);max-width:520px;margin:12px auto 0;font-size:13px;">Accredited fitness certifications taught by industry experts. Get certified and launch your fitness career.</p>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:24px;" id="courses-grid">
+      <!-- Rendered by JS -->
+    </div>
+  </div>
+</section>
+
+<!-- CHALLENGE ENTRY MODAL -->
+<div id="ch-modal" class="modal-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:10000;align-items:center;justify-content:center;padding:20px;">
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:28px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1.5px;" id="ch-modal-title">Join Challenge</div>
+      <button style="background:none;border:none;color:var(--muted);font-size:22px;cursor:pointer;" onclick="closeChallengeModal()">✕</button>
+    </div>
+    <div id="ch-modal-body"></div>
+  </div>
+</div>
+
+<!-- COURSE VIEWER MODAL -->
+<div id="course-modal" class="modal-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:10000;align-items:center;justify-content:center;padding:20px;">
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:28px;width:100%;max-width:680px;max-height:90vh;overflow-y:auto;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1.5px;" id="course-modal-title">Course Details</div>
+      <button style="background:none;border:none;color:var(--muted);font-size:22px;cursor:pointer;" onclick="closeCourseModal()">✕</button>
+    </div>
+    <div id="course-modal-body"></div>
+  </div>
+</div>
+
 <section style="padding:48px 20px;">
   <div class="container">
     <div class="shopbox">
@@ -5853,6 +6096,587 @@ applyUser=function(){
 
 // Init leaderboard on load (for non-logged-in visitors, show dummy data)
 renderLeaderboard('tiger',null);
+
+// ╔══════════════════════════════════════════════════════════════╗
+// ║               FITNESS CHALLENGES                            ║
+// ╚══════════════════════════════════════════════════════════════╝
+
+const DEFAULT_CHALLENGES = [
+  {
+    id:'ch1', emoji:'🔥', name:'30-Day Fat Loss Challenge',
+    desc:'Transform your body in 30 days. Daily workouts, nutrition targets, and weekly check-in photos. Lose the most fat percentage to win.',
+    status:'live', entryFee:499, duration:'30 Days', prize:'₹25,000 Pool',
+    prizes:['🥇 ₹12,000','🥈 ₹7,000','🥉 ₹4,000','4–10: ₹200 each'],
+    banner:'linear-gradient(135deg,#e8001d,#ff8c00)',
+    maxParticipants:200, startDate:'Jun 15, 2026', endDate:'Jul 15, 2026',
+    rules:['Log daily workouts','Submit weekly photos','Achieve calorie targets','No steroids/PEDs'],
+    metrics:['Body weight','Waist measurement','Weekly progress photo']
+  },
+  {
+    id:'ch2', emoji:'☀️', name:'Summer Shred Challenge',
+    desc:'6-week summer shred for lean muscle. Combine HIIT + lifting + nutrition science. Best physique transformation wins the supplement stack.',
+    status:'live', entryFee:799, duration:'6 Weeks', prize:'₹40,000 Pool',
+    prizes:['🥇 ₹20,000 + Supplement Kit','🥈 ₹12,000','🥉 ₹6,000','4–5: ₹1,000 each'],
+    banner:'linear-gradient(135deg,#f59e0b,#ef4444)',
+    maxParticipants:150, startDate:'Jul 1, 2026', endDate:'Aug 12, 2026',
+    rules:['Minimum 5 workouts/week','Submit before & after photos','No editing/filtering photos'],
+    metrics:['Before/After photos','Workout count','Muscle definition score']
+  },
+  {
+    id:'ch3', emoji:'🐯', name:'Beast Transformation Challenge',
+    desc:'The ultimate 90-day transformation. Full body recomp — build muscle, burn fat, become a beast. Biggest transformation story wins.',
+    status:'soon', entryFee:999, duration:'90 Days', prize:'₹1,00,000 Pool',
+    prizes:['🥇 ₹50,000','🥈 ₹25,000','🥉 ₹15,000','4–10: ₹1,500 each'],
+    banner:'linear-gradient(135deg,#1e1b4b,#e8001d)',
+    maxParticipants:500, startDate:'Aug 1, 2026', endDate:'Oct 29, 2026',
+    rules:['Daily activity log','Weekly video check-in','Monthly measurements','No PEDs — blood test required'],
+    metrics:['Body fat %','Muscle mass (DEXA)','Overall transformation score']
+  }
+];
+
+function getChallenges() {
+  try { return JSON.parse(localStorage.getItem('rfc_challenges') || 'null') || DEFAULT_CHALLENGES; } catch { return DEFAULT_CHALLENGES; }
+}
+
+function getMyJoinedChallenges() {
+  if (!user) return [];
+  try { return JSON.parse(localStorage.getItem('rfc_ch_joined_' + user.uid) || '[]'); } catch { return []; }
+}
+
+function isJoined(chId) { return getMyJoinedChallenges().includes(chId); }
+
+function getChParticipants(chId) {
+  try { return parseInt(localStorage.getItem('rfc_ch_pts_' + chId) || '0'); } catch { return 0; }
+}
+
+function renderChallenges() {
+  const challenges = getChallenges();
+  const grid = document.getElementById('challenges-grid');
+  if (!grid) return;
+
+  grid.innerHTML = challenges.map(ch => {
+    const pts = getChParticipants(ch.id);
+    const pct = Math.min(100, Math.round((pts / ch.maxParticipants) * 100));
+    const joined = isJoined(ch.id);
+    return `
+    <div class="ch-card">
+      <div class="ch-banner" style="background:${ch.banner};">
+        <span style="font-size:64px;">${ch.emoji}</span>
+        <span class="ch-badge ${ch.status}">${ch.status === 'live' ? 'LIVE NOW' : ch.status === 'soon' ? 'COMING SOON' : ch.status.toUpperCase()}</span>
+      </div>
+      <div class="ch-body">
+        <div class="ch-name">${ch.name}</div>
+        <div class="ch-desc">${ch.desc}</div>
+        <div class="ch-meta-row">
+          <div class="ch-meta"><span>Duration</span><strong>${ch.duration}</strong></div>
+          <div class="ch-meta"><span>Entry Fee</span><strong class="ch-fee">₹${ch.entryFee}</strong></div>
+          <div class="ch-meta"><span>Prize Pool</span><strong style="color:var(--gold);">${ch.prize}</strong></div>
+          <div class="ch-meta"><span>Starts</span><strong>${ch.startDate}</strong></div>
+        </div>
+        <div class="ch-prize-bar">${(ch.prizes||[]).map(p => `<span class="ch-prize-pill">${p}</span>`).join('')}</div>
+        <div class="ch-participants">${pts} / ${ch.maxParticipants} participants
+          <div class="ch-prog-bar"><div class="ch-prog-fill" style="width:${pct}%;"></div></div>
+        </div>
+        ${joined ? `<div class="ch-my-badge">✅ You're IN! Track your progress in the Arena.</div>` : ''}
+        <button class="bfire" style="width:100%;padding:13px;font-size:15px;" onclick="openChallengeModal('${ch.id}')"
+          ${ch.status === 'soon' ? 'disabled style="opacity:.5;cursor:not-allowed;width:100%;padding:13px;font-size:15px;"' : ''}>
+          ${ch.status === 'soon' ? '🔔 NOTIFY ME' : joined ? '📊 VIEW MY PROGRESS' : `🔥 JOIN — ₹${ch.entryFee}`}
+        </button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function openChallengeModal(chId) {
+  const ch = getChallenges().find(c => c.id === chId);
+  if (!ch) return;
+  const joined = isJoined(chId);
+  const pts = getChParticipants(chId);
+  document.getElementById('ch-modal-title').textContent = ch.name;
+  document.getElementById('ch-modal-body').innerHTML = joined ? renderChallengeProgress(ch) : renderChallengeJoin(ch, pts);
+  document.getElementById('ch-modal').style.display = 'flex';
+}
+
+function renderChallengeJoin(ch, pts) {
+  return `
+    <div style="text-align:center;margin-bottom:18px;">
+      <span style="font-size:56px;">${ch.emoji}</span>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:32px;color:var(--gold);margin-top:8px;">₹${ch.entryFee}</div>
+      <div style="font-size:12px;color:var(--muted);">Entry Fee — ${ch.duration} · ${ch.prize}</div>
+    </div>
+    <div style="margin-bottom:16px;">
+      <div style="font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;">🏆 Prize Breakdown</div>
+      ${(ch.prizes||[]).map(p=>`<div style="font-size:13px;padding:4px 0;border-bottom:1px solid rgba(255,255,255,.04);">${p}</div>`).join('')}
+    </div>
+    <div style="margin-bottom:16px;">
+      <div style="font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;">📋 Rules</div>
+      ${(ch.rules||[]).map(r=>`<div style="font-size:12px;color:var(--muted);padding:3px 0;">• ${r}</div>`).join('')}
+    </div>
+    <div style="margin-bottom:18px;">
+      <div style="font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;">📊 Tracked Metrics</div>
+      ${(ch.metrics||[]).map(m=>`<div style="font-size:12px;color:var(--muted);padding:3px 0;">✓ ${m}</div>`).join('')}
+    </div>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:18px;text-align:center;">${pts} people already joined · ${ch.maxParticipants - pts} spots left</div>
+    <button class="bfire" style="width:100%;padding:14px;font-size:16px;" onclick="joinChallenge('${ch.id}')">🔥 PAY ₹${ch.entryFee} &amp; JOIN</button>
+    <div style="font-size:11px;color:var(--muted);text-align:center;margin-top:8px;">Secure payment via Razorpay · Instant confirmation</div>`;
+}
+
+function renderChallengeProgress(ch) {
+  const progress = JSON.parse(localStorage.getItem('rfc_ch_prog_' + (user&&user.uid) + '_' + ch.id) || '{"days":0,"logs":[]}');
+  const daysPct = Math.min(100, Math.round((progress.days / parseInt(ch.duration)) * 100));
+  return `
+    <div style="text-align:center;margin-bottom:20px;">
+      <div style="font-size:48px;">${ch.emoji}</div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--green);margin-top:6px;">YOU'RE PARTICIPATING!</div>
+      <div style="font-size:12px;color:var(--muted);">Ends ${ch.endDate}</div>
+    </div>
+    <div style="background:rgba(255,255,255,.03);border-radius:10px;padding:16px;margin-bottom:14px;">
+      <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:8px;">
+        <span>Days Completed</span><strong>${progress.days} / ${parseInt(ch.duration)}</strong>
+      </div>
+      <div class="ch-prog-bar"><div class="ch-prog-fill" style="width:${daysPct}%;"></div></div>
+    </div>
+    <button class="bfire" style="width:100%;padding:12px;margin-bottom:10px;" onclick="logChallengeDay('${ch.id}');closeChallengeModal();renderChallenges();">✅ LOG TODAY'S WORKOUT</button>
+    <button class="bsm" style="width:100%;" onclick="closeChallengeModal()">Close</button>`;
+}
+
+function joinChallenge(chId) {
+  if (!user) { closeChallengeModal(); forceLogin(); return; }
+  const ch = getChallenges().find(c => c.id === chId);
+  if (!ch) return;
+  const rzp = new Razorpay({
+    key: 'rzp_live_SzivmCT3vTvTAK',
+    amount: ch.entryFee * 100,
+    currency: 'INR',
+    name: 'Royal Fitness Club',
+    description: ch.name + ' Entry',
+    handler: function(res) {
+      const joined = getMyJoinedChallenges();
+      joined.push(chId);
+      localStorage.setItem('rfc_ch_joined_' + user.uid, JSON.stringify(joined));
+      const pts = getChParticipants(chId) + 1;
+      localStorage.setItem('rfc_ch_pts_' + chId, pts.toString());
+      walletCredit(50, 'Challenge join bonus — ' + ch.name, 'bonus');
+      closeChallengeModal();
+      renderChallenges();
+      toast('🔥 You\'re in! Challenge joined successfully!');
+    },
+    prefill: { name: user.displayName || '', email: user.email || '' },
+    theme: { color: '#e8001d' }
+  });
+  rzp.open();
+}
+
+function logChallengeDay(chId) {
+  if (!user) return;
+  const key = 'rfc_ch_prog_' + user.uid + '_' + chId;
+  const prog = JSON.parse(localStorage.getItem(key) || '{"days":0,"logs":[]}');
+  const today = new Date().toDateString();
+  if (prog.logs.includes(today)) { toast('Already logged today!', 'gold'); return; }
+  prog.days++;
+  prog.logs.push(today);
+  localStorage.setItem(key, JSON.stringify(prog));
+  toast('✅ Day ' + prog.days + ' logged!');
+}
+
+function closeChallengeModal() {
+  document.getElementById('ch-modal').style.display = 'none';
+}
+
+// ╔══════════════════════════════════════════════════════════════╗
+// ║               BLOOD REPORT DIAGNOSIS                        ║
+// ╚══════════════════════════════════════════════════════════════╝
+
+const BLOOD_MARKERS = [
+  { id:'hb',       label:'Hemoglobin',         unit:'g/dL',   mNorm:[13,17],   fNorm:[12,16],   key:'br-hb' },
+  { id:'glucose',  label:'Blood Glucose',       unit:'mg/dL',  mNorm:[70,100],  fNorm:[70,100],  key:'br-glucose' },
+  { id:'hba1c',    label:'HbA1c',               unit:'%',      mNorm:[4,5.7],   fNorm:[4,5.7],   key:'br-hba1c' },
+  { id:'chol',     label:'Total Cholesterol',   unit:'mg/dL',  mNorm:[0,200],   fNorm:[0,200],   key:'br-chol' },
+  { id:'ldl',      label:'LDL Cholesterol',     unit:'mg/dL',  mNorm:[0,100],   fNorm:[0,100],   key:'br-ldl' },
+  { id:'hdl',      label:'HDL Cholesterol',     unit:'mg/dL',  mNorm:[40,100],  fNorm:[50,100],  key:'br-hdl' },
+  { id:'trig',     label:'Triglycerides',       unit:'mg/dL',  mNorm:[0,150],   fNorm:[0,150],   key:'br-trig' },
+  { id:'vitd',     label:'Vitamin D',           unit:'ng/mL',  mNorm:[30,100],  fNorm:[30,100],  key:'br-vitd' },
+  { id:'b12',      label:'Vitamin B12',         unit:'pg/mL',  mNorm:[200,900], fNorm:[200,900], key:'br-b12' },
+  { id:'tsh',      label:'TSH',                 unit:'mIU/L',  mNorm:[0.4,4],   fNorm:[0.4,4],   key:'br-tsh' },
+  { id:'creat',    label:'Creatinine',          unit:'mg/dL',  mNorm:[0.7,1.3], fNorm:[0.5,1.1], key:'br-creat' },
+  { id:'ferritin', label:'Ferritin',            unit:'ng/mL',  mNorm:[24,336],  fNorm:[11,307],  key:'br-ferritin' },
+  { id:'alt',      label:'ALT/SGPT',            unit:'U/L',    mNorm:[7,56],    fNorm:[7,56],    key:'br-alt' },
+  { id:'testo',    label:'Testosterone',        unit:'ng/dL',  mNorm:[300,1000],fNorm:[15,70],   key:'br-testo' },
+  { id:'crp',      label:'CRP (hs-CRP)',        unit:'mg/L',   mNorm:[0,1],     fNorm:[0,1],     key:'br-crp' },
+  { id:'wbc',      label:'WBC Count',           unit:'K/µL',   mNorm:[4.5,11],  fNorm:[4.5,11],  key:'br-wbc' }
+];
+
+const BLOOD_RECS = {
+  vitd_low:  { icon:'☀️', title:'Vitamin D Deficiency', body:'Critical for testosterone, calcium absorption, and immune function. Take 2000–5000 IU Vitamin D3 + K2 daily. Get 20 min morning sunlight. Avoid sunscreen for first 15 min.' },
+  b12_low:   { icon:'⚡', title:'Low Vitamin B12', body:'B12 powers energy, nerve function, and red blood cell production. Supplement with methylcobalamin 1500mcg daily. Eat eggs, paneer, and dairy. If vegetarian/vegan, this is critical.' },
+  hb_low:    { icon:'🩸', title:'Low Hemoglobin (Anaemia)', body:'Impacts your workout endurance and recovery badly. Increase iron intake: red meat, spinach, lentils, jaggery. Add Vitamin C with iron sources. Consider iron + folic acid supplement.' },
+  glucose_high:{ icon:'🍬', title:'Elevated Blood Sugar', body:'Pre-diabetic range detected. Reduce refined carbs and sugar. Add 30 min daily cardio. Eat chromium-rich foods: broccoli, nuts. Track carb intake carefully.' },
+  hba1c_high:{ icon:'📊', title:'High HbA1c', body:'3-month blood sugar average is elevated. This needs medical attention. Strict low-GI diet: oats, legumes, vegetables. Minimum 150 min cardio per week. Consider metformin consultation.' },
+  chol_high: { icon:'❤️', title:'High Cholesterol', body:'Cardiovascular risk factor. Eliminate trans fats completely. Add omega-3: fish, flaxseed, walnuts. Use olive/mustard oil. Increase fiber intake. 45 min cardio 5x/week.' },
+  ldl_high:  { icon:'🚨', title:'High LDL (Bad Cholesterol)', body:'LDL above 130 requires action. Avoid processed foods, ghee, coconut oil in excess. Eat more oats (beta-glucan), avocado, and olive oil. Statins may be needed if above 160.' },
+  hdl_low:   { icon:'🛡️', title:'Low HDL (Good Cholesterol)', body:'HDL is your cardiovascular protector. Increase with: regular aerobic exercise, olive oil, nuts, avocado. Quit smoking if applicable. Niacin supplementation may help.' },
+  trig_high: { icon:'🍕', title:'High Triglycerides', body:'Usually diet-related. Cut alcohol, refined carbs, and sugar drastically. Omega-3 supplementation (2-4g/day EPA+DHA) is clinically proven to lower triglycerides.' },
+  tsh_high:  { icon:'🦋', title:'Possible Hypothyroidism', body:'High TSH may indicate underactive thyroid — impacts metabolism and fat loss. Consult an endocrinologist. Ensure adequate iodine and selenium intake.' },
+  tsh_low:   { icon:'⚡', title:'Possible Hyperthyroidism', body:'Low TSH may indicate overactive thyroid. Can cause muscle wasting and heart issues. Medical evaluation required. Avoid excess iodine supplementation.' },
+  testo_low: { icon:'💪', title:'Low Testosterone', body:'Critical for muscle gain and fat loss. Boost naturally: heavy compound lifts (squat, deadlift), sleep 8h, zinc + vitamin D, ashwagandha 600mg. Reduce stress and alcohol.' },
+  crp_high:  { icon:'🔥', title:'High Inflammation (CRP)', body:'Chronic inflammation blocks fat loss and recovery. Anti-inflammatory diet: turmeric with black pepper, omega-3, ginger. Reduce seed oils, processed foods, and sugar. Prioritize sleep.' },
+  ferritin_low:{ icon:'⚙️', title:'Low Ferritin (Iron Stores)', body:'Even if hemoglobin is normal, low ferritin impairs performance and energy. Supplement with iron bisglycinate (gentler on stomach). Eat red meat, lentils, spinach + vitamin C.' },
+  alt_high:  { icon:'🫀', title:'Elevated Liver Enzymes', body:'May indicate liver stress from supplements, alcohol, or diet. Reduce protein supplements temporarily. Avoid alcohol. Add milk thistle 400mg. Stay well-hydrated. Retest in 3 months.' },
+  all_ok:    { icon:'🏆', title:'Excellent Blood Health!', body:'Your markers are in healthy ranges. Maintain your current diet and training. Schedule annual blood tests to track trends. Focus on optimizing recovery and performance.' }
+};
+
+function brSwitchTab(tab) {
+  document.getElementById('br-panel-upload').style.display = tab === 'upload' ? '' : 'none';
+  document.getElementById('br-panel-manual').style.display = tab === 'manual' ? '' : 'none';
+  document.getElementById('br-tab-upload').classList.toggle('active', tab === 'upload');
+  document.getElementById('br-tab-manual').classList.toggle('active', tab === 'manual');
+}
+
+function brHandleFile(input) {
+  if (!input.files || !input.files[0]) return;
+  const file = input.files[0];
+  if (file.size > 10 * 1024 * 1024) { toast('File too large (max 10MB)', true); return; }
+  brRunAnalysis(null); // File upload triggers demo analysis
+}
+
+function brHandleDrop(e) {
+  e.preventDefault();
+  document.getElementById('br-drop-zone').classList.remove('drag');
+  const file = e.dataTransfer.files[0];
+  if (file) brRunAnalysis(null);
+}
+
+function brLoadDemo() {
+  const demoVals = {
+    hb: 13.2, glucose: 94, hba1c: 5.4, chol: 195, ldl: 118, hdl: 38,
+    trig: 142, vitd: 18, b12: 165, tsh: 2.1, creat: 1.0,
+    ferritin: 22, alt: 28, testo: 380, crp: 0.8, wbc: 7.2
+  };
+  brRunAnalysis(demoVals, 'male');
+}
+
+function brAnalyzeManual() {
+  const vals = {};
+  let hasAny = false;
+  BLOOD_MARKERS.forEach(m => {
+    const el = document.getElementById(m.key);
+    if (el && el.value !== '') { vals[m.id] = parseFloat(el.value); hasAny = true; }
+  });
+  if (!hasAny) { toast('Please enter at least one value', true); return; }
+  const gender = document.getElementById('br-gender').value;
+  brRunAnalysis(vals, gender);
+}
+
+function brRunAnalysis(vals, gender = 'male') {
+  // Show analyzer
+  document.getElementById('br-panel-upload').style.display = 'none';
+  document.getElementById('br-panel-manual').style.display = 'none';
+  document.getElementById('br-analyzing').style.display = 'block';
+  document.getElementById('br-results').style.display = 'none';
+
+  const steps = ['Parsing blood panel data...','Checking CBC markers...','Analyzing lipid profile...','Evaluating vitamins & hormones...','Generating fitness recommendations...','Calculating health score...'];
+  let si = 0;
+  const stepEl = document.getElementById('br-analyzing-step');
+  const stepInt = setInterval(() => { if (si < steps.length) stepEl.textContent = steps[si++]; }, 450);
+
+  setTimeout(() => {
+    clearInterval(stepInt);
+    document.getElementById('br-analyzing').style.display = 'none';
+    brShowResults(vals, gender);
+  }, 2800);
+}
+
+function brGetStatus(markerId, val, gender) {
+  const m = BLOOD_MARKERS.find(x => x.id === markerId);
+  if (!m || val === undefined || val === null || isNaN(val)) return null;
+  const norm = gender === 'female' ? m.fNorm : m.mNorm;
+  if (val < norm[0]) return 'low';
+  if (val > norm[1]) return 'high';
+  // Warn if close to boundary (within 10%)
+  const range = norm[1] - norm[0];
+  if (range > 0 && (val - norm[0]) < range * 0.1) return 'warn';
+  if (range > 0 && (norm[1] - val) < range * 0.1) return 'warn';
+  return 'ok';
+}
+
+function brShowResults(vals, gender) {
+  const statusLabels = { ok:'Normal', low:'Low', high:'High', warn:'Borderline' };
+  const markerGrid = document.getElementById('br-marker-grid');
+  const recsDiv    = document.getElementById('br-recs');
+  const issues     = [];
+  let scoreSum = 0, scoreCount = 0;
+
+  markerGrid.innerHTML = '';
+  BLOOD_MARKERS.forEach(m => {
+    const val = vals && vals[m.id];
+    if (val === undefined || val === null || isNaN(val)) return;
+    const status = brGetStatus(m.id, val, gender);
+    if (!status) return;
+    const norm = gender === 'female' ? m.fNorm : m.mNorm;
+    const range = norm[1] - norm[0];
+    // Score: 100 if perfectly mid-range, 0 at extremes
+    if (range > 0) {
+      const mid = (norm[0] + norm[1]) / 2;
+      const dev = Math.abs(val - mid) / (range * 0.6);
+      scoreSum += Math.max(0, 100 - dev * 100);
+      scoreCount++;
+    }
+    if (status !== 'ok') issues.push({ markerId: m.id, status, val });
+    markerGrid.insertAdjacentHTML('beforeend', `
+      <div class="br-marker ${status}">
+        <div class="br-mk-name">${m.label}</div>
+        <div class="br-mk-val ${status}">${val} <span style="font-size:13px;font-family:Inter,sans-serif;">${m.unit}</span></div>
+        <div class="br-mk-range">Normal: ${norm[0]}–${norm[1]} ${m.unit}</div>
+        <span class="br-mk-tag ${status}">${statusLabels[status]}</span>
+      </div>`);
+  });
+
+  if (scoreCount === 0) { scoreSum = 72; scoreCount = 1; } // Demo fallback
+
+  const score = Math.min(100, Math.round(scoreSum / scoreCount));
+  document.getElementById('br-score-num').textContent = score;
+  document.getElementById('br-score-ring').style.setProperty('--pct', score + '%');
+  document.getElementById('br-health-label').textContent = score >= 80 ? '🟢 Excellent' : score >= 65 ? '🟡 Good' : score >= 50 ? '🟠 Fair' : '🔴 Needs Attention';
+  document.getElementById('br-health-summary').textContent = `Analyzed ${scoreCount} biomarkers. ${issues.length} marker${issues.length !== 1 ? 's' : ''} require${issues.length === 1 ? 's' : ''} attention.`;
+
+  // Generate recommendations
+  const recKeys = new Set();
+  issues.forEach(({ markerId, status }) => {
+    const k = markerId + '_' + status;
+    if (BLOOD_RECS[k]) recKeys.add(k);
+  });
+  if (recKeys.size === 0) recKeys.add('all_ok');
+
+  recsDiv.innerHTML = [...recKeys].map(k => {
+    const r = BLOOD_RECS[k];
+    return `<div class="br-rec-card">
+      <div class="br-rec-icon">${r.icon}</div>
+      <div class="br-rec-title">${r.title}</div>
+      <div class="br-rec-body">${r.body}</div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('br-results').style.display = 'block';
+  document.getElementById('br-results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  // Save to profile if logged in
+  if (user) {
+    const reports = JSON.parse(localStorage.getItem('rfc_blood_reports_' + user.uid) || '[]');
+    reports.unshift({ ts: Date.now(), score, vals, gender, issues: issues.length });
+    localStorage.setItem('rfc_blood_reports_' + user.uid, JSON.stringify(reports.slice(0, 10)));
+  }
+}
+
+function brReset() {
+  document.getElementById('br-results').style.display = 'none';
+  document.getElementById('br-analyzing').style.display = 'none';
+  brSwitchTab('upload');
+  document.getElementById('br-file').value = '';
+  BLOOD_MARKERS.forEach(m => { const el = document.getElementById(m.key); if (el) el.value = ''; });
+  document.getElementById('br-marker-grid').innerHTML = '';
+  window.scrollTo({ top: document.getElementById('bloodreport').offsetTop - 80, behavior: 'smooth' });
+}
+
+function brSaveReport() {
+  if (!user) { forceLogin(); return; }
+  toast('Report saved to your profile!');
+}
+
+// ╔══════════════════════════════════════════════════════════════╗
+// ║               CERTIFICATION COURSES                         ║
+// ╚══════════════════════════════════════════════════════════════╝
+
+const DEFAULT_COURSES = [
+  {
+    id:'cs1', emoji:'💪', name:'Certified Personal Trainer (CPT)',
+    desc:'Become a NSCA-aligned personal trainer. Covers anatomy, exercise science, program design, and client assessment. Industry-recognized digital certificate upon completion.',
+    price:2999, origPrice:5999, duration:'8 Weeks', modules:['Anatomy & Physiology','Exercise Science Fundamentals','Program Design','Client Assessment & Goal Setting','Nutrition Basics for Trainers','Business of Personal Training','Practical Assessments','Final Exam + Certification'],
+    banner:'linear-gradient(135deg,#e8001d,#7c3aed)',
+    level:'Beginner–Intermediate', students:847, rating:4.8, pdfUrls:[], category:'Training'
+  },
+  {
+    id:'cs2', emoji:'🥗', name:'Nutrition Basics Certification',
+    desc:'Master macronutrients, micronutrients, Indian diet planning, and sports nutrition. Learn to build meal plans for fat loss, muscle gain, and performance.',
+    price:1499, origPrice:2999, duration:'4 Weeks', modules:['Macronutrients & Micronutrients','Metabolism & Energy Balance','Indian Superfoods & Meal Planning','Sports Nutrition','Supplement Science','Building Client Meal Plans','Fat Loss vs Muscle Gain Protocols','Final Exam + Certificate'],
+    banner:'linear-gradient(135deg,#059669,#065f46)',
+    level:'All Levels', students:1203, rating:4.9, pdfUrls:[], category:'Nutrition'
+  },
+  {
+    id:'cs3', emoji:'🔥', name:'Fat Loss Specialist (FLS)',
+    desc:'Become the go-to expert for fat loss clients. Master metabolic science, hormones of fat loss, deficit protocols, carb cycling, and troubleshooting plateaus.',
+    price:1999, origPrice:3999, duration:'6 Weeks', modules:['Hormones & Fat Loss Science','Calorie Deficit Protocols','Carb Cycling & Periodization','Cardio Programming for Fat Loss','Supplement Stack for Fat Loss','Troubleshooting Plateaus','Client Case Studies','Final Exam + Certificate'],
+    banner:'linear-gradient(135deg,#f59e0b,#e8001d)',
+    level:'Intermediate', students:562, rating:4.7, pdfUrls:[], category:'Fat Loss'
+  }
+];
+
+function getCourses() {
+  try { return JSON.parse(localStorage.getItem('rfc_courses') || 'null') || DEFAULT_COURSES; } catch { return DEFAULT_COURSES; }
+}
+
+function isPurchased(courseId) {
+  if (!user) return false;
+  try { return JSON.parse(localStorage.getItem('rfc_purchased_' + user.uid) || '[]').includes(courseId); } catch { return false; }
+}
+
+function renderCourses() {
+  const courses = getCourses();
+  const grid = document.getElementById('courses-grid');
+  if (!grid) return;
+  grid.innerHTML = courses.map(c => {
+    const purchased = isPurchased(c.id);
+    return `
+    <div class="course-card">
+      <div class="course-banner" style="background:${c.banner};">
+        <span style="font-size:72px;">${c.emoji}</span>
+        <span class="course-badge cert">CERTIFICATE</span>
+      </div>
+      <div class="course-body">
+        <div class="course-name">${c.name}</div>
+        <div class="course-desc">${c.desc}</div>
+        <div class="course-meta">
+          <span>⏱ <strong>${c.duration}</strong></span>
+          <span>📚 <strong>${(c.modules||[]).length} modules</strong></span>
+          <span>👥 <strong>${c.students.toLocaleString()} students</strong></span>
+          <span>⭐ <strong>${c.rating}/5</strong></span>
+          <span>🎯 <strong>${c.level}</strong></span>
+        </div>
+        <div class="course-modules">
+          ${(c.modules||[]).slice(0,4).map(m=>`<div class="course-module-item">${m}</div>`).join('')}
+          ${c.modules.length > 4 ? `<div class="course-module-item" style="color:var(--red);">+${c.modules.length-4} more modules</div>` : ''}
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
+          <div>
+            <span class="course-price">₹${c.price.toLocaleString()}</span>
+            <span class="course-orig-price">₹${c.origPrice.toLocaleString()}</span>
+            <span style="font-size:11px;background:rgba(34,197,94,.15);color:var(--green);padding:2px 8px;border-radius:20px;margin-left:6px;">${Math.round((1-c.price/c.origPrice)*100)}% OFF</span>
+          </div>
+        </div>
+        <button class="bfire" style="width:100%;padding:13px;margin-top:14px;font-size:15px;" onclick="openCourseModal('${c.id}')">
+          ${purchased ? '📖 CONTINUE LEARNING' : `🎓 ENROLL — ₹${c.price.toLocaleString()}`}
+        </button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function openCourseModal(courseId) {
+  const c = getCourses().find(x => x.id === courseId);
+  if (!c) return;
+  const purchased = isPurchased(courseId);
+  document.getElementById('course-modal-title').textContent = c.name;
+  document.getElementById('course-modal-body').innerHTML = purchased ? renderCourseViewer(c) : renderCourseDetails(c);
+  document.getElementById('course-modal').style.display = 'flex';
+}
+
+function renderCourseDetails(c) {
+  return `
+    <div style="text-align:center;margin-bottom:18px;">
+      <span style="font-size:60px;">${c.emoji}</span>
+      <div style="font-size:12px;color:var(--muted);margin-top:8px;">🎯 ${c.level} · ⏱ ${c.duration} · 👥 ${c.students.toLocaleString()} enrolled</div>
+    </div>
+    <div style="margin-bottom:16px;font-size:13px;color:var(--muted);line-height:1.7;">${c.desc}</div>
+    <div style="margin-bottom:16px;">
+      <div style="font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:10px;">📚 Course Curriculum</div>
+      ${(c.modules||[]).map((m,i)=>`<div style="display:flex;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.04);">
+        <span style="font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--red);width:24px;flex-shrink:0;">${i+1}</span>
+        <span style="font-size:13px;">${m}</span>
+      </div>`).join('')}
+    </div>
+    <div style="background:rgba(255,208,0,.06);border:1px solid rgba(255,208,0,.2);border-radius:8px;padding:14px;margin-bottom:16px;font-size:12px;color:var(--muted);">
+      🎓 Upon completion, receive an <strong style="color:var(--gold);">RFC Digital Certificate</strong> — shareable on LinkedIn and valid as industry proof of competence.
+    </div>
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:36px;color:var(--gold);">₹${c.price.toLocaleString()}</div>
+      <div style="font-size:13px;text-decoration:line-through;color:var(--muted);">₹${c.origPrice.toLocaleString()}</div>
+      <div style="font-size:11px;background:rgba(34,197,94,.15);color:var(--green);padding:3px 10px;border-radius:20px;">${Math.round((1-c.price/c.origPrice)*100)}% OFF</div>
+    </div>
+    <button class="bfire" style="width:100%;padding:14px;font-size:16px;" onclick="purchaseCourse('${c.id}')">🎓 ENROLL NOW — ₹${c.price.toLocaleString()}</button>
+    <div style="font-size:11px;color:var(--muted);text-align:center;margin-top:8px;">Instant access · Lifetime validity · RFC Certificate</div>`;
+}
+
+function renderCourseViewer(c) {
+  const pdfLinks = (c.pdfUrls || []);
+  return `
+    <div class="cv-tab-nav" id="cv-tabs">
+      <button class="cv-tab active" onclick="cvTab(0,this)">📚 Modules</button>
+      <button class="cv-tab" onclick="cvTab(1,this)">📄 Materials</button>
+      <button class="cv-tab" onclick="cvTab(2,this)">🏆 Certificate</button>
+    </div>
+    <div id="cv-pane-0">
+      <div style="color:var(--green);font-weight:700;margin-bottom:12px;font-size:13px;">✅ Enrolled — Full Access Unlocked</div>
+      ${(c.modules||[]).map((m,i)=>`
+      <div style="display:flex;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.04);">
+        <span style="font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--red);width:24px;flex-shrink:0;">${i+1}</span>
+        <div style="flex:1;">
+          <div style="font-size:13px;">${m}</div>
+          <div style="font-size:11px;color:var(--muted);">Module ${i+1} of ${c.modules.length}</div>
+        </div>
+        <span style="font-size:18px;">📖</span>
+      </div>`).join('')}
+    </div>
+    <div id="cv-pane-1" style="display:none;">
+      ${pdfLinks.length ? pdfLinks.map(p=>`<a href="${p.url}" target="_blank" style="display:flex;gap:10px;align-items:center;padding:12px;background:rgba(255,255,255,.03);border-radius:8px;margin-bottom:8px;color:var(--text);text-decoration:none;">
+        <span style="font-size:24px;">📄</span>
+        <div><div style="font-size:13px;font-weight:600;">${p.name}</div><div style="font-size:11px;color:var(--muted);">PDF · Click to open</div></div>
+        <span style="margin-left:auto;color:var(--blue);">↗</span>
+      </a>`).join('') : `<div style="text-align:center;padding:40px 20px;color:var(--muted);">
+        <div style="font-size:36px;margin-bottom:12px;">📄</div>
+        <div>Course materials will be uploaded by the instructor soon.</div>
+      </div>`}
+    </div>
+    <div id="cv-pane-2" style="display:none;text-align:center;padding:20px 0;">
+      <div style="font-size:64px;margin-bottom:12px;">🏆</div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:2px;margin-bottom:6px;">ROYAL FITNESS CLUB</div>
+      <div style="font-size:13px;color:var(--muted);margin-bottom:20px;">Certificate of Completion</div>
+      <div style="border:2px solid var(--gold);border-radius:12px;padding:24px;margin:0 auto;max-width:400px;background:rgba(255,208,0,.03);">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1.5px;color:var(--gold);">This certifies that</div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;margin:8px 0;">${user ? (user.displayName || user.email || 'Student') : 'Student'}</div>
+        <div style="font-size:13px;color:var(--muted);margin-bottom:12px;">has successfully completed</div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--red);">${c.name}</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:12px;">Issued: ${new Date().toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'})}</div>
+      </div>
+      <button class="bsm" style="margin-top:16px;" onclick="window.print()">🖨️ Print Certificate</button>
+    </div>`;
+}
+
+function cvTab(idx, btn) {
+  [0,1,2].forEach(i => { document.getElementById('cv-pane-'+i).style.display = i === idx ? '' : 'none'; });
+  document.querySelectorAll('#cv-tabs .cv-tab').forEach((b,i) => b.classList.toggle('active', i === idx));
+}
+
+function purchaseCourse(courseId) {
+  if (!user) { closeCourseModal(); forceLogin(); return; }
+  const c = getCourses().find(x => x.id === courseId);
+  if (!c) return;
+  const rzp = new Razorpay({
+    key: 'rzp_live_SzivmCT3vTvTAK',
+    amount: c.price * 100,
+    currency: 'INR',
+    name: 'Royal Fitness Club',
+    description: c.name,
+    handler: function(res) {
+      const purchased = JSON.parse(localStorage.getItem('rfc_purchased_' + user.uid) || '[]');
+      if (!purchased.includes(courseId)) purchased.push(courseId);
+      localStorage.setItem('rfc_purchased_' + user.uid, JSON.stringify(purchased));
+      closeCourseModal();
+      renderCourses();
+      toast('🎓 Enrollment successful! Start learning now.');
+      setTimeout(() => openCourseModal(courseId), 600);
+    },
+    prefill: { name: user.displayName || '', email: user.email || '' },
+    theme: { color: '#e8001d' }
+  });
+  rzp.open();
+}
+
+function closeCourseModal() {
+  document.getElementById('course-modal').style.display = 'none';
+}
+
+// Init new sections
+renderChallenges();
+renderCourses();
 </script>
 
 <!-- ── WHATSAPP FLOATING BUTTON ──────────────────────────────────────────── -->
