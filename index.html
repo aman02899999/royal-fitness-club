@@ -7018,7 +7018,7 @@ function joinChallenge(chId) {
       renderChallenges();
       toast('🔥 You\'re in! Challenge joined successfully!');
     },
-    prefill: { name: user.displayName || '', email: user.email || '' },
+    prefill: { name: user.name || user.displayName || '', email: user.email || '' },
     theme: { color: '#e8001d' }
   });
   rzp.open();
@@ -7092,7 +7092,7 @@ function brSwitchTab(tab) {
 function brHandleFile(input) {
   if (!input.files || !input.files[0]) return;
   const file = input.files[0];
-  if (file.size > 10 * 1024 * 1024) { toast('File too large (max 10MB)', true); return; }
+  if (file.size > 10 * 1024 * 1024) { toast('File too large (max 10MB)', 'gold'); return; }
   brRunAnalysis(null); // File upload triggers demo analysis
 }
 
@@ -7119,7 +7119,7 @@ function brAnalyzeManual() {
     const el = document.getElementById(m.key);
     if (el && el.value !== '') { vals[m.id] = parseFloat(el.value); hasAny = true; }
   });
-  if (!hasAny) { toast('Please enter at least one value', true); return; }
+  if (!hasAny) { toast('Please enter at least one value', 'gold'); return; }
   const gender = document.getElementById('br-gender').value;
   brRunAnalysis(vals, gender);
 }
@@ -7990,7 +7990,7 @@ function purchaseCourse(courseId) {
       toast('🎓 Enrollment successful! Start learning now.');
       setTimeout(() => openCourseModal(courseId), 600);
     },
-    prefill: { name: user.displayName || '', email: user.email || '' },
+    prefill: { name: user.name || user.displayName || '', email: user.email || '' },
     theme: { color: '#e8001d' }
   });
   rzp.open();
@@ -8256,6 +8256,7 @@ function admSavePdf() {
   const url = document.getElementById('adm-pdf-url').value.trim();
   if (!courseId) { toast('Please select a course.','gold'); return; }
   if (!url) { toast('PDF URL is required.','gold'); return; }
+  if (!/^(https?:\/\/.+|\/[^\s]+\.pdf)/i.test(url)) { toast('URL must start with http(s):// or / and end with .pdf','gold'); return; }
   let pdfs = getAdminPdfs();
   if (id) {
     pdfs = pdfs.map(p => p.id === id ? {...p, courseId, moduleNum, title, url} : p);
