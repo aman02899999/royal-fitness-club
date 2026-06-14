@@ -1972,7 +1972,7 @@ img{loading:lazy;}
       <option value="SGD">🇸🇬 SGD</option>
     </select>
     <div id="ntimer">🔥 <span id="ntlbl">--:--:--</span></div>
-    <div id="upill"><span>⚡</span><span id="uname" style="cursor:pointer;" onclick="openProfile()" title="View Profile"></span><span class="ppro" id="ppro">PRO</span><button id="btnlo">logout</button></div>
+    <div id="upill"><span>⚡</span><span id="uname" style="cursor:pointer;" onclick="openProfile()" title="View Profile"></span><span class="ppro" id="ppro">PRO</span><button id="btnlo" title="Sign Out">⏻</button></div>
     <button class="bnav" id="navlbtn" onclick="forceLogin()">Member Login</button>
     <button class="hamburger" id="hamburger" onclick="toggleNav()" aria-label="Menu">
       <span></span><span></span><span></span>
@@ -2994,6 +2994,66 @@ img{loading:lazy;}
       <p style="color:var(--muted);max-width:560px;margin:12px auto 0;font-size:13px;">10 complete certification courses — from gym newbie to pharmaceutical performance expert. Real knowledge. RFC Certificate. Career-ready skills.</p>
     </div>
 
+    <!-- ══ FREE EDUCATION HERO BANNER ══ -->
+    <div style="position:relative;border-radius:20px;overflow:hidden;margin-bottom:36px;background:linear-gradient(135deg,#0a0a1a 0%,#0d1f12 40%,#1a0a00 100%);border:1px solid rgba(255,153,0,.25);">
+      <div style="display:flex;height:5px;"><div style="flex:1;background:#FF9933;"></div><div style="flex:1;background:#ffffff;"></div><div style="flex:1;background:#138808;"></div></div>
+      <div style="position:absolute;top:-60px;left:-60px;width:280px;height:280px;background:radial-gradient(circle,rgba(255,153,0,.18) 0%,transparent 70%);pointer-events:none;"></div>
+      <div style="position:absolute;bottom:-60px;right:-60px;width:280px;height:280px;background:radial-gradient(circle,rgba(19,136,8,.18) 0%,transparent 70%);pointer-events:none;"></div>
+      <div style="padding:40px 32px;position:relative;z-index:2;">
+        <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(255,153,0,.1);border:1px solid rgba(255,153,0,.35);border-radius:30px;padding:6px 16px;margin-bottom:20px;">
+          <span style="font-size:18px;">🇮🇳</span>
+          <span style="font-size:11px;font-weight:700;letter-spacing:2.5px;color:#FF9933;text-transform:uppercase;">Make In India Initiative</span>
+        </div>
+        <div style="font-family:'Bebas Neue',Impact,sans-serif;font-size:clamp(42px,8vw,88px);line-height:0.9;letter-spacing:2px;margin-bottom:16px;">
+          <span style="color:#ffffff;">THE COURSE IS</span><br>
+          <span style="background:linear-gradient(90deg,#FF9933,#ffffff,#138808);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">ABSOLUTELY FREE.</span>
+        </div>
+        <div style="font-family:'Bebas Neue',Impact,sans-serif;font-size:clamp(22px,4vw,40px);color:rgba(255,255,255,0.7);letter-spacing:3px;margin-bottom:24px;">Education Is A Right, Not A Privilege.</div>
+        <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:28px;">
+          <div style="background:linear-gradient(135deg,#e8001d,#b91c1c);border-radius:12px;padding:12px 24px;display:inline-block;">
+            <div style="font-family:'Bebas Neue',Impact,sans-serif;font-size:clamp(36px,6vw,60px);color:#fff;line-height:1;letter-spacing:2px;">99% OFF</div>
+            <div style="font-size:10px;color:rgba(255,255,255,0.85);letter-spacing:2px;text-align:center;margin-top:2px;">ALL COURSES</div>
+          </div>
+          <div style="flex:1;min-width:220px;">
+            <div style="font-size:clamp(13px,2vw,16px);color:rgba(255,255,255,0.85);line-height:1.7;">
+              💸 <strong style="color:#fbbf24;">This tiny fee</strong> covers only our platform hosting &amp; storage costs.<br>
+              📚 <strong style="color:#4ade80;">Every rupee of knowledge</strong> is delivered to you <em>free of cost</em>.<br>
+              🏆 <strong style="color:#60a5fa;">World-class certification</strong> — made accessible to every Indian.
+            </div>
+          </div>
+        </div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:28px;">
+          <div style="background:rgba(255,255,255,.05);border:1px solid rgba(34,197,94,.3);border-radius:12px;padding:14px 20px;text-align:center;min-width:120px;">
+            <div style="font-size:10px;font-weight:700;letter-spacing:2px;color:#4ade80;margin-bottom:4px;">🌱 BEGINNER</div>
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:#fff;line-height:1;">₹499</div>
+            <div style="font-size:10px;text-decoration:line-through;color:var(--muted);">₹49,999</div>
+            <div style="font-size:9px;color:#4ade80;font-weight:700;margin-top:2px;">99% OFF</div>
+          </div>
+          <div style="background:rgba(255,255,255,.05);border:1px solid rgba(251,191,36,.3);border-radius:12px;padding:14px 20px;text-align:center;min-width:120px;">
+            <div style="font-size:10px;font-weight:700;letter-spacing:2px;color:#fbbf24;margin-bottom:4px;">⚡ ADVANCED</div>
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:#fff;line-height:1;">₹999</div>
+            <div style="font-size:10px;text-decoration:line-through;color:var(--muted);">₹99,999</div>
+            <div style="font-size:9px;color:#fbbf24;font-weight:700;margin-top:2px;">99% OFF</div>
+          </div>
+          <div style="background:rgba(255,255,255,.05);border:1px solid rgba(167,139,250,.3);border-radius:12px;padding:14px 20px;text-align:center;min-width:120px;">
+            <div style="font-size:10px;font-weight:700;letter-spacing:2px;color:#a78bfa;margin-bottom:4px;">🐯 MASTER</div>
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:#fff;line-height:1;">₹1,499</div>
+            <div style="font-size:10px;text-decoration:line-through;color:var(--muted);">₹1,49,999</div>
+            <div style="font-size:9px;color:#a78bfa;font-weight:700;margin-top:2px;">99% OFF</div>
+          </div>
+          <div style="background:rgba(255,153,0,.06);border:1px solid rgba(255,153,0,.25);border-radius:12px;padding:14px 20px;display:flex;flex-direction:column;justify-content:center;min-width:160px;">
+            <div style="font-size:12px;color:rgba(255,255,255,.7);line-height:1.6;">✅ Lifetime Access<br>✅ RFC Certificate<br>✅ No Hidden Fees<br>✅ Instant Enrollment</div>
+          </div>
+        </div>
+        <div style="border-left:3px solid #FF9933;padding:10px 16px;background:rgba(255,153,0,.06);border-radius:0 8px 8px 0;font-size:13px;color:rgba(255,255,255,.7);font-style:italic;line-height:1.6;">
+          "Our mission is to democratise world-class fitness education for every Indian. The platform fee is just to keep the lights on — the knowledge is, and always will be, yours."
+          <div style="margin-top:6px;font-style:normal;font-size:11px;font-weight:700;color:#FF9933;letter-spacing:1px;">— RFC ACADEMY · MAKE IN INDIA 🇮🇳</div>
+        </div>
+      </div>
+      <div style="display:flex;height:5px;"><div style="flex:1;background:#FF9933;"></div><div style="flex:1;background:#ffffff;"></div><div style="flex:1;background:#138808;"></div></div>
+    </div>
+    <!-- ══ END FREE EDUCATION BANNER ══ -->
+
     <!-- Level legend -->
     <div class="cr-legend">
       <div class="cr-legend-item"><span class="cr-lvl-dot beg"></span>Beginner — Foundation Knowledge</div>
@@ -3162,8 +3222,8 @@ img{loading:lazy;}
     </div>
     <div class="adm-input-row">
       <div class="adm-field">
-        <label class="adm-label">Selling Price ₹ (max 9,999)</label>
-        <input class="adm-input" id="adm-edit-price" type="number" min="99" max="9999" placeholder="2999">
+        <label class="adm-label">Selling Price ₹</label>
+        <input class="adm-input" id="adm-edit-price" type="number" min="99" placeholder="2999">
       </div>
       <div class="adm-field">
         <label class="adm-label">Original / Crossed Price ₹</label>
@@ -4370,7 +4430,7 @@ function initUser(){
       const hadUser=!!user;
       user=null;isPro=false;
       localStorage.removeItem('bm_user');localStorage.removeItem('bm_pro');
-      if(hadUser){$('upill').classList.remove('on');$('ppro').classList.remove('on');$('navlbtn').style.display='block';$('tracker').classList.remove('pro-on');$('navtr').style.display='none';}
+      if(hadUser){$('upill').classList.remove('on');$('ppro').classList.remove('on');$('navlbtn').style.display='block';$('tracker').classList.remove('pro-on');if($('navtr'))$('navtr').style.display='none';}
       // No auto-popup on first load — user can browse freely
     }
   });
@@ -4406,7 +4466,7 @@ function applyUser(){
   $('navlbtn').style.display='none';
   // Show tracker section for all logged-in members
   $('tracker').classList.add('member-on');
-  $('navtr').style.display='inline';
+  if($('navtr'))$('navtr').style.display='inline';
   if(isPro){
     $('ppro').classList.add('on');
     $('tracker').classList.add('pro-on');
@@ -4563,7 +4623,8 @@ function showAdminLink(){
   const nl=$('nlinks');
   if(nl&&!document.getElementById('nav-admin')){
     const a=document.createElement('a');
-    a.href='/admin.html';a.id='nav-admin';a.textContent='⚡ Admin';a.style.cssText='color:var(--gold)!important;';
+    a.href='#';a.id='nav-admin';a.textContent='⚡ Admin';a.style.cssText='color:var(--gold)!important;';
+    a.onclick=function(e){e.preventDefault();openSection('admin');if(window.innerWidth<900)toggleNav();};
     nl.insertBefore(a,nl.lastElementChild);
   }
 }
@@ -4573,7 +4634,7 @@ $('btnlo').addEventListener('click',async function(){
   user=null;isPro=false;
   localStorage.removeItem('bm_user');localStorage.removeItem('bm_pro');
   $('upill').classList.remove('on');$('ppro').classList.remove('on');
-  $('navlbtn').style.display='block';$('tracker').classList.remove('pro-on');$('navtr').style.display='none';
+  $('navlbtn').style.display='block';$('tracker').classList.remove('pro-on');if($('navtr'))$('navtr').style.display='none';
   $('rescont').style.display='none';
   if($('emptyst2'))$('emptyst2').style.display='flex';
   toast('Logged out successfully.');
@@ -5723,7 +5784,7 @@ async function cancelPro(){
     try{await window.SubscriptionService.cancelSubscription(user.uid);}
     catch(e){console.warn('Cancel subscription Firestore sync failed:',e);}
   }
-  $('ppro').classList.remove('on');$('tracker').classList.remove('pro-on');$('navtr').style.display='none';
+  $('ppro').classList.remove('on');$('tracker').classList.remove('pro-on');if($('navtr'))$('navtr').style.display='none';
   renderProfile();toast('Subscription cancelled. You are back on the Free plan.','gold');
 }
 
@@ -5778,7 +5839,7 @@ function initCurrency() {
 }
 // Also update activatePro to use current currency in billing display
 function _activateProUI(){
-  $('ppro').classList.add('on');$('tracker').classList.add('pro-on');$('navtr').style.display='inline';
+  $('ppro').classList.add('on');$('tracker').classList.add('pro-on');if($('navtr'))$('navtr').style.display='inline';
   loadPD();if(lastRes)buildMealPlan(lastRes.goal,lastRes.targetCals,lastRes.macros,lastRes.diet);buildRoadmap(lastRes?lastRes.goal:'maintain');
   setTimeout(()=>$('tracker').scrollIntoView({behavior:'smooth'}),800);
 }
@@ -7249,7 +7310,7 @@ const DEFAULT_COURSES = [
     id:'cs_b1', emoji:'🌱', name:'Fitness Foundations Certificate',
     level:'beginner',
     desc:'Build an unshakeable base. Learn how the body moves, adapts, and grows. Master the fundamentals of exercise science, recovery, and healthy habits that every elite athlete relies on.',
-    price:2999, origPrice:5999, duration:'4 Weeks', students:2340, rating:4.9,
+    price:499, origPrice:49999, duration:'4 Weeks', students:2340, rating:4.9,
     img:'thumbnails/cs_b1.svg',
     banner:'linear-gradient(135deg,#065f46,#059669)',
     mods:[
@@ -7283,7 +7344,7 @@ const DEFAULT_COURSES = [
     id:'cs_b2', emoji:'🥗', name:'Nutrition & Healthy Eating Certificate',
     level:'beginner',
     desc:'Understand food at a molecular level. Build meal plans, decode labels, and learn the Indian diet science that powers elite athletes. Become the expert everyone turns to for nutrition advice.',
-    price:3499, origPrice:6999, duration:'4 Weeks', students:1870, rating:4.8,
+    price:499, origPrice:49999, duration:'4 Weeks', students:1870, rating:4.8,
     img:'thumbnails/cs_b2.svg',
     banner:'linear-gradient(135deg,#1d4ed8,#0ea5e9)',
     mods:[
@@ -7317,7 +7378,7 @@ const DEFAULT_COURSES = [
     id:'cs_b3', emoji:'🔥', name:'Body Transformation Blueprint',
     level:'beginner',
     desc:'The complete A-to-Z guide for transforming your body in 90 days. Fat loss, muscle building, and body recomposition strategies designed for real Indian lifestyles.',
-    price:3999, origPrice:7999, duration:'6 Weeks', students:1560, rating:4.9,
+    price:499, origPrice:49999, duration:'6 Weeks', students:1560, rating:4.9,
     img:'thumbnails/cs_b3.svg',
     banner:'linear-gradient(135deg,#7c3aed,#db2777)',
     mods:[
@@ -7353,7 +7414,7 @@ const DEFAULT_COURSES = [
     id:'cs_a1', emoji:'💪', name:'Certified Personal Trainer (CPT)',
     level:'advanced',
     desc:'Become a professional-grade personal trainer. 12 deep modules covering anatomy, biomechanics, periodization, client assessment, corrective exercise, and the business of fitness. India\'s most comprehensive online CPT program.',
-    price:5999, origPrice:11999, duration:'10 Weeks', students:1140, rating:4.9,
+    price:999, origPrice:99999, duration:'10 Weeks', students:1140, rating:4.9,
     img:'thumbnails/cs_a1.svg',
     banner:'linear-gradient(135deg,#e8001d,#7c3aed)',
     mods:[
@@ -7399,7 +7460,7 @@ const DEFAULT_COURSES = [
     id:'cs_a2', emoji:'🧬', name:'Sports Nutrition & Dietetics Diploma',
     level:'advanced',
     desc:'Go beyond basic macros. This diploma covers clinical nutrition science, sports dietetics, gut health, blood markers, and how to build evidence-based nutrition plans for athletes and general populations.',
-    price:6999, origPrice:13999, duration:'10 Weeks', students:890, rating:4.8,
+    price:999, origPrice:99999, duration:'10 Weeks', students:890, rating:4.8,
     img:'thumbnails/cs_a2.svg',
     banner:'linear-gradient(135deg,#059669,#065f46)',
     mods:[
@@ -7445,7 +7506,7 @@ const DEFAULT_COURSES = [
     id:'cs_a3', emoji:'🦴', name:'Physio & Sports Rehabilitation Diploma',
     level:'advanced',
     desc:'Learn to prevent, assess, and rehabilitate the injuries that stop athletes in their tracks. Covers physiotherapy principles, manual therapy basics, exercise rehab, and return-to-sport protocols.',
-    price:5499, origPrice:10999, duration:'8 Weeks', students:650, rating:4.8,
+    price:999, origPrice:99999, duration:'8 Weeks', students:650, rating:4.8,
     img:'thumbnails/cs_a3.svg',
     banner:'linear-gradient(135deg,#0369a1,#0ea5e9)',
     mods:[
@@ -7485,7 +7546,7 @@ const DEFAULT_COURSES = [
     id:'cs_a4', emoji:'🎯', name:'Fat Loss Specialist (FLS) Certification',
     level:'advanced',
     desc:'Master the complete science of fat loss — hormones, metabolism, dieting strategies, training protocols, and client psychology. Become the coach who actually gets results when others fail.',
-    price:4999, origPrice:9999, duration:'6 Weeks', students:1380, rating:4.9,
+    price:999, origPrice:99999, duration:'6 Weeks', students:1380, rating:4.9,
     img:'thumbnails/cs_a4.svg',
     banner:'linear-gradient(135deg,#f59e0b,#e8001d)',
     mods:[
@@ -7521,7 +7582,7 @@ const DEFAULT_COURSES = [
     id:'cs_m1', emoji:'👑', name:'Elite Performance & Fitness Master',
     level:'master',
     desc:'The pinnacle of fitness education. 14 modules covering elite athlete programming, advanced physiology, performance nutrition, coaching systems, periodization science, and the complete business of high-performance coaching.',
-    price:9999, origPrice:19999, duration:'16 Weeks', students:380, rating:4.9,
+    price:1499, origPrice:149999, duration:'16 Weeks', students:380, rating:4.9,
     img:'thumbnails/cs_m1.svg',
     banner:'linear-gradient(135deg,#92400e,#f59e0b)',
     mods:[
@@ -7573,7 +7634,7 @@ const DEFAULT_COURSES = [
     id:'cs_m2', emoji:'⚗️', name:'Pharmaceutical Performance Science (18+)',
     level:'master', isPharma:true,
     desc:'[18+ EDUCATIONAL COURSE] The most comprehensive harm-reduction and performance pharmacology course available. Covers the science, pharmacokinetics, protocols, and health monitoring of anabolic steroids, SARMs, peptides, prohormones, and PCT. For educational and harm-reduction purposes only.',
-    price:9999, origPrice:19999, duration:'14 Weeks', students:290, rating:4.9,
+    price:1499, origPrice:149999, duration:'14 Weeks', students:290, rating:4.9,
     img:'thumbnails/cs_m2.svg',
     banner:'linear-gradient(135deg,#1e1b4b,#7c3aed)',
     mods:[
@@ -7631,7 +7692,7 @@ const DEFAULT_COURSES = [
     id:'cs_m3', emoji:'🏥', name:'Sports Medicine & Physio Expert',
     level:'master',
     desc:'The master-level fusion of sports medicine, rehabilitation science, and elite physical therapy. Prepare for the highest-level injury management, surgery decision-making, and return-to-sport direction for elite athletes.',
-    price:8999, origPrice:17999, duration:'12 Weeks', students:220, rating:4.8,
+    price:1499, origPrice:149999, duration:'12 Weeks', students:220, rating:4.8,
     img:'thumbnails/cs_m3.svg',
     banner:'linear-gradient(135deg,#064e3b,#059669)',
     mods:[
@@ -8100,7 +8161,6 @@ function admSaveCourse() {
   const name = document.getElementById('adm-edit-name').value.trim();
   if (!name) { toast('Course name is required.','gold'); return; }
   const price = parseInt(document.getElementById('adm-edit-price').value) || 0;
-  if (price > 9999) { toast('Price cannot exceed ₹9,999.','gold'); return; }
   const origPrice = parseInt(document.getElementById('adm-edit-orig').value) || price*2;
   if (origPrice < price) { toast('Original price must be ≥ selling price.','gold'); return; }
 
@@ -8155,30 +8215,124 @@ function admTab(idx) {
 
 // ─── PDF MANAGEMENT ────────────────────────────────────────────────────────
 const DEFAULT_PDFS = [
-  {id:'pdf_b1_1',courseId:'cs_b1',moduleNum:1,title:'How the Body Works — Anatomy Essentials',url:'/course_pdfs/beginner/cs_b1_mod1_anatomy_essentials.pdf',addedDate:'2026-06-14'},
+  // ── Beginner: cs_b1 (8 modules) ──
+  {id:'pdf_b1_1',courseId:'cs_b1',moduleNum:1,title:'Anatomy Essentials',url:'/course_pdfs/beginner/cs_b1_mod1_anatomy_essentials.pdf',addedDate:'2026-06-14'},
   {id:'pdf_b1_2',courseId:'cs_b1',moduleNum:2,title:'Exercise Science Fundamentals',url:'/course_pdfs/beginner/cs_b1_mod2_exercise_science.pdf',addedDate:'2026-06-14'},
-  {id:'pdf_b1_3',courseId:'cs_b1',moduleNum:3,title:'Workout Programming 101',url:'/course_pdfs/beginner/cs_b1_mod3_workout_programming.pdf',addedDate:'2026-06-14'},
-  {id:'pdf_b1_4',courseId:'cs_b1',moduleNum:4,title:'Nutrition Basics for Beginners',url:'/course_pdfs/beginner/cs_b1_mod4_nutrition_basics.pdf',addedDate:'2026-06-14'},
-  {id:'pdf_b2_1',courseId:'cs_b2',moduleNum:1,title:'Macros & Micronutrients Deep Dive',url:'/course_pdfs/beginner/cs_b2_mod1_macros_micronutrients.pdf',addedDate:'2026-06-14'},
-  {id:'pdf_b2_2',courseId:'cs_b2',moduleNum:2,title:'Indian Diet Planning & Meal Timing',url:'/course_pdfs/beginner/cs_b2_mod2_indian_diet_planning.pdf',addedDate:'2026-06-14'},
-  {id:'pdf_b2_3',courseId:'cs_b2',moduleNum:3,title:'Indian Superfoods & Supplements',url:'/course_pdfs/beginner/cs_b2_mod3_indian_superfoods.pdf',addedDate:'2026-06-14'},
-  {id:'pdf_b2_4',courseId:'cs_b2',moduleNum:4,title:'Mindful Eating & Body Composition',url:'/course_pdfs/beginner/cs_b2_mod4_mindful_eating.pdf',addedDate:'2026-06-14'},
-  {id:'pdf_a1_1',courseId:'cs_a1',moduleNum:1,title:'Advanced Training Principles',url:'/course_pdfs/advanced/cs_a1_mod1_advanced_training.pdf',addedDate:'2026-06-14'},
-  {id:'pdf_a1_2',courseId:'cs_a1',moduleNum:2,title:'Periodisation & Progressive Overload',url:'/course_pdfs/advanced/cs_a1_mod2_periodisation.pdf',addedDate:'2026-06-14'},
-  {id:'pdf_a1_3',courseId:'cs_a1',moduleNum:3,title:'Sport-Specific Conditioning',url:'/course_pdfs/advanced/cs_a1_mod3_sport_conditioning.pdf',addedDate:'2026-06-14'},
-  {id:'pdf_a1_4',courseId:'cs_a1',moduleNum:4,title:'Recovery Science & Biometrics',url:'/course_pdfs/advanced/cs_a1_mod4_recovery_science.pdf',addedDate:'2026-06-14'},
-  {id:'pdf_a2_1',courseId:'cs_a2',moduleNum:1,title:'Clinical Nutrition Assessment',url:'/course_pdfs/advanced/cs_a2_mod1_clinical_nutrition.pdf',addedDate:'2026-06-14'},
-  {id:'pdf_a2_2',courseId:'cs_a2',moduleNum:2,title:'Evidence-Based Supplements',url:'/course_pdfs/advanced/cs_a2_mod2_supplements.pdf',addedDate:'2026-06-14'},
-  {id:'pdf_a2_3',courseId:'cs_a2',moduleNum:3,title:'Therapeutic Diets & Medical Nutrition',url:'/course_pdfs/advanced/cs_a2_mod3_therapeutic_diets.pdf',addedDate:'2026-06-14'},
-  {id:'pdf_a2_4',courseId:'cs_a2',moduleNum:4,title:'Body Recomposition Protocols',url:'/course_pdfs/advanced/cs_a2_mod4_body_recomposition.pdf',addedDate:'2026-06-14'},
-  {id:'pdf_m1_1',courseId:'cs_m1',moduleNum:1,title:'Pharmacology of Performance Drugs',url:'/course_pdfs/master/cs_m1_mod1_pharmacology.pdf',addedDate:'2026-06-14'},
-  {id:'pdf_m1_2',courseId:'cs_m1',moduleNum:2,title:'Anabolic & Androgenic Steroids — Science',url:'/course_pdfs/master/cs_m1_mod2_steroids_science.pdf',addedDate:'2026-06-14'},
-  {id:'pdf_m1_3',courseId:'cs_m1',moduleNum:3,title:'Peptides, GH & Insulin Protocols',url:'/course_pdfs/master/cs_m1_mod3_peptides_gh.pdf',addedDate:'2026-06-14'},
-  {id:'pdf_m1_4',courseId:'cs_m1',moduleNum:4,title:'Blood Biomarkers & Health Monitoring',url:'/course_pdfs/master/cs_m1_mod4_blood_biomarkers.pdf',addedDate:'2026-06-14'},
-  {id:'pdf_m2_1',courseId:'cs_m2',moduleNum:1,title:'Elite Athlete Physiology',url:'/course_pdfs/master/cs_m2_mod1_elite_physiology.pdf',addedDate:'2026-06-14'},
-  {id:'pdf_m2_2',courseId:'cs_m2',moduleNum:2,title:'Competition Prep & Peak Week',url:'/course_pdfs/master/cs_m2_mod2_competition_prep.pdf',addedDate:'2026-06-14'},
-  {id:'pdf_m2_3',courseId:'cs_m2',moduleNum:3,title:'Post-Cycle Therapy & Recovery',url:'/course_pdfs/master/cs_m2_mod3_pct_recovery.pdf',addedDate:'2026-06-14'},
-  {id:'pdf_m2_4',courseId:'cs_m2',moduleNum:4,title:'Legal Compliance & Ethical Considerations',url:'/course_pdfs/master/cs_m2_mod4_legal_compliance.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_b1_3',courseId:'cs_b1',moduleNum:3,title:'Program Design 101',url:'/course_pdfs/beginner/cs_b1_mod3_program_design.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_b1_4',courseId:'cs_b1',moduleNum:4,title:'Nutrition 101',url:'/course_pdfs/beginner/cs_b1_mod4_nutrition_101.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_b1_5',courseId:'cs_b1',moduleNum:5,title:'Recovery & Sleep',url:'/course_pdfs/beginner/cs_b1_mod5_recovery_sleep.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_b1_6',courseId:'cs_b1',moduleNum:6,title:'Mindset & Habits',url:'/course_pdfs/beginner/cs_b1_mod6_mindset_habits.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_b1_7',courseId:'cs_b1',moduleNum:7,title:'Common Mistakes to Avoid',url:'/course_pdfs/beginner/cs_b1_mod7_common_mistakes.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_b1_8',courseId:'cs_b1',moduleNum:8,title:'Final Assessment',url:'/course_pdfs/beginner/cs_b1_mod8_final_assessment.pdf',addedDate:'2026-06-14'},
+  // ── Beginner: cs_b2 (8 modules) ──
+  {id:'pdf_b2_1',courseId:'cs_b2',moduleNum:1,title:'Macronutrients Deep Dive',url:'/course_pdfs/beginner/cs_b2_mod1_macronutrients_deep.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_b2_2',courseId:'cs_b2',moduleNum:2,title:'Micronutrients & Vitamins',url:'/course_pdfs/beginner/cs_b2_mod2_micronutrients.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_b2_3',courseId:'cs_b2',moduleNum:3,title:'Indian Superfoods',url:'/course_pdfs/beginner/cs_b2_mod3_indian_superfoods.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_b2_4',courseId:'cs_b2',moduleNum:4,title:'Meal Planning Fundamentals',url:'/course_pdfs/beginner/cs_b2_mod4_meal_planning.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_b2_5',courseId:'cs_b2',moduleNum:5,title:'Metabolism & Energy Balance',url:'/course_pdfs/beginner/cs_b2_mod5_metabolism_energy.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_b2_6',courseId:'cs_b2',moduleNum:6,title:'Sports Nutrition Basics',url:'/course_pdfs/beginner/cs_b2_mod6_sports_nutrition.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_b2_7',courseId:'cs_b2',moduleNum:7,title:'Supplements Overview',url:'/course_pdfs/beginner/cs_b2_mod7_supplements.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_b2_8',courseId:'cs_b2',moduleNum:8,title:'Final Assessment',url:'/course_pdfs/beginner/cs_b2_mod8_final_assessment.pdf',addedDate:'2026-06-14'},
+  // ── Beginner: cs_b3 (8 modules) ──
+  {id:'pdf_b3_1',courseId:'cs_b3',moduleNum:1,title:'Understanding Body Composition',url:'/course_pdfs/beginner/cs_b3_mod1_body_composition.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_b3_2',courseId:'cs_b3',moduleNum:2,title:'Fat Loss & Hormones',url:'/course_pdfs/beginner/cs_b3_mod2_fat_loss_hormones.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_b3_3',courseId:'cs_b3',moduleNum:3,title:'Muscle Building Principles',url:'/course_pdfs/beginner/cs_b3_mod3_muscle_building.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_b3_4',courseId:'cs_b3',moduleNum:4,title:'Cardio for Body Composition',url:'/course_pdfs/beginner/cs_b3_mod4_cardio_composition.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_b3_5',courseId:'cs_b3',moduleNum:5,title:'Tracking & Adjusting Progress',url:'/course_pdfs/beginner/cs_b3_mod5_tracking_adjusting.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_b3_6',courseId:'cs_b3',moduleNum:6,title:'Transformation Mindset',url:'/course_pdfs/beginner/cs_b3_mod6_transformation_mindset.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_b3_7',courseId:'cs_b3',moduleNum:7,title:'Lifestyle Optimization',url:'/course_pdfs/beginner/cs_b3_mod7_lifestyle_optimization.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_b3_8',courseId:'cs_b3',moduleNum:8,title:'Final Assessment',url:'/course_pdfs/beginner/cs_b3_mod8_final_assessment.pdf',addedDate:'2026-06-14'},
+  // ── Advanced: cs_a1 (12 modules) ──
+  {id:'pdf_a1_1',courseId:'cs_a1',moduleNum:1,title:'Advanced Anatomy & Biomechanics',url:'/course_pdfs/advanced/cs_a1_mod1_advanced_anatomy_biomechanics.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_a1_2',courseId:'cs_a1',moduleNum:2,title:'Exercise Physiology for Trainers',url:'/course_pdfs/advanced/cs_a1_mod2_exercise_physiology_trainers.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_a1_3',courseId:'cs_a1',moduleNum:3,title:'Client Assessment & Fitness Testing',url:'/course_pdfs/advanced/cs_a1_mod3_client_assessment_fitness_testing.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_a1_4',courseId:'cs_a1',moduleNum:4,title:'Corrective Exercise & Injury Prevention',url:'/course_pdfs/advanced/cs_a1_mod4_corrective_exercise_injury_prevention.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_a1_5',courseId:'cs_a1',moduleNum:5,title:'Resistance Training Program Design',url:'/course_pdfs/advanced/cs_a1_mod5_resistance_training_program_design.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_a1_6',courseId:'cs_a1',moduleNum:6,title:'Cardiovascular & Metabolic Conditioning',url:'/course_pdfs/advanced/cs_a1_mod6_cardiovascular_metabolic_conditioning.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_a1_7',courseId:'cs_a1',moduleNum:7,title:'Nutrition for Personal Trainers',url:'/course_pdfs/advanced/cs_a1_mod7_nutrition_for_personal_trainers.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_a1_8',courseId:'cs_a1',moduleNum:8,title:'Special Populations Training',url:'/course_pdfs/advanced/cs_a1_mod8_special_populations_training.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_a1_9',courseId:'cs_a1',moduleNum:9,title:'Psychology, Coaching & Communication',url:'/course_pdfs/advanced/cs_a1_mod9_psychology_coaching_communication.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_a1_10',courseId:'cs_a1',moduleNum:10,title:'Business of Personal Training',url:'/course_pdfs/advanced/cs_a1_mod10_business_of_personal_training.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_a1_11',courseId:'cs_a1',moduleNum:11,title:'Practical Demonstrations & Case Studies',url:'/course_pdfs/advanced/cs_a1_mod11_practical_demonstrations_case_studies.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_a1_12',courseId:'cs_a1',moduleNum:12,title:'Final CPT Exam & Certification',url:'/course_pdfs/advanced/cs_a1_mod12_final_cpt_exam_certification.pdf',addedDate:'2026-06-14'},
+  // ── Advanced: cs_a2 (12 modules) ──
+  {id:'pdf_a2_1',courseId:'cs_a2',moduleNum:1,title:'Advanced Macronutrient Science',url:'/course_pdfs/advanced/cs_a2_mod1_advanced_macronutrient_science.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_a2_2',courseId:'cs_a2',moduleNum:2,title:'Gut Health & Microbiome for Performance',url:'/course_pdfs/advanced/cs_a2_mod2_gut_health_microbiome_performance.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_a2_3',courseId:'cs_a2',moduleNum:3,title:'Blood Marker Analysis & Nutrition',url:'/course_pdfs/advanced/cs_a2_mod3_blood_marker_analysis_nutrition.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_a2_4',courseId:'cs_a2',moduleNum:4,title:'Nutrient Timing & Periodization',url:'/course_pdfs/advanced/cs_a2_mod4_nutrient_timing_periodization.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_a2_5',courseId:'cs_a2',moduleNum:5,title:'Weight Making for Combat Athletes',url:'/course_pdfs/advanced/cs_a2_mod5_weight_making_combat_athletes.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_a2_6',courseId:'cs_a2',moduleNum:6,title:'Endurance & Team Sport Nutrition',url:'/course_pdfs/advanced/cs_a2_mod6_endurance_team_sport_nutrition.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_a2_7',courseId:'cs_a2',moduleNum:7,title:'Supplementation Science & Tiers',url:'/course_pdfs/advanced/cs_a2_mod7_supplementation_science_tiers.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_a2_8',courseId:'cs_a2',moduleNum:8,title:'Clinical Nutrition: Diabetes & Heart Health',url:'/course_pdfs/advanced/cs_a2_mod8_clinical_nutrition_diabetes_heart.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_a2_9',courseId:'cs_a2',moduleNum:9,title:'Indian Context, Regional Diets & Fasting',url:'/course_pdfs/advanced/cs_a2_mod9_indian_context_regional_diets_fasting.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_a2_10',courseId:'cs_a2',moduleNum:10,title:'Nutrition Coaching & Client Communication',url:'/course_pdfs/advanced/cs_a2_mod10_nutrition_coaching_client_communication.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_a2_11',courseId:'cs_a2',moduleNum:11,title:'Practical Meal Plan Design Masterclass',url:'/course_pdfs/advanced/cs_a2_mod11_practical_meal_plan_design_masterclass.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_a2_12',courseId:'cs_a2',moduleNum:12,title:'Final Diploma Exam & Certification',url:'/course_pdfs/advanced/cs_a2_mod12_final_diploma_exam_certification.pdf',addedDate:'2026-06-14'},
+  // ── Advanced: cs_a3 (10 modules) ──
+  {id:'pdf_a3_1',courseId:'cs_a3',moduleNum:1,title:'Musculoskeletal Anatomy for Rehab',url:'/course_pdfs/advanced/cs_a3_mod1_musculoskeletal_anatomy_rehab.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_a3_2',courseId:'cs_a3',moduleNum:2,title:'Sports Injuries: Assessment & Diagnosis',url:'/course_pdfs/advanced/cs_a3_mod2_sports_injuries_assessment_diagnosis.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_a3_3',courseId:'cs_a3',moduleNum:3,title:'Physiotherapy Principles & Manual Therapy',url:'/course_pdfs/advanced/cs_a3_mod3_physiotherapy_principles_manual_therapy.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_a3_4',courseId:'cs_a3',moduleNum:4,title:'Shoulder Rehabilitation Protocols',url:'/course_pdfs/advanced/cs_a3_mod4_shoulder_rehabilitation_protocols.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_a3_5',courseId:'cs_a3',moduleNum:5,title:'Knee Rehabilitation Protocols',url:'/course_pdfs/advanced/cs_a3_mod5_knee_rehabilitation_protocols.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_a3_6',courseId:'cs_a3',moduleNum:6,title:'Lower Back & Spine Rehabilitation',url:'/course_pdfs/advanced/cs_a3_mod6_lower_back_spine_rehabilitation.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_a3_7',courseId:'cs_a3',moduleNum:7,title:'Return to Sport & Functional Testing',url:'/course_pdfs/advanced/cs_a3_mod7_return_to_sport_functional_testing.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_a3_8',courseId:'cs_a3',moduleNum:8,title:'Injury Prevention Programming for Athletes',url:'/course_pdfs/advanced/cs_a3_mod8_injury_prevention_programming_athletes.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_a3_9',courseId:'cs_a3',moduleNum:9,title:'Recovery Modalities & Technology',url:'/course_pdfs/advanced/cs_a3_mod9_recovery_modalities_technology.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_a3_10',courseId:'cs_a3',moduleNum:10,title:'Final Diploma Exam (Physiotherapy)',url:'/course_pdfs/advanced/cs_a3_mod10_final_diploma_exam_physio.pdf',addedDate:'2026-06-14'},
+  // ── Advanced: cs_a4 (8 modules) ──
+  {id:'pdf_a4_1',courseId:'cs_a4',moduleNum:1,title:'Hormonal Architecture of Fat Loss',url:'/course_pdfs/advanced/cs_a4_mod1_hormonal_architecture_fat_loss.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_a4_2',courseId:'cs_a4',moduleNum:2,title:'Metabolic Adaptation: The Enemy of Fat Loss',url:'/course_pdfs/advanced/cs_a4_mod2_metabolic_adaptation_enemy_fat_loss.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_a4_3',courseId:'cs_a4',moduleNum:3,title:'Caloric Deficit & Flexible Dieting',url:'/course_pdfs/advanced/cs_a4_mod3_caloric_deficit_flexible_dieting.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_a4_4',courseId:'cs_a4',moduleNum:4,title:'Carb Cycling & Periodized Nutrition',url:'/course_pdfs/advanced/cs_a4_mod4_carb_cycling_periodized_nutrition.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_a4_5',courseId:'cs_a4',moduleNum:5,title:'Training for Maximum Fat Loss',url:'/course_pdfs/advanced/cs_a4_mod5_training_maximum_fat_loss.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_a4_6',courseId:'cs_a4',moduleNum:6,title:'Psychological & Behavioral Coaching',url:'/course_pdfs/advanced/cs_a4_mod6_psychological_behavioral_coaching.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_a4_7',courseId:'cs_a4',moduleNum:7,title:'Advanced Fat Loss Troubleshooting',url:'/course_pdfs/advanced/cs_a4_mod7_advanced_fat_loss_troubleshooting.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_a4_8',courseId:'cs_a4',moduleNum:8,title:'Final FLS Exam & Certification',url:'/course_pdfs/advanced/cs_a4_mod8_final_fls_exam_certification.pdf',addedDate:'2026-06-14'},
+  // ── Master: cs_m1 (14 modules) ──
+  {id:'pdf_m1_1',courseId:'cs_m1',moduleNum:1,title:'Elite Athlete Physiology & Genetics',url:'/course_pdfs/master/cs_m1_mod1_elite_athlete_physiology_genetics.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_m1_2',courseId:'cs_m1',moduleNum:2,title:'Advanced Periodization Systems',url:'/course_pdfs/master/cs_m1_mod2_advanced_periodization_systems.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_m1_3',courseId:'cs_m1',moduleNum:3,title:'Strength & Power Development Science',url:'/course_pdfs/master/cs_m1_mod3_strength_power_development_science.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_m1_4',courseId:'cs_m1',moduleNum:4,title:'Energy System Development',url:'/course_pdfs/master/cs_m1_mod4_energy_system_development.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_m1_5',courseId:'cs_m1',moduleNum:5,title:'Advanced Recovery & Biometric Monitoring',url:'/course_pdfs/master/cs_m1_mod5_advanced_recovery_biometric_monitoring.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_m1_6',courseId:'cs_m1',moduleNum:6,title:'Sports Psychology & Mental Performance',url:'/course_pdfs/master/cs_m1_mod6_sports_psychology_mental_performance.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_m1_7',courseId:'cs_m1',moduleNum:7,title:'Advanced Nutrition for Elite Performance',url:'/course_pdfs/master/cs_m1_mod7_advanced_nutrition_elite_performance.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_m1_8',courseId:'cs_m1',moduleNum:8,title:'Biomechanical Analysis & Movement Screening',url:'/course_pdfs/master/cs_m1_mod8_biomechanical_analysis_movement_screening.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_m1_9',courseId:'cs_m1',moduleNum:9,title:'Programming for Combat & Team Sports',url:'/course_pdfs/master/cs_m1_mod9_programming_combat_team_sports.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_m1_10',courseId:'cs_m1',moduleNum:10,title:'Youth & Adolescent Athletic Development',url:'/course_pdfs/master/cs_m1_mod10_youth_adolescent_athletic_development.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_m1_11',courseId:'cs_m1',moduleNum:11,title:'Elite Coaching Systems & Team Management',url:'/course_pdfs/master/cs_m1_mod11_elite_coaching_systems_team_management.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_m1_12',courseId:'cs_m1',moduleNum:12,title:'Research Literacy & Evidence-Based Coaching',url:'/course_pdfs/master/cs_m1_mod12_research_literacy_evidence_based.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_m1_13',courseId:'cs_m1',moduleNum:13,title:'Business of High-Performance Coaching',url:'/course_pdfs/master/cs_m1_mod13_business_high_performance_coaching.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_m1_14',courseId:'cs_m1',moduleNum:14,title:'Final Master Exam & Elite Certification',url:'/course_pdfs/master/cs_m1_mod14_final_master_exam_elite_certification.pdf',addedDate:'2026-06-14'},
+  // ── Master: cs_m2 (16 modules) ──
+  {id:'pdf_m2_1',courseId:'cs_m2',moduleNum:1,title:'Endocrinology & Hormonal Axis',url:'/course_pdfs/master/cs_m2_mod1_endocrinology_hormonal_axis.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_m2_2',courseId:'cs_m2',moduleNum:2,title:'Anabolic Steroids: Mechanisms & Pharmacology',url:'/course_pdfs/master/cs_m2_mod2_anabolic_steroids_mechanisms_pharmacology.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_m2_3',courseId:'cs_m2',moduleNum:3,title:'SARMs: Selective Androgen Receptor Modulators',url:'/course_pdfs/master/cs_m2_mod3_sarms_selective_androgen_receptor.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_m2_4',courseId:'cs_m2',moduleNum:4,title:'Peptides for Performance & Recovery',url:'/course_pdfs/master/cs_m2_mod4_peptides_performance_recovery.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_m2_5',courseId:'cs_m2',moduleNum:5,title:'Prohormones & Designer Steroids',url:'/course_pdfs/master/cs_m2_mod5_prohormones_designer_steroids.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_m2_6',courseId:'cs_m2',moduleNum:6,title:'Estrogen Management: AIs & SERMs',url:'/course_pdfs/master/cs_m2_mod6_estrogen_management_ais_serms.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_m2_7',courseId:'cs_m2',moduleNum:7,title:'Post Cycle Therapy: Science & Protocols',url:'/course_pdfs/master/cs_m2_mod7_post_cycle_therapy_science_protocols.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_m2_8',courseId:'cs_m2',moduleNum:8,title:'Ancillaries: Liver & Blood Pressure Support',url:'/course_pdfs/master/cs_m2_mod8_ancillaries_liver_blood_pressure.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_m2_9',courseId:'cs_m2',moduleNum:9,title:'Blood Work Interpretation for Performance',url:'/course_pdfs/master/cs_m2_mod9_blood_work_interpretation_performance.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_m2_10',courseId:'cs_m2',moduleNum:10,title:'Harm Reduction, Risk & Ethics',url:'/course_pdfs/master/cs_m2_mod10_harm_reduction_risk_ethics.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_m2_11',courseId:'cs_m2',moduleNum:11,title:'Cycle Design: Beginner to Advanced',url:'/course_pdfs/master/cs_m2_mod11_cycle_design_beginner_to_advanced.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_m2_12',courseId:'cs_m2',moduleNum:12,title:'Peptide & SARM Stacking Protocols',url:'/course_pdfs/master/cs_m2_mod12_peptide_sarm_stacking_protocols.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_m2_13',courseId:'cs_m2',moduleNum:13,title:'Female-Specific Pharmacology & Virilization',url:'/course_pdfs/master/cs_m2_mod13_female_specific_pharmacology_virilization.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_m2_14',courseId:'cs_m2',moduleNum:14,title:'Insulin & Growth Hormone (Educational)',url:'/course_pdfs/master/cs_m2_mod14_insulin_growth_hormone_educational.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_m2_15',courseId:'cs_m2',moduleNum:15,title:'Legal & Medical Landscape in India',url:'/course_pdfs/master/cs_m2_mod15_legal_medical_landscape_india.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_m2_16',courseId:'cs_m2',moduleNum:16,title:'Final Exam & Pharma Certification',url:'/course_pdfs/master/cs_m2_mod16_final_exam_pharma_certification.pdf',addedDate:'2026-06-14'},
+  // ── Master: cs_m3 (12 modules) ──
+  {id:'pdf_m3_1',courseId:'cs_m3',moduleNum:1,title:'Sports Medicine: Scope & Principles',url:'/course_pdfs/master/cs_m3_mod1_sports_medicine_scope_principles.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_m3_2',courseId:'cs_m3',moduleNum:2,title:'Imaging: X-Ray, MRI & Ultrasound',url:'/course_pdfs/master/cs_m3_mod2_imaging_xray_mri_ultrasound.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_m3_3',courseId:'cs_m3',moduleNum:3,title:'Concussion & Head Injuries in Sport',url:'/course_pdfs/master/cs_m3_mod3_concussion_head_injuries_sport.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_m3_4',courseId:'cs_m3',moduleNum:4,title:'Bone Stress Injuries & Fracture Management',url:'/course_pdfs/master/cs_m3_mod4_bone_stress_injuries_fracture_management.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_m3_5',courseId:'cs_m3',moduleNum:5,title:'Tendinopathy Science & Advanced Management',url:'/course_pdfs/master/cs_m3_mod5_tendinopathy_science_advanced_management.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_m3_6',courseId:'cs_m3',moduleNum:6,title:'Surgical Interventions: Coaches\' Knowledge',url:'/course_pdfs/master/cs_m3_mod6_surgical_interventions_coaches_knowledge.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_m3_7',courseId:'cs_m3',moduleNum:7,title:'Cardiovascular Screening & Sudden Cardiac Death',url:'/course_pdfs/master/cs_m3_mod7_cardiovascular_screening_sudden_cardiac_death.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_m3_8',courseId:'cs_m3',moduleNum:8,title:'Female Athlete Health & RED-S Triad',url:'/course_pdfs/master/cs_m3_mod8_female_athlete_health_reds_triad.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_m3_9',courseId:'cs_m3',moduleNum:9,title:'Pain Science & Chronic Musculoskeletal Conditions',url:'/course_pdfs/master/cs_m3_mod9_pain_science_chronic_musculoskeletal.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_m3_10',courseId:'cs_m3',moduleNum:10,title:'Pharmacology in Sports Medicine & NSAIDs',url:'/course_pdfs/master/cs_m3_mod10_pharmacology_sports_medicine_nsaids.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_m3_11',courseId:'cs_m3',moduleNum:11,title:'Sports Medicine: Field & Sideline Emergencies',url:'/course_pdfs/master/cs_m3_mod11_sports_medicine_field_sideline_emergencies.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_m3_12',courseId:'cs_m3',moduleNum:12,title:'Final Master Exam (Sports Medicine)',url:'/course_pdfs/master/cs_m3_mod12_final_master_exam_sports_medicine.pdf',addedDate:'2026-06-14'},
 ];
 
 function getAdminPdfs() {
