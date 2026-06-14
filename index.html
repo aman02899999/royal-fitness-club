@@ -4324,6 +4324,16 @@ function initUser(){
   }
   firebase.auth().onAuthStateChanged(async function(fbUser){
     if(fbUser){
+      // Admin bypass — always grant full access without gym-membership gate
+      if(fbUser.email===ADMIN_EMAIL){
+        user={uid:fbUser.uid,name:'Admin',email:fbUser.email,phone:'',role:'admin',plan:'royal_elite',membershipExpiry:null,memberCode:null,since:new Date().toISOString(),last:new Date().toISOString()};
+        isPro=true;
+        localStorage.setItem('bm_user',JSON.stringify(user));
+        localStorage.setItem('bm_pro','true');
+        applyUser();
+        initPDFStore();
+        return;
+      }
       try{
         const doc=await firebase.firestore().collection('users').doc(fbUser.uid).get();
         if(doc.exists){
