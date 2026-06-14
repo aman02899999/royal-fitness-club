@@ -1,102 +1,84 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-  width="900" height="340" viewBox="0 0 900 340"
-  role="img" aria-label="ELITE PERFORMANCE MASTER — USA Fitness Academy Master Certification">
-  <title>ELITE PERFORMANCE MASTER | USA Fitness Academy Master Certification</title>
-  <desc>elite fitness, performance coach, master certification, high performance training. 14 modules, 16 Weeks, rated 4.9/5 stars. USA Fitness Academy accredited certification.</desc>
-
-  <!-- Background gradient -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 340" width="900" height="340">
+  <title>ELITE PERFORMANCE MASTER | USA Fitness Academy MASTER CERTIFICATION</title>
+  <desc>elite performance master, master certification, elite level mastery, 14 modules, 16 WEEKS, rated 4.9/5, USA Fitness Academy certification</desc>
   <defs>
-    <linearGradient id="bg_cs_m1" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#1c0a00"/>
-      <stop offset="55%" stop-color="#78350f"/>
-      <stop offset="100%" stop-color="#0d0500"/>
+    <linearGradient id="bgcs_m1" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1c0a04"/>
+      <stop offset="100%" stop-color="#78350f"/>
     </linearGradient>
-    <linearGradient id="shine_cs_m1" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="rgba(255,255,255,0.06)"/>
-      <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
+    <linearGradient id="shinecs_m1" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="rgba(255,255,255,0.04)"/>
+      <stop offset="100%" stop-color="rgba(0,0,0,0.0)"/>
     </linearGradient>
-    <filter id="glow_cs_m1">
-      <feGaussianBlur stdDeviation="3" result="blur"/>
-      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-    </filter>
   </defs>
 
-  <!-- Base -->
-  <rect width="900" height="340" fill="url(#bg_cs_m1)"/>
-  <!-- Shine overlay -->
-  <rect width="900" height="340" fill="url(#shine_cs_m1)"/>
+  <!-- Background -->
+  <rect width="900" height="340" fill="url(#bgcs_m1)"/>
 
-  <!-- Decorative stripes -->
-  <g opacity="1">
-    <line x1="-100" y1="0" x2="200" y2="340" stroke="#d97706" stroke-width="38" stroke-opacity="0.09"/>
-    <line x1="80" y1="0" x2="380" y2="340" stroke="#d97706" stroke-width="38" stroke-opacity="0.09"/>
-    <line x1="260" y1="0" x2="560" y2="340" stroke="#d97706" stroke-width="38" stroke-opacity="0.09"/>
-    <line x1="440" y1="0" x2="740" y2="340" stroke="#d97706" stroke-width="38" stroke-opacity="0.09"/>
-    <line x1="620" y1="0" x2="920" y2="340" stroke="#d97706" stroke-width="38" stroke-opacity="0.09"/>
-    <line x1="800" y1="0" x2="1100" y2="340" stroke="#d97706" stroke-width="38" stroke-opacity="0.09"/>
-    <line x1="980" y1="0" x2="1280" y2="340" stroke="#d97706" stroke-width="38" stroke-opacity="0.09"/>
-    <line x1="1160" y1="0" x2="1460" y2="340" stroke="#d97706" stroke-width="38" stroke-opacity="0.09"/></g>
+  <!-- Subtle top shine -->
+  <rect width="900" height="160" fill="url(#shinecs_m1)"/>
 
-  <!-- Circles -->
-  
-    <circle cx="580" cy="-30" r="130" fill="#ffd000" fill-opacity="0.08"/>
-    <circle cx="620" cy="30" r="70" fill="#ffd000" fill-opacity="0.06"/>
-    <circle cx="-20" cy="310" r="90" fill="#ffd000" fill-opacity="0.07"/>
+  <!-- Right accent circle (large faded emoji bg) -->
+  <circle cx="760" cy="160" r="155" fill="#fbbf24" opacity="0.08"/>
+  <circle cx="760" cy="160" r="100" fill="#fbbf24" opacity="0.06"/>
 
-  <!-- Large emoji background -->
-  
-    <text x="820" y="240" font-size="140" text-anchor="middle" dominant-baseline="middle" opacity="0.28">👑</text>
-    <text x="810" y="230" font-size="120" text-anchor="middle" dominant-baseline="middle" opacity="0.55">👑</text>
+  <!-- Left accent stripe -->
+  <rect x="0" y="0" width="6" height="340" fill="#fbbf24"/>
 
-  <!-- Top brand bar -->
-  
-    <rect x="0" y="0" width="900" height="48" fill="rgba(0,0,0,0.45)"/>
-    <!-- US flag mini accent -->
-    <rect x="20" y="14" width="5" height="20" fill="#B22234" rx="1"/>
-    <rect x="27" y="14" width="5" height="20" fill="#ffffff" rx="1"/>
-    <rect x="34" y="14" width="5" height="20" fill="#3C3B6E" rx="1"/>
-    <text x="47" y="30" font-family="Arial Black, Arial" font-weight="900" font-size="11" fill="#ffffff" letter-spacing="3">USA FITNESS ACADEMY</text>
-    <text x="47" y="43" font-family="Arial, sans-serif" font-size="8" fill="rgba(255,255,255,0.6)" letter-spacing="2">WORLD-CLASS CERTIFICATION PROGRAMS</text>
-    <!-- right: ACCREDITED badge -->
-    <rect x="790" y="10" width="90" height="28" rx="4" fill="#ffd000" fill-opacity="0.25" stroke="#ffd000" stroke-width="1" stroke-opacity="0.6"/>
-    <text x="835" y="28" font-family="Arial Black, Arial" font-weight="900" font-size="9" fill="#ffd000" letter-spacing="1.5" text-anchor="middle">ACCREDITED</text>
+  <!-- Top bar: academy name -->
+  <rect x="0" y="0" width="900" height="52" fill="rgba(0,0,0,0.35)"/>
+  <!-- Flag color bars -->
+  <rect x="6" y="0" width="4" height="52" fill="#B22234"/>
+  <rect x="10" y="0" width="4" height="52" fill="#FFFFFF" opacity="0.9"/>
+  <rect x="14" y="0" width="4" height="52" fill="#3C3B6E"/>
+  <text x="26" y="33" font-family="'Arial Black',Impact,sans-serif" font-size="14" font-weight="900" fill="#fff" letter-spacing="3">USA FITNESS ACADEMY</text>
+  <text x="26" y="46" font-family="Arial,sans-serif" font-size="9" fill="rgba(255,255,255,0.55)" letter-spacing="2">WORLD-CLASS CERTIFICATION PROGRAMS</text>
+
+  <!-- ACCREDITED badge -->
+  <rect x="800" y="10" width="90" height="22" rx="3" fill="#fbbf24" opacity="0.25"/>
+  <rect x="800" y="10" width="90" height="22" rx="3" fill="none" stroke="#fbbf24" stroke-width="1" opacity="0.7"/>
+  <text x="845" y="25" font-family="Arial,sans-serif" font-size="9" font-weight="700" fill="#fbbf24" text-anchor="middle" letter-spacing="1.5">ACCREDITED</text>
 
   <!-- Level badge -->
-  
-    <rect x="20" y="60" width="74" height="24" rx="12" fill="rgba(255,208,0,.18)" stroke="#ffd000" stroke-width="1.2"/>
-    <text x="57" y="76" font-family="Arial Black, Arial" font-weight="900" font-size="9.5" fill="#ffd000" letter-spacing="2" text-anchor="middle">MASTER</text>
+  <rect x="40" y="64" width="74" height="22" rx="11" fill="#92400e"/>
+  <text x="77" y="79" font-family="Arial,sans-serif" font-size="10" font-weight="700" fill="#fff" text-anchor="middle" letter-spacing="2">MASTER</text>
 
-  <!-- Title -->
-  <text x="22" y="120" font-family="Arial Black, Impact, Arial" font-weight="900" font-size="42" fill="#ffffff" letter-spacing="1.5" paint-order="stroke" stroke="rgba(0,0,0,0.5)" stroke-width="4">ELITE PERFORMANCE</text><text x="22" y="168" font-family="Arial Black, Impact, Arial" font-weight="900" font-size="42" fill="#ffffff" letter-spacing="1.5" paint-order="stroke" stroke="rgba(0,0,0,0.5)" stroke-width="4">MASTER</text>
-  <text x="22" y="222" font-family="Arial, sans-serif" font-size="14" fill="#ffd000" letter-spacing="3" font-weight="700">MASTER CERTIFICATION</text>
-  
-    <rect x="20" y="248" width="153" height="22" rx="3" fill="#ffd000" fill-opacity="0.15" stroke="#ffd000" stroke-width="0.8" stroke-opacity="0.5"/>
-    <text x="30" y="262.5" font-family="Arial, sans-serif" font-size="10" fill="#ffd000" letter-spacing="2" font-weight="700">ELITE LEVEL MASTERY</text>
+  <!-- Course title (big) -->
+  <text x="40" y="152" font-family="Impact,'Arial Black',sans-serif" font-size="64" font-weight="900" fill="#fff" letter-spacing="1">ELITE PERFORMANCE</text>
+  <text x="40" y="222" font-family="Impact,'Arial Black',sans-serif" font-size="64" font-weight="900" fill="#fff" letter-spacing="1">MASTER</text>
 
-  <!-- Bottom stats bar -->
-  
-    <rect x="0" y="295" width="900" height="45" fill="rgba(0,0,0,0.55)"/>
-    <rect x="0" y="295" width="900" height="2" fill="#ffd000" fill-opacity="0.7"/>
-    <!-- modules -->
-    <text x="22" y="316" font-family="Arial Black, Arial" font-weight="900" font-size="18" fill="#ffd000">14</text>
-    <text x="46" y="316" font-family="Arial, sans-serif" font-size="9" fill="rgba(255,255,255,0.6)" letter-spacing="1"> MODULES</text>
-    <!-- divider -->
-    <rect x="120" y="302" width="1" height="28" fill="rgba(255,255,255,0.15)"/>
-    <!-- duration -->
-    <text x="133" y="316" font-family="Arial Black, Arial" font-weight="900" font-size="16" fill="#ffffff">16</text>
-    <text x="153" y="316" font-family="Arial, sans-serif" font-size="9" fill="rgba(255,255,255,0.6)" letter-spacing="1"> WEEKS</text>
-    <!-- divider -->
-    <rect x="250" y="302" width="1" height="28" fill="rgba(255,255,255,0.15)"/>
-    <!-- rating stars -->
-    <text x="263" y="318" font-family="Arial, sans-serif" font-size="14" fill="#ffd000">★★★★☆</text>
-    <text x="340" y="316" font-family="Arial Black, Arial" font-weight="900" font-size="13" fill="#ffffff">4.9</text>
-    <!-- right: USA FITNESS ACADEMY seal -->
-    <circle cx="845" cy="318" r="18" fill="none" stroke="#ffd000" stroke-width="1.5" stroke-opacity="0.6"/>
-    <text x="845" y="314" font-family="Arial Black, Arial" font-weight="900" font-size="6.5" fill="#ffd000" text-anchor="middle" letter-spacing="0.5">USA</text>
-    <text x="845" y="323" font-family="Arial Black, Arial" font-weight="900" font-size="6.5" fill="#ffd000" text-anchor="middle" letter-spacing="0.5">FITNESS</text>
-    <text x="845" y="331" font-family="Arial Black, Arial" font-weight="900" font-size="6.5" fill="#ffd000" text-anchor="middle" letter-spacing="0.5">ACADEMY</text>
+  <!-- Sub/type line -->
+  <text x="40" y="300" font-family="Arial,sans-serif" font-size="13" fill="#fbbf24" letter-spacing="3" opacity="0.9">MASTER CERTIFICATION</text>
 
-  <!-- Side accent line -->
-  <rect x="0" y="48" width="4" height="247" fill="#ffd000" fill-opacity="0.8" rx="2"/>
+  <!-- Tag line -->
+  <rect x="40" y="314" width="158.5" height="20" rx="3" fill="rgba(255,255,255,0.07)" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+  <text x="119.25" y="328" font-family="Arial,sans-serif" font-size="10" font-weight="700" fill="rgba(255,255,255,0.75)" text-anchor="middle" letter-spacing="1.5">ELITE LEVEL MASTERY</text>
+
+  <!-- Emoji right side -->
+  <text x="750" y="210" font-size="110" text-anchor="middle" opacity="0.7">👑</text>
+
+  <!-- Bottom bar -->
+  <rect x="0" y="290" width="900" height="50" fill="rgba(0,0,0,0.45)"/>
+  <rect x="0" y="290" width="900" height="1" fill="#fbbf24" opacity="0.4"/>
+
+  <!-- Stats -->
+  <text x="40" y="322" font-family="Arial,sans-serif" font-size="12" font-weight="700" fill="#fbbf24">14</text>
+  <text x="60" y="322" font-family="Arial,sans-serif" font-size="11" fill="rgba(255,255,255,0.55)"> MODULES</text>
+
+  <text x="180" y="322" font-family="Arial,sans-serif" font-size="12" font-weight="700" fill="#fbbf24">16 WEEKS</text>
+
+  <text x="310" y="322" font-family="Arial,sans-serif" font-size="12" font-weight="700" fill="#fbbf24">★★★★</text>
+  <text x="358" y="322" font-family="Arial,sans-serif" font-size="11" fill="rgba(255,255,255,0.55)"> 4.9</text>
+
+  <!-- Price pill -->
+  <rect x="610" y="300" width="110" height="28" rx="14" fill="#fbbf24" opacity="0.18"/>
+  <rect x="610" y="300" width="110" height="28" rx="14" fill="none" stroke="#fbbf24" stroke-width="1" opacity="0.5"/>
+  <text x="665" y="319" font-family="'Arial Black',Impact,sans-serif" font-size="13" font-weight="900" fill="#fbbf24" text-anchor="middle">₹9,999</text>
+
+  <!-- USA Fitness Academy seal circle -->
+  <circle cx="845" cy="315" r="22" fill="#fbbf24" opacity="0.12"/>
+  <circle cx="845" cy="315" r="22" fill="none" stroke="#fbbf24" stroke-width="1" opacity="0.4"/>
+  <text x="845" y="310" font-family="Arial,sans-serif" font-size="6" font-weight="700" fill="#fbbf24" text-anchor="middle" letter-spacing="0.5">USA FITNESS</text>
+  <text x="845" y="320" font-family="Arial,sans-serif" font-size="6" font-weight="700" fill="#fbbf24" text-anchor="middle" letter-spacing="0.5">ACADEMY</text>
+  <text x="845" y="330" font-family="Arial,sans-serif" font-size="7" fill="#fbbf24" text-anchor="middle">✦</text>
 </svg>
