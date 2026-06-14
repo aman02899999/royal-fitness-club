@@ -4578,6 +4578,12 @@ $('btnlo').addEventListener('click',async function(){
   if($('emptyst2'))$('emptyst2').style.display='flex';
   toast('Logged out successfully.');
 });
+async function logout(){
+  try{if(typeof firebase!=='undefined')await firebase.auth().signOut();}catch(e){}
+  user=null;isPro=false;
+  localStorage.removeItem('bm_user');localStorage.removeItem('bm_pro');
+  location.reload();
+}
 // ── PRO ──
 // activatePro moved to currency module below
 // ── GALLERY (removed) ──
