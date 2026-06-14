@@ -345,6 +345,130 @@ section{padding:68px 20px;position:relative;z-index:1;}
 .hc-cat{margin-bottom:10px;}
 .hc-cat-label{font-size:9px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:#555;margin-bottom:5px;display:flex;align-items:center;gap:6px;}
 .hc-cat-label::after{content:'';flex:1;height:1px;background:#1e1e1e;}
+
+/* ── PROMO TOP BAR ── */
+#rfc-promo-bar{
+  position:relative;z-index:200;
+  background:linear-gradient(90deg,#0e0e0e 0%,#1a0000 30%,#0e0e0e 70%,#1a0a00 100%);
+  border-bottom:1px solid rgba(232,0,29,.25);
+  padding:9px 50px 9px 16px;
+  display:flex;align-items:center;justify-content:center;gap:0;
+  overflow:hidden;
+}
+#rfc-promo-bar::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(90deg,transparent 0%,rgba(232,0,29,.06) 50%,transparent 100%);
+  animation:promoShimmer 3s ease-in-out infinite;
+}
+@keyframes promoShimmer{0%,100%{opacity:0}50%{opacity:1}}
+.promo-bar-inner{display:flex;align-items:center;gap:0;flex-wrap:nowrap;overflow:hidden;width:100%;position:relative;z-index:1;}
+.promo-bar-track{display:flex;align-items:center;gap:0;width:max-content;animation:promoScroll 36s linear infinite;}
+.promo-bar-track:hover{animation-play-state:paused;}
+.promo-item{display:flex;align-items:center;gap:8px;padding:0 28px;white-space:nowrap;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:600;letter-spacing:1px;color:#c0c0c0;}
+.promo-item .promo-pill{background:linear-gradient(135deg,var(--red),var(--orange));color:#fff;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:2px 8px;border-radius:2px;flex-shrink:0;}
+.promo-item .promo-pill.gold{background:linear-gradient(135deg,var(--gold),var(--orange));color:#000;}
+.promo-item .promo-sep{color:rgba(232,0,29,.4);font-size:18px;padding:0 6px;}
+.promo-bar-close{position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;color:#444;font-size:16px;cursor:pointer;z-index:2;line-height:1;transition:color .2s;}
+.promo-bar-close:hover{color:#888;}
+@keyframes promoScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+/* ── DUAL FEATURE MARQUEE ── */
+.rfc-marquee-wrap{background:#0a0a0a;border-top:1px solid rgba(232,0,29,.1);border-bottom:1px solid rgba(232,0,29,.1);overflow:hidden;position:relative;z-index:2;}
+.rfc-marquee-wrap::before,.rfc-marquee-wrap::after{content:'';position:absolute;top:0;bottom:0;width:80px;z-index:3;pointer-events:none;}
+.rfc-marquee-wrap::before{left:0;background:linear-gradient(90deg,#0a0a0a,transparent);}
+.rfc-marquee-wrap::after{right:0;background:linear-gradient(-90deg,#0a0a0a,transparent);}
+.rfc-mq-row{padding:9px 0;display:flex;align-items:center;border-bottom:1px solid #111;}
+.rfc-mq-row:last-child{border-bottom:none;}
+.rfc-mq-track{display:flex;align-items:center;width:max-content;gap:0;}
+.rfc-mq-track.fwd{animation:mqFwd 32s linear infinite;}
+.rfc-mq-track.rev{animation:mqRev 40s linear infinite;}
+.rfc-mq-track:hover{animation-play-state:paused;}
+@keyframes mqFwd{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+@keyframes mqRev{0%{transform:translateX(-50%)}100%{transform:translateX(0)}}
+.rfc-mq-item{display:flex;align-items:center;gap:8px;padding:0 24px;white-space:nowrap;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:#4a4a4a;}
+.rfc-mq-item .mq-icon{font-size:15px;}
+.rfc-mq-item.lit{color:#888;}
+.rfc-mq-item .mq-dot{width:3px;height:3px;border-radius:50%;background:var(--red);flex-shrink:0;margin-left:8px;}
+
+/* ── SOCIAL PROOF TICKER ── */
+.rfc-social-ticker{background:rgba(16,16,16,.9);border-top:1px solid #1a1a1a;border-bottom:2px solid rgba(232,0,29,.12);overflow:hidden;position:relative;padding:12px 0;}
+.rfc-social-ticker::before,.rfc-social-ticker::after{content:'';position:absolute;top:0;bottom:0;width:120px;z-index:2;pointer-events:none;}
+.rfc-social-ticker::before{left:0;background:linear-gradient(90deg,rgba(16,16,16,1),transparent);}
+.rfc-social-ticker::after{right:0;background:linear-gradient(-90deg,rgba(16,16,16,1),transparent);}
+.rfc-st-track{display:flex;width:max-content;animation:mqFwd 55s linear infinite;}
+.rfc-st-track:hover{animation-play-state:paused;}
+.rfc-st-item{display:flex;align-items:center;gap:10px;padding:0 36px;white-space:nowrap;}
+.rfc-st-avatar{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--red),var(--orange));display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;font-family:'Bebas Neue',sans-serif;flex-shrink:0;}
+.rfc-st-text{font-family:'Barlow',sans-serif;font-size:12px;color:#888;line-height:1;}
+.rfc-st-text strong{color:#d0d0d0;font-weight:600;}
+.rfc-st-stars{color:var(--gold);font-size:10px;letter-spacing:1px;}
+.rfc-st-divider{color:#222;padding:0 4px;font-size:16px;}
+
+/* ── FEATURE SHOWCASE ── */
+#rfc-features{padding:80px 20px;background:var(--dark);position:relative;overflow:hidden;}
+#rfc-features::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(232,0,29,.08) 0%,transparent 60%);}
+.rfc-feat-eyebrow{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:6px;text-transform:uppercase;color:var(--red);text-align:center;margin-bottom:12px;}
+.rfc-feat-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(42px,6vw,72px);line-height:.9;letter-spacing:3px;text-align:center;color:#fff;margin-bottom:10px;}
+.rfc-feat-title em{font-style:normal;background:linear-gradient(135deg,var(--red),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.rfc-feat-sub{font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:300;letter-spacing:2px;color:#666;text-align:center;text-transform:uppercase;margin-bottom:60px;}
+.rfc-feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;max-width:1100px;margin:0 auto 60px;position:relative;z-index:2;}
+@media(max-width:900px){.rfc-feat-grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:560px){.rfc-feat-grid{grid-template-columns:1fr;}}
+.rfc-feat-card{background:#0d0d0d;border:1px solid #1a1a1a;border-radius:12px;padding:28px 24px;display:flex;flex-direction:column;gap:12px;position:relative;overflow:hidden;transition:border-color .3s,transform .3s;}
+.rfc-feat-card:hover{border-color:rgba(232,0,29,.3);transform:translateY(-3px);}
+.rfc-feat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--red),transparent);opacity:0;transition:opacity .3s;}
+.rfc-feat-card:hover::before{opacity:1;}
+.rfc-feat-card.gold-card{border-color:rgba(255,208,0,.15);}
+.rfc-feat-card.gold-card:hover{border-color:rgba(255,208,0,.4);}
+.rfc-feat-card.gold-card::before{background:linear-gradient(90deg,transparent,var(--gold),transparent);}
+.rfc-feat-icon-wrap{width:52px;height:52px;border-radius:10px;background:#141414;border:1px solid #222;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;}
+.rfc-feat-card.gold-card .rfc-feat-icon-wrap{border-color:rgba(255,208,0,.2);background:rgba(255,208,0,.04);}
+.rfc-feat-name{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px;color:#fff;line-height:1;}
+.rfc-feat-desc{font-family:'Barlow',sans-serif;font-size:12.5px;color:#666;line-height:1.65;flex:1;}
+.rfc-feat-badge{font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:3px 10px;border-radius:2px;width:fit-content;}
+.rfc-feat-badge.pro{background:rgba(232,0,29,.12);border:1px solid rgba(232,0,29,.25);color:var(--red);}
+.rfc-feat-badge.elite{background:rgba(255,208,0,.1);border:1px solid rgba(255,208,0,.25);color:var(--gold);}
+.rfc-feat-badge.free{background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.2);color:var(--green);}
+
+/* ── UPGRADE CTA BANNER ── */
+#rfc-upgrade-banner{
+  background:linear-gradient(135deg,#0e0000 0%,#1a0000 40%,#0c0800 100%);
+  border-top:2px solid rgba(232,0,29,.2);border-bottom:2px solid rgba(232,0,29,.2);
+  padding:60px 20px;position:relative;overflow:hidden;
+}
+#rfc-upgrade-banner::before{
+  content:'';position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse at 20% 50%,rgba(232,0,29,.12) 0%,transparent 50%),
+    radial-gradient(ellipse at 80% 50%,rgba(255,208,0,.06) 0%,transparent 50%);
+}
+.rfc-ub-inner{max-width:900px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:40px;flex-wrap:wrap;position:relative;z-index:2;}
+.rfc-ub-left{display:flex;flex-direction:column;gap:12px;}
+.rfc-ub-eyebrow{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--red);}
+.rfc-ub-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(36px,5vw,58px);line-height:.88;letter-spacing:2px;color:#fff;}
+.rfc-ub-title em{font-style:normal;color:var(--gold);}
+.rfc-ub-features{display:flex;flex-direction:column;gap:7px;}
+.rfc-ub-feat{display:flex;align-items:center;gap:8px;font-family:'Barlow',sans-serif;font-size:13px;color:#888;}
+.rfc-ub-feat::before{content:'✓';color:var(--red);font-weight:700;font-size:13px;flex-shrink:0;}
+.rfc-ub-right{display:flex;flex-direction:column;align-items:center;gap:16px;flex-shrink:0;}
+.rfc-ub-price{text-align:center;}
+.rfc-ub-price-from{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#555;margin-bottom:4px;}
+.rfc-ub-price-num{font-family:'Bebas Neue',sans-serif;font-size:72px;line-height:1;color:var(--gold);}
+.rfc-ub-price-mo{font-family:'Barlow Condensed',sans-serif;font-size:14px;color:#555;letter-spacing:2px;}
+.rfc-ub-price-old{font-family:'Barlow Condensed',sans-serif;font-size:13px;color:#333;text-decoration:line-through;}
+.rfc-ub-cta{display:flex;flex-direction:column;gap:8px;align-items:center;}
+.rfc-ub-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:linear-gradient(135deg,var(--red),var(--orange));color:#fff;font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:3px;padding:16px 44px;border-radius:3px;border:none;cursor:pointer;box-shadow:0 12px 40px rgba(232,0,29,.45);transition:all .25s;}
+.rfc-ub-btn:hover{transform:translateY(-2px);box-shadow:0 16px 50px rgba(232,0,29,.6);}
+.rfc-ub-note{font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#333;}
+
+/* ── COUNTER STRIP ── */
+.rfc-counter-strip{background:#0c0c0c;border-top:1px solid #1a1a1a;border-bottom:1px solid #1a1a1a;padding:28px 20px;}
+.rfc-counter-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-around;flex-wrap:wrap;gap:20px;}
+.rfc-counter{text-align:center;flex:1;min-width:120px;}
+.rfc-counter-num{font-family:'Bebas Neue',sans-serif;font-size:48px;line-height:1;background:linear-gradient(135deg,var(--red),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.rfc-counter-label{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#444;margin-top:4px;}
+.rfc-counter-div{width:1px;height:40px;background:#1e1e1e;flex-shrink:0;}
+@media(max-width:600px){.rfc-counter-div{display:none;}.rfc-counter{min-width:calc(50% - 20px);}.rfc-counter-num{font-size:38px;}}
 .hc-alert-note{font-size:10px;color:rgba(255,208,0,.7);background:rgba(255,208,0,.05);border:1px solid rgba(255,208,0,.12);border-radius:4px;padding:6px 10px;margin-top:6px;line-height:1.5;}
 .hchk.on{border-color:var(--gold);color:var(--gold);background:rgba(255,208,0,.07);}
 .cnote{font-size:10px;color:var(--muted);margin-top:5px;line-height:1.5;}
@@ -1945,6 +2069,40 @@ img{loading:lazy;}
   </div>
 </div>
 
+<!-- ═══════════════════ PROMO TOP BAR ═══════════════════ -->
+<div id="rfc-promo-bar">
+  <div class="promo-bar-inner">
+    <div class="promo-bar-track" id="rfc-promo-track">
+      <div class="promo-item"><span class="promo-pill">🔥 LIVE</span>&nbsp; Royal Fitness Club — India's Ultimate Beast Ecosystem</div>
+      <div class="promo-item"><span class="promo-sep">·</span></div>
+      <div class="promo-item"><span class="promo-pill">⚡ PRO</span>&nbsp; Royal Pro from <strong style="color:var(--gold);">₹499/mo</strong> — AI Meal Plans · 22+ Expert Guides · Beast Score</div>
+      <div class="promo-item"><span class="promo-sep">·</span></div>
+      <div class="promo-item"><span class="promo-pill gold">👑 ELITE</span>&nbsp; 1-on-1 Personal Coaching from <strong style="color:var(--gold);">₹1999/mo</strong> — Limited Spots Available</div>
+      <div class="promo-item"><span class="promo-sep">·</span></div>
+      <div class="promo-item"><span class="promo-pill">🎯 NEW</span>&nbsp; 17 Medical Conditions Supported — Personalised Diet Plans for Every Diagnosis</div>
+      <div class="promo-item"><span class="promo-sep">·</span></div>
+      <div class="promo-item"><span class="promo-pill">📚 PDF</span>&nbsp; 108+ Expert PDF Guides — Beginner · Advanced · Master Courses</div>
+      <div class="promo-item"><span class="promo-sep">·</span></div>
+      <div class="promo-item">🏆 <strong style="color:#fff;">&nbsp;500+ Active Members</strong>&nbsp; — Join the Royal Family Today</div>
+      <div class="promo-item"><span class="promo-sep">·</span></div>
+      <!-- duplicate for seamless loop -->
+      <div class="promo-item"><span class="promo-pill">🔥 LIVE</span>&nbsp; Royal Fitness Club — India's Ultimate Beast Ecosystem</div>
+      <div class="promo-item"><span class="promo-sep">·</span></div>
+      <div class="promo-item"><span class="promo-pill">⚡ PRO</span>&nbsp; Royal Pro from <strong style="color:var(--gold);">₹499/mo</strong> — AI Meal Plans · 22+ Expert Guides · Beast Score</div>
+      <div class="promo-item"><span class="promo-sep">·</span></div>
+      <div class="promo-item"><span class="promo-pill gold">👑 ELITE</span>&nbsp; 1-on-1 Personal Coaching from <strong style="color:var(--gold);">₹1999/mo</strong> — Limited Spots Available</div>
+      <div class="promo-item"><span class="promo-sep">·</span></div>
+      <div class="promo-item"><span class="promo-pill">🎯 NEW</span>&nbsp; 17 Medical Conditions Supported — Personalised Diet Plans for Every Diagnosis</div>
+      <div class="promo-item"><span class="promo-sep">·</span></div>
+      <div class="promo-item"><span class="promo-pill">📚 PDF</span>&nbsp; 108+ Expert PDF Guides — Beginner · Advanced · Master Courses</div>
+      <div class="promo-item"><span class="promo-sep">·</span></div>
+      <div class="promo-item">🏆 <strong style="color:#fff;">&nbsp;500+ Active Members</strong>&nbsp; — Join the Royal Family Today</div>
+      <div class="promo-item"><span class="promo-sep">·</span></div>
+    </div>
+  </div>
+  <button class="promo-bar-close" onclick="document.getElementById('rfc-promo-bar').style.display='none'" title="Close">✕</button>
+</div>
+
 <nav>
   <div class="nlogo" onclick="switchScreen('dashboard',document.querySelector('[data-screen=dashboard]'))">ROYAL FITNESS CLUB</div>
   <div class="nlinks" id="nlinks">
@@ -2042,36 +2200,231 @@ img{loading:lazy;}
   </div>
 </section>
 
-<!-- Hero feature ticker -->
-<div class="h-ticker saas-hide">
-  <div class="h-ticker-inner" id="h-ticker-track">
-    <div class="h-tick"><span class="sep">⚡</span> Macro Tracker</div>
-    <div class="h-tick"><span class="sep">🍽️</span> AI Meal Plans</div>
-    <div class="h-tick"><span class="sep">📊</span> Progress Photos</div>
-    <div class="h-tick"><span class="sep">🏆</span> Beast Score</div>
-    <div class="h-tick"><span class="sep">💊</span> Cycle Guides</div>
-    <div class="h-tick"><span class="sep">🧬</span> SARMs Database</div>
-    <div class="h-tick"><span class="sep">📈</span> Leaderboard</div>
-    <div class="h-tick"><span class="sep">🎯</span> Goal Tracking</div>
-    <div class="h-tick"><span class="sep">💧</span> Hydration Log</div>
-    <div class="h-tick"><span class="sep">📋</span> Workout Logger</div>
-    <div class="h-tick"><span class="sep">🏅</span> Achievements</div>
-    <div class="h-tick"><span class="sep">📥</span> PDF Downloads</div>
-    <!-- duplicate for seamless loop -->
-    <div class="h-tick"><span class="sep">⚡</span> Macro Tracker</div>
-    <div class="h-tick"><span class="sep">🍽️</span> AI Meal Plans</div>
-    <div class="h-tick"><span class="sep">📊</span> Progress Photos</div>
-    <div class="h-tick"><span class="sep">🏆</span> Beast Score</div>
-    <div class="h-tick"><span class="sep">💊</span> Cycle Guides</div>
-    <div class="h-tick"><span class="sep">🧬</span> SARMs Database</div>
-    <div class="h-tick"><span class="sep">📈</span> Leaderboard</div>
-    <div class="h-tick"><span class="sep">🎯</span> Goal Tracking</div>
-    <div class="h-tick"><span class="sep">💧</span> Hydration Log</div>
-    <div class="h-tick"><span class="sep">📋</span> Workout Logger</div>
-    <div class="h-tick"><span class="sep">🏅</span> Achievements</div>
-    <div class="h-tick"><span class="sep">📥</span> PDF Downloads</div>
+<!-- ═══ DUAL FEATURE MARQUEE ═══ -->
+<div class="rfc-marquee-wrap saas-hide">
+  <!-- Row 1 → features scrolling left -->
+  <div class="rfc-mq-row">
+    <div class="rfc-mq-track fwd">
+      <div class="rfc-mq-item lit"><span class="mq-icon">⚡</span> Beast Score 2.0 <span class="mq-dot"></span></div>
+      <div class="rfc-mq-item"><span class="mq-icon">🤖</span> AI Meal Planner <span class="mq-dot"></span></div>
+      <div class="rfc-mq-item lit"><span class="mq-icon">📚</span> 108+ PDF Guides <span class="mq-dot"></span></div>
+      <div class="rfc-mq-item"><span class="mq-icon">🏋</span> Workout Logger <span class="mq-dot"></span></div>
+      <div class="rfc-mq-item lit"><span class="mq-icon">📊</span> Progress Photos <span class="mq-dot"></span></div>
+      <div class="rfc-mq-item"><span class="mq-icon">🏆</span> Leaderboard <span class="mq-dot"></span></div>
+      <div class="rfc-mq-item lit"><span class="mq-icon">💊</span> Supplement Tracker <span class="mq-dot"></span></div>
+      <div class="rfc-mq-item"><span class="mq-icon">🧬</span> SARMs Database <span class="mq-dot"></span></div>
+      <div class="rfc-mq-item lit"><span class="mq-icon">🎯</span> 12-Week Roadmap <span class="mq-dot"></span></div>
+      <div class="rfc-mq-item"><span class="mq-icon">💧</span> Hydration Log <span class="mq-dot"></span></div>
+      <div class="rfc-mq-item lit"><span class="mq-icon">🏅</span> Achievements <span class="mq-dot"></span></div>
+      <div class="rfc-mq-item"><span class="mq-icon">🩺</span> Health Conditions <span class="mq-dot"></span></div>
+      <div class="rfc-mq-item lit"><span class="mq-icon">📈</span> Body Analyser <span class="mq-dot"></span></div>
+      <div class="rfc-mq-item"><span class="mq-icon">🫀</span> Blood Report AI <span class="mq-dot"></span></div>
+      <div class="rfc-mq-item lit"><span class="mq-icon">🥗</span> Salad Builder <span class="mq-dot"></span></div>
+      <div class="rfc-mq-item"><span class="mq-icon">📅</span> Challenge Arena <span class="mq-dot"></span></div>
+      <!-- dup -->
+      <div class="rfc-mq-item lit"><span class="mq-icon">⚡</span> Beast Score 2.0 <span class="mq-dot"></span></div>
+      <div class="rfc-mq-item"><span class="mq-icon">🤖</span> AI Meal Planner <span class="mq-dot"></span></div>
+      <div class="rfc-mq-item lit"><span class="mq-icon">📚</span> 108+ PDF Guides <span class="mq-dot"></span></div>
+      <div class="rfc-mq-item"><span class="mq-icon">🏋</span> Workout Logger <span class="mq-dot"></span></div>
+      <div class="rfc-mq-item lit"><span class="mq-icon">📊</span> Progress Photos <span class="mq-dot"></span></div>
+      <div class="rfc-mq-item"><span class="mq-icon">🏆</span> Leaderboard <span class="mq-dot"></span></div>
+      <div class="rfc-mq-item lit"><span class="mq-icon">💊</span> Supplement Tracker <span class="mq-dot"></span></div>
+      <div class="rfc-mq-item"><span class="mq-icon">🧬</span> SARMs Database <span class="mq-dot"></span></div>
+      <div class="rfc-mq-item lit"><span class="mq-icon">🎯</span> 12-Week Roadmap <span class="mq-dot"></span></div>
+      <div class="rfc-mq-item"><span class="mq-icon">💧</span> Hydration Log <span class="mq-dot"></span></div>
+      <div class="rfc-mq-item lit"><span class="mq-icon">🏅</span> Achievements <span class="mq-dot"></span></div>
+      <div class="rfc-mq-item"><span class="mq-icon">🩺</span> Health Conditions <span class="mq-dot"></span></div>
+      <div class="rfc-mq-item lit"><span class="mq-icon">📈</span> Body Analyser <span class="mq-dot"></span></div>
+      <div class="rfc-mq-item"><span class="mq-icon">🫀</span> Blood Report AI <span class="mq-dot"></span></div>
+      <div class="rfc-mq-item lit"><span class="mq-icon">🥗</span> Salad Builder <span class="mq-dot"></span></div>
+      <div class="rfc-mq-item"><span class="mq-icon">📅</span> Challenge Arena <span class="mq-dot"></span></div>
+    </div>
+  </div>
+  <!-- Row 2 ← scrolling right (reversed) -->
+  <div class="rfc-mq-row">
+    <div class="rfc-mq-track rev">
+      <div class="rfc-mq-item"><span class="mq-icon">🇮🇳</span> Made for India <span class="mq-dot"></span></div>
+      <div class="rfc-mq-item lit"><span class="mq-icon">🔒</span> Secure &amp; Private <span class="mq-dot"></span></div>
+      <div class="rfc-mq-item"><span class="mq-icon">📱</span> Works on All Devices <span class="mq-dot"></span></div>
+      <div class="rfc-mq-item lit"><span class="mq-icon">⚕️</span> Clinically Backed <span class="mq-dot"></span></div>
+      <div class="rfc-mq-item"><span class="mq-icon">❌</span> Cancel Anytime <span class="mq-dot"></span></div>
+      <div class="rfc-mq-item lit"><span class="mq-icon">🍛</span> Indian Diet Plans <span class="mq-dot"></span></div>
+      <div class="rfc-mq-item"><span class="mq-icon">💳</span> Secure Razorpay <span class="mq-dot"></span></div>
+      <div class="rfc-mq-item lit"><span class="mq-icon">🧠</span> Expert Coaches <span class="mq-dot"></span></div>
+      <div class="rfc-mq-item"><span class="mq-icon">⭐</span> 4.9 / 5 Rating <span class="mq-dot"></span></div>
+      <div class="rfc-mq-item lit"><span class="mq-icon">🔥</span> 500+ Members <span class="mq-dot"></span></div>
+      <div class="rfc-mq-item"><span class="mq-icon">🏅</span> Proven Results <span class="mq-dot"></span></div>
+      <div class="rfc-mq-item lit"><span class="mq-icon">📊</span> Data-Driven <span class="mq-dot"></span></div>
+      <!-- dup -->
+      <div class="rfc-mq-item"><span class="mq-icon">🇮🇳</span> Made for India <span class="mq-dot"></span></div>
+      <div class="rfc-mq-item lit"><span class="mq-icon">🔒</span> Secure &amp; Private <span class="mq-dot"></span></div>
+      <div class="rfc-mq-item"><span class="mq-icon">📱</span> Works on All Devices <span class="mq-dot"></span></div>
+      <div class="rfc-mq-item lit"><span class="mq-icon">⚕️</span> Clinically Backed <span class="mq-dot"></span></div>
+      <div class="rfc-mq-item"><span class="mq-icon">❌</span> Cancel Anytime <span class="mq-dot"></span></div>
+      <div class="rfc-mq-item lit"><span class="mq-icon">🍛</span> Indian Diet Plans <span class="mq-dot"></span></div>
+      <div class="rfc-mq-item"><span class="mq-icon">💳</span> Secure Razorpay <span class="mq-dot"></span></div>
+      <div class="rfc-mq-item lit"><span class="mq-icon">🧠</span> Expert Coaches <span class="mq-dot"></span></div>
+      <div class="rfc-mq-item"><span class="mq-icon">⭐</span> 4.9 / 5 Rating <span class="mq-dot"></span></div>
+      <div class="rfc-mq-item lit"><span class="mq-icon">🔥</span> 500+ Members <span class="mq-dot"></span></div>
+      <div class="rfc-mq-item"><span class="mq-icon">🏅</span> Proven Results <span class="mq-dot"></span></div>
+      <div class="rfc-mq-item lit"><span class="mq-icon">📊</span> Data-Driven <span class="mq-dot"></span></div>
+    </div>
   </div>
 </div>
+
+<!-- ═══ COUNTER STRIP ═══ -->
+<div class="rfc-counter-strip saas-hide">
+  <div class="rfc-counter-inner">
+    <div class="rfc-counter"><div class="rfc-counter-num" data-target="500" data-suffix="+">0+</div><div class="rfc-counter-label">Active Members</div></div>
+    <div class="rfc-counter-div"></div>
+    <div class="rfc-counter"><div class="rfc-counter-num" data-target="108" data-suffix="">0</div><div class="rfc-counter-label">Expert PDF Guides</div></div>
+    <div class="rfc-counter-div"></div>
+    <div class="rfc-counter"><div class="rfc-counter-num" data-target="17" data-suffix="">0</div><div class="rfc-counter-label">Health Conditions Supported</div></div>
+    <div class="rfc-counter-div"></div>
+    <div class="rfc-counter"><div class="rfc-counter-num" data-target="22" data-suffix="">0</div><div class="rfc-counter-label">Pro Tools &amp; Features</div></div>
+    <div class="rfc-counter-div"></div>
+    <div class="rfc-counter"><div class="rfc-counter-num" data-target="49" data-suffix="">0</div><div class="rfc-counter-label">₹ per week (Pro)</div></div>
+    <div class="rfc-counter-div"></div>
+    <div class="rfc-counter"><div class="rfc-counter-num" data-target="49" data-suffix="9">0</div><div class="rfc-counter-label">Beast Scores Calculated</div></div>
+  </div>
+</div>
+
+<!-- ═══ SOCIAL PROOF TICKER ═══ -->
+<div class="rfc-social-ticker saas-hide">
+  <div class="rfc-st-track">
+    <div class="rfc-st-item"><div class="rfc-st-avatar">RS</div><div><div class="rfc-st-text"><strong>Rohit Sharma</strong> · Mumbai lost <strong>22kg in 4 months</strong> 🔥</div><div class="rfc-st-stars">★★★★★</div></div></div>
+    <div class="rfc-st-divider">│</div>
+    <div class="rfc-st-item"><div class="rfc-st-avatar">PG</div><div><div class="rfc-st-text"><strong>Priya Gupta</strong> · Delhi reversed <strong>PCOS in 3 months</strong> with diet plan</div><div class="rfc-st-stars">★★★★★</div></div></div>
+    <div class="rfc-st-divider">│</div>
+    <div class="rfc-st-item"><div class="rfc-st-avatar">AK</div><div><div class="rfc-st-text"><strong>Arjun Kapoor</strong> · Pune gained <strong>14kg lean muscle</strong> in 6 months</div><div class="rfc-st-stars">★★★★★</div></div></div>
+    <div class="rfc-st-divider">│</div>
+    <div class="rfc-st-item"><div class="rfc-st-avatar">SM</div><div><div class="rfc-st-text"><strong>Sneha Mehta</strong> · Bangalore Beast Score went from <strong>48 → 91 in 90 days</strong></div><div class="rfc-st-stars">★★★★★</div></div></div>
+    <div class="rfc-st-divider">│</div>
+    <div class="rfc-st-item"><div class="rfc-st-avatar">VR</div><div><div class="rfc-st-text"><strong>Vikram Reddy</strong> · Hyderabad <strong>controlled diabetes</strong> through diet — HbA1c 9.2 → 6.1</div><div class="rfc-st-stars">★★★★★</div></div></div>
+    <div class="rfc-st-divider">│</div>
+    <div class="rfc-st-item"><div class="rfc-st-avatar">NK</div><div><div class="rfc-st-text"><strong>Neha Khanna</strong> · Chennai <strong>cholesterol normalised</strong> in 8 weeks on the plan</div><div class="rfc-st-stars">★★★★★</div></div></div>
+    <div class="rfc-st-divider">│</div>
+    <div class="rfc-st-item"><div class="rfc-st-avatar">MD</div><div><div class="rfc-st-text"><strong>Manish Das</strong> · Kolkata "Beast Score calculator changed my entire approach to fitness!"</div><div class="rfc-st-stars">★★★★★</div></div></div>
+    <div class="rfc-st-divider">│</div>
+    <div class="rfc-st-item"><div class="rfc-st-avatar">AT</div><div><div class="rfc-st-text"><strong>Anita Tiwari</strong> · Jaipur <strong>thyroid symptoms reduced 60%</strong> with the diet protocol</div><div class="rfc-st-stars">★★★★★</div></div></div>
+    <div class="rfc-st-divider">│</div>
+    <!-- dup -->
+    <div class="rfc-st-item"><div class="rfc-st-avatar">RS</div><div><div class="rfc-st-text"><strong>Rohit Sharma</strong> · Mumbai lost <strong>22kg in 4 months</strong> 🔥</div><div class="rfc-st-stars">★★★★★</div></div></div>
+    <div class="rfc-st-divider">│</div>
+    <div class="rfc-st-item"><div class="rfc-st-avatar">PG</div><div><div class="rfc-st-text"><strong>Priya Gupta</strong> · Delhi reversed <strong>PCOS in 3 months</strong> with diet plan</div><div class="rfc-st-stars">★★★★★</div></div></div>
+    <div class="rfc-st-divider">│</div>
+    <div class="rfc-st-item"><div class="rfc-st-avatar">AK</div><div><div class="rfc-st-text"><strong>Arjun Kapoor</strong> · Pune gained <strong>14kg lean muscle</strong> in 6 months</div><div class="rfc-st-stars">★★★★★</div></div></div>
+    <div class="rfc-st-divider">│</div>
+    <div class="rfc-st-item"><div class="rfc-st-avatar">SM</div><div><div class="rfc-st-text"><strong>Sneha Mehta</strong> · Bangalore Beast Score went from <strong>48 → 91 in 90 days</strong></div><div class="rfc-st-stars">★★★★★</div></div></div>
+    <div class="rfc-st-divider">│</div>
+    <div class="rfc-st-item"><div class="rfc-st-avatar">VR</div><div><div class="rfc-st-text"><strong>Vikram Reddy</strong> · Hyderabad <strong>controlled diabetes</strong> through diet — HbA1c 9.2 → 6.1</div><div class="rfc-st-stars">★★★★★</div></div></div>
+    <div class="rfc-st-divider">│</div>
+    <div class="rfc-st-item"><div class="rfc-st-avatar">NK</div><div><div class="rfc-st-text"><strong>Neha Khanna</strong> · Chennai <strong>cholesterol normalised</strong> in 8 weeks on the plan</div><div class="rfc-st-stars">★★★★★</div></div></div>
+    <div class="rfc-st-divider">│</div>
+    <div class="rfc-st-item"><div class="rfc-st-avatar">MD</div><div><div class="rfc-st-text"><strong>Manish Das</strong> · Kolkata "Beast Score calculator changed my entire approach to fitness!"</div><div class="rfc-st-stars">★★★★★</div></div></div>
+    <div class="rfc-st-divider">│</div>
+    <div class="rfc-st-item"><div class="rfc-st-avatar">AT</div><div><div class="rfc-st-text"><strong>Anita Tiwari</strong> · Jaipur <strong>thyroid symptoms reduced 60%</strong> with the diet protocol</div><div class="rfc-st-stars">★★★★★</div></div></div>
+    <div class="rfc-st-divider">│</div>
+  </div>
+</div>
+
+<!-- ═══ FEATURE SHOWCASE ═══ -->
+<section id="rfc-features" class="saas-hide">
+  <div class="rfc-feat-eyebrow">Everything you need</div>
+  <div class="rfc-feat-title">BUILT FOR <em>SERIOUS</em><br>ATHLETES</div>
+  <div class="rfc-feat-sub">India's most complete fitness intelligence platform</div>
+  <div class="rfc-feat-grid">
+    <div class="rfc-feat-card">
+      <div class="rfc-feat-icon-wrap">⚡</div>
+      <div class="rfc-feat-name">BEAST SCORE 2.0</div>
+      <div class="rfc-feat-desc">Advanced body composition analysis — BMI, BMR, TDEE, body fat %, lean mass, muscle mass estimate, and a personalised 0–100 Beast Score with elite classification.</div>
+      <div class="rfc-feat-badge free">FREE</div>
+    </div>
+    <div class="rfc-feat-card">
+      <div class="rfc-feat-icon-wrap">🤖</div>
+      <div class="rfc-feat-name">AI MEAL PLANNER</div>
+      <div class="rfc-feat-desc">7-day personalised meal plans auto-built from your Beast Score. Vegetarian, Non-Veg, Eggetarian, Keto. Indian recipes, macro-split, 200+ foods.</div>
+      <div class="rfc-feat-badge pro">⚡ PRO</div>
+    </div>
+    <div class="rfc-feat-card gold-card">
+      <div class="rfc-feat-icon-wrap">👑</div>
+      <div class="rfc-feat-name">1-ON-1 COACHING</div>
+      <div class="rfc-feat-desc">Personal coaching from India's top fitness experts. Custom workout programs, weekly check-ins, diet adjustments, and dedicated WhatsApp support.</div>
+      <div class="rfc-feat-badge elite">👑 ELITE</div>
+    </div>
+    <div class="rfc-feat-card">
+      <div class="rfc-feat-icon-wrap">📚</div>
+      <div class="rfc-feat-name">PDF GUIDE LIBRARY</div>
+      <div class="rfc-feat-desc">108+ professional guides across Beginner, Advanced, and Master levels. Anabolic science, nutrition, SARMs, body recomposition, mindset, and more.</div>
+      <div class="rfc-feat-badge pro">⚡ PRO</div>
+    </div>
+    <div class="rfc-feat-card">
+      <div class="rfc-feat-icon-wrap">🩺</div>
+      <div class="rfc-feat-name">MEDICAL DIET PROTOCOLS</div>
+      <div class="rfc-feat-desc">17 health conditions supported — Diabetes, PCOS, Thyroid, Hypertension, Fatty Liver, IBS, Anaemia, Gout, and more. Personalised supplement stacks and clinical diet notes.</div>
+      <div class="rfc-feat-badge free">FREE</div>
+    </div>
+    <div class="rfc-feat-card">
+      <div class="rfc-feat-icon-wrap">📊</div>
+      <div class="rfc-feat-name">PROGRESS TRACKER</div>
+      <div class="rfc-feat-desc">Before/after progress photos, body measurement logs, weight chart, daily streak tracker, hydration counter, and workout session logger — all in one place.</div>
+      <div class="rfc-feat-badge pro">⚡ PRO</div>
+    </div>
+    <div class="rfc-feat-card">
+      <div class="rfc-feat-icon-wrap">🏆</div>
+      <div class="rfc-feat-name">BEAST LEADERBOARD</div>
+      <div class="rfc-feat-desc">Live community leaderboard ranked by Beast Score. See where you stand among all members, earn achievement badges, and rise through the elite classifications.</div>
+      <div class="rfc-feat-badge free">FREE</div>
+    </div>
+    <div class="rfc-feat-card">
+      <div class="rfc-feat-icon-wrap">🫀</div>
+      <div class="rfc-feat-name">BLOOD REPORT AI</div>
+      <div class="rfc-feat-desc">Upload your blood panel and get instant AI interpretation — CBC, lipid profile, HbA1c, thyroid, vitamins, hormones. Generates a personalised health score with recommendations.</div>
+      <div class="rfc-feat-badge pro">⚡ PRO</div>
+    </div>
+    <div class="rfc-feat-card gold-card">
+      <div class="rfc-feat-icon-wrap">🎯</div>
+      <div class="rfc-feat-name">12-WEEK ROADMAP</div>
+      <div class="rfc-feat-desc">Your complete week-by-week transformation plan — deficit setup, progressive overload phases, refeed protocols, and a final elite consolidation phase. Built for your goal.</div>
+      <div class="rfc-feat-badge elite">👑 ELITE</div>
+    </div>
+  </div>
+  <div style="text-align:center;position:relative;z-index:2;">
+    <button class="bfire" onclick="openModal('promodal')" style="font-size:16px;padding:15px 40px;">⚡ Start with Royal Pro — ₹499/mo</button>
+    <div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:#333;margin-top:12px;">Cancel anytime · Secure payment · Instant access</div>
+  </div>
+</section>
+
+<!-- ═══ UPGRADE CTA BANNER ═══ -->
+<div id="rfc-upgrade-banner" class="saas-hide">
+  <div class="rfc-ub-inner">
+    <div class="rfc-ub-left">
+      <div class="rfc-ub-eyebrow">🔥 Limited Time Offer</div>
+      <div class="rfc-ub-title">UNLOCK YOUR<br><em>FULL POTENTIAL</em></div>
+      <div class="rfc-ub-features">
+        <div class="rfc-ub-feat">AI Meal Planner — 7-day personalised Indian diet</div>
+        <div class="rfc-ub-feat">108+ Expert PDF Guides (Beginner → Master)</div>
+        <div class="rfc-ub-feat">Progress Photos, Streaks &amp; Body Measurements</div>
+        <div class="rfc-ub-feat">12-Week Transformation Roadmap</div>
+        <div class="rfc-ub-feat">Supplement Tracker &amp; Beast Score 2.0</div>
+        <div class="rfc-ub-feat">Blood Report AI Analysis</div>
+      </div>
+    </div>
+    <div class="rfc-ub-right">
+      <div class="rfc-ub-price">
+        <div class="rfc-ub-price-from">Royal Pro — Starting from</div>
+        <div class="rfc-ub-price-num">₹499</div>
+        <div class="rfc-ub-price-mo">Per Month</div>
+        <div class="rfc-ub-price-old">Was ₹999/mo · 50% off</div>
+      </div>
+      <div class="rfc-ub-cta">
+        <button class="rfc-ub-btn" onclick="openModal('promodal')">⚡ JOIN NOW</button>
+        <div class="rfc-ub-note">No contract · Cancel anytime · Secure</div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- MEMBERSHIP STATUS STRIP (shown when logged in as gym member) -->
 <div id="member-status-strip" style="display:none;background:var(--card);border-top:2px solid var(--red);border-bottom:1px solid var(--border);position:relative;z-index:80;">
   <div class="container" style="padding:12px 20px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;">
@@ -5060,6 +5413,32 @@ function updateCalAdj(){const goal=getGoal();const note=$('caladj-note');if(goal
 document.querySelectorAll('input[name="goal"]').forEach(r=>r.addEventListener('change',updateCalAdj));
 updateCalAdj();
 document.querySelectorAll('.split-tab').forEach(t=>{t.addEventListener('click',()=>{document.querySelectorAll('.split-tab').forEach(x=>x.classList.remove('active'));t.classList.add('active');currentSplit=t.dataset.split;buildWorkout(currentSplit);});});
+
+// ── COUNTER STRIP ANIMATION ──
+(function(){
+  function animateCounters(){
+    document.querySelectorAll('.rfc-counter-num[data-target]').forEach(el=>{
+      const target=parseInt(el.dataset.target,10);
+      const suffix=el.dataset.suffix||'';
+      const duration=1800;
+      const start=performance.now();
+      function step(now){
+        const p=Math.min((now-start)/duration,1);
+        const ease=1-Math.pow(1-p,3);
+        el.textContent=Math.round(ease*target)+suffix;
+        if(p<1)requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    });
+  }
+  const strip=document.querySelector('.rfc-counter-strip');
+  if(strip&&'IntersectionObserver' in window){
+    let fired=false;
+    new IntersectionObserver((entries,obs)=>{
+      if(entries[0].isIntersecting&&!fired){fired=true;animateCounters();obs.disconnect();}
+    },{threshold:0.3}).observe(strip);
+  }
+})();
 
 // ── ANATOMY VISUALIZER ──
 function drawAnatomy(bf,bfc,weight,gender){
