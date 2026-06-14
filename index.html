@@ -1945,7 +1945,7 @@ img{loading:lazy;}
       <option value="SGD">🇸🇬 SGD</option>
     </select>
     <div id="ntimer">🔥 <span id="ntlbl">--:--:--</span></div>
-    <div id="upill"><span>⚡</span><span id="uname" style="cursor:pointer;" onclick="openProfile()" title="View Profile"></span><span class="ppro" id="ppro">PRO</span><button id="btnlo">logout</button></div>
+    <div id="upill"><span>⚡</span><span id="uname" style="cursor:pointer;" onclick="openProfile()" title="View Profile"></span><span class="ppro" id="ppro">PRO</span><button id="btnlo" title="Sign Out">⏻</button></div>
     <button class="bnav" id="navlbtn" onclick="forceLogin()">Member Login</button>
     <button class="hamburger" id="hamburger" onclick="toggleNav()" aria-label="Menu">
       <span></span><span></span><span></span>
@@ -4194,7 +4194,7 @@ const $=id=>document.getElementById(id);
 function toast(msg,type='fire'){const t=$('toast');t.textContent=msg;t.className=`toast ${type} show`;setTimeout(()=>{t.className=`toast ${type}`;},3500);}
 function openModal(id){$(id).classList.add('open');if(id==='promodal'&&window.AnalyticsService)window.AnalyticsService.trackEvent('pro_modal_opened').catch(()=>{});}
 function closeModal(id){$(id).classList.remove('open');}
-['sharemodal','promodal','elitemodal'].forEach(id=>{$(id).addEventListener('click',e=>{if(e.target===$(id))closeModal(id);});});
+['sharemodal','promodal','elitemodal'].forEach(id=>{const m=$(id);if(m)m.addEventListener('click',e=>{if(e.target===m)closeModal(id);});});
 $('loginmodal').addEventListener('click',e=>{if(e.target===$('loginmodal'))closeLoginModal();});
 function animN(el,target,dec=0,sfx=''){let s=0,d=900;const step=ts=>{if(!s)s=ts;const p=Math.min((ts-s)/d,1);el.textContent=(target*p).toFixed(dec)+sfx;if(p<1)requestAnimationFrame(step);};requestAnimationFrame(step);}
 // ── TIMER ──
@@ -4450,6 +4450,8 @@ function resetPasswordPrompt(){
 function showAdminLink(){
   // No-op: admin panel is revealed via applyUser() through the sidebar item #sb-admin-item
 }
+
+function logout(){$('btnlo').click();}
 
 $('btnlo').addEventListener('click',async function(){
   try{if(typeof firebase!=='undefined')await firebase.auth().signOut();}catch(e){}
@@ -6895,7 +6897,7 @@ function joinChallenge(chId) {
       renderChallenges();
       toast('🔥 You\'re in! Challenge joined successfully!');
     },
-    prefill: { name: user.displayName || '', email: user.email || '' },
+    prefill: { name: user.name || user.displayName || '', email: user.email || '' },
     theme: { color: '#e8001d' }
   });
   rzp.open();
@@ -7718,7 +7720,7 @@ function _renderCourseViewer(c) {
   const done = Object.values(prog).filter(Boolean).length;
   const pct = total ? Math.round(done/total*100) : 0;
   const serial = _genSerial(c);
-  const userName = user ? (user.displayName || user.email || 'Student') : 'Student';
+  const userName = user ? (user.name || user.displayName || user.email || 'Student') : 'Student';
   const today = new Date().toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'});
 
   const modulesHtml = (c.mods||[]).map((m,i)=>{
@@ -7866,7 +7868,7 @@ function purchaseCourse(courseId) {
       toast('🎓 Enrollment successful! Start learning now.');
       setTimeout(() => openCourseModal(courseId), 600);
     },
-    prefill: { name: user.displayName || '', email: user.email || '' },
+    prefill: { name: user.name || user.displayName || '', email: user.email || '' },
     theme: { color: '#e8001d' }
   });
   rzp.open();
@@ -8148,7 +8150,7 @@ function populateDashboard() {
   if (gEl) gEl.textContent = greet;
 
   var nameEl = document.getElementById('dash-name');
-  if (nameEl) nameEl.textContent = user ? ('Welcome back, ' + (user.displayName || user.email.split('@')[0]) + ' 💪') : 'Welcome, Champion 👋';
+  if (nameEl) nameEl.textContent = user ? ('Welcome back, ' + (user.name || user.displayName || user.email.split('@')[0]) + ' 💪') : 'Welcome, Champion 👋';
 
   var dateEl = document.getElementById('dash-date');
   if (dateEl) dateEl.textContent = new Date().toLocaleDateString('en-IN', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
@@ -8328,10 +8330,10 @@ applyUser = function() {
   var sbGuest = document.getElementById('sb-guest');
 
   if (user) {
-    var initials = ((user.displayName || user.email || 'U')
+    var initials = ((user.name || user.displayName || user.email || 'U')
       .split(' ').map(function(w){ return w[0] || ''; }).join('').substring(0,2).toUpperCase()) || 'M';
     if (sbAv)     { sbAv.textContent = initials; }
-    if (sbUname)  sbUname.textContent  = user.displayName || (user.email ? user.email.split('@')[0] : 'Member');
+    if (sbUname)  sbUname.textContent  = user.name || user.displayName || (user.email ? user.email.split('@')[0] : 'Member');
     if (sbUemail) sbUemail.textContent = user.email || '';
     if (sbUplan)  {
       sbUplan.textContent = isPro ? 'PRO' : 'FREE';
