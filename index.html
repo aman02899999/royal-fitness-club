@@ -4486,7 +4486,7 @@ function initUser(){
   if(typeof firebase==='undefined'){
     // Firebase not loaded — fall back to localStorage
     const u=localStorage.getItem('bm_user');
-    if(u){user=JSON.parse(u);isPro=localStorage.getItem('bm_pro')==='true';applyUser();}
+    if(u){user=JSON.parse(u);isPro=localStorage.getItem('bm_pro')==='true';applyUser();if(user.role==='admin')showAdminLink();}
     // No auto-popup — user can browse freely; login triggered by tool use
     return;
   }
