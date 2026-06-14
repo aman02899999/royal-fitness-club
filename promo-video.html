@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Royal Fitness Club — Promo</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --red:#e8001d;--gold:#f59e0b;--green:#22c55e;--bg:#050508;
+  --card:#0f0f18;--text:#f0f0f5;--muted:#888;--border:#1e1e2e;
+}
+html,body{width:1280px;height:720px;overflow:hidden;background:var(--bg);}
+#canvas{width:1280px;height:720px;position:relative;overflow:hidden;font-family:'Inter',sans-serif;}
+
+/* ── SCENE BASE ── */
+.scene{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;transition:opacity .5s;}
+.scene.active{opacity:1;pointer-events:all;}
+
+/* ── ANIMATED BG ── */
+.bg-anim{position:absolute;inset:0;overflow:hidden;}
+.bg-orb{position:absolute;border-radius:50%;filter:blur(80px);opacity:.18;}
+.orb1{width:600px;height:600px;background:var(--red);top:-200px;right:-100px;animation:orbFloat 8s ease-in-out infinite alternate;}
+.orb2{width:500px;height:500px;background:#4f00e8;bottom:-200px;left:-100px;animation:orbFloat 10s ease-in-out infinite alternate-reverse;}
+.orb3{width:300px;height:300px;background:var(--gold);top:50%;left:50%;animation:orbFloat 6s ease-in-out infinite alternate;}
+@keyframes orbFloat{0%{transform:translate(0,0) scale(1);}100%{transform:translate(40px,-40px) scale(1.15);}}
+
+/* ── GRID OVERLAY ── */
+.grid-lines{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);background-size:60px 60px;}
+
+/* ── SCENE 1: LOGO REVEAL ── */
+#s1{background:#050508;}
+#s1 .logo-wrap{text-align:center;position:relative;z-index:2;}
+#s1 .logo-icon{font-size:80px;animation:iconPop .6s cubic-bezier(.34,1.56,.64,1) both;display:block;margin-bottom:16px;}
+#s1 .logo-main{font-family:'Bebas Neue',sans-serif;font-size:90px;letter-spacing:8px;color:var(--text);line-height:1;animation:slideUp .7s .2s both;}
+#s1 .logo-sub{font-family:'Barlow Condensed',sans-serif;font-size:18px;letter-spacing:12px;text-transform:uppercase;color:var(--muted);animation:slideUp .6s .5s both;}
+#s1 .logo-line{width:0;height:3px;background:linear-gradient(90deg,transparent,var(--red),transparent);margin:20px auto;animation:lineExpand .8s .8s both;}
+#s1 .logo-tag{font-family:'Barlow Condensed',sans-serif;font-size:22px;letter-spacing:4px;color:var(--red);animation:fadeIn .6s 1s both;}
+@keyframes iconPop{0%{transform:scale(0) rotate(-30deg);opacity:0;}100%{transform:scale(1) rotate(0);opacity:1;}}
+@keyframes slideUp{0%{transform:translateY(40px);opacity:0;}100%{transform:translateY(0);opacity:1;}}
+@keyframes lineExpand{0%{width:0;}100%{width:400px;}}
+@keyframes fadeIn{0%{opacity:0;}100%{opacity:1;}}
+
+/* ── SECTION LABEL ── */
+.sec-label{position:absolute;top:40px;left:60px;z-index:10;
+  font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:4px;text-transform:uppercase;color:var(--red);
+  display:flex;align-items:center;gap:8px;}
+.sec-label::before{content:'';width:24px;height:2px;background:var(--red);}
+
+/* ── SCENE 2: PROBLEM/HOOK ── */
+#s2{background:#050508;}
+#s2 .hook-wrap{text-align:center;z-index:2;position:relative;max-width:900px;padding:0 40px;}
+#s2 .hook-q{font-family:'Bebas Neue',sans-serif;font-size:72px;letter-spacing:3px;line-height:1;color:var(--text);animation:slideUp .6s .1s both;}
+#s2 .hook-q span{color:var(--red);}
+#s2 .hook-list{margin:32px 0;display:flex;flex-direction:column;gap:12px;}
+#s2 .hook-item{font-family:'Barlow Condensed',sans-serif;font-size:24px;letter-spacing:1px;color:var(--muted);display:flex;align-items:center;gap:12px;animation:slideLeft .5s both;}
+#s2 .hook-item .xi{color:var(--red);font-size:20px;}
+#s2 .hook-ans{font-family:'Bebas Neue',sans-serif;font-size:52px;letter-spacing:3px;color:var(--gold);animation:scaleIn .5s both;}
+@keyframes slideLeft{0%{transform:translateX(-40px);opacity:0;}100%{transform:translateX(0);opacity:1;}}
+@keyframes scaleIn{0%{transform:scale(.8);opacity:0;}100%{transform:scale(1);opacity:1;}}
+
+/* ── SCENE 3: FEATURES GRID ── */
+#s3{background:#050508;}
+#s3 .feat-wrap{z-index:2;position:relative;width:1100px;}
+#s3 .feat-title{font-family:'Bebas Neue',sans-serif;font-size:52px;letter-spacing:3px;text-align:center;margin-bottom:36px;animation:slideUp .5s .1s both;}
+#s3 .feat-title span{color:var(--red);}
+#s3 .feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+.feat-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px;
+  animation:cardPop .5s both;position:relative;overflow:hidden;}
+.feat-card::before{content:'';position:absolute;inset:0;border-radius:16px;
+  background:linear-gradient(135deg,rgba(232,0,29,.06),transparent);pointer-events:none;}
+.feat-card .fi{font-size:36px;margin-bottom:12px;display:block;}
+.feat-card .fn{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1.5px;margin-bottom:6px;}
+.feat-card .fd{font-size:13px;color:var(--muted);line-height:1.5;}
+.feat-card .fb{position:absolute;bottom:0;left:0;height:3px;width:0;background:var(--red);animation:barFill .4s 1s ease-out both;}
+@keyframes cardPop{0%{transform:translateY(30px) scale(.95);opacity:0;}100%{transform:translateY(0) scale(1);opacity:1;}}
+@keyframes barFill{0%{width:0;}100%{width:100%;}}
+
+/* ── SCENE 4: COURSES ── */
+#s4{background:#050508;}
+#s4 .courses-wrap{z-index:2;position:relative;width:1100px;}
+#s4 .c-title{font-family:'Bebas Neue',sans-serif;font-size:52px;letter-spacing:3px;text-align:center;margin-bottom:8px;animation:slideUp .5s .1s both;}
+#s4 .c-sub{font-family:'Barlow Condensed',sans-serif;font-size:18px;letter-spacing:2px;color:var(--muted);text-align:center;margin-bottom:36px;animation:fadeIn .5s .3s both;}
+#s4 .c-tracks{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+.c-track{border-radius:16px;padding:28px;position:relative;overflow:hidden;animation:cardPop .5s both;}
+.c-track.beg{background:linear-gradient(135deg,#0f2318,#0a1a0f);border:1px solid rgba(34,197,94,.3);}
+.c-track.adv{background:linear-gradient(135deg,#1a100f,#120a0a);border:1px solid rgba(232,0,29,.3);}
+.c-track.mst{background:linear-gradient(135deg,#1a1500,#120f00);border:1px solid rgba(245,158,11,.3);}
+.c-track .ct-badge{display:inline-flex;align-items:center;gap:6px;border-radius:20px;padding:4px 12px;font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:2px;text-transform:uppercase;margin-bottom:14px;}
+.beg .ct-badge{background:rgba(34,197,94,.15);color:var(--green);}
+.adv .ct-badge{background:rgba(232,0,29,.15);color:var(--red);}
+.mst .ct-badge{background:rgba(245,158,11,.15);color:var(--gold);}
+.c-track .ct-name{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:2px;margin-bottom:10px;}
+.c-track .ct-mods{font-size:12px;color:var(--muted);margin-bottom:14px;line-height:1.6;}
+.c-track .ct-courses{display:flex;flex-direction:column;gap:5px;}
+.ct-course{font-size:12px;color:rgba(255,255,255,.6);display:flex;align-items:center;gap:6px;}
+.ct-course::before{content:'';width:5px;height:5px;border-radius:50%;background:currentColor;flex-shrink:0;}
+.beg .ct-course{color:rgba(34,197,94,.7);}
+.adv .ct-course{color:rgba(232,0,29,.7);}
+.mst .ct-course{color:rgba(245,158,11,.7);}
+
+/* ── SCENE 5: STATS / SOCIAL PROOF ── */
+#s5{background:#050508;}
+#s5 .stats-wrap{z-index:2;position:relative;text-align:center;width:1100px;}
+#s5 .s-title{font-family:'Bebas Neue',sans-serif;font-size:52px;letter-spacing:3px;margin-bottom:48px;animation:slideUp .5s .1s both;}
+#s5 .s-title span{color:var(--gold);}
+#s5 .stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;margin-bottom:48px;}
+.stat-box{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:28px 20px;animation:cardPop .5s both;}
+.stat-box .sv{font-family:'Bebas Neue',sans-serif;font-size:54px;line-height:1;margin-bottom:4px;}
+.stat-box .sl{font-family:'Barlow Condensed',sans-serif;font-size:13px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);}
+.stat-box.c1 .sv{color:var(--red);}
+.stat-box.c2 .sv{color:var(--gold);}
+.stat-box.c3 .sv{color:var(--green);}
+.stat-box.c4 .sv{color:#818cf8;}
+#s5 .testimonial{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:28px 36px;max-width:800px;margin:0 auto;animation:slideUp .5s .6s both;position:relative;}
+#s5 .testimonial::before{content:'"';font-family:'Bebas Neue',sans-serif;font-size:100px;color:var(--red);opacity:.2;position:absolute;top:-20px;left:20px;line-height:1;}
+.t-text{font-size:16px;line-height:1.7;color:rgba(255,255,255,.85);font-style:italic;margin-bottom:16px;position:relative;z-index:1;}
+.t-by{display:flex;align-items:center;gap:12px;}
+.t-av{width:40px;height:40px;border-radius:50%;background:var(--red);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:18px;}
+.t-name{font-weight:600;font-size:14px;}
+.t-goal{font-size:12px;color:var(--green);}
+
+/* ── SCENE 6: PRICING CTA ── */
+#s6{background:#050508;}
+#s6 .price-wrap{z-index:2;position:relative;text-align:center;width:1100px;}
+#s6 .p-tag{font-family:'Barlow Condensed',sans-serif;font-size:14px;letter-spacing:4px;text-transform:uppercase;color:var(--red);margin-bottom:12px;animation:fadeIn .5s .1s both;}
+#s6 .p-title{font-family:'Bebas Neue',sans-serif;font-size:62px;letter-spacing:3px;line-height:1;margin-bottom:8px;animation:slideUp .5s .2s both;}
+#s6 .p-title span{color:var(--gold);}
+#s6 .p-sub{font-family:'Barlow Condensed',sans-serif;font-size:20px;color:var(--muted);margin-bottom:40px;animation:fadeIn .5s .4s both;}
+#s6 .plans-row{display:flex;gap:20px;justify-content:center;margin-bottom:40px;}
+.plan-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:28px 24px;width:240px;text-align:center;animation:cardPop .5s both;position:relative;}
+.plan-card.featured{border-color:var(--gold);background:linear-gradient(135deg,rgba(245,158,11,.08),var(--card));}
+.plan-card.featured::before{content:'MOST POPULAR';position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--gold);color:#000;font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:2px;font-weight:700;padding:3px 12px;border-radius:20px;white-space:nowrap;}
+.plan-badge{font-size:28px;margin-bottom:8px;display:block;}
+.plan-name{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;margin-bottom:4px;}
+.plan-price{font-family:'Bebas Neue',sans-serif;font-size:44px;line-height:1;color:var(--gold);margin-bottom:4px;}
+.plan-price span{font-size:20px;}
+.plan-period{font-size:12px;color:var(--muted);margin-bottom:16px;}
+.plan-feats{font-size:11px;color:rgba(255,255,255,.6);line-height:1.8;text-align:left;}
+.plan-feats div::before{content:'✓ ';}
+.plan-feats div{color:rgba(255,255,255,.7);}
+#s6 .cta-btn{display:inline-block;background:linear-gradient(135deg,var(--red),#c40018);color:#fff;font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:3px;padding:18px 60px;border-radius:50px;animation:ctaPulse 2s 1s infinite;}
+@keyframes ctaPulse{0%,100%{box-shadow:0 0 0 0 rgba(232,0,29,.4);}50%{box-shadow:0 0 0 20px rgba(232,0,29,0);}}
+#s6 .url{font-family:'Barlow Condensed',sans-serif;font-size:18px;letter-spacing:3px;color:var(--muted);margin-top:16px;animation:fadeIn .5s 1.2s both;}
+
+/* ── SCENE 7: CLOSING ── */
+#s7{background:#050508;}
+#s7 .close-wrap{text-align:center;z-index:2;position:relative;}
+#s7 .c-logo{font-size:64px;animation:iconPop .6s .1s both;display:block;margin-bottom:12px;}
+#s7 .c-name{font-family:'Bebas Neue',sans-serif;font-size:80px;letter-spacing:8px;animation:slideUp .6s .3s both;}
+#s7 .c-name span{color:var(--red);}
+#s7 .c-url{font-family:'Barlow Condensed',sans-serif;font-size:24px;letter-spacing:6px;color:var(--gold);margin-top:16px;animation:fadeIn .6s .8s both;}
+#s7 .c-tag{font-family:'Barlow Condensed',sans-serif;font-size:16px;letter-spacing:3px;color:var(--muted);margin-top:10px;animation:fadeIn .6s 1s both;}
+#s7 .c-socials{display:flex;gap:24px;justify-content:center;margin-top:32px;animation:fadeIn .6s 1.2s both;}
+.soc-badge{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:10px 20px;font-family:'Barlow Condensed',sans-serif;font-size:14px;letter-spacing:2px;color:var(--muted);}
+
+/* ── PROGRESS BAR ── */
+#progress{position:fixed;bottom:0;left:0;height:4px;background:linear-gradient(90deg,var(--red),var(--gold));width:0;transition:width .1s linear;z-index:999;}
+
+/* ── SCENE COUNTER ── */
+#scene-counter{position:fixed;top:20px;right:20px;font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:2px;color:rgba(255,255,255,.3);z-index:999;}
+
+/* ── PARTICLES ── */
+.particle{position:absolute;width:4px;height:4px;border-radius:50%;background:var(--red);opacity:0;animation:particleFly var(--dur,3s) var(--delay,0s) ease-out infinite;}
+@keyframes particleFly{0%{transform:translate(0,0) scale(1);opacity:.8;}100%{transform:translate(var(--tx,50px),var(--ty,-200px)) scale(0);opacity:0;}}
+
+/* ── COUNTER ANIM ── */
+.count-up{display:inline-block;}
+</style>
+</head>
+<body>
+<div id="canvas">
+
+  <!-- ANIMATED BG (shared) -->
+  <div class="bg-anim" id="bg-anim">
+    <div class="bg-orb orb1"></div>
+    <div class="bg-orb orb2"></div>
+    <div class="bg-orb orb3"></div>
+    <div class="grid-lines"></div>
+  </div>
+
+  <!-- ── SCENE 1: LOGO REVEAL ── -->
+  <div class="scene active" id="s1">
+    <div class="logo-wrap">
+      <span class="logo-icon">🏋️</span>
+      <div class="logo-main">ROYAL FITNESS CLUB</div>
+      <div class="logo-sub">Ultimate Member Portal</div>
+      <div class="logo-line"></div>
+      <div class="logo-tag">INDIA'S SMARTEST GYM ECOSYSTEM</div>
+    </div>
+  </div>
+
+  <!-- ── SCENE 2: HOOK ── -->
+  <div class="scene" id="s2">
+    <div class="sec-label">The Problem</div>
+    <div class="hook-wrap">
+      <div class="hook-q">Still Running Your Gym<br><span>Like It's 2010?</span></div>
+      <div class="hook-list">
+        <div class="hook-item" style="animation-delay:.3s"><span class="xi">✗</span> Paper registers & manual tracking</div>
+        <div class="hook-item" style="animation-delay:.5s"><span class="xi">✗</span> Members with no accountability or tools</div>
+        <div class="hook-item" style="animation-delay:.7s"><span class="xi">✗</span> Zero digital presence or coaching</div>
+      </div>
+      <div class="hook-ans" style="animation-delay:.9s">We Fixed All That. 🔥</div>
+    </div>
+  </div>
+
+  <!-- ── SCENE 3: FEATURES ── -->
+  <div class="scene" id="s3">
+    <div class="sec-label">Features</div>
+    <div class="feat-wrap">
+      <div class="feat-title">Everything Your Members <span>Need</span></div>
+      <div class="feat-grid">
+        <div class="feat-card" style="animation-delay:.1s">
+          <span class="fi">⚡</span>
+          <div class="fn">Beast Calculator</div>
+          <div class="fd">Advanced fitness score engine with BMI, body fat, TDEE, macro calculator & personalised Indian meal plans.</div>
+          <div class="fb"></div>
+        </div>
+        <div class="feat-card" style="animation-delay:.2s">
+          <span class="fi">📊</span>
+          <div class="fn">Progress Tracker</div>
+          <div class="fd">Daily workout logger, body measurement charts, streak system and before/after photo comparisons.</div>
+          <div class="fb"></div>
+        </div>
+        <div class="feat-card" style="animation-delay:.3s">
+          <span class="fi">🎓</span>
+          <div class="fn">RFC Academy</div>
+          <div class="fd">10 professional fitness courses with 108 PDF modules across Beginner, Advanced & Master levels.</div>
+          <div class="fb"></div>
+        </div>
+        <div class="feat-card" style="animation-delay:.4s">
+          <span class="fi">🏆</span>
+          <div class="fn">Community Board</div>
+          <div class="fd">Live leaderboard, referral system, badges, streak competitions and a 1000-member strong Beast Pack.</div>
+          <div class="fb"></div>
+        </div>
+        <div class="feat-card" style="animation-delay:.5s">
+          <span class="fi">🩺</span>
+          <div class="fn">Physio & Nutrition AI</div>
+          <div class="fd">Injury prevention guides, recovery protocols, supplement stacks and evidence-based diet planning.</div>
+          <div class="fb"></div>
+        </div>
+        <div class="feat-card" style="animation-delay:.6s">
+          <span class="fi">⚙️</span>
+          <div class="fn">Admin Dashboard</div>
+          <div class="fd">Member codes, renewal management, course editor, PDF library and site settings — all in one panel.</div>
+          <div class="fb"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SCENE 4: COURSES ── -->
+  <div class="scene" id="s4">
+    <div class="sec-label">RFC Academy</div>
+    <div class="courses-wrap">
+      <div class="c-title">World-Class Fitness Education</div>
+      <div class="c-sub">Certified Programs · PDF Modules · Professional Coaching</div>
+      <div class="c-tracks">
+        <div class="c-track beg" style="animation-delay:.1s">
+          <div class="ct-badge">🌱 Beginner Track</div>
+          <div class="ct-name">Foundations</div>
+          <div class="ct-mods">3 Courses · 24 PDF Modules<br>Perfect for day-one members</div>
+          <div class="ct-courses">
+            <div class="ct-course">Fitness Fundamentals Certificate</div>
+            <div class="ct-course">Nutrition & Diet Mastery</div>
+            <div class="ct-course">Body Transformation Blueprint</div>
+          </div>
+        </div>
+        <div class="c-track adv" style="animation-delay:.2s">
+          <div class="ct-badge">🔥 Advanced Track</div>
+          <div class="ct-name">Performance</div>
+          <div class="ct-mods">4 Courses · 42 PDF Modules<br>For serious athletes & trainers</div>
+          <div class="ct-courses">
+            <div class="ct-course">Certified Personal Trainer (CPT)</div>
+            <div class="ct-course">Advanced Sports Nutrition Diploma</div>
+            <div class="ct-course">Sports Physio & Rehab Diploma</div>
+            <div class="ct-course">Fat Loss Specialist (FLS)</div>
+          </div>
+        </div>
+        <div class="c-track mst" style="animation-delay:.3s">
+          <div class="ct-badge">👑 Master Track</div>
+          <div class="ct-name">Elite Mastery</div>
+          <div class="ct-mods">3 Courses · 42 PDF Modules<br>Elite-level expertise</div>
+          <div class="ct-courses">
+            <div class="ct-course">Elite Performance Coaching</div>
+            <div class="ct-course">Sports Pharmacology (Educational)</div>
+            <div class="ct-course">Sports Medicine Master</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SCENE 5: SOCIAL PROOF ── -->
+  <div class="scene" id="s5">
+    <div class="sec-label">Results</div>
+    <div class="stats-wrap">
+      <div class="s-title">Real Members. <span>Real Results.</span></div>
+      <div class="stats-row">
+        <div class="stat-box c1" style="animation-delay:.1s">
+          <div class="sv"><span class="count-up" data-target="1200">0</span>+</div>
+          <div class="sl">Active Members</div>
+        </div>
+        <div class="stat-box c2" style="animation-delay:.2s">
+          <div class="sv"><span class="count-up" data-target="108">0</span></div>
+          <div class="sl">Course Modules</div>
+        </div>
+        <div class="stat-box c3" style="animation-delay:.3s">
+          <div class="sv"><span class="count-up" data-target="98">0</span>%</div>
+          <div class="sl">Member Satisfaction</div>
+        </div>
+        <div class="stat-box c4" style="animation-delay:.4s">
+          <div class="sv">₹<span class="count-up" data-target="499">0</span></div>
+          <div class="sl">Starting Per Month</div>
+        </div>
+      </div>
+      <div class="testimonial" style="animation-delay:.6s">
+        <div class="t-text">"Beast Calculator ne meri life badal di! 4 mahine mein 22kg lose kiya. Indian meal plans are spot on — dal, roti, sabzi sab ka calculation! Yaar ye toh London ka subscription bhi sharminda ho jaye iske samne!"</div>
+        <div class="t-by">
+          <div class="t-av">R</div>
+          <div>
+            <div class="t-name">Rohit S. · Mumbai</div>
+            <div class="t-goal">✅ Lost 22kg in 4 Months</div>
+          </div>
+          <div style="margin-left:auto;font-size:20px;color:var(--gold);">★★★★★</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SCENE 6: PRICING ── -->
+  <div class="scene" id="s6">
+    <div class="sec-label">Pricing</div>
+    <div class="price-wrap">
+      <div class="p-tag">Limited Time Offer</div>
+      <div class="p-title">Start Your Journey<br><span>For Under ₹500</span></div>
+      <div class="p-sub">No contracts. Cancel anytime. 100% worth it.</div>
+      <div class="plans-row">
+        <div class="plan-card" style="animation-delay:.1s">
+          <span class="plan-badge">🏋</span>
+          <div class="plan-name">Royal Pro</div>
+          <div class="plan-price"><span>₹</span>499</div>
+          <div class="plan-period">per month</div>
+          <div class="plan-feats">
+            <div>Full Beast Calculator</div>
+            <div>Workout & diet tracker</div>
+            <div>Community leaderboard</div>
+            <div>Beginner courses</div>
+          </div>
+        </div>
+        <div class="plan-card featured" style="animation-delay:.2s">
+          <span class="plan-badge">👑</span>
+          <div class="plan-name">Royal Elite</div>
+          <div class="plan-price"><span>₹</span>1,999</div>
+          <div class="plan-period">per month</div>
+          <div class="plan-feats">
+            <div>Everything in Pro</div>
+            <div>All 10 courses (108 PDFs)</div>
+            <div>AI physio & nutrition</div>
+            <div>Priority support</div>
+          </div>
+        </div>
+        <div class="plan-card" style="animation-delay:.3s">
+          <span class="plan-badge">🏢</span>
+          <div class="plan-name">Gym Partner</div>
+          <div class="plan-price" style="font-size:28px;padding-top:8px;">Custom</div>
+          <div class="plan-period">for gym owners</div>
+          <div class="plan-feats">
+            <div>Full admin dashboard</div>
+            <div>Member code system</div>
+            <div>Renewal management</div>
+            <div>White-label options</div>
+          </div>
+        </div>
+      </div>
+      <div class="cta-btn">🔥 JOIN NOW — IT'S FREE TO START</div>
+      <div class="url">royalmentality.in</div>
+    </div>
+  </div>
+
+  <!-- ── SCENE 7: CLOSING ── -->
+  <div class="scene" id="s7">
+    <div class="close-wrap">
+      <span class="c-logo">🏋️</span>
+      <div class="c-name"><span>ROYAL</span> FITNESS CLUB</div>
+      <div class="c-url">royalmentality.in</div>
+      <div class="c-tag">India's Smartest Gym Member Portal</div>
+      <div class="c-socials">
+        <div class="soc-badge">📱 Available on Mobile</div>
+        <div class="soc-badge">🔥 10,000+ Downloads</div>
+        <div class="soc-badge">🇮🇳 Made in India</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROGRESS BAR -->
+  <div id="progress"></div>
+  <div id="scene-counter">1 / 7</div>
+
+</div>
+
+<script>
+// ── SCENE TIMING (ms) ──
+const SCENES = [
+  { id: 's1', dur: 3500 },
+  { id: 's2', dur: 5000 },
+  { id: 's3', dur: 6000 },
+  { id: 's4', dur: 5500 },
+  { id: 's5', dur: 6000 },
+  { id: 's6', dur: 6500 },
+  { id: 's7', dur: 5000 },
+];
+const TOTAL = SCENES.reduce((a,s) => a + s.dur, 0);
+let currentScene = 0;
+let sceneStart = Date.now();
+let totalStart = Date.now();
+
+function switchScene(idx) {
+  document.querySelectorAll('.scene').forEach((s,i) => s.classList.toggle('active', i === idx));
+  document.getElementById('scene-counter').textContent = (idx+1) + ' / ' + SCENES.length;
+  sceneStart = Date.now();
+  currentScene = idx;
+  // trigger count-up for scene 5
+  if (idx === 4) {
+    setTimeout(() => startCountUps(), 400);
+  }
+}
+
+function startCountUps() {
+  document.querySelectorAll('#s5 .count-up').forEach(el => {
+    const target = parseInt(el.dataset.target);
+    let current = 0;
+    const step = Math.ceil(target / 40);
+    const timer = setInterval(() => {
+      current = Math.min(current + step, target);
+      el.textContent = current.toLocaleString('en-IN');
+      if (current >= target) clearInterval(timer);
+    }, 40);
+  });
+}
+
+// Progress bar
+function tick() {
+  const elapsed = Date.now() - totalStart;
+  const pct = Math.min(elapsed / TOTAL * 100, 100);
+  document.getElementById('progress').style.width = pct + '%';
+
+  // Check scene switch
+  const sceneElapsed = Date.now() - sceneStart;
+  if (sceneElapsed >= SCENES[currentScene].dur) {
+    const next = (currentScene + 1) % SCENES.length;
+    if (next === 0) {
+      // Restart
+      totalStart = Date.now();
+    }
+    switchScene(next);
+  }
+  requestAnimationFrame(tick);
+}
+
+// Add particles
+function addParticles() {
+  const bg = document.getElementById('bg-anim');
+  for (let i = 0; i < 20; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.cssText = `
+      left:${Math.random()*100}%;
+      top:${Math.random()*100}%;
+      --dur:${2+Math.random()*4}s;
+      --delay:${Math.random()*3}s;
+      --tx:${(Math.random()-0.5)*200}px;
+      --ty:${-50-Math.random()*300}px;
+      background:${Math.random()>.5?'var(--red)':'var(--gold)'};
+      width:${2+Math.random()*4}px;
+      height:${2+Math.random()*4}px;
+      opacity:${0.2+Math.random()*0.5};
+    `;
+    bg.appendChild(p);
+  }
+}
+
+addParticles();
+requestAnimationFrame(tick);
+
+// Click to advance
+document.getElementById('canvas').addEventListener('click', () => {
+  const next = (currentScene + 1) % SCENES.length;
+  if (next === 0) totalStart = Date.now();
+  switchScene(next);
+});
+
+// Keyboard
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === ' ') {
+    e.preventDefault();
+    const next = (currentScene + 1) % SCENES.length;
+    if (next === 0) totalStart = Date.now();
+    switchScene(next);
+  }
+  if (e.key === 'ArrowLeft') {
+    e.preventDefault();
+    const prev = (currentScene - 1 + SCENES.length) % SCENES.length;
+    switchScene(prev);
+  }
+});
+</script>
+</body>
+</html>
