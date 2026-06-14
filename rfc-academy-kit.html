@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RFC Academy — Complete Course Kit</title>
+<style>
+/* ── RESET & FONTS ── */
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700&family=Barlow:wght@400;500;600&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --red:#e8001d;--gold:#ffd000;--green:#22c55e;--muted:#888;
+  --bg:#090910;--card:#111118;--border:rgba(255,255,255,.08);
+  --text:#f0f0f0;
+}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;font-size:14px;line-height:1.6;}
+
+/* ── SIDEBAR TOC ── */
+#toc{position:fixed;top:0;left:0;width:260px;height:100vh;background:#0d0d14;border-right:1px solid var(--border);overflow-y:auto;z-index:100;padding:0 0 40px;}
+#toc-logo{padding:20px 18px 14px;border-bottom:1px solid var(--border);}
+#toc-logo .t1{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;color:var(--red);}
+#toc-logo .t2{font-size:10px;letter-spacing:3px;color:var(--muted);text-transform:uppercase;}
+.toc-section{padding:12px 18px 4px;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-top:6px;}
+.toc-link{display:block;padding:7px 18px;font-size:12px;color:var(--muted);text-decoration:none;border-left:2px solid transparent;transition:all .15s;line-height:1.3;}
+.toc-link:hover{color:var(--text);background:rgba(255,255,255,.03);}
+.toc-link.active{color:var(--red);border-left-color:var(--red);background:rgba(232,0,29,.05);}
+.toc-badge{display:inline-block;font-size:8px;font-weight:700;letter-spacing:1px;padding:1px 6px;border-radius:10px;margin-left:6px;vertical-align:middle;}
+.toc-badge.beg{background:rgba(34,197,94,.15);color:#22c55e;}
+.toc-badge.adv{background:rgba(251,146,60,.15);color:#fb923c;}
+.toc-badge.mst{background:rgba(168,85,247,.15);color:#a855f7;}
+
+/* ── MAIN CONTENT ── */
+#main{margin-left:260px;min-height:100vh;}
+
+/* ── HERO ── */
+#hero{background:linear-gradient(135deg,#0a0a14 0%,#12001f 50%,#0a0a14 100%);padding:80px 60px 60px;border-bottom:1px solid var(--border);position:relative;overflow:hidden;}
+#hero::before{content:'RFC';position:absolute;font-family:'Bebas Neue',sans-serif;font-size:300px;color:rgba(232,0,29,.04);top:50%;left:50%;transform:translate(-50%,-50%);letter-spacing:20px;pointer-events:none;}
+.hero-tag{font-size:11px;letter-spacing:4px;text-transform:uppercase;color:var(--red);margin-bottom:12px;}
+.hero-h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(48px,7vw,90px);letter-spacing:4px;line-height:.95;margin-bottom:16px;}
+.hero-sub{font-size:16px;color:var(--muted);max-width:560px;margin-bottom:30px;line-height:1.6;}
+.hero-stats{display:flex;gap:32px;flex-wrap:wrap;}
+.hero-stat strong{font-family:'Bebas Neue',sans-serif;font-size:36px;color:var(--gold);display:block;}
+.hero-stat span{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);}
+.dl-btn{display:inline-flex;align-items:center;gap:10px;background:var(--red);color:#fff;font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;padding:14px 28px;border-radius:8px;text-decoration:none;border:none;cursor:pointer;transition:all .2s;margin-top:24px;}
+.dl-btn:hover{background:#c0001a;transform:translateY(-2px);}
+
+/* ── LEVEL BANNER ── */
+.level-banner{padding:32px 60px 20px;border-bottom:1px solid var(--border);}
+.level-banner-inner{display:flex;align-items:center;gap:16px;}
+.level-icon{font-size:40px;}
+.level-title{font-family:'Bebas Neue',sans-serif;font-size:38px;letter-spacing:3px;}
+.level-sub{font-size:13px;color:var(--muted);margin-top:2px;}
+.level-pill{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:4px 14px;border-radius:20px;}
+.pill-beg{background:rgba(34,197,94,.15);color:#22c55e;border:1px solid rgba(34,197,94,.3);}
+.pill-adv{background:rgba(251,146,60,.15);color:#fb923c;border:1px solid rgba(251,146,60,.3);}
+.pill-mst{background:rgba(168,85,247,.15);color:#a855f7;border:1px solid rgba(168,85,247,.3);}
+
+/* ── COURSE SECTION ── */
+.course-section{padding:48px 60px;border-bottom:2px solid rgba(255,255,255,.06);}
+.course-header{display:flex;align-items:flex-start;gap:20px;margin-bottom:28px;flex-wrap:wrap;}
+.course-emoji{font-size:56px;line-height:1;flex-shrink:0;}
+.course-info{flex:1;min-width:240px;}
+.course-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(26px,4vw,42px);letter-spacing:2px;line-height:1.1;margin-bottom:6px;}
+.course-meta-row{display:flex;gap:16px;flex-wrap:wrap;margin:8px 0 12px;}
+.cmeta{font-size:11px;color:var(--muted);display:flex;align-items:center;gap:5px;}
+.cmeta strong{color:var(--text);}
+.course-desc{font-size:13px;color:var(--muted);line-height:1.7;max-width:720px;margin-bottom:16px;}
+.course-price-block{display:flex;align-items:baseline;gap:10px;margin-bottom:6px;}
+.cprice{font-family:'Bebas Neue',sans-serif;font-size:32px;color:var(--gold);}
+.corig{font-size:14px;color:var(--muted);text-decoration:line-through;}
+.coff{font-size:11px;background:rgba(34,197,94,.12);color:var(--green);padding:2px 10px;border-radius:20px;font-weight:700;}
+
+/* ── MODULE ── */
+.modules-label{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--border);}
+.module-block{margin-bottom:16px;border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+.module-hdr{display:flex;gap:14px;align-items:flex-start;padding:16px 18px;background:rgba(255,255,255,.02);}
+.mod-num{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--red);width:28px;flex-shrink:0;line-height:1.1;}
+.mod-main{flex:1;}
+.mod-title{font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:700;letter-spacing:.5px;margin-bottom:3px;}
+.mod-dur{font-size:11px;color:var(--muted);}
+.module-body{padding:14px 18px 16px 60px;border-top:1px solid rgba(255,255,255,.05);}
+.mod-desc{font-size:13px;color:var(--muted);line-height:1.65;margin-bottom:12px;}
+.topics-label{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
+.topic-list{list-style:none;display:flex;flex-direction:column;gap:4px;}
+.topic-list li{font-size:12px;display:flex;gap:8px;align-items:flex-start;line-height:1.5;}
+.topic-list li::before{content:'▸';color:var(--red);flex-shrink:0;margin-top:1px;}
+
+/* ── PHARMA DISCLAIMER ── */
+.pharma-warn{background:rgba(239,68,68,.07);border:1px solid rgba(239,68,68,.25);border-radius:10px;padding:16px 20px;margin-bottom:24px;font-size:12px;color:#fca5a5;line-height:1.7;}
+.pharma-warn strong{color:#f87171;font-size:13px;}
+
+/* ── CERTIFICATE TEMPLATE ── */
+.cert-section{padding:40px 60px;border-bottom:1px solid var(--border);}
+.cert-heading{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:20px;}
+.cert-box{border:2px solid var(--gold);border-radius:16px;padding:40px;text-align:center;background:linear-gradient(135deg,rgba(255,208,0,.04),rgba(232,0,29,.02));position:relative;overflow:hidden;max-width:680px;}
+.cert-box::before{content:'RFC';position:absolute;font-family:'Bebas Neue',sans-serif;font-size:200px;color:rgba(255,208,0,.04);top:50%;left:50%;transform:translate(-50%,-50%);letter-spacing:12px;pointer-events:none;}
+.cert-club{font-size:11px;letter-spacing:5px;text-transform:uppercase;color:var(--muted);margin-bottom:4px;}
+.cert-main-title{font-family:'Bebas Neue',sans-serif;font-size:36px;letter-spacing:4px;color:var(--gold);margin-bottom:20px;}
+.cert-certifies{font-size:12px;color:var(--muted);margin-bottom:8px;}
+.cert-name{font-family:'Bebas Neue',sans-serif;font-size:42px;letter-spacing:2px;color:var(--text);margin-bottom:8px;}
+.cert-completed{font-size:12px;color:var(--muted);margin-bottom:10px;}
+.cert-course-name{font-family:'Bebas Neue',sans-serif;font-size:24px;color:var(--red);margin-bottom:20px;letter-spacing:1px;}
+.cert-serial{font-family:monospace;font-size:12px;letter-spacing:3px;color:var(--muted);background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:4px;padding:5px 14px;display:inline-block;margin-bottom:20px;}
+.cert-footer-row{display:flex;justify-content:space-between;align-items:flex-end;padding-top:20px;border-top:1px solid rgba(255,208,0,.15);flex-wrap:wrap;gap:10px;}
+.cert-sig{text-align:left;}
+.cert-sig .sig-line{font-family:'Bebas Neue',sans-serif;font-size:24px;color:var(--gold);border-bottom:2px solid rgba(255,208,0,.3);padding-bottom:4px;margin-bottom:4px;}
+.cert-sig .sig-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);}
+.cert-seal{width:70px;height:70px;border-radius:50%;background:rgba(232,0,29,.1);border:2px solid rgba(232,0,29,.3);display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.cert-seal .seal-txt{font-family:'Bebas Neue',sans-serif;font-size:10px;letter-spacing:2px;color:var(--red);text-align:center;line-height:1.2;}
+
+/* ── PRINT BUTTON ── */
+#print-bar{position:fixed;bottom:24px;right:24px;z-index:200;}
+.print-btn{background:var(--red);color:#fff;border:none;border-radius:10px;padding:14px 22px;font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;cursor:pointer;box-shadow:0 8px 32px rgba(232,0,29,.4);transition:all .2s;display:flex;align-items:center;gap:8px;}
+.print-btn:hover{background:#c0001a;transform:translateY(-2px);}
+
+/* ── FOOTER ── */
+#kit-footer{padding:40px 60px;text-align:center;border-top:2px solid var(--border);}
+.kit-footer-logo{font-family:'Bebas Neue',sans-serif;font-size:32px;letter-spacing:4px;color:var(--red);margin-bottom:8px;}
+.kit-footer-sub{font-size:11px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;}
+
+/* ── PRINT STYLES ── */
+@media print{
+  #toc,#print-bar{display:none!important;}
+  #main{margin-left:0!important;}
+  .course-section{page-break-before:auto;page-break-inside:avoid;}
+  .module-block{page-break-inside:avoid;}
+  .cert-box{page-break-inside:avoid;border:2px solid #c0a000;}
+  body{background:#fff!important;color:#000!important;}
+  .course-title,.cert-main-title,.cert-name{color:#000!important;}
+  .course-desc,.mod-desc,.topic-list li,.cmeta,.hero-sub,.level-sub{color:#444!important;}
+  .cert-serial,.cert-completed,.cert-certifies,.cert-club,.cert-footer-row,.sig-label,.cert-seal{color:#666!important;}
+  .mod-num{color:#c0001a!important;}
+  .topic-list li::before{color:#c0001a!important;}
+  #hero{background:#fff!important;border-bottom:2px solid #ccc!important;}
+  .hero-h1,.hero-tag{color:#000!important;}
+  .hero-stat strong{color:#b8860b!important;}
+  .level-banner{background:#f8f8f8!important;}
+  .module-hdr{background:#f5f5f5!important;}
+  .cert-box{background:#fffdf0!important;}
+}
+
+/* ── SCROLLBAR ── */
+#toc::-webkit-scrollbar{width:4px;}
+#toc::-webkit-scrollbar-track{background:transparent;}
+#toc::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:2px;}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR TOC -->
+<nav id="toc">
+  <div id="toc-logo">
+    <div class="t1">RFC ACADEMY</div>
+    <div class="t2">Complete Course Kit</div>
+  </div>
+
+  <div class="toc-section">Beginner</div>
+  <a href="#cs_b1" class="toc-link">🌱 Fitness Foundations<span class="toc-badge beg">BEG</span></a>
+  <a href="#cs_b2" class="toc-link">🥗 Nutrition Certificate<span class="toc-badge beg">BEG</span></a>
+  <a href="#cs_b3" class="toc-link">🔥 Body Transformation<span class="toc-badge beg">BEG</span></a>
+
+  <div class="toc-section">Advanced</div>
+  <a href="#cs_a1" class="toc-link">💪 Certified PT (CPT)<span class="toc-badge adv">ADV</span></a>
+  <a href="#cs_a2" class="toc-link">🧬 Sports Nutrition<span class="toc-badge adv">ADV</span></a>
+  <a href="#cs_a3" class="toc-link">🦴 Physio & Rehab<span class="toc-badge adv">ADV</span></a>
+  <a href="#cs_a4" class="toc-link">🎯 Fat Loss Specialist<span class="toc-badge adv">ADV</span></a>
+
+  <div class="toc-section">Master</div>
+  <a href="#cs_m1" class="toc-link">👑 Elite Performance<span class="toc-badge mst">MST</span></a>
+  <a href="#cs_m2" class="toc-link">⚗️ Pharma Science<span class="toc-badge mst">MST</span></a>
+  <a href="#cs_m3" class="toc-link">🏥 Sports Medicine<span class="toc-badge mst">MST</span></a>
+
+  <div class="toc-section">Certificate</div>
+  <a href="#sample-cert" class="toc-link">🏆 Sample Certificate</a>
+</nav>
+
+<!-- PRINT BUTTON -->
+<div id="print-bar">
+  <button class="print-btn" onclick="window.print()">🖨️ PRINT / SAVE PDF</button>
+</div>
+
+<!-- MAIN -->
+<div id="main">
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-tag">Royal Fitness Club</div>
+  <h1 class="hero-h1">RFC ACADEMY<br>COURSE KIT</h1>
+  <p class="hero-sub">The complete offline reference for all 10 RFC Academy certification courses. Full module content, topic breakdowns, and certificate templates — beginner to master level.</p>
+  <div class="hero-stats">
+    <div class="hero-stat"><strong>10</strong><span>Courses</span></div>
+    <div class="hero-stat"><strong>114</strong><span>Modules</span></div>
+    <div class="hero-stat"><strong>3</strong><span>Levels</span></div>
+    <div class="hero-stat"><strong>680+</strong><span>Topics</span></div>
+  </div>
+  <button class="dl-btn" onclick="window.print()">🖨️ Download as PDF</button>
+</section>
+<!-- END HERO — course content injected by JS below -->
+
+<!-- BEGINNER LEVEL BANNER -->
+<div class="level-banner" id="level-beg">
+  <div class="level-banner-inner">
+    <div class="level-icon">🌱</div>
+    <div>
+      <div class="level-title">BEGINNER LEVEL</div>
+      <div class="level-sub">3 courses · Foundation knowledge for anyone starting their fitness journey</div>
+    </div>
+    <span class="level-pill pill-beg">BEGINNER</span>
+  </div>
+</div>
+
+<!-- BEGINNER COURSES PLACEHOLDER -->
+<div id="beg-courses"></div>
+
+<!-- ADVANCED LEVEL BANNER -->
+<div class="level-banner" id="level-adv">
+  <div class="level-banner-inner">
+    <div class="level-icon">⚡</div>
+    <div>
+      <div class="level-title">ADVANCED LEVEL</div>
+      <div class="level-sub">4 courses · Professional-grade training, nutrition, physio &amp; fat loss</div>
+    </div>
+    <span class="level-pill pill-adv">ADVANCED</span>
+  </div>
+</div>
+
+<!-- ADVANCED COURSES PLACEHOLDER -->
+<div id="adv-courses"></div>
+
+<!-- MASTER LEVEL BANNER -->
+<div class="level-banner" id="level-mst">
+  <div class="level-banner-inner">
+    <div class="level-icon">🐯</div>
+    <div>
+      <div class="level-title">MASTER LEVEL</div>
+      <div class="level-sub">3 courses · Elite performance, pharmaceutical science &amp; sports medicine</div>
+    </div>
+    <span class="level-pill pill-mst">MASTER</span>
+  </div>
+</div>
+
+<!-- MASTER COURSES PLACEHOLDER -->
+<div id="mst-courses"></div>
+
+<!-- SAMPLE CERTIFICATE -->
+<section class="cert-section" id="sample-cert">
+  <div class="cert-heading">🏆 SAMPLE RFC CERTIFICATE OF COMPLETION</div>
+  <div class="cert-box">
+    <div class="cert-club">Royal Fitness Club · RFC Academy</div>
+    <div class="cert-main-title">CERTIFICATE OF COMPLETION</div>
+    <div class="cert-certifies">This is to certify that</div>
+    <div class="cert-name">YOUR NAME HERE</div>
+    <div class="cert-completed">has successfully completed the course</div>
+    <div class="cert-course-name">RFC ACADEMY CERTIFICATION COURSE</div>
+    <div class="cert-serial">Serial: RFC-2026-UID000-XXXXX-MST</div>
+    <div class="cert-footer-row">
+      <div class="cert-sig">
+        <div class="sig-line">RFC Academy</div>
+        <div class="sig-label">Issuing Authority</div>
+      </div>
+      <div style="text-align:center;">
+        <div style="font-size:10px;color:var(--muted);margin-bottom:4px;">Date of Issue</div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:18px;" id="cert-date"></div>
+      </div>
+      <div class="cert-seal">
+        <div class="seal-txt">RFC<br>CERTIFIED</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer id="kit-footer">
+  <div class="kit-footer-logo">ROYAL FITNESS CLUB</div>
+  <div class="kit-footer-sub">RFC Academy · Learn · Certify · Dominate</div>
+</footer>
+
+</div><!-- #main -->
+
+<script>
+// Set certificate date
+document.getElementById('cert-date').textContent = new Date().toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'});
+
+// ── COURSE DATA ──────────────────────────────────────────────────
+const COURSES = [
+  // ── BEGINNER ──────────────────────────────────────────────────
+  {
+    id:'cs_b1', emoji:'🌱', level:'beg',
+    name:'Fitness Foundations Certificate',
+    desc:'Build an unshakeable base. Learn how the body moves, adapts, and grows. Master the fundamentals of exercise science, recovery, and healthy habits that every elite athlete relies on.',
+    price:999, origPrice:2499, duration:'4 Weeks', students:2340, rating:4.9,
+    mods:[
+      { n:1, title:'How the Body Works — Anatomy Essentials', dur:'45 min',
+        desc:'Understand the musculoskeletal system, major muscle groups, joints, and how they work together during exercise.',
+        topics:['Skeletal system overview','Muscle types: slow vs fast twitch','Major muscle groups (upper, core, lower)','Joint mechanics and range of motion','Tendons, ligaments, and injury awareness','How muscles grow: hypertrophy basics'] },
+      { n:2, title:'Exercise Science Fundamentals', dur:'50 min',
+        desc:'The science behind how your body responds to training — from cellular adaptation to systemic changes.',
+        topics:['Energy systems: ATP-PC, glycolytic, oxidative','VO₂ max and cardiovascular adaptation','EPOC and the afterburn effect','Progressive overload principle','Deload weeks and supercompensation','Neural adaptations in early training'] },
+      { n:3, title:'Beginner Training Program Design', dur:'40 min',
+        desc:'Learn to build effective 3–4 day training plans using foundational movements and volume principles.',
+        topics:['Sets, reps, and intensity explained','Push/pull/legs vs full-body splits','Compound vs isolation exercises','Warm-up and cool-down protocols','How to progress week-to-week','Sample 4-week beginner program'] },
+      { n:4, title:'Nutrition 101 — Fueling Your Body', dur:'55 min',
+        desc:'Master the basics of food — macros, micros, hydration, and meal timing for energy and recovery.',
+        topics:['Macronutrients: protein, carbs, fats','Micronutrients: vitamins & minerals','Calorie basics and TDEE calculation','Meal timing around workouts','Hydration and electrolytes','Reading nutrition labels'] },
+      { n:5, title:'Recovery & Sleep Science', dur:'35 min',
+        desc:'Why rest is when growth actually happens. Learn to optimize recovery for maximum results.',
+        topics:['Muscle repair and protein synthesis','Sleep stages and hormonal release (GH)','Active recovery techniques','Foam rolling and mobility work','Stress and cortisol impact on recovery','Cold therapy and contrast bathing basics'] },
+      { n:6, title:'Mindset, Habits & Goal Setting', dur:'30 min',
+        desc:'Build the mental frameworks that separate those who quit from those who transform.',
+        topics:['SMART goal framework for fitness','Habit stacking and behavioral anchors','Tracking progress: photos, measurements, lifts','Dealing with plateaus mentally','Building a consistent routine','Motivation vs discipline'] },
+      { n:7, title:'Common Beginner Mistakes & How to Avoid Them', dur:'30 min',
+        desc:'Fast-track your learning by avoiding the pitfalls that hold 90% of beginners back.',
+        topics:['Ego lifting and injury risk','Too much cardio, not enough lifting','Neglecting compound movements','Over-supplementing without basics in place','Skipping warm-up and cool-down','Inconsistent sleep patterns'] },
+      { n:8, title:'Final Assessment + Certificate', dur:'20 min',
+        desc:'Test your knowledge across all 7 modules. Score 70%+ to unlock your RFC Fitness Foundations Certificate.',
+        topics:['25-question assessment covering all modules','Anatomy and exercise science MCQs','Nutrition and recovery questions','Certificate generation upon passing','LinkedIn-shareable RFC digital badge','Your next step: Advanced courses'] }
+    ]
+  },
+  {
+    id:'cs_b2', emoji:'🥗', level:'beg',
+    name:'Nutrition & Healthy Eating Certificate',
+    desc:'Understand food at a molecular level. Build meal plans, decode labels, and learn the Indian diet science that powers elite athletes. Become the expert everyone turns to for nutrition advice.',
+    price:1299, origPrice:2999, duration:'4 Weeks', students:1870, rating:4.8,
+    mods:[
+      { n:1, title:'Macronutrients Deep Dive', dur:'60 min',
+        desc:'Protein, carbohydrates, and fats — understand each macronutrient\'s role, quality sources, and how much you need.',
+        topics:['Complete vs incomplete proteins','Essential amino acids and leucine threshold','Glycemic index vs glycemic load','Simple vs complex carbohydrates','Saturated, unsaturated, and trans fats','Omega-3 vs omega-6 balance'] },
+      { n:2, title:'Micronutrients — The Unsung Heroes', dur:'55 min',
+        desc:'Iron, B12, Vitamin D, Zinc, Magnesium — deficiencies silently wreck performance. Learn to identify and fix them.',
+        topics:['Fat-soluble vs water-soluble vitamins','Vitamin D: sun, supplementation, and deficiency signs','Iron: heme vs non-heme, vegetarian strategies','Magnesium for sleep and muscle function','Zinc and testosterone connection','Calcium, Phosphorus, and bone health'] },
+      { n:3, title:'Indian Superfoods & Traditional Nutrition Science', dur:'50 min',
+        desc:'Leverage the power of daal, ghee, turmeric, amla, moringa, and other Indian superfoods backed by modern research.',
+        topics:['Ghee: Butyric acid and gut health','Turmeric + piperine: curcumin bioavailability','Amla: Vitamin C and antioxidant power','Moringa: complete protein source','Dal and legumes: protein strategy for vegetarians','Fermented foods: curd, idli, kanji for gut health'] },
+      { n:4, title:'Meal Planning for Different Goals', dur:'65 min',
+        desc:'Build practical, affordable Indian meal plans for fat loss, muscle gain, maintenance, and athletic performance.',
+        topics:['Calorie targets by goal (deficit/surplus/maintenance)','Protein-first meal design','Pre- and post-workout meal timing','Budget-friendly high-protein vegetarian meals','Bulking meal plan: calorie-dense Indian foods','Cutting meal plan: volume eating strategies'] },
+      { n:5, title:'Metabolism & Energy Balance', dur:'45 min',
+        desc:'Understand TDEE, BMR, RMR, and how to manipulate your metabolism through diet and training.',
+        topics:['BMR and RMR: what\'s the difference','TDEE components: activity factor, NEAT, TEF','Metabolic adaptation during dieting','Diet breaks and refeeds explained','Why crash diets fail long-term','Reverse dieting to restore metabolism'] },
+      { n:6, title:'Sports Nutrition Fundamentals', dur:'55 min',
+        desc:'How elite athletes eat — nutrient timing, peri-workout nutrition, and recovery nutrition strategies.',
+        topics:['Pre-workout meal: timing and composition','Intra-workout: when to use carbs and BCAAs','Post-workout anabolic window: myth vs reality','Carbohydrate loading for endurance events','Protein synthesis and muscle protein balance','Hydration strategy during training'] },
+      { n:7, title:'Supplements — What Works, What Doesn\'t', dur:'45 min',
+        desc:'Cut through the marketing noise. Learn which supplements are evidence-based and which are a waste of money.',
+        topics:['Creatine monohydrate: the king of supplements','Whey, casein, and plant proteins compared','Caffeine: optimal dosing and timing','Beta-alanine and L-citrulline for performance','Vitamin D3 + K2 combination','Fish oil: EPA/DHA dosing for health'] },
+      { n:8, title:'Final Assessment + Certificate', dur:'20 min',
+        desc:'Test your nutrition knowledge. Pass with 70% to earn your RFC Nutrition Certificate.',
+        topics:['30-question nutrition assessment','Macros, micros, and metabolism MCQs','Meal planning scenario questions','Certificate issuance on completion','Progress to Advanced Sports Nutrition Diploma','Share your RFC cert on LinkedIn'] }
+    ]
+  },
+  {
+    id:'cs_b3', emoji:'🔥', level:'beg',
+    name:'Body Transformation Blueprint',
+    desc:'The complete A-to-Z guide for transforming your body in 90 days. Fat loss, muscle building, and body recomposition strategies designed for real Indian lifestyles.',
+    price:1499, origPrice:3499, duration:'6 Weeks', students:1560, rating:4.9,
+    mods:[
+      { n:1, title:'Body Composition: Understanding What You\'re Working With', dur:'40 min',
+        desc:'Fat mass, lean mass, FFMI, body fat percentage — learn how to measure, track, and interpret your body composition.',
+        topics:['Body fat percentage ranges for men and women','DEXA, calipers, BIA — accuracy compared','Waist-to-hip ratio and metabolic risk','FFMI (Fat-Free Mass Index) calculation','Why the scale lies and what to track instead','Setting realistic transformation timelines'] },
+      { n:2, title:'Fat Loss Science & Hormones', dur:'60 min',
+        desc:'Understand the hormonal environment of fat loss — insulin, leptin, ghrelin, cortisol, and thyroid.',
+        topics:['Insulin and fat storage explained','Leptin resistance and hunger signals','Ghrelin: the hunger hormone and how to manage it','Cortisol and belly fat connection','Thyroid hormones and metabolic rate','Estrogen, testosterone, and body composition'] },
+      { n:3, title:'Muscle Building for Beginners', dur:'55 min',
+        desc:'The science and strategy of building lean muscle mass — stimulus, nutrition, sleep, and consistency.',
+        topics:['Mechanical tension, metabolic stress, muscle damage','Protein synthesis and mTOR pathway','Optimal training frequency per muscle group','Volume landmarks: MEV, MAV, MRV','Why beginners gain muscle AND lose fat simultaneously','Natty muscle building timeline — realistic expectations'] },
+      { n:4, title:'Cardio for Body Composition', dur:'45 min',
+        desc:'LISS, HIIT, steady state — when to use which type of cardio for maximum body transformation results.',
+        topics:['LISS cardio: walking, cycling, zone 2 training','HIIT: mechanisms and effectiveness','Zone 2 training and fat oxidation','Concurrent training: cardio + lifting interference','Cardio and muscle loss risk','Optimal cardio frequency for transformers'] },
+      { n:5, title:'Tracking, Measuring & Adjusting Your Plan', dur:'40 min',
+        desc:'Data-driven transformation. Learn to use measurements, photos, strength metrics, and biofeedback to keep progressing.',
+        topics:['Weekly check-in protocol','Scale weight vs true fat loss','Progress photos: lighting, angles, timing','Strength as a proxy for muscle retention','Biofeedback: hunger, energy, libido, mood','When and how to adjust calories or training'] },
+      { n:6, title:'Mindset for Transformation — Breaking Mental Barriers', dur:'35 min',
+        desc:'The psychology of body transformation — identity, motivation, social pressure, and building a champion\'s mindset.',
+        topics:['Identity shift: "I AM someone who trains"','Overcoming social pressure and family food habits','All-or-nothing thinking and why it kills progress','Dealing with slow weeks and plateaus','The role of self-compassion in consistency','Building your inner circle of support'] },
+      { n:7, title:'Lifestyle Optimization: Sleep, Stress & NEAT', dur:'35 min',
+        desc:'The often-ignored variables that account for up to 40% of your fat loss results.',
+        topics:['NEAT: non-exercise activity thermogenesis','10,000 steps and daily movement','Sleep deprivation and fat gain mechanisms','Blue light, cortisol, and sleep quality','Stress eating and emotional triggers','Work-life balance for fitness success'] },
+      { n:8, title:'Final Assessment + Certificate', dur:'20 min',
+        desc:'Complete the transformation knowledge assessment and claim your RFC Body Transformation Certificate.',
+        topics:['35-question comprehensive assessment','Body composition, hormones, and programming questions','Fat loss and muscle building scenario MCQs','Certificate generation at 70%+ score','Your transformation journey continues','Recommended next course: CPT or Fat Loss Specialist'] }
+    ]
+  },
+
+  // ── ADVANCED ──────────────────────────────────────────────────
+  {
+    id:'cs_a1', emoji:'💪', level:'adv',
+    name:'Certified Personal Trainer (CPT)',
+    desc:'Become a professional-grade personal trainer. 12 deep modules covering anatomy, biomechanics, periodization, client assessment, corrective exercise, and the business of fitness.',
+    price:3999, origPrice:8999, duration:'10 Weeks', students:1140, rating:4.9,
+    mods:[
+      { n:1, title:'Advanced Anatomy & Biomechanics', dur:'75 min',
+        desc:'Go beyond muscle names. Understand force vectors, leverage, moment arms, and how anatomy informs exercise selection.',
+        topics:['Muscle origin, insertion, and action charts','Moment arms and mechanical advantage','Sagittal, frontal, transverse planes of motion','Scapular mechanics and shoulder health','Hip anatomy: FAI, femoral anteversion','Knee valgus, varus, and injury implications'] },
+      { n:2, title:'Exercise Physiology for Trainers', dur:'70 min',
+        desc:'The science of how training creates adaptation — cardiorespiratory, neuromuscular, and hormonal.',
+        topics:['Acute vs chronic training adaptations','VO₂ max, lactate threshold, and cardio programming','Neuromuscular junction and firing rate','Hormonal response to training (testosterone, GH, insulin)','DOMS — mechanisms and management','Overtraining syndrome: recognition and prevention'] },
+      { n:3, title:'Client Assessment & Fitness Testing', dur:'60 min',
+        desc:'Learn to assess posture, movement quality, strength, endurance, and body composition in new clients.',
+        topics:['Postural assessment (plumb line, photos)','Overhead squat assessment — fault identification','Goniometry: measuring range of motion','Grip strength, push-up, sit-and-reach norms','1RM testing protocols and rep-max conversion','PAR-Q and health history screening'] },
+      { n:4, title:'Corrective Exercise & Injury Prevention', dur:'65 min',
+        desc:'Identify muscular imbalances and prescribe corrective strategies to fix movement dysfunction.',
+        topics:['Upper crossed and lower crossed syndrome','Tight vs weak muscle identification','SMR, static, and dynamic stretching hierarchy','Corrective exercise: inhibit, lengthen, activate, integrate','Common overuse injuries in gym clients','Return-to-training protocols after injury'] },
+      { n:5, title:'Resistance Training Program Design', dur:'80 min',
+        desc:'Master periodization models, volume landmarks, exercise selection, and program design for all client types.',
+        topics:['Linear, undulating, and block periodization','Volume: MEV, MAV, MRV for each muscle group','Rep range continuum (strength vs hypertrophy vs endurance)','Exercise order and pairing principles','Intensity techniques: drop sets, supersets, cluster sets','Programming for beginners vs intermediate vs advanced'] },
+      { n:6, title:'Cardiovascular & Metabolic Conditioning', dur:'55 min',
+        desc:'Design cardio programs for fat loss, endurance, and cardiovascular health across all client populations.',
+        topics:['Zone 1–5 training explained','HIIT protocols: Tabata, 30/30, 40/20','Steady-state vs interval programming','Cardio periodization across a training block','VO₂ max improvement strategies','Resting heart rate and HRV as progress markers'] },
+      { n:7, title:'Nutrition for Personal Trainers', dur:'65 min',
+        desc:'Everything a PT needs to know to guide clients on nutrition without overstepping scope of practice.',
+        topics:['Scope of practice: what PTs can and cannot prescribe','Calorie and macro estimation for clients','Protein guidance for muscle and fat loss goals','Pre/post workout nutrition recommendations','Supplement recommendations for clients','When to refer to a registered dietitian'] },
+      { n:8, title:'Special Populations Training', dur:'60 min',
+        desc:'Training youth, seniors, pregnant women, diabetics, and clients with cardiovascular conditions.',
+        topics:['Training youth athletes (ages 12–18)','Older adults: sarcopenia prevention, fall risk','Pre- and post-natal exercise guidelines','Type 2 diabetes: exercise as medicine','Hypertension and cardiovascular disease modifications','Osteoporosis: impact training and bone density'] },
+      { n:9, title:'Psychology of Coaching & Client Communication', dur:'45 min',
+        desc:'The soft skills that separate average trainers from elite coaches — motivation, rapport, and behavior change.',
+        topics:['Transtheoretical model of behavior change','Motivational interviewing techniques','Building rapport in first sessions','Handling non-compliant or resistant clients','Positive reinforcement and accountability frameworks','Social media coaching: remote client management'] },
+      { n:10, title:'Business of Personal Training', dur:'55 min',
+        desc:'Build your PT business from scratch — pricing, marketing, online coaching, and scaling to 6 figures.',
+        topics:['Pricing models: hourly vs packages vs retainer','Online coaching platforms and tools','Social media marketing for PTs in India','Content creation: reels, shorts, and authority building','Passive income: courses, plans, and programs','Legal basics: liability, contracts, and insurance'] },
+      { n:11, title:'Practical Demonstrations & Case Studies', dur:'60 min',
+        desc:'Real-world client scenarios — how to program, communicate, adjust, and progress across 6 different client types.',
+        topics:['Case 1: Obese male, 38yo, no training history','Case 2: Skinny female, 22yo, wants to gain muscle','Case 3: Athletic male, plateau on bench press','Case 4: Senior female, post knee replacement','Case 5: Busy professional, 45 mins 3×/week','Case 6: Competitive bodybuilder in off-season'] },
+      { n:12, title:'Final CPT Exam + Certification', dur:'30 min',
+        desc:'50-question comprehensive exam. Pass at 75% to earn your RFC Certified Personal Trainer credential.',
+        topics:['Section 1: Anatomy & Physiology (10 Qs)','Section 2: Assessment & Programming (15 Qs)','Section 3: Nutrition & Special Populations (10 Qs)','Section 4: Business & Psychology (10 Qs)','Section 5: Case Study Analysis (5 Qs)','Certificate + digital badge on passing'] }
+    ]
+  },
+  {
+    id:'cs_a2', emoji:'🧬', level:'adv',
+    name:'Sports Nutrition & Dietetics Diploma',
+    desc:'Go beyond basic macros. This diploma covers clinical nutrition science, sports dietetics, gut health, blood markers, and how to build evidence-based nutrition plans for athletes and general populations.',
+    price:4499, origPrice:9999, duration:'10 Weeks', students:890, rating:4.8,
+    mods:[
+      { n:1, title:'Advanced Macronutrient Science', dur:'70 min',
+        desc:'Protein turnover, carbohydrate metabolism, fat oxidation — the biochemistry every serious nutrition coach must know.',
+        topics:['Protein turnover, synthesis, and breakdown rates','Net protein balance and leucine threshold','Carbohydrate storage: glycogen capacity in liver vs muscle','Fat oxidation at rest vs exercise intensities','Metabolic flexibility: training the body to burn fat','Respiratory quotient and substrate utilization'] },
+      { n:2, title:'Gut Health, Microbiome & Performance', dur:'65 min',
+        desc:'Your gut is your second brain. Learn how the microbiome influences body composition, immunity, mood, and performance.',
+        topics:['Gut microbiome diversity and health markers','Leaky gut: zonulin, intestinal permeability','Prebiotics, probiotics, and synbiotics for athletes','Food intolerances vs allergies: testing and management','FODMAP protocol for IBS-suffering athletes','Fermented foods: evidence for microbiome support'] },
+      { n:3, title:'Blood Marker Analysis for Nutrition Optimization', dur:'60 min',
+        desc:'Read and interpret blood reports to identify deficiencies, inflammation markers, and metabolic health indicators.',
+        topics:['CBC — iron and B12 markers','HbA1c and insulin resistance assessment','Thyroid panel: TSH, T3, T4, rT3 interpretation','Lipid panel: LDL particle size, HDL, triglycerides','Vitamin D (25-OH) optimal range for athletes','CRP and homocysteine: inflammation markers'] },
+      { n:4, title:'Nutrient Timing & Periodization', dur:'60 min',
+        desc:'When you eat matters as much as what you eat. Master peri-workout nutrition and dietary periodization.',
+        topics:['Pre-workout: carb type, protein, and timing windows','Intra-workout nutrition for sessions over 60 minutes','Post-workout anabolic window: evidence review','Carb backloading and nighttime nutrition','Training-day vs rest-day calorie cycling','Nutrition periodization across a training macrocycle'] },
+      { n:5, title:'Weight Making Strategies for Combat Athletes', dur:'50 min',
+        desc:'Safely cut weight for competition in boxing, wrestling, MMA, and powerlifting weigh-ins.',
+        topics:['Water cutting: safe protocols and limits','Sodium manipulation and carb depletion','Rehydration and recovery after weigh-in','Acute vs chronic weight manipulation risks','Recovery nutrition post-weigh-in for performance','ISSN and NSCA position stands on weight cutting'] },
+      { n:6, title:'Endurance & Team Sport Nutrition', dur:'55 min',
+        desc:'Fueling marathons, triathlons, football, cricket, and cycling — sport-specific nutrition strategies.',
+        topics:['Carbohydrate loading protocols for endurance','In-race fueling: gels, bars, drinks — when and how','Sweat rate testing and hydration planning','Iron deficiency anemia in female endurance athletes','Recovery nutrition for back-to-back training days','Sports drinks vs plain water: what research says'] },
+      { n:7, title:'Supplementation Science — Tier 1 to Tier 3', dur:'60 min',
+        desc:'Evidence-based supplement hierarchy — from creatine and caffeine to emerging compounds and adaptogens.',
+        topics:['Tier 1: creatine, caffeine, beta-alanine, nitrates','Tier 2: HMB, citrulline, ashwagandha','Tier 3: NMN, berberine, apigenin','Indian adaptogenic herbs: Shilajit, Safed Musli, Brahmi','Supplement contamination and batch testing','When and how to recommend supplements to clients'] },
+      { n:8, title:'Clinical Nutrition: Diabetes, Heart Disease & PCOS', dur:'65 min',
+        desc:'Evidence-based dietary interventions for India\'s most prevalent metabolic conditions.',
+        topics:['Type 2 diabetes: low-carb vs Mediterranean vs IF evidence','Insulin resistance reversal through diet and exercise','Cardiovascular disease: DASH diet, TLC diet','PCOS: insulin connection, inositol, low-GI eating','NAFLD nutrition management','Thyroid conditions: what to eat and avoid'] },
+      { n:9, title:'Indian Context: Regional Diets & Fasting', dur:'55 min',
+        desc:'Apply sports nutrition science to uniquely Indian dietary patterns, regional cuisines, and religious fasting protocols.',
+        topics:['Vegetarian complete protein combinations','Vegan athlete: B12, iron, zinc, omega-3 strategies','Regional diets: Punjab, South India, Bengal, Maharashtra','Intermittent fasting: 16:8, OMAD in Indian context','Navratri, Ramadan, Ekadashi fasting for athletes','Mythbusting: ghee, coconut oil, rice in Indian diet'] },
+      { n:10, title:'Nutrition Coaching & Client Communication', dur:'40 min',
+        desc:'The business and communication skills to build a thriving nutrition coaching practice.',
+        topics:['Scope of practice for nutrition coaches in India','FSSAI regulations on nutrition claims','Setting up a consultation framework','Food journals, MyFitnessPal, and tracking apps','Handling resistant clients and dietary adherence','Building a sustainable online nutrition coaching business'] },
+      { n:11, title:'Practical Meal Plan Design Masterclass', dur:'60 min',
+        desc:'Build complete, individualized meal plans from scratch for 6 different client profiles.',
+        topics:['Client 1: 70kg male, fat loss, office job','Client 2: 55kg female, muscle gain, vegetarian','Client 3: 90kg male, T2 diabetes, wants to exercise','Client 4: 60kg female, PCOS, wants to lose 10kg','Client 5: 75kg male, marathon runner, training 12h/week','Client 6: 50kg female, postpartum, breastfeeding'] },
+      { n:12, title:'Final Diploma Exam + Certification', dur:'30 min',
+        desc:'60-question comprehensive exam. Pass at 75% to earn your RFC Sports Nutrition & Dietetics Diploma.',
+        topics:['Section 1: Macronutrient & Gut Science (15 Qs)','Section 2: Blood Markers & Clinical Nutrition (15 Qs)','Section 3: Periodization & Sport-Specific (15 Qs)','Section 4: Coaching & Practical Application (15 Qs)','Scenario-based case study questions','Digital diploma certificate issued on passing'] }
+    ]
+  },
+  {
+    id:'cs_a3', emoji:'🦴', level:'adv',
+    name:'Physio & Sports Rehabilitation Diploma',
+    desc:'Learn to prevent, assess, and rehabilitate the injuries that stop athletes in their tracks. Covers physiotherapy principles, manual therapy basics, exercise rehab, and return-to-sport protocols.',
+    price:3499, origPrice:7999, duration:'8 Weeks', students:650, rating:4.8,
+    mods:[
+      { n:1, title:'Musculoskeletal Anatomy for Rehab Specialists', dur:'75 min',
+        desc:'Deep-dive into connective tissue, joint mechanics, and the anatomy most relevant to sports injuries.',
+        topics:['Tendon structure: collagen types I and III','Ligament sprain grading (I, II, III)','Cartilage types and repair capacity','Bursa anatomy and bursitis pathology','Nerve root levels and dermatome maps','Fascia: superficial and deep fascial lines'] },
+      { n:2, title:'Common Sports Injuries — Assessment & Diagnosis', dur:'70 min',
+        desc:'Learn to identify, assess, and triage 20+ of the most common gym and sports injuries.',
+        topics:['Shoulder impingement and rotator cuff tears','ACL and meniscus injuries: assessment tests','Patellofemoral pain syndrome (Runner\'s Knee)','Achilles tendinopathy vs tendon rupture','Lower back pain: disc, facet, and SI joint','Tennis elbow, golfer\'s elbow'] },
+      { n:3, title:'Physiotherapy Principles & Manual Therapy Basics', dur:'65 min',
+        desc:'Understand the principles physiotherapists use and how trainers can apply them in a gym rehab context.',
+        topics:['POLICE vs RICE protocols (modern evidence)','Joint mobilization grades (Maitland I–IV)','Soft tissue massage: friction, effleurage, petrissage','Dry needling and trigger point theory','PNF stretching techniques','Kinesiology tape: application and mechanisms'] },
+      { n:4, title:'Shoulder Rehabilitation Protocols', dur:'60 min',
+        desc:'Complete shoulder rehab from acute injury to full return-to-sport. Rotator cuff, labrum, impingement.',
+        topics:['Phase 1: Acute pain management (0–2 weeks)','Phase 2: Mobility restoration (2–6 weeks)','Phase 3: Rotator cuff strengthening progression','Phase 4: Functional loading and pressing return','Scapular stability: serratus anterior and lower trap','Return-to-bench press testing criteria'] },
+      { n:5, title:'Knee Rehabilitation Protocols', dur:'65 min',
+        desc:'ACL reconstruction rehab, meniscus rehab, patellofemoral syndrome — complete evidence-based protocols.',
+        topics:['Post-ACL surgery: 0–2 weeks (swelling, gait)','Quad activation and early range of motion','Hamstring and glute strengthening for knee stability','Single-leg training progression and hop tests','Return-to-sport criteria: limb symmetry index','Patellofemoral: VMO strengthening and taping'] },
+      { n:6, title:'Lower Back Pain & Spine Rehabilitation', dur:'70 min',
+        desc:'The #1 reason people stop training. Learn to differentiate and rehabilitate disc, facet, and muscular back pain.',
+        topics:['McGill Big 3: bird dog, side plank, curl-up','McKenzie method: centralization and directional preference','Hip hinge re-education for deadlift return','Core stability progression','Disc herniation: red flags and conservative management','Deadlift and squat modifications for back pain'] },
+      { n:7, title:'Return-to-Sport Protocols & Functional Testing', dur:'55 min',
+        desc:'Evidence-based criteria for clearing athletes to return to full training and competition after injury.',
+        topics:['Limb Symmetry Index (LSI) testing standards','Single-leg hop test battery','Y-Balance Test and dynamic stability assessment','Isometric strength testing','Psychological readiness: ACL-RSI scale','Graduated return-to-sport continuum stages'] },
+      { n:8, title:'Injury Prevention Programming for Athletes', dur:'50 min',
+        desc:'Build prehabilitation programs that reduce injury rates by 50%+ across different sports.',
+        topics:['FIFA 11+ warm-up program evidence','Hip and glute prehab for runners and jumpers','Shoulder prehab for overhead athletes','Ankle stability training for court sports','Load management and training-to-competition ratios','Movement screening and early intervention'] },
+      { n:9, title:'Recovery Modalities & Technology', dur:'40 min',
+        desc:'TENS, ultrasound, blood flow restriction, compression, cryotherapy — what the evidence says.',
+        topics:['TENS: mechanisms and appropriate use','Therapeutic ultrasound: frequency and dosing','Blood Flow Restriction (BFR) training in rehab','Pneumatic compression boots: evidence review','PEMF therapy: emerging evidence','Wearables: HRV monitoring for injury risk prediction'] },
+      { n:10, title:'Final Diploma Exam + Certification', dur:'25 min',
+        desc:'50-question assessment. Pass at 75% for your RFC Physio & Sports Rehabilitation Diploma.',
+        topics:['Section 1: Anatomy & Injury Assessment (15 Qs)','Section 2: Rehabilitation Protocols (20 Qs)','Section 3: Return-to-Sport & Prevention (15 Qs)','Certificate + digital badge issued on passing','Continuing education pathway outlined','Recommended: Sports Medicine Master'] }
+    ]
+  },
+  {
+    id:'cs_a4', emoji:'🎯', level:'adv',
+    name:'Fat Loss Specialist (FLS) Certification',
+    desc:'Master the complete science of fat loss — hormones, metabolism, dieting strategies, training protocols, and client psychology. Become the coach who actually gets results when others fail.',
+    price:2999, origPrice:6999, duration:'6 Weeks', students:1380, rating:4.9,
+    mods:[
+      { n:1, title:'Hormonal Architecture of Fat Loss', dur:'70 min',
+        desc:'Insulin, glucagon, leptin, ghrelin, cortisol, thyroid — how each hormone impacts fat storage and mobilization.',
+        topics:['Insulin: anabolic master hormone and fat storage switch','Glucagon: fat mobilization and glycogenolysis','Leptin sensitivity and why it drops during dieting','Ghrelin spikes: managing hunger signals strategically','Cortisol and belly fat: HPA axis dysfunction','Thyroid T3/T4 and metabolic rate suppression'] },
+      { n:2, title:'Metabolic Adaptation — The Enemy of Fat Loss', dur:'60 min',
+        desc:'Why your metabolism slows during a diet, and the scientific strategies to fight back.',
+        topics:['Adaptive thermogenesis mechanisms','NEAT reduction during caloric deficit','Metabolic rate suppression: how much and how fast','Diet breaks: evidence for metabolic recovery','Refeeds: leptin restoration and glycogen refill','Reverse dieting protocol to restore metabolism'] },
+      { n:3, title:'Caloric Deficit Strategies & Flexible Dieting', dur:'65 min',
+        desc:'Build the optimal calorie deficit — not too aggressive, not too conservative — using flexible frameworks.',
+        topics:['Aggressive vs moderate deficit: muscle loss risk','If It Fits Your Macros (IIFYM) framework','80/20 rule: adherence over perfection','Calorie cycling across the week','Calorie banking strategy for social events','Time-restricted eating and calorie distribution'] },
+      { n:4, title:'Carb Cycling & Periodized Nutrition', dur:'60 min',
+        desc:'Optimize fat loss and muscle retention by cycling carbohydrates around training and rest days.',
+        topics:['High, medium, and low carb day protocols','Training day vs rest day macro distribution','Carb cycling and glycogen management','Protein and fat targets on low-carb days','Indian food implementation of carb cycling','When carb cycling is NOT appropriate'] },
+      { n:5, title:'Training for Maximum Fat Loss', dur:'65 min',
+        desc:'Design training programs that maximize fat oxidation, preserve muscle mass, and sustain long-term results.',
+        topics:['Compound lifting and metabolic demand','Concurrent training for maximum fat loss','HIIT intensity and fat loss effectiveness','Zone 2 cardio and fat oxidation optimization','Training frequency and volume on a deficit','Maintaining strength while in a caloric deficit'] },
+      { n:6, title:'Psychological & Behavioral Coaching for Fat Loss', dur:'50 min',
+        desc:'The mental game of fat loss — emotional eating, binge cycles, body image, and sustainable mindset shifts.',
+        topics:['Emotional eating: triggers and substitution strategies','Food guilt and the restrict-binge cycle','Body dysmorphia: recognizing and referring','Intuitive eating vs structured dieting','Mindful eating practices for fat loss clients','Building self-compassion and non-diet identity'] },
+      { n:7, title:'Advanced Fat Loss Protocols — Troubleshooting Plateaus', dur:'55 min',
+        desc:'When progress stalls — precise diagnostic tools and protocol adjustments to break through any plateau.',
+        topics:['Diagnosing a true plateau vs temporary stall','Refeed vs diet break vs deload — which to apply','Increasing NEAT: strategic approach','Adjusting calories vs increasing cardio — hierarchy','Tracking accuracy: food weighing and logging','When to use maintenance phases and why'] },
+      { n:8, title:'Final FLS Exam + Certification', dur:'20 min',
+        desc:'45-question Fat Loss Specialist exam. Pass at 75% to earn your RFC FLS Certification.',
+        topics:['Section 1: Hormones & Metabolism (15 Qs)','Section 2: Nutrition Protocols (15 Qs)','Section 3: Training & Psychology (15 Qs)','RFC FLS digital certificate issued','Pathway to Master Level courses','Client case study review materials included'] }
+    ]
+  },
+
+  // ── MASTER ────────────────────────────────────────────────────
+  {
+    id:'cs_m1', emoji:'👑', level:'mst',
+    name:'Elite Performance & Fitness Master',
+    desc:'The pinnacle of fitness education. 14 modules covering elite athlete programming, advanced physiology, performance nutrition, coaching systems, periodization science, and the complete business of high-performance coaching.',
+    price:11999, origPrice:24999, duration:'16 Weeks', students:380, rating:4.9,
+    mods:[
+      { n:1, title:'Elite Athlete Physiology & Genetic Factors', dur:'80 min',
+        desc:'What separates elite athletes from the rest — VO₂ max genetics, fiber type distribution, hormonal profiles, and trainability.',
+        topics:['ACTN3 gene and fast-twitch fiber expression','ACE gene polymorphism and endurance capacity','Elite VO₂ max values and trainability ceiling','Hormonal profiles of elite athletes (testosterone, IGF-1, GH)','Heart rate variability in elite athletes','Sleep architecture in professional athletes'] },
+      { n:2, title:'Advanced Periodization Systems', dur:'90 min',
+        desc:'Block periodization, conjugate system, undulating periodization, triphasic training — master them all.',
+        topics:['Block periodization: accumulation, transmutation, realization','Conjugate (Westside) method: ME and DE training','Daily undulating periodization (DUP) programming','Triphasic training: eccentric, isometric, concentric phases','Annual training plan (ATP) design for athletes','Taper strategies and peaking for competition'] },
+      { n:3, title:'Strength & Power Development Science', dur:'85 min',
+        desc:'Force-velocity curve, rate of force development, plyometrics, weightlifting — build explosive athletes.',
+        topics:['Force-velocity curve and training zones','Rate of Force Development (RFD) training','Plyometric progressions: volume and intensity guidelines','Olympic lifting derivatives: hang cleans, DB snatches','Strength-speed vs speed-strength training','Jump training and vertical leap development'] },
+      { n:4, title:'Energy System Development for High-Performance', dur:'75 min',
+        desc:'Program all three energy systems for sport — phosphocreatine, glycolytic, and aerobic — with precision.',
+        topics:['Alactic (phosphocreatine) system development','Glycolytic conditioning: lactate tolerance work','Aerobic base building for all sports','Energy system ratios by sport (football, boxing, tennis)','Heart rate zone training for ESD','Work:rest ratios for different energy system emphasis'] },
+      { n:5, title:'Advanced Recovery Science & Biometric Monitoring', dur:'70 min',
+        desc:'Elite recovery protocols — HRV, sleep architecture, nutrition timing, cold/heat therapy, and readiness assessment.',
+        topics:['HRV monitoring: daily readiness scoring','Sleep optimization: chronotype, environment, supplements','Cold water immersion vs contrast bathing evidence','Sauna: cardiovascular and longevity data','Pneumatic compression and NormaTec evidence','Blood biomarker monitoring for overtraining detection'] },
+      { n:6, title:'Sports Psychology & Mental Performance', dur:'65 min',
+        desc:'Pre-competition routines, focus protocols, visualisation, pressure management, and flow state induction.',
+        topics:['Pre-performance routines in elite athletes','Visualisation and mental rehearsal techniques','Attentional focus: internal vs external cues','Arousal regulation: psyching up vs calming down','Choking under pressure: mechanisms and fixes','Flow state: induction conditions and practice'] },
+      { n:7, title:'Advanced Nutrition for Elite Performance', dur:'80 min',
+        desc:'Periodized nutrition, fueling strategies for twice-daily training, competition nutrition, and supplementation at the elite level.',
+        topics:['Carbohydrate availability: training low, competing high','Protein distribution for anabolism across 24 hours','Competition day nutrition: pre, during, post','Making weight for combat sports: evidence-based cutting','Altitude nutrition: iron and EPO implications','Recovery nutrition for back-to-back training days'] },
+      { n:8, title:'Biomechanical Analysis & Movement Screening', dur:'70 min',
+        desc:'Identify compensatory movement patterns, assess joint mechanics, and use technology to optimize movement efficiency.',
+        topics:['Functional Movement Screen (FMS) and SFMA','Force plate data: GRF, asymmetries, and power output','Video gait analysis for running biomechanics','3D motion capture principles for coaches','Barbell path analysis for powerlifters','Injury prediction models from movement screening data'] },
+      { n:9, title:'Programming for Combat Sports & Team Sports', dur:'75 min',
+        desc:'Sport-specific periodization for boxing, MMA, football, basketball, cricket, and track & field.',
+        topics:['Boxing & MMA: strength-to-weight, conditioning, peaking','Football (soccer): aerobic base, sprint, agility, strength','Basketball: reactive agility, power, in-season maintenance','Cricket: mobility, explosiveness, and injury prevention','Track & field: speed development and peaking','Concurrent training management for team sport athletes'] },
+      { n:10, title:'Youth & Adolescent Athletic Development', dur:'55 min',
+        desc:'Long-Term Athlete Development (LTAD) model — how to train young athletes without stunting growth or causing injury.',
+        topics:['LTAD stages: FUNdamentals to training to win','PHV (Peak Height Velocity) and training sensitivity windows','Resistance training safety for adolescents','Specialization vs early sampling debate','Injury rates in youth sport and prevention programs','Mental health considerations in young athletes'] },
+      { n:11, title:'Elite Coaching Systems & Team Management', dur:'65 min',
+        desc:'Build and lead a high-performance coaching team. Systems thinking, athlete management, and leadership.',
+        topics:['Athlete monitoring systems (AMS) design','Staff roles: S&C, physio, nutritionist, sport psychologist','Athlete data privacy and communication protocols','Season planning with coaching staff collaboration','Performance profiling and KPI setting','Building a high-performance culture in a team'] },
+      { n:12, title:'Research Literacy & Evidence-Based Coaching', dur:'55 min',
+        desc:'Read, interpret, and apply sports science research. Avoid pseudoscience and stay evidence-based.',
+        topics:['Study types: RCT, meta-analysis, cohort, case study','Reading a research paper: methods, statistics, limitations','Statistical significance vs practical significance','Effect sizes and their relevance to coaching','Identifying cherry-picked research and bro-science','Top journals and researchers to follow in 2025–26'] },
+      { n:13, title:'Business of High-Performance Coaching', dur:'60 min',
+        desc:'Build a 7-figure high-performance coaching business — premium positioning, remote coaching, and athlete contracts.',
+        topics:['Premium positioning: charging what you\'re worth','High-ticket coaching: productizing your expertise','Remote high-performance coaching setup and tools','Athlete contracts, liability waivers, and NDAs','Corporate performance consulting for companies','Licensing your methodology and building IP'] },
+      { n:14, title:'Final Master Exam + Elite Certification', dur:'40 min',
+        desc:'70-question comprehensive master-level exam. Pass at 80% to earn the RFC Elite Performance Master certification.',
+        topics:['Section 1: Physiology & Periodization (20 Qs)','Section 2: Nutrition & Recovery Science (15 Qs)','Section 3: Sport-Specific Programming (20 Qs)','Section 4: Coaching Systems & Business (15 Qs)','RFC Elite Master digital certificate','Exclusive RFC Master alumni network access'] }
+    ]
+  },
+  {
+    id:'cs_m2', emoji:'⚗️', level:'mst', isPharma:true,
+    name:'Pharmaceutical Performance Science (18+)',
+    desc:'[18+ EDUCATIONAL COURSE] The most comprehensive harm-reduction and performance pharmacology course available. Covers the science, pharmacokinetics, protocols, and health monitoring of anabolic steroids, SARMs, peptides, prohormones, and PCT. For educational and harm-reduction purposes only.',
+    price:14999, origPrice:29999, duration:'14 Weeks', students:290, rating:4.9,
+    mods:[
+      { n:1, title:'Endocrinology & the Hormonal Axis', dur:'90 min',
+        desc:'The complete hormonal system — HPG axis, HPA axis, testosterone synthesis, and how exogenous hormones interact.',
+        topics:['Hypothalamic-Pituitary-Gonadal (HPG) axis explained','Testosterone biosynthesis: cholesterol to DHT','HPTA suppression: mechanisms and timeline','LH, FSH, and gonadotropin feedback loops','Estrogen synthesis via aromatase enzyme','Negative feedback and the homeostatic setpoint'] },
+      { n:2, title:'Anabolic Steroids — Mechanisms & Pharmacology', dur:'100 min',
+        desc:'Deep pharmacology of testosterone and its derivatives — mechanisms, receptor binding, anabolic:androgenic ratios, and esters.',
+        topics:['Androgen receptor (AR) binding and gene transcription','Anabolic vs androgenic activity ratios','Testosterone esters: propionate, enanthate, cypionate, undecanoate','Nandrolone (Deca), Trenbolone — pharmacology and risks','Oral 17-alpha alkylated steroids: hepatotoxicity mechanism','DHT derivatives: stanozolol, oxandrolone, masteron'] },
+      { n:3, title:'SARMs — Selective Androgen Receptor Modulators', dur:'80 min',
+        desc:'The science behind SARMs, how they differ from anabolic steroids, tissue selectivity claims, and current research status.',
+        topics:['SARM mechanism: tissue-selective AR modulation','Ostarine (MK-2866): clinical trials and dosing data','Ligandrol (LGD-4033): muscle gain data and suppression','RAD-140 (Testolone): potency and CNS effects','Cardarine (GW-501516): PPAR agonist, cancer risk in animals','S23 and YK-11: strongest SARMs and myostatin inhibition'] },
+      { n:4, title:'Peptides for Performance & Recovery', dur:'85 min',
+        desc:'GH secretagogues, healing peptides, and cognitive peptides — science, protocols, and harm-reduction.',
+        topics:['Growth Hormone Releasing Hormone (GHRH) analogs','GHRP-2, GHRP-6: hunger and GH pulse induction','CJC-1295 with and without DAC — half-life differences','BPC-157: tendon and ligament healing mechanisms','TB-500 (Thymosin Beta-4): systemic tissue repair','IGF-1 LR3: post-workout muscle hyperplasia implications'] },
+      { n:5, title:'Prohormones & Designer Steroids', dur:'70 min',
+        desc:'The history, science, and current legal status of prohormones and how they convert to active hormones.',
+        topics:['Prohormone definition: inactive precursors to active steroids','First generation: androstenedione, DHEA','Second generation: 1-AD, 4-AD','Designer steroids: H-Drol, Epistane, Superdrol — history','India legal status: classification and enforcement','Why prohormones are now mostly banned globally'] },
+      { n:6, title:'Estrogen Management — Aromatase Inhibitors & SERMs', dur:'75 min',
+        desc:'Managing estrogen on-cycle and the critical role of SERMs.',
+        topics:['Estrogen conversion on testosterone cycle','Aromatase Inhibitors (AIs): anastrozole vs exemestane','Letrozole: when and why it is overkill','Estrogen sides: gynecomastia, water retention, mood effects','Low estrogen signs: joint pain, libido crash','Using SERMs as an alternative to AIs on-cycle'] },
+      { n:7, title:'Post Cycle Therapy (PCT) Science & Protocols', dur:'90 min',
+        desc:'The most important module — how to restore the HPTA with evidence-based PCT.',
+        topics:['HPTA recovery timeline: what determines it','Nolvadex (Tamoxifen): SERM mechanism for PCT','Clomid (Clomiphene): LH and FSH stimulation','HCG: maintaining testicular function during cycle','4-week PCT protocol: dosing, timing, and blood work windows','Post-PCT blood work: what markers to check and optimal ranges'] },
+      { n:8, title:'Ancillaries: Liver Support, Blood Pressure & Joint Health', dur:'65 min',
+        desc:'Protecting your organs on cycle — liver support, cardiovascular ancillaries, and joint health management.',
+        topics:['Liver protection: TUDCA, UDCA, NAC — dosing and evidence','Cardioprotection: omega-3, CoQ10, taurine','Blood pressure management on cycle','Hematocrit rise from testosterone and erythropoiesis','Prolactin management: cabergoline and vitamin B6 (P5P)','Joint health: glucosamine, collagen, BPC-157'] },
+      { n:9, title:'Blood Work Interpretation for Performance Users', dur:'80 min',
+        desc:'Know your numbers. Comprehensive guide to reading blood panels before, during, and after cycles.',
+        topics:['Pre-cycle baseline: what panels to run and why','On-cycle monitoring: liver enzymes (ALT, AST), hematocrit, lipids','Lipid impact: HDL suppression and LDL elevation','Free vs total testosterone: interpretation on and off cycle','SHBG and its role in bioavailable testosterone','Post-PCT panels: LH, FSH, total T, estradiol'] },
+      { n:10, title:'Harm Reduction, Risk Stratification & Ethics', dur:'70 min',
+        desc:'The honest assessment of risks — cardiovascular, psychological, legal, and moral considerations.',
+        topics:['Left ventricular hypertrophy (LVH) and cardiac risk','Polycythemia and stroke/blood clot risk','Psychological effects: aggression, dependency','Fertility impact: azoospermia, testicular atrophy, and recovery','Adolescent use: permanent HPTA damage and growth plate issues','Ethical considerations for coaches and trainers'] },
+      { n:11, title:'Cycle Design: Beginner to Advanced Protocols', dur:'85 min',
+        desc:'Evidence-informed cycle protocols for different experience levels — minimizing risk while understanding the landscape.',
+        topics:['Golden rule: bloodwork before anything','Testosterone-only first cycle: reasoning and dosing philosophy','Adding compounds: blast and cruise concepts','TRT (Testosterone Replacement Therapy) explained','HCG protocol during longer cycles','Why less is more: the dose-response curve'] },
+      { n:12, title:'Peptide & SARM Stacking Protocols', dur:'70 min',
+        desc:'How experienced users combine GH peptides, SARMs, and other compounds — the pharmacology of stacking.',
+        topics:['GHRH + GHRP combination for GH pulse amplitude','SARMs stack: LGD + RAD-140 — synergy and suppression','Peptide + SARM combinations: rationale and monitoring','Healing stack: BPC-157 + TB-500 dosing protocol','IGF-1 LR3 timing post-workout protocol','Why stacking without knowledge dramatically increases risk'] },
+      { n:13, title:'Female-Specific Pharmacology & Virilization Risk', dur:'60 min',
+        desc:'Compounds women can use with lower virilization risk, dosing windows, and early side effect recognition.',
+        topics:['Virilization: voice deepening, clitoral enlargement, acne','Anavar (Oxandrolone): the most female-friendly oral steroid','Primobolan: low androgenicity for female athletes','Low-dose SARMs in women: Ostarine and its evidence','Peptides in women: BPC-157, TB-500 — no virilization risk','Early warning signs and when to immediately stop'] },
+      { n:14, title:'Insulin & Growth Hormone — Educational Overview', dur:'75 min',
+        desc:'The highest-risk, highest-impact compounds used in bodybuilding — for educational awareness and harm reduction only.',
+        topics:['Exogenous GH: mechanisms, dosing ranges, and side effects','IGF-1 axis: downstream effects of supraphysiological GH','Insulin in bodybuilding: risk of fatal hypoglycemia','Fast-acting vs slow-acting insulin analogs','Acromegaly risk from prolonged GH use','Why combining GH + insulin is the realm of professional bodybuilding'] },
+      { n:15, title:'Legal & Medical Landscape in India', dur:'45 min',
+        desc:'NDPS Act, WADA prohibited list, anti-doping regulations, and the legal status of these compounds in India.',
+        topics:['NDPS Act and classification of anabolic steroids','Which compounds are Schedule H or H1 drugs in India','WADA prohibited list: in-competition vs out-of-competition','Anti-doping violations in Indian sport','Medical prescription requirements and grey market risks','How to consult a doctor about TRT in India legally'] },
+      { n:16, title:'Final Exam + Certification', dur:'30 min',
+        desc:'70-question advanced pharmacology assessment. Pass at 80% for your RFC Pharmaceutical Performance Science certificate.',
+        topics:['Section 1: Endocrinology & Pharmacology (20 Qs)','Section 2: SARMs, Peptides & Prohormones (15 Qs)','Section 3: PCT, Blood Work & Harm Reduction (20 Qs)','Section 4: Ethics, Legal & Female Use (15 Qs)','RFC Pharmaceutical Performance Science certificate','Educational use disclaimer and harm-reduction pledge'] }
+    ]
+  },
+  {
+    id:'cs_m3', emoji:'🏥', level:'mst',
+    name:'Sports Medicine & Physio Expert',
+    desc:'The master-level fusion of sports medicine, rehabilitation science, and elite physical therapy. Prepare for the highest-level injury management, surgery decision-making, and return-to-sport direction for elite athletes.',
+    price:9999, origPrice:19999, duration:'12 Weeks', students:220, rating:4.8,
+    mods:[
+      { n:1, title:'Sports Medicine: Scope, Principles & Clinical Thinking', dur:'70 min',
+        desc:'The sports medicine physician\'s approach — clinical reasoning, differential diagnosis, and integrated athlete care.',
+        topics:['Sports medicine scope vs physiotherapy vs surgery','Clinical reasoning: SOAP notes and diagnostic approach','Red flags in musculoskeletal presentation','Differential diagnosis: acute vs overuse vs referred pain','The biopsychosocial model in sports medicine','Multidisciplinary team (MDT) communication standards'] },
+      { n:2, title:'Imaging in Sports Medicine — X-Ray, MRI, Ultrasound', dur:'65 min',
+        desc:'How to read and interpret sports imaging reports. What to look for on MRIs, X-rays, and diagnostic ultrasound.',
+        topics:['X-ray interpretation: fractures, bone density, alignment','MRI sequences: T1, T2, STIR — what each shows','Muscle tears: grade I, II, III on MRI','Tendon pathology on ultrasound: hypoechoic zones','Cartilage evaluation: MOAKS scoring system','When imaging is and is not needed — clinical decision rules'] },
+      { n:3, title:'Concussion & Head Injuries in Sport', dur:'60 min',
+        desc:'SCAT5, return-to-play protocols, CTE awareness, and managing the most misunderstood injury in sport.',
+        topics:['Concussion definition and pathophysiology','SCAT5 assessment tool: on-field and sideline protocol','Graded return-to-sport protocol (RTP) after concussion','Post-Concussion Syndrome (PCS) management','Second-impact syndrome: risk and prevention','Chronic Traumatic Encephalopathy (CTE) — current evidence'] },
+      { n:4, title:'Bone Stress Injuries & Fracture Management', dur:'65 min',
+        desc:'Stress reactions, stress fractures, avulsion fractures, and acute traumatic fractures in the athletic population.',
+        topics:['Bone remodeling and the stress fracture continuum','High-risk vs low-risk stress fracture sites','MRI grading of bone stress injuries (Fredericson scale)','Relative Energy Deficiency in Sport (RED-S) and bone health','Femoral neck stress fracture: a surgical emergency','Return-to-running protocols after tibial stress fractures'] },
+      { n:5, title:'Tendinopathy Science & Advanced Management', dur:'75 min',
+        desc:'The latest understanding of tendon pathology and evidence-based treatments.',
+        topics:['Continuum model of tendinopathy (Cook & Purdam)','Heavy slow resistance (HSR) training for tendinopathy','Isometric loading for acute pain reduction','Eccentric training: where it works and where it does not','PRP (Platelet-Rich Plasma) injections: current evidence','Shockwave therapy: ESWT protocols and evidence levels'] },
+      { n:6, title:'Surgical Interventions — What Coaches Must Know', dur:'70 min',
+        desc:'ACL reconstruction options, meniscus repair, rotator cuff repair, hip arthroscopy — what surgery involves and rehab implications.',
+        topics:['ACL reconstruction: BPTB vs hamstring vs quadriceps tendon grafts','Meniscus repair vs partial meniscectomy: decision factors','Rotator cuff repair: partial vs full thickness, anchor types','SLAP repair and labral reconstruction','Hip arthroscopy: FAI correction, labral repair','Total knee replacement in active populations'] },
+      { n:7, title:'Cardiovascular Screening & Sudden Cardiac Death Prevention', dur:'60 min',
+        desc:'Pre-participation cardiovascular screening, hypertrophic cardiomyopathy recognition, and emergency protocols.',
+        topics:['Pre-participation examination (PPE) standards','Hypertrophic Cardiomyopathy (HCM): the #1 cause of SCD in young athletes','Commotio Cordis: blunt chest trauma and VF','Long QT syndrome and channelopathies','ECG interpretation for athletes: normal variants vs pathology','AED placement, CPR, and emergency action plans'] },
+      { n:8, title:'Female Athlete Health — RED-S, Hormones & Triad', dur:'60 min',
+        desc:'The Female Athlete Triad and Relative Energy Deficiency in Sport (RED-S) — recognition, management, and return to play.',
+        topics:['Female Athlete Triad: energy deficiency, menstrual dysfunction, low BMD','RED-S: expanded model and male implications','Low energy availability (LEA): calculating and identifying','Functional hypothalamic amenorrhea: diagnosis and management','Bone stress fractures in female athletes: increased risk','Return-to-training after restoration of energy availability'] },
+      { n:9, title:'Pain Science & Chronic Musculoskeletal Pain Management', dur:'70 min',
+        desc:'The revolution in pain science — central sensitization, pain neuroscience education, and psychosocial factors.',
+        topics:['Gate control theory and descending pain modulation','Central sensitization: peripheral vs central mechanisms','Pain neuroscience education (PNE) — explaining pain to athletes','Catastrophizing, fear-avoidance, and kinesiophobia','Graded exposure therapy for persistent pain','Non-pharmacological pain management: evidence hierarchy'] },
+      { n:10, title:'Pharmacology in Sports Medicine — Anti-Inflammatories & Analgesics', dur:'65 min',
+        desc:'NSAIDs, corticosteroids, local anaesthetics — appropriate use, risks, and WADA status for sports physicians.',
+        topics:['NSAIDs: mechanism, appropriate duration, and GI risk','Topical vs oral NSAIDs: efficacy comparison','Corticosteroid injections: indications and risks','Colchicine and gout management in athletes','Local anaesthetic injections: diagnostic and therapeutic use','WADA-prohibited vs therapeutic use exemptions (TUEs)'] },
+      { n:11, title:'Sports Medicine in the Field — Sideline Emergencies', dur:'55 min',
+        desc:'Heat stroke, anaphylaxis, fracture management, concussion, and on-field emergency decision-making.',
+        topics:['Exertional Heat Stroke (EHS): the 10-minute rule','Exercise-Associated Hyponatremia (EAH): recognition and treatment','Anaphylaxis on the field: epinephrine administration','Fracture immobilization and transport decisions','On-field spinal injury management','ABCDE assessment in sports emergencies'] },
+      { n:12, title:'Final Master Exam + Certification', dur:'30 min',
+        desc:'60-question sports medicine master exam. Pass at 80% to earn your RFC Sports Medicine & Physio Expert credential.',
+        topics:['Section 1: Clinical Assessment & Imaging (15 Qs)','Section 2: Injury Management & Surgery (15 Qs)','Section 3: Special Topics: Concussion, RED-S, Cardiac (15 Qs)','Section 4: Pain Science & Field Emergencies (15 Qs)','RFC Sports Medicine Expert digital certificate','Pathway to continuing education and specialization'] }
+    ]
+  }
+];
+
+// ── RENDER ───────────────────────────────────────────────────────
+function offPct(c){ return Math.round((1 - c.price/c.origPrice)*100); }
+
+function renderMod(m) {
+  return `<div class="module-block">
+    <div class="module-hdr">
+      <div class="mod-num">${String(m.n).padStart(2,'0')}</div>
+      <div class="mod-main">
+        <div class="mod-title">${m.title}</div>
+        <div class="mod-dur">⏱ ${m.dur}</div>
+      </div>
+    </div>
+    <div class="module-body">
+      <p class="mod-desc">${m.desc}</p>
+      <div class="topics-label">Topics Covered</div>
+      <ul class="topic-list">${m.topics.map(t=>`<li>${t}</li>`).join('')}</ul>
+    </div>
+  </div>`;
+}
+
+function renderCourse(c) {
+  const pharma = c.isPharma ? `<div class="pharma-warn">
+    <strong>⚠️ 18+ Educational Course — Pharmaceutical & Harm Reduction Science</strong><br>
+    This course covers pharmaceutical performance science strictly for educational and harm-reduction purposes. All content is for awareness only. The possession or use of controlled substances may be illegal in your jurisdiction. By reading this material you confirm you are 18+ and understand this is educational content only. Royal Fitness Club does not endorse or encourage the use of any banned or controlled substances.
+  </div>` : '';
+  return `<section class="course-section" id="${c.id}">
+    <div class="course-header">
+      <div class="course-emoji">${c.emoji}</div>
+      <div class="course-info">
+        <div class="course-title">${c.name}</div>
+        <div class="course-meta-row">
+          <div class="cmeta">⏱ <strong>${c.duration}</strong></div>
+          <div class="cmeta">📚 <strong>${c.mods.length} Modules</strong></div>
+          <div class="cmeta">👥 <strong>${c.students.toLocaleString()} Students</strong></div>
+          <div class="cmeta">⭐ <strong>${c.rating}/5</strong></div>
+        </div>
+        <p class="course-desc">${c.desc}</p>
+        <div class="course-price-block">
+          <span class="cprice">₹${c.price.toLocaleString()}</span>
+          <span class="corig">₹${c.origPrice.toLocaleString()}</span>
+          <span class="coff">${offPct(c)}% OFF</span>
+        </div>
+      </div>
+    </div>
+    ${pharma}
+    <div class="modules-label">📚 COMPLETE COURSE CURRICULUM — ${c.mods.length} MODULES</div>
+    ${c.mods.map(renderMod).join('')}
+  </section>`;
+}
+
+// Inject courses by level
+const beg = COURSES.filter(c=>c.level==='beg');
+const adv = COURSES.filter(c=>c.level==='adv');
+const mst = COURSES.filter(c=>c.level==='mst');
+document.getElementById('beg-courses').innerHTML = beg.map(renderCourse).join('');
+document.getElementById('adv-courses').innerHTML = adv.map(renderCourse).join('');
+document.getElementById('mst-courses').innerHTML = mst.map(renderCourse).join('');
+
+// ── TOC active highlight on scroll ───────────────────────────────
+const tocLinks = document.querySelectorAll('.toc-link[href^="#cs_"]');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      tocLinks.forEach(l => l.classList.remove('active'));
+      const link = document.querySelector('.toc-link[href="#' + e.target.id + '"]');
+      if (link) link.classList.add('active');
+    }
+  });
+}, { rootMargin: '-20% 0px -70% 0px' });
+COURSES.forEach(c => {
+  const el = document.getElementById(c.id);
+  if (el) observer.observe(el);
+});
+</script>
+</body>
+</html>

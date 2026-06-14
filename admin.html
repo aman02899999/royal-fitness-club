@@ -2,956 +2,1912 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RFC Admin — Royal Fitness Club</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@300;400;600;700;900&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RFC Admin Panel</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-:root{--red:#e8001d;--orange:#ff4500;--gold:#ffd000;--dark:#070707;--card:#101010;--card2:#141414;--border:#222;--border2:#2c2c2c;--text:#f0f0f0;--muted:#a0a0a0;--green:#22c55e;--blue:#38bdf8;--pro:linear-gradient(135deg,#ffd000,#ff4500);--fire:linear-gradient(135deg,#e8001d,#ff4500);--sidebar:180px;}
-*{margin:0;padding:0;box-sizing:border-box;}
-html,body{background:var(--dark);color:var(--text);font-family:'Barlow',sans-serif;font-size:14px;overflow-x:hidden;}
-::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-track{background:#0a0a0a;}::-webkit-scrollbar-thumb{background:var(--red);}
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{--bg:#0a0a0f;--card:#13131a;--card2:#1a1a24;--border:#2a2a3a;--text:#f0f0f5;--muted:#888;--red:#e8001d;--gold:#f59e0b;--green:#22c55e;--blue:#3b82f6;}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh;}
 
-/* ── AUTH GATE ── */
-#auth-gate{position:fixed;inset:0;background:var(--dark);z-index:9999;display:flex;align-items:center;justify-content:center;}
-.auth-box{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:44px 36px;width:100%;max-width:400px;text-align:center;}
-.auth-logo{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:4px;background:var(--fire);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:6px;}
-.auth-sub{font-size:12px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:28px;}
-.auth-inp{width:100%;background:#0f0f0f;border:1px solid var(--border);border-radius:4px;padding:12px 14px;color:var(--text);font-size:14px;margin-bottom:10px;outline:none;transition:border-color .2s;}
+/* AUTH */
+#auth-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px;}
+.auth-box{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:36px;width:100%;max-width:380px;}
+.auth-logo{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:4px;color:var(--red);text-align:center;margin-bottom:4px;}
+.auth-sub{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);text-align:center;margin-bottom:28px;}
+.auth-inp{width:100%;background:var(--card2);border:1.5px solid var(--border);border-radius:8px;padding:11px 14px;color:var(--text);font-size:14px;margin-bottom:12px;outline:none;transition:border-color .18s;}
 .auth-inp:focus{border-color:var(--red);}
-.auth-btn{width:100%;background:var(--fire);color:#fff;border:none;border-radius:4px;padding:13px;font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:4px;cursor:pointer;transition:all .2s;margin-top:4px;}
-.auth-btn:hover{transform:translateY(-1px);}
-.auth-err{background:rgba(232,0,29,.1);border:1px solid rgba(232,0,29,.25);border-radius:4px;padding:9px 12px;font-size:12px;color:#ff6b6b;margin-top:10px;display:none;}
+.auth-btn{width:100%;background:var(--red);color:#fff;border:none;border-radius:8px;padding:12px;font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;cursor:pointer;transition:opacity .18s;}
+.auth-btn:hover{opacity:.85;}
+.auth-err{font-size:12px;color:#f87171;margin-top:8px;text-align:center;min-height:16px;}
 
-/* ── LAYOUT ── */
+/* LAYOUT */
 #app{display:none;min-height:100vh;}
-.sidebar{position:fixed;top:0;left:0;bottom:0;width:var(--sidebar);background:#0a0a0a;border-right:1px solid var(--border);display:flex;flex-direction:column;z-index:100;transition:transform .3s;}
-.s-logo{padding:20px 16px 16px;border-bottom:1px solid var(--border);}
-.s-logo-text{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:3px;background:var(--fire);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
-.s-logo-sub{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-top:2px;}
-.s-nav{flex:1;padding:16px 0;overflow-y:auto;}
-.s-item{display:flex;align-items:center;gap:10px;padding:11px 16px;cursor:pointer;transition:all .2s;border-left:3px solid transparent;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase;}
-.s-item:hover{background:rgba(255,255,255,.04);color:var(--text);}
-.s-item.active{border-left-color:var(--red);color:var(--red);background:rgba(232,0,29,.06);}
-.s-item .s-icon{font-size:16px;flex-shrink:0;}
-.s-bottom{padding:16px;border-top:1px solid var(--border);}
-.s-logout{width:100%;background:transparent;border:1px solid var(--border2);color:var(--muted);padding:8px;border-radius:4px;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;transition:all .2s;}
-.s-logout:hover{border-color:var(--red);color:var(--red);}
+header{background:var(--card);border-bottom:1px solid var(--border);padding:14px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+.hdr-logo{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:3px;color:var(--red);}
+.hdr-sub{font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-left:12px;}
+.hdr-right{display:flex;align-items:center;gap:12px;}
+.hdr-user{font-size:13px;color:var(--muted);}
+.btn-logout{background:transparent;border:1px solid var(--border);color:var(--muted);border-radius:6px;padding:6px 14px;font-size:12px;cursor:pointer;transition:all .18s;}
+.btn-logout:hover{border-color:var(--red);color:var(--red);}
 
-.main{margin-left:var(--sidebar);min-height:100vh;display:flex;flex-direction:column;}
-.topbar{background:#0a0a0a;border-bottom:1px solid var(--border);padding:0 24px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;}
-.tb-title{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;}
-.tb-right{display:flex;align-items:center;gap:14px;}
-.tb-admin{display:flex;align-items:center;gap:8px;}
-.tb-av{width:30px;height:30px;border-radius:50%;background:var(--fire);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:14px;color:#fff;flex-shrink:0;}
-.tb-name{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;color:var(--gold);}
-.tb-badge{font-size:9px;letter-spacing:2px;text-transform:uppercase;background:rgba(232,0,29,.12);color:var(--red);padding:2px 7px;border-radius:100px;border:1px solid rgba(232,0,29,.2);}
-.content{padding:24px;flex:1;}
+/* TABS */
+.tab-nav{background:var(--card);border-bottom:1px solid var(--border);padding:0 28px;display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;}
+.tab-nav::-webkit-scrollbar{display:none;}
+.tab-btn{background:none;border:none;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-size:13px;letter-spacing:1.5px;text-transform:uppercase;padding:14px 18px;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:all .18s;}
+.tab-btn:hover{color:var(--text);}
+.tab-btn.active{color:var(--red);border-bottom-color:var(--red);}
+.tab-pane{display:none;padding:28px;max-width:1300px;margin:0 auto;}
+.tab-pane.active{display:block;}
 
-/* ── STATS CARDS ── */
-.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px;}
-.stat-card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:20px;}
-.stat-card .sc-label{font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
-.stat-card .sc-val{font-family:'Bebas Neue',sans-serif;font-size:42px;line-height:1;}
-.stat-card .sc-sub{font-size:11px;color:var(--muted);margin-top:4px;}
-.sc-val.red{color:var(--red);}.sc-val.gold{color:var(--gold);}.sc-val.green{color:var(--green);}.sc-val.blue{color:var(--blue);}
+/* STATS */
+.stats-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:16px;margin-bottom:28px;}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px 20px;}
+.stat-val{font-family:'Bebas Neue',sans-serif;font-size:36px;line-height:1;margin-bottom:4px;}
+.stat-lbl{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);}
+.stat-card.green .stat-val{color:var(--green);}
+.stat-card.gold .stat-val{color:var(--gold);}
+.stat-card.red .stat-val{color:var(--red);}
+.stat-card.blue .stat-val{color:var(--blue);}
 
-/* ── GRID PANELS ── */
-.panel-row{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:24px;}
-.panel{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:20px;}
-.panel-title{font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;}
-.panel-full{grid-column:span 2;}
+/* CARDS / PANELS */
+.panel{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:22px;margin-bottom:22px;}
+.panel-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:10px;}
+.panel-title{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:1.5px;}
+.panel-actions{display:flex;gap:8px;flex-wrap:wrap;}
 
-/* ── TABLES ── */
-.table-wrap{overflow-x:auto;}
-table{width:100%;border-collapse:collapse;}
-th{font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);padding:9px 12px;border-bottom:1px solid var(--border);text-align:left;white-space:nowrap;}
-td{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.04);font-size:13px;vertical-align:middle;}
+/* BUTTONS */
+.btn{border:none;border-radius:8px;padding:9px 18px;font-family:'Barlow Condensed',sans-serif;font-size:14px;letter-spacing:1px;font-weight:700;cursor:pointer;transition:all .18s;}
+.btn-primary{background:var(--red);color:#fff;}
+.btn-primary:hover{opacity:.85;}
+.btn-success{background:var(--green);color:#000;}
+.btn-success:hover{opacity:.85;}
+.btn-warning{background:var(--gold);color:#000;}
+.btn-warning:hover{opacity:.85;}
+.btn-ghost{background:var(--card2);border:1px solid var(--border);color:var(--text);}
+.btn-ghost:hover{border-color:var(--red);}
+.btn-sm{padding:5px 12px;font-size:12px;}
+.btn-danger{background:transparent;border:1px solid #f87171;color:#f87171;}
+.btn-danger:hover{background:#f87171;color:#000;}
+
+/* TABLE */
+.tbl-wrap{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+th{text-align:left;padding:9px 12px;font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border);}
+td{padding:10px 12px;border-bottom:1px solid rgba(42,42,58,.5);vertical-align:middle;}
 tr:last-child td{border-bottom:none;}
-tr:hover td{background:rgba(255,255,255,.025);}
-.td-name{font-weight:600;color:var(--text);}
-.td-email{color:var(--muted);font-size:12px;}
-.td-date{color:var(--muted);font-size:12px;white-space:nowrap;}
+tr:hover td{background:rgba(255,255,255,.02);}
+.badge{display:inline-block;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600;letter-spacing:.5px;}
+.badge-green{background:rgba(34,197,94,.15);color:var(--green);}
+.badge-red{background:rgba(232,0,29,.15);color:var(--red);}
+.badge-gold{background:rgba(245,158,11,.15);color:var(--gold);}
+.badge-blue{background:rgba(59,130,246,.15);color:var(--blue);}
+.badge-muted{background:rgba(136,136,136,.15);color:var(--muted);}
 
-/* ── BADGES ── */
-.badge{display:inline-flex;align-items:center;gap:4px;font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:3px 9px;border-radius:100px;}
-.badge-free{background:rgba(160,160,160,.12);color:#aaa;border:1px solid rgba(160,160,160,.2);}
-.badge-pro{background:rgba(255,208,0,.12);color:var(--gold);border:1px solid rgba(255,208,0,.2);}
-.badge-elite{background:var(--pro);color:#000;}
-.badge-active{background:rgba(34,197,94,.12);color:var(--green);border:1px solid rgba(34,197,94,.2);}
-.badge-suspended{background:rgba(232,0,29,.12);color:var(--red);border:1px solid rgba(232,0,29,.2);}
-.badge-trial{background:rgba(56,189,248,.12);color:var(--blue);border:1px solid rgba(56,189,248,.2);}
+/* FORM */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+@media(max-width:600px){.form-grid{grid-template-columns:1fr;}}
+.form-group{display:flex;flex-direction:column;gap:5px;}
+.form-group.full{grid-column:1/-1;}
+label{font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);}
+input[type=text],input[type=email],input[type=number],input[type=url],textarea,select{width:100%;background:var(--card2);border:1.5px solid var(--border);border-radius:8px;padding:9px 12px;color:var(--text);font-size:14px;outline:none;transition:border-color .18s;font-family:'Inter',sans-serif;}
+input:focus,textarea:focus,select:focus{border-color:var(--red);}
+textarea{min-height:90px;resize:vertical;}
+select option{background:var(--card);}
 
-/* ── BUTTONS ── */
-.btn{padding:7px 14px;border-radius:4px;border:none;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;transition:all .2s;}
-.btn-primary{background:var(--fire);color:#fff;}
-.btn-primary:hover{transform:translateY(-1px);}
-.btn-outline{background:transparent;border:1px solid var(--border2);color:var(--muted);}
-.btn-outline:hover{border-color:var(--red);color:var(--red);}
-.btn-gold{background:var(--pro);color:#000;font-weight:900;}
-.btn-sm{padding:5px 10px;font-size:10px;}
-.btn-icon{background:transparent;border:1px solid var(--border);color:var(--muted);padding:5px 8px;border-radius:4px;cursor:pointer;transition:all .2s;font-size:13px;}
-.btn-icon:hover{border-color:var(--red);color:var(--red);}
-.btn-danger{background:rgba(232,0,29,.12);border:1px solid rgba(232,0,29,.2);color:var(--red);}
-.btn-danger:hover{background:rgba(232,0,29,.25);}
-
-/* ── SEARCH & FILTERS ── */
-.filter-bar{display:flex;gap:10px;align-items:center;margin-bottom:16px;flex-wrap:wrap;}
-.search-inp{flex:1;min-width:200px;background:#0f0f0f;border:1px solid var(--border);border-radius:4px;padding:9px 13px;color:var(--text);font-size:13px;outline:none;transition:border-color .2s;}
-.search-inp:focus{border-color:var(--red);}
-.filter-sel{background:#0f0f0f;border:1px solid var(--border);border-radius:4px;padding:9px 13px;color:var(--text);font-size:12px;outline:none;cursor:pointer;}
-
-/* ── PAGINATION ── */
-.pager{display:flex;align-items:center;gap:8px;margin-top:14px;justify-content:flex-end;font-size:12px;color:var(--muted);}
-.pager-btn{background:var(--card2);border:1px solid var(--border);color:var(--text);padding:5px 12px;border-radius:4px;cursor:pointer;font-size:11px;transition:all .2s;}
-.pager-btn:hover{border-color:var(--red);}
-.pager-btn:disabled{opacity:.4;cursor:default;}
-
-/* ── MODALS ── */
-.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.88);backdrop-filter:blur(10px);z-index:9000;display:none;align-items:center;justify-content:center;padding:20px;}
-.modal-bg.open{display:flex;}
-.modal{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:32px;width:100%;max-width:480px;position:relative;max-height:90vh;overflow-y:auto;}
-.modal-close{position:absolute;top:12px;right:14px;background:none;border:none;color:var(--muted);font-size:18px;cursor:pointer;}
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:1000;display:none;align-items:center;justify-content:center;padding:20px;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:28px;width:100%;max-width:580px;max-height:90vh;overflow-y:auto;}
+.modal-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;}
+.modal-title{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1.5px;}
+.modal-close{background:none;border:none;color:var(--muted);font-size:22px;cursor:pointer;padding:2px 6px;border-radius:4px;}
 .modal-close:hover{color:var(--text);}
-.modal-title{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;margin-bottom:4px;}
-.modal-sub{font-size:12px;color:var(--muted);margin-bottom:20px;}
-.form-row{margin-bottom:12px;}
-.form-label{font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:5px;}
-.form-inp,.form-sel{width:100%;background:#0f0f0f;border:1px solid var(--border);border-radius:4px;padding:10px 12px;color:var(--text);font-size:13px;outline:none;transition:border-color .2s;}
-.form-inp:focus,.form-sel:focus{border-color:var(--red);}
-.form-actions{display:flex;gap:8px;margin-top:18px;}
-.form-actions .btn{flex:1;padding:11px;}
+.modal-footer{display:flex;justify-content:flex-end;gap:10px;margin-top:20px;}
 
-/* ── TOAST ── */
-.toast{position:fixed;bottom:20px;right:20px;z-index:99999;background:var(--card);border:1px solid var(--border);border-radius:5px;padding:11px 16px;font-size:12px;max-width:280px;transform:translateY(70px);opacity:0;transition:all .35s;}
-.toast.show{transform:translateY(0);opacity:1;}
-.toast.fire{border-color:var(--red);}
-.toast.gold{border-color:var(--gold);}
-.toast.green{border-color:var(--green);}
+/* SEARCH / FILTER */
+.search-row{display:flex;gap:10px;margin-bottom:18px;flex-wrap:wrap;}
+.search-inp{flex:1;min-width:180px;background:var(--card2);border:1.5px solid var(--border);border-radius:8px;padding:9px 14px;color:var(--text);font-size:14px;outline:none;}
+.search-inp:focus{border-color:var(--red);}
 
-/* ── LOADING ── */
-.loading{display:flex;align-items:center;justify-content:center;padding:40px;color:var(--muted);font-size:12px;letter-spacing:2px;text-transform:uppercase;}
-.spinner{width:18px;height:18px;border:2px solid var(--border);border-top-color:var(--red);border-radius:50%;animation:spin .7s linear infinite;margin-right:10px;}
-@keyframes spin{to{transform:rotate(360deg);}}
+/* EMPTY STATE */
+.empty{text-align:center;padding:48px 20px;color:var(--muted);}
+.empty-icon{font-size:40px;margin-bottom:12px;}
+.empty-msg{font-size:14px;}
 
-/* ── SECTIONS ── */
-.section{display:none;}
-.section.active{display:block;}
+/* ACTIVITY FEED */
+.act-item{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid rgba(42,42,58,.4);}
+.act-item:last-child{border-bottom:none;}
+.act-icon{font-size:20px;flex-shrink:0;margin-top:2px;}
+.act-body{flex:1;}
+.act-title{font-size:13px;margin-bottom:2px;}
+.act-time{font-size:11px;color:var(--muted);}
 
-/* ── ANALYTICS BARS ── */
-.analytics-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
-.plan-dist{display:flex;flex-direction:column;gap:8px;margin-top:8px;}
-.plan-row{display:flex;align-items:center;gap:10px;}
-.plan-label{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;width:70px;flex-shrink:0;}
-.plan-bar-bg{flex:1;background:#1a1a1a;border-radius:100px;height:8px;overflow:hidden;}
-.plan-bar-fill{height:100%;border-radius:100px;transition:width .8s ease;}
-.plan-count{font-family:'Bebas Neue',sans-serif;font-size:18px;width:40px;text-align:right;}
+/* DANGER ZONE */
+.danger-zone{border:1px solid rgba(232,0,29,.3);border-radius:12px;padding:20px;}
+.danger-zone h3{color:var(--red);font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:1px;margin-bottom:8px;}
+.danger-zone p{font-size:13px;color:var(--muted);margin-bottom:14px;}
 
-.month-bars{display:flex;align-items:flex-end;gap:8px;height:100px;margin-top:12px;}
-.mbar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;}
-.mbar{width:100%;background:var(--red);border-radius:3px 3px 0 0;opacity:.8;transition:height .5s;min-height:4px;}
-.mbar-lbl{font-size:9px;color:var(--muted);letter-spacing:1px;}
-.mbar-val{font-family:'Bebas Neue',sans-serif;font-size:13px;color:var(--text);}
+/* BLOG CARD PREVIEW */
+.blog-card{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:12px;}
+.blog-card-hdr{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:8px;}
+.blog-card-title{font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:700;}
+.blog-card-meta{font-size:11px;color:var(--muted);margin-bottom:6px;}
+.blog-card-excerpt{font-size:13px;color:var(--muted);line-height:1.5;}
 
-/* ── QUICK ACTIONS ── */
-.quick-actions{display:flex;flex-direction:column;gap:8px;}
-.qa-btn{width:100%;background:var(--card2);border:1px solid var(--border);border-radius:5px;padding:10px 14px;text-align:left;cursor:pointer;display:flex;align-items:center;gap:10px;font-size:12px;color:var(--text);transition:all .2s;}
-.qa-btn:hover{border-color:var(--red);color:var(--red);}
-.qa-icon{font-size:16px;flex-shrink:0;}
+/* MODULE LIST */
+.module-list{list-style:none;}
+.module-item{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid rgba(42,42,58,.4);font-size:13px;}
+.module-item:last-child{border-bottom:none;}
+.module-num{font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--red);width:20px;flex-shrink:0;}
 
-/* ── EMPTY STATE ── */
-.empty-state{text-align:center;padding:48px 20px;color:var(--muted);}
-.empty-icon{font-size:36px;margin-bottom:10px;opacity:.4;}
-.empty-text{font-size:12px;letter-spacing:2px;text-transform:uppercase;}
+/* NOTIFICATION TOAST */
+#toast{position:fixed;bottom:28px;right:28px;background:var(--green);color:#000;padding:12px 22px;border-radius:10px;font-size:14px;font-weight:600;z-index:9999;transform:translateY(80px);opacity:0;transition:all .3s;}
+#toast.show{transform:translateY(0);opacity:1;}
+#toast.err{background:#f87171;color:#fff;}
 
-/* ── MOBILE ── */
-.hamburger-admin{display:none;background:none;border:none;cursor:pointer;padding:8px;flex-direction:column;gap:5px;}
-.hamburger-admin span{display:block;width:20px;height:2px;background:var(--text);border-radius:2px;}
-@media(max-width:900px){
-  .stats-row{grid-template-columns:1fr 1fr;}
-  .panel-row{grid-template-columns:1fr;}
-  .panel-full{grid-column:span 1;}
-}
 @media(max-width:768px){
-  :root{--sidebar:240px;}
-  .sidebar{transform:translateX(-100%);}
-  .sidebar.open{transform:translateX(0);}
-  .main{margin-left:0;}
-  .hamburger-admin{display:flex;}
-  .stats-row{grid-template-columns:1fr 1fr;}
-  .analytics-grid{grid-template-columns:1fr;}
-}
-@media(max-width:480px){
-  .stats-row{grid-template-columns:1fr;}
-  .content{padding:16px;}
+  .tab-btn{padding:12px 12px;font-size:12px;}
+  .tab-pane{padding:16px;}
+  .panel{padding:16px;}
+  header{padding:12px 16px;}
 }
 </style>
 </head>
 <body>
 
-<!-- AUTH GATE -->
-<div id="auth-gate">
+<!-- AUTH SCREEN -->
+<div id="auth-screen">
   <div class="auth-box">
-    <div class="auth-logo">ROYAL FITNESS CLUB</div>
-    <div class="auth-sub">Admin Portal</div>
-    <input type="email" class="auth-inp" id="a-email" placeholder="Admin Email">
-    <input type="password" class="auth-inp" id="a-pass" placeholder="Password">
-    <button class="auth-btn" onclick="adminLogin()">⚡ LOGIN TO ADMIN</button>
-    <div class="auth-err" id="auth-err"></div>
+    <div class="auth-logo">RFC ADMIN</div>
+    <div class="auth-sub">Royal Fitness Club — Control Panel</div>
+    <input id="adm-email" class="auth-inp" type="email" placeholder="Admin Email" autocomplete="username">
+    <input id="adm-pass" class="auth-inp" type="password" placeholder="Password" autocomplete="current-password">
+    <button class="auth-btn" onclick="adminLogin()">LOGIN</button>
+    <div id="adm-err" class="auth-err"></div>
   </div>
 </div>
 
 <!-- MAIN APP -->
 <div id="app">
-  <!-- SIDEBAR -->
-  <div class="sidebar" id="sidebar">
-    <div class="s-logo">
-      <div class="s-logo-text">RFC ADMIN</div>
-      <div class="s-logo-sub">Beast SaaS Platform</div>
+  <header>
+    <div style="display:flex;align-items:center;">
+      <span class="hdr-logo">RFC</span>
+      <span class="hdr-sub">Admin Panel</span>
     </div>
-    <nav class="s-nav">
-      <div class="s-item active" onclick="showSection('dashboard')" data-section="dashboard"><span class="s-icon">📊</span>Dashboard</div>
-      <div class="s-item" onclick="showSection('members')" data-section="members"><span class="s-icon">👥</span>Members</div>
-      <div class="s-item" onclick="showSection('subscriptions')" data-section="subscriptions"><span class="s-icon">💳</span>Subscriptions</div>
-      <div class="s-item" onclick="showSection('analytics')" data-section="analytics"><span class="s-icon">📈</span>Analytics</div>
-      <div class="s-item" onclick="showSection('settings')" data-section="settings"><span class="s-icon">⚙️</span>Settings</div>
-    </nav>
-    <div class="s-bottom">
-      <button class="s-logout" onclick="adminLogout()">🚪 Logout</button>
+    <div class="hdr-right">
+      <span class="hdr-user" id="hdr-user-email"></span>
+      <button class="btn-logout" onclick="adminLogout()">Logout</button>
+    </div>
+  </header>
+
+  <nav class="tab-nav" id="tab-nav">
+    <button class="tab-btn active" onclick="showTab('dashboard',this)">📊 Dashboard</button>
+    <button class="tab-btn" onclick="showTab('members',this)">👥 Members</button>
+    <button class="tab-btn" onclick="showTab('codegen',this)">🎟 Code Gen</button>
+    <button class="tab-btn" onclick="showTab('redemptions',this)">💰 Redemptions</button>
+    <button class="tab-btn" onclick="showTab('referrals',this)">🔗 Referrals</button>
+    <button class="tab-btn" onclick="showTab('newsletter',this)">📧 Newsletter</button>
+    <button class="tab-btn" onclick="showTab('content',this)">✨ Features</button>
+    <button class="tab-btn" onclick="showTab('blogs',this)">📝 Blogs</button>
+    <button class="tab-btn" onclick="showTab('pricing',this)">💳 Pricing</button>
+    <button class="tab-btn" onclick="showTab('faqs',this)">❓ FAQs</button>
+    <button class="tab-btn" onclick="showTab('challenges',this)">🏆 Challenges</button>
+    <button class="tab-btn" onclick="showTab('courses',this)">🎓 Courses</button>
+  </nav>
+
+  <!-- DASHBOARD TAB -->
+  <div class="tab-pane active" id="tab-dashboard">
+    <div class="stats-row" id="dash-stats"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;" id="dash-panels">
+      <div class="panel">
+        <div class="panel-hdr"><span class="panel-title">Recent Members</span></div>
+        <div id="dash-recent-members"></div>
+      </div>
+      <div class="panel">
+        <div class="panel-hdr"><span class="panel-title">Pending Redemptions</span></div>
+        <div id="dash-pending-redeem"></div>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-hdr"><span class="panel-title">Recent Activity</span></div>
+      <div id="dash-activity"></div>
     </div>
   </div>
 
-  <!-- MAIN CONTENT -->
-  <div class="main">
-    <div class="topbar">
-      <div style="display:flex;align-items:center;gap:12px;">
-        <button class="hamburger-admin" id="ham-admin" onclick="toggleSidebar()"><span></span><span></span><span></span></button>
-        <div class="tb-title" id="page-title">Dashboard</div>
-      </div>
-      <div class="tb-right">
-        <div class="tb-admin">
-          <div class="tb-av" id="admin-av">A</div>
-          <div>
-            <div class="tb-name" id="admin-name">Admin</div>
-            <div class="tb-badge">ADMIN</div>
-          </div>
+  <!-- MEMBERS TAB -->
+  <div class="tab-pane" id="tab-members">
+    <div class="panel">
+      <div class="panel-hdr">
+        <span class="panel-title">All Members</span>
+        <div class="panel-actions">
+          <button class="btn btn-primary" onclick="openAddMember()">+ Add Member</button>
         </div>
+      </div>
+      <div class="search-row">
+        <input class="search-inp" id="member-search" placeholder="Search name, email..." oninput="renderMembers()">
+        <select class="search-inp" style="max-width:160px;" id="member-filter" onchange="renderMembers()">
+          <option value="">All Status</option>
+          <option value="active">Active</option>
+          <option value="pro">Pro</option>
+          <option value="suspended">Suspended</option>
+        </select>
+      </div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr>
+            <th>Name</th><th>Email</th><th>Plan</th><th>Joined</th><th>Status</th><th>Wallet</th><th>Actions</th>
+          </tr></thead>
+          <tbody id="members-tbody"></tbody>
+        </table>
       </div>
     </div>
+  </div>
 
-    <div class="content">
-      <!-- DASHBOARD SECTION -->
-      <div class="section active" id="sec-dashboard">
-        <div class="stats-row">
-          <div class="stat-card"><div class="sc-label">Total Members</div><div class="sc-val red" id="stat-total">—</div><div class="sc-sub">All registered users</div></div>
-          <div class="stat-card"><div class="sc-label">Pro Members</div><div class="sc-val gold" id="stat-pro">—</div><div class="sc-sub">Paid subscribers</div></div>
-          <div class="stat-card"><div class="sc-label">New This Month</div><div class="sc-val green" id="stat-new">—</div><div class="sc-sub">Joined in <span id="stat-month">—</span></div></div>
-          <div class="stat-card"><div class="sc-label">Active Today</div><div class="sc-val blue" id="stat-today">—</div><div class="sc-sub">Login in last 24h</div></div>
-        </div>
-        <div class="panel-row">
-          <div class="panel" style="grid-column:span 2;">
-            <div class="panel-title">Recent Members <button class="btn btn-outline btn-sm" onclick="showSection('members')">View All →</button></div>
-            <div class="table-wrap">
-              <table>
-                <thead><tr><th>Name</th><th>Email</th><th>Plan</th><th>Status</th><th>Joined</th></tr></thead>
-                <tbody id="recent-members-body"><tr><td colspan="5"><div class="loading"><div class="spinner"></div>Loading...</div></td></tr></tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="panel-row">
-          <div class="panel">
-            <div class="panel-title">Quick Actions</div>
-            <div class="quick-actions">
-              <button class="qa-btn" onclick="openAddMember()"><span class="qa-icon">➕</span>Add New Member</button>
-              <button class="qa-btn" onclick="exportCSV()"><span class="qa-icon">📥</span>Export Members CSV</button>
-              <button class="qa-btn" onclick="showSection('analytics')"><span class="qa-icon">📈</span>View Analytics</button>
-              <button class="qa-btn" onclick="showSection('subscriptions')"><span class="qa-icon">💳</span>Manage Subscriptions</button>
-            </div>
-          </div>
-          <div class="panel">
-            <div class="panel-title">Plan Distribution</div>
-            <div class="plan-dist" id="plan-dist-dash">
-              <div class="loading"><div class="spinner"></div>Loading...</div>
-            </div>
-          </div>
-        </div>
+  <!-- CODE GEN TAB -->
+  <div class="tab-pane" id="tab-codegen">
+    <div class="panel">
+      <div class="panel-hdr">
+        <span class="panel-title">Generate Access Codes</span>
+        <button class="btn btn-primary" onclick="generateCodes()">Generate 10 Codes</button>
       </div>
-
-      <!-- MEMBERS SECTION -->
-      <div class="section" id="sec-members">
-        <div class="filter-bar">
-          <input type="text" class="search-inp" id="member-search" placeholder="Search by name or email..." oninput="filterMembers()">
-          <select class="filter-sel" id="member-filter" onchange="filterMembers()">
-            <option value="all">All Members</option>
-            <option value="active">Active</option>
-            <option value="suspended">Suspended</option>
-            <option value="pro">Pro Members</option>
-            <option value="free">Free Members</option>
-          </select>
-          <button class="btn btn-primary" onclick="openAddMember()">➕ Add Member</button>
-          <button class="btn btn-outline" onclick="exportCSV()">📥 Export CSV</button>
-        </div>
-        <div class="panel" style="padding:0;">
-          <div class="table-wrap">
-            <table>
-              <thead><tr><th>Name</th><th>Email</th><th>Phone</th><th>Plan</th><th>Status</th><th>Joined</th><th>Last Active</th><th>Actions</th></tr></thead>
-              <tbody id="members-body"><tr><td colspan="8"><div class="loading"><div class="spinner"></div>Loading members...</div></td></tr></tbody>
-            </table>
-          </div>
-          <div style="padding:12px 16px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">
-            <div style="font-size:12px;color:var(--muted);">Showing <span id="member-count">0</span> of <span id="member-total">0</span> members</div>
-            <div class="pager">
-              <button class="pager-btn" id="prev-page" onclick="changePage(-1)" disabled>← Prev</button>
-              <span id="page-info">Page 1</span>
-              <button class="pager-btn" id="next-page" onclick="changePage(1)">Next →</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- SUBSCRIPTIONS SECTION -->
-      <div class="section" id="sec-subscriptions">
-        <div class="filter-bar">
-          <select class="filter-sel" id="sub-filter" onchange="loadSubscriptions()">
-            <option value="all">All Subscriptions</option>
-            <option value="active">Active</option>
-            <option value="trial">Trial</option>
-            <option value="cancelled">Cancelled</option>
-            <option value="expired">Expired</option>
+      <div class="form-grid" style="margin-bottom:18px;">
+        <div class="form-group">
+          <label>Plan Type</label>
+          <select id="code-plan">
+            <option value="pro">Pro (Monthly)</option>
+            <option value="pro_annual">Pro Annual</option>
+            <option value="basic">Basic</option>
           </select>
         </div>
-        <div class="panel" style="padding:0;">
-          <div class="table-wrap">
-            <table>
-              <thead><tr><th>User Email</th><th>Plan</th><th>Status</th><th>Amount</th><th>Start Date</th><th>Expiry</th><th>Actions</th></tr></thead>
-              <tbody id="subs-body"><tr><td colspan="7"><div class="loading"><div class="spinner"></div>Loading...</div></td></tr></tbody>
-            </table>
-          </div>
+        <div class="form-group">
+          <label>Expiry Days</label>
+          <input type="number" id="code-expiry" value="30" min="1" max="365">
         </div>
       </div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Code</th><th>Plan</th><th>Generated</th><th>Expires</th><th>Status</th><th>Used By</th></tr></thead>
+          <tbody id="codes-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
 
-      <!-- ANALYTICS SECTION -->
-      <div class="section" id="sec-analytics">
-        <div class="stats-row">
-          <div class="stat-card"><div class="sc-label">Total Revenue</div><div class="sc-val gold" id="an-revenue">₹0</div><div class="sc-sub">All time</div></div>
-          <div class="stat-card"><div class="sc-label">Conversion Rate</div><div class="sc-val green" id="an-conv">0%</div><div class="sc-sub">Free to Pro</div></div>
-          <div class="stat-card"><div class="sc-label">Avg Lifetime</div><div class="sc-val blue" id="an-lifetime">—</div><div class="sc-sub">Days per user</div></div>
-          <div class="stat-card"><div class="sc-label">Churn Rate</div><div class="sc-val red" id="an-churn">—</div><div class="sc-sub">Cancelled / Total Pro</div></div>
-        </div>
-        <div class="stats-row">
-          <div class="stat-card"><div class="sc-label">Active Today (DAU)</div><div class="sc-val green" id="an-dau">—</div><div class="sc-sub">Logged in since midnight</div></div>
-          <div class="stat-card"><div class="sc-label">Active 30 Days (MAU)</div><div class="sc-val blue" id="an-mau">—</div><div class="sc-sub">Logged in last 30 days</div></div>
-          <div class="stat-card"><div class="sc-label">New This Week</div><div class="sc-val gold" id="an-newweek">—</div><div class="sc-sub">Registrations last 7 days</div></div>
-          <div class="stat-card"><div class="sc-label">Stickiness</div><div class="sc-val" id="an-sticky">—</div><div class="sc-sub">DAU / MAU ratio</div></div>
-        </div>
-        <div class="panel-row">
-          <div class="panel">
-            <div class="panel-title">Plan Distribution</div>
-            <div class="plan-dist" id="plan-dist-an">
-              <div class="loading"><div class="spinner"></div>Loading...</div>
-            </div>
-          </div>
-          <div class="panel">
-            <div class="panel-title">Members Joined (Last 6 Months)</div>
-            <div class="month-bars" id="month-bars">
-              <div class="loading"><div class="spinner"></div>Loading...</div>
-            </div>
-          </div>
-        </div>
-        <div class="panel-row">
-          <div class="panel">
-            <div class="panel-title">Top Events (All Time)</div>
-            <div class="plan-dist" id="top-events-an">
-              <div class="loading"><div class="spinner"></div>Loading...</div>
-            </div>
-          </div>
-        </div>
+  <!-- REDEMPTIONS TAB -->
+  <div class="tab-pane" id="tab-redemptions">
+    <div class="panel">
+      <div class="panel-hdr">
+        <span class="panel-title">Wallet Redemption Requests</span>
+        <select class="search-inp" style="max-width:180px;" id="redeem-filter" onchange="renderRedemptions()">
+          <option value="">All Requests</option>
+          <option value="pending">Pending</option>
+          <option value="approved">Approved</option>
+          <option value="rejected">Rejected</option>
+        </select>
       </div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr>
+            <th>User</th><th>Amount</th><th>UPI ID</th><th>Requested</th><th>Status</th><th>Actions</th>
+          </tr></thead>
+          <tbody id="redeem-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
 
-      <!-- SETTINGS SECTION -->
-      <div class="section" id="sec-settings">
-        <div class="panel-row">
-          <div class="panel">
-            <div class="panel-title">Admin Profile</div>
-            <div style="display:flex;align-items:center;gap:14px;margin-bottom:18px;">
-              <div style="width:52px;height:52px;border-radius:50%;background:var(--fire);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:24px;color:#fff;" id="set-av">A</div>
-              <div><div style="font-family:'Bebas Neue',sans-serif;font-size:20px;" id="set-name">Admin</div><div style="font-size:12px;color:var(--muted);" id="set-email">—</div></div>
-            </div>
-            <div class="form-row">
-              <label class="form-label">Change Password</label>
-              <input type="password" class="form-inp" id="new-pass" placeholder="New password (min 6 chars)">
-            </div>
-            <button class="btn btn-primary" onclick="changeAdminPassword()">Update Password</button>
-          </div>
-          <div class="panel">
-            <div class="panel-title">Platform Settings</div>
-            <div style="display:flex;flex-direction:column;gap:14px;">
-              <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--border);font-size:13px;"><span>Maintenance Mode</span><span style="color:var(--muted);">Off</span></div>
-              <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--border);font-size:13px;"><span>New User Registration</span><span style="color:var(--green);">On</span></div>
-              <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--border);font-size:13px;"><span>Pro Trial Duration</span><span style="color:var(--gold);">7 days</span></div>
-              <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;font-size:13px;"><span>Firebase Project</span><span style="color:var(--muted);">royal-fitness-club-7adc1</span></div>
-            </div>
-          </div>
+  <!-- REFERRALS TAB -->
+  <div class="tab-pane" id="tab-referrals">
+    <div class="panel">
+      <div class="panel-hdr">
+        <span class="panel-title">Referral Tracking</span>
+      </div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr>
+            <th>Referrer</th><th>New User</th><th>Date</th><th>Amount</th><th>Status</th><th>Actions</th>
+          </tr></thead>
+          <tbody id="referrals-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-hdr"><span class="panel-title">Referral Leaderboard</span></div>
+      <div id="ref-leaderboard"></div>
+    </div>
+  </div>
+
+  <!-- NEWSLETTER TAB -->
+  <div class="tab-pane" id="tab-newsletter">
+    <div class="panel">
+      <div class="panel-hdr">
+        <span class="panel-title">Newsletter Subscribers</span>
+        <div class="panel-actions">
+          <button class="btn btn-ghost" onclick="exportNewsletterCSV()">📥 Export CSV</button>
+          <button class="btn btn-primary" onclick="openAddSubscriber()">+ Add Subscriber</button>
         </div>
       </div>
+      <div class="search-row">
+        <input class="search-inp" id="nl-search" placeholder="Search email or name..." oninput="renderNewsletter()">
+      </div>
+      <div style="margin-bottom:12px;font-size:13px;color:var(--muted);" id="nl-count"></div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Email</th><th>Name</th><th>Subscribed</th><th>Source</th><th>Actions</th></tr></thead>
+          <tbody id="nl-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTENT (FEATURES + TESTIMONIALS) TAB -->
+  <div class="tab-pane" id="tab-content">
+    <!-- FEATURES -->
+    <div class="panel">
+      <div class="panel-hdr">
+        <span class="panel-title">Features / USPs</span>
+        <button class="btn btn-primary" onclick="openFeatureModal()">+ Add Feature</button>
+      </div>
+      <div id="features-list"></div>
+    </div>
+    <!-- TESTIMONIALS -->
+    <div class="panel">
+      <div class="panel-hdr">
+        <span class="panel-title">Testimonials</span>
+        <button class="btn btn-primary" onclick="openTestimonialModal()">+ Add Testimonial</button>
+      </div>
+      <div id="testimonials-list"></div>
+    </div>
+  </div>
+
+  <!-- BLOGS TAB -->
+  <div class="tab-pane" id="tab-blogs">
+    <div class="panel">
+      <div class="panel-hdr">
+        <span class="panel-title">Blog Posts</span>
+        <button class="btn btn-primary" onclick="openBlogModal()">+ New Post</button>
+      </div>
+      <div id="blogs-list"></div>
+    </div>
+  </div>
+
+  <!-- PRICING TAB -->
+  <div class="tab-pane" id="tab-pricing">
+    <div class="panel">
+      <div class="panel-hdr">
+        <span class="panel-title">Pricing Plans</span>
+        <button class="btn btn-primary" onclick="openPricingModal()">+ Add Plan</button>
+      </div>
+      <div id="pricing-list"></div>
+    </div>
+  </div>
+
+  <!-- FAQS TAB -->
+  <div class="tab-pane" id="tab-faqs">
+    <div class="panel">
+      <div class="panel-hdr">
+        <span class="panel-title">FAQs</span>
+        <button class="btn btn-primary" onclick="openFaqModal()">+ Add FAQ</button>
+      </div>
+      <div id="faqs-list"></div>
+    </div>
+    <div class="panel danger-zone">
+      <h3>⚠ Danger Zone</h3>
+      <p>Reset all admin content data to factory defaults. This cannot be undone.</p>
+      <button class="btn btn-danger" onclick="confirmReset()">Reset All Data to Defaults</button>
+    </div>
+  </div>
+
+  <!-- CHALLENGES TAB -->
+  <div class="tab-pane" id="tab-challenges">
+    <div class="panel">
+      <div class="panel-hdr">
+        <span class="panel-title">Fitness Challenges</span>
+        <button class="btn btn-primary" onclick="openChallengeAdminModal()">+ Add Challenge</button>
+      </div>
+      <div id="challenges-admin-list"></div>
+    </div>
+    <div class="panel">
+      <div class="panel-hdr"><span class="panel-title">Challenge Participants</span></div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Challenge</th><th>Participants</th><th>Revenue</th><th>Status</th></tr></thead>
+          <tbody id="challenge-stats-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- COURSES TAB -->
+  <div class="tab-pane" id="tab-courses">
+    <div class="panel">
+      <div class="panel-hdr">
+        <span class="panel-title">Certification Courses</span>
+        <button class="btn btn-primary" onclick="openCourseAdminModal()">+ Add Course</button>
+      </div>
+      <div id="courses-admin-list"></div>
     </div>
   </div>
 </div>
 
-<!-- EDIT MEMBER MODAL -->
-<div class="modal-bg" id="edit-modal">
+<!-- ======================== MODALS ======================== -->
+
+<!-- CHALLENGE ADMIN MODAL -->
+<div class="modal-overlay" id="modal-challenge">
   <div class="modal">
-    <button class="modal-close" onclick="closeModal('edit-modal')">✕</button>
-    <div class="modal-title">Edit Member</div>
-    <div class="modal-sub" id="edit-member-email">—</div>
-    <input type="hidden" id="edit-uid">
-    <div class="form-row"><label class="form-label">Name</label><input type="text" class="form-inp" id="edit-name"></div>
-    <div class="form-row"><label class="form-label">Phone</label><input type="tel" class="form-inp" id="edit-phone"></div>
-    <div class="form-row">
-      <label class="form-label">Plan</label>
-      <select class="form-sel" id="edit-plan">
-        <option value="free">Free</option>
-        <option value="royal_pro">Royal Pro</option>
-        <option value="royal_elite">Royal Elite</option>
-      </select>
+    <div class="modal-hdr">
+      <span class="modal-title" id="challenge-modal-title">Add Challenge</span>
+      <button class="modal-close" onclick="closeModal('modal-challenge')">✕</button>
     </div>
-    <div class="form-row">
-      <label class="form-label">Status</label>
-      <select class="form-sel" id="edit-status">
-        <option value="active">Active</option>
-        <option value="suspended">Suspended</option>
-      </select>
+    <div class="form-grid">
+      <div class="form-group"><label>Emoji</label><input type="text" id="ch-icon" placeholder="🔥" maxlength="4"></div>
+      <div class="form-group"><label>Challenge Name</label><input type="text" id="ch-name"></div>
+      <div class="form-group full"><label>Description</label><textarea id="ch-desc"></textarea></div>
+      <div class="form-group"><label>Status</label>
+        <select id="ch-status">
+          <option value="live">Live Now</option>
+          <option value="soon">Coming Soon</option>
+          <option value="ended">Ended</option>
+        </select>
+      </div>
+      <div class="form-group"><label>Entry Fee (₹)</label><input type="number" id="ch-fee" value="499"></div>
+      <div class="form-group"><label>Duration</label><input type="text" id="ch-duration" placeholder="30 Days"></div>
+      <div class="form-group"><label>Prize Pool</label><input type="text" id="ch-prize" placeholder="₹25,000 Pool"></div>
+      <div class="form-group"><label>Max Participants</label><input type="number" id="ch-maxpts" value="200"></div>
+      <div class="form-group"><label>Start Date</label><input type="text" id="ch-start" placeholder="Jun 15, 2026"></div>
+      <div class="form-group"><label>End Date</label><input type="text" id="ch-end" placeholder="Jul 15, 2026"></div>
+      <div class="form-group full"><label>Prizes (one per line, e.g. 🥇 ₹12,000)</label><textarea id="ch-prizes" style="min-height:80px;"></textarea></div>
+      <div class="form-group full"><label>Rules (one per line)</label><textarea id="ch-rules" style="min-height:80px;"></textarea></div>
+      <div class="form-group full"><label>Gradient Banner (CSS)</label><input type="text" id="ch-banner" placeholder="linear-gradient(135deg,#e8001d,#ff8c00)"></div>
     </div>
-    <div class="form-actions">
-      <button class="btn btn-outline" onclick="closeModal('edit-modal')">Cancel</button>
-      <button class="btn btn-primary" onclick="saveEditMember()">💾 Save Changes</button>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-challenge')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveChallenge()">Save Challenge</button>
     </div>
   </div>
 </div>
 
-<!-- ADD MEMBER MODAL -->
-<div class="modal-bg" id="add-modal">
+<!-- COURSE ADMIN MODAL -->
+<div class="modal-overlay" id="modal-course">
   <div class="modal">
-    <button class="modal-close" onclick="closeModal('add-modal')">✕</button>
-    <div class="modal-title">Add Member</div>
-    <div class="modal-sub">Create a new member account manually.</div>
-    <div class="form-row"><label class="form-label">Full Name</label><input type="text" class="form-inp" id="add-name"></div>
-    <div class="form-row"><label class="form-label">Email</label><input type="email" class="form-inp" id="add-email"></div>
-    <div class="form-row"><label class="form-label">Phone</label><input type="tel" class="form-inp" id="add-phone"></div>
-    <div class="form-row">
-      <label class="form-label">Plan</label>
-      <select class="form-sel" id="add-plan">
-        <option value="free">Free</option>
-        <option value="royal_pro">Royal Pro</option>
-        <option value="royal_elite">Royal Elite</option>
-      </select>
+    <div class="modal-hdr">
+      <span class="modal-title" id="course-modal-admin-title">Add Course</span>
+      <button class="modal-close" onclick="closeModal('modal-course')">✕</button>
     </div>
-    <div class="form-actions">
-      <button class="btn btn-outline" onclick="closeModal('add-modal')">Cancel</button>
-      <button class="btn btn-primary" onclick="saveAddMember()">➕ Add Member</button>
+    <div class="form-grid">
+      <div class="form-group"><label>Emoji</label><input type="text" id="cs-icon" placeholder="💪" maxlength="4"></div>
+      <div class="form-group"><label>Course Name</label><input type="text" id="cs-name"></div>
+      <div class="form-group full"><label>Description</label><textarea id="cs-desc"></textarea></div>
+      <div class="form-group"><label>Price (₹)</label><input type="number" id="cs-price"></div>
+      <div class="form-group"><label>Original Price (₹)</label><input type="number" id="cs-orig-price"></div>
+      <div class="form-group"><label>Duration</label><input type="text" id="cs-duration" placeholder="8 Weeks"></div>
+      <div class="form-group"><label>Level</label><input type="text" id="cs-level" placeholder="Beginner–Intermediate"></div>
+      <div class="form-group"><label>Category</label><input type="text" id="cs-cat" placeholder="Training"></div>
+      <div class="form-group full"><label>Modules (one per line)</label><textarea id="cs-modules" style="min-height:120px;" placeholder="Module 1: Anatomy&#10;Module 2: Exercise Science"></textarea></div>
+      <div class="form-group full"><label>PDF Materials (one URL + name per line, format: URL|Name)</label><textarea id="cs-pdfs" style="min-height:80px;" placeholder="https://example.com/file.pdf|Week 1 Guide"></textarea></div>
+      <div class="form-group full"><label>Banner Gradient (CSS)</label><input type="text" id="cs-banner" placeholder="linear-gradient(135deg,#e8001d,#7c3aed)"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-course')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveCourse()">Save Course</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD/EDIT MEMBER -->
+<div class="modal-overlay" id="modal-member">
+  <div class="modal">
+    <div class="modal-hdr">
+      <span class="modal-title" id="member-modal-title">Add Member</span>
+      <button class="modal-close" onclick="closeModal('modal-member')">✕</button>
+    </div>
+    <div class="form-grid">
+      <div class="form-group"><label>Full Name</label><input type="text" id="m-name"></div>
+      <div class="form-group"><label>Email</label><input type="email" id="m-email"></div>
+      <div class="form-group"><label>Phone</label><input type="text" id="m-phone"></div>
+      <div class="form-group"><label>City</label><input type="text" id="m-city"></div>
+      <div class="form-group"><label>Plan</label>
+        <select id="m-plan">
+          <option value="free">Free</option>
+          <option value="basic">Basic</option>
+          <option value="pro">Pro</option>
+        </select>
+      </div>
+      <div class="form-group"><label>Status</label>
+        <select id="m-status">
+          <option value="active">Active</option>
+          <option value="suspended">Suspended</option>
+        </select>
+      </div>
+      <div class="form-group"><label>Wallet Balance (₹)</label><input type="number" id="m-wallet" value="0"></div>
+      <div class="form-group"><label>Joined Date</label><input type="text" id="m-joined" placeholder="dd/mm/yyyy"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-member')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveMember()">Save Member</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD SUBSCRIBER -->
+<div class="modal-overlay" id="modal-subscriber">
+  <div class="modal" style="max-width:420px;">
+    <div class="modal-hdr">
+      <span class="modal-title">Add Subscriber</span>
+      <button class="modal-close" onclick="closeModal('modal-subscriber')">✕</button>
+    </div>
+    <div class="form-grid">
+      <div class="form-group"><label>Email</label><input type="email" id="nl-email"></div>
+      <div class="form-group"><label>Name (optional)</label><input type="text" id="nl-name"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-subscriber')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveSubscriber()">Add</button>
+    </div>
+  </div>
+</div>
+
+<!-- FEATURE MODAL -->
+<div class="modal-overlay" id="modal-feature">
+  <div class="modal" style="max-width:480px;">
+    <div class="modal-hdr">
+      <span class="modal-title" id="feature-modal-title">Add Feature</span>
+      <button class="modal-close" onclick="closeModal('modal-feature')">✕</button>
+    </div>
+    <div class="form-grid">
+      <div class="form-group"><label>Emoji / Icon</label><input type="text" id="f-icon" placeholder="💪"></div>
+      <div class="form-group"><label>Title</label><input type="text" id="f-title"></div>
+      <div class="form-group full"><label>Description</label><textarea id="f-desc"></textarea></div>
+      <div class="form-group"><label>Order (0 = first)</label><input type="number" id="f-order" value="0"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-feature')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveFeature()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- TESTIMONIAL MODAL -->
+<div class="modal-overlay" id="modal-testimonial">
+  <div class="modal" style="max-width:500px;">
+    <div class="modal-hdr">
+      <span class="modal-title" id="testimonial-modal-title">Add Testimonial</span>
+      <button class="modal-close" onclick="closeModal('modal-testimonial')">✕</button>
+    </div>
+    <div class="form-grid">
+      <div class="form-group"><label>Name</label><input type="text" id="t-name"></div>
+      <div class="form-group"><label>City</label><input type="text" id="t-city"></div>
+      <div class="form-group"><label>Result / Tag</label><input type="text" id="t-result" placeholder="Lost 12kg in 3 months"></div>
+      <div class="form-group"><label>Stars (1-5)</label><input type="number" id="t-stars" value="5" min="1" max="5"></div>
+      <div class="form-group full"><label>Quote</label><textarea id="t-quote"></textarea></div>
+      <div class="form-group full"><label>Avatar Initial (letter)</label><input type="text" id="t-avatar" maxlength="1" placeholder="A"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-testimonial')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveTestimonial()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- BLOG MODAL -->
+<div class="modal-overlay" id="modal-blog">
+  <div class="modal">
+    <div class="modal-hdr">
+      <span class="modal-title" id="blog-modal-title">New Blog Post</span>
+      <button class="modal-close" onclick="closeModal('modal-blog')">✕</button>
+    </div>
+    <div class="form-grid">
+      <div class="form-group full"><label>Title</label><input type="text" id="b-title"></div>
+      <div class="form-group"><label>Category</label>
+        <select id="b-cat">
+          <option>Nutrition</option><option>Training</option><option>Recovery</option>
+          <option>Mindset</option><option>Supplements</option><option>Success Stories</option>
+        </select>
+      </div>
+      <div class="form-group"><label>Author</label><input type="text" id="b-author" value="RFC Team"></div>
+      <div class="form-group"><label>Read Time (mins)</label><input type="number" id="b-read" value="5" min="1"></div>
+      <div class="form-group"><label>Cover Image URL</label><input type="url" id="b-img" placeholder="https://..."></div>
+      <div class="form-group full"><label>Excerpt (short summary)</label><textarea id="b-excerpt" style="min-height:60px;"></textarea></div>
+      <div class="form-group full"><label>Full Content</label><textarea id="b-content" style="min-height:160px;"></textarea></div>
+      <div class="form-group"><label>Status</label>
+        <select id="b-status">
+          <option value="published">Published</option>
+          <option value="draft">Draft</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-blog')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveBlog()">Save Post</button>
+    </div>
+  </div>
+</div>
+
+<!-- PRICING MODAL -->
+<div class="modal-overlay" id="modal-pricing">
+  <div class="modal" style="max-width:500px;">
+    <div class="modal-hdr">
+      <span class="modal-title" id="pricing-modal-title">Add Pricing Plan</span>
+      <button class="modal-close" onclick="closeModal('modal-pricing')">✕</button>
+    </div>
+    <div class="form-grid">
+      <div class="form-group"><label>Plan Name</label><input type="text" id="p-name" placeholder="Pro Monthly"></div>
+      <div class="form-group"><label>Price (₹)</label><input type="number" id="p-price"></div>
+      <div class="form-group"><label>Duration</label><input type="text" id="p-duration" placeholder="per month"></div>
+      <div class="form-group"><label>Badge (optional)</label><input type="text" id="p-badge" placeholder="MOST POPULAR"></div>
+      <div class="form-group full"><label>Features (one per line)</label><textarea id="p-features" placeholder="Unlimited workouts&#10;Personal trainer&#10;Nutrition plan"></textarea></div>
+      <div class="form-group"><label>Highlighted?</label>
+        <select id="p-highlight">
+          <option value="0">No</option>
+          <option value="1">Yes (featured border)</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-pricing')">Cancel</button>
+      <button class="btn btn-primary" onclick="savePricing()">Save Plan</button>
+    </div>
+  </div>
+</div>
+
+<!-- FAQ MODAL -->
+<div class="modal-overlay" id="modal-faq">
+  <div class="modal" style="max-width:500px;">
+    <div class="modal-hdr">
+      <span class="modal-title" id="faq-modal-title">Add FAQ</span>
+      <button class="modal-close" onclick="closeModal('modal-faq')">✕</button>
+    </div>
+    <div class="form-grid">
+      <div class="form-group full"><label>Question</label><input type="text" id="fq-question"></div>
+      <div class="form-group full"><label>Answer</label><textarea id="fq-answer"></textarea></div>
+      <div class="form-group"><label>Category</label><input type="text" id="fq-cat" placeholder="General"></div>
+      <div class="form-group"><label>Order</label><input type="number" id="fq-order" value="0"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modal-faq')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveFaq()">Save FAQ</button>
     </div>
   </div>
 </div>
 
 <!-- TOAST -->
-<div class="toast" id="toast"></div>
+<div id="toast"></div>
 
 <script>
-// ── FIREBASE INIT ──
-firebase.initializeApp({
-  apiKey: "AIzaSyD6AQun59-EJCgA7qzxMxBJj9BmKsWZrPw",
-  authDomain: "royal-fitness-club-7adc1.firebaseapp.com",
-  projectId: "royal-fitness-club-7adc1",
-  storageBucket: "royal-fitness-club-7adc1.firebasestorage.app",
-  messagingSenderId: "116269953135",
-  appId: "1:116269953135:web:e9c815a1e62788fbd05d9a"
-});
-const auth = firebase.auth();
-const db = firebase.firestore();
+// ============================================================
+// ADMIN CREDENTIALS
+// ============================================================
+const ADMIN_EMAIL = 'admin@royalfitnessclub.com';
+const ADMIN_PASS  = 'RFC@Admin2025';
 
-// ── STATE ──
-let adminUser = null;
-let allMembers = [];
-let filteredMembers = [];
-let currentPage = 1;
-const PAGE_SIZE = 20;
+// ============================================================
+// STORAGE HELPERS
+// ============================================================
+const LS = {
+  get(key, def = null) {
+    try {
+      const v = localStorage.getItem('rfc_adm_' + key);
+      return v !== null ? JSON.parse(v) : def;
+    } catch { return def; }
+  },
+  set(key, val) {
+    localStorage.setItem('rfc_adm_' + key, JSON.stringify(val));
+  },
+  rm(key) {
+    localStorage.removeItem('rfc_adm_' + key);
+  }
+};
 
-// ── UTILS ──
-function toast(msg, type = 'fire') {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.className = `toast ${type} show`;
-  setTimeout(() => { t.className = `toast ${type}`; }, 3500);
+function uid() {
+  return Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
 }
-function openModal(id) { document.getElementById(id).classList.add('open'); }
-function closeModal(id) { document.getElementById(id).classList.remove('open'); }
-function fmtDate(ts) {
+
+function fmt(ts) {
   if (!ts) return '—';
-  const d = ts.toDate ? ts.toDate() : new Date(ts);
-  return d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
-}
-function planBadge(plan) {
-  const m = { free: 'badge-free', royal_pro: 'badge-pro', royal_elite: 'badge-elite' };
-  const l = { free: 'Free', royal_pro: 'Royal Pro', royal_elite: 'Royal Elite' };
-  return `<span class="badge ${m[plan] || 'badge-free'}">${l[plan] || plan}</span>`;
-}
-function statusBadge(status) {
-  const m = { active: 'badge-active', suspended: 'badge-suspended', trial: 'badge-trial' };
-  return `<span class="badge ${m[status] || 'badge-free'}">${status || 'active'}</span>`;
+  return new Date(ts).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
 }
 
-// ── AUTH ──
-async function adminLogin() {
-  const email = document.getElementById('a-email').value.trim();
-  const pass = document.getElementById('a-pass').value;
-  const errEl = document.getElementById('auth-err');
-  errEl.style.display = 'none';
+// ============================================================
+// DEFAULT DATA
+// ============================================================
+const DEFAULTS = {
+  members: [
+    { id: 'u1', name: 'Arjun Sharma', email: 'arjun@example.com', phone: '9876543210', city: 'Mumbai', plan: 'pro', status: 'active', wallet: 240, joined: Date.now() - 86400000 * 45 },
+    { id: 'u2', name: 'Priya Nair', email: 'priya@example.com', phone: '9123456789', city: 'Bangalore', plan: 'pro', status: 'active', wallet: 120, joined: Date.now() - 86400000 * 30 },
+    { id: 'u3', name: 'Rahul Verma', email: 'rahul@example.com', phone: '9988776655', city: 'Delhi', plan: 'basic', status: 'active', wallet: 60, joined: Date.now() - 86400000 * 15 },
+    { id: 'u4', name: 'Sneha Patil', email: 'sneha@example.com', phone: '9112233445', city: 'Pune', plan: 'free', status: 'suspended', wallet: 0, joined: Date.now() - 86400000 * 7 }
+  ],
+  features: [
+    { id: 'f1', icon: '🔥', title: 'AI Workout Plans', desc: 'Personalized AI-driven programs that adapt to your progress and goals every week.', order: 0 },
+    { id: 'f2', icon: '🥗', title: 'Smart Nutrition', desc: 'Macro-optimized meal plans with Indian food options and supplement guidance.', order: 1 },
+    { id: 'f3', icon: '📊', title: 'Progress Tracking', desc: 'Real-time body composition analysis, strength graphs, and streak counters.', order: 2 },
+    { id: 'f4', icon: '🏆', title: 'Tiger Leaderboard', desc: 'Compete monthly for ₹15,000 supplement prizes. Rise through the ranks!', order: 3 }
+  ],
+  testimonials: [
+    { id: 't1', name: 'Vikram K.', city: 'Hyderabad', result: 'Lost 18kg in 4 months', stars: 5, quote: 'RFC completely transformed my approach to fitness. The AI plans are spot on and the community keeps me accountable!', avatar: 'V' },
+    { id: 't2', name: 'Ananya R.', city: 'Chennai', result: 'Gained 5kg muscle in 3 months', stars: 5, quote: 'Best investment I ever made. The nutrition plans alone are worth 10x the price.', avatar: 'A' }
+  ],
+  blogs: [
+    { id: 'b1', title: 'The Science of Muscle Hypertrophy', cat: 'Training', author: 'RFC Team', readTime: 7, img: '', excerpt: 'Understanding the mechanisms behind muscle growth can help you train smarter.', content: 'Full article content here...', status: 'published', ts: Date.now() - 86400000 * 10 },
+    { id: 'b2', title: '10 High-Protein Indian Meals Under ₹100', cat: 'Nutrition', author: 'RFC Team', readTime: 5, img: '', excerpt: 'Eating healthy on a budget is easier than you think with these desi protein-packed meals.', content: 'Full article content here...', status: 'published', ts: Date.now() - 86400000 * 3 }
+  ],
+  pricing: [
+    { id: 'p1', name: 'Starter', price: 0, duration: 'forever', badge: '', features: ['Basic workout library', 'Community access', 'Weekly tips'], highlight: false },
+    { id: 'p2', name: 'Pro Monthly', price: 999, duration: 'per month', badge: 'MOST POPULAR', features: ['Unlimited AI workouts', 'Personalized nutrition', 'Progress tracking', 'Tiger Leaderboard', 'Priority support', 'Referral rewards'], highlight: true },
+    { id: 'p3', name: 'Pro Annual', price: 7999, duration: 'per year', badge: 'SAVE 33%', features: ['Everything in Pro Monthly', 'Annual streak trophies', 'Exclusive badge', 'Early feature access'], highlight: false }
+  ],
+  faqs: [
+    { id: 'fq1', question: 'How does the AI workout plan work?', answer: 'Our AI analyzes your fitness level, goals, and available equipment to build a fully personalized plan. It adjusts weekly based on your performance.', cat: 'General', order: 0 },
+    { id: 'fq2', question: 'Can I cancel my subscription anytime?', answer: 'Yes, you can cancel anytime. Your Pro access continues until the end of the billing period.', cat: 'Billing', order: 1 },
+    { id: 'fq3', question: 'How do I earn from the referral program?', answer: 'Share your unique referral code. When someone signs up and purchases a Pro plan using your code, you earn ₹100 in your wallet. You also get ₹20 daily login bonuses.', cat: 'Referrals', order: 2 }
+  ],
+  newsletter: [],
+  codes: [],
+  redemptions: [],
+  referrals: [],
+  activity: []
+};
 
-  if (!email || !pass) { errEl.textContent = 'Please enter email and password.'; errEl.style.display = 'block'; return; }
-
-  try {
-    const cred = await auth.signInWithEmailAndPassword(email, pass);
-    const userDoc = await db.collection('users').doc(cred.user.uid).get();
-    if (!userDoc.exists || userDoc.data().role !== 'admin') {
-      await auth.signOut();
-      errEl.textContent = 'Access denied. Admin role required.';
-      errEl.style.display = 'block';
-      return;
-    }
-    adminUser = { uid: cred.user.uid, email: cred.user.email, ...userDoc.data() };
-    showDashboard();
-  } catch (err) {
-    errEl.textContent = err.message || 'Login failed.';
-    errEl.style.display = 'block';
+function seedDefaults() {
+  if (!LS.get('seeded')) {
+    Object.keys(DEFAULTS).forEach(k => LS.set(k, DEFAULTS[k]));
+    LS.set('seeded', true);
   }
 }
 
-function showDashboard() {
-  document.getElementById('auth-gate').style.display = 'none';
-  document.getElementById('app').style.display = 'flex';
-  document.getElementById('admin-name').textContent = adminUser.name || adminUser.email;
-  document.getElementById('admin-av').textContent = (adminUser.name || adminUser.email)[0].toUpperCase();
-  document.getElementById('set-name').textContent = adminUser.name || 'Admin';
-  document.getElementById('set-email').textContent = adminUser.email || '—';
-  document.getElementById('set-av').textContent = (adminUser.name || 'A')[0].toUpperCase();
-  document.getElementById('stat-month').textContent = new Date().toLocaleString('en', { month: 'long' });
-  loadDashboardStats();
-}
-
-async function adminLogout() {
-  await auth.signOut();
-  location.reload();
-}
-
-// ── NAVIGATION ──
-function showSection(name) {
-  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-  document.querySelectorAll('.s-item').forEach(i => i.classList.remove('active'));
-  document.getElementById('sec-' + name).classList.add('active');
-  document.querySelector(`.s-item[data-section="${name}"]`).classList.add('active');
-  const titles = { dashboard: 'Dashboard', members: 'Members', subscriptions: 'Subscriptions', analytics: 'Analytics', settings: 'Settings' };
-  document.getElementById('page-title').textContent = titles[name] || name;
-  if (name === 'members') loadMembers();
-  if (name === 'subscriptions') loadSubscriptions();
-  if (name === 'analytics') loadAnalytics();
-  if (window.innerWidth <= 768) closeSidebar();
-}
-
-function toggleSidebar() {
-  document.getElementById('sidebar').classList.toggle('open');
-}
-function closeSidebar() {
-  document.getElementById('sidebar').classList.remove('open');
-}
-
-// ── DASHBOARD STATS ──
-async function loadDashboardStats() {
-  try {
-    const snap = await db.collection('users').get();
-    const users = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-    const total = users.length;
-    const pro = users.filter(u => u.plan && u.plan !== 'free').length;
-    const monthStart = new Date(); monthStart.setDate(1); monthStart.setHours(0, 0, 0, 0);
-    const newThisMonth = users.filter(u => u.createdAt && u.createdAt.toDate && u.createdAt.toDate() >= monthStart).length;
-    const yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000);
-    const activeToday = users.filter(u => u.lastLogin && u.lastLogin.toDate && u.lastLogin.toDate() >= yesterday).length;
-
-    document.getElementById('stat-total').textContent = total;
-    document.getElementById('stat-pro').textContent = pro;
-    document.getElementById('stat-new').textContent = newThisMonth;
-    document.getElementById('stat-today').textContent = activeToday;
-
-    // Recent members table
-    const recent = users.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0)).slice(0, 5);
-    document.getElementById('recent-members-body').innerHTML = recent.length ? recent.map(u => `
-      <tr>
-        <td><div class="td-name">${u.name || '—'}</div></td>
-        <td><div class="td-email">${u.email || '—'}</div></td>
-        <td>${planBadge(u.plan)}</td>
-        <td>${statusBadge(u.status)}</td>
-        <td><div class="td-date">${fmtDate(u.createdAt)}</div></td>
-      </tr>
-    `).join('') : '<tr><td colspan="5"><div class="empty-state"><div class="empty-icon">👥</div><div class="empty-text">No members yet</div></div></td></tr>';
-
-    // Plan distribution
-    const free = total - pro;
-    const maxVal = Math.max(total, 1);
-    document.getElementById('plan-dist-dash').innerHTML = `
-      <div class="plan-row"><div class="plan-label" style="color:var(--muted);">Free</div><div class="plan-bar-bg"><div class="plan-bar-fill" style="width:${(free/maxVal*100).toFixed(0)}%;background:#555;"></div></div><div class="plan-count" style="color:var(--muted);">${free}</div></div>
-      <div class="plan-row"><div class="plan-label" style="color:var(--gold);">Pro</div><div class="plan-bar-bg"><div class="plan-bar-fill" style="width:${(pro/maxVal*100).toFixed(0)}%;background:var(--gold);"></div></div><div class="plan-count" style="color:var(--gold);">${pro}</div></div>
-    `;
-  } catch (err) {
-    console.error('loadDashboardStats:', err);
-    toast('Failed to load stats', 'fire');
+function confirmReset() {
+  if (confirm('⚠️ This will reset ALL admin data to defaults. Are you sure?')) {
+    Object.keys(DEFAULTS).forEach(k => LS.set(k, DEFAULTS[k]));
+    toast('Data reset to defaults');
+    renderDashboard();
+    renderMembers();
+    renderFeatures();
+    renderTestimonials();
+    renderBlogs();
+    renderPricing();
+    renderFaqs();
+    renderNewsletter();
+    renderCodes();
+    renderRedemptions();
+    renderReferrals();
   }
 }
 
-// ── MEMBERS ──
-async function loadMembers() {
-  document.getElementById('members-body').innerHTML = '<tr><td colspan="8"><div class="loading"><div class="spinner"></div>Loading members...</div></td></tr>';
-  try {
-    const snap = await db.collection('users').orderBy('createdAt', 'desc').get();
-    allMembers = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-    filterMembers();
-  } catch (err) {
-    console.error('loadMembers:', err);
-    document.getElementById('members-body').innerHTML = '<tr><td colspan="8"><div class="empty-state"><div class="empty-icon">⚠️</div><div class="empty-text">Failed to load members</div></div></td></tr>';
+// ============================================================
+// AUTH
+// ============================================================
+function adminLogin() {
+  const email = document.getElementById('adm-email').value.trim();
+  const pass  = document.getElementById('adm-pass').value;
+  const err   = document.getElementById('adm-err');
+  if (email === ADMIN_EMAIL && pass === ADMIN_PASS) {
+    err.textContent = '';
+    sessionStorage.setItem('rfc_admin_auth', '1');
+    document.getElementById('auth-screen').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    document.getElementById('hdr-user-email').textContent = email;
+    seedDefaults();
+    loadAllData();
+  } else {
+    err.textContent = 'Invalid credentials';
   }
 }
 
-function filterMembers() {
-  const query = (document.getElementById('member-search').value || '').toLowerCase();
-  const filter = document.getElementById('member-filter').value;
+function adminLogout() {
+  sessionStorage.removeItem('rfc_admin_auth');
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('auth-screen').style.display = 'flex';
+}
 
-  filteredMembers = allMembers.filter(u => {
-    const matchQ = !query || (u.name || '').toLowerCase().includes(query) || (u.email || '').toLowerCase().includes(query);
-    let matchF = true;
-    if (filter === 'active') matchF = u.status === 'active' || !u.status;
-    else if (filter === 'suspended') matchF = u.status === 'suspended';
-    else if (filter === 'pro') matchF = u.plan && u.plan !== 'free';
-    else if (filter === 'free') matchF = !u.plan || u.plan === 'free';
+document.getElementById('adm-pass').addEventListener('keydown', e => {
+  if (e.key === 'Enter') adminLogin();
+});
+
+// Auto login if session active
+if (sessionStorage.getItem('rfc_admin_auth')) {
+  document.getElementById('auth-screen').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  document.getElementById('hdr-user-email').textContent = ADMIN_EMAIL;
+  seedDefaults();
+  loadAllData();
+}
+
+// ============================================================
+// TABS
+// ============================================================
+function showTab(name, btn) {
+  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  if (btn) btn.classList.add('active');
+  if (name === 'dashboard') renderDashboard();
+  if (name === 'members') renderMembers();
+  if (name === 'codegen') renderCodes();
+  if (name === 'redemptions') renderRedemptions();
+  if (name === 'referrals') renderReferrals();
+  if (name === 'newsletter') renderNewsletter();
+  if (name === 'content') { renderFeatures(); renderTestimonials(); }
+  if (name === 'blogs') renderBlogs();
+  if (name === 'pricing') renderPricing();
+  if (name === 'faqs') renderFaqs();
+}
+
+// ============================================================
+// TOAST
+// ============================================================
+function toast(msg, isErr = false) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'show' + (isErr ? ' err' : '');
+  clearTimeout(el._t);
+  el._t = setTimeout(() => el.className = '', 2800);
+}
+
+// ============================================================
+// MODAL HELPERS
+// ============================================================
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+}
+
+document.querySelectorAll('.modal-overlay').forEach(m => {
+  m.addEventListener('click', e => { if (e.target === m) m.classList.remove('open'); });
+});
+
+// ============================================================
+// LOAD ALL DATA
+// ============================================================
+function loadAllData() {
+  renderDashboard();
+}
+
+// ============================================================
+// DASHBOARD
+// ============================================================
+function renderDashboard() {
+  const members     = LS.get('members', []);
+  const redemptions = LS.get('redemptions', []);
+  const referrals   = LS.get('referrals', []);
+  const nl          = LS.get('newsletter', []);
+
+  const stats = [
+    { label: 'Total Members', val: members.length, cls: 'blue' },
+    { label: 'Pro Members', val: members.filter(m => m.plan === 'pro').length, cls: 'gold' },
+    { label: 'Pending Payouts', val: redemptions.filter(r => r.status === 'pending').length, cls: 'red' },
+    { label: 'Total Referrals', val: referrals.length, cls: 'green' },
+    { label: 'Subscribers', val: nl.length, cls: 'blue' },
+    { label: 'Active Members', val: members.filter(m => m.status === 'active').length, cls: 'green' }
+  ];
+
+  document.getElementById('dash-stats').innerHTML = stats.map(s =>
+    `<div class="stat-card ${s.cls}"><div class="stat-val">${s.val}</div><div class="stat-lbl">${s.label}</div></div>`
+  ).join('');
+
+  // Recent members
+  const recent = [...members].sort((a, b) => b.joined - a.joined).slice(0, 5);
+  document.getElementById('dash-recent-members').innerHTML = recent.length ? `
+    <table style="width:100%;font-size:13px;">
+      ${recent.map(m => `<tr>
+        <td style="padding:7px 0;">${m.name}</td>
+        <td><span class="badge ${m.plan==='pro'?'badge-gold':'badge-muted'}">${m.plan.toUpperCase()}</span></td>
+        <td style="color:var(--muted);">${fmt(m.joined)}</td>
+      </tr>`).join('')}
+    </table>` : '<div class="empty"><div class="empty-msg">No members yet</div></div>';
+
+  // Pending redemptions
+  const pending = redemptions.filter(r => r.status === 'pending').slice(0, 5);
+  document.getElementById('dash-pending-redeem').innerHTML = pending.length ? `
+    <table style="width:100%;font-size:13px;">
+      ${pending.map(r => `<tr>
+        <td style="padding:7px 0;">${r.userName||r.userEmail}</td>
+        <td style="color:var(--gold);font-weight:700;">₹${r.amount}</td>
+        <td style="color:var(--muted);">${r.upi}</td>
+      </tr>`).join('')}
+    </table>` : '<div class="empty"><div class="empty-msg">No pending requests</div></div>';
+
+  // Activity
+  const acts = LS.get('activity', []).slice(0, 10);
+  document.getElementById('dash-activity').innerHTML = acts.length ? acts.map(a =>
+    `<div class="act-item"><div class="act-icon">${a.icon||'📌'}</div><div class="act-body"><div class="act-title">${a.msg}</div><div class="act-time">${fmt(a.ts)}</div></div></div>`
+  ).join('') : '<div class="empty"><div class="empty-msg">No activity yet</div></div>';
+}
+
+function logActivity(msg, icon = '📌') {
+  const acts = LS.get('activity', []);
+  acts.unshift({ msg, icon, ts: Date.now() });
+  LS.set('activity', acts.slice(0, 50));
+}
+
+// ============================================================
+// MEMBERS
+// ============================================================
+let editingMemberId = null;
+
+function renderMembers() {
+  const members = LS.get('members', []);
+  const q       = (document.getElementById('member-search')?.value || '').toLowerCase();
+  const filter  = document.getElementById('member-filter')?.value || '';
+
+  const filtered = members.filter(m => {
+    const matchQ = !q || m.name.toLowerCase().includes(q) || m.email.toLowerCase().includes(q);
+    const matchF = !filter || m.status === filter || m.plan === filter;
     return matchQ && matchF;
   });
 
-  currentPage = 1;
-  renderMembers();
-}
-
-function renderMembers() {
-  const start = (currentPage - 1) * PAGE_SIZE;
-  const pageData = filteredMembers.slice(start, start + PAGE_SIZE);
-  const total = filteredMembers.length;
-
-  document.getElementById('member-count').textContent = pageData.length;
-  document.getElementById('member-total').textContent = total;
-  document.getElementById('page-info').textContent = `Page ${currentPage} of ${Math.max(1, Math.ceil(total / PAGE_SIZE))}`;
-  document.getElementById('prev-page').disabled = currentPage <= 1;
-  document.getElementById('next-page').disabled = start + PAGE_SIZE >= total;
-
-  if (!pageData.length) {
-    document.getElementById('members-body').innerHTML = '<tr><td colspan="8"><div class="empty-state"><div class="empty-icon">🔍</div><div class="empty-text">No members found</div></div></td></tr>';
+  const tbody = document.getElementById('members-tbody');
+  if (!filtered.length) {
+    tbody.innerHTML = `<tr><td colspan="7"><div class="empty"><div class="empty-icon">👥</div><div class="empty-msg">No members found</div></div></td></tr>`;
     return;
   }
 
-  document.getElementById('members-body').innerHTML = pageData.map(u => `
+  tbody.innerHTML = filtered.map(m => `
     <tr>
-      <td><div class="td-name">${escHtml(u.name || '—')}</div></td>
-      <td><div class="td-email">${escHtml(u.email || '—')}</div></td>
-      <td><div class="td-email">${escHtml(u.phone || '—')}</div></td>
-      <td>${planBadge(u.plan)}</td>
-      <td>${statusBadge(u.status)}</td>
-      <td><div class="td-date">${fmtDate(u.createdAt)}</div></td>
-      <td><div class="td-date">${fmtDate(u.lastLogin)}</div></td>
+      <td><b>${m.name}</b><br><span style="color:var(--muted);font-size:11px;">${m.city||'—'}</span></td>
+      <td style="color:var(--muted);">${m.email}</td>
+      <td><span class="badge ${m.plan==='pro'?'badge-gold':m.plan==='basic'?'badge-blue':'badge-muted'}">${m.plan.toUpperCase()}</span></td>
+      <td style="color:var(--muted);font-size:12px;">${fmt(m.joined)}</td>
+      <td><span class="badge ${m.status==='active'?'badge-green':'badge-red'}">${m.status}</span></td>
+      <td style="color:var(--gold);font-weight:700;">₹${m.wallet||0}</td>
       <td>
-        <div style="display:flex;gap:5px;">
-          <button class="btn-icon" onclick="openEditMember('${u.id}')" title="Edit">✏️</button>
-          <button class="btn-icon btn-danger btn-sm" onclick="confirmDelete('${u.id}', '${escHtml(u.email || '')}')" title="Delete">🗑️</button>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+          <button class="btn btn-ghost btn-sm" onclick="editMember('${m.id}')">Edit</button>
+          <button class="btn btn-ghost btn-sm" onclick="toggleSuspend('${m.id}')">${m.status==='active'?'Suspend':'Unsuspend'}</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteMember('${m.id}')">Delete</button>
         </div>
       </td>
-    </tr>
-  `).join('');
+    </tr>`).join('');
 }
 
-function changePage(dir) {
-  currentPage += dir;
+function openAddMember() {
+  editingMemberId = null;
+  document.getElementById('member-modal-title').textContent = 'Add Member';
+  ['m-name','m-email','m-phone','m-city'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('m-plan').value = 'free';
+  document.getElementById('m-status').value = 'active';
+  document.getElementById('m-wallet').value = 0;
+  document.getElementById('m-joined').value = new Date().toLocaleDateString('en-IN');
+  document.getElementById('modal-member').classList.add('open');
+}
+
+function editMember(id) {
+  const members = LS.get('members', []);
+  const m = members.find(x => x.id === id);
+  if (!m) return;
+  editingMemberId = id;
+  document.getElementById('member-modal-title').textContent = 'Edit Member';
+  document.getElementById('m-name').value  = m.name;
+  document.getElementById('m-email').value = m.email;
+  document.getElementById('m-phone').value = m.phone || '';
+  document.getElementById('m-city').value  = m.city || '';
+  document.getElementById('m-plan').value  = m.plan;
+  document.getElementById('m-status').value = m.status;
+  document.getElementById('m-wallet').value = m.wallet || 0;
+  document.getElementById('m-joined').value = fmt(m.joined);
+  document.getElementById('modal-member').classList.add('open');
+}
+
+function saveMember() {
+  const members = LS.get('members', []);
+  const data = {
+    name:   document.getElementById('m-name').value.trim(),
+    email:  document.getElementById('m-email').value.trim(),
+    phone:  document.getElementById('m-phone').value.trim(),
+    city:   document.getElementById('m-city').value.trim(),
+    plan:   document.getElementById('m-plan').value,
+    status: document.getElementById('m-status').value,
+    wallet: parseInt(document.getElementById('m-wallet').value) || 0,
+    joined: Date.now()
+  };
+  if (!data.name || !data.email) { toast('Name and email required', true); return; }
+  if (editingMemberId) {
+    const idx = members.findIndex(m => m.id === editingMemberId);
+    if (idx > -1) members[idx] = { ...members[idx], ...data };
+    logActivity(`Member updated: ${data.name}`, '✏️');
+  } else {
+    members.push({ id: uid(), ...data });
+    logActivity(`New member added: ${data.name}`, '👤');
+  }
+  LS.set('members', members);
+  closeModal('modal-member');
   renderMembers();
+  toast(editingMemberId ? 'Member updated' : 'Member added');
 }
 
-function escHtml(str) {
-  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+function toggleSuspend(id) {
+  const members = LS.get('members', []);
+  const m = members.find(x => x.id === id);
+  if (!m) return;
+  m.status = m.status === 'active' ? 'suspended' : 'active';
+  LS.set('members', members);
+  logActivity(`Member ${m.status === 'active' ? 'unsuspended' : 'suspended'}: ${m.name}`, m.status === 'active' ? '✅' : '🚫');
+  renderMembers();
+  toast('Member status updated');
 }
 
-function openEditMember(uid) {
-  const u = allMembers.find(m => m.id === uid);
-  if (!u) return;
-  document.getElementById('edit-uid').value = uid;
-  document.getElementById('edit-member-email').textContent = u.email || '—';
-  document.getElementById('edit-name').value = u.name || '';
-  document.getElementById('edit-phone').value = u.phone || '';
-  document.getElementById('edit-plan').value = u.plan || 'free';
-  document.getElementById('edit-status').value = u.status || 'active';
-  openModal('edit-modal');
+function deleteMember(id) {
+  if (!confirm('Delete this member? This cannot be undone.')) return;
+  const members = LS.get('members', []);
+  const m = members.find(x => x.id === id);
+  LS.set('members', members.filter(x => x.id !== id));
+  logActivity(`Member deleted: ${m?.name || id}`, '🗑️');
+  renderMembers();
+  toast('Member deleted');
 }
 
-async function saveEditMember() {
-  const uid = document.getElementById('edit-uid').value;
-  const name = document.getElementById('edit-name').value.trim();
-  const phone = document.getElementById('edit-phone').value.trim();
-  const plan = document.getElementById('edit-plan').value;
-  const status = document.getElementById('edit-status').value;
-
-  try {
-    await db.collection('users').doc(uid).update({
-      name, phone, plan, status,
-      updatedAt: firebase.firestore.Timestamp.now()
-    });
-    closeModal('edit-modal');
-    toast('✅ Member updated!', 'green');
-    await loadMembers();
-  } catch (err) {
-    toast('Failed to update member: ' + err.message, 'fire');
+// ============================================================
+// CODE GENERATOR
+// ============================================================
+function generateCodes() {
+  const plan   = document.getElementById('code-plan').value;
+  const expiry = parseInt(document.getElementById('code-expiry').value) || 30;
+  const codes  = LS.get('codes', []);
+  for (let i = 0; i < 10; i++) {
+    const code = 'RFC' + plan.toUpperCase().slice(0,3) + '-' + Math.random().toString(36).slice(2,6).toUpperCase() + '-' + Math.random().toString(36).slice(2,5).toUpperCase();
+    codes.push({ id: uid(), code, plan, expiry, generated: Date.now(), expires: Date.now() + expiry * 86400000, status: 'active', usedBy: null });
   }
+  LS.set('codes', codes);
+  logActivity(`Generated 10 ${plan} codes`, '🎟');
+  renderCodes();
+  toast('10 codes generated');
 }
 
-async function confirmDelete(uid, email) {
-  if (!confirm(`Delete member ${email}?\n\nThis action cannot be undone.`)) return;
-  try {
-    await db.collection('users').doc(uid).delete();
-    toast('🗑️ Member deleted.', 'gold');
-    await loadMembers();
-  } catch (err) {
-    toast('Failed to delete: ' + err.message, 'fire');
+function renderCodes() {
+  const codes = LS.get('codes', []);
+  const tbody = document.getElementById('codes-tbody');
+  if (!codes.length) {
+    tbody.innerHTML = `<tr><td colspan="6"><div class="empty"><div class="empty-icon">🎟</div><div class="empty-msg">No codes yet — generate some above</div></div></td></tr>`;
+    return;
   }
+  tbody.innerHTML = [...codes].reverse().map(c => `
+    <tr>
+      <td><code style="font-size:13px;letter-spacing:1px;color:var(--blue);">${c.code}</code></td>
+      <td><span class="badge badge-gold">${c.plan.toUpperCase()}</span></td>
+      <td style="color:var(--muted);font-size:12px;">${fmt(c.generated)}</td>
+      <td style="color:var(--muted);font-size:12px;">${fmt(c.expires)}</td>
+      <td><span class="badge ${c.usedBy?'badge-muted':Date.now()>c.expires?'badge-red':'badge-green'}">${c.usedBy?'Used':Date.now()>c.expires?'Expired':'Active'}</span></td>
+      <td style="color:var(--muted);font-size:12px;">${c.usedBy||'—'}</td>
+    </tr>`).join('');
 }
 
-function openAddMember() { openModal('add-modal'); }
-
-async function saveAddMember() {
-  const name = document.getElementById('add-name').value.trim();
-  const email = document.getElementById('add-email').value.trim();
-  const phone = document.getElementById('add-phone').value.trim();
-  const plan = document.getElementById('add-plan').value;
-  if (!name || !email) { toast('Name and email are required', 'gold'); return; }
-
-  try {
-    await db.collection('users').add({
-      name, email, phone, plan,
-      role: 'member', status: 'active',
-      createdAt: firebase.firestore.Timestamp.now(),
-      updatedAt: firebase.firestore.Timestamp.now(),
-      lastLogin: firebase.firestore.Timestamp.now()
-    });
-    closeModal('add-modal');
-    document.getElementById('add-name').value = '';
-    document.getElementById('add-email').value = '';
-    document.getElementById('add-phone').value = '';
-    toast('✅ Member added!', 'green');
-    await loadMembers();
-    await loadDashboardStats();
-  } catch (err) {
-    toast('Failed to add member: ' + err.message, 'fire');
-  }
-}
-
-// ── SUBSCRIPTIONS ──
-async function loadSubscriptions() {
-  document.getElementById('subs-body').innerHTML = '<tr><td colspan="7"><div class="loading"><div class="spinner"></div>Loading...</div></td></tr>';
-  try {
-    const filter = document.getElementById('sub-filter').value;
-    let query = db.collection('subscriptions').orderBy('createdAt', 'desc').limit(100);
-    if (filter !== 'all') query = db.collection('subscriptions').where('status', '==', filter).orderBy('createdAt', 'desc').limit(100);
-    const snap = await query.get();
-    const subs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-
-    if (!subs.length) {
-      document.getElementById('subs-body').innerHTML = '<tr><td colspan="7"><div class="empty-state"><div class="empty-icon">💳</div><div class="empty-text">No subscriptions found</div></div></td></tr>';
-      return;
-    }
-
-    document.getElementById('subs-body').innerHTML = subs.map(s => `
-      <tr>
-        <td><div class="td-email">${escHtml(s.uid || '—')}</div></td>
-        <td>${planBadge(s.plan)}</td>
-        <td>${statusBadge(s.status)}</td>
-        <td><strong style="color:var(--gold);">₹${s.amount || 0}</strong></td>
-        <td><div class="td-date">${fmtDate(s.startDate)}</div></td>
-        <td><div class="td-date">${fmtDate(s.expiryDate)}</div></td>
-        <td>
-          ${s.status === 'active' || s.status === 'trial' ? `<button class="btn btn-danger btn-sm" onclick="cancelSub('${s.id}', '${s.uid}')">Cancel</button>` : '<span style="color:var(--muted);font-size:11px;">' + s.status + '</span>'}
-        </td>
-      </tr>
-    `).join('');
-  } catch (err) {
-    console.error('loadSubscriptions:', err);
-    document.getElementById('subs-body').innerHTML = '<tr><td colspan="7"><div class="empty-state"><div class="empty-icon">⚠️</div><div class="empty-text">Failed to load subscriptions</div></div></td></tr>';
-  }
-}
-
-async function cancelSub(subId, userId) {
-  if (!confirm('Cancel this subscription?')) return;
-  try {
-    await db.collection('subscriptions').doc(subId).update({ status: 'cancelled', updatedAt: firebase.firestore.Timestamp.now() });
-    if (userId) await db.collection('users').doc(userId).update({ plan: 'free', updatedAt: firebase.firestore.Timestamp.now() });
-    toast('Subscription cancelled.', 'gold');
-    loadSubscriptions();
-  } catch (err) {
-    toast('Failed: ' + err.message, 'fire');
-  }
-}
-
-// ── ANALYTICS ──
-async function loadAnalytics() {
-  try {
-    const snap = await db.collection('users').get();
-    const users = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-    const total = users.length;
-    const pro = users.filter(u => u.plan && u.plan !== 'free').length;
-    const free = total - pro;
-
-    const convRate = total > 0 ? ((pro / total) * 100).toFixed(1) : 0;
-    document.getElementById('an-conv').textContent = convRate + '%';
-
-    // Revenue from subscriptions
-    const subSnap = await db.collection('subscriptions').where('status', 'in', ['active', 'completed']).get();
-    const revenue = subSnap.docs.reduce((sum, d) => sum + (d.data().amount || 0), 0);
-    document.getElementById('an-revenue').textContent = '₹' + revenue.toLocaleString('en-IN');
-
-    const cancelSnap = await db.collection('subscriptions').where('status', '==', 'cancelled').get();
-    const cancelled = cancelSnap.size;
-    const churn = pro + cancelled > 0 ? ((cancelled / (pro + cancelled)) * 100).toFixed(1) + '%' : '0%';
-    document.getElementById('an-churn').textContent = churn;
-    document.getElementById('an-lifetime').textContent = '—';
-
-    // DAU / MAU / new-this-week (parallel; each failure degrades gracefully)
-    const dayStart = new Date(); dayStart.setHours(0, 0, 0, 0);
-    const d30 = new Date(Date.now() - 30 * 86400000);
-    const d7 = new Date(Date.now() - 7 * 86400000);
-    const ts = d => firebase.firestore.Timestamp.fromDate(d);
-    const [dauR, mauR, newR, evR] = await Promise.allSettled([
-      db.collection('users').where('lastLogin', '>=', ts(dayStart)).get(),
-      db.collection('users').where('lastLogin', '>=', ts(d30)).get(),
-      db.collection('users').where('createdAt', '>=', ts(d7)).get(),
-      db.collection('global_analytics').orderBy('count', 'desc').limit(8).get()
-    ]);
-    const dau = dauR.status === 'fulfilled' ? dauR.value.size : 0;
-    const mau = mauR.status === 'fulfilled' ? mauR.value.size : 0;
-    document.getElementById('an-dau').textContent = dau;
-    document.getElementById('an-mau').textContent = mau;
-    document.getElementById('an-newweek').textContent = newR.status === 'fulfilled' ? newR.value.size : 0;
-    document.getElementById('an-sticky').textContent = mau > 0 ? ((dau / mau) * 100).toFixed(0) + '%' : '—';
-
-    // Top events from global_analytics counters
-    const evBox = document.getElementById('top-events-an');
-    if (evR.status === 'fulfilled' && !evR.value.empty) {
-      const events = evR.value.docs.map(d => ({ name: d.id, count: d.data().count || 0 }));
-      const maxEv = Math.max(...events.map(e => e.count), 1);
-      evBox.innerHTML = events.map(e => `
-        <div class="plan-row"><div class="plan-label" style="color:var(--text);">${e.name.replace(/_/g, ' ')}</div><div class="plan-bar-bg"><div class="plan-bar-fill" style="width:${(e.count / maxEv * 100).toFixed(0)}%;background:var(--blue);"></div></div><div class="plan-count" style="color:var(--blue);">${e.count.toLocaleString('en-IN')}</div></div>
-      `).join('');
-    } else {
-      evBox.innerHTML = '<div style="font-size:12px;color:var(--muted);padding:10px 0;">No events tracked yet — counters appear as members use the app.</div>';
-    }
-
-    // Plan distribution
-    const maxD = Math.max(total, 1);
-    document.getElementById('plan-dist-an').innerHTML = `
-      <div class="plan-row"><div class="plan-label" style="color:var(--muted);">Free</div><div class="plan-bar-bg"><div class="plan-bar-fill" style="width:${(free/maxD*100).toFixed(0)}%;background:#555;"></div></div><div class="plan-count" style="color:var(--muted);">${free}</div></div>
-      <div class="plan-row"><div class="plan-label" style="color:var(--gold);">Pro</div><div class="plan-bar-bg"><div class="plan-bar-fill" style="width:${(pro/maxD*100).toFixed(0)}%;background:var(--gold);"></div></div><div class="plan-count" style="color:var(--gold);">${pro}</div></div>
-      <div style="margin-top:12px;font-size:11px;color:var(--muted);">Conversion Rate: <strong style="color:var(--green);">${convRate}%</strong></div>
-    `;
-
-    // Monthly join bar chart (last 6 months)
-    const months = [];
-    for (let i = 5; i >= 0; i--) {
-      const d = new Date(); d.setMonth(d.getMonth() - i);
-      months.push({ label: d.toLocaleString('en', { month: 'short' }), year: d.getFullYear(), month: d.getMonth() });
-    }
-    const monthCounts = months.map(m => ({
-      ...m,
-      count: users.filter(u => {
-        if (!u.createdAt || !u.createdAt.toDate) return false;
-        const ud = u.createdAt.toDate();
-        return ud.getMonth() === m.month && ud.getFullYear() === m.year;
-      }).length
-    }));
-    const maxCount = Math.max(...monthCounts.map(m => m.count), 1);
-    document.getElementById('month-bars').innerHTML = monthCounts.map(m => `
-      <div class="mbar-wrap">
-        <div class="mbar-val">${m.count}</div>
-        <div class="mbar" style="height:${Math.max(4, (m.count / maxCount) * 80)}px;"></div>
-        <div class="mbar-lbl">${m.label}</div>
-      </div>
-    `).join('');
-  } catch (err) {
-    console.error('loadAnalytics:', err);
-    toast('Failed to load analytics', 'fire');
-  }
-}
-
-// ── EXPORT CSV ──
-async function exportCSV() {
-  try {
-    toast('Generating CSV...', 'gold');
-    const snap = await db.collection('users').get();
-    const users = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-    const headers = ['UID', 'Name', 'Email', 'Phone', 'Role', 'Plan', 'Status', 'Joined', 'Last Login'];
-    const rows = users.map(u => [
-      u.id,
-      u.name || '',
-      u.email || '',
-      u.phone || '',
-      u.role || 'member',
-      u.plan || 'free',
-      u.status || 'active',
-      u.createdAt ? u.createdAt.toDate().toISOString().split('T')[0] : '',
-      u.lastLogin ? u.lastLogin.toDate().toISOString().split('T')[0] : ''
-    ].map(v => `"${String(v).replace(/"/g, '""')}"`).join(','));
-    const csv = [headers.join(','), ...rows].join('\n');
-    const blob = new Blob([csv], { type: 'text/csv' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url; a.download = `rfc-members-${new Date().toISOString().split('T')[0]}.csv`;
-    document.body.appendChild(a); a.click(); document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-    toast('✅ CSV exported!', 'green');
-  } catch (err) {
-    toast('Export failed: ' + err.message, 'fire');
-  }
-}
-
-// ── SETTINGS ──
-async function changeAdminPassword() {
-  const newPass = document.getElementById('new-pass').value;
-  if (!newPass || newPass.length < 6) { toast('Password must be at least 6 characters', 'gold'); return; }
-  try {
-    await auth.currentUser.updatePassword(newPass);
-    document.getElementById('new-pass').value = '';
-    toast('✅ Password updated!', 'green');
-  } catch (err) {
-    toast('Failed: ' + err.message, 'fire');
-  }
-}
-
-// ── AUTH STATE ──
-auth.onAuthStateChanged(async (user) => {
-  if (user) {
+// ============================================================
+// REDEMPTIONS
+// ============================================================
+function renderRedemptions() {
+  // Merge admin redemptions + user redemptions from localStorage
+  const adminRedeems = LS.get('redemptions', []);
+  // Also scan all rfc_redeem_reqs_* keys from user wallets
+  const allKeys = Object.keys(localStorage).filter(k => k.startsWith('rfc_redeem_reqs_'));
+  const userRedeems = [];
+  allKeys.forEach(k => {
     try {
-      const doc = await db.collection('users').doc(user.uid).get();
-      if (doc.exists && doc.data().role === 'admin') {
-        adminUser = { uid: user.uid, email: user.email, ...doc.data() };
-        showDashboard();
-      }
-    } catch (e) {}
-  }
-});
+      const uid_part = k.replace('rfc_redeem_reqs_', '');
+      const reqs = JSON.parse(localStorage.getItem(k)) || [];
+      reqs.forEach(r => userRedeems.push({ ...r, _src: uid_part }));
+    } catch {}
+  });
 
-// Enter key on login
-document.getElementById('a-pass').addEventListener('keydown', e => {
-  if (e.key === 'Enter') adminLogin();
-});
+  const all = [...adminRedeems, ...userRedeems].reduce((acc, r) => {
+    if (!acc.find(x => x.id === r.id)) acc.push(r);
+    return acc;
+  }, []);
+
+  const filter = document.getElementById('redeem-filter')?.value || '';
+  const filtered = filter ? all.filter(r => r.status === filter) : all;
+  const tbody = document.getElementById('redeem-tbody');
+  if (!filtered.length) {
+    tbody.innerHTML = `<tr><td colspan="6"><div class="empty"><div class="empty-icon">💰</div><div class="empty-msg">No redemption requests</div></div></td></tr>`;
+    return;
+  }
+  tbody.innerHTML = filtered.sort((a,b)=>(b.ts||0)-(a.ts||0)).map(r => `
+    <tr>
+      <td>${r.userName||r.userEmail||r._src||'—'}</td>
+      <td style="color:var(--gold);font-weight:700;">₹${r.amount}</td>
+      <td style="color:var(--muted);font-size:12px;">${r.upi||'—'}</td>
+      <td style="color:var(--muted);font-size:12px;">${fmt(r.ts)}</td>
+      <td><span class="badge ${r.status==='approved'?'badge-green':r.status==='rejected'?'badge-red':'badge-gold'}">${r.status||'pending'}</span></td>
+      <td>
+        ${r.status==='pending'?`
+          <div style="display:flex;gap:6px;">
+            <button class="btn btn-success btn-sm" onclick="approveRedeem('${r.id}','${r._src||''}')">Approve</button>
+            <button class="btn btn-danger btn-sm" onclick="rejectRedeem('${r.id}','${r._src||''}')">Reject</button>
+          </div>` : '—'}
+      </td>
+    </tr>`).join('');
+}
+
+function updateRedeemStatus(id, src, newStatus) {
+  // Update in admin store
+  const adminRedeems = LS.get('redemptions', []);
+  const ai = adminRedeems.findIndex(r => r.id === id);
+  if (ai > -1) adminRedeems[ai].status = newStatus;
+  LS.set('redemptions', adminRedeems);
+
+  // Update in user wallet store
+  if (src) {
+    const key = 'rfc_redeem_reqs_' + src;
+    try {
+      const reqs = JSON.parse(localStorage.getItem(key)) || [];
+      const ri = reqs.findIndex(r => r.id === id);
+      if (ri > -1) reqs[ri].status = newStatus;
+      localStorage.setItem(key, JSON.stringify(reqs));
+    } catch {}
+  }
+
+  // Also update in wallet data
+  if (src) {
+    const walletKey = 'rfc_wallet_' + src + '_data';
+    try {
+      const w = JSON.parse(localStorage.getItem(walletKey)) || {};
+      if (w.txns) {
+        w.txns.forEach(t => { if (t.id === id) t.status = newStatus; });
+        localStorage.setItem(walletKey, JSON.stringify(w));
+      }
+    } catch {}
+  }
+}
+
+function approveRedeem(id, src) {
+  updateRedeemStatus(id, src, 'approved');
+  logActivity(`Redemption approved: ${id}`, '✅');
+  renderRedemptions();
+  toast('Redemption approved');
+}
+
+function rejectRedeem(id, src) {
+  updateRedeemStatus(id, src, 'rejected');
+  logActivity(`Redemption rejected: ${id}`, '❌');
+  renderRedemptions();
+  toast('Redemption rejected');
+}
+
+// ============================================================
+// REFERRALS
+// ============================================================
+function renderReferrals() {
+  // Scan all rfc_referrals_* keys
+  const allKeys = Object.keys(localStorage).filter(k => k.startsWith('rfc_referrals_'));
+  const allRefs = [];
+  allKeys.forEach(k => {
+    try {
+      const refs = JSON.parse(localStorage.getItem(k)) || [];
+      refs.forEach(r => allRefs.push(r));
+    } catch {}
+  });
+
+  const adminRefs = LS.get('referrals', []);
+  const merged = [...adminRefs, ...allRefs].reduce((acc, r) => {
+    if (!acc.find(x => x.id === r.id)) acc.push(r);
+    return acc;
+  }, []);
+
+  const tbody = document.getElementById('referrals-tbody');
+  if (!merged.length) {
+    tbody.innerHTML = `<tr><td colspan="6"><div class="empty"><div class="empty-icon">🔗</div><div class="empty-msg">No referrals yet</div></div></td></tr>`;
+  } else {
+    tbody.innerHTML = merged.sort((a,b)=>(b.ts||0)-(a.ts||0)).map(r => `
+      <tr>
+        <td>${r.referrerCode||r.referrerId||'—'}</td>
+        <td>${r.newUserEmail||r.newUserId||'—'}</td>
+        <td style="color:var(--muted);font-size:12px;">${fmt(r.ts)}</td>
+        <td style="color:var(--gold);font-weight:700;">₹${r.amount||100}</td>
+        <td><span class="badge ${r.credited?'badge-green':'badge-gold'}">${r.credited?'Credited':'Pending'}</span></td>
+        <td>${!r.credited?`<button class="btn btn-success btn-sm" onclick="markCredited('${r.id}')">Mark Credited</button>`:'—'}</td>
+      </tr>`).join('');
+  }
+
+  // Leaderboard
+  const counts = {};
+  merged.forEach(r => {
+    const k = r.referrerCode || r.referrerId || 'Unknown';
+    counts[k] = (counts[k] || 0) + 1;
+  });
+  const sorted = Object.entries(counts).sort((a,b) => b[1]-a[1]).slice(0, 10);
+  document.getElementById('ref-leaderboard').innerHTML = sorted.length ? `
+    <table style="width:100%;font-size:13px;">
+      <thead><tr><th>#</th><th>Referrer</th><th>Referrals</th><th>Earned</th></tr></thead>
+      <tbody>${sorted.map(([k,v],i) => `<tr>
+        <td style="font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--gold);">${i+1}</td>
+        <td>${k}</td>
+        <td style="font-weight:700;">${v}</td>
+        <td style="color:var(--green);">₹${v*100}</td>
+      </tr>`).join('')}</tbody>
+    </table>` : '<div class="empty"><div class="empty-msg">No referrals to rank yet</div></div>';
+}
+
+function markCredited(id) {
+  const refs = LS.get('referrals', []);
+  const r = refs.find(x => x.id === id);
+  if (r) r.credited = true;
+  LS.set('referrals', refs);
+
+  // Also update user-side
+  const allKeys = Object.keys(localStorage).filter(k => k.startsWith('rfc_referrals_'));
+  allKeys.forEach(k => {
+    try {
+      const arr = JSON.parse(localStorage.getItem(k)) || [];
+      const ri = arr.findIndex(x => x.id === id);
+      if (ri > -1) { arr[ri].credited = true; localStorage.setItem(k, JSON.stringify(arr)); }
+    } catch {}
+  });
+
+  logActivity(`Referral credited: ${id}`, '💸');
+  renderReferrals();
+  toast('Referral marked as credited');
+}
+
+// ============================================================
+// NEWSLETTER
+// ============================================================
+function renderNewsletter() {
+  // Merge admin subscribers + user-submitted from index.html
+  const adminSubs = LS.get('newsletter', []);
+  let allSubs = [...adminSubs];
+
+  // Also check rfc_newsletter key from main site
+  try {
+    const siteSubs = JSON.parse(localStorage.getItem('rfc_newsletter') || '[]');
+    siteSubs.forEach(s => {
+      if (!allSubs.find(x => x.email === s.email)) allSubs.push(s);
+    });
+  } catch {}
+
+  const q = (document.getElementById('nl-search')?.value || '').toLowerCase();
+  const filtered = q ? allSubs.filter(s => s.email.toLowerCase().includes(q) || (s.name||'').toLowerCase().includes(q)) : allSubs;
+
+  document.getElementById('nl-count').textContent = `${filtered.length} subscriber${filtered.length !== 1 ? 's' : ''}`;
+
+  const tbody = document.getElementById('nl-tbody');
+  if (!filtered.length) {
+    tbody.innerHTML = `<tr><td colspan="5"><div class="empty"><div class="empty-icon">📧</div><div class="empty-msg">No subscribers yet</div></div></td></tr>`;
+    return;
+  }
+  tbody.innerHTML = filtered.map(s => `
+    <tr>
+      <td>${s.email}</td>
+      <td>${s.name||'—'}</td>
+      <td style="color:var(--muted);font-size:12px;">${fmt(s.ts||s.joined)}</td>
+      <td><span class="badge badge-blue">${s.source||'website'}</span></td>
+      <td><button class="btn btn-danger btn-sm" onclick="deleteSubscriber('${s.email}')">Remove</button></td>
+    </tr>`).join('');
+}
+
+function openAddSubscriber() {
+  document.getElementById('nl-email').value = '';
+  document.getElementById('nl-name').value = '';
+  document.getElementById('modal-subscriber').classList.add('open');
+}
+
+function saveSubscriber() {
+  const email = document.getElementById('nl-email').value.trim();
+  const name  = document.getElementById('nl-name').value.trim();
+  if (!email || !email.includes('@')) { toast('Valid email required', true); return; }
+  const subs = LS.get('newsletter', []);
+  if (subs.find(s => s.email === email)) { toast('Already subscribed', true); return; }
+  subs.push({ id: uid(), email, name, ts: Date.now(), source: 'admin' });
+  LS.set('newsletter', subs);
+  closeModal('modal-subscriber');
+  renderNewsletter();
+  toast('Subscriber added');
+}
+
+function deleteSubscriber(email) {
+  if (!confirm('Remove this subscriber?')) return;
+  const subs = LS.get('newsletter', []).filter(s => s.email !== email);
+  LS.set('newsletter', subs);
+  renderNewsletter();
+  toast('Subscriber removed');
+}
+
+function exportNewsletterCSV() {
+  const adminSubs = LS.get('newsletter', []);
+  let allSubs = [...adminSubs];
+  try {
+    const siteSubs = JSON.parse(localStorage.getItem('rfc_newsletter') || '[]');
+    siteSubs.forEach(s => { if (!allSubs.find(x => x.email === s.email)) allSubs.push(s); });
+  } catch {}
+
+  const rows = [['Email','Name','Subscribed','Source'], ...allSubs.map(s => [s.email, s.name||'', fmt(s.ts||s.joined), s.source||'website'])];
+  const csv = rows.map(r => r.map(v => `"${v}"`).join(',')).join('\n');
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `rfc-subscribers-${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+  toast('CSV downloaded');
+}
+
+// ============================================================
+// FEATURES
+// ============================================================
+let editingFeatureId = null;
+
+function renderFeatures() {
+  const features = LS.get('features', []).sort((a,b) => (a.order||0)-(b.order||0));
+  document.getElementById('features-list').innerHTML = features.length ? features.map(f => `
+    <div class="blog-card">
+      <div class="blog-card-hdr">
+        <div>
+          <span style="font-size:24px;margin-right:8px;">${f.icon||'⚡'}</span>
+          <span class="blog-card-title">${f.title}</span>
+        </div>
+        <div style="display:flex;gap:6px;">
+          <button class="btn btn-ghost btn-sm" onclick="openFeatureModal('${f.id}')">Edit</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteFeature('${f.id}')">Delete</button>
+        </div>
+      </div>
+      <div class="blog-card-excerpt">${f.desc}</div>
+    </div>`).join('') : '<div class="empty"><div class="empty-icon">⚡</div><div class="empty-msg">No features yet</div></div>';
+}
+
+function openFeatureModal(id) {
+  editingFeatureId = id || null;
+  const features = LS.get('features', []);
+  const f = id ? features.find(x => x.id === id) : null;
+  document.getElementById('feature-modal-title').textContent = f ? 'Edit Feature' : 'Add Feature';
+  document.getElementById('f-icon').value  = f?.icon || '';
+  document.getElementById('f-title').value = f?.title || '';
+  document.getElementById('f-desc').value  = f?.desc || '';
+  document.getElementById('f-order').value = f?.order ?? 0;
+  document.getElementById('modal-feature').classList.add('open');
+}
+
+function saveFeature() {
+  const features = LS.get('features', []);
+  const data = {
+    icon:  document.getElementById('f-icon').value.trim(),
+    title: document.getElementById('f-title').value.trim(),
+    desc:  document.getElementById('f-desc').value.trim(),
+    order: parseInt(document.getElementById('f-order').value) || 0
+  };
+  if (!data.title) { toast('Title required', true); return; }
+  if (editingFeatureId) {
+    const i = features.findIndex(f => f.id === editingFeatureId);
+    if (i > -1) features[i] = { ...features[i], ...data };
+  } else {
+    features.push({ id: uid(), ...data });
+  }
+  LS.set('features', features);
+  closeModal('modal-feature');
+  renderFeatures();
+  toast('Feature saved');
+}
+
+function deleteFeature(id) {
+  if (!confirm('Delete this feature?')) return;
+  LS.set('features', LS.get('features', []).filter(f => f.id !== id));
+  renderFeatures();
+  toast('Feature deleted');
+}
+
+// ============================================================
+// TESTIMONIALS
+// ============================================================
+let editingTestimonialId = null;
+
+function renderTestimonials() {
+  const testimonials = LS.get('testimonials', []);
+  document.getElementById('testimonials-list').innerHTML = testimonials.length ? testimonials.map(t => `
+    <div class="blog-card">
+      <div class="blog-card-hdr">
+        <div>
+          <span style="display:inline-flex;width:32px;height:32px;border-radius:50%;background:var(--red);align-items:center;justify-content:center;font-weight:700;margin-right:8px;">${t.avatar||t.name[0]}</span>
+          <span class="blog-card-title">${t.name}</span>
+          <span style="font-size:11px;color:var(--muted);margin-left:8px;">${t.city} · ${'★'.repeat(t.stars||5)}</span>
+        </div>
+        <div style="display:flex;gap:6px;">
+          <button class="btn btn-ghost btn-sm" onclick="openTestimonialModal('${t.id}')">Edit</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteTestimonial('${t.id}')">Delete</button>
+        </div>
+      </div>
+      <div class="blog-card-meta">${t.result||''}</div>
+      <div class="blog-card-excerpt">"${t.quote}"</div>
+    </div>`).join('') : '<div class="empty"><div class="empty-icon">💬</div><div class="empty-msg">No testimonials yet</div></div>';
+}
+
+function openTestimonialModal(id) {
+  editingTestimonialId = id || null;
+  const testimonials = LS.get('testimonials', []);
+  const t = id ? testimonials.find(x => x.id === id) : null;
+  document.getElementById('testimonial-modal-title').textContent = t ? 'Edit Testimonial' : 'Add Testimonial';
+  document.getElementById('t-name').value   = t?.name || '';
+  document.getElementById('t-city').value   = t?.city || '';
+  document.getElementById('t-result').value = t?.result || '';
+  document.getElementById('t-stars').value  = t?.stars || 5;
+  document.getElementById('t-quote').value  = t?.quote || '';
+  document.getElementById('t-avatar').value = t?.avatar || '';
+  document.getElementById('modal-testimonial').classList.add('open');
+}
+
+function saveTestimonial() {
+  const testimonials = LS.get('testimonials', []);
+  const data = {
+    name:   document.getElementById('t-name').value.trim(),
+    city:   document.getElementById('t-city').value.trim(),
+    result: document.getElementById('t-result').value.trim(),
+    stars:  parseInt(document.getElementById('t-stars').value) || 5,
+    quote:  document.getElementById('t-quote').value.trim(),
+    avatar: document.getElementById('t-avatar').value.trim()
+  };
+  if (!data.name || !data.quote) { toast('Name and quote required', true); return; }
+  if (editingTestimonialId) {
+    const i = testimonials.findIndex(t => t.id === editingTestimonialId);
+    if (i > -1) testimonials[i] = { ...testimonials[i], ...data };
+  } else {
+    testimonials.push({ id: uid(), ...data });
+  }
+  LS.set('testimonials', testimonials);
+  closeModal('modal-testimonial');
+  renderTestimonials();
+  toast('Testimonial saved');
+}
+
+function deleteTestimonial(id) {
+  if (!confirm('Delete this testimonial?')) return;
+  LS.set('testimonials', LS.get('testimonials', []).filter(t => t.id !== id));
+  renderTestimonials();
+  toast('Testimonial deleted');
+}
+
+// ============================================================
+// BLOGS
+// ============================================================
+let editingBlogId = null;
+
+function renderBlogs() {
+  const blogs = LS.get('blogs', []).sort((a,b) => (b.ts||0)-(a.ts||0));
+  document.getElementById('blogs-list').innerHTML = blogs.length ? blogs.map(b => `
+    <div class="blog-card">
+      <div class="blog-card-hdr">
+        <div style="flex:1;">
+          <span class="badge ${b.status==='published'?'badge-green':'badge-muted'}" style="margin-right:8px;">${b.status}</span>
+          <span class="badge badge-blue" style="margin-right:8px;">${b.cat}</span>
+          <span class="blog-card-title">${b.title}</span>
+        </div>
+        <div style="display:flex;gap:6px;flex-shrink:0;">
+          <button class="btn btn-ghost btn-sm" onclick="openBlogModal('${b.id}')">Edit</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteBlog('${b.id}')">Delete</button>
+        </div>
+      </div>
+      <div class="blog-card-meta">${b.author} · ${b.readTime} min read · ${fmt(b.ts)}</div>
+      <div class="blog-card-excerpt">${b.excerpt||''}</div>
+    </div>`).join('') : '<div class="empty"><div class="empty-icon">📝</div><div class="empty-msg">No blog posts yet</div></div>';
+}
+
+function openBlogModal(id) {
+  editingBlogId = id || null;
+  const blogs = LS.get('blogs', []);
+  const b = id ? blogs.find(x => x.id === id) : null;
+  document.getElementById('blog-modal-title').textContent = b ? 'Edit Post' : 'New Blog Post';
+  document.getElementById('b-title').value   = b?.title || '';
+  document.getElementById('b-cat').value     = b?.cat || 'Training';
+  document.getElementById('b-author').value  = b?.author || 'RFC Team';
+  document.getElementById('b-read').value    = b?.readTime || 5;
+  document.getElementById('b-img').value     = b?.img || '';
+  document.getElementById('b-excerpt').value = b?.excerpt || '';
+  document.getElementById('b-content').value = b?.content || '';
+  document.getElementById('b-status').value  = b?.status || 'published';
+  document.getElementById('modal-blog').classList.add('open');
+}
+
+function saveBlog() {
+  const blogs = LS.get('blogs', []);
+  const data = {
+    title:    document.getElementById('b-title').value.trim(),
+    cat:      document.getElementById('b-cat').value,
+    author:   document.getElementById('b-author').value.trim(),
+    readTime: parseInt(document.getElementById('b-read').value) || 5,
+    img:      document.getElementById('b-img').value.trim(),
+    excerpt:  document.getElementById('b-excerpt').value.trim(),
+    content:  document.getElementById('b-content').value.trim(),
+    status:   document.getElementById('b-status').value,
+    ts:       Date.now()
+  };
+  if (!data.title) { toast('Title required', true); return; }
+  if (editingBlogId) {
+    const i = blogs.findIndex(b => b.id === editingBlogId);
+    if (i > -1) blogs[i] = { ...blogs[i], ...data };
+  } else {
+    blogs.push({ id: uid(), ...data });
+  }
+  LS.set('blogs', blogs);
+  closeModal('modal-blog');
+  renderBlogs();
+  toast('Blog post saved');
+}
+
+function deleteBlog(id) {
+  if (!confirm('Delete this post?')) return;
+  LS.set('blogs', LS.get('blogs', []).filter(b => b.id !== id));
+  renderBlogs();
+  toast('Post deleted');
+}
+
+// ============================================================
+// PRICING
+// ============================================================
+let editingPricingId = null;
+
+function renderPricing() {
+  const plans = LS.get('pricing', []);
+  document.getElementById('pricing-list').innerHTML = plans.length ? `
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;">
+      ${plans.map(p => `
+      <div class="blog-card" style="${p.highlight?'border-color:var(--gold);':''}">
+        <div class="blog-card-hdr">
+          <div>
+            <span class="blog-card-title">${p.name}</span>
+            ${p.badge?`<span class="badge badge-gold" style="margin-left:8px;">${p.badge}</span>`:''}
+          </div>
+          <div style="display:flex;gap:6px;">
+            <button class="btn btn-ghost btn-sm" onclick="openPricingModal('${p.id}')">Edit</button>
+            <button class="btn btn-danger btn-sm" onclick="deletePricing('${p.id}')">Delete</button>
+          </div>
+        </div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:32px;color:var(--gold);margin:8px 0 4px;">₹${p.price} <span style="font-size:14px;color:var(--muted);font-family:'Inter',sans-serif;">${p.duration}</span></div>
+        <ul style="list-style:none;margin-top:8px;">
+          ${(p.features||[]).map(f => `<li style="font-size:12px;color:var(--muted);padding:2px 0;">✓ ${f}</li>`).join('')}
+        </ul>
+      </div>`).join('')}
+    </div>` : '<div class="empty"><div class="empty-icon">💳</div><div class="empty-msg">No pricing plans yet</div></div>';
+}
+
+function openPricingModal(id) {
+  editingPricingId = id || null;
+  const plans = LS.get('pricing', []);
+  const p = id ? plans.find(x => x.id === id) : null;
+  document.getElementById('pricing-modal-title').textContent = p ? 'Edit Plan' : 'Add Pricing Plan';
+  document.getElementById('p-name').value      = p?.name || '';
+  document.getElementById('p-price').value     = p?.price ?? '';
+  document.getElementById('p-duration').value  = p?.duration || '';
+  document.getElementById('p-badge').value     = p?.badge || '';
+  document.getElementById('p-features').value  = (p?.features || []).join('\n');
+  document.getElementById('p-highlight').value = p?.highlight ? '1' : '0';
+  document.getElementById('modal-pricing').classList.add('open');
+}
+
+function savePricing() {
+  const plans = LS.get('pricing', []);
+  const featText = document.getElementById('p-features').value;
+  const data = {
+    name:      document.getElementById('p-name').value.trim(),
+    price:     parseInt(document.getElementById('p-price').value) || 0,
+    duration:  document.getElementById('p-duration').value.trim(),
+    badge:     document.getElementById('p-badge').value.trim(),
+    features:  featText.split('\n').map(f => f.trim()).filter(Boolean),
+    highlight: document.getElementById('p-highlight').value === '1'
+  };
+  if (!data.name) { toast('Plan name required', true); return; }
+  if (editingPricingId) {
+    const i = plans.findIndex(p => p.id === editingPricingId);
+    if (i > -1) plans[i] = { ...plans[i], ...data };
+  } else {
+    plans.push({ id: uid(), ...data });
+  }
+  LS.set('pricing', plans);
+  closeModal('modal-pricing');
+  renderPricing();
+  toast('Pricing plan saved');
+}
+
+function deletePricing(id) {
+  if (!confirm('Delete this plan?')) return;
+  LS.set('pricing', LS.get('pricing', []).filter(p => p.id !== id));
+  renderPricing();
+  toast('Plan deleted');
+}
+
+// ============================================================
+// FAQs
+// ============================================================
+let editingFaqId = null;
+
+function renderFaqs() {
+  const faqs = LS.get('faqs', []).sort((a,b) => (a.order||0)-(b.order||0));
+  document.getElementById('faqs-list').innerHTML = faqs.length ? faqs.map(f => `
+    <div class="blog-card">
+      <div class="blog-card-hdr">
+        <div>
+          <span class="badge badge-blue" style="margin-right:8px;">${f.cat||'General'}</span>
+          <span class="blog-card-title">${f.question}</span>
+        </div>
+        <div style="display:flex;gap:6px;flex-shrink:0;">
+          <button class="btn btn-ghost btn-sm" onclick="openFaqModal('${f.id}')">Edit</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteFaq('${f.id}')">Delete</button>
+        </div>
+      </div>
+      <div class="blog-card-excerpt">${f.answer}</div>
+    </div>`).join('') : '<div class="empty"><div class="empty-icon">❓</div><div class="empty-msg">No FAQs yet</div></div>';
+}
+
+function openFaqModal(id) {
+  editingFaqId = id || null;
+  const faqs = LS.get('faqs', []);
+  const f = id ? faqs.find(x => x.id === id) : null;
+  document.getElementById('faq-modal-title').textContent = f ? 'Edit FAQ' : 'Add FAQ';
+  document.getElementById('fq-question').value = f?.question || '';
+  document.getElementById('fq-answer').value   = f?.answer || '';
+  document.getElementById('fq-cat').value      = f?.cat || 'General';
+  document.getElementById('fq-order').value    = f?.order ?? 0;
+  document.getElementById('modal-faq').classList.add('open');
+}
+
+function saveFaq() {
+  const faqs = LS.get('faqs', []);
+  const data = {
+    question: document.getElementById('fq-question').value.trim(),
+    answer:   document.getElementById('fq-answer').value.trim(),
+    cat:      document.getElementById('fq-cat').value.trim(),
+    order:    parseInt(document.getElementById('fq-order').value) || 0
+  };
+  if (!data.question || !data.answer) { toast('Question and answer required', true); return; }
+  if (editingFaqId) {
+    const i = faqs.findIndex(f => f.id === editingFaqId);
+    if (i > -1) faqs[i] = { ...faqs[i], ...data };
+  } else {
+    faqs.push({ id: uid(), ...data });
+  }
+  LS.set('faqs', faqs);
+  closeModal('modal-faq');
+  renderFaqs();
+  toast('FAQ saved');
+}
+
+function deleteFaq(id) {
+  if (!confirm('Delete this FAQ?')) return;
+  LS.set('faqs', LS.get('faqs', []).filter(f => f.id !== id));
+  renderFaqs();
+  toast('FAQ deleted');
+}
+
+// ============================================================
+// CHALLENGES ADMIN
+// ============================================================
+const DEFAULT_CHALLENGES_ADM = [
+  { id:'ch1', emoji:'🔥', name:'30-Day Fat Loss Challenge', desc:'Transform your body in 30 days.', status:'live', entryFee:499, duration:'30 Days', prize:'₹25,000 Pool', maxParticipants:200, startDate:'Jun 15, 2026', endDate:'Jul 15, 2026', prizes:['🥇 ₹12,000','🥈 ₹7,000','🥉 ₹4,000'], rules:['Log daily workouts','Submit weekly photos'], banner:'linear-gradient(135deg,#e8001d,#ff8c00)' },
+  { id:'ch2', emoji:'☀️', name:'Summer Shred Challenge', desc:'6-week summer shred for lean muscle.', status:'live', entryFee:799, duration:'6 Weeks', prize:'₹40,000 Pool', maxParticipants:150, startDate:'Jul 1, 2026', endDate:'Aug 12, 2026', prizes:['🥇 ₹20,000','🥈 ₹12,000','🥉 ₹6,000'], rules:['Minimum 5 workouts/week'], banner:'linear-gradient(135deg,#f59e0b,#ef4444)' },
+  { id:'ch3', emoji:'🐯', name:'Beast Transformation Challenge', desc:'The ultimate 90-day transformation.', status:'soon', entryFee:999, duration:'90 Days', prize:'₹1,00,000 Pool', maxParticipants:500, startDate:'Aug 1, 2026', endDate:'Oct 29, 2026', prizes:['🥇 ₹50,000','🥈 ₹25,000','🥉 ₹15,000'], rules:['Daily activity log'], banner:'linear-gradient(135deg,#1e1b4b,#e8001d)' }
+];
+
+function getChallengesAdm() {
+  return LS.get('challenges_adm', null) || DEFAULT_CHALLENGES_ADM;
+}
+
+let editingChallengeId = null;
+
+function renderChallengesAdmin() {
+  const challenges = getChallengesAdm();
+  const list = document.getElementById('challenges-admin-list');
+  if (!list) return;
+  list.innerHTML = challenges.length ? challenges.map(ch => `
+    <div class="blog-card">
+      <div class="blog-card-hdr">
+        <div>
+          <span style="font-size:28px;margin-right:8px;">${ch.emoji||'🏆'}</span>
+          <span class="blog-card-title">${ch.name}</span>
+          <span class="badge ${ch.status==='live'?'badge-green':ch.status==='soon'?'badge-gold':'badge-muted'}" style="margin-left:8px;">${ch.status.toUpperCase()}</span>
+        </div>
+        <div style="display:flex;gap:6px;">
+          <button class="btn btn-ghost btn-sm" onclick="openChallengeAdminModal('${ch.id}')">Edit</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteChallenge('${ch.id}')">Delete</button>
+        </div>
+      </div>
+      <div class="blog-card-meta">Entry: ₹${ch.entryFee} · ${ch.duration} · ${ch.prize} · ${ch.startDate} – ${ch.endDate}</div>
+      <div class="blog-card-excerpt">${ch.desc}</div>
+    </div>`).join('') : '<div class="empty"><div class="empty-icon">🏆</div><div class="empty-msg">No challenges yet</div></div>';
+
+  // Stats table
+  const tbody = document.getElementById('challenge-stats-tbody');
+  if (tbody) {
+    tbody.innerHTML = challenges.map(ch => {
+      const pts = parseInt(localStorage.getItem('rfc_ch_pts_' + ch.id) || '0');
+      return `<tr>
+        <td><b>${ch.emoji} ${ch.name}</b></td>
+        <td>${pts} / ${ch.maxParticipants}</td>
+        <td style="color:var(--green);font-weight:700;">₹${(pts * ch.entryFee).toLocaleString()}</td>
+        <td><span class="badge ${ch.status==='live'?'badge-green':ch.status==='soon'?'badge-gold':'badge-muted'}">${ch.status}</span></td>
+      </tr>`;
+    }).join('');
+  }
+}
+
+function openChallengeAdminModal(id) {
+  editingChallengeId = id || null;
+  const chs = getChallengesAdm();
+  const ch = id ? chs.find(x => x.id === id) : null;
+  document.getElementById('challenge-modal-title').textContent = ch ? 'Edit Challenge' : 'Add Challenge';
+  document.getElementById('ch-icon').value     = ch?.emoji || '🔥';
+  document.getElementById('ch-name').value     = ch?.name || '';
+  document.getElementById('ch-desc').value     = ch?.desc || '';
+  document.getElementById('ch-status').value   = ch?.status || 'live';
+  document.getElementById('ch-fee').value      = ch?.entryFee || 499;
+  document.getElementById('ch-duration').value = ch?.duration || '';
+  document.getElementById('ch-prize').value    = ch?.prize || '';
+  document.getElementById('ch-maxpts').value   = ch?.maxParticipants || 200;
+  document.getElementById('ch-start').value    = ch?.startDate || '';
+  document.getElementById('ch-end').value      = ch?.endDate || '';
+  document.getElementById('ch-prizes').value   = (ch?.prizes || []).join('\n');
+  document.getElementById('ch-rules').value    = (ch?.rules || []).join('\n');
+  document.getElementById('ch-banner').value   = ch?.banner || 'linear-gradient(135deg,#e8001d,#ff8c00)';
+  document.getElementById('modal-challenge').classList.add('open');
+}
+
+function saveChallenge() {
+  const chs = getChallengesAdm();
+  const data = {
+    emoji:          document.getElementById('ch-icon').value.trim(),
+    name:           document.getElementById('ch-name').value.trim(),
+    desc:           document.getElementById('ch-desc').value.trim(),
+    status:         document.getElementById('ch-status').value,
+    entryFee:       parseInt(document.getElementById('ch-fee').value) || 499,
+    duration:       document.getElementById('ch-duration').value.trim(),
+    prize:          document.getElementById('ch-prize').value.trim(),
+    maxParticipants:parseInt(document.getElementById('ch-maxpts').value) || 200,
+    startDate:      document.getElementById('ch-start').value.trim(),
+    endDate:        document.getElementById('ch-end').value.trim(),
+    prizes:         document.getElementById('ch-prizes').value.split('\n').map(s=>s.trim()).filter(Boolean),
+    rules:          document.getElementById('ch-rules').value.split('\n').map(s=>s.trim()).filter(Boolean),
+    banner:         document.getElementById('ch-banner').value.trim()
+  };
+  if (!data.name) { toast('Name required', true); return; }
+  if (editingChallengeId) {
+    const i = chs.findIndex(c => c.id === editingChallengeId);
+    if (i > -1) chs[i] = { ...chs[i], ...data };
+  } else {
+    chs.push({ id: uid(), ...data });
+  }
+  LS.set('challenges_adm', chs);
+  // Also sync to the main site key
+  localStorage.setItem('rfc_challenges', JSON.stringify(chs));
+  closeModal('modal-challenge');
+  renderChallengesAdmin();
+  toast('Challenge saved');
+}
+
+function deleteChallenge(id) {
+  if (!confirm('Delete this challenge?')) return;
+  const chs = getChallengesAdm().filter(c => c.id !== id);
+  LS.set('challenges_adm', chs);
+  localStorage.setItem('rfc_challenges', JSON.stringify(chs));
+  renderChallengesAdmin();
+  toast('Challenge deleted');
+}
+
+// ============================================================
+// COURSES ADMIN
+// ============================================================
+const DEFAULT_COURSES_ADM = [
+  { id:'cs1', emoji:'💪', name:'Certified Personal Trainer (CPT)', desc:'Become a NSCA-aligned personal trainer.', price:2999, origPrice:5999, duration:'8 Weeks', level:'Beginner–Intermediate', category:'Training', modules:['Anatomy & Physiology','Exercise Science Fundamentals','Program Design','Client Assessment','Nutrition Basics','Business of PT','Practical Assessments','Final Exam + Cert'], pdfUrls:[], banner:'linear-gradient(135deg,#e8001d,#7c3aed)', students:847, rating:4.8 },
+  { id:'cs2', emoji:'🥗', name:'Nutrition Basics Certification', desc:'Master macronutrients and meal planning.', price:1499, origPrice:2999, duration:'4 Weeks', level:'All Levels', category:'Nutrition', modules:['Macros & Micros','Metabolism','Indian Meal Planning','Sports Nutrition','Supplement Science','Meal Plan Building','Protocols','Final Exam + Cert'], pdfUrls:[], banner:'linear-gradient(135deg,#059669,#065f46)', students:1203, rating:4.9 },
+  { id:'cs3', emoji:'🔥', name:'Fat Loss Specialist (FLS)', desc:'Expert fat loss protocols.', price:1999, origPrice:3999, duration:'6 Weeks', level:'Intermediate', category:'Fat Loss', modules:['Hormones & Fat Loss','Calorie Deficit','Carb Cycling','Cardio Programming','Supplements','Plateaus','Case Studies','Final Exam + Cert'], pdfUrls:[], banner:'linear-gradient(135deg,#f59e0b,#e8001d)', students:562, rating:4.7 }
+];
+
+function getCoursesAdm() {
+  return LS.get('courses_adm', null) || DEFAULT_COURSES_ADM;
+}
+
+let editingCourseId = null;
+
+function renderCoursesAdmin() {
+  const courses = getCoursesAdm();
+  const list = document.getElementById('courses-admin-list');
+  if (!list) return;
+  list.innerHTML = courses.length ? courses.map(c => `
+    <div class="blog-card">
+      <div class="blog-card-hdr">
+        <div>
+          <span style="font-size:28px;margin-right:8px;">${c.emoji||'🎓'}</span>
+          <span class="blog-card-title">${c.name}</span>
+          <span class="badge badge-blue" style="margin-left:8px;">${c.category||'Course'}</span>
+        </div>
+        <div style="display:flex;gap:6px;">
+          <button class="btn btn-ghost btn-sm" onclick="openCourseAdminModal('${c.id}')">Edit</button>
+          <button class="btn btn-ghost btn-sm" onclick="openCoursePDFManager('${c.id}')">📄 PDFs</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteCourse('${c.id}')">Delete</button>
+        </div>
+      </div>
+      <div class="blog-card-meta">₹${c.price.toLocaleString()} · ${c.duration} · ${c.level} · ${c.students||0} students · ${(c.pdfUrls||[]).length} PDFs uploaded</div>
+      <div class="blog-card-excerpt">${c.desc}</div>
+      <div style="margin-top:8px;">
+        <div style="font-size:11px;color:var(--muted);margin-bottom:4px;">MODULES (${(c.modules||[]).length})</div>
+        <ul class="module-list">${(c.modules||[]).map((m,i)=>`<li class="module-item"><span class="module-num">${i+1}</span>${m}</li>`).join('')}</ul>
+      </div>
+    </div>`).join('') : '<div class="empty"><div class="empty-icon">🎓</div><div class="empty-msg">No courses yet</div></div>';
+}
+
+function openCourseAdminModal(id) {
+  editingCourseId = id || null;
+  const courses = getCoursesAdm();
+  const c = id ? courses.find(x => x.id === id) : null;
+  document.getElementById('course-modal-admin-title').textContent = c ? 'Edit Course' : 'Add Course';
+  document.getElementById('cs-icon').value      = c?.emoji || '🎓';
+  document.getElementById('cs-name').value      = c?.name || '';
+  document.getElementById('cs-desc').value      = c?.desc || '';
+  document.getElementById('cs-price').value     = c?.price || '';
+  document.getElementById('cs-orig-price').value= c?.origPrice || '';
+  document.getElementById('cs-duration').value  = c?.duration || '';
+  document.getElementById('cs-level').value     = c?.level || '';
+  document.getElementById('cs-cat').value       = c?.category || '';
+  document.getElementById('cs-modules').value   = (c?.modules || []).join('\n');
+  document.getElementById('cs-pdfs').value      = (c?.pdfUrls || []).map(p => p.url + '|' + p.name).join('\n');
+  document.getElementById('cs-banner').value    = c?.banner || 'linear-gradient(135deg,#e8001d,#7c3aed)';
+  document.getElementById('modal-course').classList.add('open');
+}
+
+function saveCourse() {
+  const courses = getCoursesAdm();
+  const pdfRaw = document.getElementById('cs-pdfs').value.trim();
+  const pdfUrls = pdfRaw ? pdfRaw.split('\n').map(line => {
+    const [url, name] = line.split('|');
+    return url ? { url: url.trim(), name: (name||'').trim() || 'Document' } : null;
+  }).filter(Boolean) : [];
+
+  const data = {
+    emoji:     document.getElementById('cs-icon').value.trim(),
+    name:      document.getElementById('cs-name').value.trim(),
+    desc:      document.getElementById('cs-desc').value.trim(),
+    price:     parseInt(document.getElementById('cs-price').value) || 0,
+    origPrice: parseInt(document.getElementById('cs-orig-price').value) || 0,
+    duration:  document.getElementById('cs-duration').value.trim(),
+    level:     document.getElementById('cs-level').value.trim(),
+    category:  document.getElementById('cs-cat').value.trim(),
+    modules:   document.getElementById('cs-modules').value.split('\n').map(s=>s.trim()).filter(Boolean),
+    pdfUrls,
+    banner:    document.getElementById('cs-banner').value.trim(),
+    students:  0,
+    rating:    4.8
+  };
+  if (!data.name) { toast('Course name required', true); return; }
+  if (editingCourseId) {
+    const i = courses.findIndex(c => c.id === editingCourseId);
+    if (i > -1) courses[i] = { ...courses[i], ...data };
+  } else {
+    courses.push({ id: uid(), ...data });
+  }
+  LS.set('courses_adm', courses);
+  localStorage.setItem('rfc_courses', JSON.stringify(courses));
+  closeModal('modal-course');
+  renderCoursesAdmin();
+  toast('Course saved');
+}
+
+function deleteCourse(id) {
+  if (!confirm('Delete this course?')) return;
+  const courses = getCoursesAdm().filter(c => c.id !== id);
+  LS.set('courses_adm', courses);
+  localStorage.setItem('rfc_courses', JSON.stringify(courses));
+  renderCoursesAdmin();
+  toast('Course deleted');
+}
+
+function openCoursePDFManager(id) {
+  const courses = getCoursesAdm();
+  const c = courses.find(x => x.id === id);
+  if (!c) return;
+  editingCourseId = id;
+  document.getElementById('cs-icon').value   = c.emoji;
+  document.getElementById('cs-name').value   = c.name;
+  document.getElementById('cs-desc').value   = c.desc;
+  document.getElementById('cs-price').value  = c.price;
+  document.getElementById('cs-orig-price').value = c.origPrice;
+  document.getElementById('cs-duration').value = c.duration;
+  document.getElementById('cs-level').value  = c.level;
+  document.getElementById('cs-cat').value    = c.category;
+  document.getElementById('cs-modules').value = (c.modules||[]).join('\n');
+  document.getElementById('cs-pdfs').value   = (c.pdfUrls||[]).map(p=>p.url+'|'+p.name).join('\n');
+  document.getElementById('cs-banner').value = c.banner;
+  document.getElementById('course-modal-admin-title').textContent = 'Edit Course PDFs — ' + c.name;
+  document.getElementById('modal-course').classList.add('open');
+}
+
+// Hook into showTab for new tabs
+const _origShowTab = showTab;
+showTab = function(name, btn) {
+  _origShowTab(name, btn);
+  if (name === 'challenges') renderChallengesAdmin();
+  if (name === 'courses') renderCoursesAdmin();
+};
 </script>
 </body>
 </html>

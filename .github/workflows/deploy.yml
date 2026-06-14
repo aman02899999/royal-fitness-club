@@ -1,0 +1,71 @@
+name: Deploy to Firebase
+
+on:
+  push:
+    branches:
+      - main
+      - claude/royal-fitness-saas-refactor-87s2ul
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node 18
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: functions/package-lock.json
+
+      - name: Install Functions dependencies
+        run: npm ci
+        working-directory: functions
+
+      - name: Install Firebase CLI
+        run: npm install -g firebase-tools
+
+      # Service account auth — non-expiring, the recommended method.
+      # SETUP: Firebase Console → Project settings → Service accounts
+      #        → Generate new private key → save JSON as GitHub secret FIREBASE_SERVICE_ACCOUNT
+      # PERMISSIONS NEEDED on the service account:
+      #   - Firebase Hosting Admin
+      #   - Cloud Datastore User (Firestore rules + indexes)
+      #   - Firebase Rules Admin (for Storage rules)
+      #   - Cloud Functions Developer (for Functions deploy — needs Blaze plan)
+      - name: Set up Firebase service account
+        run: |
+          if [ -z "$FIREBASE_SERVICE_ACCOUNT" ]; then
+            echo "::error::FIREBASE_SERVICE_ACCOUNT secret is not set."
+            echo "::error::Go to Firebase Console > Project settings > Service accounts > Generate new private key"
+            echo "::error::Then add the JSON content as a GitHub repository secret named FIREBASE_SERVICE_ACCOUNT"
+            exit 1
+          fi
+          echo "$FIREBASE_SERVICE_ACCOUNT" > "$RUNNER_TEMP/sa-key.json"
+          echo "GOOGLE_APPLICATION_CREDENTIALS=$RUNNER_TEMP/sa-key.json" >> "$GITHUB_ENV"
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+
+      - name: Verify credentials
+        run: firebase projects:list
+
+      - name: Deploy Hosting
+        run: firebase deploy --only hosting --project royal-fitness-club-7adc1
+
+      # Deploys both firestore.rules AND firestore.indexes.json
+      - name: Deploy Firestore rules + indexes
+        run: firebase deploy --only firestore --project royal-fitness-club-7adc1
+
+      # Storage rules require Firebase Rules Admin role on the service account
+      # Grant at: GCP Console > IAM > service account > Add role: Firebase Rules Admin
+      - name: Deploy Storage rules
+        continue-on-error: true
+        run: firebase deploy --only storage --project royal-fitness-club-7adc1
+
+      # Cloud Functions require Firebase Blaze (pay-as-you-go) plan
+      # Upgrade at: Firebase Console > Spark → Blaze
+      - name: Deploy Functions (requires Blaze plan)
+        continue-on-error: true
+        run: firebase deploy --only functions --project royal-fitness-club-7adc1
