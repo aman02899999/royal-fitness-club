@@ -1,85 +1,70 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 340" width="900" height="340">
-  <title>BODY TRANSFORMATION BLUEPRINT | USA Fitness Academy CERTIFICATE PROGRAM</title>
-  <desc>body transformation blueprint, certificate program, recompose your body, 8 modules, 6 WEEKS, rated 4.9/5, USA Fitness Academy certification</desc>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 340">
   <defs>
-    <linearGradient id="bgcs_b3" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#1e0b3d"/>
-      <stop offset="100%" stop-color="#6d28d9"/>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1c0a04"/><stop offset="50%" stop-color="#431407"/><stop offset="100%" stop-color="#7c2d12"/>
     </linearGradient>
-    <linearGradient id="shinecs_b3" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="rgba(255,255,255,0.04)"/>
-      <stop offset="100%" stop-color="rgba(0,0,0,0.0)"/>
+    <linearGradient id="fire" x1="0.5" y1="1" x2="0.5" y2="0">
+      <stop offset="0%" stop-color="#dc2626" stop-opacity="0.6"/>
+      <stop offset="60%" stop-color="#f97316" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#fbbf24" stop-opacity="0.2"/>
     </linearGradient>
+    <radialGradient id="glow" cx="72%" cy="50%"><stop offset="0%" stop-color="#f97316" stop-opacity="0.18"/><stop offset="100%" stop-color="#f97316" stop-opacity="0"/></radialGradient>
   </defs>
-
-  <!-- Background -->
-  <rect width="900" height="340" fill="url(#bgcs_b3)"/>
-
-  <!-- Subtle top shine -->
-  <rect width="900" height="160" fill="url(#shinecs_b3)"/>
-
-  <!-- Right accent circle (large faded emoji bg) -->
-  <circle cx="760" cy="160" r="155" fill="#a78bfa" opacity="0.08"/>
-  <circle cx="760" cy="160" r="100" fill="#a78bfa" opacity="0.06"/>
-
-  <!-- Left accent stripe -->
-  <rect x="0" y="0" width="6" height="340" fill="#a78bfa"/>
-
-  <!-- Top bar: academy name -->
-  <rect x="0" y="0" width="900" height="52" fill="rgba(0,0,0,0.35)"/>
-  <!-- Flag color bars -->
-  <rect x="6" y="0" width="4" height="52" fill="#B22234"/>
-  <rect x="10" y="0" width="4" height="52" fill="#FFFFFF" opacity="0.9"/>
-  <rect x="14" y="0" width="4" height="52" fill="#3C3B6E"/>
-  <text x="26" y="33" font-family="'Arial Black',Impact,sans-serif" font-size="14" font-weight="900" fill="#fff" letter-spacing="3">USA FITNESS ACADEMY</text>
-  <text x="26" y="46" font-family="Arial,sans-serif" font-size="9" fill="rgba(255,255,255,0.55)" letter-spacing="2">WORLD-CLASS CERTIFICATION PROGRAMS</text>
-
-  <!-- ACCREDITED badge -->
-  <rect x="800" y="10" width="90" height="22" rx="3" fill="#a78bfa" opacity="0.25"/>
-  <rect x="800" y="10" width="90" height="22" rx="3" fill="none" stroke="#a78bfa" stroke-width="1" opacity="0.7"/>
-  <text x="845" y="25" font-family="Arial,sans-serif" font-size="9" font-weight="700" fill="#a78bfa" text-anchor="middle" letter-spacing="1.5">ACCREDITED</text>
-
-  <!-- Level badge -->
-  <rect x="40" y="64" width="92" height="22" rx="11" fill="#7c3aed"/>
-  <text x="86" y="79" font-family="Arial,sans-serif" font-size="10" font-weight="700" fill="#fff" text-anchor="middle" letter-spacing="2">BEGINNER</text>
-
-  <!-- Course title (big) -->
-  <text x="40" y="136" font-family="Impact,'Arial Black',sans-serif" font-size="52" font-weight="900" fill="#fff" letter-spacing="1">BODY</text>
-  <text x="40" y="194" font-family="Impact,'Arial Black',sans-serif" font-size="52" font-weight="900" fill="#fff" letter-spacing="1">TRANSFORMATION</text>
-  <text x="40" y="252" font-family="Impact,'Arial Black',sans-serif" font-size="52" font-weight="900" fill="#fff" letter-spacing="1">BLUEPRINT</text>
-
-  <!-- Sub/type line -->
-  <text x="40" y="318" font-family="Arial,sans-serif" font-size="13" fill="#a78bfa" letter-spacing="3" opacity="0.9">CERTIFICATE PROGRAM</text>
-
-  <!-- Tag line -->
-  <rect x="40" y="332" width="158.5" height="20" rx="3" fill="rgba(255,255,255,0.07)" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
-  <text x="119.25" y="346" font-family="Arial,sans-serif" font-size="10" font-weight="700" fill="rgba(255,255,255,0.75)" text-anchor="middle" letter-spacing="1.5">RECOMPOSE YOUR BODY</text>
-
-  <!-- Emoji right side -->
-  <text x="750" y="210" font-size="110" text-anchor="middle" opacity="0.7">🔥</text>
-
+  <rect width="600" height="340" fill="url(#bg)"/>
+  <rect width="600" height="340" fill="url(#glow)"/>
+  <circle cx="480" cy="155" r="115" fill="#f97316" opacity="0.06"/>
+  <circle cx="540" cy="245" r="60" fill="#fbbf24" opacity="0.04"/>
+  <!-- Top bar -->
+  <rect width="600" height="48" fill="rgba(0,0,0,0.55)"/>
+  <rect x="0" y="0" width="4" height="48" fill="#FF9933"/>
+  <rect x="4" y="0" width="4" height="48" fill="#ffffff" opacity="0.9"/>
+  <rect x="8" y="0" width="4" height="48" fill="#138808"/>
+  <text x="22" y="20" font-family="Arial Black,Impact,sans-serif" font-size="11" font-weight="900" fill="#f97316" letter-spacing="2.5">RFC ACADEMY</text>
+  <text x="22" y="36" font-family="Arial,sans-serif" font-size="8" fill="rgba(255,255,255,0.5)" letter-spacing="1.5">ROYAL FITNESS CLUB · CERTIFIED PROGRAMS</text>
+  <rect x="488" y="11" width="104" height="26" rx="5" fill="#c2410c"/>
+  <text x="540" y="29" font-family="Arial,sans-serif" font-size="10" font-weight="800" fill="#ffffff" text-anchor="middle" letter-spacing="1.5">BEGINNER</text>
+  <!-- Left content block -->
+  <rect x="22" y="62" width="3" height="190" fill="#f97316" opacity="0.8"/>
+  <text x="36" y="82" font-family="Arial,sans-serif" font-size="9" fill="#f97316" letter-spacing="2.5" font-weight="700">TRANSFORMATION PROGRAM</text>
+  <text x="36" y="135" font-family="Arial Black,Impact,sans-serif" font-size="46" font-weight="900" fill="#ffffff" opacity="0.97">BODY</text>
+  <text x="36" y="192" font-family="Arial Black,Impact,sans-serif" font-size="46" font-weight="900" fill="#ffffff" opacity="0.97">TRANSFORM</text>
+  <text x="36" y="218" font-family="Arial,sans-serif" font-size="12" fill="rgba(255,255,255,0.6)">Burn fat · Build muscle · Change your life</text>
+  <rect x="36" y="232" width="86" height="24" rx="12" fill="rgba(255,255,255,0.08)" stroke="#f97316" stroke-width="1" stroke-opacity="0.5"/>
+  <text x="79" y="248" font-family="Arial,sans-serif" font-size="9" font-weight="700" fill="#f97316" text-anchor="middle">8 MODULES</text>
+  <rect x="132" y="232" width="86" height="24" rx="12" fill="rgba(255,255,255,0.08)" stroke="#f97316" stroke-width="1" stroke-opacity="0.5"/>
+  <text x="175" y="248" font-family="Arial,sans-serif" font-size="9" font-weight="700" fill="#f97316" text-anchor="middle">6 WEEKS</text>
+  <!-- Before/After silhouettes -->
+  <!-- BEFORE (heavier) -->
+  <circle cx="405" cy="135" r="14" fill="rgba(255,255,255,0.1)"/>
+  <ellipse cx="405" cy="180" rx="20" ry="30" fill="rgba(255,255,255,0.08)"/>
+  <rect x="388" y="205" width="14" height="48" rx="7" fill="rgba(255,255,255,0.08)"/>
+  <rect x="405" y="205" width="14" height="48" rx="7" fill="rgba(255,255,255,0.08)"/>
+  <!-- AFTER (leaner) -->
+  <circle cx="468" cy="132" r="13" fill="rgba(255,255,255,0.18)"/>
+  <ellipse cx="468" cy="172" rx="13" ry="26" fill="rgba(255,255,255,0.15)"/>
+  <rect x="458" y="196" width="10" height="52" rx="5" fill="rgba(255,255,255,0.15)" transform="rotate(-4 463 222)"/>
+  <rect x="470" y="196" width="10" height="52" rx="5" fill="rgba(255,255,255,0.15)" transform="rotate(4 475 222)"/>
+  <!-- Arrow between them -->
+  <line x1="425" y1="180" x2="452" y2="180" stroke="#f97316" stroke-width="2.5" stroke-opacity="0.8"/>
+  <polygon points="452,175 460,180 452,185" fill="#f97316" opacity="0.8"/>
+  <!-- flame shapes -->
+  <path d="M500 280 Q494 250 504 235 Q508 248 516 240 Q512 260 520 280 Z" fill="url(#fire)"/>
+  <path d="M520 280 Q514 245 526 228 Q532 244 540 235 Q534 260 542 280 Z" fill="url(#fire)"/>
+  <path d="M540 280 Q532 252 546 238 Q548 255 556 248 Q550 265 558 280 Z" fill="url(#fire)" opacity="0.7"/>
+  <circle cx="480" cy="190" r="80" fill="none" stroke="#f97316" stroke-width="1" stroke-opacity="0.12" stroke-dasharray="6,5"/>
+  <circle cx="480" cy="190" r="55" fill="none" stroke="#f97316" stroke-width="1" stroke-opacity="0.18" stroke-dasharray="4,4"/>
+  <circle cx="480" cy="190" r="30" fill="#f97316" opacity="0.08"/>
+  <text x="480" y="278" font-family="Arial,sans-serif" font-size="9" fill="#f97316" text-anchor="middle" letter-spacing="1" opacity="0.7">FAT LOSS · MUSCLE GAIN</text>
   <!-- Bottom bar -->
-  <rect x="0" y="290" width="900" height="50" fill="rgba(0,0,0,0.45)"/>
-  <rect x="0" y="290" width="900" height="1" fill="#a78bfa" opacity="0.4"/>
-
-  <!-- Stats -->
-  <text x="40" y="322" font-family="Arial,sans-serif" font-size="12" font-weight="700" fill="#a78bfa">8</text>
-  <text x="52" y="322" font-family="Arial,sans-serif" font-size="11" fill="rgba(255,255,255,0.55)"> MODULES</text>
-
-  <text x="180" y="322" font-family="Arial,sans-serif" font-size="12" font-weight="700" fill="#a78bfa">6 WEEKS</text>
-
-  <text x="310" y="322" font-family="Arial,sans-serif" font-size="12" font-weight="700" fill="#fbbf24">★★★★</text>
-  <text x="358" y="322" font-family="Arial,sans-serif" font-size="11" fill="rgba(255,255,255,0.55)"> 4.9</text>
-
-  <!-- Price pill -->
-  <rect x="610" y="300" width="110" height="28" rx="14" fill="#a78bfa" opacity="0.18"/>
-  <rect x="610" y="300" width="110" height="28" rx="14" fill="none" stroke="#a78bfa" stroke-width="1" opacity="0.5"/>
-  <text x="665" y="319" font-family="'Arial Black',Impact,sans-serif" font-size="13" font-weight="900" fill="#a78bfa" text-anchor="middle">₹3,999</text>
-
-  <!-- USA Fitness Academy seal circle -->
-  <circle cx="845" cy="315" r="22" fill="#a78bfa" opacity="0.12"/>
-  <circle cx="845" cy="315" r="22" fill="none" stroke="#a78bfa" stroke-width="1" opacity="0.4"/>
-  <text x="845" y="310" font-family="Arial,sans-serif" font-size="6" font-weight="700" fill="#a78bfa" text-anchor="middle" letter-spacing="0.5">USA FITNESS</text>
-  <text x="845" y="320" font-family="Arial,sans-serif" font-size="6" font-weight="700" fill="#a78bfa" text-anchor="middle" letter-spacing="0.5">ACADEMY</text>
-  <text x="845" y="330" font-family="Arial,sans-serif" font-size="7" fill="#a78bfa" text-anchor="middle">✦</text>
+  <rect x="0" y="290" width="600" height="50" fill="rgba(0,0,0,0.6)"/>
+  <rect x="0" y="290" width="600" height="1.5" fill="rgba(255,255,255,0.12)"/>
+  <rect x="22" y="303" width="88" height="27" rx="14" fill="#E8001D"/>
+  <text x="66" y="321" font-family="Arial Black,sans-serif" font-size="13" font-weight="900" fill="#ffffff" text-anchor="middle">₹3,999</text>
+  <text x="120" y="316" font-family="Arial,sans-serif" font-size="11" fill="rgba(255,255,255,0.38)" text-decoration="line-through">₹7,999</text>
+  <rect x="148" y="303" width="54" height="27" rx="5" fill="rgba(220,38,38,0.28)"/>
+  <text x="175" y="321" font-family="Arial,sans-serif" font-size="10" font-weight="700" fill="#f87171" text-anchor="middle">50% OFF</text>
+  <text x="240" y="316" font-family="Arial,sans-serif" font-size="11" fill="rgba(255,255,255,0.5)">📚 8 modules</text>
+  <text x="340" y="316" font-family="Arial,sans-serif" font-size="11" fill="rgba(255,255,255,0.5)">⏱ 6 Weeks</text>
+  <text x="430" y="316" font-family="Arial,sans-serif" font-size="11" fill="#fbbf24">★ 4.9</text>
+  <text x="460" y="316" font-family="Arial,sans-serif" font-size="10" fill="rgba(255,255,255,0.4)">· 1.6K+</text>
 </svg>

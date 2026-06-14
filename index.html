@@ -757,12 +757,13 @@ body.sb-open #screen-dashboard .dash-wrap{padding-top:78px;}
 .cr-lvl-dot.adv{background:#3b82f6;}
 .cr-lvl-dot.mst{background:#e8001d;}
 /* Course grid */
-.cr-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:22px;margin-bottom:36px;}
+.cr-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:22px;margin-bottom:36px;}
 /* Course cards — new cr-card system */
 .cr-card{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;transition:transform .18s,box-shadow .18s;}
 .cr-card:hover{transform:translateY(-4px);box-shadow:0 16px 48px rgba(0,0,0,.45);}
 .cr-card.hidden-by-filter{display:none!important;}
-.cr-banner{height:180px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
+/* Banner uses aspect-ratio so thumbnail never crops on any screen size */
+.cr-banner{aspect-ratio:600/340;width:100%;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;background-position:left center!important;background-size:cover!important;}
 .cr-banner-overlay{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.25) 0%,rgba(0,0,0,.6) 100%);z-index:1;}
 .cr-enrolled-badge{position:absolute;top:10px;right:10px;font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:3px 9px;border-radius:20px;background:rgba(34,197,94,.85);color:#fff;border:1px solid rgba(34,197,94,.9);z-index:2;}
 .cr-body{padding:18px;flex:1;display:flex;flex-direction:column;}
@@ -7774,8 +7775,8 @@ function _renderCourseDetails(c) {
     ⚠️ <strong>18+ Educational Course</strong> — This course covers pharmaceutical performance science for educational and harm-reduction purposes only. All content is strictly educational. The use of controlled substances may be illegal in your jurisdiction. By enrolling you confirm you are 18+ and understand this is educational content only.
   </div>` : '';
   const heroImg = c.img ? `
-    <div style="position:relative;height:220px;margin:-20px -20px 20px;overflow:hidden;border-radius:10px 10px 0 0;">
-      <img src="${c.img}" alt="${c.name}" style="width:100%;height:100%;object-fit:cover;display:block;" loading="lazy">
+    <div style="position:relative;aspect-ratio:600/340;margin:-20px -20px 20px;overflow:hidden;border-radius:10px 10px 0 0;">
+      <img src="${c.img}" alt="${c.name}" style="width:100%;height:100%;object-fit:cover;object-position:left center;display:block;" loading="lazy">
       <div style="position:absolute;inset:0;background:linear-gradient(0deg,rgba(9,9,16,.9) 0%,rgba(9,9,16,.2) 60%,transparent 100%);"></div>
       <div style="position:absolute;bottom:16px;left:16px;right:16px;">
         <div style="font-size:42px;filter:drop-shadow(0 2px 12px rgba(0,0,0,.8));">${c.emoji}</div>
@@ -7892,8 +7893,8 @@ function _renderCourseViewer(c) {
     </div>`;
 
   const viewerHero = c.img ? `
-    <div style="position:relative;height:160px;margin:-20px -20px 16px;overflow:hidden;border-radius:10px 10px 0 0;">
-      <img src="${c.img}" alt="${c.name}" style="width:100%;height:100%;object-fit:cover;display:block;" loading="lazy">
+    <div style="position:relative;aspect-ratio:600/340;margin:-20px -20px 16px;overflow:hidden;border-radius:10px 10px 0 0;">
+      <img src="${c.img}" alt="${c.name}" style="width:100%;height:100%;object-fit:cover;object-position:left center;display:block;" loading="lazy">
       <div style="position:absolute;inset:0;background:linear-gradient(0deg,rgba(9,9,16,.85) 0%,transparent 60%);"></div>
       <div style="position:absolute;bottom:12px;left:14px;display:flex;align-items:center;gap:10px;">
         <span style="font-size:32px;filter:drop-shadow(0 2px 8px rgba(0,0,0,.9));">${c.emoji}</span>

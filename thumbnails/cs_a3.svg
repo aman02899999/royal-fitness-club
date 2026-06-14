@@ -1,84 +1,71 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 340" width="900" height="340">
-  <title>PHYSIO & SPORTS REHABILITATION | USA Fitness Academy DIPLOMA PROGRAM</title>
-  <desc>physio & sports rehabilitation, diploma program, heal & prevent injury, 9 modules, 8 WEEKS, rated 4.8/5, USA Fitness Academy certification</desc>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 340">
   <defs>
-    <linearGradient id="bgcs_a3" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#0c2340"/>
-      <stop offset="100%" stop-color="#075985"/>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#021b1f"/><stop offset="50%" stop-color="#0a2f38"/><stop offset="100%" stop-color="#134e4a"/>
     </linearGradient>
-    <linearGradient id="shinecs_a3" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="rgba(255,255,255,0.04)"/>
-      <stop offset="100%" stop-color="rgba(0,0,0,0.0)"/>
-    </linearGradient>
+    <radialGradient id="glow" cx="72%" cy="47%"><stop offset="0%" stop-color="#06b6d4" stop-opacity="0.14"/><stop offset="100%" stop-color="#06b6d4" stop-opacity="0"/></radialGradient>
   </defs>
-
-  <!-- Background -->
-  <rect width="900" height="340" fill="url(#bgcs_a3)"/>
-
-  <!-- Subtle top shine -->
-  <rect width="900" height="160" fill="url(#shinecs_a3)"/>
-
-  <!-- Right accent circle (large faded emoji bg) -->
-  <circle cx="760" cy="160" r="155" fill="#38bdf8" opacity="0.08"/>
-  <circle cx="760" cy="160" r="100" fill="#38bdf8" opacity="0.06"/>
-
-  <!-- Left accent stripe -->
-  <rect x="0" y="0" width="6" height="340" fill="#38bdf8"/>
-
-  <!-- Top bar: academy name -->
-  <rect x="0" y="0" width="900" height="52" fill="rgba(0,0,0,0.35)"/>
-  <!-- Flag color bars -->
-  <rect x="6" y="0" width="4" height="52" fill="#B22234"/>
-  <rect x="10" y="0" width="4" height="52" fill="#FFFFFF" opacity="0.9"/>
-  <rect x="14" y="0" width="4" height="52" fill="#3C3B6E"/>
-  <text x="26" y="33" font-family="'Arial Black',Impact,sans-serif" font-size="14" font-weight="900" fill="#fff" letter-spacing="3">USA FITNESS ACADEMY</text>
-  <text x="26" y="46" font-family="Arial,sans-serif" font-size="9" fill="rgba(255,255,255,0.55)" letter-spacing="2">WORLD-CLASS CERTIFICATION PROGRAMS</text>
-
-  <!-- ACCREDITED badge -->
-  <rect x="800" y="10" width="90" height="22" rx="3" fill="#38bdf8" opacity="0.25"/>
-  <rect x="800" y="10" width="90" height="22" rx="3" fill="none" stroke="#38bdf8" stroke-width="1" opacity="0.7"/>
-  <text x="845" y="25" font-family="Arial,sans-serif" font-size="9" font-weight="700" fill="#38bdf8" text-anchor="middle" letter-spacing="1.5">ACCREDITED</text>
-
-  <!-- Level badge -->
-  <rect x="40" y="64" width="92" height="22" rx="11" fill="#0369a1"/>
-  <text x="86" y="79" font-family="Arial,sans-serif" font-size="10" font-weight="700" fill="#fff" text-anchor="middle" letter-spacing="2">ADVANCED</text>
-
-  <!-- Course title (big) -->
-  <text x="40" y="152" font-family="Impact,'Arial Black',sans-serif" font-size="64" font-weight="900" fill="#fff" letter-spacing="1">PHYSIO & SPORTS</text>
-  <text x="40" y="222" font-family="Impact,'Arial Black',sans-serif" font-size="64" font-weight="900" fill="#fff" letter-spacing="1">REHABILITATION</text>
-
-  <!-- Sub/type line -->
-  <text x="40" y="300" font-family="Arial,sans-serif" font-size="13" fill="#38bdf8" letter-spacing="3" opacity="0.9">DIPLOMA PROGRAM</text>
-
-  <!-- Tag line -->
-  <rect x="40" y="314" width="173.5" height="20" rx="3" fill="rgba(255,255,255,0.07)" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
-  <text x="126.75" y="328" font-family="Arial,sans-serif" font-size="10" font-weight="700" fill="rgba(255,255,255,0.75)" text-anchor="middle" letter-spacing="1.5">HEAL & PREVENT INJURY</text>
-
-  <!-- Emoji right side -->
-  <text x="750" y="210" font-size="110" text-anchor="middle" opacity="0.7">🦴</text>
-
+  <rect width="600" height="340" fill="url(#bg)"/>
+  <rect width="600" height="340" fill="url(#glow)"/>
+  <circle cx="478" cy="160" r="118" fill="#06b6d4" opacity="0.06"/>
+  <!-- Top bar -->
+  <rect width="600" height="48" fill="rgba(0,0,0,0.55)"/>
+  <rect x="0" y="0" width="4" height="48" fill="#FF9933"/>
+  <rect x="4" y="0" width="4" height="48" fill="#ffffff" opacity="0.9"/>
+  <rect x="8" y="0" width="4" height="48" fill="#138808"/>
+  <text x="22" y="20" font-family="Arial Black,Impact,sans-serif" font-size="11" font-weight="900" fill="#06b6d4" letter-spacing="2.5">RFC ACADEMY</text>
+  <text x="22" y="36" font-family="Arial,sans-serif" font-size="8" fill="rgba(255,255,255,0.5)" letter-spacing="1.5">ROYAL FITNESS CLUB · CERTIFIED PROGRAMS</text>
+  <rect x="488" y="11" width="104" height="26" rx="5" fill="#0e7490"/>
+  <text x="540" y="29" font-family="Arial,sans-serif" font-size="10" font-weight="800" fill="#ffffff" text-anchor="middle" letter-spacing="1.5">ADVANCED</text>
+  <!-- Left content block -->
+  <rect x="22" y="62" width="3" height="190" fill="#06b6d4" opacity="0.8"/>
+  <text x="36" y="82" font-family="Arial,sans-serif" font-size="9" fill="#06b6d4" letter-spacing="2.5" font-weight="700">DIPLOMA PROGRAM</text>
+  <text x="36" y="135" font-family="Arial Black,Impact,sans-serif" font-size="46" font-weight="900" fill="#ffffff" opacity="0.97">SPORTS</text>
+  <text x="36" y="192" font-family="Arial Black,Impact,sans-serif" font-size="46" font-weight="900" fill="#ffffff" opacity="0.97">PHYSIO</text>
+  <text x="36" y="218" font-family="Arial,sans-serif" font-size="12" fill="rgba(255,255,255,0.6)">Rehabilitate · Recover · Return to sport</text>
+  <rect x="36" y="232" width="86" height="24" rx="12" fill="rgba(255,255,255,0.08)" stroke="#06b6d4" stroke-width="1" stroke-opacity="0.5"/>
+  <text x="79" y="248" font-family="Arial,sans-serif" font-size="9" font-weight="700" fill="#06b6d4" text-anchor="middle">10 MODULES</text>
+  <rect x="132" y="232" width="86" height="24" rx="12" fill="rgba(255,255,255,0.08)" stroke="#06b6d4" stroke-width="1" stroke-opacity="0.5"/>
+  <text x="175" y="248" font-family="Arial,sans-serif" font-size="9" font-weight="700" fill="#06b6d4" text-anchor="middle">8 WEEKS</text>
+  <!-- Anatomy body outline -->
+  <!-- Head -->
+  <circle cx="468" cy="110" r="22" fill="none" stroke="#06b6d4" stroke-width="1.5" stroke-opacity="0.5"/>
+  <!-- Spine -->
+  <line x1="468" y1="132" x2="468" y2="230" stroke="#06b6d4" stroke-width="1.5" stroke-opacity="0.4" stroke-dasharray="4,3"/>
+  <!-- Ribcage -->
+  <ellipse cx="468" cy="175" rx="38" ry="28" fill="none" stroke="#06b6d4" stroke-width="1.5" stroke-opacity="0.4"/>
+  <ellipse cx="468" cy="175" rx="28" ry="20" fill="none" stroke="#06b6d4" stroke-width="1" stroke-opacity="0.25"/>
+  <!-- Shoulder lines -->
+  <line x1="430" y1="145" x2="506" y2="145" stroke="#06b6d4" stroke-width="1.5" stroke-opacity="0.45"/>
+  <!-- Arms -->
+  <path d="M430 145 Q410 175 415 210" stroke="#06b6d4" stroke-width="8" fill="none" stroke-linecap="round" stroke-opacity="0.2"/>
+  <path d="M506 145 Q526 175 521 210" stroke="#06b6d4" stroke-width="8" fill="none" stroke-linecap="round" stroke-opacity="0.2"/>
+  <!-- Hip/pelvis -->
+  <ellipse cx="468" cy="230" rx="30" ry="16" fill="none" stroke="#06b6d4" stroke-width="1.5" stroke-opacity="0.4"/>
+  <!-- Legs -->
+  <path d="M455 244 Q448 265 450 285" stroke="#06b6d4" stroke-width="10" fill="none" stroke-linecap="round" stroke-opacity="0.18"/>
+  <path d="M481 244 Q488 265 486 285" stroke="#06b6d4" stroke-width="10" fill="none" stroke-linecap="round" stroke-opacity="0.18"/>
+  <!-- Joint highlight circles -->
+  <circle cx="430" cy="145" r="6" fill="#06b6d4" opacity="0.4"/>
+  <circle cx="506" cy="145" r="6" fill="#06b6d4" opacity="0.4"/>
+  <circle cx="415" cy="210" r="5" fill="#06b6d4" opacity="0.35"/>
+  <circle cx="521" cy="210" r="5" fill="#06b6d4" opacity="0.35"/>
+  <circle cx="450" cy="285" r="5" fill="#06b6d4" opacity="0.3"/>
+  <circle cx="486" cy="285" r="5" fill="#06b6d4" opacity="0.3"/>
+  <!-- Medical cross -->
+  <rect x="543" y="135" width="8" height="28" rx="3" fill="#06b6d4" opacity="0.5"/>
+  <rect x="535" y="143" width="24" height="8" rx="3" fill="#06b6d4" opacity="0.5"/>
+  <text x="428" y="278" font-family="Arial,sans-serif" font-size="9" fill="#06b6d4" text-anchor="middle" letter-spacing="1" opacity="0.7">REHABILITATION</text>
   <!-- Bottom bar -->
-  <rect x="0" y="290" width="900" height="50" fill="rgba(0,0,0,0.45)"/>
-  <rect x="0" y="290" width="900" height="1" fill="#38bdf8" opacity="0.4"/>
-
-  <!-- Stats -->
-  <text x="40" y="322" font-family="Arial,sans-serif" font-size="12" font-weight="700" fill="#38bdf8">9</text>
-  <text x="52" y="322" font-family="Arial,sans-serif" font-size="11" fill="rgba(255,255,255,0.55)"> MODULES</text>
-
-  <text x="180" y="322" font-family="Arial,sans-serif" font-size="12" font-weight="700" fill="#38bdf8">8 WEEKS</text>
-
-  <text x="310" y="322" font-family="Arial,sans-serif" font-size="12" font-weight="700" fill="#fbbf24">★★★★</text>
-  <text x="358" y="322" font-family="Arial,sans-serif" font-size="11" fill="rgba(255,255,255,0.55)"> 4.8</text>
-
-  <!-- Price pill -->
-  <rect x="610" y="300" width="110" height="28" rx="14" fill="#38bdf8" opacity="0.18"/>
-  <rect x="610" y="300" width="110" height="28" rx="14" fill="none" stroke="#38bdf8" stroke-width="1" opacity="0.5"/>
-  <text x="665" y="319" font-family="'Arial Black',Impact,sans-serif" font-size="13" font-weight="900" fill="#38bdf8" text-anchor="middle">₹5,499</text>
-
-  <!-- USA Fitness Academy seal circle -->
-  <circle cx="845" cy="315" r="22" fill="#38bdf8" opacity="0.12"/>
-  <circle cx="845" cy="315" r="22" fill="none" stroke="#38bdf8" stroke-width="1" opacity="0.4"/>
-  <text x="845" y="310" font-family="Arial,sans-serif" font-size="6" font-weight="700" fill="#38bdf8" text-anchor="middle" letter-spacing="0.5">USA FITNESS</text>
-  <text x="845" y="320" font-family="Arial,sans-serif" font-size="6" font-weight="700" fill="#38bdf8" text-anchor="middle" letter-spacing="0.5">ACADEMY</text>
-  <text x="845" y="330" font-family="Arial,sans-serif" font-size="7" fill="#38bdf8" text-anchor="middle">✦</text>
+  <rect x="0" y="290" width="600" height="50" fill="rgba(0,0,0,0.6)"/>
+  <rect x="0" y="290" width="600" height="1.5" fill="rgba(255,255,255,0.12)"/>
+  <rect x="22" y="303" width="88" height="27" rx="14" fill="#E8001D"/>
+  <text x="66" y="321" font-family="Arial Black,sans-serif" font-size="13" font-weight="900" fill="#ffffff" text-anchor="middle">₹5,499</text>
+  <text x="120" y="316" font-family="Arial,sans-serif" font-size="11" fill="rgba(255,255,255,0.38)" text-decoration="line-through">₹10,999</text>
+  <rect x="148" y="303" width="54" height="27" rx="5" fill="rgba(220,38,38,0.28)"/>
+  <text x="175" y="321" font-family="Arial,sans-serif" font-size="10" font-weight="700" fill="#f87171" text-anchor="middle">50% OFF</text>
+  <text x="240" y="316" font-family="Arial,sans-serif" font-size="11" fill="rgba(255,255,255,0.5)">📚 10 modules</text>
+  <text x="340" y="316" font-family="Arial,sans-serif" font-size="11" fill="rgba(255,255,255,0.5)">⏱ 8 Weeks</text>
+  <text x="430" y="316" font-family="Arial,sans-serif" font-size="11" fill="#fbbf24">★ 4.8</text>
+  <text x="460" y="316" font-family="Arial,sans-serif" font-size="10" fill="rgba(255,255,255,0.4)">· 650+</text>
 </svg>
