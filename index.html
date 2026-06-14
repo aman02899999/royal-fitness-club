@@ -1640,6 +1640,50 @@ img{loading:lazy;}
   .pfb-out-grid{grid-template-columns:1fr 1fr;}
 }
 @media(max-width:480px){.pfb-grid{grid-template-columns:1fr;}}
+
+/* ─── ADMIN PANEL ─────────────────────────────────────────── */
+.adm-wrap{max-width:960px;margin:0 auto;padding:0 0 60px;}
+.adm-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;flex-wrap:wrap;gap:12px;}
+.adm-title{font-family:'Bebas Neue',sans-serif;font-size:32px;letter-spacing:2px;}
+.adm-badge{background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.4);color:#fca5a5;font-size:10px;font-weight:700;letter-spacing:2px;padding:4px 12px;border-radius:20px;}
+.adm-stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin-bottom:28px;}
+.adm-stat-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;text-align:center;}
+.adm-stat-val{font-family:'Bebas Neue',sans-serif;font-size:30px;color:var(--gold);}
+.adm-stat-lbl{font-size:10px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-top:2px;}
+.adm-course-table{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:20px;}
+.adm-table-hdr{display:grid;grid-template-columns:2fr 1fr 1fr 1fr 120px;gap:12px;padding:12px 16px;border-bottom:1px solid var(--border);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);}
+.adm-row{display:grid;grid-template-columns:2fr 1fr 1fr 1fr 120px;gap:12px;padding:14px 16px;border-bottom:1px solid rgba(255,255,255,.04);align-items:center;transition:background .15s;}
+.adm-row:last-child{border-bottom:none;}
+.adm-row:hover{background:rgba(255,255,255,.02);}
+.adm-course-name{font-size:13px;font-weight:600;}
+.adm-course-lvl{font-size:10px;font-weight:700;letter-spacing:1px;padding:3px 10px;border-radius:10px;}
+.adm-lvl-beginner{background:rgba(22,163,74,.15);color:#4ade80;}
+.adm-lvl-advanced{background:rgba(245,158,11,.15);color:#fbbf24;}
+.adm-lvl-master{background:rgba(124,58,237,.15);color:#a78bfa;}
+.adm-price{font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--gold);}
+.adm-orig{font-size:11px;text-decoration:line-through;color:var(--muted);}
+.adm-actions{display:flex;gap:6px;}
+.adm-btn-edit{background:rgba(59,130,246,.15);border:1px solid rgba(59,130,246,.4);color:#60a5fa;font-size:11px;padding:5px 10px;border-radius:6px;cursor:pointer;transition:background .15s;}
+.adm-btn-del{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);color:#f87171;font-size:11px;padding:5px 10px;border-radius:6px;cursor:pointer;transition:background .15s;}
+.adm-btn-edit:hover{background:rgba(59,130,246,.3);}
+.adm-btn-del:hover{background:rgba(239,68,68,.25);}
+#adm-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:10001;align-items:center;justify-content:center;padding:16px;}
+#adm-modal.open{display:flex;}
+.adm-modal-box{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:28px;width:100%;max-width:560px;max-height:90vh;overflow-y:auto;}
+.adm-modal-title{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:2px;}
+.adm-field{margin-bottom:14px;}
+.adm-label{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;display:block;}
+.adm-input{width:100%;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:8px;padding:10px 14px;color:var(--text);font-size:13px;box-sizing:border-box;font-family:inherit;}
+.adm-input:focus{outline:none;border-color:var(--red);}
+.adm-input-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.adm-footer{display:flex;gap:10px;margin-top:20px;}
+@media(max-width:768px){
+  .adm-table-hdr{grid-template-columns:1fr 90px!important;}
+  .adm-table-hdr > *:not(:first-child):not(:last-child){display:none!important;}
+  .adm-row{grid-template-columns:1fr 90px!important;}
+  .adm-row > *:nth-child(2),.adm-row > *:nth-child(3),.adm-row > *:nth-child(4){display:none!important;}
+  .adm-input-row{grid-template-columns:1fr;}
+}
 </style>
 <!-- Firebase SDK (compat) -->
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
@@ -1742,6 +1786,9 @@ img{loading:lazy;}
     <div class="sb-section-lbl">EARN & LEARN</div>
     <div class="sb-item" data-screen="referrals" onclick="switchScreen('referrals',this)"><span class="sb-icon">💰</span><span>Wallet & Referrals</span></div>
     <div class="sb-item" data-screen="courses" onclick="switchScreen('courses',this)"><span class="sb-icon">🎓</span><span>Courses</span></div>
+
+    <div class="sb-section-lbl" id="sb-admin-lbl" style="display:none;">ADMIN</div>
+    <div class="sb-item" id="sb-admin-item" data-screen="admin" onclick="switchScreen('admin',this)" style="display:none;"><span class="sb-icon">⚙️</span><span>Admin Panel</span><span class="sb-badge-pill" style="background:#e8001d;color:#fff;border-radius:4px;">ADMIN</span></div>
 
     <div class="sb-section-lbl">STORE</div>
     <div class="sb-item" data-screen="store" onclick="switchScreen('store',this)"><span class="sb-icon">📚</span><span>Knowledge Store</span></div>
@@ -2947,6 +2994,87 @@ img{loading:lazy;}
     </div>
   </div>
 </section>
+
+<!-- ADMIN PANEL SCREEN -->
+<section id="admin-panel" style="padding:60px 20px;display:none;">
+  <div class="adm-wrap">
+    <div class="adm-hdr">
+      <div>
+        <div class="adm-title">⚙️ ADMIN PANEL</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:4px;">Manage courses, prices &amp; content</div>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+        <span class="adm-badge">🔐 ADMIN ACCESS</span>
+        <button class="bsm" onclick="adminAddCourse()">+ Add Course</button>
+        <button class="bsm" style="background:rgba(239,68,68,.12);border-color:rgba(239,68,68,.4);color:#f87171;" onclick="adminResetDefaults()">↺ Reset Defaults</button>
+      </div>
+    </div>
+    <div class="adm-stats-row" id="adm-stats-row"></div>
+    <div class="adm-course-table">
+      <div class="adm-table-hdr">
+        <span>Course</span><span>Level</span><span>Price</span><span>Original</span><span>Actions</span>
+      </div>
+      <div id="adm-courses-list"></div>
+    </div>
+  </div>
+</section>
+
+<!-- Admin Edit / Add Modal -->
+<div id="adm-modal">
+  <div class="adm-modal-box">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+      <div class="adm-modal-title" id="adm-modal-title">Edit Course</div>
+      <button style="background:none;border:none;color:var(--muted);font-size:22px;cursor:pointer;" onclick="admCloseModal()">✕</button>
+    </div>
+    <input type="hidden" id="adm-edit-id">
+    <div class="adm-field">
+      <label class="adm-label">Course Name</label>
+      <input class="adm-input" id="adm-edit-name" placeholder="e.g. Fitness Foundations Certificate">
+    </div>
+    <div class="adm-field">
+      <label class="adm-label">Short Description</label>
+      <textarea class="adm-input" id="adm-edit-desc" rows="3" style="resize:vertical;" placeholder="Course description..."></textarea>
+    </div>
+    <div class="adm-input-row">
+      <div class="adm-field">
+        <label class="adm-label">Selling Price ₹ (max 9,999)</label>
+        <input class="adm-input" id="adm-edit-price" type="number" min="99" max="9999" placeholder="2999">
+      </div>
+      <div class="adm-field">
+        <label class="adm-label">Original / Crossed Price ₹</label>
+        <input class="adm-input" id="adm-edit-orig" type="number" min="99" placeholder="5999">
+      </div>
+    </div>
+    <div class="adm-input-row">
+      <div class="adm-field">
+        <label class="adm-label">Level</label>
+        <select class="adm-input" id="adm-edit-level">
+          <option value="beginner">Beginner</option>
+          <option value="advanced">Advanced</option>
+          <option value="master">Master</option>
+        </select>
+      </div>
+      <div class="adm-field">
+        <label class="adm-label">Duration</label>
+        <input class="adm-input" id="adm-edit-duration" placeholder="e.g. 4 Weeks">
+      </div>
+    </div>
+    <div class="adm-input-row">
+      <div class="adm-field">
+        <label class="adm-label">Emoji Icon</label>
+        <input class="adm-input" id="adm-edit-emoji" placeholder="🌱">
+      </div>
+      <div class="adm-field">
+        <label class="adm-label">Rating (1–5)</label>
+        <input class="adm-input" id="adm-edit-rating" type="number" step="0.1" min="1" max="5" placeholder="4.9">
+      </div>
+    </div>
+    <div class="adm-footer">
+      <button class="bfire" style="flex:1;" onclick="admSaveCourse()">💾 Save Changes</button>
+      <button class="bsm" onclick="admCloseModal()">Cancel</button>
+    </div>
+  </div>
+</div>
 
 <!-- CHALLENGE ENTRY MODAL -->
 <div id="ch-modal" class="modal-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:10000;align-items:center;justify-content:center;padding:20px;">
@@ -6902,7 +7030,7 @@ const DEFAULT_COURSES = [
     id:'cs_b1', emoji:'🌱', name:'Fitness Foundations Certificate',
     level:'beginner',
     desc:'Build an unshakeable base. Learn how the body moves, adapts, and grows. Master the fundamentals of exercise science, recovery, and healthy habits that every elite athlete relies on.',
-    price:999, origPrice:2499, duration:'4 Weeks', students:2340, rating:4.9,
+    price:2999, origPrice:5999, duration:'4 Weeks', students:2340, rating:4.9,
     img:'thumbnails/cs_b1.svg',
     banner:'linear-gradient(135deg,#065f46,#059669)',
     mods:[
@@ -6936,7 +7064,7 @@ const DEFAULT_COURSES = [
     id:'cs_b2', emoji:'🥗', name:'Nutrition & Healthy Eating Certificate',
     level:'beginner',
     desc:'Understand food at a molecular level. Build meal plans, decode labels, and learn the Indian diet science that powers elite athletes. Become the expert everyone turns to for nutrition advice.',
-    price:1299, origPrice:2999, duration:'4 Weeks', students:1870, rating:4.8,
+    price:3499, origPrice:6999, duration:'4 Weeks', students:1870, rating:4.8,
     img:'thumbnails/cs_b2.svg',
     banner:'linear-gradient(135deg,#1d4ed8,#0ea5e9)',
     mods:[
@@ -6970,7 +7098,7 @@ const DEFAULT_COURSES = [
     id:'cs_b3', emoji:'🔥', name:'Body Transformation Blueprint',
     level:'beginner',
     desc:'The complete A-to-Z guide for transforming your body in 90 days. Fat loss, muscle building, and body recomposition strategies designed for real Indian lifestyles.',
-    price:1499, origPrice:3499, duration:'6 Weeks', students:1560, rating:4.9,
+    price:3999, origPrice:7999, duration:'6 Weeks', students:1560, rating:4.9,
     img:'thumbnails/cs_b3.svg',
     banner:'linear-gradient(135deg,#7c3aed,#db2777)',
     mods:[
@@ -7006,7 +7134,7 @@ const DEFAULT_COURSES = [
     id:'cs_a1', emoji:'💪', name:'Certified Personal Trainer (CPT)',
     level:'advanced',
     desc:'Become a professional-grade personal trainer. 12 deep modules covering anatomy, biomechanics, periodization, client assessment, corrective exercise, and the business of fitness. India\'s most comprehensive online CPT program.',
-    price:3999, origPrice:8999, duration:'10 Weeks', students:1140, rating:4.9,
+    price:5999, origPrice:11999, duration:'10 Weeks', students:1140, rating:4.9,
     img:'thumbnails/cs_a1.svg',
     banner:'linear-gradient(135deg,#e8001d,#7c3aed)',
     mods:[
@@ -7052,7 +7180,7 @@ const DEFAULT_COURSES = [
     id:'cs_a2', emoji:'🧬', name:'Sports Nutrition & Dietetics Diploma',
     level:'advanced',
     desc:'Go beyond basic macros. This diploma covers clinical nutrition science, sports dietetics, gut health, blood markers, and how to build evidence-based nutrition plans for athletes and general populations.',
-    price:4499, origPrice:9999, duration:'10 Weeks', students:890, rating:4.8,
+    price:6999, origPrice:13999, duration:'10 Weeks', students:890, rating:4.8,
     img:'thumbnails/cs_a2.svg',
     banner:'linear-gradient(135deg,#059669,#065f46)',
     mods:[
@@ -7098,7 +7226,7 @@ const DEFAULT_COURSES = [
     id:'cs_a3', emoji:'🦴', name:'Physio & Sports Rehabilitation Diploma',
     level:'advanced',
     desc:'Learn to prevent, assess, and rehabilitate the injuries that stop athletes in their tracks. Covers physiotherapy principles, manual therapy basics, exercise rehab, and return-to-sport protocols.',
-    price:3499, origPrice:7999, duration:'8 Weeks', students:650, rating:4.8,
+    price:5499, origPrice:10999, duration:'8 Weeks', students:650, rating:4.8,
     img:'thumbnails/cs_a3.svg',
     banner:'linear-gradient(135deg,#0369a1,#0ea5e9)',
     mods:[
@@ -7138,7 +7266,7 @@ const DEFAULT_COURSES = [
     id:'cs_a4', emoji:'🎯', name:'Fat Loss Specialist (FLS) Certification',
     level:'advanced',
     desc:'Master the complete science of fat loss — hormones, metabolism, dieting strategies, training protocols, and client psychology. Become the coach who actually gets results when others fail.',
-    price:2999, origPrice:6999, duration:'6 Weeks', students:1380, rating:4.9,
+    price:4999, origPrice:9999, duration:'6 Weeks', students:1380, rating:4.9,
     img:'thumbnails/cs_a4.svg',
     banner:'linear-gradient(135deg,#f59e0b,#e8001d)',
     mods:[
@@ -7174,7 +7302,7 @@ const DEFAULT_COURSES = [
     id:'cs_m1', emoji:'👑', name:'Elite Performance & Fitness Master',
     level:'master',
     desc:'The pinnacle of fitness education. 14 modules covering elite athlete programming, advanced physiology, performance nutrition, coaching systems, periodization science, and the complete business of high-performance coaching.',
-    price:11999, origPrice:24999, duration:'16 Weeks', students:380, rating:4.9,
+    price:9999, origPrice:19999, duration:'16 Weeks', students:380, rating:4.9,
     img:'thumbnails/cs_m1.svg',
     banner:'linear-gradient(135deg,#92400e,#f59e0b)',
     mods:[
@@ -7226,7 +7354,7 @@ const DEFAULT_COURSES = [
     id:'cs_m2', emoji:'⚗️', name:'Pharmaceutical Performance Science (18+)',
     level:'master', isPharma:true,
     desc:'[18+ EDUCATIONAL COURSE] The most comprehensive harm-reduction and performance pharmacology course available. Covers the science, pharmacokinetics, protocols, and health monitoring of anabolic steroids, SARMs, peptides, prohormones, and PCT. For educational and harm-reduction purposes only.',
-    price:14999, origPrice:29999, duration:'14 Weeks', students:290, rating:4.9,
+    price:9999, origPrice:19999, duration:'14 Weeks', students:290, rating:4.9,
     img:'thumbnails/cs_m2.svg',
     banner:'linear-gradient(135deg,#1e1b4b,#7c3aed)',
     mods:[
@@ -7284,7 +7412,7 @@ const DEFAULT_COURSES = [
     id:'cs_m3', emoji:'🏥', name:'Sports Medicine & Physio Expert',
     level:'master',
     desc:'The master-level fusion of sports medicine, rehabilitation science, and elite physical therapy. Prepare for the highest-level injury management, surgery decision-making, and return-to-sport direction for elite athletes.',
-    price:9999, origPrice:19999, duration:'12 Weeks', students:220, rating:4.8,
+    price:8999, origPrice:17999, duration:'12 Weeks', students:220, rating:4.8,
     img:'thumbnails/cs_m3.svg',
     banner:'linear-gradient(135deg,#064e3b,#059669)',
     mods:[
@@ -7340,7 +7468,14 @@ function filterCourses(lvl, btn) {
   });
 }
 
+const ADMIN_EMAIL = 'aman.sharma0289@gmail.com';
+function isAdminUser() { return !!(user && user.email === ADMIN_EMAIL); }
+
 function getCourses() {
+  try {
+    const ov = localStorage.getItem('rfc_admin_courses');
+    if (ov) { const p = JSON.parse(ov); if (Array.isArray(p) && p.length) return p; }
+  } catch(e) {}
   return DEFAULT_COURSES;
 }
 
@@ -7650,6 +7785,129 @@ function closeCourseModal() {
 renderChallenges();
 renderCourses();
 
+// ─── ADMIN PANEL ──────────────────────────────────────────────────────────────
+function renderAdminPanel() {
+  if (!isAdminUser()) return;
+  const courses = getCourses();
+  const statsEl = document.getElementById('adm-stats-row');
+  if (statsEl) {
+    let enrolled = 0;
+    if (user) {
+      try { const p = JSON.parse(localStorage.getItem('rfc_purchased_' + user.uid) || '[]'); enrolled = p.length; } catch(e){}
+    }
+    const avgPrice = Math.round(courses.reduce((a,c) => a+(c.price||0),0) / courses.length);
+    statsEl.innerHTML = [
+      [courses.length,'Courses'],
+      [courses.filter(c=>c.level==='beginner').length,'Beginner'],
+      [courses.filter(c=>c.level==='advanced').length,'Advanced'],
+      [courses.filter(c=>c.level==='master').length,'Master'],
+      ['₹'+avgPrice.toLocaleString(),'Avg Price'],
+      [enrolled,'My Enrollments'],
+    ].map(([v,l]) => `<div class="adm-stat-card"><div class="adm-stat-val">${v}</div><div class="adm-stat-lbl">${l}</div></div>`).join('');
+  }
+  const listEl = document.getElementById('adm-courses-list');
+  if (listEl) {
+    listEl.innerHTML = courses.map(c => {
+      const disc = c.origPrice ? Math.round((1-(c.price/c.origPrice))*100) : 0;
+      return `<div class="adm-row">
+        <div>
+          <div class="adm-course-name">${c.emoji||''} ${c.name}</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:3px;">${(c.mods||[]).length} modules · ${c.duration}</div>
+        </div>
+        <div><span class="adm-course-lvl adm-lvl-${c.level}">${c.level.toUpperCase()}</span></div>
+        <div><div class="adm-price">₹${(c.price||0).toLocaleString()}</div></div>
+        <div>
+          <div class="adm-orig">₹${(c.origPrice||0).toLocaleString()}</div>
+          ${disc>0?`<div style="font-size:10px;color:var(--green);">${disc}% OFF</div>`:''}
+        </div>
+        <div class="adm-actions">
+          <button class="adm-btn-edit" onclick="adminEditCourse('${c.id}')">✏️ Edit</button>
+          <button class="adm-btn-del" onclick="adminDeleteCourse('${c.id}')">🗑️</button>
+        </div>
+      </div>`;
+    }).join('');
+  }
+}
+
+function adminEditCourse(courseId) {
+  const c = getCourses().find(x => x.id === courseId);
+  if (!c) return;
+  document.getElementById('adm-edit-id').value = c.id;
+  document.getElementById('adm-edit-name').value = c.name;
+  document.getElementById('adm-edit-desc').value = c.desc || '';
+  document.getElementById('adm-edit-price').value = c.price || 0;
+  document.getElementById('adm-edit-orig').value = c.origPrice || 0;
+  document.getElementById('adm-edit-level').value = c.level || 'beginner';
+  document.getElementById('adm-edit-duration').value = c.duration || '';
+  document.getElementById('adm-edit-emoji').value = c.emoji || '';
+  document.getElementById('adm-edit-rating').value = c.rating || 4.5;
+  document.getElementById('adm-modal-title').textContent = 'Edit Course';
+  document.getElementById('adm-modal').classList.add('open');
+}
+
+function adminAddCourse() {
+  const newId = 'cs_custom_' + Date.now();
+  ['adm-edit-name','adm-edit-desc','adm-edit-duration'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
+  document.getElementById('adm-edit-id').value = newId;
+  document.getElementById('adm-edit-price').value = 2999;
+  document.getElementById('adm-edit-orig').value = 5999;
+  document.getElementById('adm-edit-level').value = 'beginner';
+  document.getElementById('adm-edit-duration').value = '4 Weeks';
+  document.getElementById('adm-edit-emoji').value = '📚';
+  document.getElementById('adm-edit-rating').value = 4.5;
+  document.getElementById('adm-modal-title').textContent = 'Add New Course';
+  document.getElementById('adm-modal').classList.add('open');
+}
+
+function admSaveCourse() {
+  const id = document.getElementById('adm-edit-id').value;
+  const name = document.getElementById('adm-edit-name').value.trim();
+  if (!name) { toast('Course name is required.','gold'); return; }
+  const price = parseInt(document.getElementById('adm-edit-price').value) || 0;
+  if (price > 9999) { toast('Price cannot exceed ₹9,999.','gold'); return; }
+  const origPrice = parseInt(document.getElementById('adm-edit-orig').value) || price*2;
+  if (origPrice < price) { toast('Original price must be ≥ selling price.','gold'); return; }
+
+  let courses = getCourses();
+  const existing = courses.find(c => c.id === id);
+  const updated = {
+    ...(existing || { id, banner:'linear-gradient(135deg,#065f46,#059669)', students:0, mods:[] }),
+    name,
+    desc: document.getElementById('adm-edit-desc').value.trim() || (existing&&existing.desc) || '',
+    price,
+    origPrice,
+    level: document.getElementById('adm-edit-level').value,
+    duration: document.getElementById('adm-edit-duration').value.trim() || '4 Weeks',
+    emoji: document.getElementById('adm-edit-emoji').value.trim() || '📚',
+    rating: parseFloat(document.getElementById('adm-edit-rating').value) || 4.5,
+  };
+  courses = existing ? courses.map(c => c.id===id ? updated : c) : [...courses, updated];
+  localStorage.setItem('rfc_admin_courses', JSON.stringify(courses));
+  admCloseModal();
+  renderAdminPanel();
+  renderCourses();
+  toast('✅ Course saved!','green');
+}
+
+function adminDeleteCourse(courseId) {
+  if (!confirm('Delete this course? Students who purchased it will lose access. Continue?')) return;
+  const courses = getCourses().filter(c => c.id !== courseId);
+  localStorage.setItem('rfc_admin_courses', JSON.stringify(courses));
+  renderAdminPanel();
+  renderCourses();
+  toast('🗑️ Course deleted.','gold');
+}
+
+function adminResetDefaults() {
+  if (!confirm('Reset all courses to defaults? All admin edits will be lost.')) return;
+  localStorage.removeItem('rfc_admin_courses');
+  renderAdminPanel();
+  renderCourses();
+  toast('✅ Reset to default courses.','green');
+}
+
+function admCloseModal() { document.getElementById('adm-modal').classList.remove('open'); }
+
 // ════════════════════════════════════════════════════════════════════════════
 // SIDEBAR NAVIGATION SYSTEM
 // ════════════════════════════════════════════════════════════════════════════
@@ -7670,6 +7928,7 @@ const SCREEN_META = {
   store:       { icon:'📚', title:'Knowledge Store', sub:'Expert guides & programs' },
   plans:       { icon:'💳', title:'Plans & Pricing', sub:'Upgrade to PRO for full access' },
   profile:     { icon:'👤', title:'My Profile', sub:'Account settings & fitness stats' },
+  admin:       { icon:'⚙️', title:'Admin Panel', sub:'Manage courses, prices & content' },
 };
 
 // Maps sidebar screen names → element IDs to show
@@ -7689,12 +7948,13 @@ const SCREEN_MAP = {
   store:       ['store'],
   plans:       ['plans'],
   profile:     ['profile'],
+  admin:       ['admin-panel'],
 };
 
 // All element IDs managed by the screen system (hidden/shown by JS)
 const ALL_MANAGED_IDS = ['screen-dashboard','home','profile','plans','calculator',
   'mealplan','roadmap','bodyfat','calculators','physio','tracker','workoutlog',
-  'arena','challenges','bloodreport','courses','store','dashboard'];
+  'arena','challenges','bloodreport','courses','store','dashboard','admin-panel'];
 
 let currentScreen = 'dashboard';
 
@@ -7758,6 +8018,7 @@ function switchScreen(name, navEl) {
   // Trigger dynamic renders
   if (name === 'challenges') renderChallenges();
   if (name === 'courses') renderCourses();
+  if (name === 'admin') { if (isAdminUser()) renderAdminPanel(); else { toast('🔐 Admin access only.','gold'); switchScreen('dashboard', document.querySelector('[data-screen=dashboard]')); } }
   if (name === 'leaderboard') renderLeaderboard(currentLbBoard || 'tiger', null);
   if (name === 'dashboard') populateDashboard();
 
@@ -7983,10 +8244,20 @@ applyUser = function() {
     }
     if (sbMember) sbMember.style.display = 'flex';
     if (sbGuest)  sbGuest.style.display  = 'none';
+    // Show admin nav only for admin user
+    var adminItem = document.getElementById('sb-admin-item');
+    var adminLbl  = document.getElementById('sb-admin-lbl');
+    var show = isAdminUser();
+    if (adminItem) adminItem.style.display = show ? 'flex' : 'none';
+    if (adminLbl)  adminLbl.style.display  = show ? '' : 'none';
   } else {
     if (sbAv)     sbAv.textContent = 'G';
     if (sbMember) sbMember.style.display = 'none';
     if (sbGuest)  sbGuest.style.display  = 'flex';
+    var adminItem = document.getElementById('sb-admin-item');
+    var adminLbl  = document.getElementById('sb-admin-lbl');
+    if (adminItem) adminItem.style.display = 'none';
+    if (adminLbl)  adminLbl.style.display  = 'none';
   }
 
   // Refresh dashboard stats if currently on dashboard
