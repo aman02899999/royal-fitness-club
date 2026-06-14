@@ -3103,6 +3103,7 @@ img{loading:lazy;}
       <button class="adm-tab" onclick="admTab(2)">📄 PDF Library</button>
       <button class="adm-tab" onclick="admTab(3)">🌐 Site Settings</button>
       <button class="adm-tab" onclick="admTab(4)">💳 Plans</button>
+      <button class="adm-tab" onclick="admTab(5)">👥 Members</button>
     </div>
 
     <!-- Pane 0: Overview -->
@@ -3112,6 +3113,7 @@ img{loading:lazy;}
         <button class="bsm" onclick="admTab(1);adminAddCourse()">+ Add Course</button>
         <button class="bsm" onclick="admTab(2);admOpenPdfModal(null)">+ Add PDF</button>
         <button class="bsm" onclick="admTab(4);admOpenPlanModal(null)">+ Add Plan</button>
+        <button class="bsm" onclick="admTab(5)">👥 Members</button>
         <button class="bsm" style="background:rgba(239,68,68,.12);border-color:rgba(239,68,68,.4);color:#f87171;" onclick="adminResetDefaults()">↺ Reset Course Defaults</button>
       </div>
     </div>
@@ -3202,8 +3204,110 @@ img{loading:lazy;}
       </div>
     </div>
 
+    <!-- ── MEMBERS PANE ─────────────────────────────────────────────────── -->
+    <div class="adm-pane" id="adm-pane-5">
+
+      <!-- Generate Code Card -->
+      <div style="background:var(--card2);border:1px solid var(--border);border-radius:12px;padding:18px;margin-bottom:22px;">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1.5px;margin-bottom:14px;">🎟 Generate Membership Code</div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:10px;margin-bottom:12px;">
+          <div class="adm-field">
+            <label class="adm-label">Member Name</label>
+            <input class="adm-input" id="adm-mc-name" placeholder="Rohit Sharma">
+          </div>
+          <div class="adm-field">
+            <label class="adm-label">Phone (optional)</label>
+            <input class="adm-input" id="adm-mc-phone" placeholder="+91 98765 43210">
+          </div>
+          <div class="adm-field">
+            <label class="adm-label">Plan</label>
+            <select class="adm-input" id="adm-mc-plan">
+              <option value="royal_elite">👑 Royal Elite</option>
+              <option value="royal_pro">⚡ Royal Pro</option>
+              <option value="basic">🏋 Basic</option>
+            </select>
+          </div>
+          <div class="adm-field">
+            <label class="adm-label">Duration (months)</label>
+            <select class="adm-input" id="adm-mc-dur">
+              <option value="1">1 Month</option>
+              <option value="3">3 Months</option>
+              <option value="6">6 Months</option>
+              <option value="12">12 Months</option>
+            </select>
+          </div>
+        </div>
+        <button class="bsm" onclick="admGenMemberCode()" style="background:var(--red);color:#fff;border-color:var(--red);">⚡ Generate Code</button>
+        <div id="adm-mc-result" style="margin-top:14px;display:none;">
+          <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">Generated Code</div>
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+            <code id="adm-mc-code-display" style="font-size:18px;letter-spacing:3px;color:var(--gold);background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.3);border-radius:6px;padding:8px 16px;font-family:monospace;"></code>
+            <button class="adm-btn-edit" onclick="admCopyCode()" style="font-size:11px;">📋 Copy</button>
+            <button class="adm-btn-edit" onclick="admWhatsAppCode()" style="font-size:11px;background:rgba(34,197,94,.12);border-color:rgba(34,197,94,.3);color:#22c55e;">📱 WhatsApp</button>
+          </div>
+          <div id="adm-mc-expiry-display" style="font-size:12px;color:var(--muted);margin-top:6px;"></div>
+        </div>
+      </div>
+
+      <!-- Members List Card -->
+      <div style="background:var(--card2);border:1px solid var(--border);border-radius:12px;padding:18px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px;">
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1.5px;">👥 All Members</div>
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+            <input class="adm-input" id="adm-member-search" placeholder="Search name / email…" style="max-width:200px;" oninput="admRenderMembers()">
+            <button class="adm-btn-edit" onclick="admLoadMembers()" style="font-size:11px;">⟳ Refresh</button>
+          </div>
+        </div>
+        <div id="adm-members-loading" style="text-align:center;padding:20px;color:var(--muted);font-size:13px;">Click Refresh to load members.</div>
+        <div id="adm-members-list" style="display:none;"></div>
+      </div>
+
+    </div>
+
   </div>
 </section>
+
+<!-- Admin Renew Membership Modal -->
+<div id="adm-renew-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:10005;align-items:center;justify-content:center;padding:16px;">
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:24px;width:100%;max-width:420px;position:relative;">
+    <button onclick="admCloseRenewModal()" style="position:absolute;top:14px;right:14px;background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;">✕</button>
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:1.5px;margin-bottom:4px;">🔄 Renew Membership</div>
+    <div id="adm-renew-member-name" style="font-size:13px;color:var(--muted);margin-bottom:18px;"></div>
+    <input type="hidden" id="adm-renew-uid">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">
+      <div class="adm-field">
+        <label class="adm-label">New Plan</label>
+        <select class="adm-input" id="adm-renew-plan" onchange="admCalcRenewExpiry()">
+          <option value="royal_elite">👑 Royal Elite</option>
+          <option value="royal_pro">⚡ Royal Pro</option>
+          <option value="basic">🏋 Basic</option>
+        </select>
+      </div>
+      <div class="adm-field">
+        <label class="adm-label">Duration</label>
+        <select class="adm-input" id="adm-renew-dur" onchange="admCalcRenewExpiry()">
+          <option value="1">1 Month</option>
+          <option value="3">3 Months</option>
+          <option value="6">6 Months</option>
+          <option value="12">12 Months</option>
+        </select>
+      </div>
+    </div>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:6px;">Extend from:</div>
+    <div style="display:flex;gap:10px;margin-bottom:14px;">
+      <label style="font-size:13px;display:flex;align-items:center;gap:6px;cursor:pointer;"><input type="radio" name="adm-renew-from" value="expiry" checked onchange="admCalcRenewExpiry()"> Current expiry</label>
+      <label style="font-size:13px;display:flex;align-items:center;gap:6px;cursor:pointer;"><input type="radio" name="adm-renew-from" value="today" onchange="admCalcRenewExpiry()"> Today</label>
+    </div>
+    <div style="background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.25);border-radius:8px;padding:12px 16px;margin-bottom:18px;">
+      <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">New Expiry Date</div>
+      <div id="adm-renew-new-expiry" style="font-size:20px;font-family:'Bebas Neue',sans-serif;color:var(--gold);">—</div>
+    </div>
+    <button class="bsm" onclick="admConfirmRenewal()" style="width:100%;background:var(--green);border-color:var(--green);color:#000;font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:1.5px;">✓ CONFIRM RENEWAL</button>
+    <div id="adm-renew-wa-wrap" style="display:none;margin-top:10px;">
+      <button class="adm-btn-edit" onclick="admRenewWhatsApp()" style="width:100%;background:rgba(34,197,94,.12);border-color:rgba(34,197,94,.3);color:#22c55e;font-size:13px;">📱 Send WhatsApp Confirmation</button>
+    </div>
+  </div>
+</div>
 
 <!-- Admin Edit / Add Modal -->
 <div id="adm-modal">
@@ -8212,6 +8316,232 @@ function admTab(idx) {
   if (idx===2) renderAdmPdfs();
   if (idx===3) renderAdmSiteSettings();
   if (idx===4) renderAdmPlans();
+  if (idx===5) { document.getElementById('adm-mc-result').style.display='none'; }
+}
+
+// ─── MEMBER MANAGEMENT ──────────────────────────────────────────────────────
+let _admMembers = [];
+let _admRenewData = null;
+let _admLastGenCode = '';
+let _admLastGenName = '';
+let _admLastGenPhone = '';
+
+function admGenMemberCode() {
+  if (typeof firebase === 'undefined') { toast('Firebase not available', 'gold'); return; }
+  const name = (document.getElementById('adm-mc-name').value || '').trim();
+  const phone = (document.getElementById('adm-mc-phone').value || '').trim();
+  const plan = document.getElementById('adm-mc-plan').value;
+  const dur = parseInt(document.getElementById('adm-mc-dur').value) || 1;
+  if (!name) { toast('Enter the member name first', 'gold'); return; }
+
+  const rand = () => Math.random().toString(36).slice(2,5).toUpperCase();
+  const code = 'RFC-' + rand() + rand();
+  const now = new Date();
+  const expiry = new Date(now);
+  expiry.setMonth(expiry.getMonth() + dur);
+  const expiryStr = expiry.toISOString().split('T')[0];
+
+  firebase.firestore().collection('codes').doc(code).set({
+    plan, memberName: name, memberPhone: phone || '',
+    durationMonths: dur, expiryDate: expiryStr, joinDate: now.toISOString().split('T')[0],
+    used: false, usedBy: null,
+    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+    createdBy: user ? user.uid : 'admin'
+  }).then(() => {
+    _admLastGenCode = code;
+    _admLastGenName = name;
+    _admLastGenPhone = phone;
+    document.getElementById('adm-mc-code-display').textContent = code;
+    document.getElementById('adm-mc-expiry-display').textContent =
+      'Valid for ' + dur + ' month' + (dur>1?'s':'') + ' · Expires ' +
+      expiry.toLocaleDateString('en-IN', {day:'numeric', month:'short', year:'numeric'}) +
+      ' · Plan: ' + plan.replace('_',' ').replace(/\b\w/g,c=>c.toUpperCase());
+    document.getElementById('adm-mc-result').style.display = 'block';
+    toast('Code generated: ' + code);
+  }).catch(e => toast('Error: ' + e.message, 'gold'));
+}
+
+function admCopyCode() {
+  if (!_admLastGenCode) return;
+  navigator.clipboard.writeText(_admLastGenCode).then(() => toast('Code copied!')).catch(() => {
+    const t = document.createElement('textarea');
+    t.value = _admLastGenCode;
+    document.body.appendChild(t);
+    t.select();
+    document.execCommand('copy');
+    document.body.removeChild(t);
+    toast('Code copied!');
+  });
+}
+
+function admWhatsAppCode() {
+  if (!_admLastGenCode) return;
+  const msg = 'Hi ' + (_admLastGenName||'there') + '! 👋\n\nWelcome to *Royal Fitness Club* 🏋️\n\nYour membership code is ready:\n\n*Code:* `' + _admLastGenCode + '`\n\n*How to activate:*\n1. Visit royalmentality.in\n2. Tap "New Member? Register with Code"\n3. Enter your code and create your account\n\nThis code is *one-time use only*.\n\n— Royal Fitness Club 💪';
+  const phone = _admLastGenPhone.replace(/\D/g,'');
+  const url = phone ? 'https://wa.me/' + (phone.startsWith('91')?phone:'91'+phone) + '?text=' + encodeURIComponent(msg) : 'https://wa.me/?text=' + encodeURIComponent(msg);
+  window.open(url, '_blank');
+}
+
+async function admLoadMembers() {
+  if (typeof firebase === 'undefined') { toast('Firebase not available', 'gold'); return; }
+  const loadEl = document.getElementById('adm-members-loading');
+  const listEl = document.getElementById('adm-members-list');
+  loadEl.textContent = 'Loading…';
+  loadEl.style.display = 'block';
+  listEl.style.display = 'none';
+  try {
+    const snap = await firebase.firestore().collection('users')
+      .where('gymMember', '==', true).orderBy('createdAt', 'desc').limit(100).get();
+    _admMembers = snap.docs.map(d => ({ uid: d.id, ...d.data() }));
+    loadEl.style.display = 'none';
+    listEl.style.display = 'block';
+    admRenderMembers();
+  } catch(e) {
+    // Fallback: try without orderBy (index may not exist yet)
+    try {
+      const snap2 = await firebase.firestore().collection('users').get();
+      _admMembers = snap2.docs.map(d => ({ uid: d.id, ...d.data() })).filter(u => u.gymMember || u.memberCode);
+      loadEl.style.display = 'none';
+      listEl.style.display = 'block';
+      admRenderMembers();
+    } catch(e2) {
+      loadEl.textContent = 'Error loading members: ' + e2.message;
+    }
+  }
+}
+
+function admRenderMembers() {
+  const listEl = document.getElementById('adm-members-list');
+  if (!listEl) return;
+  const q = (document.getElementById('adm-member-search')?.value || '').toLowerCase();
+  const members = _admMembers.filter(m => {
+    if (!q) return true;
+    return (m.name||'').toLowerCase().includes(q) || (m.email||'').toLowerCase().includes(q) || (m.memberCode||'').toLowerCase().includes(q);
+  });
+  if (!members.length) {
+    listEl.innerHTML = '<div style="text-align:center;padding:20px;color:var(--muted);font-size:13px;">No members found. Click ⟳ Refresh to load from Firestore.</div>';
+    return;
+  }
+  const now = new Date(); now.setHours(0,0,0,0);
+  listEl.innerHTML = `
+    <div style="overflow-x:auto;">
+    <table style="width:100%;border-collapse:collapse;font-size:12px;">
+      <thead>
+        <tr style="border-bottom:1px solid var(--border);color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-size:10px;">
+          <th style="padding:10px 8px;text-align:left;">Name</th>
+          <th style="padding:10px 8px;text-align:left;">Email</th>
+          <th style="padding:10px 8px;text-align:left;">Plan</th>
+          <th style="padding:10px 8px;text-align:left;">Expires</th>
+          <th style="padding:10px 8px;text-align:left;">Status</th>
+          <th style="padding:10px 8px;text-align:left;">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${members.map(m => {
+          let expDate = null;
+          try { expDate = m.membershipExpiry ? (m.membershipExpiry.toDate ? m.membershipExpiry.toDate() : new Date(m.membershipExpiry)) : null; } catch(e){}
+          const dl = expDate ? Math.ceil((expDate - now) / 86400000) : null;
+          const expired = dl !== null && dl <= 0;
+          const expStr = expDate ? expDate.toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}) : '—';
+          const statusColor = expired ? 'var(--red)' : dl !== null && dl <= 14 ? 'var(--gold)' : 'var(--green)';
+          const statusText = expired ? 'EXPIRED' : dl !== null ? (dl <= 14 ? 'EXP IN ' + dl + 'd' : 'ACTIVE') : 'ACTIVE';
+          const planLabel = {'royal_elite':'👑 Elite','royal_pro':'⚡ Pro','basic':'🏋 Basic'}[m.plan] || (m.plan||'—');
+          return `<tr style="border-bottom:1px solid var(--border);">
+            <td style="padding:10px 8px;"><div style="font-weight:600;">${m.name||'—'}</div><div style="font-size:10px;color:var(--muted);">${m.memberCode||''}</div></td>
+            <td style="padding:10px 8px;color:var(--muted);">${m.email||'—'}</td>
+            <td style="padding:10px 8px;">${planLabel}</td>
+            <td style="padding:10px 8px;color:var(--muted);">${expStr}</td>
+            <td style="padding:10px 8px;"><span style="color:${statusColor};font-weight:700;font-size:10px;">${statusText}</span></td>
+            <td style="padding:10px 8px;">
+              <button class="adm-btn-edit" onclick="admOpenRenewModal('${m.uid}')" style="font-size:10px;">🔄 Renew</button>
+            </td>
+          </tr>`;
+        }).join('')}
+      </tbody>
+    </table>
+    </div>`;
+}
+
+function admOpenRenewModal(uid) {
+  const m = _admMembers.find(x => x.uid === uid);
+  if (!m) return;
+  _admRenewData = m;
+  document.getElementById('adm-renew-uid').value = uid;
+  document.getElementById('adm-renew-member-name').textContent = (m.name||m.email||'Member') + ' · ' + (m.email||'');
+  document.getElementById('adm-renew-plan').value = m.plan || 'royal_elite';
+  document.getElementById('adm-renew-dur').value = '1';
+  document.querySelector('input[name="adm-renew-from"][value="expiry"]').checked = true;
+  document.getElementById('adm-renew-wa-wrap').style.display = 'none';
+  admCalcRenewExpiry();
+  const modal = document.getElementById('adm-renew-modal');
+  modal.style.display = 'flex';
+}
+
+function admCloseRenewModal() {
+  document.getElementById('adm-renew-modal').style.display = 'none';
+  _admRenewData = null;
+}
+
+function admCalcRenewExpiry() {
+  const dur = parseInt(document.getElementById('adm-renew-dur').value) || 1;
+  const from = document.querySelector('input[name="adm-renew-from"]:checked')?.value || 'expiry';
+  let base = new Date();
+  if (from === 'expiry' && _admRenewData?.membershipExpiry) {
+    try {
+      const exp = _admRenewData.membershipExpiry.toDate ? _admRenewData.membershipExpiry.toDate() : new Date(_admRenewData.membershipExpiry);
+      if (exp > new Date()) base = exp;
+    } catch(e) {}
+  }
+  const newExp = new Date(base);
+  newExp.setMonth(newExp.getMonth() + dur);
+  document.getElementById('adm-renew-new-expiry').textContent =
+    newExp.toLocaleDateString('en-IN', {weekday:'short', day:'numeric', month:'long', year:'numeric'});
+  document.getElementById('adm-renew-modal')._newExpiry = newExp;
+}
+
+async function admConfirmRenewal() {
+  if (typeof firebase === 'undefined') { toast('Firebase not available', 'gold'); return; }
+  const uid = document.getElementById('adm-renew-uid').value;
+  const plan = document.getElementById('adm-renew-plan').value;
+  const modal = document.getElementById('adm-renew-modal');
+  const newExp = modal._newExpiry;
+  if (!uid || !newExp) return;
+  const btn = modal.querySelector('.bsm');
+  btn.disabled = true; btn.textContent = 'Saving…';
+  try {
+    const expiryTs = firebase.firestore.Timestamp.fromDate(newExp);
+    await firebase.firestore().collection('users').doc(uid).update({
+      plan, membershipExpiry: expiryTs, lastRenewed: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    await firebase.firestore().collection('users').doc(uid).collection('renewals').add({
+      plan, newExpiry: expiryTs, renewedAt: firebase.firestore.FieldValue.serverTimestamp(),
+      renewedBy: user ? user.uid : 'admin'
+    });
+    // Update local cache
+    const idx = _admMembers.findIndex(m => m.uid === uid);
+    if (idx > -1) { _admMembers[idx].plan = plan; _admMembers[idx].membershipExpiry = newExp; }
+    toast('✅ Membership renewed until ' + newExp.toLocaleDateString('en-IN', {day:'numeric', month:'short', year:'numeric'}));
+    document.getElementById('adm-renew-wa-wrap').style.display = 'block';
+    admRenderMembers();
+  } catch(e) {
+    toast('Error: ' + e.message, 'gold');
+  } finally {
+    btn.disabled = false; btn.textContent = '✓ CONFIRM RENEWAL';
+  }
+}
+
+function admRenewWhatsApp() {
+  if (!_admRenewData) return;
+  const modal = document.getElementById('adm-renew-modal');
+  const newExp = modal._newExpiry;
+  const name = _admRenewData.name || 'there';
+  const phone = (_admRenewData.phone||'').replace(/\D/g,'');
+  const plan = document.getElementById('adm-renew-plan').value;
+  const planLabel = {'royal_elite':'👑 Royal Elite','royal_pro':'⚡ Royal Pro','basic':'🏋 Basic'}[plan]||plan;
+  const expStr = newExp ? newExp.toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'}) : '—';
+  const msg = 'Hi ' + name + '! 👋\n\nYour *Royal Fitness Club* membership has been renewed! 🏋️🔥\n\n*Plan:* ' + planLabel + '\n*Valid Until:* ' + expStr + '\n\nKeep crushing it! 💪\n\n— Royal Fitness Club';
+  const url = phone ? 'https://wa.me/' + (phone.startsWith('91')?phone:'91'+phone) + '?text=' + encodeURIComponent(msg) : 'https://wa.me/?text=' + encodeURIComponent(msg);
+  window.open(url, '_blank');
 }
 
 // ─── PDF MANAGEMENT ────────────────────────────────────────────────────────
