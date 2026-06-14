@@ -1,57 +1,81 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 340" width="900" height="340">
-  <title>NUTRITION & HEALTHY EATING | USA Fitness Academy — 99% Off Make in India</title>
-  <desc>nutrition & healthy eating, BEGINNER, 8 modules, 4 WEEKS, ₹499 platform fee only, free education make in india</desc>
+  <title>NUTRITION & HEALTHY EATING | USA Fitness Academy CERTIFICATE PROGRAM</title>
+  <desc>nutrition & healthy eating, certificate program, eat like an athlete, 8 modules, 4 WEEKS, rated 4.8/5, USA Fitness Academy certification</desc>
   <defs>
     <linearGradient id="bgcs_b2" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0%" stop-color="#0c1445"/>
       <stop offset="100%" stop-color="#1d4ed8"/>
     </linearGradient>
     <linearGradient id="shinecs_b2" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="rgba(255,255,255,0.05)"/>
-      <stop offset="100%" stop-color="rgba(0,0,0,0)"/>
+      <stop offset="0%" stop-color="rgba(255,255,255,0.04)"/>
+      <stop offset="100%" stop-color="rgba(0,0,0,0.0)"/>
     </linearGradient>
   </defs>
+
+  <!-- Background -->
   <rect width="900" height="340" fill="url(#bgcs_b2)"/>
+
+  <!-- Subtle top shine -->
   <rect width="900" height="160" fill="url(#shinecs_b2)"/>
-  <circle cx="760" cy="160" r="155" fill="#38bdf8" opacity="0.07"/>
-  <circle cx="760" cy="160" r="100" fill="#38bdf8" opacity="0.05"/>
+
+  <!-- Right accent circle (large faded emoji bg) -->
+  <circle cx="760" cy="160" r="155" fill="#38bdf8" opacity="0.08"/>
+  <circle cx="760" cy="160" r="100" fill="#38bdf8" opacity="0.06"/>
+
+  <!-- Left accent stripe -->
   <rect x="0" y="0" width="6" height="340" fill="#38bdf8"/>
-  <!-- Top bar -->
-  <rect x="0" y="0" width="900" height="52" fill="rgba(0,0,0,0.38)"/>
-  <rect x="6" y="0" width="4" height="52" fill="#FF9933"/>
+
+  <!-- Top bar: academy name -->
+  <rect x="0" y="0" width="900" height="52" fill="rgba(0,0,0,0.35)"/>
+  <!-- Flag color bars -->
+  <rect x="6" y="0" width="4" height="52" fill="#B22234"/>
   <rect x="10" y="0" width="4" height="52" fill="#FFFFFF" opacity="0.9"/>
-  <rect x="14" y="0" width="4" height="52" fill="#138808"/>
+  <rect x="14" y="0" width="4" height="52" fill="#3C3B6E"/>
   <text x="26" y="33" font-family="'Arial Black',Impact,sans-serif" font-size="14" font-weight="900" fill="#fff" letter-spacing="3">USA FITNESS ACADEMY</text>
   <text x="26" y="46" font-family="Arial,sans-serif" font-size="9" fill="rgba(255,255,255,0.55)" letter-spacing="2">WORLD-CLASS CERTIFICATION PROGRAMS</text>
+
+  <!-- ACCREDITED badge -->
   <rect x="800" y="10" width="90" height="22" rx="3" fill="#38bdf8" opacity="0.25"/>
   <rect x="800" y="10" width="90" height="22" rx="3" fill="none" stroke="#38bdf8" stroke-width="1" opacity="0.7"/>
   <text x="845" y="25" font-family="Arial,sans-serif" font-size="9" font-weight="700" fill="#38bdf8" text-anchor="middle" letter-spacing="1.5">ACCREDITED</text>
+
   <!-- Level badge -->
   <rect x="40" y="64" width="92" height="22" rx="11" fill="#0369a1"/>
   <text x="86" y="79" font-family="Arial,sans-serif" font-size="10" font-weight="700" fill="#fff" text-anchor="middle" letter-spacing="2">BEGINNER</text>
-  
-  <!-- 99% OFF badge -->
-  <rect x="680" y="62" width="110" height="36" rx="4" fill="rgba(255,0,0,0.85)"/>
-  <text x="735" y="76" font-family="Impact,'Arial Black',sans-serif" font-size="11" font-weight="900" fill="#fff" text-anchor="middle" letter-spacing="1">99% OFF</text>
-  <text x="735" y="91" font-family="Arial,sans-serif" font-size="9" fill="rgba(255,255,255,0.9)" text-anchor="middle">MAKE IN INDIA 🇮🇳</text>
+
+  <!-- Course title (big) -->
   <text x="40" y="152" font-family="Impact,'Arial Black',sans-serif" font-size="64" font-weight="900" fill="#fff" letter-spacing="1">NUTRITION &</text>
   <text x="40" y="222" font-family="Impact,'Arial Black',sans-serif" font-size="64" font-weight="900" fill="#fff" letter-spacing="1">HEALTHY EATING</text>
+
+  <!-- Sub/type line -->
   <text x="40" y="300" font-family="Arial,sans-serif" font-size="13" fill="#38bdf8" letter-spacing="3" opacity="0.9">CERTIFICATE PROGRAM</text>
+
+  <!-- Tag line -->
   <rect x="40" y="314" width="158.5" height="20" rx="3" fill="rgba(255,255,255,0.07)" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
   <text x="119.25" y="328" font-family="Arial,sans-serif" font-size="10" font-weight="700" fill="rgba(255,255,255,0.75)" text-anchor="middle" letter-spacing="1.5">EAT LIKE AN ATHLETE</text>
+
+  <!-- Emoji right side -->
   <text x="750" y="210" font-size="110" text-anchor="middle" opacity="0.7">🥗</text>
+
   <!-- Bottom bar -->
   <rect x="0" y="290" width="900" height="50" fill="rgba(0,0,0,0.45)"/>
   <rect x="0" y="290" width="900" height="1" fill="#38bdf8" opacity="0.4"/>
+
+  <!-- Stats -->
   <text x="40" y="322" font-family="Arial,sans-serif" font-size="12" font-weight="700" fill="#38bdf8">8</text>
   <text x="52" y="322" font-family="Arial,sans-serif" font-size="11" fill="rgba(255,255,255,0.55)"> MODULES</text>
+
   <text x="180" y="322" font-family="Arial,sans-serif" font-size="12" font-weight="700" fill="#38bdf8">4 WEEKS</text>
+
   <text x="310" y="322" font-family="Arial,sans-serif" font-size="12" font-weight="700" fill="#fbbf24">★★★★</text>
   <text x="358" y="322" font-family="Arial,sans-serif" font-size="11" fill="rgba(255,255,255,0.55)"> 4.8</text>
+
   <!-- Price pill -->
-  <rect x="590" y="300" width="130" height="28" rx="14" fill="rgba(255,0,0,0.6)"/>
-  <text x="655" y="319" font-family="Impact,'Arial Black',sans-serif" font-size="14" font-weight="900" fill="#fff" text-anchor="middle">₹499 ONLY</text>
-  <!-- Seal -->
+  <rect x="610" y="300" width="110" height="28" rx="14" fill="#38bdf8" opacity="0.18"/>
+  <rect x="610" y="300" width="110" height="28" rx="14" fill="none" stroke="#38bdf8" stroke-width="1" opacity="0.5"/>
+  <text x="665" y="319" font-family="'Arial Black',Impact,sans-serif" font-size="13" font-weight="900" fill="#38bdf8" text-anchor="middle">₹3,499</text>
+
+  <!-- USA Fitness Academy seal circle -->
   <circle cx="845" cy="315" r="22" fill="#38bdf8" opacity="0.12"/>
   <circle cx="845" cy="315" r="22" fill="none" stroke="#38bdf8" stroke-width="1" opacity="0.4"/>
   <text x="845" y="310" font-family="Arial,sans-serif" font-size="6" font-weight="700" fill="#38bdf8" text-anchor="middle" letter-spacing="0.5">USA FITNESS</text>

@@ -1684,6 +1684,27 @@ img{loading:lazy;}
   .adm-row > *:nth-child(2),.adm-row > *:nth-child(3),.adm-row > *:nth-child(4){display:none!important;}
   .adm-input-row{grid-template-columns:1fr;}
 }
+/* ─── ADMIN TABS & NEW PANELS ─────────────────────────────────── */
+.adm-tabs{display:flex;gap:4px;margin-bottom:20px;flex-wrap:wrap;}
+.adm-tab{padding:8px 14px;border:1px solid var(--border);border-radius:6px;background:transparent;color:var(--muted);cursor:pointer;font-size:12px;font-weight:600;transition:all .15s;}
+.adm-tab.active{background:var(--red);border-color:var(--red);color:#fff;}
+.adm-pane{display:none;}
+.adm-pane.active{display:block;}
+.adm-pdf-row{display:grid;grid-template-columns:1fr 60px 2fr auto;gap:10px;align-items:center;padding:10px 12px;border-bottom:1px solid var(--border);font-size:12px;}
+.adm-pdf-hdr{background:var(--card);font-weight:700;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);}
+.adm-plan-row{display:grid;grid-template-columns:1fr auto auto auto;gap:10px;align-items:center;padding:10px 12px;border-bottom:1px solid var(--border);font-size:12px;}
+.adm-site-field{margin-bottom:16px;}
+.adm-site-field label{display:block;font-size:11px;font-weight:600;color:var(--muted);margin-bottom:6px;letter-spacing:1px;text-transform:uppercase;}
+.adm-site-field input,.adm-site-field textarea,.adm-site-field select{width:100%;box-sizing:border-box;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:6px;padding:9px 12px;color:var(--text);font-size:13px;font-family:inherit;}
+.adm-announce-bar{background:var(--red);color:#fff;text-align:center;padding:10px 16px;font-size:13px;font-weight:600;position:relative;z-index:9000;}
+.adm-announce-close{position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;color:#fff;font-size:18px;cursor:pointer;line-height:1;}
+#adm-pdf-modal,#adm-plan-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:10002;align-items:center;justify-content:center;padding:16px;}
+#adm-pdf-modal.open,#adm-plan-modal.open{display:flex;}
+@media(max-width:640px){
+  .adm-pdf-row{grid-template-columns:1fr auto;}
+  .adm-pdf-row>*:nth-child(2),.adm-pdf-row>*:nth-child(3){display:none;}
+  .adm-plan-row{grid-template-columns:1fr auto;}
+}
 </style>
 <!-- Firebase SDK (compat) -->
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
@@ -1717,6 +1738,11 @@ img{loading:lazy;}
 <script src="src/communityService.js"></script>
 </head>
 <body>
+<!-- ANNOUNCEMENT BAR — controlled by admin site settings -->
+<div id="rfc-announce-bar" class="adm-announce-bar" style="display:none;">
+  <span id="rfc-announce-text"></span>
+  <button class="adm-announce-close" onclick="document.getElementById('rfc-announce-bar').style.display='none'">✕</button>
+</div>
 <!-- GYM MEMBERSHIP GATE — shown when membership expired or not enrolled -->
 <div id="gym-gate">
   <div class="ggate-logo">ROYAL FITNESS CLUB</div>
@@ -1945,7 +1971,7 @@ img{loading:lazy;}
       <option value="SGD">🇸🇬 SGD</option>
     </select>
     <div id="ntimer">🔥 <span id="ntlbl">--:--:--</span></div>
-    <div id="upill"><span>⚡</span><span id="uname" style="cursor:pointer;" onclick="openProfile()" title="View Profile"></span><span class="ppro" id="ppro">PRO</span><button id="btnlo" title="Sign Out">⏻</button></div>
+    <div id="upill"><span>⚡</span><span id="uname" style="cursor:pointer;" onclick="openProfile()" title="View Profile"></span><span class="ppro" id="ppro">PRO</span><button id="btnlo">logout</button></div>
     <button class="bnav" id="navlbtn" onclick="forceLogin()">Member Login</button>
     <button class="hamburger" id="hamburger" onclick="toggleNav()" aria-label="Menu">
       <span></span><span></span><span></span>
@@ -2961,99 +2987,6 @@ img{loading:lazy;}
 <!-- ═══════════════════════ FITNESS CERTIFICATION COURSES ═══════════════════════ -->
 <section id="courses" style="padding:60px 20px;">
   <div class="container">
-
-    <!-- ══ COURSE HERO BANNER ══ -->
-    <div style="position:relative;border-radius:20px;overflow:hidden;margin-bottom:36px;background:linear-gradient(135deg,#0a0a1a 0%,#0d1f12 40%,#1a0a00 100%);border:1px solid rgba(255,153,0,.25);">
-      <!-- Indian flag color stripe top -->
-      <div style="display:flex;height:5px;">
-        <div style="flex:1;background:#FF9933;"></div>
-        <div style="flex:1;background:#ffffff;"></div>
-        <div style="flex:1;background:#138808;"></div>
-      </div>
-      <!-- Glow orbs -->
-      <div style="position:absolute;top:-60px;left:-60px;width:280px;height:280px;background:radial-gradient(circle,rgba(255,153,0,.18) 0%,transparent 70%);pointer-events:none;"></div>
-      <div style="position:absolute;bottom:-60px;right:-60px;width:280px;height:280px;background:radial-gradient(circle,rgba(19,136,8,.18) 0%,transparent 70%);pointer-events:none;"></div>
-      <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:400px;height:400px;background:radial-gradient(circle,rgba(255,255,255,.03) 0%,transparent 70%);pointer-events:none;"></div>
-
-      <div style="padding:40px 32px;position:relative;z-index:2;">
-        <!-- Make in India tag -->
-        <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(255,153,0,.1);border:1px solid rgba(255,153,0,.35);border-radius:30px;padding:6px 16px;margin-bottom:20px;">
-          <span style="font-size:18px;">🇮🇳</span>
-          <span style="font-size:11px;font-weight:700;letter-spacing:2.5px;color:#FF9933;text-transform:uppercase;">Make In India Initiative</span>
-        </div>
-
-        <!-- Main headline -->
-        <div style="font-family:'Bebas Neue',Impact,sans-serif;font-size:clamp(42px,8vw,88px);line-height:0.9;letter-spacing:2px;margin-bottom:16px;">
-          <span style="color:#ffffff;">THE COURSE IS</span><br>
-          <span style="background:linear-gradient(90deg,#FF9933,#ffffff,#138808);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">ABSOLUTELY FREE.</span>
-        </div>
-
-        <!-- Sub headline -->
-        <div style="font-family:'Bebas Neue',Impact,sans-serif;font-size:clamp(22px,4vw,40px);color:rgba(255,255,255,0.7);letter-spacing:3px;margin-bottom:24px;">
-          Education Is A Right, Not A Privilege.
-        </div>
-
-        <!-- 99% off callout -->
-        <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:28px;">
-          <div style="background:linear-gradient(135deg,#e8001d,#b91c1c);border-radius:12px;padding:12px 24px;display:inline-block;">
-            <div style="font-family:'Bebas Neue',Impact,sans-serif;font-size:clamp(36px,6vw,60px);color:#fff;line-height:1;letter-spacing:2px;">99% OFF</div>
-            <div style="font-size:10px;color:rgba(255,255,255,0.85);letter-spacing:2px;text-align:center;margin-top:2px;">ALL COURSES</div>
-          </div>
-          <div style="flex:1;min-width:220px;">
-            <div style="font-size:clamp(13px,2vw,16px);color:rgba(255,255,255,0.85);line-height:1.7;">
-              💸 <strong style="color:#fbbf24;">This tiny fee</strong> covers only our platform hosting &amp; storage costs.<br>
-              📚 <strong style="color:#4ade80;">Every rupee of knowledge</strong> is delivered to you <em>free of cost</em>.<br>
-              🏆 <strong style="color:#60a5fa;">World-class certification</strong> — made accessible to every Indian.
-            </div>
-          </div>
-        </div>
-
-        <!-- Price comparison pills -->
-        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:28px;">
-          <div style="background:rgba(255,255,255,.05);border:1px solid rgba(34,197,94,.3);border-radius:12px;padding:14px 20px;text-align:center;min-width:120px;">
-            <div style="font-size:10px;font-weight:700;letter-spacing:2px;color:#4ade80;margin-bottom:4px;">🌱 BEGINNER</div>
-            <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:#fff;line-height:1;">₹499</div>
-            <div style="font-size:10px;text-decoration:line-through;color:var(--muted);">₹49,999</div>
-            <div style="font-size:9px;color:#4ade80;font-weight:700;margin-top:2px;">99% OFF</div>
-          </div>
-          <div style="background:rgba(255,255,255,.05);border:1px solid rgba(251,191,36,.3);border-radius:12px;padding:14px 20px;text-align:center;min-width:120px;">
-            <div style="font-size:10px;font-weight:700;letter-spacing:2px;color:#fbbf24;margin-bottom:4px;">⚡ ADVANCED</div>
-            <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:#fff;line-height:1;">₹999</div>
-            <div style="font-size:10px;text-decoration:line-through;color:var(--muted);">₹99,999</div>
-            <div style="font-size:9px;color:#fbbf24;font-weight:700;margin-top:2px;">99% OFF</div>
-          </div>
-          <div style="background:rgba(255,255,255,.05);border:1px solid rgba(167,139,250,.3);border-radius:12px;padding:14px 20px;text-align:center;min-width:120px;">
-            <div style="font-size:10px;font-weight:700;letter-spacing:2px;color:#a78bfa;margin-bottom:4px;">🐯 MASTER</div>
-            <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:#fff;line-height:1;">₹1,499</div>
-            <div style="font-size:10px;text-decoration:line-through;color:var(--muted);">₹1,49,999</div>
-            <div style="font-size:9px;color:#a78bfa;font-weight:700;margin-top:2px;">99% OFF</div>
-          </div>
-          <div style="background:rgba(255,153,0,.06);border:1px solid rgba(255,153,0,.25);border-radius:12px;padding:14px 20px;display:flex;flex-direction:column;justify-content:center;min-width:160px;">
-            <div style="font-size:12px;color:rgba(255,255,255,.7);line-height:1.6;">
-              ✅ Lifetime Access<br>
-              ✅ RFC Certificate<br>
-              ✅ No Hidden Fees<br>
-              ✅ Instant Enrollment
-            </div>
-          </div>
-        </div>
-
-        <!-- Bottom quote -->
-        <div style="border-left:3px solid #FF9933;padding:10px 16px;background:rgba(255,153,0,.06);border-radius:0 8px 8px 0;font-size:13px;color:rgba(255,255,255,.7);font-style:italic;line-height:1.6;">
-          "Our mission is to democratise world-class fitness education for every Indian. The platform fee is just to keep the lights on — the knowledge is, and always will be, yours."
-          <div style="margin-top:6px;font-style:normal;font-size:11px;font-weight:700;color:#FF9933;letter-spacing:1px;">— RFC ACADEMY · MAKE IN INDIA 🇮🇳</div>
-        </div>
-      </div>
-
-      <!-- Indian flag color stripe bottom -->
-      <div style="display:flex;height:5px;">
-        <div style="flex:1;background:#FF9933;"></div>
-        <div style="flex:1;background:#ffffff;"></div>
-        <div style="flex:1;background:#138808;"></div>
-      </div>
-    </div>
-    <!-- ══ END HERO BANNER ══ -->
-
     <div style="text-align:center;margin-bottom:24px;">
       <div class="stag">Learn. Certify. Dominate.</div>
       <div class="sh" style="font-size:clamp(32px,6vw,58px);">RFC ACADEMY</div>
@@ -3094,21 +3027,119 @@ img{loading:lazy;}
     <div class="adm-hdr">
       <div>
         <div class="adm-title">⚙️ ADMIN PANEL</div>
-        <div style="font-size:12px;color:var(--muted);margin-top:4px;">Manage courses, prices &amp; content</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:4px;">Manage courses, PDFs, settings &amp; plans</div>
       </div>
       <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
         <span class="adm-badge">🔐 ADMIN ACCESS</span>
+      </div>
+    </div>
+
+    <!-- Tab Bar -->
+    <div class="adm-tabs">
+      <button class="adm-tab active" onclick="admTab(0)">📊 Overview</button>
+      <button class="adm-tab" onclick="admTab(1)">🎓 Courses</button>
+      <button class="adm-tab" onclick="admTab(2)">📄 PDF Library</button>
+      <button class="adm-tab" onclick="admTab(3)">🌐 Site Settings</button>
+      <button class="adm-tab" onclick="admTab(4)">💳 Plans</button>
+    </div>
+
+    <!-- Pane 0: Overview -->
+    <div class="adm-pane active" id="adm-pane-0">
+      <div class="adm-stats-row" id="adm-stats-row"></div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px;">
+        <button class="bsm" onclick="admTab(1);adminAddCourse()">+ Add Course</button>
+        <button class="bsm" onclick="admTab(2);admOpenPdfModal(null)">+ Add PDF</button>
+        <button class="bsm" onclick="admTab(4);admOpenPlanModal(null)">+ Add Plan</button>
+        <button class="bsm" style="background:rgba(239,68,68,.12);border-color:rgba(239,68,68,.4);color:#f87171;" onclick="adminResetDefaults()">↺ Reset Course Defaults</button>
+      </div>
+    </div>
+
+    <!-- Pane 1: Courses -->
+    <div class="adm-pane" id="adm-pane-1">
+      <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;">
         <button class="bsm" onclick="adminAddCourse()">+ Add Course</button>
         <button class="bsm" style="background:rgba(239,68,68,.12);border-color:rgba(239,68,68,.4);color:#f87171;" onclick="adminResetDefaults()">↺ Reset Defaults</button>
       </div>
-    </div>
-    <div class="adm-stats-row" id="adm-stats-row"></div>
-    <div class="adm-course-table">
-      <div class="adm-table-hdr">
-        <span>Course</span><span>Level</span><span>Price</span><span>Original</span><span>Actions</span>
+      <div class="adm-course-table">
+        <div class="adm-table-hdr">
+          <span>Course</span><span>Level</span><span>Price</span><span>Original</span><span>Actions</span>
+        </div>
+        <div id="adm-courses-list"></div>
       </div>
-      <div id="adm-courses-list"></div>
     </div>
+
+    <!-- Pane 2: PDF Library -->
+    <div class="adm-pane" id="adm-pane-2">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px;">
+        <div style="font-size:13px;color:var(--muted);">Manage PDF resources per course module. Linked PDFs appear as download buttons in the course viewer.</div>
+        <button class="bsm" onclick="admOpenPdfModal(null)">+ Add PDF</button>
+      </div>
+      <div class="adm-course-table">
+        <div class="adm-pdf-row adm-pdf-hdr">
+          <span>Course / Module</span><span>Mod #</span><span>Title / URL</span><span>Actions</span>
+        </div>
+        <div id="adm-pdf-list"></div>
+      </div>
+    </div>
+
+    <!-- Pane 3: Site Settings -->
+    <div class="adm-pane" id="adm-pane-3">
+      <div id="adm-site-form">
+        <div class="adm-site-field">
+          <label>Site Name</label>
+          <input id="adm-site-name" placeholder="Royal Fitness Club">
+        </div>
+        <div class="adm-site-field">
+          <label>Hero Headline</label>
+          <input id="adm-site-headline" placeholder="Transform. Dominate. Conquer.">
+        </div>
+        <div class="adm-site-field">
+          <label>Support Email</label>
+          <input id="adm-site-email" type="email" placeholder="support@royalfitnessclub.in">
+        </div>
+        <div class="adm-site-field">
+          <label>WhatsApp Number (with country code)</label>
+          <input id="adm-site-whatsapp" placeholder="918851830081">
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          <div class="adm-site-field">
+            <label>Pro Price (₹/mo)</label>
+            <input id="adm-site-pro-price" type="number" min="0" placeholder="499">
+          </div>
+          <div class="adm-site-field">
+            <label>Elite Price (₹/mo)</label>
+            <input id="adm-site-elite-price" type="number" min="0" placeholder="999">
+          </div>
+        </div>
+        <div style="border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:16px;">
+          <div style="font-size:13px;font-weight:600;margin-bottom:12px;color:var(--text);">📢 Announcement Banner</div>
+          <div class="adm-site-field" style="margin-bottom:10px;">
+            <label>Banner Text</label>
+            <input id="adm-site-announce" placeholder="🔥 Summer Sale — 50% OFF all courses this week!">
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <input type="checkbox" id="adm-site-announce-enabled" style="width:auto;accent-color:var(--red);">
+            <label for="adm-site-announce-enabled" style="font-size:13px;color:var(--muted);cursor:pointer;">Enable announcement banner</label>
+          </div>
+        </div>
+        <button class="bfire" style="width:100%;" onclick="admSaveSiteSettings()">💾 Save Settings</button>
+      </div>
+    </div>
+
+    <!-- Pane 4: Plans -->
+    <div class="adm-pane" id="adm-pane-4">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px;">
+        <div style="font-size:13px;color:var(--muted);">Manage membership plans and pricing.</div>
+        <button class="bsm" onclick="admOpenPlanModal(null)">+ Add Plan</button>
+      </div>
+      <div class="adm-course-table">
+        <div class="adm-plan-row" style="background:var(--card);font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);">
+          <span>Plan Name / Badge</span><span>Price</span><span>Status</span><span>Actions</span>
+        </div>
+        <div id="adm-plans-list"></div>
+      </div>
+    </div>
+
   </div>
 </section>
 
@@ -3165,6 +3196,84 @@ img{loading:lazy;}
     <div class="adm-footer">
       <button class="bfire" style="flex:1;" onclick="admSaveCourse()">💾 Save Changes</button>
       <button class="bsm" onclick="admCloseModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Admin PDF Add/Edit Modal -->
+<div id="adm-pdf-modal">
+  <div class="adm-modal-box">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+      <div class="adm-modal-title" id="adm-pdf-modal-title">Add PDF</div>
+      <button style="background:none;border:none;color:var(--muted);font-size:22px;cursor:pointer;" onclick="admClosePdfModal()">✕</button>
+    </div>
+    <input type="hidden" id="adm-pdf-edit-id">
+    <div class="adm-field">
+      <label class="adm-label">Course</label>
+      <select class="adm-input" id="adm-pdf-course"></select>
+    </div>
+    <div class="adm-field">
+      <label class="adm-label">Module Number</label>
+      <input class="adm-input" id="adm-pdf-modnum" type="number" min="1" max="20" placeholder="1">
+    </div>
+    <div class="adm-field">
+      <label class="adm-label">Title</label>
+      <input class="adm-input" id="adm-pdf-title" placeholder="Module PDF title">
+    </div>
+    <div class="adm-field">
+      <label class="adm-label">PDF URL / Path</label>
+      <input class="adm-input" id="adm-pdf-url" placeholder="/course_pdfs/beginner/cs_b1_mod1_anatomy_essentials.pdf">
+    </div>
+    <div class="adm-footer">
+      <button class="bfire" style="flex:1;" onclick="admSavePdf()">💾 Save PDF Record</button>
+      <button class="bsm" onclick="admClosePdfModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Admin Plan Add/Edit Modal -->
+<div id="adm-plan-modal">
+  <div class="adm-modal-box">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+      <div class="adm-modal-title" id="adm-plan-modal-title">Edit Plan</div>
+      <button style="background:none;border:none;color:var(--muted);font-size:22px;cursor:pointer;" onclick="admClosePlanModal()">✕</button>
+    </div>
+    <input type="hidden" id="adm-plan-edit-id">
+    <div class="adm-input-row">
+      <div class="adm-field">
+        <label class="adm-label">Plan Name</label>
+        <input class="adm-input" id="adm-plan-name" placeholder="Royal Pro">
+      </div>
+      <div class="adm-field">
+        <label class="adm-label">Badge Emoji</label>
+        <input class="adm-input" id="adm-plan-badge" placeholder="👑">
+      </div>
+    </div>
+    <div class="adm-input-row">
+      <div class="adm-field">
+        <label class="adm-label">Price (₹)</label>
+        <input class="adm-input" id="adm-plan-price" type="number" min="0" placeholder="499">
+      </div>
+      <div class="adm-field">
+        <label class="adm-label">Period</label>
+        <select class="adm-input" id="adm-plan-period">
+          <option value="month">Monthly</option>
+          <option value="year">Yearly</option>
+          <option value="lifetime">Lifetime</option>
+        </select>
+      </div>
+    </div>
+    <div class="adm-field">
+      <label class="adm-label">Features (one per line)</label>
+      <textarea class="adm-input" id="adm-plan-features" rows="6" style="resize:vertical;" placeholder="Full workout tracker&#10;Nutrition plans&#10;Blood AI reports"></textarea>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+      <input type="checkbox" id="adm-plan-active" style="accent-color:var(--red);">
+      <label for="adm-plan-active" style="font-size:13px;color:var(--muted);cursor:pointer;">Plan is active (visible to users)</label>
+    </div>
+    <div class="adm-footer">
+      <button class="bfire" style="flex:1;" onclick="admSavePlan()">💾 Save Plan</button>
+      <button class="bsm" onclick="admClosePlanModal()">Cancel</button>
     </div>
   </div>
 </div>
@@ -4194,7 +4303,7 @@ const $=id=>document.getElementById(id);
 function toast(msg,type='fire'){const t=$('toast');t.textContent=msg;t.className=`toast ${type} show`;setTimeout(()=>{t.className=`toast ${type}`;},3500);}
 function openModal(id){$(id).classList.add('open');if(id==='promodal'&&window.AnalyticsService)window.AnalyticsService.trackEvent('pro_modal_opened').catch(()=>{});}
 function closeModal(id){$(id).classList.remove('open');}
-['sharemodal','promodal','elitemodal'].forEach(id=>{const m=$(id);if(m)m.addEventListener('click',e=>{if(e.target===m)closeModal(id);});});
+['sharemodal','promodal','elitemodal'].forEach(id=>{$(id).addEventListener('click',e=>{if(e.target===$(id))closeModal(id);});});
 $('loginmodal').addEventListener('click',e=>{if(e.target===$('loginmodal'))closeLoginModal();});
 function animN(el,target,dec=0,sfx=''){let s=0,d=900;const step=ts=>{if(!s)s=ts;const p=Math.min((ts-s)/d,1);el.textContent=(target*p).toFixed(dec)+sfx;if(p<1)requestAnimationFrame(step);};requestAnimationFrame(step);}
 // ── TIMER ──
@@ -4230,14 +4339,6 @@ function initUser(){
           const effectivePlan=planExpired?'free':(d.plan||'free');
           user={uid:fbUser.uid,name:d.name||fbUser.email.split('@')[0],email:d.email||fbUser.email,phone:d.phone||'',role:d.role||'member',plan:effectivePlan,membershipExpiry:gymExpiry?.toISOString()||null,memberCode:d.memberCode||null,since:d.createdAt?.toDate?.()?.toISOString()||new Date().toISOString(),last:new Date().toISOString()};
           isPro=effectivePlan==='royal_pro'||effectivePlan==='royal_elite';
-        }else if(fbUser.email===ADMIN_EMAIL){
-          // Admin user — bypass Firestore doc requirement
-          user={uid:fbUser.uid,name:'Admin',email:fbUser.email,role:'admin',plan:'royal_pro',since:new Date().toISOString(),last:new Date().toISOString()};
-          isPro=true;
-          localStorage.setItem('bm_user',JSON.stringify(user));
-          localStorage.setItem('bm_pro','true');
-          applyUser();
-          return;
         }else{
           // Auth user exists but no Firestore doc — not a registered member
           showMembershipGate('notfound',null);
@@ -4258,7 +4359,7 @@ function initUser(){
       const hadUser=!!user;
       user=null;isPro=false;
       localStorage.removeItem('bm_user');localStorage.removeItem('bm_pro');
-      if(hadUser){$('upill').classList.remove('on');$('ppro').classList.remove('on');$('navlbtn').style.display='block';$('tracker').classList.remove('pro-on');if($('navtr'))$('navtr').style.display='none';}
+      if(hadUser){$('upill').classList.remove('on');$('ppro').classList.remove('on');$('navlbtn').style.display='block';$('tracker').classList.remove('pro-on');$('navtr').style.display='none';}
       // No auto-popup on first load — user can browse freely
     }
   });
@@ -4294,7 +4395,7 @@ function applyUser(){
   $('navlbtn').style.display='none';
   // Show tracker section for all logged-in members
   $('tracker').classList.add('member-on');
-  if($('navtr'))$('navtr').style.display='inline';
+  $('navtr').style.display='inline';
   if(isPro){
     $('ppro').classList.add('on');
     $('tracker').classList.add('pro-on');
@@ -4448,17 +4549,20 @@ function resetPasswordPrompt(){
 }
 
 function showAdminLink(){
-  // No-op: admin panel is revealed via applyUser() through the sidebar item #sb-admin-item
+  const nl=$('nlinks');
+  if(nl&&!document.getElementById('nav-admin')){
+    const a=document.createElement('a');
+    a.href='/admin.html';a.id='nav-admin';a.textContent='⚡ Admin';a.style.cssText='color:var(--gold)!important;';
+    nl.insertBefore(a,nl.lastElementChild);
+  }
 }
-
-function logout(){$('btnlo').click();}
 
 $('btnlo').addEventListener('click',async function(){
   try{if(typeof firebase!=='undefined')await firebase.auth().signOut();}catch(e){}
   user=null;isPro=false;
   localStorage.removeItem('bm_user');localStorage.removeItem('bm_pro');
   $('upill').classList.remove('on');$('ppro').classList.remove('on');
-  $('navlbtn').style.display='block';$('tracker').classList.remove('pro-on');if($('navtr'))$('navtr').style.display='none';
+  $('navlbtn').style.display='block';$('tracker').classList.remove('pro-on');$('navtr').style.display='none';
   $('rescont').style.display='none';
   if($('emptyst2'))$('emptyst2').style.display='flex';
   toast('Logged out successfully.');
@@ -5602,7 +5706,7 @@ async function cancelPro(){
     try{await window.SubscriptionService.cancelSubscription(user.uid);}
     catch(e){console.warn('Cancel subscription Firestore sync failed:',e);}
   }
-  $('ppro').classList.remove('on');$('tracker').classList.remove('pro-on');if($('navtr'))$('navtr').style.display='none';
+  $('ppro').classList.remove('on');$('tracker').classList.remove('pro-on');$('navtr').style.display='none';
   renderProfile();toast('Subscription cancelled. You are back on the Free plan.','gold');
 }
 
@@ -5657,7 +5761,7 @@ function initCurrency() {
 }
 // Also update activatePro to use current currency in billing display
 function _activateProUI(){
-  $('ppro').classList.add('on');$('tracker').classList.add('pro-on');if($('navtr'))$('navtr').style.display='inline';
+  $('ppro').classList.add('on');$('tracker').classList.add('pro-on');$('navtr').style.display='inline';
   loadPD();if(lastRes)buildMealPlan(lastRes.goal,lastRes.targetCals,lastRes.macros,lastRes.diet);buildRoadmap(lastRes?lastRes.goal:'maintain');
   setTimeout(()=>$('tracker').scrollIntoView({behavior:'smooth'}),800);
 }
@@ -6897,7 +7001,7 @@ function joinChallenge(chId) {
       renderChallenges();
       toast('🔥 You\'re in! Challenge joined successfully!');
     },
-    prefill: { name: user.name || user.displayName || '', email: user.email || '' },
+    prefill: { name: user.displayName || '', email: user.email || '' },
     theme: { color: '#e8001d' }
   });
   rzp.open();
@@ -7128,7 +7232,7 @@ const DEFAULT_COURSES = [
     id:'cs_b1', emoji:'🌱', name:'Fitness Foundations Certificate',
     level:'beginner',
     desc:'Build an unshakeable base. Learn how the body moves, adapts, and grows. Master the fundamentals of exercise science, recovery, and healthy habits that every elite athlete relies on.',
-    price:499, origPrice:49999, duration:'4 Weeks', students:2340, rating:4.9,
+    price:2999, origPrice:5999, duration:'4 Weeks', students:2340, rating:4.9,
     img:'thumbnails/cs_b1.svg',
     banner:'linear-gradient(135deg,#065f46,#059669)',
     mods:[
@@ -7162,7 +7266,7 @@ const DEFAULT_COURSES = [
     id:'cs_b2', emoji:'🥗', name:'Nutrition & Healthy Eating Certificate',
     level:'beginner',
     desc:'Understand food at a molecular level. Build meal plans, decode labels, and learn the Indian diet science that powers elite athletes. Become the expert everyone turns to for nutrition advice.',
-    price:499, origPrice:49999, duration:'4 Weeks', students:1870, rating:4.8,
+    price:3499, origPrice:6999, duration:'4 Weeks', students:1870, rating:4.8,
     img:'thumbnails/cs_b2.svg',
     banner:'linear-gradient(135deg,#1d4ed8,#0ea5e9)',
     mods:[
@@ -7196,7 +7300,7 @@ const DEFAULT_COURSES = [
     id:'cs_b3', emoji:'🔥', name:'Body Transformation Blueprint',
     level:'beginner',
     desc:'The complete A-to-Z guide for transforming your body in 90 days. Fat loss, muscle building, and body recomposition strategies designed for real Indian lifestyles.',
-    price:499, origPrice:49999, duration:'6 Weeks', students:1560, rating:4.9,
+    price:3999, origPrice:7999, duration:'6 Weeks', students:1560, rating:4.9,
     img:'thumbnails/cs_b3.svg',
     banner:'linear-gradient(135deg,#7c3aed,#db2777)',
     mods:[
@@ -7232,7 +7336,7 @@ const DEFAULT_COURSES = [
     id:'cs_a1', emoji:'💪', name:'Certified Personal Trainer (CPT)',
     level:'advanced',
     desc:'Become a professional-grade personal trainer. 12 deep modules covering anatomy, biomechanics, periodization, client assessment, corrective exercise, and the business of fitness. India\'s most comprehensive online CPT program.',
-    price:999, origPrice:99999, duration:'10 Weeks', students:1140, rating:4.9,
+    price:5999, origPrice:11999, duration:'10 Weeks', students:1140, rating:4.9,
     img:'thumbnails/cs_a1.svg',
     banner:'linear-gradient(135deg,#e8001d,#7c3aed)',
     mods:[
@@ -7278,7 +7382,7 @@ const DEFAULT_COURSES = [
     id:'cs_a2', emoji:'🧬', name:'Sports Nutrition & Dietetics Diploma',
     level:'advanced',
     desc:'Go beyond basic macros. This diploma covers clinical nutrition science, sports dietetics, gut health, blood markers, and how to build evidence-based nutrition plans for athletes and general populations.',
-    price:999, origPrice:99999, duration:'10 Weeks', students:890, rating:4.8,
+    price:6999, origPrice:13999, duration:'10 Weeks', students:890, rating:4.8,
     img:'thumbnails/cs_a2.svg',
     banner:'linear-gradient(135deg,#059669,#065f46)',
     mods:[
@@ -7324,7 +7428,7 @@ const DEFAULT_COURSES = [
     id:'cs_a3', emoji:'🦴', name:'Physio & Sports Rehabilitation Diploma',
     level:'advanced',
     desc:'Learn to prevent, assess, and rehabilitate the injuries that stop athletes in their tracks. Covers physiotherapy principles, manual therapy basics, exercise rehab, and return-to-sport protocols.',
-    price:999, origPrice:99999, duration:'8 Weeks', students:650, rating:4.8,
+    price:5499, origPrice:10999, duration:'8 Weeks', students:650, rating:4.8,
     img:'thumbnails/cs_a3.svg',
     banner:'linear-gradient(135deg,#0369a1,#0ea5e9)',
     mods:[
@@ -7364,7 +7468,7 @@ const DEFAULT_COURSES = [
     id:'cs_a4', emoji:'🎯', name:'Fat Loss Specialist (FLS) Certification',
     level:'advanced',
     desc:'Master the complete science of fat loss — hormones, metabolism, dieting strategies, training protocols, and client psychology. Become the coach who actually gets results when others fail.',
-    price:999, origPrice:99999, duration:'6 Weeks', students:1380, rating:4.9,
+    price:4999, origPrice:9999, duration:'6 Weeks', students:1380, rating:4.9,
     img:'thumbnails/cs_a4.svg',
     banner:'linear-gradient(135deg,#f59e0b,#e8001d)',
     mods:[
@@ -7400,7 +7504,7 @@ const DEFAULT_COURSES = [
     id:'cs_m1', emoji:'👑', name:'Elite Performance & Fitness Master',
     level:'master',
     desc:'The pinnacle of fitness education. 14 modules covering elite athlete programming, advanced physiology, performance nutrition, coaching systems, periodization science, and the complete business of high-performance coaching.',
-    price:1499, origPrice:149999, duration:'16 Weeks', students:380, rating:4.9,
+    price:9999, origPrice:19999, duration:'16 Weeks', students:380, rating:4.9,
     img:'thumbnails/cs_m1.svg',
     banner:'linear-gradient(135deg,#92400e,#f59e0b)',
     mods:[
@@ -7452,7 +7556,7 @@ const DEFAULT_COURSES = [
     id:'cs_m2', emoji:'⚗️', name:'Pharmaceutical Performance Science (18+)',
     level:'master', isPharma:true,
     desc:'[18+ EDUCATIONAL COURSE] The most comprehensive harm-reduction and performance pharmacology course available. Covers the science, pharmacokinetics, protocols, and health monitoring of anabolic steroids, SARMs, peptides, prohormones, and PCT. For educational and harm-reduction purposes only.',
-    price:1499, origPrice:149999, duration:'14 Weeks', students:290, rating:4.9,
+    price:9999, origPrice:19999, duration:'14 Weeks', students:290, rating:4.9,
     img:'thumbnails/cs_m2.svg',
     banner:'linear-gradient(135deg,#1e1b4b,#7c3aed)',
     mods:[
@@ -7510,7 +7614,7 @@ const DEFAULT_COURSES = [
     id:'cs_m3', emoji:'🏥', name:'Sports Medicine & Physio Expert',
     level:'master',
     desc:'The master-level fusion of sports medicine, rehabilitation science, and elite physical therapy. Prepare for the highest-level injury management, surgery decision-making, and return-to-sport direction for elite athletes.',
-    price:1499, origPrice:149999, duration:'12 Weeks', students:220, rating:4.8,
+    price:8999, origPrice:17999, duration:'12 Weeks', students:220, rating:4.8,
     img:'thumbnails/cs_m3.svg',
     banner:'linear-gradient(135deg,#064e3b,#059669)',
     mods:[
@@ -7567,7 +7671,7 @@ function filterCourses(lvl, btn) {
 }
 
 const ADMIN_EMAIL = 'aman.sharma0289@gmail.com';
-function isAdminUser() { return !!(user && (user.email === ADMIN_EMAIL || user.role === 'admin')); }
+function isAdminUser() { return !!(user && user.email === ADMIN_EMAIL); }
 
 function getCourses() {
   try {
@@ -7744,6 +7848,7 @@ function _renderCourseViewer(c) {
         <button class="bsm" style="margin-top:14px;width:100%;" onclick="cvMarkDone('${c.id}',${i},event)">
           ${isDone ? '✅ Completed — Click to undo' : '⬜ Mark as Complete'}
         </button>
+        ${(()=>{ const pdfRec = getAdminPdfs().find(p => p.courseId === c.id && p.moduleNum === i+1); return pdfRec ? `<a class="bsm" href="${pdfRec.url}" target="_blank" rel="noopener" style="margin-top:8px;width:100%;display:flex;align-items:center;gap:6px;justify-content:center;background:rgba(34,197,94,.12);border-color:rgba(34,197,94,.4);color:#22c55e;text-decoration:none;">📄 Download Module PDF</a>` : ''; })()}
       </div>
     </div>`;
   }).join('');
@@ -7868,7 +7973,7 @@ function purchaseCourse(courseId) {
       toast('🎓 Enrollment successful! Start learning now.');
       setTimeout(() => openCourseModal(courseId), 600);
     },
-    prefill: { name: user.name || user.displayName || '', email: user.email || '' },
+    prefill: { name: user.displayName || '', email: user.email || '' },
     theme: { color: '#e8001d' }
   });
   rzp.open();
@@ -7882,10 +7987,17 @@ function closeCourseModal() {
 // Init new sections
 renderChallenges();
 renderCourses();
+// Apply any persisted site settings (announcement bar, prices, etc.)
+applyAdminSiteSettings(getAdminSiteSettings());
 
 // ─── ADMIN PANEL ──────────────────────────────────────────────────────────────
 function renderAdminPanel() {
   if (!isAdminUser()) return;
+  renderAdmOverview();
+  renderAdmCourses();
+}
+
+function renderAdmOverview() {
   const courses = getCourses();
   const statsEl = document.getElementById('adm-stats-row');
   if (statsEl) {
@@ -7893,20 +8005,28 @@ function renderAdminPanel() {
     if (user) {
       try { const p = JSON.parse(localStorage.getItem('rfc_purchased_' + user.uid) || '[]'); enrolled = p.length; } catch(e){}
     }
-    const avgPrice = Math.round(courses.reduce((a,c) => a+(c.price||0),0) / courses.length);
+    const pdfs = getAdminPdfs();
+    const plans = getAdminPlans();
+    const siteCfg = getAdminSiteSettings();
     statsEl.innerHTML = [
-      [courses.length,'Courses'],
+      [courses.length,'Total Courses'],
       [courses.filter(c=>c.level==='beginner').length,'Beginner'],
       [courses.filter(c=>c.level==='advanced').length,'Advanced'],
       [courses.filter(c=>c.level==='master').length,'Master'],
-      ['₹'+avgPrice.toLocaleString(),'Avg Price'],
-      [enrolled,'My Enrollments'],
+      [pdfs.length,'PDFs Configured'],
+      [plans.filter(p=>p.active).length,'Active Plans'],
+      [siteCfg.announcementEnabled?'ON':'OFF','Announcement'],
     ].map(([v,l]) => `<div class="adm-stat-card"><div class="adm-stat-val">${v}</div><div class="adm-stat-lbl">${l}</div></div>`).join('');
   }
+}
+
+function renderAdmCourses() {
+  const courses = getCourses();
   const listEl = document.getElementById('adm-courses-list');
   if (listEl) {
     listEl.innerHTML = courses.map(c => {
       const disc = c.origPrice ? Math.round((1-(c.price/c.origPrice))*100) : 0;
+      const pdfCount = getAdminPdfs().filter(p=>p.courseId===c.id).length;
       return `<div class="adm-row">
         <div>
           <div class="adm-course-name">${c.emoji||''} ${c.name}</div>
@@ -7920,6 +8040,7 @@ function renderAdminPanel() {
         </div>
         <div class="adm-actions">
           <button class="adm-btn-edit" onclick="adminEditCourse('${c.id}')">✏️ Edit</button>
+          <button class="adm-btn-edit" onclick="admTab(2);admFilterPdfByCourse('${c.id}')" style="background:rgba(34,197,94,.12);border-color:rgba(34,197,94,.3);color:#22c55e;">📄 PDFs${pdfCount>0?' ('+pdfCount+')':''}</button>
           <button class="adm-btn-del" onclick="adminDeleteCourse('${c.id}')">🗑️</button>
         </div>
       </div>`;
@@ -8005,6 +8126,302 @@ function adminResetDefaults() {
 }
 
 function admCloseModal() { document.getElementById('adm-modal').classList.remove('open'); }
+
+// ─── ADMIN TAB SWITCHING ───────────────────────────────────────────────────
+function admTab(idx) {
+  document.querySelectorAll('.adm-tab').forEach((t,i) => t.classList.toggle('active', i===idx));
+  document.querySelectorAll('.adm-pane').forEach((p,i) => p.classList.toggle('active', i===idx));
+  if (idx===2) renderAdmPdfs();
+  if (idx===3) renderAdmSiteSettings();
+  if (idx===4) renderAdmPlans();
+}
+
+// ─── PDF MANAGEMENT ────────────────────────────────────────────────────────
+const DEFAULT_PDFS = [
+  {id:'pdf_b1_1',courseId:'cs_b1',moduleNum:1,title:'How the Body Works — Anatomy Essentials',url:'/course_pdfs/beginner/cs_b1_mod1_anatomy_essentials.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_b1_2',courseId:'cs_b1',moduleNum:2,title:'Exercise Science Fundamentals',url:'/course_pdfs/beginner/cs_b1_mod2_exercise_science.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_b1_3',courseId:'cs_b1',moduleNum:3,title:'Workout Programming 101',url:'/course_pdfs/beginner/cs_b1_mod3_workout_programming.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_b1_4',courseId:'cs_b1',moduleNum:4,title:'Nutrition Basics for Beginners',url:'/course_pdfs/beginner/cs_b1_mod4_nutrition_basics.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_b2_1',courseId:'cs_b2',moduleNum:1,title:'Macros & Micronutrients Deep Dive',url:'/course_pdfs/beginner/cs_b2_mod1_macros_micronutrients.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_b2_2',courseId:'cs_b2',moduleNum:2,title:'Indian Diet Planning & Meal Timing',url:'/course_pdfs/beginner/cs_b2_mod2_indian_diet_planning.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_b2_3',courseId:'cs_b2',moduleNum:3,title:'Indian Superfoods & Supplements',url:'/course_pdfs/beginner/cs_b2_mod3_indian_superfoods.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_b2_4',courseId:'cs_b2',moduleNum:4,title:'Mindful Eating & Body Composition',url:'/course_pdfs/beginner/cs_b2_mod4_mindful_eating.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_a1_1',courseId:'cs_a1',moduleNum:1,title:'Advanced Training Principles',url:'/course_pdfs/advanced/cs_a1_mod1_advanced_training.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_a1_2',courseId:'cs_a1',moduleNum:2,title:'Periodisation & Progressive Overload',url:'/course_pdfs/advanced/cs_a1_mod2_periodisation.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_a1_3',courseId:'cs_a1',moduleNum:3,title:'Sport-Specific Conditioning',url:'/course_pdfs/advanced/cs_a1_mod3_sport_conditioning.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_a1_4',courseId:'cs_a1',moduleNum:4,title:'Recovery Science & Biometrics',url:'/course_pdfs/advanced/cs_a1_mod4_recovery_science.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_a2_1',courseId:'cs_a2',moduleNum:1,title:'Clinical Nutrition Assessment',url:'/course_pdfs/advanced/cs_a2_mod1_clinical_nutrition.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_a2_2',courseId:'cs_a2',moduleNum:2,title:'Evidence-Based Supplements',url:'/course_pdfs/advanced/cs_a2_mod2_supplements.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_a2_3',courseId:'cs_a2',moduleNum:3,title:'Therapeutic Diets & Medical Nutrition',url:'/course_pdfs/advanced/cs_a2_mod3_therapeutic_diets.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_a2_4',courseId:'cs_a2',moduleNum:4,title:'Body Recomposition Protocols',url:'/course_pdfs/advanced/cs_a2_mod4_body_recomposition.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_m1_1',courseId:'cs_m1',moduleNum:1,title:'Pharmacology of Performance Drugs',url:'/course_pdfs/master/cs_m1_mod1_pharmacology.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_m1_2',courseId:'cs_m1',moduleNum:2,title:'Anabolic & Androgenic Steroids — Science',url:'/course_pdfs/master/cs_m1_mod2_steroids_science.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_m1_3',courseId:'cs_m1',moduleNum:3,title:'Peptides, GH & Insulin Protocols',url:'/course_pdfs/master/cs_m1_mod3_peptides_gh.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_m1_4',courseId:'cs_m1',moduleNum:4,title:'Blood Biomarkers & Health Monitoring',url:'/course_pdfs/master/cs_m1_mod4_blood_biomarkers.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_m2_1',courseId:'cs_m2',moduleNum:1,title:'Elite Athlete Physiology',url:'/course_pdfs/master/cs_m2_mod1_elite_physiology.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_m2_2',courseId:'cs_m2',moduleNum:2,title:'Competition Prep & Peak Week',url:'/course_pdfs/master/cs_m2_mod2_competition_prep.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_m2_3',courseId:'cs_m2',moduleNum:3,title:'Post-Cycle Therapy & Recovery',url:'/course_pdfs/master/cs_m2_mod3_pct_recovery.pdf',addedDate:'2026-06-14'},
+  {id:'pdf_m2_4',courseId:'cs_m2',moduleNum:4,title:'Legal Compliance & Ethical Considerations',url:'/course_pdfs/master/cs_m2_mod4_legal_compliance.pdf',addedDate:'2026-06-14'},
+];
+
+function getAdminPdfs() {
+  try { return JSON.parse(localStorage.getItem('rfc_admin_pdfs') || 'null') || DEFAULT_PDFS; } catch(e){ return DEFAULT_PDFS; }
+}
+function saveAdminPdfs(pdfs) { localStorage.setItem('rfc_admin_pdfs', JSON.stringify(pdfs)); }
+
+let _admPdfFilterCourse = '';
+function admFilterPdfByCourse(courseId) {
+  _admPdfFilterCourse = courseId;
+  renderAdmPdfs();
+}
+
+function renderAdmPdfs() {
+  const listEl = document.getElementById('adm-pdf-list');
+  if (!listEl) return;
+  let pdfs = getAdminPdfs();
+  if (_admPdfFilterCourse) pdfs = pdfs.filter(p => p.courseId === _admPdfFilterCourse);
+  const courses = getCourses();
+  if (!pdfs.length) { listEl.innerHTML = '<div style="padding:20px;text-align:center;color:var(--muted);font-size:13px;">No PDF records found. Click "+ Add PDF" to add one.</div>'; return; }
+  listEl.innerHTML = pdfs.map(p => {
+    const course = courses.find(c => c.id === p.courseId);
+    const courseName = course ? (course.emoji||'') + ' ' + course.name : p.courseId;
+    return `<div class="adm-pdf-row">
+      <div>
+        <div style="font-weight:600;font-size:12px;">${courseName}</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:2px;">${p.title||'Untitled PDF'}</div>
+      </div>
+      <div style="font-weight:700;color:var(--red);">Mod ${p.moduleNum}</div>
+      <div>
+        <a href="${p.url}" target="_blank" rel="noopener" style="color:var(--green);font-size:11px;word-break:break-all;">${p.url}</a>
+      </div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;">
+        <button class="adm-btn-edit" onclick="admOpenPdfModal('${p.id}')">✏️ Edit</button>
+        <button class="adm-btn-del" onclick="admDeletePdf('${p.id}')">🗑️</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function admOpenPdfModal(pdfId) {
+  const pdfs = getAdminPdfs();
+  const courses = getCourses();
+  const courseSelect = document.getElementById('adm-pdf-course');
+  if (courseSelect) {
+    courseSelect.innerHTML = courses.map(c => `<option value="${c.id}">${c.emoji||''} ${c.name}</option>`).join('');
+  }
+  if (pdfId) {
+    const p = pdfs.find(x => x.id === pdfId);
+    if (!p) return;
+    document.getElementById('adm-pdf-edit-id').value = p.id;
+    document.getElementById('adm-pdf-course').value = p.courseId;
+    document.getElementById('adm-pdf-modnum').value = p.moduleNum;
+    document.getElementById('adm-pdf-title').value = p.title || '';
+    document.getElementById('adm-pdf-url').value = p.url || '';
+    document.getElementById('adm-pdf-modal-title').textContent = 'Edit PDF Record';
+  } else {
+    document.getElementById('adm-pdf-edit-id').value = '';
+    document.getElementById('adm-pdf-modnum').value = 1;
+    document.getElementById('adm-pdf-title').value = '';
+    document.getElementById('adm-pdf-url').value = '';
+    document.getElementById('adm-pdf-modal-title').textContent = 'Add PDF Record';
+    if (_admPdfFilterCourse && courseSelect) courseSelect.value = _admPdfFilterCourse;
+  }
+  document.getElementById('adm-pdf-modal').classList.add('open');
+}
+
+function admClosePdfModal() { document.getElementById('adm-pdf-modal').classList.remove('open'); }
+
+function admSavePdf() {
+  const id = document.getElementById('adm-pdf-edit-id').value;
+  const courseId = document.getElementById('adm-pdf-course').value;
+  const moduleNum = parseInt(document.getElementById('adm-pdf-modnum').value) || 1;
+  const title = document.getElementById('adm-pdf-title').value.trim();
+  const url = document.getElementById('adm-pdf-url').value.trim();
+  if (!courseId) { toast('Please select a course.','gold'); return; }
+  if (!url) { toast('PDF URL is required.','gold'); return; }
+  let pdfs = getAdminPdfs();
+  if (id) {
+    pdfs = pdfs.map(p => p.id === id ? {...p, courseId, moduleNum, title, url} : p);
+  } else {
+    pdfs.push({id:'pdf_'+Date.now(), courseId, moduleNum, title, url, addedDate: new Date().toISOString().slice(0,10)});
+  }
+  saveAdminPdfs(pdfs);
+  admClosePdfModal();
+  renderAdmPdfs();
+  renderAdmOverview();
+  renderAdmCourses();
+  toast('✅ PDF record saved!','green');
+}
+
+function admDeletePdf(pdfId) {
+  if (!confirm('Delete this PDF record?')) return;
+  const pdfs = getAdminPdfs().filter(p => p.id !== pdfId);
+  saveAdminPdfs(pdfs);
+  renderAdmPdfs();
+  renderAdmOverview();
+  renderAdmCourses();
+  toast('🗑️ PDF deleted.','gold');
+}
+
+// ─── SITE SETTINGS ─────────────────────────────────────────────────────────
+function getAdminSiteSettings() {
+  const defaults = {
+    siteName: 'Royal Fitness Club',
+    supportEmail: '',
+    whatsapp: '',
+    heroHeadline: 'Transform. Dominate. Conquer.',
+    proPrice: 499,
+    elitePrice: 999,
+    announcement: '',
+    announcementEnabled: false
+  };
+  try { return {...defaults, ...JSON.parse(localStorage.getItem('rfc_site_settings') || '{}')}; } catch(e){ return defaults; }
+}
+
+function saveAdminSiteSettings(s) {
+  localStorage.setItem('rfc_site_settings', JSON.stringify(s));
+  applyAdminSiteSettings(s);
+}
+
+function applyAdminSiteSettings(s) {
+  // Announcement bar
+  const bar = document.getElementById('rfc-announce-bar');
+  const txt = document.getElementById('rfc-announce-text');
+  if (bar) {
+    if (s.announcementEnabled && s.announcement) {
+      if (txt) txt.textContent = s.announcement;
+      bar.style.display = '';
+    } else {
+      bar.style.display = 'none';
+    }
+  }
+  // Pro price elements
+  document.querySelectorAll('.px-pro').forEach(el => { el.textContent = '₹' + (s.proPrice||499); });
+  document.querySelectorAll('.px-elite').forEach(el => { el.textContent = '₹' + (s.elitePrice||999); });
+}
+
+function renderAdmSiteSettings() {
+  const s = getAdminSiteSettings();
+  const set = (id, val) => { const el = document.getElementById(id); if (el) el.value = val; };
+  const setChk = (id, val) => { const el = document.getElementById(id); if (el) el.checked = !!val; };
+  set('adm-site-name', s.siteName || '');
+  set('adm-site-headline', s.heroHeadline || '');
+  set('adm-site-email', s.supportEmail || '');
+  set('adm-site-whatsapp', s.whatsapp || '');
+  set('adm-site-pro-price', s.proPrice || 499);
+  set('adm-site-elite-price', s.elitePrice || 999);
+  set('adm-site-announce', s.announcement || '');
+  setChk('adm-site-announce-enabled', s.announcementEnabled);
+}
+
+function admSaveSiteSettings() {
+  const g = id => { const el = document.getElementById(id); return el ? el.value : ''; };
+  const gChk = id => { const el = document.getElementById(id); return el ? el.checked : false; };
+  const s = {
+    siteName: g('adm-site-name').trim() || 'Royal Fitness Club',
+    heroHeadline: g('adm-site-headline').trim() || 'Transform. Dominate. Conquer.',
+    supportEmail: g('adm-site-email').trim(),
+    whatsapp: g('adm-site-whatsapp').trim(),
+    proPrice: parseInt(g('adm-site-pro-price')) || 499,
+    elitePrice: parseInt(g('adm-site-elite-price')) || 999,
+    announcement: g('adm-site-announce').trim(),
+    announcementEnabled: gChk('adm-site-announce-enabled'),
+  };
+  saveAdminSiteSettings(s);
+  renderAdmOverview();
+  toast('✅ Site settings saved!','green');
+}
+
+// ─── PLANS MANAGEMENT ──────────────────────────────────────────────────────
+const DEFAULT_PLANS = [
+  {id:'plan_pro', name:'Royal Pro', price:499, period:'month', features:['Full workout tracker','Nutrition plans','Blood AI reports','Leaderboard access','Priority support'], badge:'👑', active:true},
+  {id:'plan_elite', name:'Royal Elite', price:999, period:'month', features:['Everything in Pro','1-on-1 coaching (2 sessions)','Custom meal plan','Advanced analytics'], badge:'⚡', active:true},
+  {id:'plan_royal', name:'Royal Annual', price:4999, period:'year', features:['All Pro & Elite features','12-month access','Exclusive RFC merchandise discount','Certificate of completion'], badge:'🏆', active:true},
+];
+
+function getAdminPlans() {
+  try { return JSON.parse(localStorage.getItem('rfc_admin_plans') || 'null') || DEFAULT_PLANS; } catch(e){ return DEFAULT_PLANS; }
+}
+function saveAdminPlans(plans) { localStorage.setItem('rfc_admin_plans', JSON.stringify(plans)); }
+
+function renderAdmPlans() {
+  const listEl = document.getElementById('adm-plans-list');
+  if (!listEl) return;
+  const plans = getAdminPlans();
+  if (!plans.length) { listEl.innerHTML = '<div style="padding:20px;text-align:center;color:var(--muted);font-size:13px;">No plans. Click "+ Add Plan" to create one.</div>'; return; }
+  listEl.innerHTML = plans.map(p => {
+    const periodLabel = p.period==='year' ? '/yr' : p.period==='lifetime' ? ' lifetime' : '/mo';
+    return `<div class="adm-plan-row">
+      <div>
+        <div style="font-weight:700;font-size:13px;">${p.badge||''} ${p.name}</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:2px;">${(p.features||[]).length} features</div>
+      </div>
+      <div style="font-weight:700;color:var(--gold);">₹${(p.price||0).toLocaleString()}${periodLabel}</div>
+      <div><span style="font-size:11px;padding:3px 8px;border-radius:20px;background:${p.active?'rgba(34,197,94,.15)':'rgba(255,255,255,.06)'};color:${p.active?'var(--green)':'var(--muted)'};">${p.active?'Active':'Inactive'}</span></div>
+      <div style="display:flex;gap:6px;">
+        <button class="adm-btn-edit" onclick="admOpenPlanModal('${p.id}')">✏️ Edit</button>
+        <button class="adm-btn-del" onclick="admDeletePlan('${p.id}')">🗑️</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function admOpenPlanModal(planId) {
+  if (planId) {
+    const p = getAdminPlans().find(x => x.id === planId);
+    if (!p) return;
+    document.getElementById('adm-plan-edit-id').value = p.id;
+    document.getElementById('adm-plan-name').value = p.name || '';
+    document.getElementById('adm-plan-badge').value = p.badge || '';
+    document.getElementById('adm-plan-price').value = p.price || 0;
+    document.getElementById('adm-plan-period').value = p.period || 'month';
+    document.getElementById('adm-plan-features').value = (p.features||[]).join('\n');
+    document.getElementById('adm-plan-active').checked = !!p.active;
+    document.getElementById('adm-plan-modal-title').textContent = 'Edit Plan';
+  } else {
+    const newId = 'plan_custom_' + Date.now();
+    document.getElementById('adm-plan-edit-id').value = newId;
+    document.getElementById('adm-plan-name').value = '';
+    document.getElementById('adm-plan-badge').value = '⭐';
+    document.getElementById('adm-plan-price').value = 499;
+    document.getElementById('adm-plan-period').value = 'month';
+    document.getElementById('adm-plan-features').value = '';
+    document.getElementById('adm-plan-active').checked = true;
+    document.getElementById('adm-plan-modal-title').textContent = 'Add New Plan';
+  }
+  document.getElementById('adm-plan-modal').classList.add('open');
+}
+
+function admClosePlanModal() { document.getElementById('adm-plan-modal').classList.remove('open'); }
+
+function admSavePlan() {
+  const id = document.getElementById('adm-plan-edit-id').value;
+  const name = document.getElementById('adm-plan-name').value.trim();
+  if (!name) { toast('Plan name is required.','gold'); return; }
+  const price = parseInt(document.getElementById('adm-plan-price').value) || 0;
+  const period = document.getElementById('adm-plan-period').value;
+  const badge = document.getElementById('adm-plan-badge').value.trim() || '⭐';
+  const features = document.getElementById('adm-plan-features').value.split('\n').map(f=>f.trim()).filter(Boolean);
+  const active = document.getElementById('adm-plan-active').checked;
+  let plans = getAdminPlans();
+  const existing = plans.find(p => p.id === id);
+  const updated = {...(existing || {id}), name, price, period, badge, features, active};
+  plans = existing ? plans.map(p => p.id===id ? updated : p) : [...plans, updated];
+  saveAdminPlans(plans);
+  admClosePlanModal();
+  renderAdmPlans();
+  renderAdmOverview();
+  toast('✅ Plan saved!','green');
+}
+
+function admDeletePlan(planId) {
+  if (!confirm('Delete this plan?')) return;
+  const plans = getAdminPlans().filter(p => p.id !== planId);
+  saveAdminPlans(plans);
+  renderAdmPlans();
+  renderAdmOverview();
+  toast('🗑️ Plan deleted.','gold');
+}
 
 // ════════════════════════════════════════════════════════════════════════════
 // SIDEBAR NAVIGATION SYSTEM
@@ -8150,7 +8567,7 @@ function populateDashboard() {
   if (gEl) gEl.textContent = greet;
 
   var nameEl = document.getElementById('dash-name');
-  if (nameEl) nameEl.textContent = user ? ('Welcome back, ' + (user.name || user.displayName || user.email.split('@')[0]) + ' 💪') : 'Welcome, Champion 👋';
+  if (nameEl) nameEl.textContent = user ? ('Welcome back, ' + (user.displayName || user.email.split('@')[0]) + ' 💪') : 'Welcome, Champion 👋';
 
   var dateEl = document.getElementById('dash-date');
   if (dateEl) dateEl.textContent = new Date().toLocaleDateString('en-IN', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
@@ -8330,10 +8747,10 @@ applyUser = function() {
   var sbGuest = document.getElementById('sb-guest');
 
   if (user) {
-    var initials = ((user.name || user.displayName || user.email || 'U')
+    var initials = ((user.displayName || user.email || 'U')
       .split(' ').map(function(w){ return w[0] || ''; }).join('').substring(0,2).toUpperCase()) || 'M';
     if (sbAv)     { sbAv.textContent = initials; }
-    if (sbUname)  sbUname.textContent  = user.name || user.displayName || (user.email ? user.email.split('@')[0] : 'Member');
+    if (sbUname)  sbUname.textContent  = user.displayName || (user.email ? user.email.split('@')[0] : 'Member');
     if (sbUemail) sbUemail.textContent = user.email || '';
     if (sbUplan)  {
       sbUplan.textContent = isPro ? 'PRO' : 'FREE';
