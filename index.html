@@ -4258,7 +4258,7 @@ function initUser(){
       const hadUser=!!user;
       user=null;isPro=false;
       localStorage.removeItem('bm_user');localStorage.removeItem('bm_pro');
-      if(hadUser){$('upill').classList.remove('on');$('ppro').classList.remove('on');$('navlbtn').style.display='block';$('tracker').classList.remove('pro-on');$('navtr').style.display='none';}
+      if(hadUser){$('upill').classList.remove('on');$('ppro').classList.remove('on');$('navlbtn').style.display='block';$('tracker').classList.remove('pro-on');if($('navtr'))$('navtr').style.display='none';}
       // No auto-popup on first load — user can browse freely
     }
   });
@@ -4294,7 +4294,7 @@ function applyUser(){
   $('navlbtn').style.display='none';
   // Show tracker section for all logged-in members
   $('tracker').classList.add('member-on');
-  $('navtr').style.display='inline';
+  if($('navtr'))$('navtr').style.display='inline';
   if(isPro){
     $('ppro').classList.add('on');
     $('tracker').classList.add('pro-on');
@@ -4456,7 +4456,7 @@ $('btnlo').addEventListener('click',async function(){
   user=null;isPro=false;
   localStorage.removeItem('bm_user');localStorage.removeItem('bm_pro');
   $('upill').classList.remove('on');$('ppro').classList.remove('on');
-  $('navlbtn').style.display='block';$('tracker').classList.remove('pro-on');$('navtr').style.display='none';
+  $('navlbtn').style.display='block';$('tracker').classList.remove('pro-on');if($('navtr'))$('navtr').style.display='none';
   $('rescont').style.display='none';
   if($('emptyst2'))$('emptyst2').style.display='flex';
   toast('Logged out successfully.');
@@ -5600,7 +5600,7 @@ async function cancelPro(){
     try{await window.SubscriptionService.cancelSubscription(user.uid);}
     catch(e){console.warn('Cancel subscription Firestore sync failed:',e);}
   }
-  $('ppro').classList.remove('on');$('tracker').classList.remove('pro-on');$('navtr').style.display='none';
+  $('ppro').classList.remove('on');$('tracker').classList.remove('pro-on');if($('navtr'))$('navtr').style.display='none';
   renderProfile();toast('Subscription cancelled. You are back on the Free plan.','gold');
 }
 
@@ -5655,7 +5655,7 @@ function initCurrency() {
 }
 // Also update activatePro to use current currency in billing display
 function _activateProUI(){
-  $('ppro').classList.add('on');$('tracker').classList.add('pro-on');$('navtr').style.display='inline';
+  $('ppro').classList.add('on');$('tracker').classList.add('pro-on');if($('navtr'))$('navtr').style.display='inline';
   loadPD();if(lastRes)buildMealPlan(lastRes.goal,lastRes.targetCals,lastRes.macros,lastRes.diet);buildRoadmap(lastRes?lastRes.goal:'maintain');
   setTimeout(()=>$('tracker').scrollIntoView({behavior:'smooth'}),800);
 }
