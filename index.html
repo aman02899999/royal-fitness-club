@@ -339,9 +339,13 @@ section{padding:68px 20px;position:relative;z-index:1;}
 .toast.show{transform:translateY(0);opacity:1;}
 .toast.fire{border-color:var(--red);}.toast.gold{border-color:var(--gold);}
 @keyframes fup{from{opacity:0;transform:translateY(26px);}to{opacity:1;transform:translateY(0);}}
-.hcrow{display:flex;gap:8px;flex-wrap:wrap;}
+.hcrow{display:flex;gap:6px;flex-wrap:wrap;}
 .hchk{flex:1;min-width:90px;display:flex;align-items:center;justify-content:center;gap:6px;padding:9px 6px;border:1px solid var(--border);border-radius:4px;cursor:pointer;font-size:12px;font-weight:500;transition:all .2s;user-select:none;}
 .hchk input{display:none;}
+.hc-cat{margin-bottom:10px;}
+.hc-cat-label{font-size:9px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:#555;margin-bottom:5px;display:flex;align-items:center;gap:6px;}
+.hc-cat-label::after{content:'';flex:1;height:1px;background:#1e1e1e;}
+.hc-alert-note{font-size:10px;color:rgba(255,208,0,.7);background:rgba(255,208,0,.05);border:1px solid rgba(255,208,0,.12);border-radius:4px;padding:6px 10px;margin-top:6px;line-height:1.5;}
 .hchk.on{border-color:var(--gold);color:var(--gold);background:rgba(255,208,0,.07);}
 .cnote{font-size:10px;color:var(--muted);margin-top:5px;line-height:1.5;}
 .toggle2{display:flex;gap:8px;}
@@ -2341,12 +2345,61 @@ img{loading:lazy;}
             <option value="traditional">Traditional Indian Thali</option>
           </select>
         </div>
-        <div><label class="flbl">Health Conditions (multi-select)</label>
-          <div class="hcrow">
-            <label class="hchk"><input type="checkbox" id="hc-pcos" value="pcos"> PCOS/PCOD</label>
-            <label class="hchk"><input type="checkbox" id="hc-thyroid" value="thyroid"> Thyroid</label>
-            <label class="hchk"><input type="checkbox" id="hc-diabetic" value="diabetic"> Diabetic</label>
+        <div><label class="flbl">Health Conditions <span style="font-size:9px;color:var(--muted);font-weight:400;letter-spacing:1px;">(select all that apply — diet plan adjusts automatically)</span></label>
+          <!-- HORMONAL -->
+          <div class="hc-cat">
+            <div class="hc-cat-label">🧬 Hormonal / Endocrine</div>
+            <div class="hcrow">
+              <label class="hchk"><input type="checkbox" id="hc-pcos" value="pcos"> 🌸 PCOS/PCOD</label>
+              <label class="hchk"><input type="checkbox" id="hc-thyroid" value="thyroid"> 🦋 Thyroid</label>
+              <label class="hchk"><input type="checkbox" id="hc-low_t" value="low_t"> ⚡ Low Testosterone</label>
+            </div>
           </div>
+          <!-- METABOLIC -->
+          <div class="hc-cat">
+            <div class="hc-cat-label">🔬 Metabolic</div>
+            <div class="hcrow">
+              <label class="hchk"><input type="checkbox" id="hc-diabetic" value="diabetic"> 💉 Diabetic (T2)</label>
+              <label class="hchk"><input type="checkbox" id="hc-insulin_resistance" value="insulin_resistance"> 📊 Pre-Diabetes / Insulin Resistance</label>
+              <label class="hchk"><input type="checkbox" id="hc-cholesterol" value="cholesterol"> 🩸 High Cholesterol</label>
+              <label class="hchk"><input type="checkbox" id="hc-fatty_liver" value="fatty_liver"> 🫁 Fatty Liver (NAFLD)</label>
+              <label class="hchk"><input type="checkbox" id="hc-uric_acid" value="uric_acid"> 🦶 High Uric Acid / Gout</label>
+            </div>
+          </div>
+          <!-- CARDIOVASCULAR -->
+          <div class="hc-cat">
+            <div class="hc-cat-label">🫀 Cardiovascular</div>
+            <div class="hcrow">
+              <label class="hchk"><input type="checkbox" id="hc-hypertension" value="hypertension"> 🫀 High BP / Hypertension</label>
+            </div>
+          </div>
+          <!-- DIGESTIVE -->
+          <div class="hc-cat">
+            <div class="hc-cat-label">🫃 Digestive / Gut</div>
+            <div class="hcrow">
+              <label class="hchk"><input type="checkbox" id="hc-ibs" value="ibs"> 🫃 IBS / Gut Issues</label>
+              <label class="hchk"><input type="checkbox" id="hc-acid_reflux" value="acid_reflux"> 🔥 GERD / Acid Reflux</label>
+            </div>
+          </div>
+          <!-- BLOOD / BONE / SKIN -->
+          <div class="hc-cat">
+            <div class="hc-cat-label">🦴 Blood · Bone · Skin</div>
+            <div class="hcrow">
+              <label class="hchk"><input type="checkbox" id="hc-anemia" value="anemia"> 💊 Iron Deficiency Anemia</label>
+              <label class="hchk"><input type="checkbox" id="hc-vitamin_d" value="vitamin_d"> ☀️ Vitamin D Deficiency</label>
+              <label class="hchk"><input type="checkbox" id="hc-osteoporosis" value="osteoporosis"> 🦴 Osteoporosis / Bone Health</label>
+              <label class="hchk"><input type="checkbox" id="hc-skin_acne" value="skin_acne"> ✨ Acne / Skin Issues</label>
+            </div>
+          </div>
+          <!-- MIND / JOINT -->
+          <div class="hc-cat">
+            <div class="hc-cat-label">🧠 Mind · Joints</div>
+            <div class="hcrow">
+              <label class="hchk"><input type="checkbox" id="hc-arthritis" value="arthritis"> 🦵 Joint Pain / Arthritis</label>
+              <label class="hchk"><input type="checkbox" id="hc-anxiety" value="anxiety"> 🧠 Anxiety / Stress / Poor Sleep</label>
+            </div>
+          </div>
+          <div class="hc-alert-note">⚠️ These recommendations are diet & nutrition guidance only. Always consult your doctor for medical treatment.</div>
         </div>
         <div><label class="flbl">Protein Supplement</label>
           <div class="toggle2 rrow">
@@ -4839,25 +4892,59 @@ function getSupps(goal,diet,whey,health){
   // Health condition logic
   health=health||[];
   if(health.includes('thyroid')){
-    base.push({n:'Selenium',d:'200mcg daily — supports healthy thyroid function.'},{n:'Iodine (consult doctor)',d:'Only as advised by your physician.'});
+    base.push({n:'Selenium',d:'200mcg daily — supports healthy thyroid conversion (T4→T3).'},{n:'Iodine (consult doctor)',d:'Only if prescribed — excess iodine worsens some thyroid conditions.'});
     for(let i=base.length-1;i>=0;i--)if(/green tea|caffeine|carnitine|stimulant/i.test(base[i].n))base.splice(i,1);
   }
-  if(health.includes('pcos'))base.push({n:'Inositol (Myo+D-Chiro 40:1)',d:'2g twice daily — insulin sensitivity & hormonal balance (PCOS).'},{n:'Berberine',d:'500mg with meals — blood sugar support (consult doctor).'});
+  if(health.includes('pcos'))base.push({n:'Inositol (Myo+D-Chiro 40:1)',d:'2g twice daily — restores insulin sensitivity & hormonal balance in PCOS.'},{n:'Berberine',d:'500mg with meals — blood sugar & androgen control (consult doctor).'},{n:'N-Acetyl Cysteine (NAC)',d:'600mg daily — reduces oxidative stress & improves PCOS symptoms.'});
   if(health.includes('diabetic')){
-    base.push({n:'Cinnamon Extract',d:'500mg with meals — blood sugar support.'},{n:'Chromium Picolinate',d:'200mcg daily — insulin function.'},{n:'Berberine',d:'500mg with meals (consult doctor).'});
+    base.push({n:'Cinnamon Extract',d:'500mg with meals — blunts post-meal blood sugar spikes.'},{n:'Chromium Picolinate',d:'200mcg daily — improves insulin receptor sensitivity.'},{n:'Berberine',d:'500mg 3× daily with meals — as effective as metformin in studies (consult doctor).'});
     for(let i=base.length-1;i>=0;i--)if(/mass gainer|shilajit/i.test(base[i].n))base.splice(i,1);
   }
+  if(health.includes('insulin_resistance'))base.push({n:'Berberine',d:'500mg with meals — top-tier insulin sensitiser.'},{n:'Chromium Picolinate',d:'200mcg daily — improves glucose uptake.'},{n:'Alpha Lipoic Acid (ALA)',d:'300–600mg daily — reduces insulin resistance & oxidative damage.'});
+  if(health.includes('hypertension')){
+    base.push({n:'Potassium (from food)',d:'Bananas, coconut water, sweet potato — offsets sodium and lowers BP.'},{n:'Magnesium Glycinate',d:'400mg — vasodilation & blood pressure regulation (already in base).'},{n:'CoQ10',d:'100–200mg daily — shown to reduce systolic BP by 11 mmHg in studies.'},{n:'L-Citrulline',d:'6g pre-workout — boosts nitric oxide & supports healthy blood pressure.'});
+    for(let i=base.length-1;i>=0;i--)if(/sodium|caffeine|pre.workout/i.test(base[i].n||''))base.splice(i,1);
+  }
+  if(health.includes('cholesterol'))base.push({n:'Omega-3 Fish Oil',d:'3–4g EPA+DHA daily — lowers triglycerides, raises HDL (already in base — increase dose).'},{n:'Red Yeast Rice (consult doctor)',d:'If doctor-approved: natural statin-like effect on LDL cholesterol.'},{n:'Plant Sterols',d:'2g/day with meals — blocks cholesterol absorption in the gut.'},{n:'Psyllium Husk (Isabgol)',d:'10g with water before meals — soluble fibre that significantly lowers LDL.'});
+  if(health.includes('fatty_liver'))base.push({n:'Milk Thistle (Silymarin)',d:'400–600mg daily — protects and regenerates liver cells.'},{n:'Vitamin E',d:'400 IU daily — reduces hepatic inflammation in NAFLD (consult doctor).'},{n:'N-Acetyl Cysteine (NAC)',d:'600mg twice daily — powerful liver antioxidant.'},{n:'Choline (from eggs / supplement)',d:'500mg daily — essential for fat export from liver cells.'});
+  if(health.includes('ibs'))base.push({n:'Probiotic (multi-strain)',d:'10–50 billion CFU daily — restores gut microbiome balance (Lactobacillus + Bifidobacterium).'},{n:'L-Glutamine',d:'5–10g daily on empty stomach — heals intestinal lining & reduces permeability.'},{n:'Digestive Enzymes',d:'With each meal — reduces bloating, gas & incomplete digestion.'},{n:'Psyllium Husk',d:'5g in water — soluble fibre that bulks stool without irritating the gut.'});
+  if(health.includes('acid_reflux'))base.push({n:'Slippery Elm / DGL Licorice',d:'300mg before meals — coats and soothes the oesophageal lining.'},{n:'Aloe Vera Juice',d:'30ml before meals — alkaline and anti-inflammatory for GERD.'},{n:'Digestive Enzymes + HCl (low acid cases)',d:'Often GERD is caused by too-little acid, not too much — try with meals.'});
+  if(health.includes('anemia'))base.push({n:'Iron Bisglycinate',d:'25–50mg on empty stomach — highly absorbable form of iron.'},{n:'Vitamin C (with iron)',d:'500mg with every iron dose — increases absorption by up to 300%.'},{n:'Folate (B9)',d:'400–800mcg daily — essential for red blood cell production.'},{n:'Vitamin B12',d:'1000mcg sublingual — critical for megaloblastic anaemia, especially vegetarians.'});
+  if(health.includes('uric_acid')){
+    base.push({n:'Tart Cherry Extract',d:'480mg twice daily — lowers uric acid levels and reduces gout flares.'},{n:'Vitamin C',d:'1000mg daily — shown to reduce uric acid by ~0.5 mg/dL.'},{n:'Quercetin',d:'500mg daily — inhibits xanthine oxidase (uric acid production enzyme).'});
+    for(let i=base.length-1;i>=0;i--)if(/whey|creatine|bcaa|mass gainer/i.test(base[i].n||''))base.splice(i,1);
+  }
+  if(health.includes('vitamin_d'))base.push({n:'Vitamin D3 + K2 (HIGH DOSE)',d:'5,000–10,000 IU D3 + 200mcg K2 daily until levels normalise — recheck in 3 months.'});
+  if(health.includes('osteoporosis'))base.push({n:'Calcium Citrate',d:'500mg twice daily with meals — more absorbable than carbonate form.'},{n:'Vitamin D3 + K2',d:'2,000–4,000 IU D3 + 200mcg K2 daily — essential for calcium deposition into bone.'},{n:'Magnesium Malate',d:'300–400mg daily — co-factor for bone mineralisation.'},{n:'Collagen Peptides',d:'10g daily — matrix protein that gives bone its flexibility strength.'});
+  if(health.includes('skin_acne'))base.push({n:'Zinc Picolinate',d:'30–45mg with food — antimicrobial, reduces sebum production & acne by up to 30%.'},{n:'Omega-3 Fish Oil',d:'2–3g EPA/DHA — reduces inflammatory acne significantly.'},{n:'NAC (N-Acetyl Cysteine)',d:'600mg daily — antioxidant that clears oxidative skin damage.'},{n:'Probiotic',d:'Multi-strain 20B CFU — gut-skin axis: clear gut = clearer skin.'});
+  if(health.includes('arthritis'))base.push({n:'Glucosamine + Chondroitin',d:'1500mg + 1200mg daily — rebuilds joint cartilage over 8–12 weeks.'},{n:'Turmeric (Curcumin + Piperine)',d:'1000mg curcumin + 10mg piperine daily — powerful anti-inflammatory for joints.'},{n:'Collagen Type II',d:'40mg undenatured collagen daily — directly reduces joint pain in clinical trials.'},{n:'Boswellia (Shallaki)',d:'300–400mg 3× daily — Ayurvedic anti-inflammatory proven for osteoarthritis.'});
+  if(health.includes('low_t'))base.push({n:'Zinc Picolinate',d:'30mg daily — critical for testosterone synthesis; avoid deficiency.'},{n:'Ashwagandha (KSM-66)',d:'600mg daily — raises testosterone by up to 15%, reduces cortisol.'},{n:'Vitamin D3',d:'3,000–5,000 IU daily — doubles as a steroid hormone precursor for testosterone.'},{n:'Shilajit (standardised)',d:'250–500mg twice daily — raises total testosterone and free testosterone levels.'});
+  if(health.includes('anxiety'))base.push({n:'Ashwagandha (KSM-66)',d:'300mg twice daily — lowers cortisol by up to 27.9% in clinical trials.'},{n:'L-Theanine',d:'200mg with morning coffee — smooth calm focus without sedation.'},{n:'Magnesium Glycinate',d:'400mg before bed — the most calming form; reduces anxiety & improves sleep quality.'},{n:'Vitamin B Complex',d:'B5, B6, B12 — nervous system support, energy production, stress hormone regulation.'});
   const seen={},out=[];
   base.forEach(s=>{if(!seen[s.n]){seen[s.n]=1;out.push(s);}});
-  return out.slice(0,12);
+  return out.slice(0,14);
 }
 function getHealthNote(health){
   health=health||[];if(!health.length)return '';
   const notes=[];
-  if(health.includes('thyroid'))notes.push('🔵 Thyroid: Stimulants avoided. Take supplements 4 hours apart from thyroid medication. Selenium and iodine support added.');
-  if(health.includes('pcos'))notes.push('🔵 PCOS/PCOD: Inositol & magnesium added. Focus on low-GI foods, strength training, and stress management.');
-  if(health.includes('diabetic'))notes.push('🔵 Diabetic: Mass gainers & high-sugar items removed. Cinnamon & chromium added. Always consult your doctor before changing diet.');
-  return notes.join('<br><br>');
+  if(health.includes('thyroid'))notes.push('🦋 <strong>Thyroid:</strong> Avoid raw cruciferous vegetables (eat cooked instead). Take thyroid medication on empty stomach — wait 60 min before eating. Avoid soy within 4 hours of medication. Selenium-rich foods: Brazil nuts, eggs, sunflower seeds. Stimulant supplements removed from your list.');
+  if(health.includes('pcos'))notes.push('🌸 <strong>PCOS/PCOD:</strong> Low-GI diet is critical — swap rice for millets, roti, oats. Avoid refined sugar completely. Eat every 3–4 hours to stabilise insulin. Include cinnamon in morning oatmeal. Strength training 3–4× per week reduces androgen levels naturally. Inositol + NAC added to your plan.');
+  if(health.includes('diabetic'))notes.push('💉 <strong>Type 2 Diabetes:</strong> Strict low-GI diet — no white rice, maida, fruit juices, or sugar. Eat protein + fat before carbs at every meal to blunt glucose spikes. Vinegar (1 tbsp before meals) reduces post-meal blood sugar by 20–30%. Walk 10–15 min after every meal. Mass gainers and sugary supplements removed.');
+  if(health.includes('insulin_resistance'))notes.push('📊 <strong>Insulin Resistance / Pre-Diabetes:</strong> Replace refined carbs with millets, legumes, vegetables. Eat smaller meals more frequently. Time your largest carb meals around workouts. Intermittent fasting (16:8) has strong evidence for reversing insulin resistance. Berberine + ALA added to your supplement plan.');
+  if(health.includes('hypertension'))notes.push('🫀 <strong>High Blood Pressure:</strong> DASH Diet protocol applied — high potassium (bananas, coconut water, spinach), low sodium (under 1,500mg/day). Eliminate processed foods, pickles, papads, packaged snacks. Increase magnesium: dark chocolate, leafy greens, pumpkin seeds. Caffeine and pre-workout stimulants reduced. Beet juice (200ml) shown to lower systolic BP by 4–10 mmHg.');
+  if(health.includes('cholesterol'))notes.push('🩸 <strong>High Cholesterol:</strong> Replace saturated fats with omega-3 rich foods (fish, flaxseed, walnuts). Increase soluble fibre: oats, psyllium, apples, legumes. Avoid trans fats completely (vanaspati, commercially fried foods). Garlic (2 raw cloves daily) lowers LDL by 5–15%. Coconut oil in moderation. Egg yolks are fine (dietary cholesterol has minimal impact on serum cholesterol).');
+  if(health.includes('fatty_liver'))notes.push('🫁 <strong>Fatty Liver (NAFLD):</strong> Eliminate alcohol completely. Cut fructose and refined sugar — the primary drivers of fatty liver. No fruit juice, soft drinks, or packaged foods. Increase coffee intake (2–3 cups/day — shown to reduce liver fibrosis). Eat cruciferous vegetables daily (broccoli, cauliflower). Milk thistle, NAC, Vitamin E added. 7–10% bodyweight loss reverses fatty liver in most cases.');
+  if(health.includes('ibs'))notes.push('🫃 <strong>IBS / Gut Issues:</strong> Low-FODMAP protocol during flares — avoid onion, garlic, wheat, dairy, apples, beans temporarily. Introduce probiotics and fermented foods (curd, kefir, kanji). Chew food thoroughly (25–30 chews per bite). Avoid eating too fast or under stress. Identify your personal trigger foods using a food diary. L-Glutamine and digestive enzymes added to your plan.');
+  if(health.includes('acid_reflux'))notes.push('🔥 <strong>GERD / Acid Reflux:</strong> Avoid lying down within 3 hours of eating. Smaller, more frequent meals. Avoid trigger foods: spicy food, tomatoes, citrus, chocolate, coffee, alcohol, mint. Eat slowly. Elevate head of bed by 6–8 inches. Alkaline foods: cucumber, melons, oatmeal, bananas. Do not overeat at any single meal — a full stomach increases reflux risk.');
+  if(health.includes('anemia'))notes.push('💊 <strong>Iron Deficiency Anemia:</strong> Eat iron-rich foods: red meat, chicken liver, spinach, bajra, daal, jaggery. Always pair with Vitamin C (lemon water, amla) to triple absorption. Avoid tea/coffee within 1 hour of iron-rich meals — tannins block absorption. Cook in cast iron pans — adds bioavailable iron to food. B12 supplementation added (especially important for vegetarians/vegans).');
+  if(health.includes('uric_acid'))notes.push('🦶 <strong>High Uric Acid / Gout:</strong> Avoid organ meats (liver, kidney), red meat, shellfish, alcohol (especially beer), high-fructose foods. Drink 3+ litres of water daily — dilutes and flushes uric acid. Cherries (or tart cherry extract) reduce gout attacks by 35%. Increase alkaline foods: cucumber, coconut water, celery. Whey protein and creatine removed — switch to plant protein. Low-purine diet applied.');
+  if(health.includes('vitamin_d'))notes.push('☀️ <strong>Vitamin D Deficiency:</strong> 20–30 min of direct sunlight daily (arms and legs exposed, 10am–2pm). Increase dietary sources: fatty fish (salmon, mackerel), egg yolks, D3-fortified foods. High-dose D3 + K2 added to your supplement plan. Recheck 25(OH)D blood levels after 3 months. Target level: 50–80 ng/mL for optimal muscle strength and immune function.');
+  if(health.includes('osteoporosis'))notes.push('🦴 <strong>Osteoporosis / Bone Health:</strong> Weight-bearing exercise is the #1 bone builder — resistance training + walking. Calcium from food first: dairy, ragi (finger millet), sesame seeds, almonds, tofu. Avoid smoking and excess alcohol — both directly reduce bone density. Vitamin D3 + K2 directs calcium into bones (not arteries). Collagen peptides + magnesium added. Avoid very high sodium intake — it leaches calcium from bones.');
+  if(health.includes('skin_acne'))notes.push('✨ <strong>Acne / Skin Issues:</strong> Low-GI diet reduces insulin-driven sebum overproduction. Eliminate dairy milk (whey protein in milk spikes IGF-1, worsening acne) — switch to plant milk. Cut refined sugar completely. Increase zinc-rich foods: pumpkin seeds, chickpeas, cashews. Omega-3 reduces inflammatory acne. Stay hydrated (3L water minimum). The gut-skin axis is real — probiotic and anti-inflammatory diet added.');
+  if(health.includes('arthritis'))notes.push('🦵 <strong>Joint Pain / Arthritis:</strong> Anti-inflammatory diet: Mediterranean-style eating, high in omega-3 (fish, flax), turmeric, ginger, berries, olive oil. Eliminate pro-inflammatory foods: refined carbs, seed oils (sunflower, soybean), processed meats. Lose weight if overweight — every 1kg lost reduces knee joint load by 4kg. Collagen Type II, glucosamine, chondroitin, and Boswellia added. Low-impact training recommended (swimming, cycling).');
+  if(health.includes('low_t'))notes.push('⚡ <strong>Low Testosterone:</strong> Eat adequate dietary fat (healthy fats are the building blocks of testosterone): eggs, ghee, avocado, nuts, fatty fish. Avoid chronic calorie restriction — extreme dieting crashes testosterone. Get 7–9 hours of quality sleep — 70% of testosterone is produced during sleep. Zinc + Vitamin D + Ashwagandha + Shilajit added. Resistance training (heavy compound lifts) is the most potent natural testosterone booster.');
+  if(health.includes('anxiety'))notes.push('🧠 <strong>Anxiety / Stress / Sleep:</strong> Reduce caffeine after 2pm — it has an 8-hour half-life. Increase magnesium-rich foods: dark chocolate, spinach, pumpkin seeds, bananas. Avoid skipping meals — blood sugar crashes trigger anxiety. Omega-3 (EPA/DHA) significantly reduces anxiety scores in clinical trials. Ashwagandha + L-Theanine + Magnesium Glycinate added to your plan. Sleep hygiene: screen-off 1 hour before bed, consistent wake time.');
+  return '<div style="display:flex;flex-direction:column;gap:10px;">'+notes.map(n=>`<div style="background:rgba(56,189,248,.05);border-left:3px solid var(--blue);border-radius:0 6px 6px 0;padding:10px 14px;font-size:12px;color:#c0c0c0;line-height:1.7;">${n}</div>`).join('')+'</div>';
 }
 // ── 7-DAY WORKOUT SPLITS ──
 const WK={
@@ -4914,7 +5001,7 @@ function calculate(){
   const act=parseFloat($('iact').value),goal=getGoal(),gender=getGender(),diet=$('idiet').value;
   const dietStyle=$('idietstyle').value;
   const whey=document.querySelector('input[name="whey"]:checked').value;
-  const health=['pcos','thyroid','diabetic'].filter(h=>$('hc-'+h).checked);
+  const health=['pcos','thyroid','diabetic','insulin_resistance','hypertension','cholesterol','fatty_liver','ibs','acid_reflux','anemia','uric_acid','vitamin_d','osteoporosis','skin_acne','arthritis','low_t','anxiety'].filter(h=>{const el=$('hc-'+h);return el&&el.checked;});
   const caladj=parseFloat($('icaladj').value)||(goal==='loss'?500:goal==='gain'?350:0);
   const ormW=parseFloat($('iorw').value)||0,ormR=parseFloat($('iorr').value)||0;
   if(!age||!weight||!height||age<13||weight<30||height<100){toast('⚠️ Please enter valid details!','gold');return;}
@@ -4968,7 +5055,7 @@ function calculate(){
 // ── HEALTH CHECKBOX VISUAL + GOAL→CALORIE AUTO-UPDATE + SPLIT TABS ──
 function toggleHipField(){const hf=$('hip-field');if(!hf)return;const f=getGender()==='female';hf.style.visibility=f?'visible':'hidden';hf.style.pointerEvents=f?'auto':'none';}
 document.querySelectorAll('input[name="gender"]').forEach(r=>r.addEventListener('change',toggleHipField));
-['pcos','thyroid','diabetic'].forEach(h=>{const el=$('hc-'+h);if(el)el.addEventListener('change',()=>{el.closest('.hchk').classList.toggle('on',el.checked);});});
+['pcos','thyroid','diabetic','insulin_resistance','hypertension','cholesterol','fatty_liver','ibs','acid_reflux','anemia','uric_acid','vitamin_d','osteoporosis','skin_acne','arthritis','low_t','anxiety'].forEach(h=>{const el=$('hc-'+h);if(el)el.addEventListener('change',()=>{el.closest('.hchk').classList.toggle('on',el.checked);});});
 function updateCalAdj(){const goal=getGoal();const note=$('caladj-note');if(goal==='loss'){$('icaladj').value=500;note.textContent='Auto-set to 500 kcal deficit for Fat Loss.';}else if(goal==='gain'){$('icaladj').value=350;note.textContent='Auto-set to 350 kcal surplus for Muscle Gain.';}else{$('icaladj').value=0;note.textContent='Maintenance — eating at your TDEE (no deficit/surplus).';}}
 document.querySelectorAll('input[name="goal"]').forEach(r=>r.addEventListener('change',updateCalAdj));
 updateCalAdj();
@@ -5539,7 +5626,7 @@ function subNews(){const e=$('nemail').value.trim();if(!e){toast('Please enter y
 function applyElite(){const n=$('el-name').value.trim(),p=$('el-phone').value.trim(),g=$('el-goal').value;if(!n||!p||!g){toast('Please fill in all details (name, number, goal)','gold');return;}const apps=JSON.parse(localStorage.getItem('bm_elite')||'[]');apps.push({name:n,phone:p,goal:g,date:new Date().toISOString()});localStorage.setItem('bm_elite',JSON.stringify(apps));closeModal('elitemodal');toast('👑 Application received! Our team will contact you within 24 hours.','gold');}
 
 // ── RESTORE ──
-function restore(){const s=localStorage.getItem('bm_inp');if(!s)return;const d=JSON.parse(s);[['ia','age'],['iw','weight'],['ih','height'],['iwa','waist']].forEach(([id,k])=>{if($(id)&&d[k])$(id).value=d[k];});if($('iact')&&d.act)$('iact').value=d.act;if($('idiet')&&d.diet)$('idiet').value=d.diet;if($('idietstyle')&&d.dietStyle)$('idietstyle').value=d.dietStyle;if(d.gender){const r=document.querySelector(`input[name="gender"][value="${d.gender}"]`);if(r)r.checked=true;}if(d.goal){const r=document.querySelector(`input[name="goal"][value="${d.goal}"]`);if(r)r.checked=true;}if(d.whey){const r=document.querySelector(`input[name="whey"][value="${d.whey}"]`);if(r)r.checked=true;}if(d.health)d.health.forEach(h=>{const el=$('hc-'+h);if(el){el.checked=true;el.closest('.hchk').classList.add('on');}});updateCalAdj();}
+function restore(){const s=localStorage.getItem('bm_inp');if(!s)return;const d=JSON.parse(s);[['ia','age'],['iw','weight'],['ih','height'],['iwa','waist']].forEach(([id,k])=>{if($(id)&&d[k])$(id).value=d[k];});if($('iact')&&d.act)$('iact').value=d.act;if($('idiet')&&d.diet)$('idiet').value=d.diet;if($('idietstyle')&&d.dietStyle)$('idietstyle').value=d.dietStyle;if(d.gender){const r=document.querySelector(`input[name="gender"][value="${d.gender}"]`);if(r)r.checked=true;}if(d.goal){const r=document.querySelector(`input[name="goal"][value="${d.goal}"]`);if(r)r.checked=true;}if(d.whey){const r=document.querySelector(`input[name="whey"][value="${d.whey}"]`);if(r)r.checked=true;}if(d.health)d.health.forEach(h=>{const el=$('hc-'+h);if(el&&el.closest('.hchk')){el.checked=true;el.closest('.hchk').classList.add('on');}});updateCalAdj();}
 
 // ════════ V5 MODULES ════════
 // ── ADVANCED CALCULATORS ──
