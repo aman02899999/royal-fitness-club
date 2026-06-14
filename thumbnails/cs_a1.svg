@@ -1,60 +1,66 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 340" width="900" height="340">
-  <title>CERTIFIED PERSONAL TRAINER | USA Fitness Academy — 99% Off Make in India</title>
-  <desc>certified personal trainer, ADVANCED, 12 modules, 10 WEEKS, ₹999 platform fee only, free education make in india</desc>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 340">
   <defs>
-    <linearGradient id="bgcs_a1" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#450a0a"/>
-      <stop offset="100%" stop-color="#991b1b"/>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#030712"/><stop offset="50%" stop-color="#0c1a3a"/><stop offset="100%" stop-color="#1e3a6e"/>
     </linearGradient>
-    <linearGradient id="shinecs_a1" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="rgba(255,255,255,0.05)"/>
-      <stop offset="100%" stop-color="rgba(0,0,0,0)"/>
-    </linearGradient>
+    <radialGradient id="glow" cx="72%" cy="45%"><stop offset="0%" stop-color="#3b82f6" stop-opacity="0.15"/><stop offset="100%" stop-color="#3b82f6" stop-opacity="0"/></radialGradient>
   </defs>
-  <rect width="900" height="340" fill="url(#bgcs_a1)"/>
-  <rect width="900" height="160" fill="url(#shinecs_a1)"/>
-  <circle cx="760" cy="160" r="155" fill="#f97316" opacity="0.07"/>
-  <circle cx="760" cy="160" r="100" fill="#f97316" opacity="0.05"/>
-  <rect x="0" y="0" width="6" height="340" fill="#f97316"/>
+  <rect width="600" height="340" fill="url(#bg)"/>
+  <rect width="600" height="340" fill="url(#glow)"/>
+  <circle cx="488" cy="155" r="125" fill="#3b82f6" opacity="0.06"/>
+  <circle cx="540" cy="250" r="65" fill="#60a5fa" opacity="0.04"/>
   <!-- Top bar -->
-  <rect x="0" y="0" width="900" height="52" fill="rgba(0,0,0,0.38)"/>
-  <rect x="6" y="0" width="4" height="52" fill="#FF9933"/>
-  <rect x="10" y="0" width="4" height="52" fill="#FFFFFF" opacity="0.9"/>
-  <rect x="14" y="0" width="4" height="52" fill="#138808"/>
-  <text x="26" y="33" font-family="'Arial Black',Impact,sans-serif" font-size="14" font-weight="900" fill="#fff" letter-spacing="3">USA FITNESS ACADEMY</text>
-  <text x="26" y="46" font-family="Arial,sans-serif" font-size="9" fill="rgba(255,255,255,0.55)" letter-spacing="2">WORLD-CLASS CERTIFICATION PROGRAMS</text>
-  <rect x="800" y="10" width="90" height="22" rx="3" fill="#f97316" opacity="0.25"/>
-  <rect x="800" y="10" width="90" height="22" rx="3" fill="none" stroke="#f97316" stroke-width="1" opacity="0.7"/>
-  <text x="845" y="25" font-family="Arial,sans-serif" font-size="9" font-weight="700" fill="#f97316" text-anchor="middle" letter-spacing="1.5">ACCREDITED</text>
-  <!-- Level badge -->
-  <rect x="40" y="64" width="92" height="22" rx="11" fill="#b45309"/>
-  <text x="86" y="79" font-family="Arial,sans-serif" font-size="10" font-weight="700" fill="#fff" text-anchor="middle" letter-spacing="2">ADVANCED</text>
-  
-  <!-- 99% OFF badge -->
-  <rect x="680" y="62" width="110" height="36" rx="4" fill="rgba(255,0,0,0.85)"/>
-  <text x="735" y="76" font-family="Impact,'Arial Black',sans-serif" font-size="11" font-weight="900" fill="#fff" text-anchor="middle" letter-spacing="1">99% OFF</text>
-  <text x="735" y="91" font-family="Arial,sans-serif" font-size="9" fill="rgba(255,255,255,0.9)" text-anchor="middle">MAKE IN INDIA 🇮🇳</text>
-  <text x="40" y="152" font-family="Impact,'Arial Black',sans-serif" font-size="64" font-weight="900" fill="#fff" letter-spacing="1">CERTIFIED PERSONAL</text>
-  <text x="40" y="222" font-family="Impact,'Arial Black',sans-serif" font-size="64" font-weight="900" fill="#fff" letter-spacing="1">TRAINER</text>
-  <text x="40" y="300" font-family="Arial,sans-serif" font-size="13" fill="#f97316" letter-spacing="3" opacity="0.9">CPT DIPLOMA</text>
-  <rect x="40" y="314" width="158.5" height="20" rx="3" fill="rgba(255,255,255,0.07)" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
-  <text x="119.25" y="328" font-family="Arial,sans-serif" font-size="10" font-weight="700" fill="rgba(255,255,255,0.75)" text-anchor="middle" letter-spacing="1.5">INDUSTRY RECOGNIZED</text>
-  <text x="750" y="210" font-size="110" text-anchor="middle" opacity="0.7">🏋️</text>
+  <rect width="600" height="48" fill="rgba(0,0,0,0.55)"/>
+  <rect x="0" y="0" width="4" height="48" fill="#FF9933"/>
+  <rect x="4" y="0" width="4" height="48" fill="#ffffff" opacity="0.9"/>
+  <rect x="8" y="0" width="4" height="48" fill="#138808"/>
+  <text x="22" y="20" font-family="Arial Black,Impact,sans-serif" font-size="11" font-weight="900" fill="#3b82f6" letter-spacing="2.5">RFC ACADEMY</text>
+  <text x="22" y="36" font-family="Arial,sans-serif" font-size="8" fill="rgba(255,255,255,0.5)" letter-spacing="1.5">ROYAL FITNESS CLUB · CERTIFIED PROGRAMS</text>
+  <rect x="488" y="11" width="104" height="26" rx="5" fill="#1d4ed8"/>
+  <text x="540" y="29" font-family="Arial,sans-serif" font-size="10" font-weight="800" fill="#ffffff" text-anchor="middle" letter-spacing="1.5">ADVANCED</text>
+  <!-- Left content block -->
+  <rect x="22" y="62" width="3" height="190" fill="#3b82f6" opacity="0.8"/>
+  <text x="36" y="82" font-family="Arial,sans-serif" font-size="9" fill="#3b82f6" letter-spacing="2.5" font-weight="700">PROFESSIONAL CERTIFICATION</text>
+  <text x="36" y="135" font-family="Arial Black,Impact,sans-serif" font-size="46" font-weight="900" fill="#ffffff" opacity="0.97">PERSONAL</text>
+  <text x="36" y="192" font-family="Arial Black,Impact,sans-serif" font-size="46" font-weight="900" fill="#ffffff" opacity="0.97">TRAINER (CPT)</text>
+  <text x="36" y="218" font-family="Arial,sans-serif" font-size="12" fill="rgba(255,255,255,0.6)">Certify · Coach · Transform clients</text>
+  <rect x="36" y="232" width="86" height="24" rx="12" fill="rgba(255,255,255,0.08)" stroke="#3b82f6" stroke-width="1" stroke-opacity="0.5"/>
+  <text x="79" y="248" font-family="Arial,sans-serif" font-size="9" font-weight="700" fill="#3b82f6" text-anchor="middle">12 MODULES</text>
+  <rect x="132" y="232" width="86" height="24" rx="12" fill="rgba(255,255,255,0.08)" stroke="#3b82f6" stroke-width="1" stroke-opacity="0.5"/>
+  <text x="175" y="248" font-family="Arial,sans-serif" font-size="9" font-weight="700" fill="#3b82f6" text-anchor="middle">10 WEEKS</text>
+  <!-- Trainer with client illustration -->
+  <circle cx="452" cy="150" r="17" fill="rgba(255,255,255,0.15)"/>
+  <rect x="438" y="168" width="27" height="46" rx="9" fill="rgba(255,255,255,0.15)"/>
+  <line x1="438" y1="193" x2="408" y2="168" stroke="rgba(255,255,255,0.15)" stroke-width="11" stroke-linecap="round"/>
+  <line x1="465" y1="193" x2="495" y2="168" stroke="rgba(255,255,255,0.15)" stroke-width="11" stroke-linecap="round"/>
+  <line x1="445" y1="214" x2="431" y2="260" stroke="rgba(255,255,255,0.15)" stroke-width="13" stroke-linecap="round"/>
+  <line x1="458" y1="214" x2="472" y2="260" stroke="rgba(255,255,255,0.15)" stroke-width="13" stroke-linecap="round"/>
+  <rect x="362" y="143" width="180" height="10" rx="4" fill="rgba(59,130,246,0.5)"/>
+  <rect x="342" y="126" width="22" height="44" rx="4" fill="rgba(59,130,246,0.5)"/>
+  <rect x="362" y="130" width="16" height="36" rx="3" fill="rgba(59,130,246,0.5)" opacity="0.7"/>
+  <rect x="520" y="130" width="16" height="36" rx="3" fill="rgba(59,130,246,0.5)" opacity="0.7"/>
+  <rect x="540" y="126" width="22" height="44" rx="4" fill="rgba(59,130,246,0.5)"/>
+  <!-- Clipboard / certification -->
+  <rect x="528" y="110" width="48" height="60" rx="4" fill="rgba(255,255,255,0.08)" stroke="#3b82f6" stroke-width="1" stroke-opacity="0.5"/>
+  <rect x="540" y="106" width="24" height="8" rx="4" fill="rgba(255,255,255,0.15)"/>
+  <line x1="537" y1="126" x2="568" y2="126" stroke="#3b82f6" stroke-width="1.5" stroke-opacity="0.5"/>
+  <line x1="537" y1="135" x2="568" y2="135" stroke="#3b82f6" stroke-width="1.5" stroke-opacity="0.5"/>
+  <line x1="537" y1="144" x2="560" y2="144" stroke="#3b82f6" stroke-width="1.5" stroke-opacity="0.5"/>
+  <text x="552" y="160" font-family="Arial,sans-serif" font-size="8" fill="#3b82f6" text-anchor="middle" font-weight="700">CPT</text>
+  <circle cx="462" cy="195" r="80" fill="none" stroke="#3b82f6" stroke-width="1" stroke-opacity="0.12" stroke-dasharray="6,5"/>
+  <circle cx="462" cy="195" r="55" fill="none" stroke="#3b82f6" stroke-width="1" stroke-opacity="0.18" stroke-dasharray="4,4"/>
+  <circle cx="462" cy="195" r="30" fill="#3b82f6" opacity="0.08"/>
+  <text x="412" y="278" font-family="Arial,sans-serif" font-size="9" fill="#3b82f6" text-anchor="middle" letter-spacing="1" opacity="0.7">PERSONAL TRAINING</text>
   <!-- Bottom bar -->
-  <rect x="0" y="290" width="900" height="50" fill="rgba(0,0,0,0.45)"/>
-  <rect x="0" y="290" width="900" height="1" fill="#f97316" opacity="0.4"/>
-  <text x="40" y="322" font-family="Arial,sans-serif" font-size="12" font-weight="700" fill="#f97316">12</text>
-  <text x="60" y="322" font-family="Arial,sans-serif" font-size="11" fill="rgba(255,255,255,0.55)"> MODULES</text>
-  <text x="180" y="322" font-family="Arial,sans-serif" font-size="12" font-weight="700" fill="#f97316">10 WEEKS</text>
-  <text x="310" y="322" font-family="Arial,sans-serif" font-size="12" font-weight="700" fill="#fbbf24">★★★★</text>
-  <text x="358" y="322" font-family="Arial,sans-serif" font-size="11" fill="rgba(255,255,255,0.55)"> 4.9</text>
-  <!-- Price pill -->
-  <rect x="590" y="300" width="130" height="28" rx="14" fill="rgba(255,0,0,0.6)"/>
-  <text x="655" y="319" font-family="Impact,'Arial Black',sans-serif" font-size="14" font-weight="900" fill="#fff" text-anchor="middle">₹999 ONLY</text>
-  <!-- Seal -->
-  <circle cx="845" cy="315" r="22" fill="#f97316" opacity="0.12"/>
-  <circle cx="845" cy="315" r="22" fill="none" stroke="#f97316" stroke-width="1" opacity="0.4"/>
-  <text x="845" y="310" font-family="Arial,sans-serif" font-size="6" font-weight="700" fill="#f97316" text-anchor="middle" letter-spacing="0.5">USA FITNESS</text>
-  <text x="845" y="320" font-family="Arial,sans-serif" font-size="6" font-weight="700" fill="#f97316" text-anchor="middle" letter-spacing="0.5">ACADEMY</text>
-  <text x="845" y="330" font-family="Arial,sans-serif" font-size="7" fill="#f97316" text-anchor="middle">✦</text>
+  <rect x="0" y="290" width="600" height="50" fill="rgba(0,0,0,0.6)"/>
+  <rect x="0" y="290" width="600" height="1.5" fill="rgba(255,255,255,0.12)"/>
+  <rect x="22" y="303" width="88" height="27" rx="14" fill="#E8001D"/>
+  <text x="66" y="321" font-family="Arial Black,sans-serif" font-size="13" font-weight="900" fill="#ffffff" text-anchor="middle">₹5,999</text>
+  <text x="120" y="316" font-family="Arial,sans-serif" font-size="11" fill="rgba(255,255,255,0.38)" text-decoration="line-through">₹11,999</text>
+  <rect x="148" y="303" width="54" height="27" rx="5" fill="rgba(220,38,38,0.28)"/>
+  <text x="175" y="321" font-family="Arial,sans-serif" font-size="10" font-weight="700" fill="#f87171" text-anchor="middle">50% OFF</text>
+  <text x="240" y="316" font-family="Arial,sans-serif" font-size="11" fill="rgba(255,255,255,0.5)">📚 12 modules</text>
+  <text x="340" y="316" font-family="Arial,sans-serif" font-size="11" fill="rgba(255,255,255,0.5)">⏱ 10 Weeks</text>
+  <text x="430" y="316" font-family="Arial,sans-serif" font-size="11" fill="#fbbf24">★ 4.9</text>
+  <text x="460" y="316" font-family="Arial,sans-serif" font-size="10" fill="rgba(255,255,255,0.4)">· 1.1K+</text>
 </svg>

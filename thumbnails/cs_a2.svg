@@ -1,60 +1,69 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 340" width="900" height="340">
-  <title>SPORTS NUTRITION & DIETETICS | USA Fitness Academy — 99% Off Make in India</title>
-  <desc>sports nutrition & dietetics, ADVANCED, 12 modules, 10 WEEKS, ₹999 platform fee only, free education make in india</desc>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 340">
   <defs>
-    <linearGradient id="bgcs_a2" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#022c22"/>
-      <stop offset="100%" stop-color="#065f46"/>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0d0219"/><stop offset="50%" stop-color="#1e0a3d"/><stop offset="100%" stop-color="#2e1065"/>
     </linearGradient>
-    <linearGradient id="shinecs_a2" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="rgba(255,255,255,0.05)"/>
-      <stop offset="100%" stop-color="rgba(0,0,0,0)"/>
-    </linearGradient>
+    <radialGradient id="glow" cx="72%" cy="48%"><stop offset="0%" stop-color="#a855f7" stop-opacity="0.16"/><stop offset="100%" stop-color="#a855f7" stop-opacity="0"/></radialGradient>
   </defs>
-  <rect width="900" height="340" fill="url(#bgcs_a2)"/>
-  <rect width="900" height="160" fill="url(#shinecs_a2)"/>
-  <circle cx="760" cy="160" r="155" fill="#34d399" opacity="0.07"/>
-  <circle cx="760" cy="160" r="100" fill="#34d399" opacity="0.05"/>
-  <rect x="0" y="0" width="6" height="340" fill="#34d399"/>
+  <rect width="600" height="340" fill="url(#bg)"/>
+  <rect width="600" height="340" fill="url(#glow)"/>
+  <circle cx="478" cy="158" r="120" fill="#a855f7" opacity="0.06"/>
   <!-- Top bar -->
-  <rect x="0" y="0" width="900" height="52" fill="rgba(0,0,0,0.38)"/>
-  <rect x="6" y="0" width="4" height="52" fill="#FF9933"/>
-  <rect x="10" y="0" width="4" height="52" fill="#FFFFFF" opacity="0.9"/>
-  <rect x="14" y="0" width="4" height="52" fill="#138808"/>
-  <text x="26" y="33" font-family="'Arial Black',Impact,sans-serif" font-size="14" font-weight="900" fill="#fff" letter-spacing="3">USA FITNESS ACADEMY</text>
-  <text x="26" y="46" font-family="Arial,sans-serif" font-size="9" fill="rgba(255,255,255,0.55)" letter-spacing="2">WORLD-CLASS CERTIFICATION PROGRAMS</text>
-  <rect x="800" y="10" width="90" height="22" rx="3" fill="#34d399" opacity="0.25"/>
-  <rect x="800" y="10" width="90" height="22" rx="3" fill="none" stroke="#34d399" stroke-width="1" opacity="0.7"/>
-  <text x="845" y="25" font-family="Arial,sans-serif" font-size="9" font-weight="700" fill="#34d399" text-anchor="middle" letter-spacing="1.5">ACCREDITED</text>
-  <!-- Level badge -->
-  <rect x="40" y="64" width="92" height="22" rx="11" fill="#047857"/>
-  <text x="86" y="79" font-family="Arial,sans-serif" font-size="10" font-weight="700" fill="#fff" text-anchor="middle" letter-spacing="2">ADVANCED</text>
-  
-  <!-- 99% OFF badge -->
-  <rect x="680" y="62" width="110" height="36" rx="4" fill="rgba(255,0,0,0.85)"/>
-  <text x="735" y="76" font-family="Impact,'Arial Black',sans-serif" font-size="11" font-weight="900" fill="#fff" text-anchor="middle" letter-spacing="1">99% OFF</text>
-  <text x="735" y="91" font-family="Arial,sans-serif" font-size="9" fill="rgba(255,255,255,0.9)" text-anchor="middle">MAKE IN INDIA 🇮🇳</text>
-  <text x="40" y="152" font-family="Impact,'Arial Black',sans-serif" font-size="64" font-weight="900" fill="#fff" letter-spacing="1">SPORTS NUTRITION &</text>
-  <text x="40" y="222" font-family="Impact,'Arial Black',sans-serif" font-size="64" font-weight="900" fill="#fff" letter-spacing="1">DIETETICS</text>
-  <text x="40" y="300" font-family="Arial,sans-serif" font-size="13" fill="#34d399" letter-spacing="3" opacity="0.9">DIPLOMA PROGRAM</text>
-  <rect x="40" y="314" width="181" height="20" rx="3" fill="rgba(255,255,255,0.07)" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
-  <text x="130.5" y="328" font-family="Arial,sans-serif" font-size="10" font-weight="700" fill="rgba(255,255,255,0.75)" text-anchor="middle" letter-spacing="1.5">SCIENCE OF PERFORMANCE</text>
-  <text x="750" y="210" font-size="110" text-anchor="middle" opacity="0.7">🧬</text>
+  <rect width="600" height="48" fill="rgba(0,0,0,0.55)"/>
+  <rect x="0" y="0" width="4" height="48" fill="#FF9933"/>
+  <rect x="4" y="0" width="4" height="48" fill="#ffffff" opacity="0.9"/>
+  <rect x="8" y="0" width="4" height="48" fill="#138808"/>
+  <text x="22" y="20" font-family="Arial Black,Impact,sans-serif" font-size="11" font-weight="900" fill="#a855f7" letter-spacing="2.5">RFC ACADEMY</text>
+  <text x="22" y="36" font-family="Arial,sans-serif" font-size="8" fill="rgba(255,255,255,0.5)" letter-spacing="1.5">ROYAL FITNESS CLUB · CERTIFIED PROGRAMS</text>
+  <rect x="488" y="11" width="104" height="26" rx="5" fill="#7e22ce"/>
+  <text x="540" y="29" font-family="Arial,sans-serif" font-size="10" font-weight="800" fill="#ffffff" text-anchor="middle" letter-spacing="1.5">ADVANCED</text>
+  <!-- Left content block -->
+  <rect x="22" y="62" width="3" height="190" fill="#a855f7" opacity="0.8"/>
+  <text x="36" y="82" font-family="Arial,sans-serif" font-size="9" fill="#a855f7" letter-spacing="2.5" font-weight="700">DIPLOMA PROGRAM</text>
+  <text x="36" y="135" font-family="Arial Black,Impact,sans-serif" font-size="46" font-weight="900" fill="#ffffff" opacity="0.97">SPORTS</text>
+  <text x="36" y="192" font-family="Arial Black,Impact,sans-serif" font-size="46" font-weight="900" fill="#ffffff" opacity="0.97">NUTRITION</text>
+  <text x="36" y="218" font-family="Arial,sans-serif" font-size="12" fill="rgba(255,255,255,0.6)">Clinical dietetics for athletic excellence</text>
+  <rect x="36" y="232" width="86" height="24" rx="12" fill="rgba(255,255,255,0.08)" stroke="#a855f7" stroke-width="1" stroke-opacity="0.5"/>
+  <text x="79" y="248" font-family="Arial,sans-serif" font-size="9" font-weight="700" fill="#a855f7" text-anchor="middle">10 MODULES</text>
+  <rect x="132" y="232" width="86" height="24" rx="12" fill="rgba(255,255,255,0.08)" stroke="#a855f7" stroke-width="1" stroke-opacity="0.5"/>
+  <text x="175" y="248" font-family="Arial,sans-serif" font-size="9" font-weight="700" fill="#a855f7" text-anchor="middle">10 WEEKS</text>
+  <!-- Molecule / DNA illustration -->
+  <circle cx="538" cy="185" r="12" fill="#a855f7" opacity="0.6"/>
+  <line x1="468" y1="185" x2="538" y2="185" stroke="#a855f7" stroke-width="3" opacity="0.35"/>
+  <circle cx="503" cy="245" r="12" fill="#a855f7" opacity="0.6"/>
+  <line x1="468" y1="185" x2="503" y2="245" stroke="#a855f7" stroke-width="3" opacity="0.35"/>
+  <circle cx="433" cy="245" r="12" fill="#a855f7" opacity="0.6"/>
+  <line x1="468" y1="185" x2="433" y2="245" stroke="#a855f7" stroke-width="3" opacity="0.35"/>
+  <circle cx="398" cy="185" r="12" fill="#a855f7" opacity="0.6"/>
+  <line x1="468" y1="185" x2="398" y2="185" stroke="#a855f7" stroke-width="3" opacity="0.35"/>
+  <circle cx="433" cy="124" r="12" fill="#a855f7" opacity="0.6"/>
+  <line x1="468" y1="185" x2="433" y2="124" stroke="#a855f7" stroke-width="3" opacity="0.35"/>
+  <circle cx="503" cy="124" r="12" fill="#a855f7" opacity="0.6"/>
+  <line x1="468" y1="185" x2="503" y2="124" stroke="#a855f7" stroke-width="3" opacity="0.35"/>
+  <circle cx="468" cy="185" r="18" fill="#a855f7" opacity="0.7"/>
+
+  <!-- Helix lines -->
+  <path d="M415 130 Q440 160 415 190 Q440 220 415 250" stroke="#a855f7" stroke-width="2" fill="none" stroke-opacity="0.4" stroke-dasharray="5,3"/>
+  <path d="M425 130 Q450 160 425 190 Q450 220 425 250" stroke="#c084fc" stroke-width="2" fill="none" stroke-opacity="0.3" stroke-dasharray="5,3"/>
+  <!-- connecting rungs -->
+  <line x1="415" y1="148" x2="425" y2="148" stroke="#a855f7" stroke-width="2" stroke-opacity="0.45"/>
+  <line x1="415" y1="170" x2="425" y2="170" stroke="#a855f7" stroke-width="2" stroke-opacity="0.45"/>
+  <line x1="415" y1="192" x2="425" y2="192" stroke="#a855f7" stroke-width="2" stroke-opacity="0.45"/>
+  <line x1="415" y1="214" x2="425" y2="214" stroke="#a855f7" stroke-width="2" stroke-opacity="0.45"/>
+  <circle cx="468" cy="185" r="80" fill="none" stroke="#a855f7" stroke-width="1" stroke-opacity="0.12" stroke-dasharray="6,5"/>
+  <circle cx="468" cy="185" r="55" fill="none" stroke="#a855f7" stroke-width="1" stroke-opacity="0.18" stroke-dasharray="4,4"/>
+  <circle cx="468" cy="185" r="30" fill="#a855f7" opacity="0.08"/>
+  <text x="420" y="278" font-family="Arial,sans-serif" font-size="9" fill="#a855f7" text-anchor="middle" letter-spacing="1" opacity="0.7">SPORTS DIETETICS</text>
   <!-- Bottom bar -->
-  <rect x="0" y="290" width="900" height="50" fill="rgba(0,0,0,0.45)"/>
-  <rect x="0" y="290" width="900" height="1" fill="#34d399" opacity="0.4"/>
-  <text x="40" y="322" font-family="Arial,sans-serif" font-size="12" font-weight="700" fill="#34d399">12</text>
-  <text x="60" y="322" font-family="Arial,sans-serif" font-size="11" fill="rgba(255,255,255,0.55)"> MODULES</text>
-  <text x="180" y="322" font-family="Arial,sans-serif" font-size="12" font-weight="700" fill="#34d399">10 WEEKS</text>
-  <text x="310" y="322" font-family="Arial,sans-serif" font-size="12" font-weight="700" fill="#fbbf24">★★★★</text>
-  <text x="358" y="322" font-family="Arial,sans-serif" font-size="11" fill="rgba(255,255,255,0.55)"> 4.8</text>
-  <!-- Price pill -->
-  <rect x="590" y="300" width="130" height="28" rx="14" fill="rgba(255,0,0,0.6)"/>
-  <text x="655" y="319" font-family="Impact,'Arial Black',sans-serif" font-size="14" font-weight="900" fill="#fff" text-anchor="middle">₹999 ONLY</text>
-  <!-- Seal -->
-  <circle cx="845" cy="315" r="22" fill="#34d399" opacity="0.12"/>
-  <circle cx="845" cy="315" r="22" fill="none" stroke="#34d399" stroke-width="1" opacity="0.4"/>
-  <text x="845" y="310" font-family="Arial,sans-serif" font-size="6" font-weight="700" fill="#34d399" text-anchor="middle" letter-spacing="0.5">USA FITNESS</text>
-  <text x="845" y="320" font-family="Arial,sans-serif" font-size="6" font-weight="700" fill="#34d399" text-anchor="middle" letter-spacing="0.5">ACADEMY</text>
-  <text x="845" y="330" font-family="Arial,sans-serif" font-size="7" fill="#34d399" text-anchor="middle">✦</text>
+  <rect x="0" y="290" width="600" height="50" fill="rgba(0,0,0,0.6)"/>
+  <rect x="0" y="290" width="600" height="1.5" fill="rgba(255,255,255,0.12)"/>
+  <rect x="22" y="303" width="88" height="27" rx="14" fill="#E8001D"/>
+  <text x="66" y="321" font-family="Arial Black,sans-serif" font-size="13" font-weight="900" fill="#ffffff" text-anchor="middle">₹6,999</text>
+  <text x="120" y="316" font-family="Arial,sans-serif" font-size="11" fill="rgba(255,255,255,0.38)" text-decoration="line-through">₹13,999</text>
+  <rect x="148" y="303" width="54" height="27" rx="5" fill="rgba(220,38,38,0.28)"/>
+  <text x="175" y="321" font-family="Arial,sans-serif" font-size="10" font-weight="700" fill="#f87171" text-anchor="middle">50% OFF</text>
+  <text x="240" y="316" font-family="Arial,sans-serif" font-size="11" fill="rgba(255,255,255,0.5)">📚 10 modules</text>
+  <text x="340" y="316" font-family="Arial,sans-serif" font-size="11" fill="rgba(255,255,255,0.5)">⏱ 10 Weeks</text>
+  <text x="430" y="316" font-family="Arial,sans-serif" font-size="11" fill="#fbbf24">★ 4.8</text>
+  <text x="460" y="316" font-family="Arial,sans-serif" font-size="10" fill="rgba(255,255,255,0.4)">· 890+</text>
 </svg>
