@@ -22,6 +22,8 @@
 <meta name="twitter:title" content="Royal Fitness Club — India's Ultimate Beast Ecosystem">
 <meta name="twitter:description" content="AI meal plans · Beast Score · 22 expert guides · Digital membership. India's most advanced gym platform.">
 <meta name="twitter:image" content="https://royal-fitness-club-7adc1.web.app/icons/icon-512x512.png">
+<link rel="icon" href="/icons/icon-192x192.png" type="image/png">
+<link rel="shortcut icon" href="/icons/icon-192x192.png" type="image/png">
 <link rel="manifest" href="/manifest.json">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -6657,8 +6659,10 @@ function checkAndUnlockBadges(){
       setTimeout(()=>toast(`${b.icon} Badge unlocked: ${b.name}!`,'fire'),i*1800+800);
     });
     // Persist to Firestore
-    firebase.firestore().collection('activity').doc(user.uid)
-      .set({badges:unlocked},{merge:true}).catch(()=>{});
+    if(typeof firebase!=='undefined'){
+      firebase.firestore().collection('activity').doc(user.uid)
+        .set({badges:unlocked},{merge:true}).catch(()=>{});
+    }
   }
   return unlocked;
 }
@@ -9281,6 +9285,9 @@ applyUser = function() {
   // Refresh dashboard stats if currently on dashboard
   if (currentScreen === 'dashboard') populateDashboard();
 };
+
+// Re-apply with patched version so admin sidebar item reflects localStorage state
+if (user) applyUser();
 
 // ─── Initialize layout ───────────────────────────────────────────────────────
 
