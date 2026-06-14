@@ -4230,6 +4230,14 @@ function initUser(){
           const effectivePlan=planExpired?'free':(d.plan||'free');
           user={uid:fbUser.uid,name:d.name||fbUser.email.split('@')[0],email:d.email||fbUser.email,phone:d.phone||'',role:d.role||'member',plan:effectivePlan,membershipExpiry:gymExpiry?.toISOString()||null,memberCode:d.memberCode||null,since:d.createdAt?.toDate?.()?.toISOString()||new Date().toISOString(),last:new Date().toISOString()};
           isPro=effectivePlan==='royal_pro'||effectivePlan==='royal_elite';
+        }else if(fbUser.email===ADMIN_EMAIL){
+          // Admin user — bypass Firestore doc requirement
+          user={uid:fbUser.uid,name:'Admin',email:fbUser.email,role:'admin',plan:'royal_pro',since:new Date().toISOString(),last:new Date().toISOString()};
+          isPro=true;
+          localStorage.setItem('bm_user',JSON.stringify(user));
+          localStorage.setItem('bm_pro','true');
+          applyUser();
+          return;
         }else{
           // Auth user exists but no Firestore doc — not a registered member
           showMembershipGate('notfound',null);
@@ -4440,12 +4448,7 @@ function resetPasswordPrompt(){
 }
 
 function showAdminLink(){
-  const nl=$('nlinks');
-  if(nl&&!document.getElementById('nav-admin')){
-    const a=document.createElement('a');
-    a.href='/admin.html';a.id='nav-admin';a.textContent='⚡ Admin';a.style.cssText='color:var(--gold)!important;';
-    nl.insertBefore(a,nl.lastElementChild);
-  }
+  // No-op: admin panel is revealed via applyUser() through the sidebar item #sb-admin-item
 }
 
 $('btnlo').addEventListener('click',async function(){
@@ -7562,7 +7565,7 @@ function filterCourses(lvl, btn) {
 }
 
 const ADMIN_EMAIL = 'aman.sharma0289@gmail.com';
-function isAdminUser() { return !!(user && user.email === ADMIN_EMAIL); }
+function isAdminUser() { return !!(user && (user.email === ADMIN_EMAIL || user.role === 'admin')); }
 
 function getCourses() {
   try {
