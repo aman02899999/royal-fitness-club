@@ -1857,6 +1857,24 @@ img{loading:lazy;}
 /* ─── INLINE PRICE EDIT ───────────────────────────────────────── */
 .admin-inline-price{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--red);outline:none;border-bottom:2px dashed transparent;padding:2px 4px;border-radius:4px;cursor:text;min-width:50px;text-align:center;}
 .admin-inline-price:hover,.admin-inline-price:focus{border-bottom-color:var(--red);background:rgba(232,0,29,.06);}
+/* ─── ADMIN SESSION — bypass ALL lock overlays ───────────────── */
+.is-admin-session #tracker-gate,
+.is-admin-session #physio-gate,
+.is-admin-session #rpgate,
+.is-admin-session .progate,
+.is-admin-session #gym-gate,
+.is-admin-session #expiry-warn-bar,
+.is-admin-session .mlocked-meal,
+.is-admin-session .locked-step { display:none !important; }
+.is-admin-session .tracker { display:block !important; }
+.is-admin-session .rstep.locked-step { filter:none !important; opacity:1 !important; pointer-events:auto !important; }
+/* ─── ADMIN CONTROL BAR ──────────────────────────────────────── */
+#admin-ctrl-bar { display:none; }
+.is-admin-session #admin-ctrl-bar { display:block; }
+.admin-ctrl-btn{display:flex;align-items:center;gap:8px;width:100%;padding:9px 12px;border-radius:7px;border:1px solid rgba(255,255,255,.07);background:rgba(255,255,255,.03);color:var(--text);font-family:'Barlow Condensed',sans-serif;font-size:14px;letter-spacing:.5px;cursor:pointer;text-align:left;transition:background .15s,border-color .15s;margin-bottom:5px;}
+.admin-ctrl-btn:hover{background:rgba(232,0,29,.12);border-color:rgba(232,0,29,.3);}
+.admin-ctrl-btn:last-child{margin-bottom:0;}
+.admin-ctrl-badge{display:none;position:absolute;top:-5px;right:-5px;background:var(--red);color:#fff;font-size:9px;font-weight:700;border-radius:50%;width:16px;height:16px;align-items:center;justify-content:center;}
 /* ─── ADMIN BADGE on challenge cards ─────────────────────────── */
 .admin-ch-edit-bar{display:none;align-items:center;gap:8px;margin-top:8px;padding-top:8px;border-top:1px solid rgba(232,0,29,.2);}
 .is-admin-session .admin-ch-edit-bar{display:flex;}
@@ -4990,7 +5008,11 @@ setInterval(()=>{const p=document.createElement('div');p.className='pt';const s=
 // ── UTILITY ──
 const $=id=>document.getElementById(id);
 function toast(msg,type='fire'){const t=$('toast');t.textContent=msg;t.className=`toast ${type} show`;setTimeout(()=>{t.className=`toast ${type}`;},3500);}
-function openModal(id){$(id).classList.add('open');if(id==='promodal'&&window.AnalyticsService)window.AnalyticsService.trackEvent('pro_modal_opened').catch(()=>{});}
+function openModal(id){
+  if(isAdminUser()&&(id==='promodal'||id==='gym-gate'))return; // admin bypasses all gates
+  $(id).classList.add('open');
+  if(id==='promodal'&&window.AnalyticsService)window.AnalyticsService.trackEvent('pro_modal_opened').catch(()=>{});
+}
 function closeModal(id){$(id).classList.remove('open');}
 ['sharemodal','promodal','elitemodal'].forEach(id=>{$(id).addEventListener('click',e=>{if(e.target===$(id))closeModal(id);});});
 $('loginmodal').addEventListener('click',e=>{if(e.target===$('loginmodal'))closeLoginModal();});
@@ -5172,9 +5194,23 @@ function applyUser(){
       applyNavControl();
     }
   }
-  // Mark body as admin session for CSS targeting
-  if (isAdminUser()) document.body.classList.add('is-admin-session');
-  else document.body.classList.remove('is-admin-session');
+  // Mark body as admin session for CSS targeting + programmatic gate bypass
+  if (isAdminUser()) {
+    document.body.classList.add('is-admin-session');
+    // Force-hide every gate element immediately
+    ['tracker-gate','physio-gate','rpgate','gym-gate','expiry-warn-bar'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = 'none';
+    });
+    document.querySelectorAll('.progate,.mlocked-meal').forEach(el => el.style.display = 'none');
+    // Unlock roadmap steps (CSS also covers this)
+    document.querySelectorAll('.rstep.locked-step').forEach(el => el.classList.remove('locked-step'));
+    // Ensure tracker is shown in pro mode
+    const tracker = document.getElementById('tracker');
+    if (tracker) { tracker.classList.add('pro-on'); }
+  } else {
+    document.body.classList.remove('is-admin-session');
+  }
 }
 
 async function loginWithFirebase(){
@@ -6763,6 +6799,7 @@ function filterCatalog(cat,btn){
 
 async function buyCatalogPDF(productId,title,amountPaise){
   if(!user){toast('Please log in first!','gold');forceLogin();return;}
+  if(isAdminUser()){toast('✅ Admin: All PDFs are freely accessible — no payment required.','green');return;}
   const prod=PDF_PRODUCTS[productId];
   if(!prod){toast('Product not found.','gold');return;}
   try{
@@ -6859,6 +6896,7 @@ async function buyPDFProduct(productId){
   const prod=PDF_PRODUCTS[productId];
   if(!prod){toast('Unknown product.','gold');return;}
   if(!user){forceLogin();return;}
+  if(isAdminUser()){toast('✅ Admin: PDF access is always free.','green');return;}
   try{
     toast('Preparing secure checkout...','gold');
     await _loadRzp();
@@ -6938,6 +6976,7 @@ function initBundles() {
 
 async function buyBundle(bundleId) {
   if(!user){forceLogin();return;}
+  if(isAdminUser()){toast('✅ Admin: All bundles are freely accessible.','green');return;}
   const bundle=BUNDLES[bundleId];
   if(!bundle)return;
   try{
@@ -7820,6 +7859,14 @@ function renderChallengeProgress(ch) {
 
 function joinChallenge(chId) {
   if (!user) { closeChallengeModal(); forceLogin(); return; }
+  // Admin: bypass payment — go directly to admin edit panel
+  if (isAdminUser()) {
+    closeChallengeModal();
+    switchScreen('admin', document.getElementById('sb-admin-item'));
+    setTimeout(() => admTab(6), 300);
+    toast('⚙️ Admin: Opening Challenges editor…','green');
+    return;
+  }
   const ch = getChallenges().find(c => c.id === chId);
   if (!ch) return;
   const rzp = new Razorpay({
@@ -8520,6 +8567,7 @@ function getCourses() {
 }
 
 function isPurchased(courseId) {
+  if (isAdminUser()) return true; // admin has full access to all courses
   if (!user) return false;
   try { return JSON.parse(localStorage.getItem('rfc_purchased_' + user.uid) || '[]').includes(courseId); } catch { return false; }
 }
@@ -8794,6 +8842,13 @@ function cvTab(idx, btn) {
 
 function purchaseCourse(courseId) {
   if (!user) { closeCourseModal(); forceLogin(); return; }
+  // Admin: instant free access — no payment
+  if (isAdminUser()) {
+    closeCourseModal();
+    toast('✅ Admin: All courses always unlocked — no payment required.','green');
+    setTimeout(() => openCourseModal(courseId), 400);
+    return;
+  }
   const c = getCourses().find(x => x.id === courseId);
   if (!c) return;
   const rzp = new Razorpay({
@@ -9289,6 +9344,29 @@ function applyNavControl() {
     }
   });
 }
+
+// ═══════════════════════════════════════════════════════════════════════════
+//  ADMIN CONTROL BAR
+// ═══════════════════════════════════════════════════════════════════════════
+let _adminCtrlOpen = false;
+function toggleAdminCtrl() {
+  _adminCtrlOpen = !_adminCtrlOpen;
+  const panel = document.getElementById('admin-ctrl-panel');
+  const arr = document.getElementById('admin-ctrl-arr');
+  if (panel) panel.style.display = _adminCtrlOpen ? 'block' : 'none';
+  if (arr) arr.style.transform = _adminCtrlOpen ? 'rotate(180deg)' : 'rotate(0)';
+}
+function goAdmin(tabIdx) {
+  toggleAdminCtrl();
+  switchScreen('admin', document.getElementById('sb-admin-item'));
+  setTimeout(() => admTab(tabIdx), 250);
+}
+// Close on outside click
+document.addEventListener('click', function(e) {
+  if (_adminCtrlOpen && !document.getElementById('admin-ctrl-bar')?.contains(e.target)) {
+    _adminCtrlOpen = true; toggleAdminCtrl();
+  }
+});
 
 // Notify Me overlay
 function closeNotifyOverlay() {
@@ -10494,6 +10572,29 @@ if (user) applyUser();
   footer .container>div:first-child{grid-template-columns:1fr!important;}
 }
 </style>
+
+<!-- ─── ADMIN CONTROL BAR (visible only in admin sessions) ─── -->
+<div id="admin-ctrl-bar" style="position:fixed;top:12px;right:12px;z-index:25000;">
+  <!-- Pill toggle -->
+  <div onclick="toggleAdminCtrl()" style="background:linear-gradient(135deg,#e8001d,#8b0011);color:#fff;border-radius:7px;padding:7px 14px;cursor:pointer;font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:2px;box-shadow:0 4px 18px rgba(232,0,29,.5);user-select:none;display:flex;align-items:center;gap:8px;white-space:nowrap;">
+    <span>⚙️</span> <span>ADMIN</span> <span id="admin-ctrl-arr" style="font-size:10px;transition:transform .2s;">▾</span>
+  </div>
+  <!-- Dropdown panel -->
+  <div id="admin-ctrl-panel" style="display:none;background:var(--card);border:1px solid rgba(232,0,29,.25);border-radius:12px;padding:14px;margin-top:6px;min-width:230px;box-shadow:0 12px 40px rgba(0,0,0,.6);">
+    <div style="font-size:9px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--border);">Admin Quick Access</div>
+    <button class="admin-ctrl-btn" onclick="goAdmin(0)">📊 Admin Overview</button>
+    <button class="admin-ctrl-btn" onclick="goAdmin(5)">👥 Members &amp; Approvals</button>
+    <button class="admin-ctrl-btn" onclick="goAdmin(6)">🏆 Edit Challenges</button>
+    <button class="admin-ctrl-btn" onclick="goAdmin(7)">🧭 Nav Control</button>
+    <button class="admin-ctrl-btn" onclick="goAdmin(1)">🎓 Edit Courses</button>
+    <button class="admin-ctrl-btn" onclick="goAdmin(4)">💳 Edit Plans &amp; Prices</button>
+    <button class="admin-ctrl-btn" onclick="goAdmin(3)">🌐 Site Settings</button>
+    <button class="admin-ctrl-btn" onclick="goAdmin(2)">📄 PDF Library</button>
+    <div style="border-top:1px solid var(--border);margin:10px 0 8px;"></div>
+    <button class="admin-ctrl-btn" onclick="admDeployAll();toggleAdminCtrl();" style="background:rgba(232,0,29,.12);border-color:rgba(232,0,29,.3);">🚀 Save &amp; Deploy All</button>
+    <button class="admin-ctrl-btn" onclick="logoutUser();toggleAdminCtrl();" style="color:#f87171;">⏻ Logout</button>
+  </div>
+</div>
 
 <!-- ─── FLOATING ADMIN SAVE BAR ─── -->
 <div id="adm-save-bar" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:20000;background:linear-gradient(90deg,#0d0d0d,#111);border-top:2px solid #e8001d;padding:12px 20px;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;box-shadow:0 -4px 24px rgba(232,0,29,.25);">
