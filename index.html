@@ -767,6 +767,8 @@ body.sb-open #screen-dashboard .dash-wrap{padding-top:78px;}
   body.sb-open > *:not(#rfc-sidebar):not(#sb-toggle):not(#rfc-sb-overlay){margin-left:0;}
   body.sb-open > nav{display:flex!important;}
   #sb-toggle{left:10px;}
+  /* Push logo right so sidebar-toggle doesn't clip the first letter */
+  nav{padding-left:46px;}
 }
 .wallet-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#ffd000,#ff8c00);}
 .wallet-bal{font-family:'Bebas Neue',sans-serif;font-size:46px;line-height:1;color:#ffd000;letter-spacing:1px;}
@@ -1816,7 +1818,9 @@ img{loading:lazy;}
   .adm-input-row{grid-template-columns:1fr;}
 }
 /* ─── ADMIN TABS & NEW PANELS ─────────────────────────────────── */
-.adm-tabs{display:flex;gap:4px;margin-bottom:20px;flex-wrap:wrap;}
+.adm-tabs{display:flex;gap:4px;margin-bottom:20px;flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:4px;}
+.adm-tabs::-webkit-scrollbar{display:none;}
+.adm-tab{white-space:nowrap;flex-shrink:0;}
 .adm-tab{padding:8px 14px;border:1px solid var(--border);border-radius:6px;background:transparent;color:var(--muted);cursor:pointer;font-size:12px;font-weight:600;transition:all .15s;}
 .adm-tab.active{background:var(--red);border-color:var(--red);color:#fff;}
 .adm-pane{display:none;}
@@ -4761,10 +4765,10 @@ img{loading:lazy;}
     <div class="mlogo">ROYAL FITNESS CLUB</div>
     <div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--red);margin:4px 0 16px;">Members Portal</div>
     <!-- Tab switcher -->
-    <div style="display:flex;gap:0;border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:18px;">
-      <button id="tab-login" onclick="switchAuthTab('login')" style="flex:1;padding:9px;background:var(--red);color:#fff;border:none;font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:1px;cursor:pointer;transition:all .18s;">LOGIN</button>
-      <button id="tab-register" onclick="switchAuthTab('register')" style="flex:1;padding:9px;background:transparent;color:var(--muted);border:none;font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:1px;cursor:pointer;transition:all .18s;">WITH CODE</button>
-      <button id="tab-self" onclick="switchAuthTab('self')" style="flex:1;padding:9px;background:transparent;color:var(--muted);border:none;font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:1px;cursor:pointer;transition:all .18s;">SELF REGISTER</button>
+    <div style="display:flex;gap:0;border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:18px;min-width:0;">
+      <button id="tab-login" onclick="switchAuthTab('login')" style="flex:1;min-width:0;padding:9px 6px;background:var(--red);color:#fff;border:none;font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:.5px;cursor:pointer;transition:all .18s;">LOGIN</button>
+      <button id="tab-register" onclick="switchAuthTab('register')" style="flex:1;min-width:0;padding:9px 6px;background:transparent;color:var(--muted);border:none;font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:.5px;cursor:pointer;transition:all .18s;">WITH CODE</button>
+      <button id="tab-self" onclick="switchAuthTab('self')" style="flex:1;min-width:0;padding:9px 6px;background:transparent;color:var(--muted);border:none;font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:.5px;cursor:pointer;transition:all .18s;">SELF REGISTER</button>
     </div>
     <!-- LOGIN PANEL -->
     <div id="auth-login-panel">
@@ -9742,7 +9746,14 @@ function populateDashboard() {
   if (dateEl) dateEl.textContent = new Date().toLocaleDateString('en-IN', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
 
   // Tiger score
-  var score = calcTigerScore();
+  var _pd=JSON.parse(localStorage.getItem('bm_pd')||'{}');
+  var _wkKey='rfc_workouts_'+(user?user.uid||'':'');
+  var _wks=(JSON.parse(localStorage.getItem(_wkKey)||'[]')).length;
+  var _tsStreak=parseInt(_pd.streak||0);
+  var _tsCheckins=parseInt(localStorage.getItem('bm_total_checkins')||'0');
+  var _tsRefs=(JSON.parse(localStorage.getItem('bm_refs_'+(user?user.uid||'':''))||'[]')).filter(function(r){return r.credited;}).length;
+  var _tsPhotos=(JSON.parse(localStorage.getItem('bm_progress_photos')||'[]')).length;
+  var score=calcTigerScore(_tsStreak,_wks,_tsCheckins,_tsRefs,_tsPhotos);
   var scoreEl = document.getElementById('ds-tiger');
   if (scoreEl) scoreEl.textContent = score;
   var dbScore = document.getElementById('db-tiger-score');
