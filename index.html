@@ -1824,6 +1824,42 @@ img{loading:lazy;}
 .adm-tab{padding:8px 14px;border:1px solid var(--border);border-radius:6px;background:transparent;color:var(--muted);cursor:pointer;font-size:12px;font-weight:600;transition:all .15s;}
 .adm-tab.active{background:var(--red);border-color:var(--red);color:#fff;}
 .adm-pane{display:none;}
+/* ─── CHALLENGE EDITOR CARDS ──────────────────────────────────── */
+.adm-ch-card{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:10px;display:flex;gap:12px;align-items:flex-start;transition:border-color .15s,transform .1s,box-shadow .1s;}
+.adm-ch-card.drag-over{border-color:var(--red);box-shadow:0 0 0 2px rgba(232,0,29,.25);transform:scale(1.01);}
+.adm-ch-card.dragging{opacity:.35;border-style:dashed;}
+.adm-ch-drag{cursor:grab;font-size:18px;color:var(--muted);flex-shrink:0;padding:4px 2px;line-height:1;user-select:none;}
+.adm-ch-drag:active{cursor:grabbing;}
+.adm-ch-emoji{font-size:30px;flex-shrink:0;cursor:pointer;line-height:1;padding:2px 4px;border-radius:6px;transition:background .15s;}
+.adm-ch-emoji:hover{background:rgba(255,255,255,.08);}
+.adm-ch-body{flex:1;min-width:0;}
+.adm-ch-name{font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--text);letter-spacing:1px;outline:none;border-bottom:1px dashed transparent;padding:2px 4px;border-radius:4px;display:inline-block;min-width:80px;cursor:text;}
+.adm-ch-name:hover,.adm-ch-name:focus{border-bottom-color:rgba(232,0,29,.5);background:rgba(232,0,29,.04);}
+.adm-ch-fields{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;margin:8px 0;}
+.adm-ch-field label{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:3px;}
+.adm-ch-field input,.adm-ch-field select,.adm-ch-field textarea{font-size:12px;padding:6px 8px;border:1px solid var(--border);background:var(--card);color:var(--text);border-radius:6px;width:100%;outline:none;font-family:'Barlow',sans-serif;transition:border-color .15s;}
+.adm-ch-field input:focus,.adm-ch-field select:focus,.adm-ch-field textarea:focus{border-color:var(--red);}
+.adm-ch-status{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:4px;font-size:10px;font-weight:700;letter-spacing:1px;cursor:pointer;border:1px solid;user-select:none;transition:all .15s;}
+.adm-ch-status.live{background:rgba(34,197,94,.12);color:#4ade80;border-color:rgba(34,197,94,.3);}
+.adm-ch-status.soon{background:rgba(245,158,11,.12);color:#fbbf24;border-color:rgba(245,158,11,.3);}
+.adm-ch-status.ended{background:rgba(100,116,139,.12);color:#94a3b8;border-color:rgba(100,116,139,.3);}
+/* ─── NAV CONTROL TOGGLES ─────────────────────────────────────── */
+.adm-nav-row{display:flex;align-items:center;gap:12px;padding:11px 14px;background:var(--card2);border:1px solid var(--border);border-radius:8px;margin-bottom:8px;flex-wrap:wrap;}
+.adm-toggle-wrap{position:relative;width:44px;height:24px;flex-shrink:0;}
+.adm-toggle-wrap input{opacity:0;width:0;height:0;position:absolute;}
+.adm-toggle-slider{position:absolute;inset:0;border-radius:24px;background:#374151;cursor:pointer;transition:background .2s;}
+.adm-toggle-slider::before{content:'';position:absolute;left:4px;top:4px;width:16px;height:16px;border-radius:50%;background:#fff;transition:transform .2s;}
+.adm-toggle-wrap input:checked~.adm-toggle-slider{background:#16a34a;}
+.adm-toggle-wrap input:checked~.adm-toggle-slider::before{transform:translateX(20px);}
+.adm-nav-lbl{font-family:'Barlow Condensed',sans-serif;font-size:15px;letter-spacing:.3px;min-width:160px;}
+.adm-nav-notify-inp{flex:1;font-size:11px;padding:5px 9px;border:1px solid var(--border);background:var(--card);color:var(--text);border-radius:5px;outline:none;font-family:'Barlow',sans-serif;min-width:140px;}
+.adm-nav-notify-inp:focus{border-color:var(--gold);}
+/* ─── INLINE PRICE EDIT ───────────────────────────────────────── */
+.admin-inline-price{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--red);outline:none;border-bottom:2px dashed transparent;padding:2px 4px;border-radius:4px;cursor:text;min-width:50px;text-align:center;}
+.admin-inline-price:hover,.admin-inline-price:focus{border-bottom-color:var(--red);background:rgba(232,0,29,.06);}
+/* ─── ADMIN BADGE on challenge cards ─────────────────────────── */
+.admin-ch-edit-bar{display:none;align-items:center;gap:8px;margin-top:8px;padding-top:8px;border-top:1px solid rgba(232,0,29,.2);}
+.is-admin-session .admin-ch-edit-bar{display:flex;}
 .adm-pane.active{display:block;}
 .adm-pdf-row{display:grid;grid-template-columns:1fr 60px 2fr auto;gap:10px;align-items:center;padding:10px 12px;border-bottom:1px solid var(--border);font-size:12px;}
 .adm-pdf-hdr{background:var(--card);font-weight:700;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);}
@@ -3516,6 +3552,8 @@ img{loading:lazy;}
       <button class="adm-tab" onclick="admTab(3)">🌐 Site Settings</button>
       <button class="adm-tab" onclick="admTab(4)">💳 Plans</button>
       <button class="adm-tab" onclick="admTab(5)">👥 Members</button>
+      <button class="adm-tab" onclick="admTab(6)">🏆 Challenges</button>
+      <button class="adm-tab" onclick="admTab(7)">🧭 Nav Control</button>
     </div>
 
     <!-- Pane 0: Overview -->
@@ -3526,6 +3564,8 @@ img{loading:lazy;}
         <button class="bsm" onclick="admTab(2);admOpenPdfModal(null)">+ Add PDF</button>
         <button class="bsm" onclick="admTab(4);admOpenPlanModal(null)">+ Add Plan</button>
         <button class="bsm" onclick="admTab(5)">👥 Members</button>
+        <button class="bsm" onclick="admTab(6)">🏆 Challenges</button>
+        <button class="bsm" onclick="admTab(7)">🧭 Nav Control</button>
         <button class="bsm" style="background:rgba(239,68,68,.12);border-color:rgba(239,68,68,.4);color:#f87171;" onclick="adminResetDefaults()">↺ Reset Course Defaults</button>
       </div>
     </div>
@@ -3712,6 +3752,27 @@ img{loading:lazy;}
         <div id="adm-members-list" style="display:none;"></div>
       </div>
 
+    </div>
+
+    <!-- Pane 6: Challenges CRUD -->
+    <div class="adm-pane" id="adm-pane-6">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px;">
+        <div style="font-size:12px;color:var(--muted);">☰ Drag to reorder · Click field to edit · Click status badge to cycle · Changes deploy instantly.</div>
+        <button class="bsm" onclick="admAddChallenge()" style="background:var(--red);color:#fff;border-color:var(--red);">+ New Challenge</button>
+      </div>
+      <div id="adm-challenges-list"></div>
+    </div>
+
+    <!-- Pane 7: Nav Control -->
+    <div class="adm-pane" id="adm-pane-7">
+      <div style="font-size:12px;color:var(--muted);margin-bottom:16px;line-height:1.6;">
+        Toggle each menu item <b>ON</b> to make it visible to members. Set it <b>OFF</b> to replace it with a "Notify Me" screen — members can subscribe for updates. Click <b>💾 Save &amp; Deploy</b> to push changes live.
+      </div>
+      <div id="adm-nav-control-list"></div>
+      <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap;">
+        <button class="bfire" style="flex:1;" onclick="admSaveNavControl()">💾 Save &amp; Deploy Nav</button>
+        <button class="bsm" onclick="admLoadNavControl()">↺ Refresh</button>
+      </div>
     </div>
 
   </div>
@@ -5100,6 +5161,20 @@ function applyUser(){
     }).catch(()=>{});
   }
   setTimeout(checkAndUnlockBadges, 800);
+  // Apply nav control (hide disabled tabs from members)
+  if (typeof applyNavControl === 'function') {
+    // Pull latest nav config from Firestore if available
+    if (typeof firebase !== 'undefined' && !isAdminUser()) {
+      firebase.firestore().collection('admin_config').doc('nav_control').get()
+        .then(d => { if (d.exists && d.data().nav) { localStorage.setItem('rfc_nav_control', JSON.stringify(d.data().nav)); } applyNavControl(); })
+        .catch(() => applyNavControl());
+    } else {
+      applyNavControl();
+    }
+  }
+  // Mark body as admin session for CSS targeting
+  if (isAdminUser()) document.body.classList.add('is-admin-session');
+  else document.body.classList.remove('is-admin-session');
 }
 
 async function loginWithFirebase(){
@@ -7643,34 +7718,48 @@ function renderChallenges() {
   const grid = document.getElementById('challenges-grid');
   if (!grid) return;
 
-  grid.innerHTML = challenges.map(ch => {
+  const _isAdmin = isAdminUser();
+  grid.innerHTML = challenges.map((ch, chIdx) => {
     const pts = getChParticipants(ch.id);
     const pct = Math.min(100, Math.round((pts / ch.maxParticipants) * 100));
     const joined = isJoined(ch.id);
+    const adminBar = _isAdmin ? `
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:10px;padding-top:10px;border-top:1px dashed rgba(232,0,29,.25);">
+        <span style="font-size:10px;letter-spacing:1.5px;color:var(--red);font-weight:700;text-transform:uppercase;">⚙️ Admin</span>
+        <button class="bsm" style="font-size:11px;" onclick="admTab(6);switchScreen('admin',document.getElementById('sb-admin-item'))">✏️ Edit in Admin Panel</button>
+        <button class="bsm" style="font-size:11px;" onclick="admChCycleStatus(${chIdx});admTab(6);switchScreen('admin',document.getElementById('sb-admin-item'))">⟳ Cycle Status (${ch.status})</button>
+        <button class="bsm" style="font-size:11px;background:rgba(239,68,68,.1);border-color:rgba(239,68,68,.3);color:#f87171;" onclick="if(confirm('Delete?')){admDeleteChallenge(${chIdx});switchScreen('challenges',null);}">🗑 Delete</button>
+      </div>` : '';
+    const actionBtn = _isAdmin
+      ? `<button class="bfire" style="width:100%;padding:13px;font-size:15px;background:rgba(232,0,29,.15);border:1px dashed rgba(232,0,29,.5);cursor:pointer;" onclick="admTab(6);switchScreen('admin',document.getElementById('sb-admin-item'))">⚙️ ADMIN — EDIT THIS CHALLENGE</button>`
+      : ch.status === 'soon'
+        ? `<button class="bfire" style="width:100%;padding:13px;font-size:15px;opacity:.5;cursor:not-allowed;" disabled>🔔 NOTIFY ME</button>`
+        : joined
+          ? `<button class="bfire" style="width:100%;padding:13px;font-size:15px;" onclick="openChallengeModal('${ch.id}')">📊 VIEW MY PROGRESS</button>`
+          : `<button class="bfire" style="width:100%;padding:13px;font-size:15px;" onclick="openChallengeModal('${ch.id}')">🔥 JOIN — ₹${ch.entryFee}</button>`;
     return `
     <div class="ch-card">
       <div class="ch-banner" style="background:${ch.banner};">
         <span style="font-size:64px;">${ch.emoji}</span>
         <span class="ch-badge ${ch.status}">${ch.status === 'live' ? 'LIVE NOW' : ch.status === 'soon' ? 'COMING SOON' : ch.status.toUpperCase()}</span>
+        ${_isAdmin ? '<span style="position:absolute;top:8px;right:8px;background:rgba(0,0,0,.6);color:var(--gold);font-size:10px;font-weight:700;letter-spacing:1px;padding:3px 8px;border-radius:4px;">ADMIN VIEW</span>' : ''}
       </div>
       <div class="ch-body">
         <div class="ch-name">${ch.name}</div>
         <div class="ch-desc">${ch.desc}</div>
         <div class="ch-meta-row">
           <div class="ch-meta"><span>Duration</span><strong>${ch.duration}</strong></div>
-          <div class="ch-meta"><span>Entry Fee</span><strong class="ch-fee">₹${ch.entryFee}</strong></div>
+          <div class="ch-meta"><span>Entry Fee</span><strong class="ch-fee">${_isAdmin ? '<span style="color:var(--green);font-size:11px;">FREE (ADMIN)</span>' : '₹'+ch.entryFee}</strong></div>
           <div class="ch-meta"><span>Prize Pool</span><strong style="color:var(--gold);">${ch.prize}</strong></div>
-          <div class="ch-meta"><span>Starts</span><strong>${ch.startDate}</strong></div>
+          <div class="ch-meta"><span>Starts</span><strong>${ch.startDate||'TBA'}</strong></div>
         </div>
         <div class="ch-prize-bar">${(ch.prizes||[]).map(p => `<span class="ch-prize-pill">${p}</span>`).join('')}</div>
         <div class="ch-participants">${pts} / ${ch.maxParticipants} participants
           <div class="ch-prog-bar"><div class="ch-prog-fill" style="width:${pct}%;"></div></div>
         </div>
-        ${joined ? `<div class="ch-my-badge">✅ You're IN! Track your progress in the Arena.</div>` : ''}
-        <button class="bfire" style="width:100%;padding:13px;font-size:15px;" onclick="openChallengeModal('${ch.id}')"
-          ${ch.status === 'soon' ? 'disabled style="opacity:.5;cursor:not-allowed;width:100%;padding:13px;font-size:15px;"' : ''}>
-          ${ch.status === 'soon' ? '🔔 NOTIFY ME' : joined ? '📊 VIEW MY PROGRESS' : `🔥 JOIN — ₹${ch.entryFee}`}
-        </button>
+        ${!_isAdmin && joined ? `<div class="ch-my-badge">✅ You're IN! Track your progress in the Arena.</div>` : ''}
+        ${actionBtn}
+        ${adminBar}
       </div>
     </div>`;
   }).join('');
@@ -8883,6 +8972,348 @@ function admTab(idx) {
   if (idx===3) renderAdmSiteSettings();
   if (idx===4) renderAdmPlans();
   if (idx===5) { document.getElementById('adm-mc-result').style.display='none'; adminLoadPending(); }
+  if (idx===6) admLoadChallenges();
+  if (idx===7) admLoadNavControl();
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+//  FLOATING SAVE / DEPLOY BAR
+// ═══════════════════════════════════════════════════════════════════════════
+let _saveBarTimer = null;
+function showSaveBar(msg) {
+  const bar = document.getElementById('adm-save-bar');
+  if (!bar) return;
+  const msgEl = document.getElementById('adm-save-bar-msg');
+  if (msgEl) msgEl.textContent = msg || 'Changes pending';
+  bar.style.display = 'flex';
+  if (_saveBarTimer) clearTimeout(_saveBarTimer);
+}
+function hideSaveBar() {
+  const bar = document.getElementById('adm-save-bar');
+  if (bar) bar.style.display = 'none';
+}
+async function admDeployAll() {
+  // Deploy challenges
+  const chs = getChallenges();
+  // Deploy nav control
+  const nc = getNavControl();
+  if (typeof firebase !== 'undefined') {
+    const db = firebase.firestore();
+    const batch = db.batch();
+    batch.set(db.collection('admin_config').doc('challenges'), { challenges: chs, updatedAt: firebase.firestore.FieldValue.serverTimestamp() });
+    batch.set(db.collection('admin_config').doc('nav_control'), { nav: nc, updatedAt: firebase.firestore.FieldValue.serverTimestamp() });
+    try { await batch.commit(); } catch(e) { console.warn('Deploy partial:', e); }
+  }
+  // Also save current site settings
+  admSaveSiteSettings();
+  hideSaveBar();
+  toast('🚀 All changes deployed to all members!', 'green');
+  renderChallenges();
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+//  CHALLENGES ADMIN CRUD + DRAG & DROP
+// ═══════════════════════════════════════════════════════════════════════════
+let _admChDragSrc = null;
+
+function admLoadChallenges() {
+  const challenges = getChallenges();
+  const list = document.getElementById('adm-challenges-list');
+  if (!list) return;
+  if (!challenges.length) {
+    list.innerHTML = '<div style="text-align:center;padding:30px;color:var(--muted);font-size:13px;">No challenges yet. Click "+ New Challenge" to create one.</div>';
+    return;
+  }
+  list.innerHTML = challenges.map((ch, idx) => `
+    <div class="adm-ch-card" draggable="true"
+      id="adm-ch-card-${idx}"
+      ondragstart="admChDragStart(event,${idx})"
+      ondragover="admChDragOver(event,${idx})"
+      ondrop="admChDrop(event,${idx})"
+      ondragleave="this.classList.remove('drag-over')"
+      ondragend="this.classList.remove('dragging')">
+      <div class="adm-ch-drag" title="Drag to reorder">☰</div>
+      <div class="adm-ch-emoji" title="Click to cycle emoji" onclick="admChCycleEmoji(${idx})">${ch.emoji}</div>
+      <div class="adm-ch-body">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap;">
+          <div class="adm-ch-name" contenteditable="true" spellcheck="false"
+            onblur="admChSave(${idx},'name',this.textContent.trim()||'Untitled')"
+            onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${ch.name}</div>
+          <span class="adm-ch-status ${ch.status}" title="Click to cycle: live → soon → ended" onclick="admChCycleStatus(${idx})">${ch.status==='live'?'● LIVE':ch.status==='soon'?'◌ COMING SOON':'✕ ENDED'}</span>
+        </div>
+        <div class="adm-ch-fields">
+          <div class="adm-ch-field">
+            <label>Entry Fee (₹)</label>
+            <input type="number" value="${ch.entryFee}" min="0" oninput="admChSave(${idx},'entryFee',+this.value);showSaveBar('Entry fee updated')">
+          </div>
+          <div class="adm-ch-field">
+            <label>Prize Pool</label>
+            <input type="text" value="${ch.prize}" oninput="admChSave(${idx},'prize',this.value);showSaveBar('Prize pool updated')">
+          </div>
+          <div class="adm-ch-field">
+            <label>Duration</label>
+            <input type="text" value="${ch.duration}" oninput="admChSave(${idx},'duration',this.value);showSaveBar('Duration updated')">
+          </div>
+          <div class="adm-ch-field">
+            <label>Max Participants</label>
+            <input type="number" value="${ch.maxParticipants}" min="1" oninput="admChSave(${idx},'maxParticipants',+this.value);showSaveBar('Max participants updated')">
+          </div>
+          <div class="adm-ch-field">
+            <label>Start Date</label>
+            <input type="text" value="${ch.startDate||''}" placeholder="Jun 15, 2026" oninput="admChSave(${idx},'startDate',this.value);showSaveBar('Start date updated')">
+          </div>
+          <div class="adm-ch-field">
+            <label>End Date</label>
+            <input type="text" value="${ch.endDate||''}" placeholder="Jul 15, 2026" oninput="admChSave(${idx},'endDate',this.value);showSaveBar('End date updated')">
+          </div>
+        </div>
+        <div class="adm-ch-field" style="margin-bottom:8px;">
+          <label>Description</label>
+          <textarea rows="2" style="resize:vertical;" onblur="admChSave(${idx},'desc',this.value);showSaveBar('Description updated')">${ch.desc||''}</textarea>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
+          <div class="adm-ch-field">
+            <label>Rules (one per line)</label>
+            <textarea rows="3" style="resize:vertical;" onblur="admChSave(${idx},'rules',this.value.split('\\n').filter(r=>r.trim()));showSaveBar('Rules updated')">${(ch.rules||[]).join('\n')}</textarea>
+          </div>
+          <div class="adm-ch-field">
+            <label>Prize Breakdown (one per line)</label>
+            <textarea rows="3" style="resize:vertical;" onblur="admChSave(${idx},'prizes',this.value.split('\\n').filter(r=>r.trim()));showSaveBar('Prizes updated')">${(ch.prizes||[]).join('\n')}</textarea>
+          </div>
+        </div>
+        <div class="adm-ch-field" style="margin-bottom:8px;">
+          <label>Banner Gradient CSS (e.g. linear-gradient(135deg,#e8001d,#ff8c00))</label>
+          <input type="text" value="${ch.banner||''}" oninput="admChSave(${idx},'banner',this.value);showSaveBar('Banner updated')">
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;">
+          <button class="bsm" style="font-size:11px;background:rgba(34,197,94,.1);border-color:rgba(34,197,94,.3);color:#4ade80;" onclick="admDeployChallenge()">🚀 Deploy Now</button>
+          <button class="bsm" style="font-size:11px;" onclick="admDupChallenge(${idx})">⧉ Duplicate</button>
+          <button class="bsm" style="font-size:11px;background:rgba(239,68,68,.1);border-color:rgba(239,68,68,.3);color:#f87171;" onclick="admDeleteChallenge(${idx})">🗑 Delete</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function admChSave(idx, field, val) {
+  const chs = getChallenges();
+  if (!chs[idx]) return;
+  chs[idx][field] = val;
+  localStorage.setItem('rfc_challenges', JSON.stringify(chs));
+}
+
+function admChCycleStatus(idx) {
+  const chs = getChallenges();
+  const order = ['live','soon','ended'];
+  chs[idx].status = order[(order.indexOf(chs[idx].status||'soon')+1) % order.length];
+  localStorage.setItem('rfc_challenges', JSON.stringify(chs));
+  admLoadChallenges();
+  renderChallenges();
+  showSaveBar('Challenge status → ' + chs[idx].status);
+}
+
+function admChCycleEmoji(idx) {
+  const emojis = ['🔥','☀️','🐯','⚡','💪','🏆','🎯','🧬','🥊','🦁','🌊','❄️','🚀','🌟','💥','🔱','⚔️','🏅'];
+  const chs = getChallenges();
+  const cur = chs[idx].emoji || '🔥';
+  chs[idx].emoji = emojis[(emojis.indexOf(cur)+1) % emojis.length];
+  localStorage.setItem('rfc_challenges', JSON.stringify(chs));
+  admLoadChallenges();
+  renderChallenges();
+  showSaveBar('Emoji updated');
+}
+
+function admAddChallenge() {
+  const chs = getChallenges();
+  const nc = { id:'ch_'+Date.now(), emoji:'⚡', name:'New Challenge', desc:'Enter challenge description.', status:'soon', entryFee:499, duration:'30 Days', prize:'₹10,000 Pool', prizes:['🥇 ₹5,000','🥈 ₹3,000','🥉 ₹2,000'], banner:'linear-gradient(135deg,#e8001d,#ff8c00)', maxParticipants:100, startDate:'', endDate:'', rules:['Log daily workouts','Submit weekly photos'], metrics:['Body weight','Progress photos'] };
+  chs.push(nc);
+  localStorage.setItem('rfc_challenges', JSON.stringify(chs));
+  admLoadChallenges();
+  renderChallenges();
+  showSaveBar('New challenge created — deploy when ready');
+  setTimeout(()=>document.getElementById('adm-ch-card-'+(chs.length-1))?.scrollIntoView({behavior:'smooth',block:'start'}),200);
+}
+
+function admDeleteChallenge(idx) {
+  const chs = getChallenges();
+  const nm = chs[idx]?.name || 'challenge';
+  if (!confirm('Delete "' + nm + '"? This cannot be undone.')) return;
+  chs.splice(idx,1);
+  localStorage.setItem('rfc_challenges', JSON.stringify(chs));
+  admLoadChallenges();
+  renderChallenges();
+  showSaveBar('Challenge deleted — deploy to push to members');
+}
+
+function admDupChallenge(idx) {
+  const chs = getChallenges();
+  const dup = JSON.parse(JSON.stringify(chs[idx]));
+  dup.id = 'ch_'+Date.now();
+  dup.name = dup.name + ' (Copy)';
+  dup.status = 'soon';
+  chs.splice(idx+1,0,dup);
+  localStorage.setItem('rfc_challenges', JSON.stringify(chs));
+  admLoadChallenges();
+  renderChallenges();
+  showSaveBar('Challenge duplicated');
+}
+
+async function admDeployChallenge() {
+  const chs = getChallenges();
+  if (typeof firebase !== 'undefined') {
+    try {
+      await firebase.firestore().collection('admin_config').doc('challenges')
+        .set({ challenges: chs, updatedAt: firebase.firestore.FieldValue.serverTimestamp() });
+      toast('🚀 Challenges deployed to all members!','green');
+    } catch(e) { toast('Saved locally (Firebase error: '+e.message+')','gold'); }
+  } else {
+    toast('✅ Challenges saved locally.','green');
+  }
+  renderChallenges();
+  hideSaveBar();
+}
+
+// Drag and drop
+function admChDragStart(e, idx) {
+  _admChDragSrc = idx;
+  e.dataTransfer.effectAllowed = 'move';
+  document.getElementById('adm-ch-card-'+idx)?.classList.add('dragging');
+}
+function admChDragOver(e, idx) {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+  if (idx !== _admChDragSrc) document.getElementById('adm-ch-card-'+idx)?.classList.add('drag-over');
+}
+function admChDrop(e, targetIdx) {
+  e.preventDefault();
+  document.getElementById('adm-ch-card-'+targetIdx)?.classList.remove('drag-over');
+  if (_admChDragSrc === null || _admChDragSrc === targetIdx) return;
+  const chs = getChallenges();
+  const moved = chs.splice(_admChDragSrc,1)[0];
+  chs.splice(targetIdx,0,moved);
+  localStorage.setItem('rfc_challenges', JSON.stringify(chs));
+  _admChDragSrc = null;
+  admLoadChallenges();
+  renderChallenges();
+  showSaveBar('Challenge order changed — deploy to push to members');
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+//  NAV CONTROL — Enable/disable sidebar tabs
+// ═══════════════════════════════════════════════════════════════════════════
+const ALL_NAV_SCREENS = [
+  {id:'dashboard', label:'📊 Dashboard'},
+  {id:'workouts', label:'🏋️ Workouts'},
+  {id:'nutrition', label:'🥗 Nutrition'},
+  {id:'toolbox', label:'🧮 Toolbox'},
+  {id:'roadmap', label:'🗺️ Roadmap'},
+  {id:'physio', label:'🩺 Physio'},
+  {id:'challenges', label:'🏆 Challenges'},
+  {id:'leaderboard', label:'🐯 Leaderboard'},
+  {id:'transform', label:'📈 Progress'},
+  {id:'bloodai', label:'🩸 Blood AI'},
+  {id:'referrals', label:'💰 Wallet & Referrals'},
+  {id:'courses', label:'🎓 Courses'},
+  {id:'store', label:'📚 Knowledge Store'},
+  {id:'plans', label:'💳 Plans & Pricing'},
+  {id:'profile', label:'👤 My Profile'},
+];
+
+function getNavControl() {
+  try { return JSON.parse(localStorage.getItem('rfc_nav_control')||'null')||{}; } catch { return {}; }
+}
+
+function admLoadNavControl() {
+  const nc = getNavControl();
+  const list = document.getElementById('adm-nav-control-list');
+  if (!list) return;
+  list.innerHTML = ALL_NAV_SCREENS.map(s => {
+    const cfg = nc[s.id]||{};
+    const enabled = cfg.enabled !== false;
+    const notifyMsg = cfg.notifyMsg || '';
+    return `<div class="adm-nav-row">
+      <label class="adm-toggle-wrap">
+        <input type="checkbox" ${enabled?'checked':''} onchange="admNavToggle('${s.id}',this.checked)">
+        <span class="adm-toggle-slider"></span>
+      </label>
+      <div class="adm-nav-lbl">${s.label}</div>
+      <input class="adm-nav-notify-inp" id="adm-nav-notify-${s.id}" placeholder="Notify Me message…" value="${notifyMsg.replace(/"/g,'&quot;')}" ${enabled?'disabled style="opacity:.35;"':''} oninput="showSaveBar('Nav message updated')">
+      <span style="font-size:11px;color:${enabled?'var(--green)':'var(--muted)'};min-width:44px;text-align:center;">${enabled?'ON':'OFF'}</span>
+    </div>`;
+  }).join('');
+}
+
+function admNavToggle(id, checked) {
+  const nc = getNavControl();
+  if (!nc[id]) nc[id] = {};
+  nc[id].enabled = checked;
+  localStorage.setItem('rfc_nav_control', JSON.stringify(nc));
+  admLoadNavControl();
+  applyNavControl();
+  showSaveBar((checked?'Enabled':'Disabled')+': '+id);
+}
+
+function admSaveNavControl() {
+  const nc = getNavControl();
+  ALL_NAV_SCREENS.forEach(s => {
+    const inp = document.getElementById('adm-nav-notify-'+s.id);
+    if (inp) { if (!nc[s.id]) nc[s.id]={}; nc[s.id].notifyMsg = inp.value.trim(); }
+  });
+  localStorage.setItem('rfc_nav_control', JSON.stringify(nc));
+  if (typeof firebase !== 'undefined') {
+    firebase.firestore().collection('admin_config').doc('nav_control')
+      .set({nav:nc,updatedAt:firebase.firestore.FieldValue.serverTimestamp()})
+      .then(()=>toast('✅ Nav settings deployed!','green'))
+      .catch(()=>toast('✅ Nav settings saved locally.','green'));
+  } else {
+    toast('✅ Nav settings saved.','green');
+  }
+  hideSaveBar();
+  applyNavControl();
+}
+
+function applyNavControl() {
+  if (isAdminUser()) return; // admin sees everything always
+  const nc = getNavControl();
+  ALL_NAV_SCREENS.forEach(s => {
+    const cfg = nc[s.id];
+    if (!cfg) return;
+    const sidebarItem = document.querySelector('[data-screen="'+s.id+'"]');
+    if (!sidebarItem) return;
+    if (cfg.enabled === false) {
+      sidebarItem.dataset.disabled = 'true';
+      sidebarItem.dataset.notifyMsg = cfg.notifyMsg || 'This feature is coming soon!';
+    } else {
+      delete sidebarItem.dataset.disabled;
+      delete sidebarItem.dataset.notifyMsg;
+    }
+  });
+}
+
+// Notify Me overlay
+function closeNotifyOverlay() {
+  const el = document.getElementById('notify-me-overlay');
+  if (el) el.style.display = 'none';
+}
+function showNotifyOverlay(msg) {
+  const el = document.getElementById('notify-me-overlay');
+  const msgEl = document.getElementById('notify-me-msg');
+  if (msgEl) msgEl.textContent = msg || 'This feature is coming soon!';
+  const thanks = document.getElementById('notify-me-thanks');
+  if (thanks) thanks.style.display = 'none';
+  const emailEl = document.getElementById('notify-me-email');
+  if (emailEl) emailEl.value = (user&&user.email)||'';
+  if (el) el.style.display = 'flex';
+}
+function submitNotifyMe() {
+  const email = document.getElementById('notify-me-email')?.value?.trim();
+  if (!email) { toast('Please enter your email','gold'); return; }
+  if (typeof firebase !== 'undefined') {
+    firebase.firestore().collection('notify_me').add({ email, screen: currentScreen, ts: firebase.firestore.FieldValue.serverTimestamp() }).catch(()=>{});
+  }
+  const thanks = document.getElementById('notify-me-thanks');
+  if (thanks) thanks.style.display = 'block';
+  setTimeout(closeNotifyOverlay, 2000);
 }
 
 // ─── MEMBER MANAGEMENT ──────────────────────────────────────────────────────
@@ -9522,21 +9953,70 @@ function renderAdmPlans() {
   if (!listEl) return;
   const plans = getAdminPlans();
   if (!plans.length) { listEl.innerHTML = '<div style="padding:20px;text-align:center;color:var(--muted);font-size:13px;">No plans. Click "+ Add Plan" to create one.</div>'; return; }
-  listEl.innerHTML = plans.map(p => {
+  listEl.innerHTML = plans.map((p, idx) => {
     const periodLabel = p.period==='year' ? '/yr' : p.period==='lifetime' ? ' lifetime' : '/mo';
-    return `<div class="adm-plan-row">
+    return `<div class="adm-plan-row" style="background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:10px;display:grid;grid-template-columns:1fr auto auto auto;gap:12px;align-items:center;">
       <div>
-        <div style="font-weight:700;font-size:13px;">${p.badge||''} ${p.name}</div>
-        <div style="font-size:11px;color:var(--muted);margin-top:2px;">${(p.features||[]).length} features</div>
+        <div style="font-weight:700;font-size:14px;margin-bottom:4px;">${p.badge||''} <span contenteditable="true" style="outline:none;border-bottom:1px dashed transparent;padding:1px 3px;border-radius:3px;" onblur="admPlanInlineEdit(${idx},'name',this.textContent.trim())" onmouseover="this.style.borderBottomColor='rgba(232,0,29,.4)'" onmouseout="this.style.borderBottomColor='transparent'">${p.name}</span></div>
+        <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+          <span style="font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--red);">₹</span>
+          <span class="admin-inline-price" contenteditable="true" title="Click to edit price" onblur="admPlanInlineEdit(${idx},'price',parseInt(this.textContent.replace(/[^0-9]/g,''))||0)" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${(p.price||0).toLocaleString()}</span>
+          <span style="font-size:11px;color:var(--muted);">${periodLabel}</span>
+          <select style="font-size:11px;padding:3px 6px;border:1px solid var(--border);background:var(--card);color:var(--text);border-radius:4px;" onchange="admPlanInlineEdit(${idx},'period',this.value)">
+            <option value="month" ${p.period==='month'?'selected':''}>/ month</option>
+            <option value="year" ${p.period==='year'?'selected':''}>/ year</option>
+            <option value="lifetime" ${p.period==='lifetime'?'selected':''}>lifetime</option>
+          </select>
+        </div>
+        <div style="margin-top:8px;">
+          <div style="font-size:10px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;">Features (click to edit)</div>
+          <div contenteditable="true" style="font-size:11px;color:rgba(255,255,255,.6);line-height:1.7;outline:none;border:1px dashed transparent;padding:4px 6px;border-radius:4px;white-space:pre-line;" title="Edit features, one per line" onblur="admPlanInlineEdit(${idx},'features',this.textContent.trim().split('\\n').filter(f=>f.trim()))" onmouseover="this.style.borderColor='rgba(255,255,255,.1)'" onmouseout="this.style.borderColor='transparent'">${(p.features||[]).join('\n')}</div>
+        </div>
       </div>
-      <div style="font-weight:700;color:var(--gold);">₹${(p.price||0).toLocaleString()}${periodLabel}</div>
-      <div><span style="font-size:11px;padding:3px 8px;border-radius:20px;background:${p.active?'rgba(34,197,94,.15)':'rgba(255,255,255,.06)'};color:${p.active?'var(--green)':'var(--muted)'};">${p.active?'Active':'Inactive'}</span></div>
-      <div style="display:flex;gap:6px;">
-        <button class="adm-btn-edit" onclick="admOpenPlanModal('${p.id}')">✏️ Edit</button>
-        <button class="adm-btn-del" onclick="admDeletePlan('${p.id}')">🗑️</button>
+      <div>
+        <label style="font-size:10px;color:var(--muted);display:block;margin-bottom:4px;letter-spacing:1px;">STATUS</label>
+        <button onclick="admPlanToggleActive(${idx})" style="padding:5px 12px;border-radius:20px;border:1px solid;font-size:11px;cursor:pointer;background:${p.active?'rgba(34,197,94,.15)':'rgba(255,255,255,.06)'};color:${p.active?'#4ade80':'var(--muted)'};border-color:${p.active?'rgba(34,197,94,.3)':'var(--border)'};">${p.active?'● Active':'○ Inactive'}</button>
+      </div>
+      <div>
+        <button class="bsm" style="font-size:11px;margin-bottom:6px;display:block;width:100%;" onclick="admOpenPlanModal('${p.id}')">✏️ Full Edit</button>
+        <button class="bsm" style="font-size:11px;background:rgba(239,68,68,.1);border-color:rgba(239,68,68,.3);color:#f87171;width:100%;" onclick="admDeletePlan('${p.id}')">🗑️ Delete</button>
+      </div>
+      <div>
+        <button class="bsm" style="font-size:11px;background:rgba(34,197,94,.1);border-color:rgba(34,197,94,.3);color:#4ade80;writing-mode:horizontal-tb;" onclick="admDeployPlans()">🚀 Deploy</button>
       </div>
     </div>`;
   }).join('');
+}
+
+function admPlanInlineEdit(idx, field, val) {
+  const plans = getAdminPlans();
+  if (!plans[idx]) return;
+  plans[idx][field] = val;
+  saveAdminPlans(plans);
+  showSaveBar('Plan "' + plans[idx].name + '" updated — click Deploy to push live');
+}
+
+function admPlanToggleActive(idx) {
+  const plans = getAdminPlans();
+  if (!plans[idx]) return;
+  plans[idx].active = !plans[idx].active;
+  saveAdminPlans(plans);
+  renderAdmPlans();
+  showSaveBar('Plan status toggled');
+}
+
+async function admDeployPlans() {
+  const plans = getAdminPlans();
+  if (typeof firebase !== 'undefined') {
+    try {
+      await firebase.firestore().collection('admin_config').doc('plans')
+        .set({ plans, updatedAt: firebase.firestore.FieldValue.serverTimestamp() });
+      toast('🚀 Plans deployed to all members!','green');
+    } catch(e) { toast('Saved locally (Firebase: '+e.message+')','gold'); }
+  } else {
+    toast('✅ Plans saved locally.','green');
+  }
+  hideSaveBar();
 }
 
 function admOpenPlanModal(planId) {
@@ -9647,6 +10127,15 @@ const ALL_MANAGED_IDS = ['screen-dashboard','home','profile','plans','calculator
 let currentScreen = 'dashboard';
 
 function switchScreen(name, navEl) {
+  // Check nav control — disabled screens show Notify Me overlay instead
+  if (!isAdminUser()) {
+    const nc = getNavControl();
+    const cfg = nc[name];
+    if (cfg && cfg.enabled === false) {
+      showNotifyOverlay(cfg.notifyMsg || 'This feature is coming soon!');
+      return;
+    }
+  }
   // Hide all managed sections, remove screen class
   ALL_MANAGED_IDS.forEach(function(id) {
     var el = document.getElementById(id);
@@ -10005,5 +10494,34 @@ if (user) applyUser();
   footer .container>div:first-child{grid-template-columns:1fr!important;}
 }
 </style>
+
+<!-- ─── FLOATING ADMIN SAVE BAR ─── -->
+<div id="adm-save-bar" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:20000;background:linear-gradient(90deg,#0d0d0d,#111);border-top:2px solid #e8001d;padding:12px 20px;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;box-shadow:0 -4px 24px rgba(232,0,29,.25);">
+  <div style="display:flex;align-items:center;gap:10px;">
+    <span style="font-size:16px;">⚡</span>
+    <div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:1px;color:#fff;">UNSAVED CHANGES</div>
+      <div id="adm-save-bar-msg" style="font-size:11px;color:rgba(255,255,255,.5);letter-spacing:.5px;">Edit detected</div>
+    </div>
+  </div>
+  <div style="display:flex;gap:10px;align-items:center;">
+    <button onclick="hideSaveBar()" style="background:transparent;color:rgba(255,255,255,.4);border:1px solid rgba(255,255,255,.15);border-radius:6px;padding:7px 14px;font-size:12px;cursor:pointer;font-family:'Barlow Condensed',sans-serif;">✕ Dismiss</button>
+    <button onclick="admDeployAll()" style="background:linear-gradient(135deg,#e8001d,#a00015);color:#fff;border:none;border-radius:6px;padding:9px 22px;font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:2px;cursor:pointer;transition:opacity .15s;" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">🚀 SAVE &amp; DEPLOY</button>
+  </div>
+</div>
+
+<!-- ─── NOTIFY ME OVERLAY (for disabled screens) ─── -->
+<div id="notify-me-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:18000;align-items:center;justify-content:center;padding:20px;">
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:36px 28px;max-width:380px;width:100%;text-align:center;position:relative;">
+    <button onclick="closeNotifyOverlay()" style="position:absolute;top:14px;right:14px;background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;">✕</button>
+    <div style="font-size:48px;margin-bottom:12px;">🔔</div>
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:2px;color:var(--text);margin-bottom:8px;">COMING SOON</div>
+    <div id="notify-me-msg" style="font-size:14px;color:var(--muted);line-height:1.6;margin-bottom:20px;">This feature will be available soon. Register your interest and we'll notify you!</div>
+    <input type="email" id="notify-me-email" placeholder="Your email address" style="width:100%;padding:10px 14px;border:1px solid var(--border);background:var(--card2);color:var(--text);border-radius:8px;font-size:14px;margin-bottom:12px;outline:none;font-family:'Barlow',sans-serif;">
+    <button onclick="submitNotifyMe()" style="width:100%;background:var(--red);color:#fff;border:none;border-radius:8px;padding:12px;font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;cursor:pointer;">🔔 NOTIFY ME WHEN LIVE</button>
+    <div id="notify-me-thanks" style="display:none;margin-top:12px;font-size:13px;color:var(--green);">✅ You're on the list! We'll notify you.</div>
+  </div>
+</div>
+
 </body>
 </html>
