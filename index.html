@@ -2268,6 +2268,12 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
           <div class="water-streak" id="water-streak-row"></div>
         </div>
 
+        <!-- PR Tracker -->
+        <div class="dash-card" style="margin-bottom:16px;">
+          <div class="dash-card-hdr" style="margin-bottom:12px;"><span class="dash-card-title">🏅 Personal Records</span></div>
+          <div id="pr-tracker-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;"></div>
+        </div>
+
         <div class="dash-card">
           <div class="dash-card-hdr"><span class="dash-card-title">Quick Actions</span></div>
           <div class="dash-quick-grid">
@@ -11036,6 +11042,104 @@ function sbClose() {
 
 // ─── Dashboard population ────────────────────────────────────────────────────
 
+// ── WOD — Workout of the Day ───────────────────────────────────────────────
+const WOD_LIBRARY=[
+  {name:'AMRAP 20: 5 Pull-Ups, 10 Push-Ups, 15 Air Squats',sets:'AMRAP',reps:'20 min',rest:'As needed',muscle:'Full Body'},
+  {name:'5×5 Back Squat @ 80% 1RM',sets:'5',reps:'5',rest:'3 min',muscle:'Legs'},
+  {name:'3 Rounds: 400m Run + 21 KB Swings + 12 Pull-Ups (Benchmark: Helen)',sets:'3',reps:'For time',rest:'2 min',muscle:'Cardio + Upper'},
+  {name:'Death by Burpees — 10 rounds escalating',sets:'10',reps:'Escalating',rest:'60s',muscle:'Full Body'},
+  {name:'Tabata: Deadlifts + Box Jumps (8 rounds each)',sets:'8',reps:'20s on / 10s off',rest:'1 min between',muscle:'Posterior Chain + Cardio'},
+  {name:'21-15-9: Thrusters + Pull-Ups (Benchmark: Fran)',sets:'3',reps:'21-15-9',rest:'As needed',muscle:'Full Body'},
+  {name:'Pyramid: Bench Press 5-4-3-2-1 (adding weight each set)',sets:'5',reps:'5/4/3/2/1',rest:'2-3 min',muscle:'Chest + Triceps'},
+  {name:'10 Rounds: 100m Sprint + 10 Dips + 10 Rows',sets:'10',reps:'For time',rest:'90s',muscle:'Upper Body + Cardio'},
+  {name:'Heavy Push Day: OHP 4×6 + Incline BP 4×8 + Lateral Raises 3×12',sets:'4/4/3',reps:'6/8/12',rest:'2 min',muscle:'Shoulders + Chest'},
+  {name:'8-Minute EMOM: 3 Power Cleans + 6 Box Jumps',sets:'8',reps:'EMOM',rest:'Remainder of min',muscle:'Explosive Full Body'},
+];
+function loadWOD(){
+  const todayKey='bm_wod_'+new Date().toDateString();
+  let wod=JSON.parse(localStorage.getItem(todayKey)||'null');
+  if(!wod){wod=WOD_LIBRARY[new Date().getDay()%WOD_LIBRARY.length];localStorage.setItem(todayKey,JSON.stringify(wod));}
+  const nameEl=document.getElementById('wod-name');
+  if(nameEl)nameEl.textContent=wod.name||'';
+  const metaEl=document.getElementById('wod-meta');
+  if(metaEl)metaEl.innerHTML=`<span class="wod-meta-pill">🎯 ${wod.muscle||''}</span><span class="wod-meta-pill">📋 ${wod.sets||''}×${wod.reps||''}</span><span class="wod-meta-pill">⏱ Rest: ${wod.rest||''}</span>`;
+  const doneKey='bm_wod_done_'+new Date().toDateString();
+  if(localStorage.getItem(doneKey)){
+    const btn=document.getElementById('wod-btn');const msg=document.getElementById('wod-done-msg');
+    if(btn)btn.style.display='none';if(msg)msg.style.display='block';
+  }
+}
+function markWODDone(){
+  if(!user){toast('Please log in first!','gold');return;}
+  const doneKey='bm_wod_done_'+new Date().toDateString();
+  if(localStorage.getItem(doneKey)){toast('Already completed today!','gold');return;}
+  localStorage.setItem(doneKey,'1');
+  // Award tiger points
+  const tsKey='rfc_tiger_'+user.uid;const ts=parseInt(localStorage.getItem(tsKey)||'0');
+  localStorage.setItem(tsKey,String(ts+10));
+  if(document.getElementById('wod-btn'))document.getElementById('wod-btn').style.display='none';
+  if(document.getElementById('wod-done-msg'))document.getElementById('wod-done-msg').style.display='block';
+  toast('🏆 WOD Complete! +10 Tiger Points','gold');
+}
+
+// ── WATER TRACKER ──────────────────────────────────────────────────────────
+function getWaterData(){
+  const key='bm_water_'+new Date().toDateString();
+  return JSON.parse(localStorage.getItem(key)||'{"ml":0,"goal":2500}');
+}
+function saveWaterData(d){localStorage.setItem('bm_water_'+new Date().toDateString(),JSON.stringify(d));}
+function addWater(ml){
+  const d=getWaterData();d.ml=Math.max(0,d.ml+ml);saveWaterData(d);updateWaterRing(d);
+  if(ml>0&&d.ml>=d.goal)toast('💧 Daily water goal reached!','gold');
+}
+function updateWaterRing(d){
+  if(!d)d=getWaterData();
+  const pct=Math.min(1,d.ml/d.goal);
+  const arc=document.getElementById('water-ring-arc');
+  if(arc){const circ=251.2;arc.style.strokeDashoffset=circ*(1-pct);}
+  const mlEl=document.getElementById('water-ml-label');if(mlEl)mlEl.textContent=d.ml;
+  const goalEl=document.getElementById('water-goal-ml');if(goalEl)goalEl.textContent=d.goal;
+  // Streak row
+  const row=document.getElementById('water-streak-row');
+  if(row){
+    const days=[];const today=new Date();
+    for(let i=6;i>=0;i--){const d2=new Date(today);d2.setDate(today.getDate()-i);const k='bm_water_'+d2.toDateString();const wd=JSON.parse(localStorage.getItem(k)||'{"ml":0,"goal":2500}');days.push({label:['S','M','T','W','T','F','S'][d2.getDay()],met:wd.ml>=wd.goal});}
+    row.innerHTML='<div style="display:flex;gap:6px;margin-top:10px;justify-content:center;">'+days.map(d=>`<div style="text-align:center;"><div style="width:28px;height:28px;border-radius:50%;background:${d.met?'var(--blue)':'rgba(56,189,248,.1)'};border:1px solid ${d.met?'var(--blue)':'rgba(56,189,248,.2)'};display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:${d.met?'#fff':'#556'};">${d.met?'💧':d.label}</div></div>`).join('')+'</div>';
+  }
+}
+
+// ── PR TRACKER ─────────────────────────────────────────────────────────────
+const PR_LIFTS=['Squat','Deadlift','Bench Press','Overhead Press','Pull-Up','Row'];
+function renderPRTracker(){
+  const grid=document.getElementById('pr-tracker-grid');
+  if(!grid)return;
+  const uid=user?user.uid:'guest';
+  grid.innerHTML=PR_LIFTS.map(lift=>{
+    const key='bm_pr_'+uid+'_'+lift.replace(/ /g,'_');
+    const pr=JSON.parse(localStorage.getItem(key)||'{"kg":0,"date":""}');
+    return `<div class="pr-card">
+      <div class="pr-card-name">${lift}</div>
+      <div class="pr-card-val">${pr.kg||'—'}<span style="font-size:12px;color:var(--muted);">${pr.kg?' kg':''}</span></div>
+      ${pr.date?`<div style="font-size:10px;color:var(--muted);margin-top:2px;">${pr.date}</div>`:''}
+      <div style="display:flex;gap:6px;margin-top:8px;">
+        <input id="pr-inp-${lift.replace(/ /g,'_')}" type="number" placeholder="kg" style="width:70px;background:var(--card);border:1px solid var(--border);border-radius:4px;padding:5px 8px;color:var(--text);font-size:13px;">
+        <button onclick="savePR('${lift}')" style="flex:1;background:var(--red);color:#fff;border:none;border-radius:4px;padding:5px;font-size:11px;font-weight:700;cursor:pointer;letter-spacing:1px;">SET PR</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+function savePR(lift){
+  const uid=user?user.uid:'guest';
+  const key='bm_pr_'+uid+'_'+lift.replace(/ /g,'_');
+  const inp=document.getElementById('pr-inp-'+lift.replace(/ /g,'_'));
+  const kg=parseFloat(inp?inp.value:'');
+  if(!kg||kg<=0){toast('Enter a valid weight!','gold');return;}
+  const prev=JSON.parse(localStorage.getItem(key)||'{"kg":0}');
+  if(kg>prev.kg){toast('🎉 New PR! +5 Tiger Points','gold');if(user){const ts=parseInt(localStorage.getItem('rfc_tiger_'+user.uid)||'0');localStorage.setItem('rfc_tiger_'+user.uid,String(ts+5));}}
+  localStorage.setItem(key,JSON.stringify({kg,date:new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})}));
+  renderPRTracker();
+}
+
 function populateDashboard() {
   // Greeting + date
   var h = new Date().getHours();
@@ -11116,6 +11220,11 @@ function populateDashboard() {
 
   // Recent activity
   _populateDashActivity();
+
+  // WOD, Water, PR Tracker
+  if (typeof loadWOD === 'function') loadWOD();
+  if (typeof updateWaterRing === 'function') updateWaterRing(getWaterData());
+  if (typeof renderPRTracker === 'function') renderPRTracker();
 }
 
 function _populateDashTasks() {
