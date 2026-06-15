@@ -8226,7 +8226,36 @@ function copyRefCode(){
 
 function shareReferralWhatsApp(){
   const code=getRefCode();
-  const msg=`Join Royal Fitness Club — the ultimate gym member portal! 🏋️🔥\n\nUse my referral code *${code}* when registering to get started.\n\nTrack workouts, nutrition, body stats & more → royalmentality.in`;
+  const msg=`🦁 *ROYAL FITNESS CLUB*
+━━━━━━━━━━━━━━━━━━━━━━
+
+💪 Hey! I'm inviting you to join my gym's *free* digital fitness platform!
+
+🎁 *Use my referral code to register:*
+▬▬▬▬▬▬▬▬▬▬▬▬▬▬
+     *${code}*
+▬▬▬▬▬▬▬▬▬▬▬▬▬▬
+
+🔗 Sign up FREE here:
+👉 *royal-fitness-club-7adc1.web.app*
+
+━━━━━━━━━━━━━━━━━━━━━━
+✅ *WHAT YOU GET — ALL FREE:*
+
+📊 BMI, BMR & TDEE Calculator
+🐯 Beast Score (0–100)
+💪 1-Rep Max Calculator
+🔥 Daily WOD + Water Tracker
+💊 Indian Supplement Guide
+🏆 Tiger Leaderboard & PR Tracker
+🫀 3D Body Anatomy Visualizer
+🎯 Calories & Macro Targets
+⚖️ Body Fat % Estimator
+━━━━━━━━━━━━━━━━━━━━━━
+
+🏋️ *₹0/month for all gym members!*
+
+Join now and start your transformation! 🔥👑`;
   window.open('https://wa.me/?text='+encodeURIComponent(msg),'_blank');
 }
 
@@ -10314,7 +10343,46 @@ function admCopyCode() {
 
 function admWhatsAppCode() {
   if (!_admLastGenCode) return;
-  const msg = 'Hi ' + (_admLastGenName||'there') + '! 👋\n\nWelcome to *Royal Fitness Club* 🏋️\n\nYour membership code is ready:\n\n*Code:* `' + _admLastGenCode + '`\n\n*How to activate:*\n1. Visit royalmentality.in\n2. Tap "New Member? Register with Code"\n3. Enter your code and create your account\n\nThis code is *one-time use only*.\n\n— Royal Fitness Club 💪';
+  const name = _admLastGenName || 'there';
+  const code = _admLastGenCode;
+  const msg =
+`🦁 *ROYAL FITNESS CLUB*
+━━━━━━━━━━━━━━━━━━━━━━
+
+👋 Hi ${name}!
+
+Welcome to the *Royal Fitness Club* family! 🎉
+Your exclusive membership access code is ready.
+
+🔑 *YOUR ACCESS CODE*
+▬▬▬▬▬▬▬▬▬▬▬▬▬▬
+     *${code}*
+▬▬▬▬▬▬▬▬▬▬▬▬▬▬
+
+📱 *HOW TO ACTIVATE — 3 Easy Steps:*
+
+1️⃣ Open: *royal-fitness-club-7adc1.web.app*
+2️⃣ Tap *"New Member? Register with Code"*
+3️⃣ Enter your code & set up your account
+
+━━━━━━━━━━━━━━━━━━━━━━
+⚡ *YOUR FREE MEMBER TOOLS:*
+
+✅ BMI, BMR & TDEE Calculator
+✅ Beast Score (0–100)
+✅ Daily WOD + Water Tracker
+✅ Body Fat & 1-Rep Max Calculator
+✅ Indian Supplement Guide
+✅ Tiger Leaderboard & PR Tracker
+✅ 3D Body Anatomy Visualizer
+✅ Calories & Macro Targets
+━━━━━━━━━━━━━━━━━━━━━━
+
+⚠️ _This code is *ONE-TIME USE* only._
+_Do not share it with anyone._
+
+💪 Let's crush your goals!
+— *Royal Fitness Club Team* 🏋️`;
   const phone = _admLastGenPhone.replace(/\D/g,'');
   const url = phone ? 'https://wa.me/' + (phone.startsWith('91')?phone:'91'+phone) + '?text=' + encodeURIComponent(msg) : 'https://wa.me/?text=' + encodeURIComponent(msg);
   window.open(url, '_blank');
@@ -10581,7 +10649,36 @@ function admRenewWhatsApp() {
   const plan = document.getElementById('adm-renew-plan').value;
   const planLabel = {'royal_elite':'👑 Royal Elite','royal_pro':'⚡ Royal Pro','basic':'🏋 Basic'}[plan]||plan;
   const expStr = newExp ? newExp.toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'}) : '—';
-  const msg = 'Hi ' + name + '! 👋\n\nYour *Royal Fitness Club* membership has been renewed! 🏋️🔥\n\n*Plan:* ' + planLabel + '\n*Valid Until:* ' + expStr + '\n\nKeep crushing it! 💪\n\n— Royal Fitness Club';
+  const msg =
+`🦁 *ROYAL FITNESS CLUB*
+━━━━━━━━━━━━━━━━━━━━━━
+
+🎉 Hi ${name}!
+
+Your membership has been *RENEWED!* 🔥
+
+💳 *MEMBERSHIP DETAILS*
+▬▬▬▬▬▬▬▬▬▬▬▬▬▬
+🏆 Plan: *${planLabel}*
+📅 Valid Until: *${expStr}*
+▬▬▬▬▬▬▬▬▬▬▬▬▬▬
+
+📱 Login & access your tools:
+👉 *royal-fitness-club-7adc1.web.app*
+
+━━━━━━━━━━━━━━━━━━━━━━
+💪 Your member dashboard is ready:
+
+🔥 Today's Workout (WOD)
+📊 Progress Tracking
+🏆 Leaderboard & Challenges
+🤖 AI Meal Plan _(Pro)_
+📈 Progress Charts _(Pro)_
+━━━━━━━━━━━━━━━━━━━━━━
+
+Stay consistent. Stay royal! 👑
+
+— *Royal Fitness Club Team* 🏋️`;
   const url = phone ? 'https://wa.me/' + (phone.startsWith('91')?phone:'91'+phone) + '?text=' + encodeURIComponent(msg) : 'https://wa.me/?text=' + encodeURIComponent(msg);
   window.open(url, '_blank');
 }
