@@ -1894,6 +1894,61 @@ img{loading:lazy;}
   .adm-pdf-row>*:nth-child(2),.adm-pdf-row>*:nth-child(3){display:none;}
   .adm-plan-row{grid-template-columns:1fr auto;}
 }
+/* ── ONBOARDING WIZARD ── */
+#ob-overlay{position:fixed;inset:0;z-index:30000;background:linear-gradient(135deg,#0a0a0a 0%,#120000 60%,#0a0a0a 100%);overflow-y:auto;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:24px 16px 40px;}
+.ob-logo{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:4px;color:var(--red);margin-bottom:6px;}
+.ob-tag{font-size:11px;letter-spacing:3px;color:var(--muted);text-transform:uppercase;margin-bottom:32px;}
+.ob-progress{display:flex;gap:6px;margin-bottom:32px;}
+.ob-dot{width:28px;height:4px;border-radius:2px;background:rgba(255,255,255,.12);transition:background .3s;}
+.ob-dot.done{background:var(--red);}
+.ob-dot.active{background:var(--gold);}
+.ob-card{width:100%;max-width:560px;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:32px 28px;}
+.ob-step{display:none;}
+.ob-step.active{display:block;}
+.ob-title{font-family:'Bebas Neue',sans-serif;font-size:30px;letter-spacing:2px;color:var(--text);margin-bottom:6px;line-height:1.1;}
+.ob-sub{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:28px;}
+.ob-goal-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px;}
+.ob-goal-card{background:var(--card2);border:2px solid var(--border);border-radius:12px;padding:18px 14px;text-align:center;cursor:pointer;transition:all .2s;user-select:none;}
+.ob-goal-card:hover{border-color:rgba(232,0,29,.4);}
+.ob-goal-card.selected{border-color:var(--red);background:rgba(232,0,29,.08);}
+.ob-goal-card .og-icon{font-size:34px;margin-bottom:8px;}
+.ob-goal-card .og-label{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:1.5px;color:var(--text);}
+.ob-goal-card .og-sub{font-size:11px;color:var(--muted);margin-top:4px;}
+.ob-field{margin-bottom:18px;}
+.ob-label{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:7px;display:block;}
+.ob-input{width:100%;background:var(--card2);border:1px solid var(--border);color:var(--text);padding:11px 14px;border-radius:8px;font-family:'Barlow',sans-serif;font-size:15px;outline:none;transition:border-color .2s;box-sizing:border-box;}
+.ob-input:focus{border-color:var(--red);}
+.ob-radio-row{display:flex;gap:10px;flex-wrap:wrap;}
+.ob-radio{display:flex;align-items:center;gap:7px;background:var(--card2);border:1.5px solid var(--border);border-radius:8px;padding:9px 14px;cursor:pointer;transition:all .2s;font-size:13px;color:var(--text);}
+.ob-radio input{display:none;}
+.ob-radio.selected{border-color:var(--red);background:rgba(232,0,29,.07);color:var(--red);}
+.ob-act-grid{display:grid;gap:8px;margin-bottom:8px;}
+.ob-act-item{background:var(--card2);border:1.5px solid var(--border);border-radius:9px;padding:11px 14px;cursor:pointer;transition:all .2s;}
+.ob-act-item:hover{border-color:rgba(232,0,29,.3);}
+.ob-act-item.selected{border-color:var(--red);background:rgba(232,0,29,.07);}
+.ob-act-item .ai-title{font-weight:700;font-size:13px;color:var(--text);}
+.ob-act-item .ai-sub{font-size:11px;color:var(--muted);margin-top:2px;}
+.ob-select{width:100%;background:var(--card2);border:1px solid var(--border);color:var(--text);padding:11px 14px;border-radius:8px;font-family:'Barlow',sans-serif;font-size:14px;outline:none;appearance:none;cursor:pointer;}
+.ob-health-grid{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px;}
+.ob-chip{background:var(--card2);border:1.5px solid var(--border);border-radius:20px;padding:7px 14px;font-size:12px;cursor:pointer;transition:all .2s;color:var(--muted);}
+.ob-chip.selected{border-color:var(--gold);background:rgba(255,208,0,.08);color:var(--gold);}
+.ob-btn{width:100%;background:var(--red);color:#fff;border:none;border-radius:10px;padding:14px;font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:3px;cursor:pointer;margin-top:20px;transition:opacity .2s;}
+.ob-btn:disabled{opacity:.4;cursor:default;}
+.ob-btn-outline{width:100%;background:transparent;color:var(--muted);border:1px solid var(--border);border-radius:10px;padding:11px;font-family:'Barlow Condensed',sans-serif;font-size:14px;letter-spacing:1.5px;cursor:pointer;margin-top:10px;}
+.ob-loading-wrap{text-align:center;padding:20px 0;}
+.ob-loading-icon{font-size:52px;margin-bottom:16px;animation:ob-spin 1.2s linear infinite;display:inline-block;}
+@keyframes ob-spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+.ob-loading-msg{font-size:14px;color:var(--muted);line-height:2;min-height:100px;}
+.ob-result-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:20px 0;}
+.ob-result-box{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center;}
+.ob-result-box .orb-val{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--red);letter-spacing:1px;}
+.ob-result-box .orb-lbl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;margin-top:4px;}
+.ob-back{background:none;border:none;color:var(--muted);font-size:12px;cursor:pointer;padding:0;margin-bottom:16px;letter-spacing:1px;text-transform:uppercase;}
+.ob-back:hover{color:var(--text);}
+/* Update stats modal */
+#update-stats-modal{display:none;position:fixed;inset:0;z-index:20000;background:rgba(0,0,0,.8);align-items:center;justify-content:center;}
+#update-stats-modal.open{display:flex;}
+#update-stats-inner{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:28px;width:100%;max-width:460px;max-height:90vh;overflow-y:auto;}
 </style>
 <!-- Firebase SDK (compat) -->
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
@@ -2568,6 +2623,7 @@ img{loading:lazy;}
         </div>
         <div class="prof-row" style="margin-top:10px;"><span>Goal</span><span id="ps-goal">—</span></div>
         <div class="prof-row"><span>Diet Type</span><span id="ps-diet">—</span></div>
+        <button class="bsm" style="width:100%;margin-top:14px;" onclick="openUpdateStats()">📏 Update My Stats</button>
       </div>
       <!-- Activity summary -->
       <div class="prof-card">
@@ -5214,6 +5270,11 @@ function applyUser(){
   } else {
     document.body.classList.remove('is-admin-session');
   }
+  // Onboarding check — deferred so DOM + functions are fully ready
+  setTimeout(function() {
+    if (!isAdminUser()) checkOnboarding();
+    else restoreUserPlan();
+  }, 400);
 }
 
 async function loginWithFirebase(){
@@ -10552,6 +10613,294 @@ if (user) applyUser();
   // Show dashboard as the landing screen
   switchScreen('dashboard', document.querySelector('[data-screen="dashboard"]'));
 })();
+
+// ─────────────────────────────────────────────────────────────
+// ONBOARDING WIZARD
+// ─────────────────────────────────────────────────────────────
+var _obData = {};
+var _obStep = 1;
+var _obTotalSteps = 5; // visible steps (not counting loading/done)
+
+function checkOnboarding() {
+  if (!user) return;
+  var done = localStorage.getItem('rfc_onboarded_' + user.uid);
+  if (!done) {
+    showOnboarding();
+  } else {
+    restoreUserPlan();
+  }
+}
+
+function showOnboarding() {
+  var overlay = document.getElementById('ob-overlay');
+  if (!overlay) return;
+  // Pre-fill name from user
+  _obData = { goal: 'loss', actLevel: '1.55' };
+  _obStep = 1;
+  obRenderProgress();
+  obGoTo(1);
+  overlay.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+
+function hideOnboarding() {
+  var overlay = document.getElementById('ob-overlay');
+  if (overlay) overlay.style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+function obRenderProgress() {
+  var pg = document.getElementById('ob-progress');
+  if (!pg) return;
+  pg.innerHTML = '';
+  for (var i = 1; i <= _obTotalSteps; i++) {
+    var d = document.createElement('div');
+    d.className = 'ob-dot' + (i < _obStep ? ' done' : i === _obStep ? ' active' : '');
+    pg.appendChild(d);
+  }
+}
+
+function obGoTo(step) {
+  document.querySelectorAll('.ob-step').forEach(function(s) { s.classList.remove('active'); });
+  var el = document.getElementById('ob-step-' + step);
+  if (el) el.classList.add('active');
+  _obStep = step <= _obTotalSteps ? step : _obStep;
+  obRenderProgress();
+  var card = document.querySelector('.ob-card');
+  if (card) card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function obSelectGoal(el) {
+  document.querySelectorAll('.ob-goal-card').forEach(function(c) { c.classList.remove('selected'); });
+  el.classList.add('selected');
+  _obData.goal = el.dataset.goal;
+  // map athletic → maintain in calc engine (athletic isn't a valid calc goal)
+  _obData.calcGoal = el.dataset.goal === 'athletic' ? 'maintain' : el.dataset.goal;
+}
+
+function obStep2Next() {
+  var age = parseFloat(document.getElementById('ob-age').value);
+  if (!age || age < 13 || age > 90) { toast('Please enter a valid age (13–90)', 'gold'); return; }
+  var gChecked = document.querySelector('input[name="ob-gender"]:checked');
+  _obData.age = age;
+  _obData.gender = gChecked ? gChecked.value : 'male';
+  _obData.diet = document.getElementById('ob-diet').value;
+  obGoTo(3);
+}
+
+// Gender radio styling
+document.querySelectorAll('input[name="ob-gender"]').forEach(function(r) {
+  r.addEventListener('change', function() {
+    document.querySelectorAll('.ob-radio').forEach(function(l) { l.classList.remove('selected'); });
+    if (r.parentElement) r.parentElement.classList.add('selected');
+  });
+});
+
+function obStep3Next() {
+  var h = parseFloat(document.getElementById('ob-height').value);
+  var w = parseFloat(document.getElementById('ob-weight').value);
+  if (!h || h < 120 || h > 250) { toast('Please enter a valid height (120–250 cm)', 'gold'); return; }
+  if (!w || w < 30 || w > 300) { toast('Please enter a valid weight (30–300 kg)', 'gold'); return; }
+  _obData.height = h;
+  _obData.weight = w;
+  var tw = parseFloat(document.getElementById('ob-target-weight').value);
+  if (tw && tw >= 30 && tw <= 300) _obData.targetWeight = tw;
+  obGoTo(4);
+}
+
+function obSelectAct(el) {
+  document.querySelectorAll('.ob-act-item').forEach(function(a) { a.classList.remove('selected'); });
+  el.classList.add('selected');
+  _obData.actLevel = el.dataset.act;
+}
+
+function obToggleChip(el) {
+  el.classList.toggle('selected');
+}
+
+function obGeneratePlan() {
+  var hcs = [];
+  document.querySelectorAll('#ob-health-chips .ob-chip.selected').forEach(function(c) { hcs.push(c.dataset.hc); });
+  _obData.health = hcs;
+  if (!_obData.calcGoal) _obData.calcGoal = _obData.goal === 'athletic' ? 'maintain' : (_obData.goal || 'loss');
+  obGoTo(6);
+  // Animate loading messages then run calculation
+  var msgs = [
+    'Calculating your BMR &amp; TDEE…',
+    'Setting your macro targets…',
+    'Building your 7-day meal plan…',
+    'Personalising your roadmap…',
+    'Creating your dashboard…'
+  ];
+  var msgEl = document.getElementById('ob-loading-msg');
+  var mi = 0;
+  var interval = setInterval(function() {
+    mi++;
+    if (mi < msgs.length && msgEl) msgEl.innerHTML = msgs[mi];
+    if (mi >= msgs.length - 1) clearInterval(interval);
+  }, 600);
+  setTimeout(function() {
+    obRunCalculation();
+  }, 3200);
+}
+
+function obRunCalculation() {
+  var d = _obData;
+  if (!d.age || !d.height || !d.weight) { toast('Missing data — please restart onboarding', 'gold'); obGoTo(1); return; }
+  // Fill calculator DOM fields
+  var ia = document.getElementById('ia'); if (ia) ia.value = d.age;
+  var iw = document.getElementById('iw'); if (iw) iw.value = d.weight;
+  var ih = document.getElementById('ih'); if (ih) ih.value = d.height;
+  var iwa = document.getElementById('iwa'); if (iwa) iwa.value = Math.round(d.weight * 0.52);
+  var iact = document.getElementById('iact'); if (iact) iact.value = d.actLevel || '1.55';
+  var idiet = document.getElementById('idiet'); if (idiet) idiet.value = d.diet || 'nonveg';
+  var idietstyle = document.getElementById('idietstyle'); if (idietstyle) idietstyle.value = 'balanced';
+  // Set goal radio
+  var goalVal = d.calcGoal || 'loss';
+  var goalR = document.querySelector('input[name="goal"][value="' + goalVal + '"]');
+  if (goalR) goalR.checked = true;
+  // Set gender radio
+  var genR = document.querySelector('input[name="gender"][value="' + (d.gender || 'male') + '"]');
+  if (genR) genR.checked = true;
+  // Set health checkboxes
+  if (d.health) d.health.forEach(function(hc) {
+    var el = document.getElementById('hc-' + hc);
+    if (el) { el.checked = true; var w = el.closest('.hchk'); if (w) w.classList.add('on'); }
+  });
+  // Set whey default
+  var wheyR = document.querySelector('input[name="whey"][value="yes"]');
+  if (wheyR) wheyR.checked = true;
+  // Cal adjustment
+  var icaladj = document.getElementById('icaladj');
+  if (icaladj) icaladj.value = goalVal === 'loss' ? 500 : goalVal === 'gain' ? 350 : 0;
+  // Run calculate()
+  try { calculate(); } catch(e) { console.error('Onboarding calc error:', e); }
+  // Save plan to localStorage
+  var plan = Object.assign({}, d, { ts: Date.now() });
+  localStorage.setItem('rfc_userplan_' + user.uid, JSON.stringify(plan));
+  localStorage.setItem('rfc_onboarded_' + user.uid, '1');
+  // Show result step
+  setTimeout(function() { obShowResult(); }, 300);
+}
+
+function obShowResult() {
+  if (!lastRes) { obGoTo(7); return; }
+  var r = lastRes;
+  var grid = document.getElementById('ob-result-grid');
+  var strat = document.getElementById('ob-strategy-box');
+  var goalLabel = {loss:'Fat Loss', gain:'Muscle Gain', maintain:'Maintenance'}[r.goal] || r.goal;
+  if (grid) grid.innerHTML = [
+    {val: r.targetCals + ' kcal', lbl: 'Daily Calories'},
+    {val: r.macros.prot + 'g', lbl: 'Protein / day'},
+    {val: r.macros.carb + 'g', lbl: 'Carbs / day'},
+    {val: r.macros.fat + 'g', lbl: 'Fats / day'},
+    {val: r.bmi.toFixed(1), lbl: 'Your BMI'},
+    {val: r.water + 'L', lbl: 'Water / day'},
+  ].map(function(x) {
+    return '<div class="ob-result-box"><div class="orb-val">' + x.val + '</div><div class="orb-lbl">' + x.lbl + '</div></div>';
+  }).join('');
+  if (strat) strat.innerHTML = '<strong style="color:var(--text);">🎯 ' + goalLabel + ' Strategy:</strong><br>' + (typeof getStrat === 'function' ? getStrat(r.goal, r.bmi) : '');
+  obGoTo(7);
+}
+
+function obEnterDashboard() {
+  hideOnboarding();
+  switchScreen('dashboard', document.querySelector('[data-screen="dashboard"]'));
+  toast('🎉 Welcome! Your personalised plan is ready.', 'green');
+  // Rebuild meal plan now UI is visible
+  if (lastRes) {
+    try { buildMealPlan(lastRes.goal, lastRes.targetCals, lastRes.macros, lastRes.diet); } catch(e) {}
+    try { buildRoadmap(lastRes.goal); } catch(e) {}
+  }
+}
+
+// Restore saved plan for returning users (so nutrition/profile reflect their data)
+function restoreUserPlan() {
+  if (!user) return;
+  var saved = localStorage.getItem('rfc_userplan_' + user.uid);
+  if (!saved) return;
+  try {
+    var d = JSON.parse(saved);
+    if (!d.age || !d.height || !d.weight) return;
+    // If lastRes already set (e.g. user calculated manually), don't overwrite
+    if (lastRes) return;
+    // Silently fill calculator and run
+    var ia = document.getElementById('ia'); if (ia) ia.value = d.age;
+    var iw = document.getElementById('iw'); if (iw) iw.value = d.weight;
+    var ih = document.getElementById('ih'); if (ih) ih.value = d.height;
+    var iwa = document.getElementById('iwa'); if (iwa) iwa.value = Math.round(d.weight * 0.52);
+    var iact = document.getElementById('iact'); if (iact) iact.value = d.actLevel || '1.55';
+    var idiet = document.getElementById('idiet'); if (idiet) idiet.value = d.diet || 'nonveg';
+    var idietstyle = document.getElementById('idietstyle'); if (idietstyle) idietstyle.value = 'balanced';
+    var goalVal = d.calcGoal || d.goal || 'loss';
+    var goalR = document.querySelector('input[name="goal"][value="' + goalVal + '"]');
+    if (goalR) goalR.checked = true;
+    var genR = document.querySelector('input[name="gender"][value="' + (d.gender || 'male') + '"]');
+    if (genR) genR.checked = true;
+    if (d.health) d.health.forEach(function(hc) {
+      var el = document.getElementById('hc-' + hc);
+      if (el) { el.checked = true; var w = el.closest('.hchk'); if (w) w.classList.add('on'); }
+    });
+    var wheyR = document.querySelector('input[name="whey"][value="yes"]');
+    if (wheyR) wheyR.checked = true;
+    var icaladj = document.getElementById('icaladj');
+    if (icaladj) icaladj.value = goalVal === 'loss' ? 500 : goalVal === 'gain' ? 350 : 0;
+    try { calculate(); } catch(e) {}
+  } catch(e) { console.error('restoreUserPlan error:', e); }
+}
+
+// "Update My Stats" — users can change measurements/health but not name/email
+function openUpdateStats() {
+  var saved = localStorage.getItem(user ? 'rfc_userplan_' + user.uid : '');
+  var d = {};
+  try { d = JSON.parse(saved || '{}'); } catch(e) {}
+  var ih = document.getElementById('us-height'); if (ih) ih.value = d.height || (lastRes ? lastRes.height : '');
+  var iw = document.getElementById('us-weight'); if (iw) iw.value = d.weight || (lastRes ? lastRes.weight : '');
+  var ia = document.getElementById('us-act'); if (ia) ia.value = d.actLevel || (lastRes ? lastRes.act : '1.55');
+  var id = document.getElementById('us-diet'); if (id) id.value = d.diet || (lastRes ? lastRes.diet : 'nonveg');
+  var ig = document.getElementById('us-goal'); if (ig) ig.value = d.calcGoal || (lastRes ? lastRes.goal : 'loss');
+  var m = document.getElementById('update-stats-modal');
+  if (m) m.classList.add('open');
+}
+
+function closeUpdateStats() {
+  var m = document.getElementById('update-stats-modal');
+  if (m) m.classList.remove('open');
+}
+
+function saveUpdateStats() {
+  var h = parseFloat(document.getElementById('us-height').value);
+  var w = parseFloat(document.getElementById('us-weight').value);
+  if (!h || h < 120 || h > 250) { toast('Enter valid height (120–250 cm)', 'gold'); return; }
+  if (!w || w < 30 || w > 300) { toast('Enter valid weight (30–300 kg)', 'gold'); return; }
+  var act = document.getElementById('us-act').value;
+  var diet = document.getElementById('us-diet').value;
+  var goal = document.getElementById('us-goal').value;
+  // Load existing plan and update only measurement fields
+  var saved = {};
+  try { saved = JSON.parse(localStorage.getItem('rfc_userplan_' + user.uid) || '{}'); } catch(e) {}
+  saved.height = h; saved.weight = w; saved.actLevel = act; saved.diet = diet; saved.calcGoal = goal;
+  localStorage.setItem('rfc_userplan_' + user.uid, JSON.stringify(saved));
+  // Apply to calculator
+  var ia = document.getElementById('ia'); if (ia) ia.value = saved.age || '';
+  var ih = document.getElementById('ih'); if (ih) ih.value = h;
+  var iw = document.getElementById('iw'); if (iw) iw.value = w;
+  var iwa = document.getElementById('iwa'); if (iwa) iwa.value = Math.round(w * 0.52);
+  var iact = document.getElementById('iact'); if (iact) iact.value = act;
+  var idiet = document.getElementById('idiet'); if (idiet) idiet.value = diet;
+  var goalR = document.querySelector('input[name="goal"][value="' + goal + '"]');
+  if (goalR) goalR.checked = true;
+  var icaladj = document.getElementById('icaladj');
+  if (icaladj) icaladj.value = goal === 'loss' ? 500 : goal === 'gain' ? 350 : 0;
+  try { calculate(); } catch(e) {}
+  closeUpdateStats();
+  toast('✅ Stats updated — plan refreshed!', 'green');
+  // Rebuild downstream
+  if (lastRes) {
+    try { buildMealPlan(lastRes.goal, lastRes.targetCals, lastRes.macros, lastRes.diet); } catch(e) {}
+    try { buildRoadmap(lastRes.goal); } catch(e) {}
+  }
+}
 </script>
 
 <!-- ── WHATSAPP FLOATING BUTTON ──────────────────────────────────────────── -->
@@ -10624,6 +10973,215 @@ if (user) applyUser();
     <input type="email" id="notify-me-email" placeholder="Your email address" style="width:100%;padding:10px 14px;border:1px solid var(--border);background:var(--card2);color:var(--text);border-radius:8px;font-size:14px;margin-bottom:12px;outline:none;font-family:'Barlow',sans-serif;">
     <button onclick="submitNotifyMe()" style="width:100%;background:var(--red);color:#fff;border:none;border-radius:8px;padding:12px;font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;cursor:pointer;">🔔 NOTIFY ME WHEN LIVE</button>
     <div id="notify-me-thanks" style="display:none;margin-top:12px;font-size:13px;color:var(--green);">✅ You're on the list! We'll notify you.</div>
+  </div>
+</div>
+
+<!-- ── ONBOARDING WIZARD ── -->
+<div id="ob-overlay" style="display:none;">
+  <div class="ob-logo">ROYAL FITNESS CLUB</div>
+  <div class="ob-tag">Your free personalised plan · takes 2 minutes</div>
+  <div class="ob-progress" id="ob-progress"></div>
+  <div class="ob-card">
+
+    <!-- Step 1: Goal -->
+    <div class="ob-step active" id="ob-step-1">
+      <div class="ob-title">What's your goal?</div>
+      <div class="ob-sub">We'll build your plan around this. You can change it later.</div>
+      <div class="ob-goal-grid">
+        <div class="ob-goal-card selected" data-goal="loss" onclick="obSelectGoal(this)">
+          <div class="og-icon">🔥</div>
+          <div class="og-label">LOSE FAT</div>
+          <div class="og-sub">Burn fat, get lean</div>
+        </div>
+        <div class="ob-goal-card" data-goal="gain" onclick="obSelectGoal(this)">
+          <div class="og-icon">💪</div>
+          <div class="og-label">BUILD MUSCLE</div>
+          <div class="og-sub">Lean bulk, get strong</div>
+        </div>
+        <div class="ob-goal-card" data-goal="maintain" onclick="obSelectGoal(this)">
+          <div class="og-icon">⚖️</div>
+          <div class="og-label">MAINTAIN</div>
+          <div class="og-sub">Stay fit, body recomp</div>
+        </div>
+        <div class="ob-goal-card" data-goal="athletic" onclick="obSelectGoal(this)">
+          <div class="og-icon">🏃</div>
+          <div class="og-label">IMPROVE FITNESS</div>
+          <div class="og-sub">Endurance &amp; performance</div>
+        </div>
+      </div>
+      <button class="ob-btn" onclick="obGoTo(2)">NEXT →</button>
+    </div>
+
+    <!-- Step 2: Personal info -->
+    <div class="ob-step" id="ob-step-2">
+      <button class="ob-back" onclick="obGoTo(1)">← Back</button>
+      <div class="ob-title">About you</div>
+      <div class="ob-sub">Used to calculate your exact calorie target and macro split.</div>
+      <div class="ob-field">
+        <label class="ob-label">Age (years)</label>
+        <input class="ob-input" id="ob-age" type="number" min="13" max="90" placeholder="e.g. 25">
+      </div>
+      <div class="ob-field">
+        <label class="ob-label">Gender</label>
+        <div class="ob-radio-row">
+          <label class="ob-radio selected" id="ob-gen-m"><input type="radio" name="ob-gender" value="male" checked> ♂ Male</label>
+          <label class="ob-radio" id="ob-gen-f"><input type="radio" name="ob-gender" value="female"> ♀ Female</label>
+        </div>
+      </div>
+      <div class="ob-field">
+        <label class="ob-label">Diet preference</label>
+        <select class="ob-select" id="ob-diet">
+          <option value="nonveg">🍗 Non-Vegetarian</option>
+          <option value="veg">🌿 Pure Vegetarian</option>
+          <option value="egget">🥚 Eggetarian</option>
+          <option value="keto">⚡ Keto</option>
+        </select>
+      </div>
+      <button class="ob-btn" onclick="obStep2Next()">NEXT →</button>
+    </div>
+
+    <!-- Step 3: Body stats -->
+    <div class="ob-step" id="ob-step-3">
+      <button class="ob-back" onclick="obGoTo(2)">← Back</button>
+      <div class="ob-title">Your body stats</div>
+      <div class="ob-sub">Needed to calculate your BMR, BMI, and personalised calorie target.</div>
+      <div class="ob-field">
+        <label class="ob-label">Height (cm)</label>
+        <input class="ob-input" id="ob-height" type="number" min="120" max="250" placeholder="e.g. 175">
+      </div>
+      <div class="ob-field">
+        <label class="ob-label">Current weight (kg)</label>
+        <input class="ob-input" id="ob-weight" type="number" min="30" max="300" placeholder="e.g. 75">
+      </div>
+      <div class="ob-field">
+        <label class="ob-label">Target weight (kg) <span style="font-size:10px;color:var(--muted);">optional</span></label>
+        <input class="ob-input" id="ob-target-weight" type="number" min="30" max="300" placeholder="e.g. 68">
+      </div>
+      <button class="ob-btn" onclick="obStep3Next()">NEXT →</button>
+    </div>
+
+    <!-- Step 4: Activity level -->
+    <div class="ob-step" id="ob-step-4">
+      <button class="ob-back" onclick="obGoTo(3)">← Back</button>
+      <div class="ob-title">How active are you?</div>
+      <div class="ob-sub">This determines your Total Daily Energy Expenditure (TDEE).</div>
+      <div class="ob-act-grid">
+        <div class="ob-act-item" data-act="1.2" onclick="obSelectAct(this)">
+          <div class="ai-title">🪑 Sedentary</div>
+          <div class="ai-sub">Desk job, little or no exercise</div>
+        </div>
+        <div class="ob-act-item" data-act="1.375" onclick="obSelectAct(this)">
+          <div class="ai-title">🚶 Lightly Active</div>
+          <div class="ai-sub">Light exercise 1–3 days/week</div>
+        </div>
+        <div class="ob-act-item selected" data-act="1.55" onclick="obSelectAct(this)">
+          <div class="ai-title">🏃 Moderately Active</div>
+          <div class="ai-sub">Gym 3–5 days/week</div>
+        </div>
+        <div class="ob-act-item" data-act="1.725" onclick="obSelectAct(this)">
+          <div class="ai-title">🔥 Very Active</div>
+          <div class="ai-sub">Hard training 6–7 days/week</div>
+        </div>
+        <div class="ob-act-item" data-act="1.9" onclick="obSelectAct(this)">
+          <div class="ai-title">⚡ Beast Mode</div>
+          <div class="ai-sub">Twice a day or physical job</div>
+        </div>
+      </div>
+      <button class="ob-btn" onclick="obGoTo(5)">NEXT →</button>
+    </div>
+
+    <!-- Step 5: Health conditions -->
+    <div class="ob-step" id="ob-step-5">
+      <button class="ob-back" onclick="obGoTo(4)">← Back</button>
+      <div class="ob-title">Any health conditions?</div>
+      <div class="ob-sub">Optional — your meal plan and supplements will auto-adjust. Tap all that apply.</div>
+      <div class="ob-health-grid" id="ob-health-chips">
+        <div class="ob-chip" data-hc="diabetic" onclick="obToggleChip(this)">🩺 Diabetes</div>
+        <div class="ob-chip" data-hc="thyroid" onclick="obToggleChip(this)">🦋 Thyroid</div>
+        <div class="ob-chip" data-hc="hypertension" onclick="obToggleChip(this)">❤️ BP / Hypertension</div>
+        <div class="ob-chip" data-hc="pcos" onclick="obToggleChip(this)">🔄 PCOS</div>
+        <div class="ob-chip" data-hc="cholesterol" onclick="obToggleChip(this)">🩸 High Cholesterol</div>
+        <div class="ob-chip" data-hc="fatty_liver" onclick="obToggleChip(this)">🫀 Fatty Liver</div>
+        <div class="ob-chip" data-hc="ibs" onclick="obToggleChip(this)">🤢 IBS / Gut Issues</div>
+        <div class="ob-chip" data-hc="anemia" onclick="obToggleChip(this)">💊 Anaemia</div>
+        <div class="ob-chip" data-hc="uric_acid" onclick="obToggleChip(this)">⚗️ High Uric Acid</div>
+        <div class="ob-chip" data-hc="vitamin_d" onclick="obToggleChip(this)">☀️ Vitamin D Low</div>
+        <div class="ob-chip" data-hc="anxiety" onclick="obToggleChip(this)">🧠 Anxiety / Stress</div>
+        <div class="ob-chip" data-hc="low_t" onclick="obToggleChip(this)">⚡ Low Testosterone</div>
+      </div>
+      <p style="font-size:11px;color:var(--muted);margin:12px 0 0;">No conditions? Just click Generate below.</p>
+      <button class="ob-btn" onclick="obGeneratePlan()">🚀 GENERATE MY FREE PLAN</button>
+      <button class="ob-btn-outline" onclick="obGoTo(4)">← Back</button>
+    </div>
+
+    <!-- Step 6: Generating -->
+    <div class="ob-step" id="ob-step-6">
+      <div class="ob-loading-wrap">
+        <div class="ob-loading-icon">⚙️</div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:2px;color:var(--text);margin-bottom:16px;">BUILDING YOUR PLAN…</div>
+        <div class="ob-loading-msg" id="ob-loading-msg">Calculating your BMR &amp; TDEE…</div>
+      </div>
+    </div>
+
+    <!-- Step 7: Done -->
+    <div class="ob-step" id="ob-step-7">
+      <div style="text-align:center;margin-bottom:24px;">
+        <div style="font-size:52px;margin-bottom:12px;">🎉</div>
+        <div class="ob-title" style="font-size:26px;">YOUR PLAN IS READY!</div>
+        <div class="ob-sub" style="margin-bottom:0;">Based on your stats, here's what we've built for you:</div>
+      </div>
+      <div class="ob-result-grid" id="ob-result-grid"></div>
+      <div style="background:rgba(232,0,29,.07);border:1px solid rgba(232,0,29,.2);border-radius:10px;padding:14px;margin-bottom:16px;font-size:13px;color:rgba(255,255,255,.7);line-height:1.6;" id="ob-strategy-box"></div>
+      <button class="ob-btn" onclick="obEnterDashboard()">📊 VIEW MY DASHBOARD</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- Update Stats Modal -->
+<div id="update-stats-modal">
+  <div id="update-stats-inner">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;">UPDATE MY STATS</div>
+      <button onclick="closeUpdateStats()" style="background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;">✕</button>
+    </div>
+    <p style="font-size:12px;color:var(--muted);margin-bottom:20px;line-height:1.6;">Update your measurements and health details. Your meal plan and dashboard will refresh automatically.</p>
+    <div class="ob-field">
+      <label class="ob-label">Height (cm)</label>
+      <input class="ob-input" id="us-height" type="number" min="120" max="250">
+    </div>
+    <div class="ob-field">
+      <label class="ob-label">Current weight (kg)</label>
+      <input class="ob-input" id="us-weight" type="number" min="30" max="300">
+    </div>
+    <div class="ob-field">
+      <label class="ob-label">Activity level</label>
+      <select class="ob-select" id="us-act">
+        <option value="1.2">Sedentary — Little to no exercise</option>
+        <option value="1.375">Light — 1–3 days/week</option>
+        <option value="1.55" selected>Moderate — 3–5 days/week</option>
+        <option value="1.725">Active — 6–7 days/week</option>
+        <option value="1.9">Beast Mode — Twice daily</option>
+      </select>
+    </div>
+    <div class="ob-field">
+      <label class="ob-label">Diet type</label>
+      <select class="ob-select" id="us-diet">
+        <option value="nonveg">🍗 Non-Vegetarian</option>
+        <option value="veg">🌿 Vegetarian</option>
+        <option value="egget">🥚 Eggetarian</option>
+        <option value="keto">⚡ Keto</option>
+      </select>
+    </div>
+    <div class="ob-field">
+      <label class="ob-label">Goal</label>
+      <select class="ob-select" id="us-goal">
+        <option value="loss">🔥 Fat Loss</option>
+        <option value="gain">💪 Muscle Gain</option>
+        <option value="maintain">⚖️ Maintain</option>
+      </select>
+    </div>
+    <button class="ob-btn" onclick="saveUpdateStats()" style="margin-top:12px;">💾 SAVE &amp; REFRESH PLAN</button>
   </div>
 </div>
 
