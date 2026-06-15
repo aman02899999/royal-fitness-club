@@ -4,10 +4,11 @@
   "webDir": "www",
   "bundledWebRuntime": false,
   "server": {
-    "androidScheme": "https"
+    "url": "https://royal-fitness-club-7adc1.web.app",
+    "cleartext": false
   },
   "android": {
-    "allowMixedContent": true,
+    "allowMixedContent": false,
     "backgroundColor": "#070707",
     "minWebViewVersion": 60
   },
