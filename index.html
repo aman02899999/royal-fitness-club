@@ -3833,6 +3833,7 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
       <button class="adm-tab" onclick="admTab(5)">👥 Members</button>
       <button class="adm-tab" onclick="admTab(6)">🏆 Challenges</button>
       <button class="adm-tab" onclick="admTab(7)">🧭 Nav Control</button>
+      <button class="adm-tab" onclick="admTab(8)">💪 WOD Editor</button>
     </div>
 
     <!-- Pane 0: Overview -->
@@ -4051,6 +4052,18 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
       <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap;">
         <button class="bfire" style="flex:1;" onclick="admSaveNavControl()">💾 Save &amp; Deploy Nav</button>
         <button class="bsm" onclick="admLoadNavControl()">↺ Refresh</button>
+      </div>
+    </div>
+
+    <!-- Pane 8: WOD Editor -->
+    <div class="adm-pane" id="adm-pane-8">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px;">
+        <div style="font-size:12px;color:var(--muted);">Edit the 10-workout WOD rotation. Each entry cycles by day. Changes saved to localStorage and Firebase.</div>
+        <button class="bfire" style="padding:8px 18px;font-size:13px;" onclick="admSaveWODs()">💾 Save WODs</button>
+      </div>
+      <div id="adm-wod-list" style="display:flex;flex-direction:column;gap:14px;"></div>
+      <div style="margin-top:18px;">
+        <button class="bsm" onclick="admAddWOD()">+ Add WOD</button>
       </div>
     </div>
 
@@ -9765,6 +9778,87 @@ function admTab(idx) {
   if (idx===5) { document.getElementById('adm-mc-result').style.display='none'; adminLoadPending(); const b=document.querySelectorAll('.adm-tab')[5]?.querySelector('.adm-pending-badge');if(b)b.remove(); }
   if (idx===6) admLoadChallenges();
   if (idx===7) admLoadNavControl();
+  if (idx===8) admLoadWODs();
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+//  ADMIN WOD EDITOR
+// ═══════════════════════════════════════════════════════════════════════════
+function admLoadWODs() {
+  const container = document.getElementById('adm-wod-list');
+  if (!container) return;
+  const wods = JSON.parse(localStorage.getItem('rfc_wod_library') || JSON.stringify(WOD_LIBRARY));
+  container.innerHTML = wods.map((w, i) => `
+    <div class="rcard" style="position:relative;" id="adm-wod-${i}">
+      <div style="font-size:10px;color:var(--muted);font-family:'Barlow Condensed',sans-serif;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;">WOD #${i+1}</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+        <div>
+          <label style="font-size:11px;color:var(--muted);display:block;margin-bottom:4px;">Exercise / Description</label>
+          <input class="adm-input" style="width:100%;box-sizing:border-box;" value="${(w.name||'').replace(/"/g,'&quot;')}" id="adm-wod-name-${i}" placeholder="e.g. AMRAP 20: 5 Pull-Ups, 10 Push-Ups...">
+        </div>
+        <div>
+          <label style="font-size:11px;color:var(--muted);display:block;margin-bottom:4px;">Muscle Focus</label>
+          <input class="adm-input" style="width:100%;box-sizing:border-box;" value="${(w.muscle||'').replace(/"/g,'&quot;')}" id="adm-wod-muscle-${i}" placeholder="e.g. Full Body">
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px;margin-bottom:10px;">
+        <div>
+          <label style="font-size:11px;color:var(--muted);display:block;margin-bottom:4px;">Sets</label>
+          <input class="adm-input" style="width:100%;box-sizing:border-box;" value="${w.sets||''}" id="adm-wod-sets-${i}" placeholder="3">
+        </div>
+        <div>
+          <label style="font-size:11px;color:var(--muted);display:block;margin-bottom:4px;">Reps</label>
+          <input class="adm-input" style="width:100%;box-sizing:border-box;" value="${w.reps||''}" id="adm-wod-reps-${i}" placeholder="10">
+        </div>
+        <div>
+          <label style="font-size:11px;color:var(--muted);display:block;margin-bottom:4px;">Rest</label>
+          <input class="adm-input" style="width:100%;box-sizing:border-box;" value="${w.rest||''}" id="adm-wod-rest-${i}" placeholder="60s">
+        </div>
+        <div>
+          <label style="font-size:11px;color:var(--muted);display:block;margin-bottom:4px;">Notes</label>
+          <input class="adm-input" style="width:100%;box-sizing:border-box;" value="${(w.notes||'').replace(/"/g,'&quot;')}" id="adm-wod-notes-${i}" placeholder="Optional tip">
+        </div>
+      </div>
+      <button onclick="admRemoveWOD(${i})" style="position:absolute;top:14px;right:14px;background:rgba(232,0,29,.15);border:1px solid rgba(232,0,29,.3);color:var(--red);border-radius:6px;padding:3px 10px;font-size:11px;cursor:pointer;">✕ Remove</button>
+    </div>
+  `).join('');
+}
+
+function admAddWOD() {
+  const wods = JSON.parse(localStorage.getItem('rfc_wod_library') || JSON.stringify(WOD_LIBRARY));
+  wods.push({name:'New WOD', muscle:'Full Body', sets:'3', reps:'10', rest:'60s', notes:''});
+  localStorage.setItem('rfc_wod_library', JSON.stringify(wods));
+  admLoadWODs();
+  toast('WOD added — fill in the details then Save.','gold');
+}
+
+function admRemoveWOD(idx) {
+  const wods = JSON.parse(localStorage.getItem('rfc_wod_library') || JSON.stringify(WOD_LIBRARY));
+  wods.splice(idx, 1);
+  localStorage.setItem('rfc_wod_library', JSON.stringify(wods));
+  admLoadWODs();
+  toast('WOD removed.','gold');
+}
+
+function admSaveWODs() {
+  const wods = JSON.parse(localStorage.getItem('rfc_wod_library') || JSON.stringify(WOD_LIBRARY));
+  wods.forEach((w, i) => {
+    const n = document.getElementById('adm-wod-name-'+i); if(n) w.name=n.value.trim();
+    const m = document.getElementById('adm-wod-muscle-'+i); if(m) w.muscle=m.value.trim();
+    const s = document.getElementById('adm-wod-sets-'+i); if(s) w.sets=s.value.trim();
+    const r = document.getElementById('adm-wod-reps-'+i); if(r) w.reps=r.value.trim();
+    const rt = document.getElementById('adm-wod-rest-'+i); if(rt) w.rest=rt.value.trim();
+    const nt = document.getElementById('adm-wod-notes-'+i); if(nt) w.notes=nt.value.trim();
+  });
+  localStorage.setItem('rfc_wod_library', JSON.stringify(wods));
+  if (typeof firebase !== 'undefined') {
+    firebase.firestore().collection('admin_config').doc('wod_library')
+      .set({wods, updatedAt: firebase.firestore.FieldValue.serverTimestamp()})
+      .then(()=>toast('✅ WODs saved to Firebase!','gold'))
+      .catch(()=>toast('✅ WODs saved locally (Firebase offline).','gold'));
+  } else {
+    toast('✅ WODs saved locally.','gold');
+  }
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -11058,7 +11152,11 @@ const WOD_LIBRARY=[
 function loadWOD(){
   const todayKey='bm_wod_'+new Date().toDateString();
   let wod=JSON.parse(localStorage.getItem(todayKey)||'null');
-  if(!wod){wod=WOD_LIBRARY[new Date().getDay()%WOD_LIBRARY.length];localStorage.setItem(todayKey,JSON.stringify(wod));}
+  if(!wod){
+    const lib=JSON.parse(localStorage.getItem('rfc_wod_library')||JSON.stringify(WOD_LIBRARY));
+    wod=lib[new Date().getDay()%lib.length];
+    localStorage.setItem(todayKey,JSON.stringify(wod));
+  }
   const nameEl=document.getElementById('wod-name');
   if(nameEl)nameEl.textContent=wod.name||'';
   const metaEl=document.getElementById('wod-meta');
