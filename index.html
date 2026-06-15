@@ -4946,6 +4946,8 @@ img{loading:lazy;}
 </div>
 <div class="toast" id="toast"></div>
 <script>
+// Early constants needed before initUser() runs
+var ADMIN_EMAIL = 'aman.sharma0289@gmail.com';
 // ── WATERMARK ──
 (function(){const wm=document.getElementById('watermark');let h='';for(let i=0;i<60;i++)h+='<span>ROYAL FITNESS CLUB</span>';wm.innerHTML=h;})();
 // ── HAMBURGER MENU ──
@@ -5183,17 +5185,18 @@ function applyUser(){
     }).catch(()=>{});
   }
   setTimeout(checkAndUnlockBadges, 800);
-  // Apply nav control (hide disabled tabs from members)
-  if (typeof applyNavControl === 'function') {
-    // Pull latest nav config from Firestore if available
-    if (typeof firebase !== 'undefined' && !isAdminUser()) {
-      firebase.firestore().collection('admin_config').doc('nav_control').get()
-        .then(d => { if (d.exists && d.data().nav) { localStorage.setItem('rfc_nav_control', JSON.stringify(d.data().nav)); } applyNavControl(); })
-        .catch(() => applyNavControl());
-    } else {
-      applyNavControl();
+  // Apply nav control (hide disabled tabs from members) — deferred so all consts are ready
+  setTimeout(function() {
+    if (typeof applyNavControl === 'function') {
+      if (typeof firebase !== 'undefined' && !isAdminUser()) {
+        firebase.firestore().collection('admin_config').doc('nav_control').get()
+          .then(function(d) { if (d.exists && d.data().nav) { localStorage.setItem('rfc_nav_control', JSON.stringify(d.data().nav)); } applyNavControl(); })
+          .catch(function() { applyNavControl(); });
+      } else {
+        applyNavControl();
+      }
     }
-  }
+  }, 200);
   // Mark body as admin session for CSS targeting + programmatic gate bypass
   if (isAdminUser()) {
     document.body.classList.add('is-admin-session');
@@ -7315,7 +7318,7 @@ const BADGES=[
   {id:'profile_photo', icon:'📸', name:'Visual Proof',      desc:'Uploaded a progress photo',                          check:()=>!!localStorage.getItem('bm_photo_before')||!!localStorage.getItem('bm_photo_side')},
 ];
 
-const BADGES_KEY=()=>user?'rfc_badges_'+user.uid:'';
+var BADGES_KEY=()=>user?'rfc_badges_'+user.uid:'';
 
 function checkAndUnlockBadges(){
   if(!user) return;
@@ -8555,7 +8558,7 @@ function filterCourses(lvl, btn) {
   });
 }
 
-const ADMIN_EMAIL = 'aman.sharma0289@gmail.com';
+var ADMIN_EMAIL = 'aman.sharma0289@gmail.com';
 function isAdminUser() { return !!(user && user.email === ADMIN_EMAIL); }
 
 function getCourses() {
@@ -9256,7 +9259,7 @@ function admChDrop(e, targetIdx) {
 // ═══════════════════════════════════════════════════════════════════════════
 //  NAV CONTROL — Enable/disable sidebar tabs
 // ═══════════════════════════════════════════════════════════════════════════
-const ALL_NAV_SCREENS = [
+var ALL_NAV_SCREENS = [
   {id:'dashboard', label:'📊 Dashboard'},
   {id:'workouts', label:'🏋️ Workouts'},
   {id:'nutrition', label:'🥗 Nutrition'},
