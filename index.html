@@ -8665,7 +8665,6 @@ function renderCourses() {
     return `<div class="cr-card${hidden}" data-level="${c.level}">
       <div class="cr-banner" style="${c.img ? `background:url('${c.img}') center/cover no-repeat;` : `background:${c.banner};`}">
         <div class="cr-banner-overlay"></div>
-        <span style="font-size:58px;position:relative;z-index:2;filter:drop-shadow(0 2px 8px rgba(0,0,0,.7));">${c.emoji}</span>
         <span class="cr-lvl-badge" style="background:${LVL_COLOR[c.level]||'#444'};position:relative;z-index:2;">${LVL_LABEL[c.level]||c.level}</span>
         ${purchased ? '<span class="cr-enrolled-badge" style="position:relative;z-index:2;">✓ ENROLLED</span>' : ''}
       </div>
