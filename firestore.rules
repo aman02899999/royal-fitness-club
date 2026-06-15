@@ -144,5 +144,17 @@ service cloud.firestore {
       allow read: if request.auth != null && docId.matches(request.auth.uid + '_.*');
       allow write: if false;
     }
+
+    // admin_config/{docId} - nav control, challenges, plans config set by admin
+    match /admin_config/{docId} {
+      allow read: if request.auth != null;
+      allow write: if isAdmin();
+    }
+
+    // notify_me/{id} - "notify me" email captures from locked feature overlay
+    match /notify_me/{id} {
+      allow create: if request.auth != null;
+      allow read, update, delete: if isAdmin();
+    }
   }
 }
