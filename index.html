@@ -5137,7 +5137,7 @@ function showAdminLink(){
   if(nl&&!document.getElementById('nav-admin')){
     const a=document.createElement('a');
     a.href='#';a.id='nav-admin';a.textContent='⚡ Admin';a.style.cssText='color:var(--gold)!important;';
-    a.onclick=function(e){e.preventDefault();openSection('admin');if(window.innerWidth<900)toggleNav();};
+    a.onclick=function(e){e.preventDefault();switchScreen('admin',document.getElementById('sb-admin-item'));if(window.innerWidth<900)toggleNav();};
     nl.insertBefore(a,nl.lastElementChild);
   }
 }
