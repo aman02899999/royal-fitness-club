@@ -3615,6 +3615,44 @@ img{loading:lazy;}
     <!-- ── MEMBERS PANE ─────────────────────────────────────────────────── -->
     <div class="adm-pane" id="adm-pane-5">
 
+      <!-- ── PENDING APPROVALS ── -->
+      <div id="adm-pending-card" style="background:rgba(99,102,241,.07);border:1px solid rgba(99,102,241,.3);border-radius:12px;padding:18px;margin-bottom:22px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:14px;">
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1.5px;">⏳ Pending Approvals <span id="adm-pending-badge" style="background:var(--red);color:#fff;border-radius:4px;font-size:12px;padding:2px 7px;vertical-align:middle;">0</span></div>
+          <button class="bsm" onclick="adminLoadPending()" style="font-size:11px;">⟳ Refresh</button>
+        </div>
+        <div id="adm-pending-loading" style="font-size:12px;color:var(--muted);">Click ⟳ Refresh to load pending registrations.</div>
+        <div id="adm-pending-list" style="display:none;"></div>
+      </div>
+
+      <!-- Approve modal -->
+      <div class="mbg" id="adm-approve-modal" style="z-index:100001;">
+        <div class="mbox" style="max-width:420px;">
+          <button class="mclose" onclick="closeModal('adm-approve-modal')">✕</button>
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1.5px;margin-bottom:14px;color:var(--green);">✅ Approve Member</div>
+          <div id="adm-approve-name" style="font-size:14px;font-weight:700;margin-bottom:4px;"></div>
+          <div id="adm-approve-email" style="font-size:12px;color:var(--muted);margin-bottom:16px;"></div>
+          <div class="adm-field" style="margin-bottom:10px;">
+            <label class="adm-label">Assign Plan</label>
+            <select class="adm-input" id="adm-approve-plan">
+              <option value="royal_elite">👑 Royal Elite</option>
+              <option value="royal_pro">⚡ Royal Pro</option>
+              <option value="basic">🏋 Basic</option>
+            </select>
+          </div>
+          <div class="adm-field" style="margin-bottom:16px;">
+            <label class="adm-label">Membership Duration</label>
+            <select class="adm-input" id="adm-approve-dur">
+              <option value="1">1 Month</option>
+              <option value="3">3 Months</option>
+              <option value="6">6 Months</option>
+              <option value="12">12 Months</option>
+            </select>
+          </div>
+          <button class="mbtn" style="background:linear-gradient(135deg,#16a34a,#15803d);" onclick="admConfirmApprove()">✅ APPROVE &amp; ACTIVATE</button>
+        </div>
+      </div>
+
       <!-- Generate Code Card -->
       <div style="background:var(--card2);border:1px solid var(--border);border-radius:12px;padding:18px;margin-bottom:22px;">
         <div style="font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1.5px;margin-bottom:14px;">🎟 Generate Membership Code</div>
@@ -4724,8 +4762,9 @@ img{loading:lazy;}
     <div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--red);margin:4px 0 16px;">Members Portal</div>
     <!-- Tab switcher -->
     <div style="display:flex;gap:0;border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:18px;">
-      <button id="tab-login" onclick="switchAuthTab('login')" style="flex:1;padding:9px;background:var(--red);color:#fff;border:none;font-family:'Barlow Condensed',sans-serif;font-size:13px;letter-spacing:1.5px;cursor:pointer;transition:all .18s;">LOGIN</button>
-      <button id="tab-register" onclick="switchAuthTab('register')" style="flex:1;padding:9px;background:transparent;color:var(--muted);border:none;font-family:'Barlow Condensed',sans-serif;font-size:13px;letter-spacing:1.5px;cursor:pointer;transition:all .18s;">NEW MEMBER</button>
+      <button id="tab-login" onclick="switchAuthTab('login')" style="flex:1;padding:9px;background:var(--red);color:#fff;border:none;font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:1px;cursor:pointer;transition:all .18s;">LOGIN</button>
+      <button id="tab-register" onclick="switchAuthTab('register')" style="flex:1;padding:9px;background:transparent;color:var(--muted);border:none;font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:1px;cursor:pointer;transition:all .18s;">WITH CODE</button>
+      <button id="tab-self" onclick="switchAuthTab('self')" style="flex:1;padding:9px;background:transparent;color:var(--muted);border:none;font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:1px;cursor:pointer;transition:all .18s;">SELF REGISTER</button>
     </div>
     <!-- LOGIN PANEL -->
     <div id="auth-login-panel">
@@ -4737,7 +4776,7 @@ img{loading:lazy;}
         <button class="auth-guest-btn" onclick="resetPasswordPrompt()">Forgot password?</button>
       </div>
     </div>
-    <!-- REGISTER PANEL -->
+    <!-- REGISTER WITH CODE PANEL -->
     <div id="auth-register-panel" style="display:none;">
       <div class="mwarn" style="background:rgba(34,197,94,.08);border-color:rgba(34,197,94,.25);color:#86efac;">🎟️ Enter your membership code from the gym to create your account.</div>
       <input type="text" class="minp" id="reg-code" placeholder="Membership Code (e.g. RFC-A3K9P2)" autocomplete="off" style="text-transform:uppercase;letter-spacing:2px;font-family:monospace;font-size:15px;">
@@ -4748,6 +4787,17 @@ img{loading:lazy;}
       <input type="text" class="minp" id="reg-referral" placeholder="Referral Code (optional — earn ₹20 bonus)" autocomplete="off" style="letter-spacing:1px;">
       <div id="reg-err" style="font-size:12px;color:#f87171;margin:-4px 0 8px;min-height:16px;"></div>
       <button class="mbtn" style="background:linear-gradient(135deg,#16a34a,#15803d);" onclick="registerWithCode()">✅ CREATE MY ACCOUNT</button>
+    </div>
+    <!-- SELF REGISTER PANEL -->
+    <div id="auth-self-panel" style="display:none;">
+      <div class="mwarn" style="background:rgba(99,102,241,.08);border-color:rgba(99,102,241,.3);color:#a5b4fc;">⏳ Register yourself — your account will be reviewed and approved by the admin before activation.</div>
+      <input type="text" class="minp" id="self-name" placeholder="Your Full Name">
+      <input type="tel" class="minp" id="self-phone" placeholder="Mobile Number">
+      <input type="email" class="minp" id="self-email" placeholder="Email Address" autocomplete="email">
+      <input type="password" class="minp" id="self-pass" placeholder="Create Password (min 6 chars)" autocomplete="new-password">
+      <input type="text" class="minp" id="self-referral" placeholder="Referral Code (optional)" autocomplete="off" style="letter-spacing:1px;">
+      <div id="self-err" style="font-size:12px;color:#f87171;margin:-4px 0 8px;min-height:16px;"></div>
+      <button class="mbtn" style="background:linear-gradient(135deg,#6366f1,#4f46e5);" onclick="registerSelf()">📝 SUBMIT FOR APPROVAL</button>
     </div>
   </div>
 </div>
@@ -4912,6 +4962,9 @@ function initUser(){
         const doc=await firebase.firestore().collection('users').doc(fbUser.uid).get();
         if(doc.exists){
           const d=doc.data();
+          // Check pending / rejected status (self-registered users)
+          if(d.status==='pending'){showMembershipGate('pending',null);return;}
+          if(d.status==='rejected'){showMembershipGate('rejected',null);return;}
           // Check gym membership expiry — if set and expired, block access
           const gymExpiry=d.membershipExpiry?.toDate?.();
           if(gymExpiry&&gymExpiry<new Date()){
@@ -4967,6 +5020,16 @@ function showMembershipGate(type,expDate){
     icon.textContent='🚫';
     title.textContent='NOT ENROLLED';
     msgEl.innerHTML='Your account is not linked to an active gym membership.<br>Please visit Royal Fitness Club to complete your enrollment.';
+    gate.querySelector('.ggate-contact').style.display='block';
+  }else if(type==='pending'){
+    icon.textContent='⏳';
+    title.textContent='APPROVAL PENDING';
+    msgEl.innerHTML='Your registration is under review by the admin.<br>You will receive access once your account is approved.<br><span style="color:var(--gold);font-size:12px;">Please check back later or contact the gym.</span>';
+    gate.querySelector('.ggate-contact').style.display='block';
+  }else if(type==='rejected'){
+    icon.textContent='❌';
+    title.textContent='REGISTRATION REJECTED';
+    msgEl.innerHTML='Your registration was not approved.<br>Please contact Royal Fitness Club for more details.';
     gate.querySelector('.ggate-contact').style.display='block';
   }
   gate.style.display='flex';
@@ -5056,20 +5119,14 @@ function loginUser(){loginWithFirebase();}
 
 // ── AUTH TAB SWITCH ──
 function switchAuthTab(tab){
-  const loginPanel=$('auth-login-panel');
-  const regPanel=$('auth-register-panel');
-  const tabLogin=$('tab-login');
-  const tabReg=$('tab-register');
-  if(tab==='login'){
-    loginPanel.style.display='block';regPanel.style.display='none';
-    tabLogin.style.background='var(--red)';tabLogin.style.color='#fff';
-    tabReg.style.background='transparent';tabReg.style.color='var(--muted)';
-  }else{
-    loginPanel.style.display='none';regPanel.style.display='block';
-    tabReg.style.background='var(--red)';tabReg.style.color='#fff';
-    tabLogin.style.background='transparent';tabLogin.style.color='var(--muted)';
-    setTimeout(()=>$('reg-code')?.focus(),100);
-  }
+  const panels={login:$('auth-login-panel'),register:$('auth-register-panel'),self:$('auth-self-panel')};
+  const tabs={login:$('tab-login'),register:$('tab-register'),self:$('tab-self')};
+  Object.values(panels).forEach(p=>{if(p)p.style.display='none';});
+  Object.values(tabs).forEach(t=>{if(t){t.style.background='transparent';t.style.color='var(--muted)';}});
+  if(panels[tab])panels[tab].style.display='block';
+  if(tabs[tab]){tabs[tab].style.background='var(--red)';tabs[tab].style.color='#fff';}
+  if(tab==='register')setTimeout(()=>$('reg-code')?.focus(),100);
+  if(tab==='self')setTimeout(()=>$('self-name')?.focus(),100);
 }
 
 // ── REGISTER WITH MEMBERSHIP CODE ──
@@ -5118,6 +5175,41 @@ async function registerWithCode(){
     if(err.code==='auth/email-already-in-use'){errEl.textContent='An account with this email already exists. Please login instead.';}
     else{errEl.textContent=err.message||'Registration failed. Please try again.';}
   }finally{btn.disabled=false;btn.textContent='✅ CREATE MY ACCOUNT';}
+}
+
+async function registerSelf(){
+  const name=($('self-name')?.value||'').trim();
+  const phone=($('self-phone')?.value||'').trim();
+  const email=($('self-email')?.value||'').trim();
+  const pass=$('self-pass')?.value||'';
+  const referral=($('self-referral')?.value||'').trim().toUpperCase();
+  const errEl=$('self-err');
+  errEl.textContent='';
+  if(!name){errEl.textContent='Please enter your full name.';return;}
+  if(!email||!email.includes('@')){errEl.textContent='Please enter a valid email.';return;}
+  if(!phone){errEl.textContent='Please enter your mobile number.';return;}
+  if(pass.length<6){errEl.textContent='Password must be at least 6 characters.';return;}
+  if(typeof firebase==='undefined'){errEl.textContent='Service loading, please try again.';return;}
+  const btn=document.querySelector('#auth-self-panel .mbtn');
+  btn.disabled=true;btn.textContent='Submitting…';
+  try{
+    const cred=await firebase.auth().createUserWithEmailAndPassword(email,pass);
+    const uid=cred.user.uid;
+    await firebase.firestore().collection('users').doc(uid).set({
+      name,email,phone,role:'member',gymMember:false,
+      status:'pending',
+      plan:'basic',
+      memberCode:null,
+      referralUsed:referral||null,
+      createdAt:firebase.firestore.FieldValue.serverTimestamp(),
+      lastLogin:firebase.firestore.FieldValue.serverTimestamp()
+    });
+    closeLoginModal();
+    showMembershipGate('pending',null);
+  }catch(err){
+    if(err.code==='auth/email-already-in-use'){errEl.textContent='An account with this email already exists. Please login.';}
+    else{errEl.textContent=err.message||'Registration failed. Please try again.';}
+  }finally{btn.disabled=false;btn.textContent='📝 SUBMIT FOR APPROVAL';}
 }
 
 function guestAccess(){
@@ -8786,7 +8878,7 @@ function admTab(idx) {
   if (idx===2) renderAdmPdfs();
   if (idx===3) renderAdmSiteSettings();
   if (idx===4) renderAdmPlans();
-  if (idx===5) { document.getElementById('adm-mc-result').style.display='none'; }
+  if (idx===5) { document.getElementById('adm-mc-result').style.display='none'; adminLoadPending(); }
 }
 
 // ─── MEMBER MANAGEMENT ──────────────────────────────────────────────────────
@@ -8930,6 +9022,110 @@ function admRenderMembers() {
       </tbody>
     </table>
     </div>`;
+}
+
+// ── PENDING APPROVALS ──
+let _pendingApproveUID = null;
+
+async function adminLoadPending() {
+  if (typeof firebase === 'undefined') { toast('Firebase not available', 'gold'); return; }
+  const loadEl = document.getElementById('adm-pending-loading');
+  const listEl = document.getElementById('adm-pending-list');
+  const badge = document.getElementById('adm-pending-badge');
+  loadEl.textContent = 'Loading pending registrations…';
+  loadEl.style.display = 'block';
+  listEl.style.display = 'none';
+  try {
+    const snap = await firebase.firestore().collection('users').where('status', '==', 'pending').get();
+    const pending = snap.docs.map(d => ({ uid: d.id, ...d.data() }));
+    badge.textContent = pending.length;
+    badge.style.background = pending.length > 0 ? 'var(--red)' : '#333';
+    loadEl.style.display = 'none';
+    listEl.style.display = 'block';
+    if (!pending.length) {
+      listEl.innerHTML = '<div style="text-align:center;padding:20px;color:var(--muted);font-size:13px;">No pending registrations.</div>';
+      return;
+    }
+    listEl.innerHTML = `<div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;font-size:12px;">
+      <thead><tr style="border-bottom:1px solid var(--border);color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-size:10px;">
+        <th style="padding:10px 8px;text-align:left;">Name</th>
+        <th style="padding:10px 8px;text-align:left;">Email</th>
+        <th style="padding:10px 8px;text-align:left;">Phone</th>
+        <th style="padding:10px 8px;text-align:left;">Registered</th>
+        <th style="padding:10px 8px;text-align:left;">Actions</th>
+      </tr></thead><tbody>
+      ${pending.map(m => {
+        const dateStr = m.createdAt?.toDate ? m.createdAt.toDate().toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}) : '—';
+        return `<tr style="border-bottom:1px solid var(--border);">
+          <td style="padding:10px 8px;font-weight:600;">${m.name||'—'}</td>
+          <td style="padding:10px 8px;color:var(--muted);">${m.email||'—'}</td>
+          <td style="padding:10px 8px;color:var(--muted);">${m.phone||'—'}</td>
+          <td style="padding:10px 8px;color:var(--muted);">${dateStr}</td>
+          <td style="padding:10px 8px;">
+            <div style="display:flex;gap:6px;flex-wrap:wrap;">
+              <button class="adm-btn-edit" style="background:rgba(34,197,94,.12);border-color:rgba(34,197,94,.3);color:#22c55e;" onclick="admOpenApprove('${m.uid}','${(m.name||'').replace(/'/g,'')}\','${m.email||''}')">✅ Approve</button>
+              <button class="adm-btn-del" onclick="admRejectMember('${m.uid}','${(m.name||'').replace(/'/g,'')}')">❌ Reject</button>
+              ${m.phone ? `<a href="https://wa.me/${m.phone.replace(/\D/g,'').replace(/^0/,'91')}" target="_blank" class="adm-btn-edit" style="font-size:11px;background:rgba(34,197,94,.08);border-color:rgba(34,197,94,.2);color:#22c55e;text-decoration:none;">📱 WA</a>` : ''}
+            </div>
+          </td>
+        </tr>`;
+      }).join('')}
+      </tbody></table></div>`;
+  } catch(e) {
+    loadEl.textContent = 'Error: ' + e.message;
+  }
+}
+
+function admOpenApprove(uid, name, email) {
+  _pendingApproveUID = uid;
+  document.getElementById('adm-approve-name').textContent = name;
+  document.getElementById('adm-approve-email').textContent = email;
+  document.getElementById('adm-approve-plan').value = 'royal_elite';
+  document.getElementById('adm-approve-dur').value = '1';
+  openModal('adm-approve-modal');
+}
+
+async function admConfirmApprove() {
+  if (!_pendingApproveUID) return;
+  const plan = document.getElementById('adm-approve-plan').value;
+  const dur = parseInt(document.getElementById('adm-approve-dur').value, 10);
+  const expiry = new Date();
+  expiry.setMonth(expiry.getMonth() + dur);
+  const btn = document.querySelector('#adm-approve-modal .mbtn');
+  btn.disabled = true; btn.textContent = 'Approving…';
+  try {
+    await firebase.firestore().collection('users').doc(_pendingApproveUID).update({
+      status: 'approved',
+      gymMember: true,
+      plan,
+      membershipExpiry: firebase.firestore.Timestamp.fromDate(expiry),
+      approvedAt: firebase.firestore.FieldValue.serverTimestamp(),
+      approvedBy: user ? user.email : 'admin'
+    });
+    closeModal('adm-approve-modal');
+    toast('✅ Member approved and activated!', 'green');
+    adminLoadPending();
+  } catch(e) {
+    toast('Error: ' + e.message, 'gold');
+  } finally {
+    btn.disabled = false; btn.textContent = '✅ APPROVE & ACTIVATE';
+  }
+}
+
+async function admRejectMember(uid, name) {
+  if (!confirm('Reject registration for ' + name + '? This cannot be undone.')) return;
+  try {
+    await firebase.firestore().collection('users').doc(uid).update({
+      status: 'rejected',
+      gymMember: false,
+      rejectedAt: firebase.firestore.FieldValue.serverTimestamp(),
+      rejectedBy: user ? user.email : 'admin'
+    });
+    toast('Registration rejected.');
+    adminLoadPending();
+  } catch(e) {
+    toast('Error: ' + e.message, 'gold');
+  }
 }
 
 function admOpenRenewModal(uid) {
