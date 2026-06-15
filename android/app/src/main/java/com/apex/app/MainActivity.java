@@ -1,4 +1,4 @@
-package com.royalfitnessclub.app;
+package com.apex.app;
 
 import com.getcapacitor.BridgeActivity;
 
