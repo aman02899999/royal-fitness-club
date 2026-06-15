@@ -11090,8 +11090,9 @@ function switchScreen(name, navEl) {
     }
   });
 
-  // Remove any previously injected page headers
+  // Remove any previously injected page headers and tickers
   document.querySelectorAll('.sb-page-hdr').forEach(function(h) { h.remove(); });
+  document.querySelectorAll('.section-ticker').forEach(function(t) { t.remove(); });
 
   // Show sections for this screen
   var ids = SCREEN_MAP[name] || ['home'];
