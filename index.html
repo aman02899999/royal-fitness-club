@@ -852,6 +852,36 @@ body.sb-open #screen-dashboard .dash-wrap{padding-top:78px;}
 .br-inp-group label{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:4px;}
 .br-inp-group input{width:100%;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:6px;padding:8px 10px;color:var(--text);font-size:14px;outline:none;}
 .br-inp-group input:focus{border-color:var(--red);}
+.br-section-hdr{grid-column:1/-1;font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);padding:8px 0 4px;border-bottom:1px solid var(--border);margin-top:8px;}
+/* ── AI PHYSIO WIZARD ── */
+.aip-step-indicator{display:flex;gap:6px;margin-bottom:20px;flex-wrap:wrap;}
+.aip-step-dot{width:28px;height:28px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--muted);transition:all .3s;}
+.aip-step-dot.active{border-color:var(--red);color:var(--red);background:rgba(232,0,29,.1);}
+.aip-step-dot.done{border-color:var(--green);background:var(--green);color:#000;}
+.aip-step-title{font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:14px;color:var(--text);}
+.aip-body-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;margin-bottom:18px;}
+.aip-body-btn{background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:12px 10px;text-align:center;cursor:pointer;transition:all .2s;font-size:13px;}
+.aip-body-btn:hover,.aip-body-btn.sel{border-color:var(--red);background:rgba(232,0,29,.08);color:var(--red);}
+.aip-pills{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px;}
+.aip-pill{padding:7px 14px;border:1px solid var(--border);border-radius:20px;cursor:pointer;font-size:12px;transition:all .2s;color:var(--muted);}
+.aip-pill:hover,.aip-pill.sel{border-color:var(--red);background:rgba(232,0,29,.1);color:var(--red);}
+.aip-slider-wrap{margin-bottom:18px;}
+.aip-slider-labels{display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-top:4px;}
+.aip-sev-badge{display:inline-block;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700;margin-top:8px;}
+.aip-sev-mild{background:rgba(34,197,94,.15);color:var(--green);}
+.aip-sev-mod{background:rgba(251,191,36,.15);color:var(--gold);}
+.aip-sev-sev{background:rgba(232,0,29,.15);color:var(--red);}
+.aip-nav-row{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap;}
+.aip-report-card{background:var(--card2);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:12px;}
+.aip-report-title{font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
+.aip-diag{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1px;color:var(--text);margin-bottom:6px;}
+.aip-redflag{background:rgba(232,0,29,.12);border:1px solid var(--red);border-radius:8px;padding:12px 14px;font-size:13px;color:var(--red);font-weight:700;margin-bottom:12px;}
+.aip-phase{margin-bottom:14px;}
+.aip-phase-hdr{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:6px;}
+.aip-phase ul{margin:0;padding-left:18px;font-size:13px;color:var(--muted);line-height:1.8;}
+.aip-phase ul li{margin-bottom:2px;}
+.aip-supp{background:rgba(34,197,94,.06);border:1px solid rgba(34,197,94,.2);border-radius:8px;padding:12px 14px;font-size:12px;color:var(--muted);line-height:1.7;}
+.aip-supp strong{color:var(--green);}
 /* ── FITNESS CHALLENGES ── */
 #challenges{}
 .ch-card{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;transition:transform .2s,box-shadow .2s;}
@@ -3098,6 +3128,7 @@ img{loading:lazy;}
       <div class="ptab" data-panel="recovery">😴 Recovery</div>
       <div class="ptab" data-panel="warmup">🔥 Warm-Up</div>
       <div class="ptab" data-panel="foamroll">🫀 Foam Roll</div>
+      <div class="ptab" data-panel="aiphysio">🤖 AI Physio</div>
     </div>
     <!-- PAIN -->
     <div class="ppanel active" data-panel="pain">
@@ -3195,6 +3226,15 @@ img{loading:lazy;}
         <div class="fr-tip">
           <strong>Pro tip:</strong> Roll <em>before</em> training to warm up and increase range. Roll <em>after</em> training for recovery. Never roll directly on a joint or the lower spine.
         </div>
+      </div>
+    </div>
+    <!-- AI PHYSIO -->
+    <div class="ppanel" data-panel="aiphysio">
+      <div class="rcard">
+        <div class="rctitle">🤖 AI Physio Assessment</div>
+        <p style="font-size:13px;color:var(--muted);margin:6px 0 16px;">Answer 5 quick questions and get a personalised physiotherapy recovery plan — no appointment needed.</p>
+        <div id="aip-wizard"></div>
+        <div id="aip-report" style="display:none;"></div>
       </div>
     </div>
   </div>
@@ -3445,22 +3485,59 @@ img{loading:lazy;}
     <!-- Manual entry panel -->
     <div id="br-panel-manual" style="display:none;max-width:800px;margin:0 auto;">
       <div class="br-manual-grid">
+        <div class="br-section-hdr">CBC Panel</div>
         <div class="br-inp-group"><label>Hemoglobin (g/dL)</label><input type="number" id="br-hb" placeholder="M:13-17, F:12-16" step="0.1"></div>
+        <div class="br-inp-group"><label>RBC (×10⁶/µL)</label><input type="number" id="br-rbc" placeholder="M:4.5-5.9, F:4.0-5.2" step="0.01"></div>
+        <div class="br-inp-group"><label>WBC (K/µL)</label><input type="number" id="br-wbc" placeholder="4.5-11 normal" step="0.1"></div>
+        <div class="br-inp-group"><label>Platelets (K/µL)</label><input type="number" id="br-platelets" placeholder="150-400 normal" step="1"></div>
+        <div class="br-inp-group"><label>MCV (fL)</label><input type="number" id="br-mcv" placeholder="80-100 normal" step="1"></div>
+        <div class="br-inp-group"><label>MCH (pg)</label><input type="number" id="br-mch" placeholder="27-34 normal" step="0.1"></div>
+        <div class="br-inp-group"><label>Neutrophils (%)</label><input type="number" id="br-neutrophils" placeholder="40-70% normal" step="1"></div>
+
+        <div class="br-section-hdr">Metabolic Panel</div>
         <div class="br-inp-group"><label>Blood Glucose (mg/dL)</label><input type="number" id="br-glucose" placeholder="70-100 (fasting)" step="1"></div>
         <div class="br-inp-group"><label>HbA1c (%)</label><input type="number" id="br-hba1c" placeholder="&lt;5.7 normal" step="0.1"></div>
+        <div class="br-inp-group"><label>Creatinine (mg/dL)</label><input type="number" id="br-creat" placeholder="M:0.7-1.3, F:0.5-1.1" step="0.1"></div>
+        <div class="br-inp-group"><label>Blood Urea/BUN (mg/dL)</label><input type="number" id="br-urea" placeholder="7-20 normal" step="1"></div>
+        <div class="br-inp-group"><label>Uric Acid (mg/dL)</label><input type="number" id="br-uricacid" placeholder="M:3.4-7.0, F:2.4-6.0" step="0.1"></div>
+        <div class="br-inp-group"><label>Sodium (mEq/L)</label><input type="number" id="br-sodium" placeholder="136-145 normal" step="1"></div>
+        <div class="br-inp-group"><label>Potassium (mEq/L)</label><input type="number" id="br-potassium" placeholder="3.5-5.0 normal" step="0.1"></div>
+        <div class="br-inp-group"><label>Calcium (mg/dL)</label><input type="number" id="br-calcium" placeholder="8.5-10.5 normal" step="0.1"></div>
+        <div class="br-inp-group"><label>Magnesium (mg/dL)</label><input type="number" id="br-magnesium" placeholder="1.7-2.2 normal" step="0.01"></div>
+
+        <div class="br-section-hdr">Lipid Panel</div>
         <div class="br-inp-group"><label>Total Cholesterol (mg/dL)</label><input type="number" id="br-chol" placeholder="&lt;200 desirable" step="1"></div>
         <div class="br-inp-group"><label>LDL (mg/dL)</label><input type="number" id="br-ldl" placeholder="&lt;100 optimal" step="1"></div>
         <div class="br-inp-group"><label>HDL (mg/dL)</label><input type="number" id="br-hdl" placeholder="M:&gt;40, F:&gt;50" step="1"></div>
         <div class="br-inp-group"><label>Triglycerides (mg/dL)</label><input type="number" id="br-trig" placeholder="&lt;150 normal" step="1"></div>
+
+        <div class="br-section-hdr">Liver Panel</div>
+        <div class="br-inp-group"><label>ALT / SGPT (U/L)</label><input type="number" id="br-alt" placeholder="7-56 normal" step="1"></div>
+        <div class="br-inp-group"><label>AST / SGOT (U/L)</label><input type="number" id="br-ast" placeholder="10-40 normal" step="1"></div>
+        <div class="br-inp-group"><label>GGT (U/L)</label><input type="number" id="br-ggt" placeholder="M:8-61, F:5-36" step="1"></div>
+        <div class="br-inp-group"><label>Bilirubin Total (mg/dL)</label><input type="number" id="br-bilirubin" placeholder="0.2-1.2 normal" step="0.1"></div>
+
+        <div class="br-section-hdr">Thyroid &amp; Hormones</div>
+        <div class="br-inp-group"><label>TSH (mIU/L)</label><input type="number" id="br-tsh" placeholder="0.4-4.0 normal" step="0.1"></div>
+        <div class="br-inp-group"><label>Free T4 (ng/dL)</label><input type="number" id="br-freet4" placeholder="0.8-1.8 normal" step="0.01"></div>
+        <div class="br-inp-group"><label>Testosterone (ng/dL)</label><input type="number" id="br-testo" placeholder="M:300-1000" step="1"></div>
+        <div class="br-inp-group"><label>Free Testosterone (pg/mL)</label><input type="number" id="br-freetesto" placeholder="M:9-30, F:0.3-1.9" step="0.1"></div>
+        <div class="br-inp-group"><label>SHBG (nmol/L)</label><input type="number" id="br-shbg" placeholder="M:10-57, F:18-144" step="1"></div>
+        <div class="br-inp-group"><label>Cortisol AM (µg/dL)</label><input type="number" id="br-cortisol" placeholder="6-18 normal" step="0.1"></div>
+        <div class="br-inp-group"><label>Prolactin (ng/mL)</label><input type="number" id="br-prolactin" placeholder="M:2-18, F:2-29" step="0.1"></div>
+        <div class="br-inp-group"><label>IGF-1 (ng/mL)</label><input type="number" id="br-igf1" placeholder="115-307 (adult)" step="1"></div>
+
+        <div class="br-section-hdr">Vitamins &amp; Minerals</div>
         <div class="br-inp-group"><label>Vitamin D (ng/mL)</label><input type="number" id="br-vitd" placeholder="30-100 normal" step="1"></div>
         <div class="br-inp-group"><label>Vitamin B12 (pg/mL)</label><input type="number" id="br-b12" placeholder="200-900 normal" step="1"></div>
-        <div class="br-inp-group"><label>TSH (mIU/L)</label><input type="number" id="br-tsh" placeholder="0.4-4.0 normal" step="0.1"></div>
-        <div class="br-inp-group"><label>Creatinine (mg/dL)</label><input type="number" id="br-creat" placeholder="M:0.7-1.3, F:0.5-1.1" step="0.1"></div>
+        <div class="br-inp-group"><label>Folate (ng/mL)</label><input type="number" id="br-folate" placeholder="3-17 normal" step="0.1"></div>
+        <div class="br-inp-group"><label>Zinc (µg/dL)</label><input type="number" id="br-zinc" placeholder="70-120 normal" step="1"></div>
+        <div class="br-inp-group"><label>Iron (µg/dL)</label><input type="number" id="br-iron" placeholder="M:65-175, F:50-170" step="1"></div>
         <div class="br-inp-group"><label>Ferritin (ng/mL)</label><input type="number" id="br-ferritin" placeholder="M:24-336, F:11-307" step="1"></div>
-        <div class="br-inp-group"><label>ALT / SGPT (U/L)</label><input type="number" id="br-alt" placeholder="7-56 normal" step="1"></div>
-        <div class="br-inp-group"><label>Testosterone (ng/dL)</label><input type="number" id="br-testo" placeholder="M:300-1000" step="1"></div>
+
+        <div class="br-section-hdr">Inflammation</div>
         <div class="br-inp-group"><label>CRP / hs-CRP (mg/L)</label><input type="number" id="br-crp" placeholder="&lt;1.0 low risk" step="0.1"></div>
-        <div class="br-inp-group"><label>WBC count (K/µL)</label><input type="number" id="br-wbc" placeholder="4.5-11 normal" step="0.1"></div>
+        <div class="br-inp-group"><label>Homocysteine (µmol/L)</label><input type="number" id="br-homocysteine" placeholder="5-10 optimal" step="0.1"></div>
       </div>
       <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:8px;">
         <select id="br-gender" class="fi2" style="max-width:160px;">
@@ -6393,7 +6470,7 @@ const WU_DATA={
 };
 document.querySelectorAll('.wu-type-btn').forEach(b=>{b.addEventListener('click',()=>{document.querySelectorAll('.wu-type-btn').forEach(x=>x.classList.remove('sel'));b.classList.add('sel');const steps=WU_DATA[b.dataset.wu];const el=$('wu-plan');el.style.display='block';el.innerHTML='<div class="wu-steps">'+steps.map((s,i)=>`<div class="wu-step"><div class="wu-step-num">0${i+1}</div><div class="wu-step-body"><div class="wu-step-name">${s.name}</div><div class="wu-step-detail">${s.detail}</div><div class="wu-step-sets">${s.sets}</div></div></div>`).join('')+'</div>';});});
 // ── PHYSIO TABS ──
-document.querySelectorAll('.ptab').forEach(t=>{t.addEventListener('click',()=>{document.querySelectorAll('.ptab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.ppanel').forEach(x=>x.classList.remove('active'));t.classList.add('active');document.querySelector('.ppanel[data-panel="'+t.dataset.panel+'"]').classList.add('active');});});
+document.querySelectorAll('.ptab').forEach(t=>{t.addEventListener('click',()=>{document.querySelectorAll('.ptab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.ppanel').forEach(x=>x.classList.remove('active'));t.classList.add('active');document.querySelector('.ppanel[data-panel="'+t.dataset.panel+'"]').classList.add('active');if(t.dataset.panel==='aiphysio'&&!document.getElementById('aip-wizard').innerHTML.trim())aipInit();});});
 // ── POSTURE QUESTIONNAIRE ──
 const postureQs=[
   {q:'Do your shoulders round forward?',id:'pq1'},
@@ -6435,6 +6512,335 @@ function scoreRecovery(){const sleep=+$('sl-sleep').value,stress=+$('sl-stress')
   $('recoveryresult').innerHTML='<div class="scoredisp"><div class="sdv" style="color:'+col+'">'+score+'</div><div class="sdl">Recovery Score / 100</div></div><div class="recplan">'+plan+'</div>';
   pdScores.recovery=score;saveScores();
 }
+// ══════════════════════════════════════════════════════════════════
+// AI PHYSIOTHERAPIST — step-by-step symptom assessment
+// ══════════════════════════════════════════════════════════════════
+const aipState = { area:'', severity:5, types:[], timing:[], history:'' };
+
+function aipInit() {
+  const w = document.getElementById('aip-wizard');
+  const r = document.getElementById('aip-report');
+  if (!w) return;
+  r.style.display = 'none'; r.innerHTML = '';
+  w.innerHTML = `
+    <div class="aip-step-indicator" id="aip-dots">
+      ${[1,2,3,4,5].map((n,i)=>`<div class="aip-step-dot${i===0?' active':''}" id="aip-dot-${n}">${n}</div>`).join('')}
+      <span style="font-size:11px;color:var(--muted);align-self:center;margin-left:4px;">Step 1 of 5</span>
+    </div>
+    <div id="aip-step-body"></div>`;
+  aipRenderStep(1);
+}
+
+function aipRenderStep(step) {
+  const body = document.getElementById('aip-step-body');
+  const dots = document.querySelectorAll('.aip-step-dot');
+  dots.forEach((d,i)=>{
+    d.className = 'aip-step-dot' + (i+1 < step ? ' done' : i+1 === step ? ' active' : '');
+    d.textContent = i+1 < step ? '✓' : i+1;
+  });
+  const stepLabel = body.closest('.rcard')?.querySelector('.aip-step-indicator span');
+  if (stepLabel) stepLabel.textContent = `Step ${step} of 5`;
+
+  if (step === 1) {
+    const areas = [
+      {k:'neck',l:'Neck'},           {k:'shoulder',l:'Shoulder'},
+      {k:'upper_back',l:'Upper Back'},{k:'lower_back',l:'Lower Back'},
+      {k:'knee',l:'Knee'},            {k:'hip',l:'Hip'},
+      {k:'elbow',l:'Elbow'},          {k:'wrist',l:'Wrist'},
+      {k:'ankle',l:'Ankle'},          {k:'full_body',l:'Full Body / Multiple'}
+    ];
+    body.innerHTML = `<div class="aip-step-title">Where is the pain or discomfort?</div>
+      <div class="aip-body-grid">${areas.map(a=>`<div class="aip-body-btn${aipState.area===a.k?' sel':''}" onclick="aipState.area='${a.k}';document.querySelectorAll('.aip-body-btn').forEach(b=>b.classList.remove('sel'));this.classList.add('sel')">${a.l}</div>`).join('')}</div>
+      <div class="aip-nav-row"><button class="bfire" style="padding:10px 24px;" onclick="if(!aipState.area){toast('Please select a body area','gold');return;}aipRenderStep(2)">Next →</button></div>`;
+  } else if (step === 2) {
+    const sev = aipState.severity;
+    const sevClass = sev<=3 ? 'mild' : sev<=6 ? 'mod' : 'sev';
+    const sevLabel = sev<=3 ? 'Mild' : sev<=6 ? 'Moderate' : 'Severe';
+    body.innerHTML = `<div class="aip-step-title">How severe is the pain? (1 = barely noticeable, 10 = unbearable)</div>
+      <div class="aip-slider-wrap">
+        <input type="range" class="slider" id="aip-sev-slider" min="1" max="10" value="${sev}" style="width:100%;" oninput="aipState.severity=+this.value;document.getElementById('aip-sev-num').textContent=this.value;const c=+this.value<=3?'mild':+this.value<=6?'mod':'sev';document.getElementById('aip-sev-badge').className='aip-sev-badge aip-sev-'+c;document.getElementById('aip-sev-badge').textContent=['','Mild','Mild','Mild','Moderate','Moderate','Moderate','Severe','Severe','Severe','Severe'][+this.value]">
+        <div style="text-align:center;margin-top:10px;"><span style="font-family:Bebas Neue,sans-serif;font-size:38px;color:var(--text);" id="aip-sev-num">${sev}</span><span style="font-size:14px;color:var(--muted);"> / 10</span></div>
+        <div style="text-align:center;"><span class="aip-sev-badge aip-sev-${sevClass}" id="aip-sev-badge">${sevLabel}</span></div>
+        <div class="aip-slider-labels"><span>1 – Mild</span><span>5 – Moderate</span><span>10 – Severe</span></div>
+      </div>
+      <div class="aip-nav-row">
+        <button class="bsm" onclick="aipRenderStep(1)">← Back</button>
+        <button class="bfire" style="padding:10px 24px;" onclick="aipRenderStep(3)">Next →</button>
+      </div>`;
+  } else if (step === 3) {
+    const types = ['Sharp / Stabbing','Dull / Aching','Burning','Stiffness / Tightness','Throbbing / Pulsing','Numbness / Tingling','Weakness'];
+    body.innerHTML = `<div class="aip-step-title">What type of pain is it? (select all that apply)</div>
+      <div class="aip-pills">${types.map(t=>`<div class="aip-pill${aipState.types.includes(t)?' sel':''}" onclick="if(aipState.types.includes('${t}'))aipState.types=aipState.types.filter(x=>x!=='${t}');else aipState.types.push('${t}');this.classList.toggle('sel')">${t}</div>`).join('')}</div>
+      <div class="aip-nav-row">
+        <button class="bsm" onclick="aipRenderStep(2)">← Back</button>
+        <button class="bfire" style="padding:10px 24px;" onclick="if(!aipState.types.length){toast('Select at least one pain type','gold');return;}aipRenderStep(4)">Next →</button>
+      </div>`;
+  } else if (step === 4) {
+    const timings = ['Morning only (improves during day)','During exercise / activity','Immediately after exercise','Constant / All day','At rest / At night','Sitting for long periods','With specific movements only'];
+    body.innerHTML = `<div class="aip-step-title">When do you feel it? (select all that apply)</div>
+      <div class="aip-pills">${timings.map(t=>`<div class="aip-pill${aipState.timing.includes(t)?' sel':''}" onclick="if(aipState.timing.includes('${t}'))aipState.timing=aipState.timing.filter(x=>x!=='${t}');else aipState.timing.push('${t}');this.classList.toggle('sel')">${t}</div>`).join('')}</div>
+      <div class="aip-nav-row">
+        <button class="bsm" onclick="aipRenderStep(3)">← Back</button>
+        <button class="bfire" style="padding:10px 24px;" onclick="if(!aipState.timing.length){toast('Select at least one timing','gold');return;}aipRenderStep(5)">Next →</button>
+      </div>`;
+  } else if (step === 5) {
+    const hx = ['New injury (less than 2 weeks)','Returning/recurring injury','Chronic (more than 3 months)','Post-surgery / Post-procedure','No prior injury — first time'];
+    body.innerHTML = `<div class="aip-step-title">What is the injury history?</div>
+      <div class="aip-pills" style="flex-direction:column;">${hx.map(h=>`<div class="aip-pill${aipState.history===h?' sel':''}" style="border-radius:8px;" onclick="aipState.history='${h}';document.querySelectorAll('#aip-step-body .aip-pill').forEach(p=>p.classList.remove('sel'));this.classList.add('sel')">${h}</div>`).join('')}</div>
+      <div class="aip-nav-row">
+        <button class="bsm" onclick="aipRenderStep(4)">← Back</button>
+        <button class="bfire" style="padding:10px 24px;" onclick="if(!aipState.history){toast('Please select an option','gold');return;}aipGenerateReport()">🔬 Generate My Plan</button>
+      </div>`;
+  }
+}
+
+function aipGenerateReport() {
+  const {area, severity, types, timing, history} = aipState;
+  const wizard = document.getElementById('aip-wizard');
+  const report = document.getElementById('aip-report');
+  wizard.style.display = 'none'; report.style.display = 'block';
+
+  // Red flags check
+  const hasNumbness = types.includes('Numbness / Tingling');
+  const hasWeakness = types.includes('Weakness');
+  const isNight = timing.includes('At rest / At night');
+  const isSevere = severity >= 7;
+  const isPostSurg = history.includes('Post-surgery');
+
+  let redFlag = '';
+  if (hasNumbness && area === 'lower_back') redFlag = '🚨 URGENT: Numbness with lower back pain may indicate nerve compression or disc herniation. See a doctor or physiotherapist immediately before doing any exercises.';
+  else if (hasNumbness && area === 'neck') redFlag = '🚨 URGENT: Neck pain with numbness/tingling in arms can indicate cervical nerve root compression. Seek medical evaluation before proceeding with exercises.';
+  else if (hasWeakness && isSevere) redFlag = '🚨 CAUTION: Severe pain with muscle weakness may indicate a significant tear or nerve issue. Get a clinical assessment before starting this plan.';
+  else if (isNight && area === 'shoulder' && isSevere) redFlag = '⚠️ Night pain in shoulder at rest may indicate rotator cuff tear, calcific tendinopathy, or bursitis. See a physiotherapist for imaging referral.';
+  else if (isNight && isSevere) redFlag = '⚠️ Pain at rest/at night warrants medical review to rule out inflammatory or systemic causes.';
+  else if (severity >= 8) redFlag = '⚠️ High pain severity (8+/10): Start with Phase 1 only. Do not push through pain. If no improvement in 1 week, see a physiotherapist.';
+
+  // Diagnosis engine
+  const diagMap = {
+    neck: {
+      default: 'Cervical Muscle Strain (Neck Pain)',
+      stiff_morning: 'Postural Neck Strain — Tech Neck Syndrome',
+      sharp_movement: 'Cervical Facet Joint Irritation',
+      numb_tingle: 'Cervical Radiculopathy (Nerve Root Compression)',
+      sitting: 'Upper Cross Syndrome — Postural Dysfunction'
+    },
+    shoulder: {
+      default: 'Shoulder Impingement Syndrome',
+      sharp_overhead: 'Rotator Cuff Impingement / Tendinopathy',
+      night_pain: 'Shoulder Bursitis / Subacromial Inflammation',
+      weak: 'Possible Rotator Cuff Tear — needs assessment',
+      chronic: 'Adhesive Capsulitis (Frozen Shoulder)'
+    },
+    upper_back: {
+      default: 'Thoracic Postural Strain',
+      stiff: 'Thoracic Kyphosis / Postural Dysfunction',
+      burning: 'Thoracic Facet Joint Syndrome'
+    },
+    lower_back: {
+      default: 'Lumbar Muscle Strain',
+      sharp_lifting: 'Lumbar Disc Irritation',
+      leg_pain: 'Possible Sciatica / Nerve Root Irritation',
+      chronic: 'Chronic Non-Specific Low Back Pain',
+      morning: 'Lumbar Facet Joint Syndrome (Worse in Morning)'
+    },
+    knee: {
+      default: 'Knee Pain — Requires Assessment',
+      dull_after: 'Patellofemoral Pain Syndrome (Runner\'s Knee)',
+      sharp_pivot: 'Meniscus Irritation / Ligament Strain',
+      front: 'Patellar Tendinopathy (Jumper\'s Knee)',
+      chronic: 'Knee Osteoarthritis / Degenerative Changes'
+    },
+    hip: {
+      default: 'Hip Flexor Strain / Hip Impingement',
+      deep_groin: 'Femoro-Acetabular Impingement (FAI)',
+      side: 'Gluteal Tendinopathy / Greater Trochanteric Bursitis',
+      chronic: 'Hip Osteoarthritis'
+    },
+    elbow: {
+      default: 'Elbow Tendinopathy',
+      outer: 'Lateral Epicondylitis (Tennis Elbow)',
+      inner: 'Medial Epicondylitis (Golfer\'s Elbow)',
+      burning_grip: 'Cubital Tunnel Syndrome (Ulnar Nerve)'
+    },
+    wrist: {
+      default: 'Wrist Strain / Tendinopathy',
+      numb: 'Carpal Tunnel Syndrome (Median Nerve Compression)',
+      thumb: 'De Quervain\'s Tenosynovitis'
+    },
+    ankle: {
+      default: 'Ankle Sprain / Ligament Injury',
+      new_twist: 'Acute Lateral Ankle Sprain — RICE Protocol Needed',
+      chronic: 'Chronic Ankle Instability / Peroneal Tendinopathy',
+      achilles: 'Achilles Tendinopathy'
+    },
+    full_body: {
+      default: 'Generalised Fatigue / Overtraining Syndrome',
+      fatigue: 'Overtraining Syndrome — De-Load Required',
+      stiff_morning: 'Possible Systemic Inflammation — Consider Blood Work'
+    }
+  };
+
+  let diagnosis = (diagMap[area] || diagMap.lower_back).default;
+  if (area === 'neck') {
+    if (hasNumbness) diagnosis = diagMap.neck.numb_tingle;
+    else if (timing.includes('Morning only (improves during day)') || types.includes('Stiffness / Tightness')) diagnosis = diagMap.neck.stiff_morning;
+    else if (timing.includes('Sitting for long periods')) diagnosis = diagMap.neck.sitting;
+    else if (types.includes('Sharp / Stabbing')) diagnosis = diagMap.neck.sharp_movement;
+  } else if (area === 'shoulder') {
+    if (hasWeakness) diagnosis = diagMap.shoulder.weak;
+    else if (timing.includes('At rest / At night') && isSevere) diagnosis = diagMap.shoulder.night_pain;
+    else if (history.includes('Chronic')) diagnosis = diagMap.shoulder.chronic;
+  } else if (area === 'lower_back') {
+    if (hasNumbness) diagnosis = diagMap.lower_back.leg_pain;
+    else if (history.includes('Chronic')) diagnosis = diagMap.lower_back.chronic;
+    else if (timing.includes('Morning only (improves during day)')) diagnosis = diagMap.lower_back.morning;
+    else if (types.includes('Sharp / Stabbing')) diagnosis = diagMap.lower_back.sharp_lifting;
+  } else if (area === 'knee') {
+    if (history.includes('Chronic')) diagnosis = diagMap.knee.chronic;
+    else if (timing.includes('Immediately after exercise') || timing.includes('During exercise / activity')) diagnosis = diagMap.knee.dull_after;
+    else if (types.includes('Sharp / Stabbing')) diagnosis = diagMap.knee.sharp_pivot;
+  } else if (area === 'ankle' && history.includes('New injury')) {
+    diagnosis = diagMap.ankle.new_twist;
+  } else if (area === 'elbow') {
+    if (hasNumbness) diagnosis = diagMap.elbow.burning_grip;
+  } else if (area === 'wrist' && hasNumbness) {
+    diagnosis = diagMap.wrist.numb;
+  }
+
+  // Protocols
+  const protocols = aipGetProtocol(area, diagnosis, severity, types, timing, history);
+
+  report.innerHTML = `
+    ${redFlag ? `<div class="aip-redflag">${redFlag}</div>` : ''}
+    <div class="aip-report-card">
+      <div class="aip-report-title">AI Physio Assessment</div>
+      <div style="font-size:11px;color:var(--muted);margin-bottom:10px;">${area.replace('_',' ').toUpperCase()} · SEVERITY ${severity}/10 · ${history}</div>
+      <div class="aip-diag">${diagnosis}</div>
+      <div style="font-size:12px;color:var(--muted);margin-top:4px;">Based on: ${[...types,...timing].slice(0,3).join(' · ')}</div>
+    </div>
+
+    <div class="aip-report-card">
+      <div class="aip-phase">
+        <div class="aip-phase-hdr">⚡ Phase 1 — Acute Management (Weeks 1–2)</div>
+        <ul>${protocols.p1.map(x=>`<li>${x}</li>`).join('')}</ul>
+      </div>
+      <div class="aip-phase">
+        <div class="aip-phase-hdr">🔄 Phase 2 — Mobility & Flexibility (Weeks 2–4)</div>
+        <ul>${protocols.p2.map(x=>`<li>${x}</li>`).join('')}</ul>
+      </div>
+      <div class="aip-phase">
+        <div class="aip-phase-hdr">💪 Phase 3 — Strengthening & Rehab (Weeks 4–8)</div>
+        <ul>${protocols.p3.map(x=>`<li>${x}</li>`).join('')}</ul>
+      </div>
+      <div class="aip-phase">
+        <div class="aip-phase-hdr">🏋️ Phase 4 — Return to Training</div>
+        <ul>${protocols.p4.map(x=>`<li>${x}</li>`).join('')}</ul>
+      </div>
+    </div>
+
+    <div class="aip-report-card">
+      <div class="aip-report-title">Supplement Support</div>
+      <div class="aip-supp">${protocols.supps}</div>
+    </div>
+
+    <div style="margin-top:14px;padding:12px 14px;background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.2);border-radius:8px;font-size:12px;color:var(--muted);">
+      ⚠️ This AI plan is for educational purposes only and does not replace a qualified physiotherapist. If your pain is severe, worsening, or associated with numbness/weakness, see a healthcare professional.
+    </div>
+
+    <div style="display:flex;gap:10px;margin-top:18px;flex-wrap:wrap;">
+      <button class="bsm" onclick="aipState.area='';aipState.severity=5;aipState.types=[];aipState.timing=[];aipState.history='';document.getElementById('aip-wizard').style.display='';document.getElementById('aip-report').style.display='none';aipInit()">↺ Start New Assessment</button>
+      <button class="bfire" style="padding:10px 20px;" onclick="toast('Report saved to your profile!','gold')">💾 Save Report</button>
+    </div>`;
+}
+
+function aipGetProtocol(area, diag, severity, types, timing, history) {
+  const isAcute = history.includes('New injury');
+  const isChronic = history.includes('Chronic');
+  const hasNumb = types.includes('Numbness / Tingling');
+  const isPostSurg = history.includes('Post-surgery');
+
+  const protocols = {
+    neck: {
+      p1: ['STOP any overhead pressing, heavy lat pulldowns, or overhead shrugging','Apply ice 15–20 min × 3 daily for first 48h, then switch to heat','Chin tucks: gently pull chin straight back (10 reps × 3 sets, hourly)','Avoid forward head posture — raise your monitor, use a lumbar support','Gentle neck rotation: turn head 45° each side, hold 5 sec × 10 reps','Sleep on one pillow with neck in neutral position'],
+      p2: ['Neck flexion/extension stretches: 30 sec hold × 3 each direction','Levator scapulae stretch: ear to shoulder + look down 45° — 30 sec × 2 each','Doorway pec stretch: 30 sec × 3 to address upper cross syndrome','Upper trap stretch: opposite hand on top of head, gentle pull — 30 sec each side','Thoracic extension over foam roller: 10–15 extensions at mid-back level'],
+      p3: ['Band pull-aparts: 3 × 20 (scapular retraction, key for neck health)','Face pulls: 3 × 15 with bands or cable at face height','Deep neck flexor activation: chin tuck + gentle head lift — 3 × 10','Prone Y-T-W: lying face down, raise arms into Y, T, W shape — 3 × 10 each','Shoulder blade squeezes: hold 5 sec × 20 reps × 3 sets'],
+      p4: ['Gradually reintroduce pressing: start with 60% of previous weights','Add band exercises before every upper body session as warm-up','Maintain chin-tuck habit throughout all exercises','Retest range of motion — full pain-free ROM before returning to heavy lifts'],
+      supps: '<strong>Magnesium glycinate 400mg:</strong> Before bed — reduces muscle spasm and improves sleep quality for recovery.\n<strong>Turmeric (Curcumin 1000mg + Piperine 10mg):</strong> With meals — powerful anti-inflammatory, reduces joint inflammation within 4–6 weeks.\n<strong>Collagen (type I/II) 10g:</strong> With Vitamin C on empty stomach — repairs connective tissue and tendons.\n<strong>Omega-3 (EPA+DHA 2–3g):</strong> With meals — reduces inflammation systemically.\n<strong>Foods:</strong> Bone broth, turmeric milk (haldi doodh), ginger tea, pineapple (bromelain), tart cherry juice.'
+    },
+    shoulder: {
+      p1: ['STOP overhead pressing, pull-ups, heavy bench — rest the shoulder 2 weeks','Ice 15–20 min × 3 daily for acute inflammation, switch to heat after 72h','Pendulum exercises: lean forward, arm hanging, gentle circles 30 sec × 3','Cross-body stretch: pull arm across chest with opposite hand, 30 sec × 3','NSAIDs (ibuprofen) with food if doctor approves — reduces acute inflammation','Support sleeping position: sleep on unaffected side with pillow under arm'],
+      p2: ['Internal/external rotation with band: 3 × 15 at 30° abduction — pain free only','Sleeper stretch: lying on affected side, bend elbow 90°, gentle push — 30 sec × 3','Wall walk: fingers walk up wall to tolerance, 3 × 10 reps','Pendulum circles: increasing range gradually — 1 min each direction','Posterior capsule stretch: across-body arm pull — 30 sec × 3'],
+      p3: ['Band external rotation: 3 × 20 (rotator cuff strengthening — most important)','Side-lying external rotation with 1–2 kg: 3 × 15 each side','Prone Y: face down, raise arms overhead into Y — 3 × 12','Scaption raises: 30° from front (scapular plane) — 3 × 12 with light weight','Face pulls: 3 × 20 — essential for impingement correction','Gradually reintroduce pressing: push-ups → DB press → barbell'],
+      p4: ['Return to pressing only when full ROM and no pain with resistance','Always warm up rotator cuff with band work before any pressing/pulling','Correct scapular winging before loading — get a movement screen','Avoid wide-grip pressing — narrower grip reduces impingement risk'],
+      supps: '<strong>Collagen (type II) 40mg undenatured or 10g hydrolysed:</strong> On empty stomach with Vitamin C — specifically targets joint cartilage.\n<strong>Glucosamine 1500mg + Chondroitin 1200mg:</strong> Daily — rebuilds joint tissue over 8–12 weeks.\n<strong>Boswellia 400mg × 3/day:</strong> Potent Ayurvedic anti-inflammatory proven for joint pain.\n<strong>MSM (Methylsulfonylmethane) 1–3g:</strong> Reduces joint inflammation and improves flexibility.\n<strong>Omega-3 2–4g EPA+DHA:</strong> Systemic anti-inflammatory.\n<strong>Foods:</strong> Bone broth, eggs, fatty fish, turmeric, ginger, pineapple, papaya.'
+    },
+    lower_back: {
+      p1: hasNumb ? ['🚨 If numbness/tingling — avoid forward bending, heavy lifting, any position that increases symptoms','Rest in comfortable position — most people do better walking gently rather than complete bed rest','Ice lower back 20 min every 2 hours for 48h, then moist heat','Cat-cow stretches: very gentle, 10 reps × 3, pain-free range only','McKenzie press-up (prone): only if pain centralises — lie face down, press up on hands 10 reps','AVOID: forward bending, sit-ups, leg raises — these increase disc pressure','See a physiotherapist ASAP for nerve involvement'] :
+        ['Avoid lifting, forward bending, sitting for prolonged periods — first 48h','Ice first 48h (20 min × 4/day), then switch to moist heat','Gentle knee-to-chest stretch: lying on back, pull knee to chest 30 sec × 3 each','Cat-cow: on hands and knees, arch and round back × 10 reps × 3 sets','Walking: 10–15 min gentle walks × 2/day — best acute back medicine','NSAIDs with meals if approved by doctor'],
+      p2: ['Child\'s pose: hold 60 sec × 3 — releases lumbar extensors','Piriformis stretch: cross ankle over knee, pull toward chest — 30 sec × 3 each','Hip flexor stretch: kneeling lunge, push hips forward — 30 sec × 3 each side','90-90 hip stretch: seated or lying — 60 sec each side','Dead bug: lying on back, extend opposite arm/leg slowly — 3 × 10 each side (core activation without loading spine)'],
+      p3: ['Glute bridges: 3 × 20 — most important for lower back support','Bird dog: opposite arm and leg extension, hold 3 sec — 3 × 10 each','McGill Big 3: curl-up, side plank, bird dog — 3 × 6–8 each','Clamshells with band: 3 × 20 each side (hip external rotators)','Single-leg glute bridge: 3 × 15 — corrects left-right imbalances','Jefferson curl: very light weight, pain-free flexion — only in Phase 3+'],
+      p4: ['Return to deadlifts with Romanian (hip hinge focus) — start at 40% max','Learn hip hinge pattern before reloading: KB deadlift → RDL → conventional deadlift','Add belt only when technique is solid — not as a crutch','Core bracing before every rep — Valsalva technique for heavy lifts','Avoid sitting for >45 min without standing and walking — install stand desk reminder'],
+      supps: '<strong>Magnesium glycinate 400mg:</strong> Before bed — reduces muscle spasm, the #1 supplement for back pain.\n<strong>Turmeric 1000mg + Piperine 10mg:</strong> 3x/day — as effective as ibuprofen for chronic back pain in studies.\n<strong>Vitamin D3 3000–5000 IU:</strong> Deficiency worsens musculoskeletal pain — most Indians are deficient.\n<strong>Collagen 10g:</strong> Repairs disc and ligament tissue — take with Vitamin C.\n<strong>Boswellia 400mg × 3:</strong> Reduces spinal inflammation.\n<strong>Foods:</strong> Anti-inflammatory diet — no seed oils, no processed food. Add turmeric, ginger, omega-3 rich fish, nuts, dark leafy greens.'
+    },
+    knee: {
+      p1: ['STOP heavy squatting, lunges, running, jumping — rest 2 weeks','Ice wrapped in cloth: 15 min × 4 daily for first 48h (never directly on skin)','Compression bandage and elevation when resting — reduces swelling','Straight leg raises: lying flat, lift leg to 45°, hold 3 sec — 3 × 15 (pain-free)','Avoid full knee flexion beyond 90° during pain phase','NSAIDs with food if doctor approves — reduces acute inflammation'],
+      p2: ['Quad sets: lying flat, tighten thigh, hold 5 sec — 3 × 20','Short arc quads: rolled towel under knee, extend only last 30° — 3 × 15','Terminal knee extensions with band: 3 × 20 — critical for patella tracking','Calf raises: 3 × 20 — reduces knee stress by improving ankle mobility','Seated knee flexion/extension: active range in pain-free zone','Hip abductor clamshells: 3 × 20 — weak hips cause knee issues'],
+      p3: ['Wall squats (isometric): hold at 60° for 30–45 sec × 3 — reduces pain significantly','Step-ups: low step, controlled — 3 × 12 each leg','Bulgarian split squat: partial range first — 3 × 10','Spanish squat with band: 3 × 30 sec hold — patellar tendon specific','Lateral band walks: 3 × 15 steps each direction','Single-leg press: 3 × 12 (controlled lowering — eccentric focus)'],
+      p4: ['Return to squatting: bodyweight → goblet → front squat → back squat progression','Running: walk-run protocol — 1 min run, 2 min walk × 10 before continuous running','Plyometrics last — no jumping until 90% strength recovery','Always warm up with VMO activation and hip work before leg training'],
+      supps: '<strong>Glucosamine 1500mg + Chondroitin 1200mg:</strong> Daily for 12 weeks minimum — clinically proven for knee joint repair.\n<strong>Collagen Type II 40mg undenatured:</strong> Most specific for knee cartilage — take on empty stomach.\n<strong>Boswellia 400mg × 3/day:</strong> Best studied anti-inflammatory for knee osteoarthritis and sports injuries.\n<strong>Omega-3 3g EPA+DHA:</strong> Reduces joint inflammation.\n<strong>Turmeric 1g + Piperine:</strong> Add to meals — synergistic with glucosamine.\n<strong>Foods:</strong> Bone broth (collagen), fatty fish, pineapple (bromelain), tart cherries (antioxidant), ginger tea.'
+    },
+    hip: {
+      p1: ['Avoid deep squatting, hip flexion past 90°, activities that reproduce pain','Ice over painful area 15 min × 3 daily for first 72h','Supine hip flexor stretch: lying, pull knee to chest (opposite leg flat) — 30 sec × 3','Piriformis stretch: cross affected leg over other knee, pull — 30 sec × 3','Gentle walking on flat surface only — no hills or stairs initially'],
+      p2: ['Hip flexor kneeling lunge stretch: 30–60 sec × 3 each — most important','90-90 stretch: figure 4 position on floor — 60 sec × 2 each side','Lateral hip stretch: standing, cross one leg over, side bend — 30 sec × 3','Glute stretch: seated pigeon — 30–45 sec × 3 each','Thomas test stretch: hanging one leg off bed edge — 60 sec × 2'],
+      p3: ['Clamshells with resistance band: 3 × 20 (gluteus medius — critical)','Side-lying hip abduction: 3 × 20 each — targets lateral hip','Glute bridges with band above knees: 3 × 20','Hip thrust: bodyweight → loaded — 3 × 15','Fire hydrants: on hands and knees, lift knee out to side — 3 × 20','Single-leg deadlift: balance + posterior chain — 3 × 10 each'],
+      p4: ['Return to squatting: box squat → parallel → ATG progression','Address mobility first: hip flexor and piriformis flexibility paramount','Strengthen glutes before loading heavily — weak glutes = hip pain'],
+      supps: '<strong>Glucosamine + Chondroitin:</strong> 1500/1200mg daily — joint repair.\n<strong>Collagen Type II 40mg:</strong> Hip cartilage support.\n<strong>Boswellia 400mg × 3:</strong> Hip joint inflammation reduction.\n<strong>Magnesium 400mg:</strong> Muscle spasm relief, especially hip flexors.\n<strong>Foods:</strong> Collagen-rich bone broth, turmeric, fatty fish, dark cherries.'
+    },
+    elbow: {
+      p1: ['REST from gripping, lifting, racket sports, curls — 2 weeks minimum','Ice elbow for 15 min × 3 daily (especially after any activity)','Counterforce brace (tennis elbow band): wear during any grip activity','Avoid handshaking, opening jars, typing with wrists extended','Gentle wrist extension stretch: arm out, palm down, pull fingers back — 30 sec × 3 × 5/day'],
+      p2: ['Wrist flexor stretch: arm out, palm up, pull fingers back — 30 sec × 3','Wrist extension stretch: arm out, palm down, pull fingers back — 30 sec × 3','Forearm pronation/supination with stick: 3 × 20 slow reps','Towel wringing: wring out a wet towel 10 reps × 3 — progressive grip','Wrist circle mobility: 2 min each direction'],
+      p3: ['Eccentric wrist extension (Tyler Twist): key exercise for lateral epicondylitis — 3 × 15, slow 3-sec lowering','Eccentric wrist curl (Golfer\'s elbow): 3 × 15','Reverse barbell curl: very light — 3 × 15','Grip strengthener: 3 × 20 reps — progressive resistance','Finger extensor band: wrap band around fingers, open against resistance — 3 × 20'],
+      p4: ['Reintroduce pulling movements: rows before curls, cables before barbells','Avoid EZ bar at first — neutral grip (hammer) reduces elbow stress','Progress grip work: farmer carries → loaded carries → heavy deadlifts'],
+      supps: '<strong>Collagen 10g + Vitamin C 500mg:</strong> On empty stomach — tendon repair protocol.\n<strong>Turmeric 1000mg:</strong> Tendon inflammation reduction.\n<strong>Omega-3 3g:</strong> Systemic anti-inflammatory.\n<strong>Bromelain (pineapple enzyme) 500mg:</strong> Between meals — reduces acute tendon swelling.\n<strong>Magnesium 400mg:</strong> Muscle recovery.'
+    },
+    wrist: {
+      p1: ['STOP activities requiring grip or wrist loading — rest with neutral wrist splint','Ice 15 min × 3 daily for acute cases','Wear wrist splint at night and during sleep — keeps wrist neutral','Avoid typing with bent wrists — ergonomic keyboard/mouse position','Gentle fist-open-close: full range slowly — 3 × 20 within comfort'],
+      p2: ['Wrist circles: 30 sec each direction × 3','Tendon glides: move fingers from fist to straight to spread — 3 × 10 (nerve mobility)','Prayer stretch: palms together, lower hands keeping palms together — 30 sec × 3','Reverse prayer: back of hands together, raise — 30 sec × 3','Nerve flossing (for carpal tunnel): arm out, tilt head away, extend wrist/fingers — 10 reps'],
+      p3: ['Wrist flexion/extension curls: light DB 1–2 kg — 3 × 20 each direction','Radial/ulnar deviation: 3 × 15 each','Putty/grip exercises: progressive resistance','Forearm pronation/supination: 3 × 20','Rice bucket (if available): bury hand in rice, make movements — 5 min × 2'],
+      p4: ['Return to barbell with wrist wraps initially','Use Fat Gripz or thick handles to distribute load','Avoid extreme wrist extension in bench press — use false grip or tuck elbows'],
+      supps: '<strong>Collagen 10g + Vitamin C:</strong> Tendon and ligament repair.\n<strong>Omega-3 3g:</strong> Inflammation reduction.\n<strong>Bromelain 500mg:</strong> Anti-swelling enzyme.\n<strong>Magnesium:</strong> Muscle and nerve function.\n<strong>B6 50–100mg:</strong> Specifically for carpal tunnel — clinically studied.'
+    },
+    ankle: {
+      p1: isAcute ?
+        ['RICE protocol immediately: Rest, Ice (20 min × every 2h), Compression bandage, Elevation above heart level','Do NOT return to sport or training — acute sprain needs 2 weeks minimum','Protected weight-bearing only: use crutches if unable to bear weight','Rule out fracture with Ottawa Ankle Rules — if bone pain on palpation, get X-ray','Alphabet exercises: trace alphabet with big toe (seated, foot elevated) — improves circulation without loading','After 48–72h: gentle ankle circles, gentle towel stretching'] :
+        ['Reduce aggravating activity — no impact running or jumping','Ice after activity 15 min — use compression','Elevate foot when sitting — keeps swelling down','Calf stretch against wall: 30 sec × 3 each (knee straight and bent — hits both heads of gastrocnemius)'],
+      p2: ['Ankle alphabet: trace A–Z with foot — range of motion in all planes','Single-leg calf raises (concentric only): 3 × 20 — builds ankle stability','Towel scrunches with toes: 3 × 20 — intrinsic foot strength','Balance/proprioception: single leg stand flat ground — 3 × 30 sec each','Wobble board or BOSU balance: 3 × 1 min each leg (start week 3)'],
+      p3: ['Eccentric calf raises: up with two legs, down on one leg only — 3 × 15 (Alfredson protocol)','Lateral band walks: 3 × 20 steps each direction (peroneal strength)','Resisted dorsiflexion with band: 3 × 20','Resisted eversion and inversion with band: 3 × 20 each direction','Agility ladder flat: slow foot patterns before any jumping'],
+      p4: ['Return to running: start on flat surface, 10 min only, build by 10% weekly','Cutting/lateral movements: final progression before sport-specific drills','Always tape or brace ankle for first 3 months back — prevents re-injury (highest risk period)','Strength parity: single-leg hop test — affected leg should match 90% of unaffected'],
+      supps: '<strong>Collagen 10g + Vitamin C:</strong> Ligament repair — most important supplement for sprains.\n<strong>Bromelain 500mg:</strong> Reduces acute swelling faster — take between meals.\n<strong>Boswellia 400mg × 3:</strong> Joint anti-inflammatory.\n<strong>Omega-3 3g:</strong> Systemic inflammation.\n<strong>Turmeric 1g:</strong> Anti-inflammatory support.\n<strong>Foods:</strong> Bone broth daily (collagen), pineapple, tart cherry juice, ginger.'
+    },
+    upper_back: {
+      p1: ['Reduce heavy back loading — no rowing, pull-ups, or deadlifts in acute phase','Posture correction: shoulder blades back and down throughout the day','Ice or heat on affected area 15–20 min × 3 daily (heat usually better for thoracic)','Thoracic extension over foam roller: place roller under mid-back, support head — 10 extensions','Open book stretch: lying on side, reach top arm back to open chest — 30 sec × 5 each side'],
+      p2: ['Foam roller thoracic mobilisation: 5 segments from T1–T8, 10 extensions each','Thread-the-needle: on hands and knees, thread arm under body — 30 sec × 3 each','Cat-cow with thoracic focus: 3 × 15','Doorway pec stretch: arms at 90°, step through — 30 sec × 3 (essential for upper cross syndrome)','Wall angels: stand against wall, slide arms up and down — 3 × 12'],
+      p3: ['Band pull-aparts: 3 × 20 — #1 exercise for upper back health','Face pulls: 3 × 20 — external rotation and retraction','Prone T-Y-I raises: 3 × 10 each — lower/mid trap activation','Seated row (cable): 3 × 15, retract scapulae fully at end','Chest-supported row: 3 × 12 (removes lumbar stress)'],
+      p4: ['Return to heavy pulling with scapular retraction cues throughout','Add mobility warm-up: 5 min thoracic work before every training session','Ergonomics check: monitor height, chair setup, standing desk'],
+      supps: '<strong>Magnesium glycinate 400mg:</strong> Muscle spasm and tension relief.\n<strong>Turmeric 1g + Piperine:</strong> Joint and soft tissue inflammation.\n<strong>Omega-3 3g:</strong> Anti-inflammatory.\n<strong>Collagen 10g:</strong> Spinal disc and connective tissue support.'
+    },
+    full_body: {
+      p1: ['DELOAD IMMEDIATELY — reduce training volume by 50% for 2 weeks minimum','Prioritise sleep: 9 hours minimum — growth hormone and repair happens only in deep sleep','Hydration: 3–4 litres daily — dehydration worsens all musculoskeletal pain','Eliminate all stimulants for 2 weeks (pre-workout, excess caffeine) — restores sleep quality','Gentle daily walks: 20–30 min — promotes recovery without loading'],
+      p2: ['Full body mobility routine daily: hip circles, shoulder circles, spinal rotation — 10 min','Yoga nidra or meditation: 20 min daily — reduces cortisol (the recovery killer)','Contrast showers: 3 min hot, 30 sec cold × 3 — enhances circulation and recovery','Foam rolling: full body protocol, 30–60 sec per muscle group','Active recovery: swimming, cycling light — blood flow without impact'],
+      p3: ['Gradually reintroduce training: 1 compound lift per session, 3 × 8 at 60%','Monitor HRV (Heart Rate Variability) — green days only for hard training','Prioritise 3 full rest days per week for 4 weeks — then reassess','Focus: form and feel, not weight — deload rebuilt neuromuscular efficiency'],
+      p4: ['Return to normal training with strict periodisation — no more than 10% volume increase/week','Schedule deload every 4–6 weeks proactively — prevents overtraining recurrence','Baseline blood work: cortisol, testosterone, iron, thyroid — overtraining shows in bloods'],
+      supps: '<strong>Ashwagandha (KSM-66) 600mg:</strong> Adaptogen — clinically proven to reduce cortisol, boost recovery and testosterone.\n<strong>Magnesium glycinate 400mg:</strong> Most depleted mineral in overtrained athletes — before bed.\n<strong>Zinc 25–30mg:</strong> Immune and testosterone support — depleted by heavy training.\n<strong>Omega-3 3–4g EPA+DHA:</strong> Reduces systemic inflammation from overtraining.\n<strong>Vitamin D3 5000 IU:</strong> Deficiency linked to overtraining syndrome.\n<strong>B-complex:</strong> Energy metabolism and nervous system recovery.\n<strong>Foods:</strong> Beef liver (zinc, B12, iron), eggs, fatty fish, leafy greens, Brazil nuts (selenium), tart cherry juice.'
+    }
+  };
+
+  return protocols[area] || protocols.lower_back;
+}
+
+// Initialize AI Physio on tab switch
+document.addEventListener('DOMContentLoaded', () => { /* physio tab init handled by tab switcher */ });
+
 // ── SCORE PERSISTENCE ──
 let pdScores=JSON.parse(localStorage.getItem('bm_scores')||'{}');
 function saveScores(){localStorage.setItem('bm_scores',JSON.stringify(pdScores));buildBeastScore2();if(user?.uid&&window.TransformationService)window.TransformationService.savePhysioScores(user.uid,pdScores).catch(()=>{});}
@@ -7977,41 +8383,113 @@ function closeChallengeModal() {
 // ╚══════════════════════════════════════════════════════════════╝
 
 const BLOOD_MARKERS = [
-  { id:'hb',       label:'Hemoglobin',         unit:'g/dL',   mNorm:[13,17],   fNorm:[12,16],   key:'br-hb' },
-  { id:'glucose',  label:'Blood Glucose',       unit:'mg/dL',  mNorm:[70,100],  fNorm:[70,100],  key:'br-glucose' },
-  { id:'hba1c',    label:'HbA1c',               unit:'%',      mNorm:[4,5.7],   fNorm:[4,5.7],   key:'br-hba1c' },
-  { id:'chol',     label:'Total Cholesterol',   unit:'mg/dL',  mNorm:[0,200],   fNorm:[0,200],   key:'br-chol' },
-  { id:'ldl',      label:'LDL Cholesterol',     unit:'mg/dL',  mNorm:[0,100],   fNorm:[0,100],   key:'br-ldl' },
-  { id:'hdl',      label:'HDL Cholesterol',     unit:'mg/dL',  mNorm:[40,100],  fNorm:[50,100],  key:'br-hdl' },
-  { id:'trig',     label:'Triglycerides',       unit:'mg/dL',  mNorm:[0,150],   fNorm:[0,150],   key:'br-trig' },
-  { id:'vitd',     label:'Vitamin D',           unit:'ng/mL',  mNorm:[30,100],  fNorm:[30,100],  key:'br-vitd' },
-  { id:'b12',      label:'Vitamin B12',         unit:'pg/mL',  mNorm:[200,900], fNorm:[200,900], key:'br-b12' },
-  { id:'tsh',      label:'TSH',                 unit:'mIU/L',  mNorm:[0.4,4],   fNorm:[0.4,4],   key:'br-tsh' },
-  { id:'creat',    label:'Creatinine',          unit:'mg/dL',  mNorm:[0.7,1.3], fNorm:[0.5,1.1], key:'br-creat' },
-  { id:'ferritin', label:'Ferritin',            unit:'ng/mL',  mNorm:[24,336],  fNorm:[11,307],  key:'br-ferritin' },
-  { id:'alt',      label:'ALT/SGPT',            unit:'U/L',    mNorm:[7,56],    fNorm:[7,56],    key:'br-alt' },
-  { id:'testo',    label:'Testosterone',        unit:'ng/dL',  mNorm:[300,1000],fNorm:[15,70],   key:'br-testo' },
-  { id:'crp',      label:'CRP (hs-CRP)',        unit:'mg/L',   mNorm:[0,1],     fNorm:[0,1],     key:'br-crp' },
-  { id:'wbc',      label:'WBC Count',           unit:'K/µL',   mNorm:[4.5,11],  fNorm:[4.5,11],  key:'br-wbc' }
+  // CBC
+  { id:'hb',         label:'Hemoglobin',          unit:'g/dL',     mNorm:[13,17],     fNorm:[12,16],     key:'br-hb',         group:'CBC' },
+  { id:'rbc',        label:'RBC Count',            unit:'×10⁶/µL',  mNorm:[4.5,5.9],   fNorm:[4.0,5.2],   key:'br-rbc',        group:'CBC' },
+  { id:'wbc',        label:'WBC Count',            unit:'K/µL',     mNorm:[4.5,11],    fNorm:[4.5,11],    key:'br-wbc',        group:'CBC' },
+  { id:'platelets',  label:'Platelets',            unit:'K/µL',     mNorm:[150,400],   fNorm:[150,400],   key:'br-platelets',  group:'CBC' },
+  { id:'mcv',        label:'MCV',                  unit:'fL',       mNorm:[80,100],    fNorm:[80,100],    key:'br-mcv',        group:'CBC' },
+  { id:'mch',        label:'MCH',                  unit:'pg',       mNorm:[27,34],     fNorm:[27,34],     key:'br-mch',        group:'CBC' },
+  { id:'neutrophils',label:'Neutrophils',          unit:'%',        mNorm:[40,70],     fNorm:[40,70],     key:'br-neutrophils',group:'CBC' },
+  // Metabolic
+  { id:'glucose',    label:'Blood Glucose',        unit:'mg/dL',    mNorm:[70,100],    fNorm:[70,100],    key:'br-glucose',    group:'Metabolic' },
+  { id:'hba1c',      label:'HbA1c',                unit:'%',        mNorm:[4,5.7],     fNorm:[4,5.7],     key:'br-hba1c',      group:'Metabolic' },
+  { id:'creat',      label:'Creatinine',           unit:'mg/dL',    mNorm:[0.7,1.3],   fNorm:[0.5,1.1],   key:'br-creat',      group:'Metabolic' },
+  { id:'urea',       label:'Blood Urea/BUN',       unit:'mg/dL',    mNorm:[7,20],      fNorm:[7,20],      key:'br-urea',       group:'Metabolic' },
+  { id:'uricacid',   label:'Uric Acid',            unit:'mg/dL',    mNorm:[3.4,7.0],   fNorm:[2.4,6.0],   key:'br-uricacid',   group:'Metabolic' },
+  { id:'sodium',     label:'Sodium',               unit:'mEq/L',    mNorm:[136,145],   fNorm:[136,145],   key:'br-sodium',     group:'Metabolic' },
+  { id:'potassium',  label:'Potassium',            unit:'mEq/L',    mNorm:[3.5,5.0],   fNorm:[3.5,5.0],   key:'br-potassium',  group:'Metabolic' },
+  { id:'calcium',    label:'Calcium',              unit:'mg/dL',    mNorm:[8.5,10.5],  fNorm:[8.5,10.5],  key:'br-calcium',    group:'Metabolic' },
+  { id:'magnesium',  label:'Magnesium',            unit:'mg/dL',    mNorm:[1.7,2.2],   fNorm:[1.7,2.2],   key:'br-magnesium',  group:'Metabolic' },
+  // Lipids
+  { id:'chol',       label:'Total Cholesterol',    unit:'mg/dL',    mNorm:[0,200],     fNorm:[0,200],     key:'br-chol',       group:'Lipids' },
+  { id:'ldl',        label:'LDL Cholesterol',      unit:'mg/dL',    mNorm:[0,100],     fNorm:[0,100],     key:'br-ldl',        group:'Lipids' },
+  { id:'hdl',        label:'HDL Cholesterol',      unit:'mg/dL',    mNorm:[40,100],    fNorm:[50,100],    key:'br-hdl',        group:'Lipids' },
+  { id:'trig',       label:'Triglycerides',        unit:'mg/dL',    mNorm:[0,150],     fNorm:[0,150],     key:'br-trig',       group:'Lipids' },
+  // Liver
+  { id:'alt',        label:'ALT/SGPT',             unit:'U/L',      mNorm:[7,56],      fNorm:[7,56],      key:'br-alt',        group:'Liver' },
+  { id:'ast',        label:'AST/SGOT',             unit:'U/L',      mNorm:[10,40],     fNorm:[10,40],     key:'br-ast',        group:'Liver' },
+  { id:'ggt',        label:'GGT',                  unit:'U/L',      mNorm:[8,61],      fNorm:[5,36],      key:'br-ggt',        group:'Liver' },
+  { id:'bilirubin',  label:'Bilirubin (Total)',     unit:'mg/dL',    mNorm:[0.2,1.2],   fNorm:[0.2,1.2],   key:'br-bilirubin',  group:'Liver' },
+  // Hormones
+  { id:'tsh',        label:'TSH',                  unit:'mIU/L',    mNorm:[0.4,4],     fNorm:[0.4,4],     key:'br-tsh',        group:'Hormones' },
+  { id:'freet4',     label:'Free T4',              unit:'ng/dL',    mNorm:[0.8,1.8],   fNorm:[0.8,1.8],   key:'br-freet4',     group:'Hormones' },
+  { id:'testo',      label:'Testosterone',         unit:'ng/dL',    mNorm:[300,1000],  fNorm:[15,70],     key:'br-testo',      group:'Hormones' },
+  { id:'freetesto',  label:'Free Testosterone',    unit:'pg/mL',    mNorm:[9,30],      fNorm:[0.3,1.9],   key:'br-freetesto',  group:'Hormones' },
+  { id:'shbg',       label:'SHBG',                 unit:'nmol/L',   mNorm:[10,57],     fNorm:[18,144],    key:'br-shbg',       group:'Hormones' },
+  { id:'cortisol',   label:'Cortisol (AM)',         unit:'µg/dL',    mNorm:[6,18],      fNorm:[6,18],      key:'br-cortisol',   group:'Hormones' },
+  { id:'prolactin',  label:'Prolactin',            unit:'ng/mL',    mNorm:[2,18],      fNorm:[2,29],      key:'br-prolactin',  group:'Hormones' },
+  { id:'igf1',       label:'IGF-1',                unit:'ng/mL',    mNorm:[115,307],   fNorm:[115,307],   key:'br-igf1',       group:'Hormones' },
+  // Vitamins & Minerals
+  { id:'vitd',       label:'Vitamin D',            unit:'ng/mL',    mNorm:[30,100],    fNorm:[30,100],    key:'br-vitd',       group:'Vitamins' },
+  { id:'b12',        label:'Vitamin B12',          unit:'pg/mL',    mNorm:[200,900],   fNorm:[200,900],   key:'br-b12',        group:'Vitamins' },
+  { id:'folate',     label:'Folate',               unit:'ng/mL',    mNorm:[3,17],      fNorm:[3,17],      key:'br-folate',     group:'Vitamins' },
+  { id:'zinc',       label:'Zinc',                 unit:'µg/dL',    mNorm:[70,120],    fNorm:[70,120],    key:'br-zinc',       group:'Vitamins' },
+  { id:'iron',       label:'Iron',                 unit:'µg/dL',    mNorm:[65,175],    fNorm:[50,170],    key:'br-iron',       group:'Vitamins' },
+  { id:'ferritin',   label:'Ferritin',             unit:'ng/mL',    mNorm:[24,336],    fNorm:[11,307],    key:'br-ferritin',   group:'Vitamins' },
+  // Inflammation
+  { id:'crp',        label:'CRP (hs-CRP)',         unit:'mg/L',     mNorm:[0,1],       fNorm:[0,1],       key:'br-crp',        group:'Inflammation' },
+  { id:'homocysteine',label:'Homocysteine',        unit:'µmol/L',   mNorm:[5,10],      fNorm:[5,10],      key:'br-homocysteine',group:'Inflammation' }
 ];
 
 const BLOOD_RECS = {
-  vitd_low:  { icon:'☀️', title:'Vitamin D Deficiency', body:'Critical for testosterone, calcium absorption, and immune function. Take 2000–5000 IU Vitamin D3 + K2 daily. Get 20 min morning sunlight. Avoid sunscreen for first 15 min.' },
-  b12_low:   { icon:'⚡', title:'Low Vitamin B12', body:'B12 powers energy, nerve function, and red blood cell production. Supplement with methylcobalamin 1500mcg daily. Eat eggs, paneer, and dairy. If vegetarian/vegan, this is critical.' },
-  hb_low:    { icon:'🩸', title:'Low Hemoglobin (Anaemia)', body:'Impacts your workout endurance and recovery badly. Increase iron intake: red meat, spinach, lentils, jaggery. Add Vitamin C with iron sources. Consider iron + folic acid supplement.' },
-  glucose_high:{ icon:'🍬', title:'Elevated Blood Sugar', body:'Pre-diabetic range detected. Reduce refined carbs and sugar. Add 30 min daily cardio. Eat chromium-rich foods: broccoli, nuts. Track carb intake carefully.' },
-  hba1c_high:{ icon:'📊', title:'High HbA1c', body:'3-month blood sugar average is elevated. This needs medical attention. Strict low-GI diet: oats, legumes, vegetables. Minimum 150 min cardio per week. Consider metformin consultation.' },
-  chol_high: { icon:'❤️', title:'High Cholesterol', body:'Cardiovascular risk factor. Eliminate trans fats completely. Add omega-3: fish, flaxseed, walnuts. Use olive/mustard oil. Increase fiber intake. 45 min cardio 5x/week.' },
-  ldl_high:  { icon:'🚨', title:'High LDL (Bad Cholesterol)', body:'LDL above 130 requires action. Avoid processed foods, ghee, coconut oil in excess. Eat more oats (beta-glucan), avocado, and olive oil. Statins may be needed if above 160.' },
-  hdl_low:   { icon:'🛡️', title:'Low HDL (Good Cholesterol)', body:'HDL is your cardiovascular protector. Increase with: regular aerobic exercise, olive oil, nuts, avocado. Quit smoking if applicable. Niacin supplementation may help.' },
-  trig_high: { icon:'🍕', title:'High Triglycerides', body:'Usually diet-related. Cut alcohol, refined carbs, and sugar drastically. Omega-3 supplementation (2-4g/day EPA+DHA) is clinically proven to lower triglycerides.' },
-  tsh_high:  { icon:'🦋', title:'Possible Hypothyroidism', body:'High TSH may indicate underactive thyroid — impacts metabolism and fat loss. Consult an endocrinologist. Ensure adequate iodine and selenium intake.' },
-  tsh_low:   { icon:'⚡', title:'Possible Hyperthyroidism', body:'Low TSH may indicate overactive thyroid. Can cause muscle wasting and heart issues. Medical evaluation required. Avoid excess iodine supplementation.' },
-  testo_low: { icon:'💪', title:'Low Testosterone', body:'Critical for muscle gain and fat loss. Boost naturally: heavy compound lifts (squat, deadlift), sleep 8h, zinc + vitamin D, ashwagandha 600mg. Reduce stress and alcohol.' },
-  crp_high:  { icon:'🔥', title:'High Inflammation (CRP)', body:'Chronic inflammation blocks fat loss and recovery. Anti-inflammatory diet: turmeric with black pepper, omega-3, ginger. Reduce seed oils, processed foods, and sugar. Prioritize sleep.' },
-  ferritin_low:{ icon:'⚙️', title:'Low Ferritin (Iron Stores)', body:'Even if hemoglobin is normal, low ferritin impairs performance and energy. Supplement with iron bisglycinate (gentler on stomach). Eat red meat, lentils, spinach + vitamin C.' },
-  alt_high:  { icon:'🫀', title:'Elevated Liver Enzymes', body:'May indicate liver stress from supplements, alcohol, or diet. Reduce protein supplements temporarily. Avoid alcohol. Add milk thistle 400mg. Stay well-hydrated. Retest in 3 months.' },
-  all_ok:    { icon:'🏆', title:'Excellent Blood Health!', body:'Your markers are in healthy ranges. Maintain your current diet and training. Schedule annual blood tests to track trends. Focus on optimizing recovery and performance.' }
+  // CBC
+  hb_low:           { icon:'🩸', title:'Low Hemoglobin — Anaemia', body:'Impacts workout endurance and recovery badly. Increase iron intake: red meat, liver, spinach, lentils, jaggery. Always pair iron-rich foods with Vitamin C for 3× better absorption. Avoid tea/coffee within 1h of meals. Consider iron bisglycinate 25mg + folate supplement.' },
+  hb_high:          { icon:'⚠️', title:'High Hemoglobin', body:'Elevated hemoglobin can thicken blood and raise clot risk. Stay well-hydrated (3L water/day). Avoid iron supplements. Reduce red meat. If above 18 g/dL, seek medical evaluation to rule out polycythemia.' },
+  rbc_low:          { icon:'🔴', title:'Low RBC Count', body:'Fewer red blood cells reduce oxygen delivery to muscles — affecting endurance and strength. Eat iron-rich foods and ensure adequate B12 and folate. Check for underlying cause if persistent. Retest after 3 months of dietary changes.' },
+  wbc_high:         { icon:'🦠', title:'High WBC — Possible Infection', body:'Elevated white blood cells signal infection, inflammation, or immune activation. Rest and reduce training intensity until resolved. Stay hydrated. Consult a doctor if above 15 K/µL or if you have fever, fatigue, or other symptoms.' },
+  wbc_low:          { icon:'🛡️', title:'Low WBC — Immune Alert', body:'Low WBC may increase infection susceptibility. Avoid overtraining syndrome which suppresses immunity. Prioritize 8h sleep. Add zinc 25mg, vitamin C 1000mg, and elderberry extract. See a doctor if below 3.5 K/µL.' },
+  platelets_low:    { icon:'💉', title:'Low Platelet Count', body:'Can affect blood clotting — avoid high-contact sports or heavy lifting until resolved. Eat papaya leaf extract, pomegranate juice, and folate-rich foods (lentils, asparagus). Medical evaluation required if below 100 K/µL.' },
+  platelets_high:   { icon:'⚠️', title:'High Platelet Count', body:'Elevated platelets increase clotting risk. Stay well-hydrated. Avoid prolonged sitting or immobility. Reduce stress and quit smoking if applicable. Medical evaluation recommended above 600 K/µL.' },
+  mcv_low:          { icon:'🔵', title:'Low MCV — Microcytic Anaemia', body:'Small red blood cells are the hallmark of iron deficiency. Supplement with iron bisglycinate 25mg on an empty stomach with Vitamin C. Repeat CBC after 3 months. Rule out thalassemia if iron is normal.' },
+  mcv_high:         { icon:'🔵', title:'High MCV — Macrocytic Anaemia', body:'Large red blood cells indicate B12 or folate deficiency (or excess alcohol). Supplement methylcobalamin 1500mcg sublingual + methylfolate 400–800mcg daily. Significantly reduce or eliminate alcohol consumption.' },
+  mch_low:          { icon:'📉', title:'Low MCH — Iron Deficiency', body:'Low hemoglobin per cell is a classic iron deficiency sign. Combine iron bisglycinate 25mg with Vitamin C on an empty stomach. Avoid taking iron with calcium, coffee, or tea. Pair with folic acid for optimal RBC production.' },
+  neutrophils_low:  { icon:'🛡️', title:'Low Neutrophils', body:'Reduced neutrophils compromise your first line of defence. Avoid overtraining. Prioritize 8h sleep. Supplement zinc 25mg + vitamin C 1000mg + elderberry extract. Avoid contact with sick individuals. Consult doctor if below 1.5 K/µL.' },
+  // Metabolic
+  glucose_high:     { icon:'🍬', title:'Elevated Fasting Blood Sugar', body:'Pre-diabetic range detected. Immediately reduce refined carbs, sugary drinks, and white rice/bread. Add 30 min brisk walking after meals. Eat chromium-rich foods: broccoli, green beans, nuts. Berberine 500mg before meals is clinically effective. Track your carb intake daily.' },
+  hba1c_high:       { icon:'📊', title:'High HbA1c — 3-Month Sugar Average High', body:'Sustained elevated blood sugar requires urgent action. Follow a strict low-GI diet: oats, legumes, non-starchy vegetables. Minimum 150 min cardio + 2× weekly resistance training. Berberine 500mg 3×/day before meals. Consult a doctor — metformin may be indicated.' },
+  creat_high:       { icon:'🫘', title:'High Creatinine — Kidney Stress', body:'Reduce protein intake temporarily to 0.8–1.0g/kg bodyweight. Drink 3–4L water daily. Avoid creatine supplementation, NSAIDs (ibuprofen, naproxen), and excess sodium. Eliminate alcohol. Retest in 4–6 weeks. Medical review essential if above 2.0 mg/dL.' },
+  urea_high:        { icon:'🧪', title:'Elevated Blood Urea / BUN', body:'High urea usually indicates excess protein intake or mildly reduced kidney clearance. Reduce dietary protein to 1.2–1.6g/kg. Drink 3L water daily. Avoid high-protein powders temporarily. Retest after 4 weeks of dietary change.' },
+  uricacid_high:    { icon:'🦶', title:'High Uric Acid — Gout Risk', body:'Eliminate high-purine foods: organ meats, shellfish, red meat in excess, beer, and sugary drinks. Drink 2.5–3L water daily. Cherries and tart cherry extract lower uric acid naturally. Vitamin C 500mg/day and celery seed extract are evidence-based. Avoid fructose (fruit juice, honey, HFCS).' },
+  sodium_low:       { icon:'🧂', title:'Low Sodium — Hyponatremia', body:'Low sodium causes fatigue, headaches, and dangerous cramping during exercise. Add electrolytes to long training sessions (>60 min). Do not restrict salt if training hard in heat. If symptomatic (dizziness, confusion), seek immediate medical attention.' },
+  sodium_high:      { icon:'🧂', title:'High Sodium', body:'High sodium elevates blood pressure and increases cardiovascular risk. Drastically reduce processed foods, sauces, pickles, and papad. Increase potassium (bananas, avocado, sweet potato, coconut water) which counteracts sodium. Drink adequate water.' },
+  potassium_low:    { icon:'⚡', title:'Low Potassium', body:'Potassium deficiency causes muscle weakness, cramps, fatigue, and irregular heartbeat. Eat potassium-rich foods daily: bananas, avocado, coconut water, sweet potato, spinach, lentils. Avoid excess caffeine and alcohol which deplete potassium. Supplement only under medical supervision.' },
+  potassium_high:   { icon:'⚠️', title:'High Potassium — Hyperkalemia', body:'High potassium can cause dangerous heart rhythm disturbances. Avoid potassium supplements and high-potassium foods temporarily: bananas, oranges, potatoes, tomatoes. This requires medical evaluation, especially if you take ACE inhibitors or have kidney issues.' },
+  calcium_low:      { icon:'🦴', title:'Low Calcium', body:'Essential for bone density, muscle contraction, and nerve function. Take calcium citrate 500mg (better absorbed than carbonate) always with Vitamin D3. Eat dairy, sesame seeds (til), almonds, ragi, and dark leafy greens. Ensure Vitamin D is adequate for calcium absorption.' },
+  magnesium_low:    { icon:'💤', title:'Low Magnesium', body:'Magnesium deficiency causes poor sleep, muscle cramps, insulin resistance, and low energy. Supplement magnesium glycinate 300–400mg before bed (best for sleep and absorption). Eat pumpkin seeds, dark chocolate, almonds, cashews, and legumes. Reduces muscle cramps within 2 weeks.' },
+  // Lipids
+  chol_high:        { icon:'❤️', title:'High Total Cholesterol', body:'Cardiovascular risk factor requiring dietary action. Eliminate trans fats (vanaspati, margarine, packaged foods) completely. Add omega-3 (fatty fish 3×/week or 2g EPA+DHA supplement). Cook with olive or mustard oil. Increase soluble fiber: oats, psyllium husk, apples. 45 min cardio 5×/week.' },
+  ldl_high:         { icon:'🚨', title:'High LDL — Bad Cholesterol Elevated', body:'LDL above 130 requires immediate action. Cut saturated fat: limit full-fat dairy, red meat, coconut oil. Eat oats with psyllium husk (beta-glucan lowers LDL 10–15%). Add avocado, olive oil, and walnuts. Red yeast rice 600mg may help. Statins needed above 160 mg/dL.' },
+  hdl_low:          { icon:'🛡️', title:'Low HDL — Good Cholesterol Low', body:'HDL under 40 (men) / 50 (women) significantly raises heart disease risk. Boost with: 45 min aerobic exercise daily, olive oil, nuts, avocado, fatty fish. Quit smoking — it drops HDL dramatically. Niacin 500mg under medical supervision can raise HDL 15–35%.' },
+  trig_high:        { icon:'🍕', title:'High Triglycerides', body:'Triglycerides above 200 are primarily dietary. Cut alcohol completely (even moderate drinking elevates trig significantly). Slash refined carbs: white rice, bread, sugar, fruit juice. Omega-3 2–4g EPA+DHA is clinically proven to lower triglycerides 20–30%. Intermittent fasting helps significantly.' },
+  // Liver
+  alt_high:         { icon:'🫀', title:'Elevated ALT — Liver Stress', body:'Liver may be stressed from supplements, alcohol, or excess protein. Immediately reduce protein powders and eliminate alcohol. Add milk thistle (silymarin) 400mg and NAC 600mg twice daily. Drink 3L water. Avoid Tylenol/paracetamol. Retest in 8–12 weeks. Seek medical review if above 3× normal.' },
+  ast_high:         { icon:'⚠️', title:'Elevated AST', body:'AST rises naturally 24–72h post-workout (muscle release), so confirm it with a rest-day blood test. Persistent elevation needs attention. Reduce training volume 30% temporarily. Avoid hepatotoxic supplements (high-dose niacin, kava, DMAA). Add TUDCA 250–500mg to protect liver cells.' },
+  ggt_high:         { icon:'🍺', title:'High GGT — Alcohol/Medication Effect', body:'GGT is the most alcohol-sensitive liver marker. Stop alcohol completely — GGT normalizes in 4–6 weeks of abstinence. Review all medications with your doctor (statins, antibiotics, and antifungals raise GGT). If not alcohol-related, evaluate for fatty liver disease.' },
+  bilirubin_high:   { icon:'🟡', title:'Elevated Bilirubin', body:'Mild isolated bilirubin elevation is often benign Gilbert\'s syndrome (5–10% of population — harmless). However, if ALT/AST are also elevated, this may indicate liver disease requiring evaluation. Stay well-hydrated, avoid prolonged fasting. Always recheck with other liver markers.' },
+  // Thyroid
+  tsh_high:         { icon:'🦋', title:'High TSH — Possible Hypothyroidism', body:'TSH above 4.5 suggests underactive thyroid — slows metabolism, causes fatigue and fat gain. Consult an endocrinologist. Support thyroid naturally: selenium 200mcg (Brazil nuts, 2/day), iodine from iodized salt or seaweed, and zinc 25mg. Thyroid hormone replacement (levothyroxine) may be needed.' },
+  tsh_low:          { icon:'⚡', title:'Low TSH — Possible Hyperthyroidism', body:'TSH below 0.4 suggests overactive thyroid — causes muscle wasting, palpitations, anxiety, and insomnia. Urgent medical evaluation required. Avoid all iodine supplements. Reduce stimulants: caffeine, pre-workouts. L-carnitine may help reduce some symptoms while awaiting treatment.' },
+  freet4_low:       { icon:'🦋', title:'Low Free T4 — Thyroid Hormone Deficit', body:'Low FT4 with high TSH confirms primary hypothyroidism. Thyroid hormone replacement (levothyroxine) is typically required. While awaiting medical evaluation: ensure adequate selenium 200mcg, iodine, and zinc. Avoid soy, raw cruciferous vegetables, and excess fiber around medication time.' },
+  freet4_high:      { icon:'⚡', title:'High Free T4', body:'Elevated FT4 can indicate hyperthyroidism or excess thyroid medication. Medical evaluation required. Stop iodine supplements. Avoid high-iodine foods: seaweed, iodized salt. Monitor for symptoms: rapid heartbeat, weight loss, heat intolerance, tremors.' },
+  // Hormones
+  testo_low:        { icon:'💪', title:'Low Testosterone', body:'Testosterone below 300 ng/dL severely limits muscle gain and fat loss. Natural optimization: heavy compound lifts (squat, deadlift, bench 3–4×/week), sleep 8–9h nightly, zinc 30mg, vitamin D3 5000 IU, ashwagandha KSM-66 600mg, and D-aspartic acid 3g. Reduce alcohol, stress, and excess body fat. TRT consultation if below 250 ng/dL.' },
+  freetesto_low:    { icon:'💪', title:'Low Free Testosterone', body:'Low free T often means high SHBG is binding it. Reduce refined carbs and alcohol (both raise SHBG). Supplement boron 3mg/day (reduces SHBG 25%+). Nettle root extract 300mg can displace bound testosterone. Strength training naturally reduces SHBG over time.' },
+  shbg_high:        { icon:'🔗', title:'High SHBG — Testosterone Being Bound', body:'High SHBG locks up your free testosterone making it biologically inactive. Corrective actions: boron 3mg daily is the most effective supplement for lowering SHBG. Reduce alcohol and long fasting periods (both raise SHBG). Optimize insulin (avoid excessive sugar). Check thyroid (hypothyroidism raises SHBG).' },
+  cortisol_high:    { icon:'😰', title:'High Cortisol — Chronic Stress Hormone', body:'Elevated cortisol destroys muscle, increases belly fat storage, disrupts sleep, and crushes immunity. Priority interventions: sleep 8h (cortisol normalizes with quality sleep), reduce training volume 20–25%, add ashwagandha KSM-66 600mg, rhodiola rosea 400mg, and phosphatidylserine 400mg. No caffeine after 12pm.' },
+  prolactin_high:   { icon:'🔋', title:'High Prolactin', body:'Elevated prolactin suppresses testosterone and libido and can cause fatigue and brain fog. In men, above 20 ng/mL needs evaluation. Possible causes: stress, certain medications (antidepressants, metoclopramide), pituitary adenoma. Vitamin B6 (P5P form) 100mg may help normalize prolactin. Requires medical evaluation.' },
+  igf1_low:         { icon:'📉', title:'Low IGF-1', body:'IGF-1 is the key anabolic signalling hormone for muscle growth and recovery. Boost naturally: compound resistance training (squats, deadlifts), adequate protein 1.6–2g/kg, quality sleep (growth hormone peaks at night), zinc, and vitamin D. Low-calorie dieting suppresses IGF-1 significantly.' },
+  // Vitamins & Minerals
+  vitd_low:         { icon:'☀️', title:'Vitamin D Deficiency', body:'Vitamin D below 30 ng/mL impairs testosterone production, immune function, calcium absorption, and mood. Take Vitamin D3 5000 IU + K2 100mcg daily for 3 months then retest. Get 20 min direct sunlight on skin between 10am–2pm. Dark-skinned individuals need 2× longer sun exposure. India has extremely high deficiency rates.' },
+  b12_low:          { icon:'⚡', title:'Low Vitamin B12', body:'B12 powers energy production, nerve health, red blood cell formation, and DNA synthesis. Supplement methylcobalamin 1500mcg sublingual daily (bypasses poor gut absorption). Eat eggs, paneer, fish, dairy, and liver. Pure vegetarians and vegans almost always become deficient — B12 injection monthly is gold standard.' },
+  folate_low:       { icon:'🧬', title:'Low Folate (Vitamin B9)', body:'Folate is critical for DNA synthesis, red blood cell production, and cardiovascular health (lowers homocysteine). Supplement methylfolate 400–800mcg daily (better than folic acid). Eat spinach, asparagus, lentils, chickpeas, and fortified foods. Essential if planning pregnancy. Alcohol drastically depletes folate.' },
+  zinc_low:         { icon:'🛡️', title:'Low Zinc', body:'Zinc is essential for testosterone production, immune function, wound healing, taste/smell, and protein synthesis. Supplement zinc picolinate or gluconate 25–30mg. Eat pumpkin seeds (highest source), beef, chickpeas, cashews, and oysters. Avoid taking zinc with iron or calcium (compete for absorption). Do not exceed 40mg/day long-term.' },
+  iron_low:         { icon:'⚙️', title:'Low Iron', body:'Low serum iron even with normal hemoglobin impairs energy, oxygen delivery, and performance. Take iron bisglycinate 25mg on empty stomach with 500mg Vitamin C. Eat red meat, organ meat, lentils, dark leafy greens. Avoid iron absorption blockers within 2h: tea, coffee, calcium supplements, high-fiber foods.' },
+  ferritin_low:     { icon:'⚙️', title:'Low Ferritin — Iron Stores Depleted', body:'Ferritin below 20 ng/mL severely impairs athletic performance and energy even when hemoglobin is normal. Iron bisglycinate 25–50mg with Vitamin C is the gentlest and most effective form. Female athletes and vegetarians are high-risk. Recheck ferritin (not just hemoglobin) after 3 months of supplementation.' },
+  // Inflammation
+  crp_high:         { icon:'🔥', title:'High CRP — Chronic Inflammation', body:'Chronic low-grade inflammation blocks fat loss, impairs recovery, and accelerates aging. Anti-inflammatory protocol: curcumin + piperine 500mg twice daily, omega-3 3g EPA+DHA, ginger 2g, tart cherry extract. Cut seed oils (canola, soybean), ultra-processed foods, and refined sugar completely. Prioritize 8h sleep — inflammation resets during deep sleep.' },
+  homocysteine_high:{ icon:'💀', title:'High Homocysteine — Major Cardiovascular Risk', body:'Homocysteine above 15 µmol/L doubles heart attack and stroke risk and impairs cognitive function. The fix is remarkably simple: the B-vitamin trio. Take daily: B6 (P5P form) 25mg + methylcobalamin B12 1000mcg + methylfolate 800mcg. Also add betaine (TMG) 1–2g. Reduce coffee (raises homocysteine) and alcohol. Retest in 8–12 weeks.' },
+  all_ok:           { icon:'🏆', title:'Excellent Blood Health!', body:'All your markers are within healthy ranges. Maintain your current diet and training protocol. Schedule a comprehensive blood panel annually to track trends over time. Focus on optimizing sleep quality, recovery, and performance consistency. You\'re in great health — keep it up!' }
 };
 
 function brSwitchTab(tab) {
@@ -8037,9 +8515,21 @@ function brHandleDrop(e) {
 
 function brLoadDemo() {
   const demoVals = {
-    hb: 13.2, glucose: 94, hba1c: 5.4, chol: 195, ldl: 118, hdl: 38,
-    trig: 142, vitd: 18, b12: 165, tsh: 2.1, creat: 1.0,
-    ferritin: 22, alt: 28, testo: 380, crp: 0.8, wbc: 7.2
+    // CBC
+    hb: 13.2, rbc: 4.6, wbc: 7.2, platelets: 220, mcv: 78, mch: 25.4, neutrophils: 62,
+    // Metabolic
+    glucose: 94, hba1c: 5.4, creat: 1.0, urea: 14, uricacid: 7.8,
+    sodium: 140, potassium: 4.1, calcium: 9.2, magnesium: 1.6,
+    // Lipids
+    chol: 195, ldl: 118, hdl: 38, trig: 142,
+    // Liver
+    alt: 28, ast: 32, ggt: 24, bilirubin: 0.8,
+    // Thyroid & Hormones
+    tsh: 2.1, freet4: 1.2, testo: 380, freetesto: 8.2, shbg: 52, cortisol: 14, prolactin: 8, igf1: 180,
+    // Vitamins & Minerals
+    vitd: 18, b12: 165, folate: 5.2, zinc: 65, iron: 72, ferritin: 22,
+    // Inflammation
+    crp: 0.8, homocysteine: 16.4
   };
   brRunAnalysis(demoVals, 'male');
 }
@@ -8096,6 +8586,7 @@ function brShowResults(vals, gender) {
   let scoreSum = 0, scoreCount = 0;
 
   markerGrid.innerHTML = '';
+  let lastGroup = '';
   BLOOD_MARKERS.forEach(m => {
     const val = vals && vals[m.id];
     if (val === undefined || val === null || isNaN(val)) return;
@@ -8103,7 +8594,6 @@ function brShowResults(vals, gender) {
     if (!status) return;
     const norm = gender === 'female' ? m.fNorm : m.mNorm;
     const range = norm[1] - norm[0];
-    // Score: 100 if perfectly mid-range, 0 at extremes
     if (range > 0) {
       const mid = (norm[0] + norm[1]) / 2;
       const dev = Math.abs(val - mid) / (range * 0.6);
@@ -8111,6 +8601,10 @@ function brShowResults(vals, gender) {
       scoreCount++;
     }
     if (status !== 'ok') issues.push({ markerId: m.id, status, val });
+    if (m.group && m.group !== lastGroup) {
+      lastGroup = m.group;
+      markerGrid.insertAdjacentHTML('beforeend', `<div class="br-section-hdr">${m.group}</div>`);
+    }
     markerGrid.insertAdjacentHTML('beforeend', `
       <div class="br-marker ${status}">
         <div class="br-mk-name">${m.label}</div>
