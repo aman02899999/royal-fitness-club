@@ -8229,33 +8229,39 @@ function shareReferralWhatsApp(){
   const msg=`🦁 *ROYAL FITNESS CLUB*
 ━━━━━━━━━━━━━━━━━━━━━━
 
-💪 Hey! I'm inviting you to join my gym's *free* digital fitness platform!
+💪 Hey! I'm inviting you to join our gym's *FREE* digital fitness platform!
 
-🎁 *Use my referral code to register:*
-▬▬▬▬▬▬▬▬▬▬▬▬▬▬
-     *${code}*
-▬▬▬▬▬▬▬▬▬▬▬▬▬▬
+🎁 *Use my referral code to join:*
+▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬
+        *${code}*
+▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬
 
-🔗 Sign up FREE here:
-👉 *royal-fitness-club-7adc1.web.app*
+📲 *Register FREE here* 👇
+https://royal-fitness-club-7adc1.web.app
 
 ━━━━━━━━━━━━━━━━━━━━━━
-✅ *WHAT YOU GET — ALL FREE:*
+🆓 *WHAT YOU GET — ALL FREE:*
 
 📊 BMI, BMR & TDEE Calculator
 🐯 Beast Score (0–100)
+⚖️ Body Fat % Estimator
 💪 1-Rep Max Calculator
 🔥 Daily WOD + Water Tracker
 💊 Indian Supplement Guide
-🏆 Tiger Leaderboard & PR Tracker
+🏆 Tiger Leaderboard & Challenges
 🫀 3D Body Anatomy Visualizer
 🎯 Calories & Macro Targets
-⚖️ Body Fat % Estimator
+🏅 PR Tracker (Personal Records)
+
+_All at_ *₹0/month!* 🙌
 ━━━━━━━━━━━━━━━━━━━━━━
 
-🏋️ *₹0/month for all gym members!*
+🌟 *Pro plan available at ₹499/mo:*
+🤖 AI Meal Plan · 📈 Progress Charts
+📸 Photo Tracking · 📄 PDF Export
 
-Join now and start your transformation! 🔥👑`;
+━━━━━━━━━━━━━━━━━━━━━━
+Join now & start your transformation! 🔥👑`;
   window.open('https://wa.me/?text='+encodeURIComponent(msg),'_blank');
 }
 
@@ -10292,6 +10298,7 @@ let _admRenewData = null;
 let _admLastGenCode = '';
 let _admLastGenName = '';
 let _admLastGenPhone = '';
+let _admLastGenPlan = '';
 
 function admGenMemberCode() {
   if (typeof firebase === 'undefined') { toast('Firebase not available', 'gold'); return; }
@@ -10318,6 +10325,7 @@ function admGenMemberCode() {
     _admLastGenCode = code;
     _admLastGenName = name;
     _admLastGenPhone = phone;
+    _admLastGenPlan = plan;
     document.getElementById('adm-mc-code-display').textContent = code;
     document.getElementById('adm-mc-expiry-display').textContent =
       'Valid for ' + dur + ' month' + (dur>1?'s':'') + ' · Expires ' +
@@ -10345,44 +10353,104 @@ function admWhatsAppCode() {
   if (!_admLastGenCode) return;
   const name = _admLastGenName || 'there';
   const code = _admLastGenCode;
-  const msg =
+  const isPro = ['royal_elite','royal_pro'].includes(_admLastGenPlan);
+
+  const msgFree =
 `🦁 *ROYAL FITNESS CLUB*
 ━━━━━━━━━━━━━━━━━━━━━━
 
-👋 Hi ${name}!
+👋 Hi ${name}! Welcome to the family! 🎉
 
-Welcome to the *Royal Fitness Club* family! 🎉
-Your exclusive membership access code is ready.
+Your *Free Member* access code is ready!
 
-🔑 *YOUR ACCESS CODE*
-▬▬▬▬▬▬▬▬▬▬▬▬▬▬
-     *${code}*
-▬▬▬▬▬▬▬▬▬▬▬▬▬▬
+🔑 *YOUR REGISTRATION CODE*
+▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬
+        *${code}*
+▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬
 
-📱 *HOW TO ACTIVATE — 3 Easy Steps:*
+📲 *ACTIVATE IN 3 EASY STEPS:*
 
-1️⃣ Open: *royal-fitness-club-7adc1.web.app*
+1️⃣ Open the app 👇
+https://royal-fitness-club-7adc1.web.app
+
 2️⃣ Tap *"New Member? Register with Code"*
-3️⃣ Enter your code & set up your account
+3️⃣ Enter your code & create your account
 
 ━━━━━━━━━━━━━━━━━━━━━━
-⚡ *YOUR FREE MEMBER TOOLS:*
+🆓 *YOUR FREE TOOLS — ALL INCLUDED:*
 
-✅ BMI, BMR & TDEE Calculator
-✅ Beast Score (0–100)
-✅ Daily WOD + Water Tracker
-✅ Body Fat & 1-Rep Max Calculator
-✅ Indian Supplement Guide
-✅ Tiger Leaderboard & PR Tracker
-✅ 3D Body Anatomy Visualizer
-✅ Calories & Macro Targets
+📊 BMI, BMR & TDEE Calculator
+🐯 Beast Score (0–100)
+⚖️ Body Fat % Estimator
+💪 1-Rep Max Calculator
+🔥 Daily WOD + Water Tracker
+💊 Indian Supplement Guide
+🏆 Tiger Leaderboard & Challenges
+🫀 3D Body Anatomy Visualizer
+🎯 Calories & Macro Targets
+🏅 PR Tracker (Personal Records)
+
+_All at_ *₹0/month!* 🙌
 ━━━━━━━━━━━━━━━━━━━━━━
 
-⚠️ _This code is *ONE-TIME USE* only._
-_Do not share it with anyone._
+🌟 *Want MORE? Upgrade to Royal Pro:*
+🤖 Full 7-Day AI Meal Plan
+📈 Progress Charts & Streak Tracking
+📸 Before/After Transformation Photos
+📄 PDF Export & Shareable Cards
+👉 Just *₹499/month!*
 
-💪 Let's crush your goals!
-— *Royal Fitness Club Team* 🏋️`;
+━━━━━━━━━━━━━━━━━━━━━━
+⚠️ _Code is *ONE-TIME USE* only._
+_Please do not share with anyone._
+
+💪 Ready to crush your goals?
+— *Royal Fitness Club* 🏋️🔥`;
+
+  const msgPro =
+`👑 *ROYAL FITNESS CLUB — PRO*
+━━━━━━━━━━━━━━━━━━━━━━
+
+🔥 Hi ${name}! Welcome to the elite! 👑
+
+Your *Royal Pro* access code is ready!
+
+🔑 *YOUR PRO ACCESS CODE*
+▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬
+        *${code}*
+▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬
+
+📲 *ACTIVATE IN 3 EASY STEPS:*
+
+1️⃣ Open the app 👇
+https://royal-fitness-club-7adc1.web.app
+
+2️⃣ Tap *"New Member? Register with Code"*
+3️⃣ Enter your code & unlock all Pro features
+
+━━━━━━━━━━━━━━━━━━━━━━
+⭐ *YOUR PRO EXCLUSIVE TOOLS:*
+
+🤖 Full 7-Day AI Meal Plan
+📈 Progress Charts & Streak Tracking
+📸 Before/After Transformation Photos
+📄 PDF Export & Shareable Cards
+🎓 All Premium Courses Unlocked
+
+✅ *PLUS ALL FREE TOOLS:*
+📊 BMI, BMR & TDEE · 🐯 Beast Score
+⚖️ Body Fat % · 💪 1-Rep Max
+🔥 WOD + Water · 💊 Supplements
+🏆 Leaderboard · 🎯 Macros · 🫀 3D Anatomy
+━━━━━━━━━━━━━━━━━━━━━━
+
+⚠️ _Code is *ONE-TIME USE* only._
+_Please do not share with anyone._
+
+👑 You're now Royal. Let's go!
+— *Royal Fitness Club* 🏋️🔥`;
+
+  const msg = isPro ? msgPro : msgFree;
   const phone = _admLastGenPhone.replace(/\D/g,'');
   const url = phone ? 'https://wa.me/' + (phone.startsWith('91')?phone:'91'+phone) + '?text=' + encodeURIComponent(msg) : 'https://wa.me/?text=' + encodeURIComponent(msg);
   window.open(url, '_blank');
@@ -10647,38 +10715,90 @@ function admRenewWhatsApp() {
   const name = _admRenewData.name || 'there';
   const phone = (_admRenewData.phone||'').replace(/\D/g,'');
   const plan = document.getElementById('adm-renew-plan').value;
-  const planLabel = {'royal_elite':'👑 Royal Elite','royal_pro':'⚡ Royal Pro','basic':'🏋 Basic'}[plan]||plan;
+  const planLabel = {'royal_elite':'👑 Royal Elite','royal_pro':'⚡ Royal Pro','basic':'🏋️ Basic'}[plan]||plan;
   const expStr = newExp ? newExp.toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'}) : '—';
-  const msg =
+  const isPro = ['royal_elite','royal_pro'].includes(plan);
+
+  const msgFree =
 `🦁 *ROYAL FITNESS CLUB*
 ━━━━━━━━━━━━━━━━━━━━━━
 
-🎉 Hi ${name}!
+🎉 Hi ${name}! Great news!
 
-Your membership has been *RENEWED!* 🔥
+Your *Gym Membership* has been renewed! 🏋️✅
 
-💳 *MEMBERSHIP DETAILS*
-▬▬▬▬▬▬▬▬▬▬▬▬▬▬
-🏆 Plan: *${planLabel}*
+💳 *YOUR RENEWED PLAN*
+▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬
+🏋️ Plan: *${planLabel}*
 📅 Valid Until: *${expStr}*
-▬▬▬▬▬▬▬▬▬▬▬▬▬▬
+▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬
 
-📱 Login & access your tools:
-👉 *royal-fitness-club-7adc1.web.app*
+📲 Login & start training 👇
+https://royal-fitness-club-7adc1.web.app
 
 ━━━━━━━━━━━━━━━━━━━━━━
-💪 Your member dashboard is ready:
+🆓 *YOUR FREE TOOLS — ALL ACTIVE:*
 
-🔥 Today's Workout (WOD)
-📊 Progress Tracking
-🏆 Leaderboard & Challenges
-🤖 AI Meal Plan _(Pro)_
-📈 Progress Charts _(Pro)_
+📊 BMI, BMR & TDEE Calculator
+🐯 Beast Score (0–100)
+⚖️ Body Fat % Estimator
+💪 1-Rep Max Calculator
+🔥 Daily WOD + Water Tracker
+💊 Indian Supplement Guide
+🏆 Tiger Leaderboard & Challenges
+🫀 3D Body Anatomy Visualizer
+🎯 Calories & Macro Targets
+🏅 PR Tracker (Personal Records)
 ━━━━━━━━━━━━━━━━━━━━━━
 
-Stay consistent. Stay royal! 👑
+🌟 *Unlock MORE with Royal Pro:*
+🤖 AI Meal Plans · 📈 Progress Charts
+📸 Photo Upload · 📄 PDF Export
+👉 Just *₹499/month!*
 
-— *Royal Fitness Club Team* 🏋️`;
+━━━━━━━━━━━━━━━━━━━━━━
+Keep crushing it! 💪
+
+— *Royal Fitness Club* 🏋️👑`;
+
+  const msgPro =
+`👑 *ROYAL FITNESS CLUB — PRO*
+━━━━━━━━━━━━━━━━━━━━━━
+
+🎉 Hi ${name}! Welcome back, Champion! 🔥
+
+Your *PRO Membership* has been RENEWED! 👑✅
+
+💳 *YOUR RENEWED PRO PLAN*
+▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬
+⭐ Plan: *${planLabel}*
+📅 Valid Until: *${expStr}*
+▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬
+
+📲 Login & access all Pro tools 👇
+https://royal-fitness-club-7adc1.web.app
+
+━━━━━━━━━━━━━━━━━━━━━━
+⭐ *YOUR PRO EXCLUSIVE TOOLS:*
+
+🤖 Full 7-Day AI Meal Plan
+📈 Progress Charts & Streak Tracking
+📸 Before/After Transformation Photos
+📄 PDF Export & Shareable Cards
+🎓 All Premium Courses Unlocked
+
+✅ *PLUS ALL FREE TOOLS:*
+📊 BMI, BMR & TDEE · 🐯 Beast Score
+⚖️ Body Fat % · 💪 1-Rep Max
+🔥 WOD + Water · 💊 Supplements
+🏆 Leaderboard · 🎯 Macros · 🫀 3D Anatomy
+━━━━━━━━━━━━━━━━━━━━━━
+
+You're unstoppable. Stay royal! 👑
+
+— *Royal Fitness Club* 🏋️🔥`;
+
+  const msg = isPro ? msgPro : msgFree;
   const url = phone ? 'https://wa.me/' + (phone.startsWith('91')?phone:'91'+phone) + '?text=' + encodeURIComponent(msg) : 'https://wa.me/?text=' + encodeURIComponent(msg);
   window.open(url, '_blank');
 }
