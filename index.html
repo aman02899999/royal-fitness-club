@@ -9396,11 +9396,17 @@ function getCourseProgress(courseId) {
 }
 
 function _genSerial(c) {
+  if (!user) return 'RFC-DEMO';
+  const key = 'rfc_cert_serial_' + user.uid + '_' + c.id;
+  const stored = localStorage.getItem(key);
+  if (stored) return stored;
   const year = new Date().getFullYear();
-  const uid = user ? user.uid.substring(0,6).toUpperCase() : 'DEMO00';
+  const uid = user.uid.substring(0,6).toUpperCase();
   const num = Math.floor(10000 + Math.random() * 89999);
   const lvl = c.level.substring(0,3).toUpperCase();
-  return 'RFC-' + year + '-' + uid + '-' + num + '-' + lvl;
+  const serial = 'RFC-' + year + '-' + uid + '-' + num + '-' + lvl;
+  localStorage.setItem(key, serial);
+  return serial;
 }
 
 function renderCourses() {
