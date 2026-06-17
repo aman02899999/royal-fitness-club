@@ -2269,7 +2269,6 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
 @media(max-width:480px){
   .rfc-feat-grid{grid-template-columns:1fr!important;}
   .pdf-for-section{grid-template-columns:1fr!important;}
-  .lb-prize-bar{grid-template-columns:1fr!important;}
   .elite-feats{grid-template-columns:1fr!important;}
   .fr-grid{grid-template-columns:1fr!important;}
   .br-group,.blood-section-grid{grid-template-columns:1fr!important;}
@@ -2282,6 +2281,91 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
   /* Announcement close btn doesn't clip */
   .adm-announce-bar{padding-right:48px!important;}
 }
+
+/* ── Mobile-only refinements ── */
+@media(max-width:900px){
+  /* Hide "← Dashboard" back button — bottom nav Home tab serves that role */
+  .sb-page-hdr-actions{display:none!important;}
+
+  /* "Member Login" top nav button — text only, more compact */
+  #navlbtn{font-size:11px!important;padding:6px 10px!important;letter-spacing:.5px!important;}
+
+  /* Leaderboard tabs — wrap so they don't overflow */
+  .lb-tabs{flex-wrap:wrap!important;gap:6px!important;margin:16px 0 12px!important;}
+  .lb-tab{padding:7px 14px!important;font-size:12px!important;letter-spacing:1px!important;}
+
+  /* Leaderboard prize bar — stay 3-col but tighter */
+  .lb-prize{padding:10px 6px!important;}
+  .lb-prize-medal{font-size:22px!important;}
+  .lb-prize-val{font-size:14px!important;}
+
+  /* Page header — tighter on mobile */
+  .sb-page-hdr{padding:10px 14px!important;}
+  .sb-page-hdr-icon{font-size:18px!important;}
+  .sb-page-hdr-title{font-size:16px!important;}
+  .sb-page-hdr-sub{font-size:9px!important;}
+
+  /* Section ticker — smaller on mobile */
+  .section-ticker{height:24px!important;}
+  .section-ticker-item{font-size:9px!important;padding:0 12px!important;}
+
+  /* Nav pill (logged-in user) */
+  #upill{gap:6px!important;}
+  #ntimer{font-size:11px!important;}
+
+  /* Top nav height reduce — more content space */
+  nav{height:48px!important;}
+  body.sb-open section.sb-active-screen{padding-top:48px!important;}
+  body.sb-open .sb-screen-first{padding-top:48px!important;}
+  body.sb-open #screen-dashboard .dash-wrap{padding-top:60px!important;}
+  .sb-page-hdr{top:48px!important;}
+
+  /* Workout check-in button — full width on mobile */
+  .ch-join-btn,.bfire[style*="width:100%"]{padding:13px 20px!important;}
+
+  /* Challenges card grid */
+  .ch-grid{grid-template-columns:1fr!important;}
+
+  /* Progress photos grid */
+  .pg-grid{grid-template-columns:1fr 1fr!important;}
+
+  /* Blood report — input grid 2-col */
+  .blood-form-grid{grid-template-columns:1fr 1fr!important;}
+
+  /* Blood report action buttons */
+  .blood-actions{flex-direction:column!important;}
+
+  /* Admin — modal full-height on mobile */
+  .adm-modal-box{max-width:100%!important;margin:0!important;border-radius:16px 16px 0 0!important;}
+
+  /* Course module list — readable */
+  .cmod-title{font-size:13px!important;}
+
+  /* Wallet card */
+  .wallet-card{padding:16px!important;}
+  .wallet-bal{letter-spacing:0!important;}
+
+  /* Store PDF grid */
+  .pdf-catalog-grid{grid-template-columns:1fr 1fr!important;}
+
+  /* WhatsApp FAB — lift above bottom nav */
+  #wa-fab{bottom:80px!important;right:16px!important;width:50px!important;height:50px!important;font-size:24px!important;}
+
+  /* Nav logo — prevent wrapping on mobile */
+  .nlogo{font-size:clamp(12px,3.5vw,18px)!important;letter-spacing:1px!important;white-space:nowrap!important;}
+
+  /* Keep leaderboard prize bar 3-col even on small phones */
+  .lb-prize-bar{grid-template-columns:repeat(3,1fr)!important;}
+  .lb-prize{padding:10px 4px!important;}
+  .lb-prize-medal{font-size:20px!important;}
+  .lb-prize-val{font-size:12px!important;letter-spacing:0!important;}
+  .lb-prize-reward{font-size:8px!important;letter-spacing:.5px!important;}
+
+  /* Challenges screen inner tabs — wrap */
+  .ch-tabs{flex-wrap:wrap!important;gap:6px!important;}
+  .ch-tab{font-size:12px!important;padding:6px 12px!important;}
+}
+
 </style>
 <!-- Firebase SDK (compat) -->
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
@@ -2461,7 +2545,7 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
         <div class="dash-card" style="margin-bottom:16px;">
           <div class="dash-card-hdr">
             <span class="dash-card-title">Today's Plan</span>
-            <span class="dash-card-tag ai">AI GENERATED</span>
+            <span class="dash-card-tag ai">SMART PLAN</span>
           </div>
           <div id="dash-tasks">
             <!-- Populated by JS -->
@@ -12566,7 +12650,7 @@ function saveUpdateStats() {
 </div>
 
 <!-- ═══ MOBILE BOTTOM NAVIGATION ═══ -->
-<nav id="mob-btm-nav" aria-label="Mobile navigation">
+<div id="mob-btm-nav" role="navigation" aria-label="Mobile navigation">
   <div class="mbn-grid">
     <div class="mbn-item mbn-active" id="mbn-dashboard" onclick="switchScreen('dashboard',document.querySelector('[data-screen=dashboard]'));updateMobNav('dashboard')" role="button" aria-label="Home">
       <span class="mbn-icon">🏠</span><span class="mbn-lbl">Home</span>
@@ -12584,7 +12668,7 @@ function saveUpdateStats() {
       <span class="mbn-icon">👤</span><span class="mbn-lbl">Me</span>
     </div>
   </div>
-</nav>
+</div>
 <script>
 (function(){
   var MOB_NAV_MAP = {
