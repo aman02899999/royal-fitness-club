@@ -5384,6 +5384,15 @@ function initUser(){
         if(typeof restoreCloudPhotos==='function')restoreCloudPhotos(doc.data());
         if(user.role==='admin')showAdminLink();
         initPDFStore();
+        // Sync course purchases from Firestore so they survive device switch
+        firebase.firestore().collection('users').doc(fbUser.uid).collection('course_purchases').get()
+          .then(snap=>{
+            if(snap.empty)return;
+            const arr=JSON.parse(localStorage.getItem('rfc_purchased_'+fbUser.uid)||'[]');
+            snap.forEach(d=>{if(!arr.includes(d.id))arr.push(d.id);});
+            localStorage.setItem('rfc_purchased_'+fbUser.uid,JSON.stringify(arr));
+            renderCourses();
+          }).catch(()=>{});
       }catch(err){
         console.error('Auth state error:',err);
         setTimeout(forceLogin,1600);
@@ -7300,7 +7309,7 @@ async function activatePro() {
     }catch(cfErr){console.warn('[activatePro] createRazorpayOrder unavailable:',cfErr.message);}
     const rzp=new Razorpay({
       key:'rzp_live_SzivmCT3vTvTAK',
-      amount:c.pro*100,
+      amount:CURRENCIES.INR.pro*100,
       currency:'INR',
       order_id:orderId||undefined,
       name:'Royal Fitness Club',
@@ -7514,6 +7523,7 @@ async function buyCatalogPDF(productId,title,amountPaise){
         }
       },
     });
+    rzp.on('payment.failed',()=>toast('Payment failed — please try again.','gold'));
     rzp.open();
   }catch(err){
     console.error('[buyCatalogPDF]',err);
@@ -7688,6 +7698,7 @@ async function buyBundle(bundleId) {
       }
     };
     const rzp=new window.Razorpay(options);
+    rzp.on('payment.failed',()=>toast('Payment failed — please try again.','gold'));
     rzp.open();
   }catch(e){toast('Payment service loading… try again.','gold');}
 }
@@ -8583,27 +8594,30 @@ function joinChallenge(chId) {
   }
   const ch = getChallenges().find(c => c.id === chId);
   if (!ch) return;
-  const rzp = new Razorpay({
-    key: 'rzp_live_SzivmCT3vTvTAK',
-    amount: ch.entryFee * 100,
-    currency: 'INR',
-    name: 'Royal Fitness Club',
-    description: ch.name + ' Entry',
-    handler: function(res) {
-      const joined = getMyJoinedChallenges();
-      joined.push(chId);
-      localStorage.setItem('rfc_ch_joined_' + user.uid, JSON.stringify(joined));
-      const pts = getChParticipants(chId) + 1;
-      localStorage.setItem('rfc_ch_pts_' + chId, pts.toString());
-      walletCredit(50, 'Challenge join bonus — ' + ch.name, 'bonus');
-      closeChallengeModal();
-      renderChallenges();
-      toast('🔥 You\'re in! Challenge joined successfully!');
-    },
-    prefill: { name: user.name || user.displayName || '', email: user.email || '' },
-    theme: { color: '#e8001d' }
-  });
-  rzp.open();
+  _loadRzp().then(() => {
+    const rzp = new Razorpay({
+      key: 'rzp_live_SzivmCT3vTvTAK',
+      amount: ch.entryFee * 100,
+      currency: 'INR',
+      name: 'Royal Fitness Club',
+      description: ch.name + ' Entry',
+      handler: function(res) {
+        const joined = getMyJoinedChallenges();
+        joined.push(chId);
+        localStorage.setItem('rfc_ch_joined_' + user.uid, JSON.stringify(joined));
+        const pts = getChParticipants(chId) + 1;
+        localStorage.setItem('rfc_ch_pts_' + chId, pts.toString());
+        walletCredit(50, 'Challenge join bonus — ' + ch.name, 'bonus');
+        closeChallengeModal();
+        renderChallenges();
+        toast('🔥 You\'re in! Challenge joined successfully!');
+      },
+      prefill: { name: user.name || user.displayName || '', email: user.email || '' },
+      theme: { color: '#e8001d' }
+    });
+    rzp.on('payment.failed', () => toast('Payment failed — please try again.', 'gold'));
+    rzp.open();
+  }).catch(() => toast('Could not open payment — please try again.', 'gold'));
 }
 
 function logChallengeDay(chId) {
@@ -9652,25 +9666,35 @@ function purchaseCourse(courseId) {
   }
   const c = getCourses().find(x => x.id === courseId);
   if (!c) return;
-  const rzp = new Razorpay({
-    key: 'rzp_live_SzivmCT3vTvTAK',
-    amount: c.price * 100,
-    currency: 'INR',
-    name: 'Royal Fitness Club',
-    description: c.name,
-    handler: function(res) {
-      const purchased = JSON.parse(localStorage.getItem('rfc_purchased_' + user.uid) || '[]');
-      if (!purchased.includes(courseId)) purchased.push(courseId);
-      localStorage.setItem('rfc_purchased_' + user.uid, JSON.stringify(purchased));
-      closeCourseModal();
-      renderCourses();
-      toast('🎓 Enrollment successful! Start learning now.');
-      setTimeout(() => openCourseModal(courseId), 600);
-    },
-    prefill: { name: user.name || user.displayName || '', email: user.email || '' },
-    theme: { color: '#e8001d' }
-  });
-  rzp.open();
+  _loadRzp().then(() => {
+    const rzp = new Razorpay({
+      key: 'rzp_live_SzivmCT3vTvTAK',
+      amount: c.price * 100,
+      currency: 'INR',
+      name: 'Royal Fitness Club',
+      description: c.name,
+      handler: function(res) {
+        const purchased = JSON.parse(localStorage.getItem('rfc_purchased_' + user.uid) || '[]');
+        if (!purchased.includes(courseId)) purchased.push(courseId);
+        localStorage.setItem('rfc_purchased_' + user.uid, JSON.stringify(purchased));
+        // Persist to Firestore so purchase survives device switch
+        if (user && typeof firebase !== 'undefined') {
+          firebase.firestore().collection('users').doc(user.uid)
+            .collection('course_purchases').doc(courseId)
+            .set({ courseId, paymentId: res.razorpay_payment_id || '', date: firebase.firestore.FieldValue.serverTimestamp() })
+            .catch(() => {});
+        }
+        closeCourseModal();
+        renderCourses();
+        toast('🎓 Enrollment successful! Start learning now.');
+        setTimeout(() => openCourseModal(courseId), 600);
+      },
+      prefill: { name: user.name || user.displayName || '', email: user.email || '' },
+      theme: { color: '#e8001d' }
+    });
+    rzp.on('payment.failed', () => toast('Payment failed — please try again.', 'gold'));
+    rzp.open();
+  }).catch(() => toast('Could not open payment — please try again.', 'gold'));
 }
 
 function closeCourseModal() {

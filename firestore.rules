@@ -103,6 +103,12 @@ service cloud.firestore {
       allow write: if isAdmin();
     }
 
+    // users/{uid}/course_purchases/{courseId} - course enrollment records
+    match /users/{uid}/course_purchases/{courseId} {
+      allow read: if request.auth != null && request.auth.uid == uid;
+      allow write: if (request.auth != null && request.auth.uid == uid) || isAdmin();
+    }
+
     // physio_logs/{uid}/logs/{logId} - physio assessment history
     match /physio_logs/{uid}/logs/{logId} {
       allow read, write: if request.auth != null && request.auth.uid == uid;
