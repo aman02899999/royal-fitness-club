@@ -3027,7 +3027,7 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
         <div class="prof-email" id="prof-email">—</div>
         <span class="prof-plan-badge free" id="prof-badge">⚡ Free Plan</span>
       </div>
-      <button class="bsm" style="flex:0 0 auto;padding:9px 16px;" onclick="closeProfile()">← Back to Site</button>
+      <button class="bsm" style="flex:0 0 auto;padding:9px 16px;" onclick="document.body.classList.contains('sb-open')?switchScreen('dashboard',document.querySelector('[data-screen=dashboard]')):closeProfile()">← Dashboard</button>
     </div>
     <div class="prof-grid">
       <!-- Plan & Membership -->
@@ -3898,9 +3898,9 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
 <section id="bloodreport" style="padding:60px 20px;background:var(--card2);">
   <div class="container">
     <div style="text-align:center;margin-bottom:36px;">
-      <div class="stag">AI-Powered Health Insights</div>
-      <div class="sh" style="font-size:clamp(32px,6vw,58px);">BLOOD REPORT DIAGNOSIS</div>
-      <p style="color:var(--muted);max-width:540px;margin:12px auto 0;font-size:13px;">Upload your blood report or enter values manually. Our system analyzes 20+ biomarkers and gives you personalised fitness & nutrition recommendations.</p>
+      <div class="stag">Formula-Based Health Insights</div>
+      <div class="sh" style="font-size:clamp(32px,6vw,58px);">BLOOD REPORT ANALYSER</div>
+      <p style="color:var(--muted);max-width:540px;margin:12px auto 0;font-size:13px;">Enter your blood values manually or upload a report. Our system checks 20+ biomarkers against clinical reference ranges and gives you personalised fitness & nutrition recommendations.</p>
     </div>
 
     <!-- Mode toggle -->
