@@ -162,5 +162,23 @@ service cloud.firestore {
       allow create: if request.auth != null;
       allow read, update, delete: if isAdmin();
     }
+
+    // admin_inbox/{id} - new member notifications for admin
+    match /admin_inbox/{id} {
+      allow create: if request.auth != null;
+      allow read, update, delete: if isAdmin();
+    }
+
+    // elite_applications/{id} - Royal Elite coaching applications
+    match /elite_applications/{id} {
+      allow create: if true;
+      allow read, update, delete: if isAdmin();
+    }
+
+    // newsletter_subscribers/{id} - newsletter signups
+    match /newsletter_subscribers/{id} {
+      allow create: if true;
+      allow read, update, delete: if isAdmin();
+    }
   }
 }
