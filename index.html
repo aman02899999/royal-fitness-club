@@ -3604,7 +3604,34 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
 <section id="mealplan">
   <div class="container">
     <div class="stag">200+ Indian Foods · Calorie-Scaled</div><div class="sh">7-DAY MEAL PLAN</div>
-    <p class="ssub">Vegetarian, Non-Veg, Eggetarian, Keto — daily meal plans automatically built from your Beast Score calculator results. Adjust meal frequency, include salad, and customise your food preferences.</p>
+    <p class="ssub">Vegetarian, Non-Veg, Eggetarian, Keto — daily meal plans automatically built from your Beast Score calculator results.</p>
+
+    <!-- Macro summary banner — populated by JS on screen switch -->
+    <div id="mp-macro-banner" style="display:none;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:18px 20px;margin:20px 0 8px;position:relative;overflow:hidden;">
+      <div style="position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--red),var(--gold),#22c55e);"></div>
+      <div style="font-size:10px;font-weight:700;letter-spacing:3px;color:var(--muted);text-transform:uppercase;margin-bottom:10px;">📊 Your Daily Targets</div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;" id="mp-macro-grid">
+        <div style="text-align:center;background:rgba(232,0,29,.07);border:1px solid rgba(232,0,29,.15);border-radius:10px;padding:10px 6px;">
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--red);line-height:1;" id="mp-m-cals">—</div>
+          <div style="font-size:9px;letter-spacing:2px;color:var(--muted);margin-top:2px;">KCAL</div>
+        </div>
+        <div style="text-align:center;background:rgba(59,130,246,.06);border:1px solid rgba(59,130,246,.15);border-radius:10px;padding:10px 6px;">
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:26px;color:#60a5fa;line-height:1;" id="mp-m-prot">—</div>
+          <div style="font-size:9px;letter-spacing:2px;color:var(--muted);margin-top:2px;">PROTEIN g</div>
+        </div>
+        <div style="text-align:center;background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.15);border-radius:10px;padding:10px 6px;">
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--gold);line-height:1;" id="mp-m-carb">—</div>
+          <div style="font-size:9px;letter-spacing:2px;color:var(--muted);margin-top:2px;">CARBS g</div>
+        </div>
+        <div style="text-align:center;background:rgba(34,197,94,.06);border:1px solid rgba(34,197,94,.15);border-radius:10px;padding:10px 6px;">
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:26px;color:#4ade80;line-height:1;" id="mp-m-fat">—</div>
+          <div style="font-size:9px;letter-spacing:2px;color:var(--muted);margin-top:2px;">FATS g</div>
+        </div>
+      </div>
+      <div id="mp-macro-cta" style="display:none;margin-top:10px;text-align:center;">
+        <button class="bsm" style="font-size:12px;" onclick="switchScreen('toolbox',document.querySelector('[data-screen=toolbox]'))">🧮 Run Calculator to get your targets →</button>
+      </div>
+    </div>
     <div style="display:flex;gap:16px;flex-wrap:wrap;align-items:center;margin-top:20px;margin-bottom:8px;">
       <div>
         <label class="flbl" style="margin-bottom:6px;display:block;">How many meals per day?</label>
@@ -3639,7 +3666,7 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
           <button class="fst" data-slot="postworkout" onclick="showFoodSlot(this,'postworkout')">Post-Workout</button>
         </div>
         <div class="food-sel-btn-row">
-          <button class="btn-sm" onclick="autoSelectFoods()">🤖 Auto Select All</button>
+          <button class="btn-sm" onclick="autoSelectFoods()">⚡ Auto Select All</button>
           <button class="btn-sm btn-outline" onclick="clearFoodPrefs()">✕ Clear Selections</button>
         </div>
         <div id="food-sel-grid" class="food-sel-grid"></div>
@@ -4039,6 +4066,8 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
       <span>Your rank: <strong id="lb-my-rank-num" style="color:var(--gold);">#—</strong> &nbsp;|&nbsp; Tiger Score: <strong id="lb-my-score-top" style="color:var(--gold);">0</strong></span>
       <span style="margin-left:auto;font-size:11px;color:var(--muted);">Resets monthly</span>
     </div>
+    <!-- Rank gap motivator -->
+    <div id="lb-rank-motivator" style="display:none;background:rgba(232,0,29,.06);border:1px solid rgba(232,0,29,.15);border-radius:10px;padding:12px 16px;margin-bottom:12px;font-size:13px;color:rgba(255,255,255,.75);" id="lb-rank-motivator"></div>
 
     <!-- Tabs -->
     <div class="lb-tabs" style="margin-bottom:16px;">
@@ -11869,7 +11898,7 @@ function switchScreen(name, navEl) {
   if (name === 'challenges') renderChallenges();
   if (name === 'courses') renderCourses();
   if (name === 'admin') { if (isAdminUser()) renderAdminPanel(); else { toast('🔐 Admin access only.','gold'); switchScreen('dashboard', document.querySelector('[data-screen=dashboard]')); } }
-  if (name === 'leaderboard') renderLeaderboard(currentLbBoard || 'tiger', null);
+  if (name === 'leaderboard') { renderLeaderboard(currentLbBoard || 'tiger', null); _updateLbMotivator(); }
   if (name === 'dashboard') populateDashboard();
   if (name === 'referrals') {
     renderWallet();
@@ -11878,6 +11907,7 @@ function switchScreen(name, navEl) {
       if (wc) wc.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }, 120);
   }
+  if (name === 'nutrition') _updateMacroBanner();
 
   // Close mobile sidebar on nav
   if (window.innerWidth < 900) {
@@ -11998,6 +12028,49 @@ function renderPRTracker(){
     </div>`;
   }).join('');
 }
+function _updateMacroBanner() {
+  var banner = document.getElementById('mp-macro-banner');
+  if (!banner) return;
+  banner.style.display = 'block';
+  try {
+    var last = JSON.parse(localStorage.getItem('bm_last_result') || 'null');
+    if (last && last.targetCals) {
+      document.getElementById('mp-m-cals').textContent = last.targetCals;
+      document.getElementById('mp-m-prot').textContent = last.macros ? last.macros.prot : '—';
+      document.getElementById('mp-m-carb').textContent = last.macros ? last.macros.carb : '—';
+      document.getElementById('mp-m-fat').textContent  = last.macros ? last.macros.fat  : '—';
+      var ctaEl = document.getElementById('mp-macro-cta');
+      if (ctaEl) ctaEl.style.display = 'none';
+    } else {
+      ['mp-m-cals','mp-m-prot','mp-m-carb','mp-m-fat'].forEach(function(id) {
+        var el = document.getElementById(id); if (el) el.textContent = '—';
+      });
+      var ctaEl = document.getElementById('mp-macro-cta');
+      if (ctaEl) ctaEl.style.display = 'block';
+    }
+  } catch(e) {}
+}
+
+function _updateLbMotivator() {
+  var el = document.getElementById('lb-rank-motivator');
+  if (!el || !user) return;
+  try {
+    var board = buildLeaderboardData('tiger');
+    var myIdx = board.findIndex(function(e) { return e.uid === user.uid; });
+    if (myIdx < 0) { el.style.display = 'none'; return; }
+    var myScore = board[myIdx].tigerScore || 0;
+    el.style.display = 'block';
+    if (myIdx === 0) {
+      el.innerHTML = '🏆 <strong>You\'re #1 this month!</strong> Keep going — defend your crown!';
+    } else {
+      var above = board[myIdx - 1];
+      var gap = (above.tigerScore || 0) - myScore;
+      var workoutsNeeded = Math.ceil(gap / 25);
+      el.innerHTML = '⚡ You\'re <strong style="color:var(--gold);">' + gap + ' points</strong> behind <strong>' + (above.name || 'Rank #' + myIdx) + '</strong> (#' + myIdx + '). Log ~' + workoutsNeeded + ' more workout' + (workoutsNeeded > 1 ? 's' : '') + ' to overtake them!';
+    }
+  } catch(e) { el.style.display = 'none'; }
+}
+
 function savePR(lift){
   const uid=user?user.uid:'guest';
   const key='bm_pr_'+uid+'_'+lift.replace(/ /g,'_');
