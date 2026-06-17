@@ -2083,6 +2083,205 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
 .ml{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:#a0a0a0;margin-top:4px;}
 /* Dark cards glow on focus */
 .rfc-card,.adm-modal-box,.mbox{border:1px solid var(--border2);}
+
+/* ═══════════════════════════════════════════════════════════
+   MOBILE BOTTOM NAV
+═══════════════════════════════════════════════════════════ */
+#mob-btm-nav{
+  display:none;position:fixed;bottom:0;left:0;right:0;z-index:600;
+  background:linear-gradient(180deg,rgba(8,9,22,.97),rgba(6,7,18,1));
+  border-top:1px solid rgba(255,255,255,.07);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+}
+#mob-btm-nav .mbn-grid{display:grid;grid-template-columns:repeat(5,1fr);}
+.mbn-item{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:3px;padding:9px 4px 8px;cursor:pointer;
+  -webkit-tap-highlight-color:transparent;user-select:none;
+  transition:opacity .12s;
+}
+.mbn-item:active{opacity:.5;}
+.mbn-icon{font-size:21px;line-height:1;}
+.mbn-lbl{font-size:9px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:rgba(160,160,180,.55);}
+.mbn-item.mbn-active .mbn-icon{filter:drop-shadow(0 0 6px rgba(232,0,29,.6));}
+.mbn-item.mbn-active .mbn-lbl{color:var(--red);}
+
+/* ═══════════════════════════════════════════════════════════
+   COMPREHENSIVE MOBILE ADAPTIVE — ≤900px
+═══════════════════════════════════════════════════════════ */
+@media(max-width:900px){
+  /* Show bottom nav */
+  #mob-btm-nav{display:block;}
+
+  /* Body padding so content isn't hidden under bottom nav */
+  body{padding-bottom:calc(64px + env(safe-area-inset-bottom,0px));}
+
+  /* Sidebar on mobile = full overlay, no content shift */
+  body.sb-open>*:not(#rfc-sidebar):not(#sb-toggle):not(#rfc-sb-overlay){margin-left:0!important;}
+
+  /* Bigger, more prominent hamburger */
+  #sb-toggle{
+    top:10px;left:10px;width:40px;height:40px;font-size:17px;
+    background:rgba(15,15,28,.9);border-color:rgba(255,255,255,.12);border-radius:9px;
+    box-shadow:0 2px 12px rgba(0,0,0,.5);
+  }
+  /* Logo area clears toggle */
+  nav{padding-left:58px!important;}
+
+  /* All screen wrappers — tight padding */
+  .sc-wrap{padding:12px 14px 12px!important;}
+  .dash-wrap{padding:12px 14px 12px!important;}
+  body.sb-open #screen-dashboard .dash-wrap{padding-top:72px!important;}
+  body.sb-open section.sb-active-screen{padding-top:56px!important;}
+  body.sb-open .sb-screen-first{padding-top:56px!important;}
+
+  /* Inline section padding overrides (many sections use style="padding:60px 20px") */
+  section[style*="padding:60px"],section[style*="padding: 60px"]{padding:28px 16px!important;}
+
+  /* Page header bar */
+  .sb-page-hdr{padding:10px 14px;top:50px;}
+  .sb-page-hdr-title{font-size:17px;}
+  .sb-page-hdr-sub{font-size:10px;}
+
+  /* ── TYPOGRAPHY ── */
+  .sh{font-size:clamp(26px,8vw,52px)!important;letter-spacing:1px!important;}
+  .bsn,.bsn *{font-size:clamp(50px,13vw,78px)!important;}
+  .scbig{font-size:clamp(50px,14vw,84px)!important;}
+  .stbig{font-size:clamp(40px,11vw,64px)!important;}
+  .probig{font-size:clamp(36px,10vw,50px)!important;}
+  .wallet-bal{font-size:clamp(34px,10vw,46px)!important;}
+  .elite-price{font-size:clamp(48px,13vw,72px)!important;}
+  .ssub{font-size:13px;}
+
+  /* ── DASHBOARD ── */
+  .dash-stats{grid-template-columns:1fr 1fr!important;}
+  .dash-stat-card{padding:12px 10px!important;}
+  .dash-stat-val{font-size:26px!important;}
+  .dash-stat-icon{font-size:22px!important;}
+  .dash-grid{grid-template-columns:1fr!important;}
+  /* Quick actions — 3 per row */
+  .dash-quick-grid{grid-template-columns:repeat(3,1fr)!important;gap:8px!important;}
+  .dash-quick-btn{padding:10px 6px!important;flex-direction:column!important;text-align:center!important;gap:4px!important;font-size:11px!important;}
+  .dash-quick-btn .dq-icon{font-size:22px!important;}
+
+  /* ── FORMS & INPUTS (touch-friendly) ── */
+  .fi2,.fsel,.adm-input,input[type=text],input[type=number],input[type=email],
+  input[type=tel],input[type=password],select,textarea{
+    min-height:44px!important;font-size:16px!important;padding:10px 14px!important;
+  }
+  .bfire,.bcalc,.bsm,.btn-sm,button.ob-btn,button.bsig{
+    min-height:44px!important;
+  }
+  /* Prevent iOS zoom on input focus */
+  input,select,textarea{font-size:16px!important;}
+
+  /* ── FEATURE GRID ── */
+  .rfc-feat-grid{grid-template-columns:1fr 1fr!important;gap:12px!important;}
+  .rfc-feat-card{padding:16px 14px!important;}
+  .rfc-feat-name{font-size:14px!important;}
+  .rfc-feat-desc{font-size:11px!important;}
+
+  /* ── UPGRADE BANNER ── */
+  .rfc-ub-inner{flex-direction:column!important;gap:18px!important;}
+  .rfc-ub-price-num{font-size:56px!important;}
+
+  /* ── COUNTERS SECTION ── */
+  .rfc-counter-div{display:none!important;}
+  .rfc-counter{min-width:calc(50% - 16px)!important;}
+  .rfc-counter-num{font-size:40px!important;}
+
+  /* ── PLANS ── */
+  .plans2{grid-template-columns:1fr!important;}
+
+  /* ── TABLES — horizontal scroll ── */
+  .diet-table,table:not(.lb-table){display:block;overflow-x:auto;-webkit-overflow-scrolling:touch;}
+
+  /* ── LEADERBOARD ── */
+  .lb-prize-bar{grid-template-columns:repeat(3,1fr)!important;}
+  .tiger-factors{grid-template-columns:repeat(3,1fr)!important;}
+
+  /* ── COURSES ── */
+  .cgrid{grid-template-columns:1fr!important;}
+  .course-modal-inner{border-radius:16px 16px 0 0!important;margin:auto 0 0!important;max-height:90vh!important;}
+
+  /* ── ELITE SECTION ── */
+  .elite-card{padding:24px 18px!important;}
+  .elite-feats{grid-template-columns:1fr 1fr!important;}
+  .elite-coach{flex-direction:column!important;text-align:center!important;gap:12px!important;}
+
+  /* ── SHOPBOX ── */
+  .shopbox{padding:32px 16px!important;}
+
+  /* ── STORE / PDF ── */
+  .pdf-hero{grid-template-columns:1fr!important;gap:20px!important;}
+  .pdf-for-section{grid-template-columns:1fr 1fr!important;}
+
+  /* ── BLOOD REPORT inputs ── */
+  .br-group,.blood-section-grid{grid-template-columns:1fr 1fr!important;}
+
+  /* ── PHYSIO ── */
+  .fr-grid{grid-template-columns:1fr 1fr!important;}
+  .ptabs{flex-wrap:wrap!important;gap:4px!important;}
+  .ptab{font-size:11px!important;padding:6px 10px!important;}
+
+  /* ── ADMIN PANEL ── */
+  .adm-wrap{padding:0 0 80px!important;}
+  .adm-tabs{flex-wrap:wrap!important;gap:6px!important;}
+  .adm-tab{font-size:11px!important;padding:6px 10px!important;}
+  .adm-modal-box{border-radius:16px 16px 0 0!important;margin:auto 0 0!important;}
+
+  /* ── TRANSFORMATION ── */
+  .tr3,.bfg,.m4,.row2{grid-template-columns:1fr!important;}
+
+  /* ── ANNOUNCEMENT BAR ── */
+  .adm-announce-bar{font-size:11px!important;padding:8px 40px 8px 12px!important;}
+
+  /* Admin ctrl bar stays accessible */
+  #admin-ctrl-bar{top:8px!important;right:8px!important;}
+
+  /* Card min-widths that can cause overflow */
+  .tcard{min-width:unset!important;max-width:100%!important;}
+
+  /* Horizontal scroll containers */
+  .m4-row,.tcard-wrap,.rfc-plans-row,.exgrid{
+    display:flex!important;flex-wrap:nowrap!important;
+    overflow-x:auto!important;-webkit-overflow-scrolling:touch!important;
+    scroll-snap-type:x mandatory!important;
+    padding-bottom:8px!important;
+  }
+  .tcard,.rfc-plans-row>*{scroll-snap-align:start!important;}
+
+  /* Roadmap / Timeline cards */
+  .rfc-roadmap-step{padding:16px!important;}
+
+  /* Challenges grid */
+  .ch-grid{grid-template-columns:1fr!important;}
+
+  /* Upgrade CTA banner hidden on mobile (clutters UX) */
+  #rfc-upgrade-banner{display:none!important;}
+
+  /* Progress section */
+  .pg-photo-grid,.progress-grid{grid-template-columns:1fr 1fr!important;}
+}
+
+/* ═══ EXTRA SMALL PHONES ≤480px ═══ */
+@media(max-width:480px){
+  .rfc-feat-grid{grid-template-columns:1fr!important;}
+  .pdf-for-section{grid-template-columns:1fr!important;}
+  .lb-prize-bar{grid-template-columns:1fr!important;}
+  .elite-feats{grid-template-columns:1fr!important;}
+  .fr-grid{grid-template-columns:1fr!important;}
+  .br-group,.blood-section-grid{grid-template-columns:1fr!important;}
+  .dash-stats{grid-template-columns:1fr 1fr!important;}
+  .sh{font-size:clamp(22px,9vw,36px)!important;}
+  .bsn,.bsn *{font-size:clamp(44px,14vw,62px)!important;}
+  .wallet-bal{font-size:clamp(28px,9vw,40px)!important;}
+  .rfc-counter-num{font-size:34px!important;}
+  .mbn-lbl{font-size:8px;}
+  /* Announcement close btn doesn't clip */
+  .adm-announce-bar{padding-right:48px!important;}
+}
 </style>
 <!-- Firebase SDK (compat) -->
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
@@ -11410,6 +11609,8 @@ function switchScreen(name, navEl) {
   // Close mobile sidebar on nav
   if (window.innerWidth < 900) {
     document.getElementById('rfc-sidebar').classList.remove('sb-open-mobile');
+    var _ov = document.getElementById('rfc-sb-overlay');
+    if (_ov) _ov.classList.remove('show');
   }
 
   currentScreen = name;
@@ -11417,7 +11618,10 @@ function switchScreen(name, navEl) {
 
 function sbToggle() {
   if (window.innerWidth < 900) {
-    document.getElementById('rfc-sidebar').classList.toggle('sb-open-mobile');
+    var sb = document.getElementById('rfc-sidebar');
+    var ov = document.getElementById('rfc-sb-overlay');
+    var open = sb.classList.toggle('sb-open-mobile');
+    if (ov) ov.classList.toggle('show', open);
   } else {
     document.body.classList.toggle('sb-open');
   }
@@ -11425,6 +11629,8 @@ function sbToggle() {
 
 function sbClose() {
   document.getElementById('rfc-sidebar').classList.remove('sb-open-mobile');
+  var ov = document.getElementById('rfc-sb-overlay');
+  if (ov) ov.classList.remove('show');
 }
 
 // ─── Dashboard population ────────────────────────────────────────────────────
@@ -12359,5 +12565,56 @@ function saveUpdateStats() {
   </div>
 </div>
 
+<!-- ═══ MOBILE BOTTOM NAVIGATION ═══ -->
+<nav id="mob-btm-nav" aria-label="Mobile navigation">
+  <div class="mbn-grid">
+    <div class="mbn-item mbn-active" id="mbn-dashboard" onclick="switchScreen('dashboard',document.querySelector('[data-screen=dashboard]'));updateMobNav('dashboard')" role="button" aria-label="Home">
+      <span class="mbn-icon">🏠</span><span class="mbn-lbl">Home</span>
+    </div>
+    <div class="mbn-item" id="mbn-workouts" onclick="switchScreen('workouts',document.querySelector('[data-screen=workouts]'));updateMobNav('workouts')" role="button" aria-label="Workouts">
+      <span class="mbn-icon">🏋️</span><span class="mbn-lbl">Train</span>
+    </div>
+    <div class="mbn-item" id="mbn-nutrition" onclick="switchScreen('nutrition',document.querySelector('[data-screen=nutrition]'));updateMobNav('nutrition')" role="button" aria-label="Meal Plan">
+      <span class="mbn-icon">🥗</span><span class="mbn-lbl">Meals</span>
+    </div>
+    <div class="mbn-item" id="mbn-leaderboard" onclick="switchScreen('leaderboard',document.querySelector('[data-screen=leaderboard]'));updateMobNav('leaderboard')" role="button" aria-label="Leaderboard">
+      <span class="mbn-icon">🐯</span><span class="mbn-lbl">Ranks</span>
+    </div>
+    <div class="mbn-item" id="mbn-profile" onclick="switchScreen('profile',document.querySelector('[data-screen=profile]'));updateMobNav('profile')" role="button" aria-label="Profile">
+      <span class="mbn-icon">👤</span><span class="mbn-lbl">Me</span>
+    </div>
+  </div>
+</nav>
+<script>
+(function(){
+  var MOB_NAV_MAP = {
+    dashboard:'dashboard', workouts:'workouts', nutrition:'nutrition',
+    leaderboard:'leaderboard', profile:'profile',
+    // secondary mappings
+    toolbox:'dashboard', transform:'dashboard', challenges:'workouts',
+    bloodai:'profile', referrals:'profile', courses:'profile',
+    store:'profile', plans:'profile', physio:'workouts',
+    roadmap:'workouts', admin:'profile'
+  };
+  window.updateMobNav = function(screen){
+    var target = MOB_NAV_MAP[screen] || null;
+    document.querySelectorAll('.mbn-item').forEach(function(el){
+      el.classList.remove('mbn-active');
+    });
+    if(target){
+      var el = document.getElementById('mbn-' + target);
+      if(el) el.classList.add('mbn-active');
+    }
+  };
+  // Patch switchScreen to always update bottom nav
+  var _origSS = window.switchScreen;
+  if(_origSS){
+    window.switchScreen = function(name, navEl){
+      _origSS(name, navEl);
+      window.updateMobNav(name);
+    };
+  }
+})();
+</script>
 </body>
 </html>
