@@ -7206,6 +7206,8 @@ function renderProfile(){
   $('pa-reports').textContent=(JSON.parse(localStorage.getItem('bm_hist')||'[]')).length;
   let photoCount=0;if(localStorage.getItem('bm_photo_before'))photoCount++;if(localStorage.getItem('bm_photo_after'))photoCount++;
   $('pa-photos').textContent=photoCount;
+  // Refresh Tiger Score and wallet so profile always shows current values
+  renderWallet();
   // Draw digital membership card
   setTimeout(drawMemberCard, 100);
   // Render achievement badges
@@ -11531,7 +11533,7 @@ function populateDashboard() {
   if (gEl) gEl.textContent = greet;
 
   var nameEl = document.getElementById('dash-name');
-  if (nameEl) nameEl.textContent = user ? ('Welcome back, ' + (user.displayName || user.email.split('@')[0]) + ' 💪') : 'Welcome, Champion 👋';
+  if (nameEl) nameEl.textContent = user ? ('Welcome back, ' + (user.name || user.displayName || (user.email||'Beast').split('@')[0]) + ' 💪') : 'Welcome, Champion 👋';
 
   var dateEl = document.getElementById('dash-date');
   if (dateEl) dateEl.textContent = new Date().toLocaleDateString('en-IN', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
@@ -11726,7 +11728,7 @@ applyUser = function() {
     var initials = ((user.displayName || user.email || 'U')
       .split(' ').map(function(w){ return w[0] || ''; }).join('').substring(0,2).toUpperCase()) || 'M';
     if (sbAv)     { sbAv.textContent = initials; }
-    if (sbUname)  sbUname.textContent  = user.displayName || (user.email ? user.email.split('@')[0] : 'Member');
+    if (sbUname)  sbUname.textContent  = user.name || user.displayName || (user.email ? user.email.split('@')[0] : 'Member');
     if (sbUemail) sbUemail.textContent = user.email || '';
     if (sbUplan)  {
       sbUplan.textContent = isPro ? 'PRO' : 'FREE';
