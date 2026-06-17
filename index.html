@@ -3900,13 +3900,13 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
     <div style="text-align:center;margin-bottom:36px;">
       <div class="stag">Formula-Based Health Insights</div>
       <div class="sh" style="font-size:clamp(32px,6vw,58px);">BLOOD REPORT ANALYSER</div>
-      <p style="color:var(--muted);max-width:540px;margin:12px auto 0;font-size:13px;">Enter your blood values manually or upload a report. Our system checks 20+ biomarkers against clinical reference ranges and gives you personalised fitness & nutrition recommendations.</p>
+      <p style="color:var(--muted);max-width:540px;margin:12px auto 0;font-size:13px;">Enter your blood test values — our system checks 20+ biomarkers against clinical reference ranges and gives you personalised fitness &amp; nutrition recommendations.</p>
     </div>
 
     <!-- Mode toggle -->
     <div style="display:flex;gap:10px;justify-content:center;margin-bottom:28px;flex-wrap:wrap;">
-      <button class="bsm active" id="br-tab-upload" onclick="brSwitchTab('upload')">📄 Upload Report</button>
-      <button class="bsm" id="br-tab-manual" onclick="brSwitchTab('manual')">✏️ Enter Values</button>
+      <button class="bsm active" id="br-tab-upload" onclick="brSwitchTab('upload')">🔬 Demo Report</button>
+      <button class="bsm" id="br-tab-manual" onclick="brSwitchTab('manual')">✏️ Enter Your Values</button>
     </div>
 
     <!-- Upload panel -->
@@ -3916,10 +3916,10 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
            ondragleave="this.classList.remove('drag')"
            ondrop="brHandleDrop(event)">
         <div class="br-upload-icon">🩸</div>
-        <div class="br-upload-label">Drop your blood report here</div>
-        <div class="br-upload-sub">PDF, JPG, PNG accepted · Max 10MB</div>
+        <div class="br-upload-label">Try with Demo Data</div>
+        <div class="br-upload-sub">See a sample blood report analysis · Or use ✏️ Enter Values to input your own</div>
         <input type="file" id="br-file" accept=".pdf,.jpg,.jpeg,.png" style="display:none" onchange="brHandleFile(this)">
-        <button class="bsm" style="margin-top:16px;" onclick="event.stopPropagation();">Choose File</button>
+        <button class="bsm" style="margin-top:16px;" onclick="event.stopPropagation();brLoadDemo();">▶ Run Demo Analysis</button>
       </div>
       <div style="text-align:center;margin-top:12px;">
         <button class="bsm" style="font-size:12px;padding:8px 16px;opacity:.7;" onclick="brLoadDemo()">🔬 Try with Demo Data</button>
@@ -11689,6 +11689,13 @@ function switchScreen(name, navEl) {
   if (name === 'admin') { if (isAdminUser()) renderAdminPanel(); else { toast('🔐 Admin access only.','gold'); switchScreen('dashboard', document.querySelector('[data-screen=dashboard]')); } }
   if (name === 'leaderboard') renderLeaderboard(currentLbBoard || 'tiger', null);
   if (name === 'dashboard') populateDashboard();
+  if (name === 'referrals') {
+    renderWallet();
+    setTimeout(function() {
+      var wc = document.getElementById('wallet-card');
+      if (wc) wc.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 120);
+  }
 
   // Close mobile sidebar on nav
   if (window.innerWidth < 900) {
