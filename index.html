@@ -3172,14 +3172,14 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
     <div class="prof-grid">
       <!-- Plan & Membership -->
       <div class="prof-card prof-plan-box" style="grid-column:span 1;">
-        <div class="prof-plan-title" id="pp-title">ROYAL ULTIMATE</div>
+        <div class="prof-plan-title" id="pp-title">FREE PLAN</div>
         <div class="prof-plan-price" id="pp-price">₹499<small>/mo</small></div>
         <div style="margin:10px 0;"><span class="prof-status none" id="pp-status">● Active</span></div>
         <div id="pp-days-display" style="display:none;margin:10px 0;padding:10px 14px;border-radius:8px;text-align:center;border:1px solid rgba(34,197,94,.2);background:rgba(34,197,94,.06);">
           <div style="font-family:'Bebas Neue',sans-serif;font-size:34px;line-height:1;color:var(--green);" id="pp-days-num">—</div>
           <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-top:2px;" id="pp-days-label">days remaining</div>
         </div>
-        <div class="prof-pay-row"><span>Plan</span><span id="pp-plan">Beast Ultimate</span></div>
+        <div class="prof-pay-row"><span>Plan</span><span id="pp-plan">—</span></div>
         <div class="prof-pay-row"><span>Status</span><span id="pp-statustext">Active</span></div>
         <div class="prof-pay-row"><span>Started</span><span id="pp-started">—</span></div>
         <div class="prof-pay-row"><span id="pp-next-label">Next Billing</span><span id="pp-next">—</span></div>
@@ -3380,7 +3380,7 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
           <li><span class="fi" style="color:#a78bfa;">✓</span> Custom Diet Plan by Nutritionist</li>
           <li><span class="fi" style="color:#a78bfa;">✓</span> Weekly Check-in Calls</li>
           <li><span class="fi" style="color:#a78bfa;">✓</span> Priority Support &amp; WhatsApp Access</li>
-          <li><span class="fi" style="color:#a78bfa;">✓</span> Monthly Body Composition Analysis</div></li>
+          <li><span class="fi" style="color:#a78bfa;">✓</span> Monthly Body Composition Analysis</li>
           <li><span class="fi" style="color:#a78bfa;">✓</span> Exclusive Elite Badge on Leaderboard</li>
           <li><span class="fi" style="color:#a78bfa;">✓</span> Early Access to New Features</li>
           <li><span class="fi" style="color:#a78bfa;">✓</span> Lifetime Coaching Record Access</li>
@@ -3527,7 +3527,7 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
         <div id="emptyst2" class="emptyst">
           <div class="emico">🏋️</div>
           <div class="emtxt">Login to get your personalised plan</div>
-          <div style="font-size:12px;color:#888;">Your Beast Transformation Plan will appear here</div>
+          <div style="font-size:12px;color:#888;">Your Royal Transformation Plan will appear here</div>
         </div>
         <div id="rescont" style="flex-direction:column;gap:14px;">
           <div class="rcard"><div class="rctitle">Body Metrics</div>
@@ -4067,7 +4067,7 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
       <span style="margin-left:auto;font-size:11px;color:var(--muted);">Resets monthly</span>
     </div>
     <!-- Rank gap motivator -->
-    <div id="lb-rank-motivator" style="display:none;background:rgba(232,0,29,.06);border:1px solid rgba(232,0,29,.15);border-radius:10px;padding:12px 16px;margin-bottom:12px;font-size:13px;color:rgba(255,255,255,.75);" id="lb-rank-motivator"></div>
+    <div id="lb-rank-motivator" style="display:none;background:rgba(232,0,29,.06);border:1px solid rgba(232,0,29,.15);border-radius:10px;padding:12px 16px;margin-bottom:12px;font-size:13px;color:rgba(255,255,255,.75);"></div>
 
     <!-- Tabs -->
     <div class="lb-tabs" style="margin-bottom:16px;">
@@ -4806,7 +4806,7 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
         <input type="email" id="nemail" class="fi2" placeholder="Email / Mobile Number" style="flex:1;min-width:190px;">
         <button class="bfire" style="padding:12px 22px;font-size:15px;" onclick="subNews()">JOIN FREE</button>
       </div>
-      <p id="nconf" style="margin-top:11px;font-size:12px;color:var(--gold);display:none;">🔥 Welcome to the Beast Pack! Check your inbox.</p>
+      <p id="nconf" style="margin-top:11px;font-size:12px;color:var(--gold);display:none;">🔥 Welcome to Royal Fitness Club! Check your inbox.</p>
     </div>
   </div>
 </section>
@@ -7043,8 +7043,8 @@ function syncLeaderboard(fields){
 }
 
 // ── NEWSLETTER ──
-function subNews(){const e=$('nemail').value.trim();if(!e){toast('Please enter your email or number','gold');return;}$('nconf').style.display='block';$('nemail').value='';toast('🔥 Welcome! You are in.','gold');}
-function applyElite(){const n=$('el-name').value.trim(),p=$('el-phone').value.trim(),g=$('el-goal').value;if(!n||!p||!g){toast('Please fill in all details (name, number, goal)','gold');return;}const apps=JSON.parse(localStorage.getItem('bm_elite')||'[]');apps.push({name:n,phone:p,goal:g,date:new Date().toISOString()});localStorage.setItem('bm_elite',JSON.stringify(apps));closeModal('elitemodal');toast('👑 Application received! Our team will contact you within 24 hours.','gold');}
+function subNews(){const e=$('nemail').value.trim();if(!e){toast('Please enter your email or number','gold');return;}try{firebase.firestore().collection('newsletter_subscribers').add({contact:e,date:new Date().toISOString(),uid:user?user.uid:null,serverTs:firebase.firestore.FieldValue.serverTimestamp()}).catch(()=>{});}catch(_){}$('nconf').style.display='block';$('nemail').value='';toast('🔥 Welcome! You are in.','gold');}
+function applyElite(){const n=$('el-name').value.trim(),p=$('el-phone').value.trim(),g=$('el-goal').value;if(!n||!p||!g){toast('Please fill in all details (name, number, goal)','gold');return;}const entry={name:n,phone:p,goal:g,email:user?user.email:'',uid:user?user.uid:'',date:new Date().toISOString(),ts:Date.now()};const apps=JSON.parse(localStorage.getItem('bm_elite')||'[]');apps.push(entry);localStorage.setItem('bm_elite',JSON.stringify(apps));try{firebase.firestore().collection('elite_applications').add({...entry,serverTs:firebase.firestore.FieldValue.serverTimestamp()}).catch(()=>{});}catch(e){}closeModal('elitemodal');toast('👑 Application received! Our team will contact you within 24 hours.','gold');}
 
 // ── RESTORE ──
 function restore(){const s=localStorage.getItem('bm_inp');if(!s)return;const d=JSON.parse(s);[['ia','age'],['iw','weight'],['ih','height'],['iwa','waist']].forEach(([id,k])=>{if($(id)&&d[k])$(id).value=d[k];});if($('iact')&&d.act)$('iact').value=d.act;if($('idiet')&&d.diet)$('idiet').value=d.diet;if($('idietstyle')&&d.dietStyle)$('idietstyle').value=d.dietStyle;if(d.gender){const r=document.querySelector(`input[name="gender"][value="${d.gender}"]`);if(r)r.checked=true;}if(d.goal){const r=document.querySelector(`input[name="goal"][value="${d.goal}"]`);if(r)r.checked=true;}if(d.whey){const r=document.querySelector(`input[name="whey"][value="${d.whey}"]`);if(r)r.checked=true;}if(d.health)d.health.forEach(h=>{const el=$('hc-'+h);if(el&&el.closest('.hchk')){el.checked=true;el.closest('.hchk').classList.add('on');}});updateCalAdj();}
