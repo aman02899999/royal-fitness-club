@@ -161,6 +161,8 @@ section::before{content:'';position:absolute;inset:0;background:linear-gradient(
 .ssub{color:var(--muted);font-size:14px;max-width:500px;line-height:1.65;}
 .divider{height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);}
 .plans2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:32px;}
+.plans2.three{grid-template-columns:repeat(3,1fr);}
+@media(max-width:900px){.plans2.three{grid-template-columns:1fr;}}
 @media(max-width:700px){.plans2{grid-template-columns:1fr;}}
 .pcard{background:linear-gradient(145deg,#0e1025,#0a0c1e);border:1px solid var(--border);border-radius:14px;padding:22px 20px;position:relative;overflow:hidden;transition:all .3s;box-shadow:0 8px 32px rgba(0,0,0,.3);}
 .pcard:hover{transform:translateY(-4px);border-color:rgba(124,58,237,.35);box-shadow:0 16px 48px rgba(124,58,237,.12);}
@@ -1226,6 +1228,103 @@ body{font-size:16px;}
 .hamburger.open span:nth-child(2){opacity:0;}
 .hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
 .nmobile-extras{display:none;}
+
+/* ── SALES ENHANCEMENTS ── */
+
+/* Sidebar group labels */
+.sb-group-label{
+  font-size:9px;font-weight:700;letter-spacing:3px;text-transform:uppercase;
+  color:rgba(255,255,255,.2);padding:14px 18px 4px;
+  border-top:1px solid rgba(255,255,255,.05);margin-top:4px;
+}
+.sb-group-label:first-child{border-top:none;margin-top:0;}
+
+/* Quick action tiles — new design */
+.dqa-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
+.dqa-tile{
+  display:flex;align-items:center;gap:12px;
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);
+  border-radius:12px;padding:14px 14px;cursor:pointer;
+  transition:background .15s,border-color .15s,transform .1s;
+  -webkit-tap-highlight-color:transparent;
+}
+.dqa-tile:active{transform:scale(.97);}
+.dqa-tile:hover{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.14);}
+.dqa-tile.red{border-color:rgba(232,0,29,.2);background:rgba(232,0,29,.05);}
+.dqa-tile.red:hover{background:rgba(232,0,29,.09);}
+.dqa-tile.gold{border-color:rgba(245,158,11,.2);background:rgba(245,158,11,.04);}
+.dqa-tile.green{border-color:rgba(34,197,94,.18);background:rgba(34,197,94,.04);}
+.dqa-tile.blue{border-color:rgba(59,130,246,.2);background:rgba(59,130,246,.04);}
+.dqa-tile.purple{border-color:rgba(139,92,246,.2);background:rgba(139,92,246,.04);}
+.dqa-icon{font-size:28px;line-height:1;flex-shrink:0;}
+.dqa-body{}
+.dqa-name{font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:.5px;color:#fff;line-height:1.1;}
+.dqa-sub{font-size:10px;color:rgba(255,255,255,.4);margin-top:2px;line-height:1.3;}
+
+/* Free-user upgrade nudge inside dashboard */
+#dash-upgrade-nudge{
+  background:linear-gradient(135deg,rgba(232,0,29,.1),rgba(139,92,246,.08));
+  border:1px solid rgba(232,0,29,.25);border-radius:14px;
+  padding:20px;margin-bottom:16px;position:relative;overflow:hidden;
+  display:none;
+}
+#dash-upgrade-nudge::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,#e8001d,#8b5cf6);
+}
+.dun-eyebrow{font-size:9px;font-weight:700;letter-spacing:3px;color:var(--red);text-transform:uppercase;margin-bottom:6px;}
+.dun-title{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1px;color:#fff;margin-bottom:10px;line-height:1.1;}
+.dun-feats{display:flex;flex-direction:column;gap:5px;margin-bottom:14px;}
+.dun-feat{display:flex;align-items:center;gap:8px;font-size:12px;color:rgba(255,255,255,.6);}
+.dun-feat-icon{font-size:14px;flex-shrink:0;}
+.dun-btn{display:inline-flex;align-items:center;gap:6px;background:linear-gradient(90deg,#e8001d,#c0001a);color:#fff;border:none;border-radius:6px;padding:10px 20px;font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;cursor:pointer;width:100%;justify-content:center;box-shadow:0 6px 24px rgba(232,0,29,.3);}
+.dun-note{font-size:10px;color:rgba(255,255,255,.3);text-align:center;margin-top:7px;letter-spacing:1px;}
+
+/* Plans page improvements */
+.plans-social-proof{
+  display:flex;align-items:center;justify-content:center;gap:32px;
+  flex-wrap:wrap;padding:20px;
+  background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);
+  border-radius:12px;margin-bottom:32px;
+}
+.psp-item{text-align:center;}
+.psp-num{font-family:'Bebas Neue',sans-serif;font-size:36px;line-height:1;}
+.psp-lbl{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.35);}
+.plans-badge-row{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:28px;}
+.pbest{
+  background:linear-gradient(90deg,rgba(245,158,11,.15),rgba(232,0,29,.1));
+  border:1px solid rgba(245,158,11,.4);border-radius:30px;
+  padding:6px 16px;font-size:11px;font-weight:700;letter-spacing:2px;color:var(--gold);
+}
+/* Elite plan card */
+.pcard.elite{
+  background:linear-gradient(145deg,#0d0d1f,#080f1e);
+  border:1px solid rgba(139,92,246,.3);position:relative;overflow:hidden;
+}
+.pcard.elite::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,#8b5cf6,#3b82f6,#22c55e);
+}
+.pbadge.pbelite{background:rgba(139,92,246,.2);color:#a78bfa;border:1px solid rgba(139,92,246,.4);}
+.plans2.three{grid-template-columns:repeat(3,1fr);}
+.pcard .p-popular{
+  position:absolute;top:-1px;right:24px;
+  background:linear-gradient(90deg,var(--red),var(--orange));
+  color:#fff;font-size:9px;font-weight:700;letter-spacing:2px;
+  padding:4px 12px;border-radius:0 0 8px 8px;
+}
+.pcard{position:relative;}
+.plan-guarantee{
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  padding:16px;background:rgba(34,197,94,.05);border:1px solid rgba(34,197,94,.15);
+  border-radius:10px;margin-top:24px;font-size:12px;color:rgba(255,255,255,.55);
+}
+.plan-guarantee span:first-child{font-size:20px;}
+
+/* Stat cards — clickable */
+.dash-stat-card{cursor:pointer;transition:border-color .15s,background .15s;}
+.dash-stat-card:hover{border-color:rgba(255,255,255,.15)!important;background:rgba(255,255,255,.06)!important;}
+.dash-stat-card:active{transform:scale(.97);}
 
 /* ── COMPREHENSIVE MOBILE ── */
 @media(max-width:768px){
@@ -2518,21 +2617,21 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
       <button class="bsm" onclick="switchScreen('toolbox',document.querySelector('[data-screen=toolbox]'))">🧮 Open Toolbox →</button>
     </div>
 
-    <!-- Stat cards -->
+    <!-- Stat cards (clickable) -->
     <div class="dash-stats" id="dash-stat-cards">
-      <div class="dash-stat-card">
-        <div><div class="dash-stat-lbl">Tiger Score</div><div class="dash-stat-val" id="ds-tiger" style="color:var(--gold);">--</div><div class="dash-stat-sub">This month</div></div>
+      <div class="dash-stat-card" onclick="switchScreen('leaderboard',document.querySelector('[data-screen=leaderboard]'))" title="View Leaderboard">
+        <div><div class="dash-stat-lbl">Tiger Score</div><div class="dash-stat-val" id="ds-tiger" style="color:var(--gold);">--</div><div class="dash-stat-sub">Tap → Leaderboard</div></div>
         <div class="dash-stat-icon">🐯</div>
       </div>
-      <div class="dash-stat-card">
-        <div><div class="dash-stat-lbl">Streak</div><div class="dash-stat-val" id="ds-streak" style="color:var(--red);">-- days</div><div class="dash-stat-sub">Keep going!</div></div>
+      <div class="dash-stat-card" onclick="switchScreen('workouts',document.querySelector('[data-screen=workouts]'))" title="View Workouts">
+        <div><div class="dash-stat-lbl">Streak</div><div class="dash-stat-val" id="ds-streak" style="color:var(--red);">-- days</div><div class="dash-stat-sub">Tap → Log Workout</div></div>
         <div class="dash-stat-icon">🔥</div>
       </div>
-      <div class="dash-stat-card">
-        <div><div class="dash-stat-lbl">Wallet Balance</div><div class="dash-stat-val" id="ds-wallet" style="color:var(--green);">₹--</div><div class="dash-stat-sub">Available</div></div>
+      <div class="dash-stat-card" onclick="switchScreen('referrals',document.querySelector('[data-screen=referrals]'))" title="View Wallet">
+        <div><div class="dash-stat-lbl">Wallet Balance</div><div class="dash-stat-val" id="ds-wallet" style="color:var(--green);">₹--</div><div class="dash-stat-sub">Tap → Wallet</div></div>
         <div class="dash-stat-icon">💰</div>
       </div>
-      <div class="dash-stat-card">
+      <div class="dash-stat-card" onclick="switchScreen('workouts',document.querySelector('[data-screen=workouts]'))" title="View Workouts">
         <div><div class="dash-stat-lbl">Workouts</div><div class="dash-stat-val" id="ds-workouts" style="color:#60a5fa;">--</div><div class="dash-stat-sub">This month</div></div>
         <div class="dash-stat-icon">🏋️</div>
       </div>
@@ -2590,15 +2689,56 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
           <div id="pr-tracker-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;"></div>
         </div>
 
+        <!-- Upgrade nudge — shown only to free-plan users via JS -->
+        <div id="dash-upgrade-nudge">
+          <div class="dun-eyebrow">🔒 Free Plan — You're Missing Out</div>
+          <div class="dun-title">Unlock Your Full<br>Fitness Arsenal</div>
+          <div class="dun-feats">
+            <div class="dun-feat"><span class="dun-feat-icon">🥗</span>7-Day Personalised Indian Meal Plan</div>
+            <div class="dun-feat"><span class="dun-feat-icon">🗺️</span>12-Week Transformation Roadmap</div>
+            <div class="dun-feat"><span class="dun-feat-icon">📚</span>108+ Expert PDF Guides (Beginner→Master)</div>
+            <div class="dun-feat"><span class="dun-feat-icon">📈</span>Progress Photos, Streaks & Body Charts</div>
+            <div class="dun-feat"><span class="dun-feat-icon">🩸</span>Blood Report Analyser — 20+ Biomarkers</div>
+          </div>
+          <button class="dun-btn" onclick="switchScreen('plans',document.querySelector('[data-screen=plans]'))">⚡ UPGRADE TO PRO — ₹499/mo</button>
+          <div class="dun-note">No contract · Cancel anytime · Instant access</div>
+        </div>
+
         <div class="dash-card">
-          <div class="dash-card-hdr"><span class="dash-card-title">Quick Actions</span></div>
-          <div class="dash-quick-grid">
-            <div class="dash-quick-btn" onclick="switchScreen('toolbox',document.querySelector('[data-screen=toolbox]'))"><span class="dq-icon">🧮</span><span>Calculator</span></div>
-            <div class="dash-quick-btn" onclick="switchScreen('nutrition',document.querySelector('[data-screen=nutrition]'))"><span class="dq-icon">🥗</span><span>Meal Plan</span></div>
-            <div class="dash-quick-btn" onclick="switchScreen('workouts',document.querySelector('[data-screen=workouts]'))"><span class="dq-icon">📝</span><span>Log Workout</span></div>
-            <div class="dash-quick-btn" onclick="switchScreen('bloodai',document.querySelector('[data-screen=bloodai]'))"><span class="dq-icon">🩸</span><span>Blood Analyser</span></div>
-            <div class="dash-quick-btn" onclick="switchScreen('challenges',document.querySelector('[data-screen=challenges]'))"><span class="dq-icon">🏆</span><span>Challenges</span></div>
-            <div class="dash-quick-btn" onclick="switchScreen('courses',document.querySelector('[data-screen=courses]'))"><span class="dq-icon">🎓</span><span>Courses</span></div>
+          <div class="dash-card-hdr"><span class="dash-card-title">Quick Access</span></div>
+          <div class="dqa-grid">
+            <div class="dqa-tile red" onclick="switchScreen('workouts',document.querySelector('[data-screen=workouts]'))">
+              <span class="dqa-icon">🏋️</span>
+              <div class="dqa-body"><div class="dqa-name">Log Workout</div><div class="dqa-sub">Track today's session</div></div>
+            </div>
+            <div class="dqa-tile green" onclick="switchScreen('nutrition',document.querySelector('[data-screen=nutrition]'))">
+              <span class="dqa-icon">🥗</span>
+              <div class="dqa-body"><div class="dqa-name">Meal Plan</div><div class="dqa-sub">Your 7-day Indian diet</div></div>
+            </div>
+            <div class="dqa-tile blue" onclick="switchScreen('toolbox',document.querySelector('[data-screen=toolbox]'))">
+              <span class="dqa-icon">🧮</span>
+              <div class="dqa-body"><div class="dqa-name">Calculators</div><div class="dqa-sub">BMI · BMR · Beast Score</div></div>
+            </div>
+            <div class="dqa-tile purple" onclick="switchScreen('bloodai',document.querySelector('[data-screen=bloodai]'))">
+              <span class="dqa-icon">🩸</span>
+              <div class="dqa-body"><div class="dqa-name">Blood Analyser</div><div class="dqa-sub">Check 20+ biomarkers</div></div>
+            </div>
+            <div class="dqa-tile gold" onclick="switchScreen('challenges',document.querySelector('[data-screen=challenges]'))">
+              <span class="dqa-icon">🏆</span>
+              <div class="dqa-body"><div class="dqa-name">Challenges</div><div class="dqa-sub">Earn Tiger Points</div></div>
+            </div>
+            <div class="dqa-tile blue" onclick="switchScreen('courses',document.querySelector('[data-screen=courses]'))">
+              <span class="dqa-icon">🎓</span>
+              <div class="dqa-body"><div class="dqa-name">Courses</div><div class="dqa-sub">10 certification paths</div></div>
+            </div>
+            <div class="dqa-tile" onclick="switchScreen('roadmap',document.querySelector('[data-screen=roadmap]'))">
+              <span class="dqa-icon">🗺️</span>
+              <div class="dqa-body"><div class="dqa-name">Roadmap</div><div class="dqa-sub">12-week plan</div></div>
+            </div>
+            <div class="dqa-tile" onclick="switchScreen('store',document.querySelector('[data-screen=store]'))">
+              <span class="dqa-icon">📚</span>
+              <div class="dqa-body"><div class="dqa-name">PDF Guides</div><div class="dqa-sub">108+ expert guides</div></div>
+            </div>
           </div>
         </div>
       </div>
@@ -3169,49 +3309,91 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
 <div class="divider"></div>
 <section id="plans">
   <div class="container">
-    <div class="stag">Digital Add-Ons For Members</div><div class="sh">MEMBERSHIP BENEFITS</div>
-    <p class="ssub">Included free with your gym membership. Upgrade to unlock premium digital features.</p>
-    <div class="plans2">
+    <div class="stag">Choose Your Path</div>
+    <div class="sh">UPGRADE YOUR GAME</div>
+    <p class="ssub">Every Royal Fitness Club gym member gets free app access. Upgrade for the full transformation arsenal.</p>
+
+    <!-- Social proof strip -->
+    <div class="plans-social-proof">
+      <div class="psp-item"><div class="psp-num" style="color:var(--red);">500+</div><div class="psp-lbl">Active Members</div></div>
+      <div class="psp-item"><div class="psp-num" style="color:var(--gold);">4.9★</div><div class="psp-lbl">Member Rating</div></div>
+      <div class="psp-item"><div class="psp-num" style="color:var(--green);">108+</div><div class="psp-lbl">PDF Guides</div></div>
+      <div class="psp-item"><div class="psp-num" style="color:#60a5fa;">10</div><div class="psp-lbl">Courses</div></div>
+      <div class="psp-item"><div class="psp-num" style="color:#a78bfa;">16</div><div class="psp-lbl">Features</div></div>
+    </div>
+
+    <div class="plans2 three">
+      <!-- Free Plan -->
       <div class="pcard">
         <div class="pbadge pbfree">🏋️ Gym Member</div>
         <div class="pprice">FREE</div>
         <div class="pper">Included with your gym membership</div>
         <ul class="pfeats">
-          <li><span class="fi r">✓</span> BMI, BMR & TDEE Calculator</li>
-          <li><span class="fi r">✓</span> Calories & Macro Targets</li>
-          <li><span class="fi r">✓</span> Beast Score (0–100)</li>
-          <li><span class="fi r">✓</span> Body Anatomy Visualizer (3D)</li>
+          <li><span class="fi r">✓</span> Beast Score Calculator (0–100)</li>
+          <li><span class="fi r">✓</span> BMI, BMR &amp; TDEE Calculator</li>
+          <li><span class="fi r">✓</span> Calories &amp; Macro Targets</li>
           <li><span class="fi r">✓</span> Body Fat % Estimator</li>
           <li><span class="fi r">✓</span> 1-Rep Max Calculator</li>
-          <li><span class="fi r">✓</span> Indian Supplement Guide</li>
-          <li><span class="fi r">✓</span> Transformation Strategy</li>
-          <li><span class="fi r">✓</span> Transformation History</li>
-          <li class="flocked"><span class="fi m">🔒</span> Full 7-Day Indian Meal Plan</li>
-          <li class="flocked"><span class="fi m">🔒</span> Progress Charts & Streak</li>
-          <li class="flocked"><span class="fi m">🔒</span> Before/After Photo Upload</li>
-          <li class="flocked"><span class="fi m">🔒</span> PDF Export & Share Card</li>
+          <li><span class="fi r">✓</span> Tiger Leaderboard Access</li>
+          <li><span class="fi r">✓</span> WOD (Workout of the Day)</li>
+          <li><span class="fi r">✓</span> Water Tracker</li>
+          <li class="flocked"><span class="fi m">🔒</span> Full Meal Planner</li>
+          <li class="flocked"><span class="fi m">🔒</span> 12-Week Roadmap</li>
+          <li class="flocked"><span class="fi m">🔒</span> Blood Analyser</li>
+          <li class="flocked"><span class="fi m">🔒</span> 108+ PDF Guides</li>
         </ul>
-        <button class="bfire" style="width:100%;justify-content:center;" onclick="forceLogin()">Member Login →</button>
+        <button class="bfire" style="width:100%;justify-content:center;opacity:.75;" onclick="switchScreen('dashboard',document.querySelector('[data-screen=dashboard]'))">You're on this plan</button>
       </div>
-      <div class="pcard pro">
-        <div class="pbadge pbpro">👑 Beast Pro</div>
-        <div class="promobox"><div>🔥</div><div><div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:2px;color:var(--gold);">LIMITED TIME</div><div class="ptimer2" id="ptimer2">23:59:59</div></div></div>
+
+      <!-- Pro Plan — MOST POPULAR -->
+      <div class="pcard pro" style="transform:scale(1.03);z-index:2;">
+        <div class="p-popular">🔥 MOST POPULAR</div>
+        <div class="pbadge pbpro">👑 Royal Pro</div>
+        <div class="promobox"><div>⚡</div><div><div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:2px;color:var(--gold);">LIMITED TIME — 50% OFF</div><div class="ptimer2" id="ptimer2">23:59:59</div></div></div>
         <div class="pprice gold"><sup>₹</sup>499<sub>/mo</sub></div>
-        <div class="pper">Direct subscription · Cancel anytime</div>
+        <div class="pper" style="text-decoration:line-through;color:#555;">Was ₹999/mo</div>
         <ul class="pfeats">
           <li><span class="fi g">✓</span> Everything in Free</li>
           <li><span class="fi g">✓</span> Full 7-Day Indian Meal Plan</li>
-          <li><span class="fi g">✓</span> 50+ Veg & Non-Veg Foods</li>
+          <li><span class="fi g">✓</span> 50+ Veg &amp; Non-Veg Foods</li>
           <li><span class="fi g">✓</span> 12-Week Transformation Roadmap</li>
-          <li><span class="fi g">✓</span> Progress Charts & Weight Graph</li>
+          <li><span class="fi g">✓</span> Progress Charts &amp; Weight Graph</li>
           <li><span class="fi g">✓</span> Beast Streak System</li>
           <li><span class="fi g">✓</span> Before/After Photo Upload</li>
-          <li><span class="fi g">✓</span> Social Beast Score Share Card</li>
-          <li><span class="fi g">✓</span> Branded PDF Report Export</li>
-          <li><span class="fi g">✓</span> Community Access</li>
+          <li><span class="fi g">✓</span> Blood Report Analyser (20+ markers)</li>
+          <li><span class="fi g">✓</span> 108+ Expert PDF Guides</li>
+          <li><span class="fi g">✓</span> 10 Certification Courses</li>
+          <li><span class="fi g">✓</span> Tiger Points &amp; Wallet</li>
+          <li><span class="fi g">✓</span> Physio &amp; Recovery Plans</li>
         </ul>
-        <button class="bpro apulse" onclick="openModal('promodal')">UNLOCK ROYAL PRO 👑 — <span class="px-pro">₹499</span>/mo</button>
+        <button class="bpro apulse" onclick="openModal('promodal')" style="width:100%;justify-content:center;">⚡ GET ROYAL PRO — ₹499/mo</button>
       </div>
+
+      <!-- Royal Elite -->
+      <div class="pcard elite">
+        <div class="pbadge pbelite">💎 Royal Elite</div>
+        <div class="pprice" style="color:#a78bfa;"><sup style="color:#a78bfa;">₹</sup>1,999<sub>/mo</sub></div>
+        <div class="pper">Personal coaching · Limited spots</div>
+        <ul class="pfeats">
+          <li><span class="fi" style="color:#a78bfa;">✓</span> Everything in Royal Pro</li>
+          <li><span class="fi" style="color:#a78bfa;">✓</span> 1-on-1 Personal Trainer Sessions</li>
+          <li><span class="fi" style="color:#a78bfa;">✓</span> Custom Diet Plan by Nutritionist</li>
+          <li><span class="fi" style="color:#a78bfa;">✓</span> Weekly Check-in Calls</li>
+          <li><span class="fi" style="color:#a78bfa;">✓</span> Priority Support &amp; WhatsApp Access</li>
+          <li><span class="fi" style="color:#a78bfa;">✓</span> Monthly Body Composition Analysis</div></li>
+          <li><span class="fi" style="color:#a78bfa;">✓</span> Exclusive Elite Badge on Leaderboard</li>
+          <li><span class="fi" style="color:#a78bfa;">✓</span> Early Access to New Features</li>
+          <li><span class="fi" style="color:#a78bfa;">✓</span> Lifetime Coaching Record Access</li>
+        </ul>
+        <div style="margin-bottom:10px;padding:8px 12px;background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.2);border-radius:8px;font-size:11px;color:#a78bfa;text-align:center;letter-spacing:1px;">⚠️ Only 5 spots available this month</div>
+        <button class="bpro apulse" onclick="openModal('promodal')" style="width:100%;justify-content:center;background:linear-gradient(90deg,#6d28d9,#4f46e5);">💎 JOIN ELITE — ₹1,999/mo</button>
+      </div>
+    </div>
+
+    <!-- Guarantee strip -->
+    <div class="plan-guarantee">
+      <span>🛡️</span>
+      <span>Cancel anytime · Secure Razorpay payment · Instant access · No hidden fees</span>
     </div>
   </div>
 </section>
@@ -11901,6 +12083,12 @@ function populateDashboard() {
       var idx = user ? board.findIndex(function(e) { return e.uid === user.uid; }) : -1;
       rankEl.textContent = idx >= 0 ? '#' + (idx + 1) : (user ? '#' + board.length : '--');
     } catch(e) { rankEl.textContent = '--'; }
+  }
+
+  // Upgrade nudge — show only to free-plan users (use global isPro flag)
+  var nudge = document.getElementById('dash-upgrade-nudge');
+  if (nudge) {
+    nudge.style.display = isPro ? 'none' : 'block';
   }
 
   // Today's tasks
