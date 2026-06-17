@@ -3238,10 +3238,10 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
       <!-- Quick actions -->
       <div class="prof-card">
         <h4>⚡ Quick Actions</h4>
-        <button class="bsm" style="width:100%;margin-bottom:8px;" onclick="closeProfile();document.getElementById('calculator').scrollIntoView({behavior:'smooth'})">🧮 Open Calculator</button>
-        <button class="bsm" style="width:100%;margin-bottom:8px;" onclick="closeProfile();document.getElementById('mealplan').scrollIntoView({behavior:'smooth'})">🍛 View Meal Plan</button>
+        <button class="bsm" style="width:100%;margin-bottom:8px;" onclick="switchScreen('toolbox',document.querySelector('[data-screen=toolbox]'))">🧮 Open Calculator</button>
+        <button class="bsm" style="width:100%;margin-bottom:8px;" onclick="switchScreen('nutrition',document.querySelector('[data-screen=nutrition]'))">🍛 View Meal Plan</button>
         <button class="bsm" style="width:100%;margin-bottom:8px;" onclick="savePDF()">📄 Export PDF Report</button>
-        <button class="bsm" style="width:100%;margin-bottom:8px;" onclick="closeProfile();document.getElementById('dashboard').scrollIntoView({behavior:'smooth'})">📊 Transformation Dashboard</button>
+        <button class="bsm" style="width:100%;margin-bottom:8px;" onclick="switchScreen('dashboard',document.querySelector('[data-screen=dashboard]'))">📊 Dashboard</button>
         <button class="bsm" style="width:100%;border-color:var(--red);color:var(--red);" onclick="profileLogout()">🚪 Logout</button>
       </div>
       <!-- Billing history -->
@@ -3300,7 +3300,7 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
           <div class="tf-box"><div class="tf-val" id="tf-refs">0</div><div class="tf-lbl">Referrals×50</div></div>
           <div class="tf-box"><div class="tf-val" id="tf-photos">0</div><div class="tf-lbl">Photos×20</div></div>
         </div>
-        <button class="bsm" style="width:100%;margin-top:12px;" onclick="closeProfile();document.getElementById('arena').scrollIntoView({behavior:'smooth'})">🏆 View Full Leaderboard</button>
+        <button class="bsm" style="width:100%;margin-top:12px;" onclick="switchScreen('leaderboard',document.querySelector('[data-screen=leaderboard]'))">🏆 View Full Leaderboard</button>
       </div>
     </div>
   </div>
@@ -3386,7 +3386,7 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
           <li><span class="fi" style="color:#a78bfa;">✓</span> Lifetime Coaching Record Access</li>
         </ul>
         <div style="margin-bottom:10px;padding:8px 12px;background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.2);border-radius:8px;font-size:11px;color:#a78bfa;text-align:center;letter-spacing:1px;">⚠️ Only 5 spots available this month</div>
-        <button class="bpro apulse" onclick="openModal('promodal')" style="width:100%;justify-content:center;background:linear-gradient(90deg,#6d28d9,#4f46e5);">💎 JOIN ELITE — ₹1,999/mo</button>
+        <button class="bpro apulse" onclick="openModal('elitemodal')" style="width:100%;justify-content:center;background:linear-gradient(90deg,#6d28d9,#4f46e5);">💎 JOIN ELITE — ₹1,999/mo</button>
       </div>
     </div>
 
@@ -3762,7 +3762,7 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
       <div class="ptab" data-panel="recovery">😴 Recovery</div>
       <div class="ptab" data-panel="warmup">🔥 Warm-Up</div>
       <div class="ptab" data-panel="foamroll">🫀 Foam Roll</div>
-      <div class="ptab" data-panel="aiphysio">🤖 Smart Physio</div>
+      <div class="ptab" data-panel="aiphysio">🩺 Smart Physio</div>
     </div>
     <!-- PAIN -->
     <div class="ppanel active" data-panel="pain">
@@ -3865,7 +3865,7 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
     <!-- AI PHYSIO -->
     <div class="ppanel" data-panel="aiphysio">
       <div class="rcard">
-        <div class="rctitle">🤖 Smart Physio Assessment</div>
+        <div class="rctitle">🩺 Smart Physio Assessment</div>
         <p style="font-size:13px;color:var(--muted);margin:6px 0 16px;">Answer 5 quick questions and get a personalised physiotherapy recovery plan — no appointment needed.</p>
         <div id="aip-wizard"></div>
         <div id="aip-report" style="display:none;"></div>
@@ -3940,7 +3940,7 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
     <button class="psg-btn" onclick="openModal('promodal')">⚡ Unlock Royal Pro — <span class="px-pro">₹499</span>/mo</button>
   </div>
   <div class="container">
-    <div class="stag">Beast Pro Exclusive</div><div class="sh">PROGRESS COMMAND CENTER</div>
+    <div class="stag">Royal Pro Exclusive</div><div class="sh">PROGRESS COMMAND CENTER</div>
     <p class="ssub">Every streak, every drop, every rep — track and visualise your progress.</p>
     <div class="tr3">
       <div class="trc"><h4>🔥 Beast Streak</h4>
@@ -6197,7 +6197,7 @@ async function logout(){
 const tdata=[
   {n:'Rohit S.',city:'Mumbai',goal:'Lost 22kg',stars:'★★★★★',txt:'"Beast Calculator ne meri life badal di! 4 mahine mein pehchaana nahi jata ab. Indian meal plan ekdum sahi tha!"'},
   {n:'Ananya K.',city:'Delhi',goal:'Lost 15kg',stars:'★★★★★',txt:'"Pehli baar kisi app ne mujhe Indian foods ka proper macro breakdown diya. Dal, roti, sabzi sab ka calculation!"'},
-  {n:'Siddharth M.',city:'Pune',goal:'+14kg Muscle',stars:'★★★★★',txt:'"Beast Pro ki 7-day meal plan follow ki. 6 mahine mein 14kg lean mass gain! Chawal aur paneer se!"'},
+  {n:'Siddharth M.',city:'Pune',goal:'+14kg Muscle',stars:'★★★★★',txt:'"Royal Pro ki 7-day meal plan follow ki. 6 mahine mein 14kg lean mass gain! Chawal aur paneer se!"'},
   {n:'Deepika R.',city:'Bangalore',goal:'Lost 18kg',stars:'★★★★★',txt:'"Body anatomy visualizer dekh ke samajh aaya mera body fat kitna tha. Streak system amazing hai!"'},
   {n:'Amit P.',city:'Chennai',goal:'Athlete',stars:'★★★★★',txt:'"₹499 mein itna sab kuch? Yaar ye toh London ka subscription bhi sharminda ho jaye iske samne!"'},
   {n:'Priyanka N.',city:'Hyderabad',goal:'Lost 12kg',stars:'★★★★★',txt:'"Before/after photos feature bahut emotional tha. 3 mahine baad apna photo dekha toh bilkul alag tha!"'},
@@ -7438,7 +7438,7 @@ function aipGenerateReport() {
     </div>
 
     <div style="margin-top:14px;padding:12px 14px;background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.2);border-radius:8px;font-size:12px;color:var(--muted);">
-      ⚠️ This AI plan is for educational purposes only and does not replace a qualified physiotherapist. If your pain is severe, worsening, or associated with numbness/weakness, see a healthcare professional.
+      ⚠️ This formula-based plan is for educational purposes only and does not replace a qualified physiotherapist. If your pain is severe, worsening, or associated with numbness/weakness, see a healthcare professional.
     </div>
 
     <div style="display:flex;gap:10px;margin-top:18px;flex-wrap:wrap;">
@@ -7532,7 +7532,7 @@ function aipGetProtocol(area, diag, severity, types, timing, history) {
   return protocols[area] || protocols.lower_back;
 }
 
-// Initialize AI Physio on tab switch
+// Initialize Smart Physio on tab switch
 document.addEventListener('DOMContentLoaded', () => { /* physio tab init handled by tab switcher */ });
 
 // ── SCORE PERSISTENCE ──
