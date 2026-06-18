@@ -251,6 +251,15 @@ section::before{content:'';position:absolute;inset:0;background:linear-gradient(
 .aleg{display:flex;align-items:center;gap:7px;font-size:10px;}
 .aleg-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
 .aleg-lbl{color:var(--muted);}.aleg-val{color:var(--text);font-weight:600;margin-left:auto;font-size:10px;}
+/* Anatomy overlay badges */
+.anat-badge{position:absolute;background:rgba(10,0,2,.88);border:1px solid rgba(232,0,29,.5);border-radius:6px;padding:4px 8px;text-align:center;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);}
+.anat-badge-val{font-family:'Bebas Neue',sans-serif;font-size:15px;color:#e8001d;line-height:1.1;}
+.anat-badge-lbl{font-size:7.5px;color:#ccc;letter-spacing:.4px;margin-top:1px;}
+.anat-badge::after{content:'';position:absolute;width:20px;height:1px;background:rgba(232,0,29,.4);}
+.anat-badge.left::after{left:100%;top:50%;transform:translateY(-50%);}
+.anat-badge.right::after{right:100%;top:50%;transform:translateY(-50%);}
+#anatomy-img-wrap{position:relative;overflow:hidden;border-radius:8px;background:#fff;}
+#anatomy-img{width:100%;display:block;mix-blend-mode:multiply;filter:contrast(1.08) saturate(1.1);}
 .mtabs{display:flex;gap:0;border-bottom:1px solid var(--border);margin-top:24px;overflow-x:auto;}
 .mtab{padding:9px 16px;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .2s;white-space:nowrap;flex-shrink:0;}
 .mtab.active{color:var(--red);border-bottom-color:var(--red);}
@@ -3604,46 +3613,41 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
           <div class="anatomy-wrap" id="anatomy-wrap-outer">
             <div class="rctitle" style="margin-bottom:10px;">🧬 Interactive 3D Anatomy — BioDigital Human</div>
             <!-- BioDigital launcher card — opens full interactive model in browser tab -->
-            <div id="biodigital-launcher" onclick="window.open('https://human.biodigital.com/viewer/?id=5HQ0&ui-anatomy-descriptions=true&ui-anatomy-pronunciations=true&ui-anatomy-labels=true&ui-audio=true&ui-chapter-list=false&ui-fullscreen=true&ui-help=true&ui-info=true&ui-label-list=true&ui-layers=true&ui-loader=circle&ui-media-controls=full&ui-menu=true&ui-nav=true&ui-search=true&ui-tools=true&ui-tutorial=false&ui-undo=true&ui-whiteboard=true&initial.none=true&disable-scroll=false&dk=edac91d2443ff104ab74174b3047b00937a21960&paid=o_25ed890c','_blank')" style="cursor:pointer;border:1px solid var(--border);border-radius:10px;overflow:hidden;background:linear-gradient(135deg,#07070f 0%,#110a10 40%,#0d0a14 100%);position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:32px 20px;min-height:260px;transition:border-color .2s;" onmouseover="this.style.borderColor='var(--red)'" onmouseout="this.style.borderColor='var(--border)'">
-              <!-- Background decorative circles -->
-              <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;">
-                <div style="position:absolute;width:220px;height:220px;border-radius:50%;border:1px solid rgba(232,0,29,.1);top:50%;left:50%;transform:translate(-50%,-50%);"></div>
-                <div style="position:absolute;width:300px;height:300px;border-radius:50%;border:1px solid rgba(232,0,29,.06);top:50%;left:50%;transform:translate(-50%,-50%);"></div>
-                <div style="position:absolute;width:380px;height:380px;border-radius:50%;border:1px solid rgba(232,0,29,.03);top:50%;left:50%;transform:translate(-50%,-50%);"></div>
+            <!-- Muscular anatomy image with transparent bg + body composition overlay -->
+            <div id="anatomy-img-wrap">
+              <img id="anatomy-img" src="icons/anatomy_muscles.jpg" alt="Human Muscular System — Royal Fitness Club">
+
+              <!-- Data overlay badges — shown after Beast Score calculation -->
+              <div id="bio-overlay" style="display:none;position:absolute;inset:0;pointer-events:none;">
+                <!-- LEFT side badges (front body) -->
+                <div class="anat-badge left" id="ab-muscle"  style="top:16%;left:2%;">
+                  <div class="anat-badge-val">—</div><div class="anat-badge-lbl">💪 MUSCLE</div>
+                </div>
+                <div class="anat-badge left" id="ab-fat"     style="top:40%;left:2%;">
+                  <div class="anat-badge-val">—</div><div class="anat-badge-lbl">🔥 BODY FAT</div>
+                </div>
+                <div class="anat-badge left" id="ab-lean"    style="top:64%;left:2%;">
+                  <div class="anat-badge-val">—</div><div class="anat-badge-lbl">⚡ LEAN MASS</div>
+                </div>
+                <!-- RIGHT side badges (back body) -->
+                <div class="anat-badge right" id="ab-water"  style="top:16%;right:2%;">
+                  <div class="anat-badge-val">—</div><div class="anat-badge-lbl">💧 WATER</div>
+                </div>
+                <div class="anat-badge right" id="ab-bone"   style="top:40%;right:2%;">
+                  <div class="anat-badge-val">—</div><div class="anat-badge-lbl">🦴 BONE MASS</div>
+                </div>
+                <!-- Category pill at bottom centre -->
+                <div id="ab-category" style="position:absolute;bottom:10px;left:50%;transform:translateX(-50%);background:rgba(232,0,29,.92);color:#fff;border-radius:12px;padding:4px 14px;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:1.5px;white-space:nowrap;"></div>
               </div>
-              <!-- Body silhouette icon -->
-              <svg width="72" height="120" viewBox="0 0 72 120" fill="none" xmlns="http://www.w3.org/2000/svg" style="position:relative;z-index:1;opacity:.9;">
-                <circle cx="36" cy="12" r="11" fill="#e8001d" opacity=".8"/>
-                <rect x="29" y="22" width="14" height="10" rx="4" fill="#e8001d" opacity=".7"/>
-                <rect x="16" y="30" width="40" height="38" rx="7" fill="#e8001d" opacity=".6"/>
-                <rect x="4" y="30" width="12" height="34" rx="5" fill="#e8001d" opacity=".5"/>
-                <rect x="56" y="30" width="12" height="34" rx="5" fill="#e8001d" opacity=".5"/>
-                <rect x="20" y="66" width="32" height="14" rx="5" fill="#e8001d" opacity=".5"/>
-                <rect x="20" y="78" width="14" height="40" rx="5" fill="#e8001d" opacity=".45"/>
-                <rect x="38" y="78" width="14" height="40" rx="5" fill="#e8001d" opacity=".45"/>
-                <!-- muscle highlight lines -->
-                <line x1="28" y1="40" x2="44" y2="40" stroke="#ff6b6b" stroke-width="1.5" opacity=".4"/>
-                <line x1="28" y1="50" x2="44" y2="50" stroke="#ff6b6b" stroke-width="1.5" opacity=".4"/>
-                <line x1="28" y1="60" x2="44" y2="60" stroke="#ff6b6b" stroke-width="1.5" opacity=".4"/>
-              </svg>
-              <div style="position:relative;z-index:1;text-align:center;">
-                <div style="font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px;color:#fff;margin-bottom:4px;">BIODIGITAL HUMAN</div>
-                <div style="font-size:11px;color:var(--muted);letter-spacing:1px;">MUSCULAR SYSTEM · FULL INTERACTIVE 3D ANATOMY</div>
+
+              <!-- Pre-calculation prompt -->
+              <div id="bio-prompt" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;">
+                <div style="background:rgba(255,255,255,.82);border-radius:10px;padding:16px 20px;text-align:center;max-width:220px;">
+                  <div style="font-size:26px;margin-bottom:6px;">🧮</div>
+                  <div style="font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:2px;color:#111;">CALCULATE YOUR SCORE</div>
+                  <div style="font-size:10px;color:#666;margin-top:4px;">Run Beast Score above to see your body composition mapped onto this anatomy chart</div>
+                </div>
               </div>
-              <!-- Feature chips -->
-              <div style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center;position:relative;z-index:1;">
-                <span style="background:rgba(232,0,29,.12);border:1px solid rgba(232,0,29,.25);color:#e8001d;font-size:9px;font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:1px;padding:3px 8px;border-radius:12px;">🏷 ANATOMY LABELS</span>
-                <span style="background:rgba(56,189,248,.08);border:1px solid rgba(56,189,248,.2);color:#38bdf8;font-size:9px;font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:1px;padding:3px 8px;border-radius:12px;">🔍 SEARCH</span>
-                <span style="background:rgba(245,197,24,.08);border:1px solid rgba(245,197,24,.2);color:#f5c518;font-size:9px;font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:1px;padding:3px 8px;border-radius:12px;">🗂 LAYERS</span>
-                <span style="background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.2);color:#22c55e;font-size:9px;font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:1px;padding:3px 8px;border-radius:12px;">⛶ FULLSCREEN</span>
-                <span style="background:rgba(192,41,46,.12);border:1px solid rgba(192,41,46,.25);color:#e8001d;font-size:9px;font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:1px;padding:3px 8px;border-radius:12px;">🔊 AUDIO</span>
-              </div>
-              <!-- CTA button -->
-              <button style="position:relative;z-index:1;background:linear-gradient(135deg,#e8001d,#a0001a);color:#fff;border:none;border-radius:8px;padding:11px 28px;font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;cursor:pointer;display:flex;align-items:center;gap:8px;box-shadow:0 4px 20px rgba(232,0,29,.3);">
-                🧬 OPEN 3D BODY MAP
-                <span style="font-size:12px;opacity:.8;">↗</span>
-              </button>
-              <div style="position:relative;z-index:1;font-size:9px;color:var(--muted);letter-spacing:.5px;">Opens full interactive viewer · Drag · Zoom · Click any muscle</div>
             </div>
             <div class="anat-legend" id="anatleg" style="margin-top:10px;"></div>
           </div>
@@ -6701,6 +6705,29 @@ document.querySelectorAll('.split-tab').forEach(x=>{x.classList.toggle('active',
 function drawAnatomy(bf,bfc,weight,gender){
   const bfMass=weight*(bf/100),leanMass=weight-bfMass,muscleMass=leanMass*.85,boneMass=leanMass*.15;
   const waterPct=Math.min(65,50+Math.max(0,(25-bf))*.6);
+  // Update image overlay badges
+  const overlay=$('bio-overlay'),prompt=$('bio-prompt');
+  if(overlay){overlay.style.display='block';}
+  if(prompt){prompt.style.display='none';}
+  const setB=(id,val)=>{const el=$('ab-'+id);if(el){const v=el.querySelector('.anat-badge-val');if(v)v.textContent=val;}};
+  setB('muscle', muscleMass.toFixed(1)+'kg');
+  setB('fat',    bf.toFixed(1)+'%');
+  setB('lean',   leanMass.toFixed(1)+'kg');
+  setB('water',  waterPct.toFixed(0)+'%');
+  setB('bone',   boneMass.toFixed(1)+'kg');
+  const catEl=$('ab-category');
+  if(catEl){
+    catEl.textContent=bfc;
+    catEl.style.background=bf<15?'rgba(34,197,94,.92)':bf<25?'rgba(245,158,11,.92)':'rgba(232,0,29,.92)';
+  }
+  // Tint the anatomy image based on body fat level
+  const img=$('anatomy-img');
+  if(img){
+    const hue=bf<15?0:bf<25?30:0;
+    const sat=bf<20?1.2:1.05;
+    img.style.filter=`contrast(1.08) saturate(${sat}) hue-rotate(${hue}deg)`;
+  }
+  // Update legend
   $('anatleg').innerHTML=`
     <div class="aleg"><div class="aleg-dot" style="background:#e8001d;"></div><span class="aleg-lbl">Muscle</span><span class="aleg-val">${muscleMass.toFixed(1)}kg</span></div>
     <div class="aleg"><div class="aleg-dot" style="background:#ff8c00;"></div><span class="aleg-lbl">Body Fat</span><span class="aleg-val">${bf.toFixed(1)}%</span></div>
@@ -6708,7 +6735,6 @@ function drawAnatomy(bf,bfc,weight,gender){
     <div class="aleg"><div class="aleg-dot" style="background:#22c55e;"></div><span class="aleg-lbl">Lean Mass</span><span class="aleg-val">${leanMass.toFixed(1)}kg</span></div>
     <div class="aleg"><div class="aleg-dot" style="background:#94a3b8;"></div><span class="aleg-lbl">Bone Mass</span><span class="aleg-val">${boneMass.toFixed(1)}kg</span></div>
     <div class="aleg"><div class="aleg-dot" style="background:${bf<15?'#22c55e':bf<25?'#ffd000':'#e8001d'};"></div><span class="aleg-lbl">Category</span><span class="aleg-val">${bfc}</span></div>`;
-  bioDigitalFocus('fullbody');
 }
 
 // ── BIODIGITAL HUMAN 3D VIEWER ──────────────────────────────────────────────
