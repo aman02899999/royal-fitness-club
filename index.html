@@ -7695,6 +7695,8 @@ function renderProfile(){
   const badge=$('prof-badge');
   const GYM_PLAN_LABELS={'royal_elite':'👑 Royal Elite','royal_pro':'⚡ Royal Pro','basic':'🏋 Basic Member'};
   if(user.membershipExpiry){badge.className='prof-plan-badge '+(isPro?'pro':'free');badge.textContent=GYM_PLAN_LABELS[user.plan]||'🏋 Member';}
+  else if(isAdminUser()||user.plan==='royal_elite'){badge.className='prof-plan-badge pro';badge.textContent='💎 Royal Elite';}
+  else if(isPro&&user.gymMember){badge.className='prof-plan-badge pro';badge.textContent='🏋 Pro (Gym Member)';}
   else if(isPro){badge.className='prof-plan-badge pro';badge.textContent='👑 Royal Pro';}
   else{badge.className='prof-plan-badge free';badge.textContent='⚡ Free Plan';}
   // account
@@ -7754,15 +7756,27 @@ function renderProfile(){
     $('pp-action').style.display='none';
     $('pp-cancel').style.display='block';
     $('pp-history').innerHTML=sub.history.map(h=>`<div class="prof-pay-row"><span>${h.date} — ${h.desc}</span><span style="color:var(--green);">${h.amt}</span></div>`).join('');
+  }else if(isPro||isAdminUser()){
+    // PRO user without Razorpay sub (gym-member PRO or admin)
+    const _planLabel=isAdminUser()||user.plan==='royal_elite'?'ROYAL ELITE':user.gymMember?'ROYAL PRO (GYM)':'ROYAL PRO';
+    $('pp-title').textContent=_planLabel;
+    $('pp-price').innerHTML='<small style="font-size:10px;letter-spacing:2px;color:var(--gold);">'+( isAdminUser()?'ADMIN ACCESS':user.gymMember?'GYM MEMBER BENEFIT':'PRO ACCESS' )+'</small>';
+    $('pp-status').className='prof-status active';$('pp-status').textContent='● Active';
+    $('pp-plan').textContent=isAdminUser()||user.plan==='royal_elite'?'Royal Elite':user.gymMember?'Pro (Gym Membership)':'Royal Pro';
+    $('pp-statustext').textContent='Active';
+    $('pp-started').textContent=user.since?new Date(user.since).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}):'—';
+    $('pp-next').textContent='—';$('pp-method').textContent=user.gymMember?'Gym Membership':'Complimentary';
+    $('pp-action').style.display='none';$('pp-cancel').style.display='none';
+    $('pp-history').innerHTML='<p style="font-size:12px;color:var(--muted);">Access granted via '+( isAdminUser()?'admin account':user.gymMember?'RFC gym membership (3+ months)':'plan upgrade' )+'.</p>';
   }else{
-    $('pp-title').textContent='ROYAL ULTIMATE';
-    const _cf=CURRENCIES[currentCurrency]||CURRENCIES.INR;$('pp-price').innerHTML=_cf.sym+'0<small>/mo</small>';
+    $('pp-title').textContent='FREE PLAN';
+    const _cf=CURRENCIES[currentCurrency]||CURRENCIES.INR;$('pp-price').innerHTML=_cf.sym+'499<small>/mo to upgrade</small>';
     $('pp-status').className='prof-status none';$('pp-status').textContent='● Active';
     $('pp-plan').textContent='Free';$('pp-statustext').textContent='Active';
     $('pp-started').textContent=user.since?new Date(user.since).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}):'—';
     $('pp-next').textContent='—';$('pp-method').textContent='None';
     $('pp-action').style.display='block';$('pp-cancel').style.display='none';
-    $('pp-history').innerHTML='<p style="font-size:12px;color:var(--muted);">No transactions yet. Upgrade to Pro to start your 7-day free trial.</p>';
+    $('pp-history').innerHTML='<p style="font-size:12px;color:var(--muted);">No transactions yet. Upgrade to Pro or join RFC gym for 3 months to unlock all features.</p>';
   }
   // latest stats
   if(lastRes){$('ps-bmi').textContent=lastRes.bmi.toFixed(1);$('ps-score').textContent=lastRes.score;$('ps-bf').textContent=lastRes.bf.toFixed(1)+'%';$('ps-cals').textContent=lastRes.targetCals;$('ps-goal').textContent=lastRes.goal.toUpperCase();$('ps-diet').textContent=lastRes.diet;}
@@ -11897,8 +11911,8 @@ const ALL_MANAGED_IDS = ['screen-dashboard','home','profile','plans','calculator
 let currentScreen = 'dashboard';
 
 function switchScreen(name, navEl) {
-  // Hide onboarding overlay when navigating to publicly accessible screens
-  if (['plans','courses','store'].includes(name)) hideOnboarding();
+  // Hide onboarding overlay when navigating away from dashboard
+  if (name !== 'dashboard') hideOnboarding();
   // Check nav control — disabled screens show Notify Me overlay instead
   if (!isAdminUser()) {
     const nc = getNavControl();
@@ -11986,6 +12000,7 @@ function switchScreen(name, navEl) {
     }, 120);
   }
   if (name === 'nutrition') _updateMacroBanner();
+  if (name === 'profile') { if (typeof renderProfile === 'function') renderProfile(); }
 
   // Close mobile sidebar on nav
   if (window.innerWidth < 900) {
