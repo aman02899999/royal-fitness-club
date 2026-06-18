@@ -11703,7 +11703,7 @@ function renderAdmSiteSettings() {
   set('adm-site-email', s.supportEmail || '');
   set('adm-site-whatsapp', s.whatsapp || '');
   set('adm-site-pro-price', s.proPrice || 499);
-  set('adm-site-elite-price', s.elitePrice || 999);
+  set('adm-site-elite-price', s.elitePrice || 1999);
   set('adm-site-announce', s.announcement || '');
   setChk('adm-site-announce-enabled', s.announcementEnabled);
 }
@@ -11717,7 +11717,7 @@ function admSaveSiteSettings() {
     supportEmail: g('adm-site-email').trim(),
     whatsapp: g('adm-site-whatsapp').trim(),
     proPrice: parseInt(g('adm-site-pro-price')) || 499,
-    elitePrice: parseInt(g('adm-site-elite-price')) || 999,
+    elitePrice: parseInt(g('adm-site-elite-price')) || 1999,
     announcement: g('adm-site-announce').trim(),
     announcementEnabled: gChk('adm-site-announce-enabled'),
   };
@@ -11729,7 +11729,7 @@ function admSaveSiteSettings() {
 // ─── PLANS MANAGEMENT ──────────────────────────────────────────────────────
 const DEFAULT_PLANS = [
   {id:'plan_pro', name:'Royal Pro', price:499, period:'month', features:['Full workout tracker','Nutrition plans','Blood Analyser reports','Leaderboard access','Priority support'], badge:'👑', active:true},
-  {id:'plan_elite', name:'Royal Elite', price:999, period:'month', features:['Everything in Pro','1-on-1 coaching (2 sessions)','Custom meal plan','Advanced analytics'], badge:'⚡', active:true},
+  {id:'plan_elite', name:'Royal Elite', price:1999, period:'month', features:['Everything in Pro','1-on-1 coaching (2 sessions)','Custom meal plan','Advanced analytics'], badge:'⚡', active:true},
   {id:'plan_royal', name:'Royal Annual', price:4999, period:'year', features:['All Pro & Elite features','12-month access','Exclusive RFC merchandise discount','Certificate of completion'], badge:'🏆', active:true},
 ];
 
