@@ -5,6 +5,9 @@ on:
     branches: [ main, master, claude/royal-fitness-saas-refactor-87s2ul ]
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -68,17 +71,66 @@ jobs:
           cd android
           ./gradlew assembleDebug --no-daemon --stacktrace
 
-      - name: Upload Debug APK
+      - name: Rename APK
+        run: |
+          cp android/app/build/outputs/apk/debug/app-debug.apk \
+             android/app/build/outputs/apk/debug/royal-fitness-club.apk
+
+      - name: Get APK info
+        id: apk_info
+        run: |
+          APK="android/app/build/outputs/apk/debug/royal-fitness-club.apk"
+          SIZE=$(du -sh "$APK" | cut -f1)
+          echo "size=$SIZE" >> $GITHUB_OUTPUT
+          echo "✅ APK ready: $SIZE"
+
+      - name: Upload APK as artifact
         uses: actions/upload-artifact@v4
         with:
           name: royal-fitness-club-debug-apk
-          path: android/app/build/outputs/apk/debug/app-debug.apk
+          path: android/app/build/outputs/apk/debug/royal-fitness-club.apk
           retention-days: 30
 
-      - name: Get APK size
+      - name: Delete existing android-latest release (if exists)
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          APK="android/app/build/outputs/apk/debug/app-debug.apk"
-          if [ -f "$APK" ]; then
-            SIZE=$(du -sh "$APK" | cut -f1)
-            echo "✅ APK built successfully: $SIZE"
-          fi
+          gh release delete android-latest --yes --repo ${{ github.repository }} 2>/dev/null || true
+          git push origin :refs/tags/android-latest 2>/dev/null || true
+
+      - name: Create GitHub Release with APK
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: android-latest
+          name: "Royal Fitness Club — Android App (Latest)"
+          prerelease: true
+          generate_release_notes: false
+          body: |
+            ## 📱 Royal Fitness Club — Android App
+
+            **Download and install the latest Royal Fitness Club APK on your Android device.**
+
+            ### How to Install
+            1. Download `royal-fitness-club.apk` below
+            2. On your Android phone: go to **Settings → Security → Unknown Sources** (or **Install Unknown Apps**) and allow your browser
+            3. Open the downloaded file and tap **Install**
+            4. Launch **Royal Fitness Club** from your home screen
+
+            ### Requirements
+            - Android 7.0 (API 24) or higher
+            - ~20MB free space
+
+            ### Features
+            - ✅ Full fitness SaaS platform — meal plans, workout programmes, Beast Score
+            - ✅ Tiger Score leaderboard & challenges
+            - ✅ AI-powered blood report analysis
+            - ✅ Knowledge Store with 100+ PDF guides
+            - ✅ Admin panel for gym owners
+            - ✅ Works offline (cached content)
+            - ✅ Push notifications ready
+
+            > **Note:** This is a debug build. A signed release build requires a keystore (see `release-android.yml`).
+
+            **Build:** ${{ github.sha }} · **Size:** ${{ steps.apk_info.outputs.size }}
+          files: android/app/build/outputs/apk/debug/royal-fitness-club.apk

@@ -697,6 +697,22 @@ section::before{content:'';position:absolute;inset:0;background:linear-gradient(
 .sb-user-plan.free{background:rgba(136,136,136,.2);color:var(--muted);}
 .sb-sign-out{background:none;border:none;color:var(--muted);font-size:11px;cursor:pointer;padding:6px 0 0;display:block;transition:color .15s;}
 .sb-sign-out:hover{color:var(--red);}
+.sb-apk-btn{display:flex;align-items:center;gap:8px;width:100%;margin-top:10px;padding:9px 12px;background:linear-gradient(135deg,rgba(34,197,94,.15),rgba(34,197,94,.08));border:1px solid rgba(34,197,94,.3);border-radius:8px;color:#22c55e;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;text-decoration:none;transition:all .2s;}
+.sb-apk-btn:hover{background:linear-gradient(135deg,rgba(34,197,94,.25),rgba(34,197,94,.15));border-color:#22c55e;transform:translateY(-1px);}
+.sb-apk-btn svg{flex-shrink:0;}
+/* APK download modal */
+.apk-modal-card{background:linear-gradient(135deg,#0d1f0d,#071407);border:1px solid rgba(34,197,94,.3);border-radius:16px;padding:28px;text-align:center;}
+.apk-qr-wrap{display:inline-block;background:#fff;border-radius:12px;padding:12px;margin:16px auto;}
+.apk-step{display:flex;align-items:flex-start;gap:12px;text-align:left;margin-bottom:12px;}
+.apk-step-num{min-width:26px;height:26px;border-radius:50%;background:var(--red);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;}
+/* Android download banner */
+.android-dl-banner{background:linear-gradient(135deg,rgba(34,197,94,.12),rgba(34,197,94,.06));border:1px solid rgba(34,197,94,.25);border-radius:12px;padding:16px 20px;display:flex;align-items:center;gap:16px;margin-bottom:20px;cursor:pointer;transition:all .2s;}
+.android-dl-banner:hover{border-color:#22c55e;transform:translateY(-1px);}
+.android-dl-icon{font-size:36px;flex-shrink:0;}
+.android-dl-text{flex:1;min-width:0;}
+.android-dl-title{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1.5px;color:#22c55e;}
+.android-dl-sub{font-size:12px;color:var(--muted);margin-top:2px;}
+.android-dl-btn{flex-shrink:0;background:#22c55e;color:#000;border:none;border-radius:8px;padding:10px 16px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:1px;cursor:pointer;white-space:nowrap;}
 /* Collapsed toggle button */
 #sb-toggle{position:fixed;top:14px;left:252px;z-index:1100;background:var(--card);border:1px solid rgba(255,255,255,.06);border-radius:4px;width:28px;height:28px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:13px;transition:left .28s cubic-bezier(.4,0,.2,1);color:var(--muted);}
 #sb-toggle:hover{color:var(--text);border-color:var(--red);}
@@ -2610,6 +2626,10 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
       </div>
       <button class="sb-sign-out" onclick="logout()">Sign Out</button>
     </div>
+    <a href="https://github.com/aman02899999/royal-fitness-club/releases/download/android-latest/royal-fitness-club.apk" class="sb-apk-btn" download onclick="trackApkDownload(event)">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.523 2H6.477A2.477 2.477 0 0 0 4 4.477v15.046A2.477 2.477 0 0 0 6.477 22h11.046A2.477 2.477 0 0 0 20 19.523V4.477A2.477 2.477 0 0 0 17.523 2zM12 17.5a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11zm0-2a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7zm3.5-9.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/></svg>
+      📱 Download Android App
+    </a>
   </div>
 </aside>
 
@@ -2645,6 +2665,16 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
         <div><div class="dash-stat-lbl">Workouts</div><div class="dash-stat-val" id="ds-workouts" style="color:#60a5fa;">--</div><div class="dash-stat-sub">This month</div></div>
         <div class="dash-stat-icon">🏋️</div>
       </div>
+    </div>
+
+    <!-- Android App Download Banner -->
+    <div class="android-dl-banner" onclick="openApkModal()">
+      <div class="android-dl-icon">🤖</div>
+      <div class="android-dl-text">
+        <div class="android-dl-title">Download Android App</div>
+        <div class="android-dl-sub">Get the native app for faster access, offline use &amp; notifications</div>
+      </div>
+      <button class="android-dl-btn" onclick="event.stopPropagation();downloadApk()">⬇ Download APK</button>
     </div>
 
     <!-- Upgrade nudge — shown only to free-plan users via JS -->
@@ -2833,6 +2863,7 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
     <a href="javascript:void(0)" onclick="switchScreen('leaderboard',null);closeNav()">🐯 Leaderboard</a>
     <a href="javascript:void(0)" onclick="switchScreen('plans',null);closeNav()">💳 Membership</a>
     <a href="javascript:void(0)" onclick="switchScreen('profile',null);closeNav()">👤 Profile</a>
+    <a href="javascript:void(0)" onclick="openApkModal();closeNav()" style="color:#22c55e;">🤖 Android App</a>
     <div class="nmobile-extras">
       <select class="cur-sel" id="cursel-m" onchange="changeCurrency(this.value);closeNav();" title="Currency">
         <option value="INR">🇮🇳 INR</option>
@@ -5656,6 +5687,7 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
           <span style="font-size:12px;color:var(--muted);">📍 Royal Fitness Club, India</span>
           <span style="font-size:12px;color:var(--muted);">🕐 Mon–Sat: 6am – 10pm</span>
         </div>
+        <a href="https://github.com/aman02899999/royal-fitness-club/releases/download/android-latest/royal-fitness-club.apk" download="royal-fitness-club.apk" onclick="trackApkDownload(event)" style="display:flex;align-items:center;justify-content:center;gap:8px;background:linear-gradient(135deg,rgba(34,197,94,.15),rgba(34,197,94,.08));border:1px solid rgba(34,197,94,.3);color:#22c55e;text-decoration:none;border-radius:8px;padding:10px 16px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px;transition:all .2s;" onmouseover="this.style.borderColor='#22c55e'" onmouseout="this.style.borderColor='rgba(34,197,94,.3)'">🤖 Download Android APK</a>
         <button id="pwa-install-btn" onclick="triggerPWAInstall()" style="display:none;background:linear-gradient(135deg,var(--red),#ff4444);color:#fff;border:none;border-radius:8px;padding:10px 16px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;width:100%;">📲 Install App on Phone</button>
       </div>
     </div>
@@ -5666,6 +5698,54 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
   </div>
 </footer>
 </div><!-- end #landing-footer -->
+
+<!-- ═══════ APK DOWNLOAD MODAL ═══════ -->
+<div class="mbg" id="apkmodal">
+  <div class="mbox" style="max-width:500px;">
+    <button class="mclose" onclick="closeModal('apkmodal')">✕</button>
+    <div class="apk-modal-card">
+      <div style="font-size:48px;margin-bottom:8px;">🤖</div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:2px;color:#22c55e;margin-bottom:4px;">Android App</div>
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:20px;">Royal Fitness Club for Android</div>
+
+      <a id="apk-download-link" href="https://github.com/aman02899999/royal-fitness-club/releases/download/android-latest/royal-fitness-club.apk" download="royal-fitness-club.apk" onclick="trackApkDownload(event)" style="display:inline-flex;align-items:center;gap:10px;background:#22c55e;color:#000;text-decoration:none;border-radius:10px;padding:14px 28px;font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px;margin-bottom:20px;transition:all .2s;" onmouseover="this.style.background='#16a34a'" onmouseout="this.style.background='#22c55e'">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M16.59 9H15V4c0-.55-.45-1-1-1h-4c-.55 0-1 .45-1 1v5H7.41c-.89 0-1.34 1.08-.71 1.71l4.59 4.59c.39.39 1.02.39 1.41 0l4.59-4.59c.63-.63.19-1.71-.7-1.71zM5 19c0 .55.45 1 1 1h12c.55 0 1-.45 1-1s-.45-1-1-1H6c-.55 0-1 .45-1 1z"/></svg>
+        ⬇ Download APK (~20MB)
+      </a>
+
+      <div style="text-align:left;margin-bottom:20px;">
+        <div style="font-size:12px;color:var(--muted);margin-bottom:12px;font-weight:600;text-transform:uppercase;letter-spacing:1px;">How to Install</div>
+        <div class="apk-step">
+          <div class="apk-step-num">1</div>
+          <div style="font-size:13px;color:var(--text);">Tap <strong>⬇ Download APK</strong> above — the file downloads to your Android phone.</div>
+        </div>
+        <div class="apk-step">
+          <div class="apk-step-num">2</div>
+          <div style="font-size:13px;color:var(--text);">Go to <strong>Settings → Security</strong> (or <em>Install Unknown Apps</em>) and enable installation from your browser.</div>
+        </div>
+        <div class="apk-step">
+          <div class="apk-step-num">3</div>
+          <div style="font-size:13px;color:var(--text);">Open your Downloads folder, tap <strong>royal-fitness-club.apk</strong> and tap <strong>Install</strong>.</div>
+        </div>
+        <div class="apk-step">
+          <div class="apk-step-num">4</div>
+          <div style="font-size:13px;color:var(--text);">Launch <strong>Royal Fitness Club</strong> from your home screen — all your data syncs automatically.</div>
+        </div>
+      </div>
+
+      <div style="background:rgba(255,255,255,.04);border-radius:8px;padding:12px;font-size:11px;color:var(--muted);text-align:left;line-height:1.6;">
+        <strong style="color:var(--text);">Requirements:</strong> Android 7.0+ · ~20MB · All features included<br>
+        <strong style="color:var(--text);">Note:</strong> This is a side-loaded APK. You may see a "Play Protect" warning — tap <em>Install anyway</em>.
+      </div>
+
+      <div style="margin-top:16px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+        <button class="bsm" onclick="closeModal('apkmodal')" style="font-size:12px;">✕ Close</button>
+        <button id="pwa-install-btn2" onclick="triggerPWAInstall()" style="display:none;background:linear-gradient(135deg,var(--red),#ff4444);color:#fff;border:none;border-radius:8px;padding:10px 18px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:1.5px;cursor:pointer;">📲 Install as Web App (iOS/Desktop)</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="mbg" id="loginmodal">
   <div class="mbox" style="max-width:440px;">
     <button class="mclose" onclick="closeLoginModal()">✕</button>
@@ -8662,23 +8742,41 @@ let _deferredInstall=null;
 window.addEventListener('beforeinstallprompt',e=>{
   e.preventDefault();
   _deferredInstall=e;
-  const btn=document.getElementById('pwa-install-btn');
-  if(btn){btn.style.display='block';}
-  // Show toast nudge once per session
+  ['pwa-install-btn','pwa-install-btn2'].forEach(id=>{const b=document.getElementById(id);if(b)b.style.display='block';});
   if(!sessionStorage.getItem('pwa_nudge')){
     sessionStorage.setItem('pwa_nudge','1');
     setTimeout(()=>toast('📲 Add Royal Fitness Club to your home screen for quick access!','gold'),4000);
   }
 });
 function triggerPWAInstall(){
-  if(!_deferredInstall){toast('Open this site in Chrome/Safari to install','gold');return;}
+  if(!_deferredInstall){toast('Open in Chrome/Safari to install as web app','gold');return;}
   _deferredInstall.prompt();
   _deferredInstall.userChoice.then(r=>{
     if(r.outcome==='accepted') toast('✅ App installed! Find RFC on your home screen.','fire');
     _deferredInstall=null;
-    const btn=document.getElementById('pwa-install-btn');
-    if(btn) btn.style.display='none';
+    ['pwa-install-btn','pwa-install-btn2'].forEach(id=>{const b=document.getElementById(id);if(b)b.style.display='none';});
   });
+}
+
+// ── ANDROID APK DOWNLOAD ──────────────────────────────────────────────────────
+const APK_URL='https://github.com/aman02899999/royal-fitness-club/releases/download/android-latest/royal-fitness-club.apk';
+
+function openApkModal(){openModal('apkmodal');}
+
+function downloadApk(){
+  const a=document.createElement('a');
+  a.href=APK_URL;
+  a.download='royal-fitness-club.apk';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  toast('⬇ Downloading APK… Open the file to install on Android','green');
+  if(window.AnalyticsService) window.AnalyticsService.trackEvent('apk_download').catch(()=>{});
+}
+
+function trackApkDownload(e){
+  toast('⬇ APK downloading… Enable "Install from unknown sources" in Android Settings','green');
+  if(window.AnalyticsService) window.AnalyticsService.trackEvent('apk_download').catch(()=>{});
 }
 
 // ── WATER INTAKE TRACKER ──────────────────────────────────────────────────────
