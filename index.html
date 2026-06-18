@@ -6012,11 +6012,13 @@ function applyUser(){
     $('tracker').classList.add('pro-on');
     const tg=$('tracker-gate');if(tg)tg.style.display='none';
     const pg=$('physio-gate');if(pg)pg.style.display='none';
-    loadPD();
+    const pp=document.getElementById('progress-photos-panel');if(pp)pp.style.display='block';
+    loadPD();restorePhotos();
   }else{
     // Free member — show tracker UI but with lock overlay
     const tg=$('tracker-gate');if(tg)tg.style.display='flex';
     const pg=$('physio-gate');if(pg)pg.style.display='flex';
+    const pp=document.getElementById('progress-photos-panel');if(pp)pp.style.display='none';
     if($('navtr'))$('navtr').innerHTML='TRACKER&nbsp;<span class="nav-pro-lock">PRO</span>';
   }
   // Membership status strip + expiry warning bar
