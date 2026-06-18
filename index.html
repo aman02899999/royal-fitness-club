@@ -2538,9 +2538,13 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
   <div class="ggate-contact">
     <p>📍 Visit us at the gym front desk</p>
     <strong>Royal Fitness Club</strong>
-    <p style="margin-top:6px;font-size:11px;color:#666;">Renew your membership to regain full app access</p>
+    <p style="margin-top:6px;font-size:11px;color:#666;">Renew your gym membership to restore PRO access</p>
   </div>
-  <button class="ggate-logout" onclick="firebase.auth().signOut().then(()=>{document.getElementById('gym-gate').style.display='none';forceLogin();})">← Logout</button>
+  <div style="display:flex;flex-direction:column;gap:10px;margin-top:4px;width:100%;max-width:300px;">
+    <button onclick="document.getElementById('gym-gate').style.display='none';" style="padding:11px 20px;background:linear-gradient(135deg,#16a34a,#15803d);color:#fff;border:none;border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;letter-spacing:1.5px;cursor:pointer;">✅ CONTINUE WITH FREE ACCESS</button>
+    <button onclick="document.getElementById('gym-gate').style.display='none';setTimeout(()=>openProModal(),300);" style="padding:11px 20px;background:linear-gradient(135deg,#d4a840,#b8922e);color:#000;border:none;border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;letter-spacing:1.5px;cursor:pointer;">⚡ UPGRADE FOR ₹499/MO</button>
+    <button class="ggate-logout" onclick="firebase.auth().signOut().then(()=>{document.getElementById('gym-gate').style.display='none';forceLogin();})">← Switch Account</button>
+  </div>
 </div>
 <!-- GYM ANNOUNCEMENT BANNER -->
 <div id="ann-banner" style="display:none;position:relative;z-index:92;background:linear-gradient(135deg,#1e3a5f,#172554);border-bottom:2px solid rgba(59,130,246,.3);padding:10px 48px 10px 20px;">
@@ -4574,9 +4578,9 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
           <div class="adm-field">
             <label class="adm-label">Plan</label>
             <select class="adm-input" id="adm-mc-plan">
-              <option value="royal_elite">👑 Royal Elite</option>
-              <option value="royal_pro">⚡ Royal Pro</option>
-              <option value="basic">🏋 Basic</option>
+              <option value="royal_pro" selected>⚡ Royal Pro (3-month gym member)</option>
+              <option value="royal_elite">👑 Royal Elite (special/VIP)</option>
+              <option value="basic">🏋 Basic (free features only)</option>
             </select>
           </div>
           <div class="adm-field">
@@ -5966,20 +5970,18 @@ function initUser(){
           // Check pending / rejected status (self-registered users)
           if(d.status==='pending'){showMembershipGate('pending',null);return;}
           if(d.status==='rejected'){showMembershipGate('rejected',null);return;}
-          // Check gym membership expiry — if set and expired, block access
+          // Check gym membership expiry — if expired, downgrade to free (don't hard-block)
           const gymExpiry=d.membershipExpiry?.toDate?.();
-          if(gymExpiry&&gymExpiry<new Date()){
-            showMembershipGate('expired',gymExpiry);
-            return;
-          }
+          const gymExpired=gymExpiry&&gymExpiry<new Date();
           // Check digital subscription expiry
           const planExpired=d.expiryDate?.toDate?.()&&d.expiryDate.toDate()<new Date();
-          const effectivePlan=planExpired?'free':(d.plan||'free');
-          // Gym member 3+ months gets PRO free
+          // Effective plan: expired membership or expired sub → free
+          const effectivePlan=(gymExpired||planExpired)?'free':(d.plan||'free');
+          // Gym member 3+ months gets PRO free (also covers legacy members without expiry set)
           const _joinDateStr=d.joinDate||(d.createdAt?.toDate?.()?.toISOString?.())||null;
           const _memberStart=_joinDateStr?new Date(_joinDateStr):null;
           const _threeMonthsAgo=new Date();_threeMonthsAgo.setMonth(_threeMonthsAgo.getMonth()-3);
-          const _hasThreeMonths=d.gymMember===true&&_memberStart&&_memberStart<=_threeMonthsAgo;
+          const _hasThreeMonths=!gymExpired&&d.gymMember===true&&_memberStart&&_memberStart<=_threeMonthsAgo;
           isPro=_hasThreeMonths||effectivePlan==='royal_pro'||effectivePlan==='royal_elite';
           user={uid:fbUser.uid,name:d.name||fbUser.displayName||fbUser.email.split('@')[0],email:d.email||fbUser.email,phone:d.phone||'',role:d.role||'member',plan:effectivePlan,gymMember:d.gymMember===true,userType:d.gymMember?'member':'outsider',joinDate:d.joinDate||null,membershipExpiry:gymExpiry?.toISOString()||null,memberCode:d.memberCode||null,since:d.createdAt?.toDate?.()?.toISOString()||new Date().toISOString(),last:new Date().toISOString()};
         }else{
@@ -6045,7 +6047,7 @@ function showMembershipGate(type,expDate){
     icon.textContent='⏰';
     title.textContent='MEMBERSHIP EXPIRED';
     expEl.textContent=expDate?expDate.toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'}):'—';
-    msgEl.innerHTML='Your Royal Fitness Club gym membership expired on <span class="ggate-expiry" id="ggate-expiry">'+expEl.textContent+'</span>.<br>Please visit the gym to renew your membership.';
+    msgEl.innerHTML='Your gym membership expired on <span class="ggate-expiry">'+expEl.textContent+'</span>.<br><br>✅ <strong>You still have free app access.</strong><br>Visit the gym front desk to renew your 3-month membership &amp; restore PRO.<br><span style="color:var(--gold);font-size:11px;">Or upgrade online for ₹499/month → tap the button below.</span>';
   }else if(type==='notfound'){
     icon.textContent='🚫';
     title.textContent='NOT ENROLLED';
@@ -6074,16 +6076,25 @@ function applyUser(){
   // Show tracker section for all logged-in members
   $('tracker').classList.add('member-on');
   if($('navtr'))$('navtr').style.display='inline';
-  // Gym member PRO unlock countdown
+  // Gym member membership expiry notices
   if(user.gymMember&&!isPro){
-    const _joinStr=user.joinDate||user.since;
-    if(_joinStr){
-      const _jd=new Date(_joinStr);const _now=new Date();
-      const _mo=Math.floor((_now-_jd)/(1000*60*60*24*30.44));
-      const _left=Math.max(0,3-_mo);
-      if(_left>0&&!sessionStorage.getItem('rfc_pro_unlock_shown')){
-        sessionStorage.setItem('rfc_pro_unlock_shown','1');
-        setTimeout(()=>toast('⏳ PRO unlocks in '+_left+' month'+(_left===1?'':'s')+'! You\'re an RFC member — hang tight.','gold'),2200);
+    if(user.membershipExpiry&&!sessionStorage.getItem('rfc_exp_shown')){
+      // Expired gym membership — soft nudge to renew (they still have free access)
+      sessionStorage.setItem('rfc_exp_shown','1');
+      const _expDate=new Date(user.membershipExpiry);
+      const _expStr=_expDate.toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'});
+      setTimeout(()=>toast('⚠️ Your gym membership expired on '+_expStr+'. Visit the gym to renew & restore PRO!','gold'),1800);
+    } else {
+      // Active gym member — countdown to PRO unlock (for legacy members without expiry set)
+      const _joinStr=user.joinDate||user.since;
+      if(_joinStr){
+        const _jd=new Date(_joinStr);const _now=new Date();
+        const _mo=Math.floor((_now-_jd)/(1000*60*60*24*30.44));
+        const _left=Math.max(0,3-_mo);
+        if(_left>0&&!sessionStorage.getItem('rfc_pro_unlock_shown')){
+          sessionStorage.setItem('rfc_pro_unlock_shown','1');
+          setTimeout(()=>toast('⏳ PRO unlocks in '+_left+' month'+(_left===1?'':'s')+'! You\'re an RFC member — hang tight.','gold'),2200);
+        }
       }
     }
   }
