@@ -4122,7 +4122,7 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
       <!-- Rendered by JS -->
     </div>
 
-    <div style="text-align:center;margin-top:32px;" id="my-challenges-section" style="display:none;">
+    <div style="text-align:center;margin-top:32px;display:none;" id="my-challenges-section">
       <div class="stag" style="margin-bottom:16px;">Your Active Challenges</div>
       <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;" id="my-challenges-grid"></div>
     </div>
@@ -9119,6 +9119,30 @@ function renderChallenges() {
       </div>
     </div>`;
   }).join('');
+
+  // Show/hide "Your Active Challenges" section
+  const mySec = document.getElementById('my-challenges-section');
+  const myGrid = document.getElementById('my-challenges-grid');
+  if (mySec && myGrid) {
+    const joined = getMyJoinedChallenges();
+    const myChs = challenges.filter(ch => joined.includes(ch.id));
+    if (myChs.length > 0) {
+      myGrid.innerHTML = myChs.map(ch => `
+        <div class="ch-card" onclick="openChallengeModal('${ch.id}')" style="cursor:pointer;">
+          <div class="ch-banner" style="background:${ch.banner};height:80px;">
+            <span style="font-size:40px;">${ch.emoji}</span>
+          </div>
+          <div class="ch-body">
+            <div class="ch-name">${ch.name}</div>
+            <div class="ch-my-badge" style="margin:8px 0;">✅ Active · ${ch.duration}</div>
+            <button class="bfire" style="width:100%;padding:10px;font-size:13px;">📊 VIEW PROGRESS</button>
+          </div>
+        </div>`).join('');
+      mySec.style.display = '';
+    } else {
+      mySec.style.display = 'none';
+    }
+  }
 }
 
 function openChallengeModal(chId) {
