@@ -22,13 +22,13 @@
 <meta name="twitter:title" content="Royal Fitness Club — India's Ultimate Fitness Ecosystem">
 <meta name="twitter:description" content="Smart meal plans · Beast Score · 108+ PDF guides · 10 courses · Digital membership. India's most advanced gym platform.">
 <meta name="twitter:image" content="https://royal-fitness-club-7adc1.web.app/icons/icon-512x512.png">
-<link rel="icon" href="/icons/icon-192x192.png" type="image/png">
-<link rel="shortcut icon" href="/icons/icon-192x192.png" type="image/png">
-<link rel="manifest" href="/manifest.json">
+<link rel="icon" href="icons/icon-192x192.png" type="image/png">
+<link rel="shortcut icon" href="icons/icon-192x192.png" type="image/png">
+<link rel="manifest" href="manifest.json">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="RFC">
-<link rel="apple-touch-icon" href="/icons/icon-152x152.png">
+<link rel="apple-touch-icon" href="icons/icon-152x152.png">
 <meta name="mobile-web-app-capable" content="yes">
 <link rel="dns-prefetch" href="https://www.gstatic.com">
 <link rel="dns-prefetch" href="https://firestore.googleapis.com">
@@ -2542,7 +2542,7 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
   </div>
   <div style="display:flex;flex-direction:column;gap:10px;margin-top:4px;width:100%;max-width:300px;">
     <button onclick="document.getElementById('gym-gate').style.display='none';" style="padding:11px 20px;background:linear-gradient(135deg,#16a34a,#15803d);color:#fff;border:none;border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;letter-spacing:1.5px;cursor:pointer;">✅ CONTINUE WITH FREE ACCESS</button>
-    <button onclick="document.getElementById('gym-gate').style.display='none';setTimeout(()=>openProModal(),300);" style="padding:11px 20px;background:linear-gradient(135deg,#d4a840,#b8922e);color:#000;border:none;border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;letter-spacing:1.5px;cursor:pointer;">⚡ UPGRADE FOR ₹499/MO</button>
+    <button onclick="document.getElementById('gym-gate').style.display='none';setTimeout(()=>openModal('promodal'),300);" style="padding:11px 20px;background:linear-gradient(135deg,#d4a840,#b8922e);color:#000;border:none;border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;letter-spacing:1.5px;cursor:pointer;">⚡ UPGRADE FOR ₹499/MO</button>
     <button class="ggate-logout" onclick="firebase.auth().signOut().then(()=>{document.getElementById('gym-gate').style.display='none';forceLogin();})">← Switch Account</button>
   </div>
 </div>
@@ -5862,8 +5862,6 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
 </div>
 <div class="toast" id="toast"></div>
 <script>
-// Early constants needed before initUser() runs
-var ADMIN_EMAIL = 'aman.sharma0289@gmail.com';
 // ── WATERMARK ──
 (function(){const wm=document.getElementById('watermark');let h='';for(let i=0;i<60;i++)h+='<span>ROYAL FITNESS CLUB</span>';wm.innerHTML=h;})();
 // ── HAMBURGER MENU ──
