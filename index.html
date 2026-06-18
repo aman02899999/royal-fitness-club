@@ -653,7 +653,7 @@ section::before{content:'';position:absolute;inset:0;background:linear-gradient(
   .day-total-bar{gap:8px;}
 }
 /* ── WALLET & REFERRAL ── */
-.wallet-card{background:linear-gradient(135deg,#080f1e,#0d1f3c);border:1px solid rgba(255,208,0,.25);border-radius:12px;padding:20px;position:relative;overflow:hidden;}
+.wallet-card{background:linear-gradient(135deg,#0e0e12,#0b0b10);border:1px solid rgba(255,208,0,.25);border-radius:12px;padding:20px;position:relative;overflow:hidden;}
 
 /* ══════════════════════════════════════════════
    SIDEBAR LAYOUT SYSTEM
@@ -743,7 +743,7 @@ body.sb-open > *:not(#rfc-sidebar):not(#sb-toggle):not(#rfc-sb-overlay){
 .dash-card-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
 .dash-card-title{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);}
 .dash-card-tag{font-size:10px;letter-spacing:1px;text-transform:uppercase;font-weight:700;padding:3px 9px;border-radius:20px;}
-.dash-card-tag.ai{background:rgba(139,92,246,.2);color:#a78bfa;}
+.dash-card-tag.ai{background:rgba(212,168,64,.15);color:#d4a840;}
 .dash-task{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.04);}
 .dash-task:last-child{border-bottom:none;}
 .dash-task-icon{font-size:22px;flex-shrink:0;}
@@ -783,27 +783,30 @@ body.sb-open #screen-dashboard .dash-wrap{padding-top:78px;}
 /* Injected screen title bar */
 .sb-page-hdr{
   display:flex;align-items:center;justify-content:space-between;
-  padding:18px 20px 16px;border-bottom:1px solid rgba(255,255,255,.04);
-  background:rgba(8,8,10,.9);backdrop-filter:blur(8px);
+  padding:20px 24px 18px;
+  border-bottom:1px solid rgba(192,41,46,.1);
+  border-left:3px solid var(--red);
+  background:linear-gradient(90deg,rgba(192,41,46,.06) 0%,rgba(8,8,10,.95) 60%);
+  backdrop-filter:blur(12px);
   position:sticky;top:54px;z-index:50;margin-bottom:0;
 }
-.sb-page-hdr-left{display:flex;align-items:center;gap:12px;}
-.sb-page-hdr-icon{font-size:22px;line-height:1;}
-.sb-page-hdr-title{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;letter-spacing:-0.2px;line-height:1.1;}
-.sb-page-hdr-sub{font-size:11px;color:var(--muted);letter-spacing:.5px;margin-top:1px;}
+.sb-page-hdr-left{display:flex;align-items:center;gap:14px;}
+.sb-page-hdr-icon{font-size:24px;line-height:1;}
+.sb-page-hdr-title{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;letter-spacing:-0.3px;line-height:1.1;}
+.sb-page-hdr-sub{font-size:11px;color:var(--muted);letter-spacing:.6px;margin-top:2px;text-transform:uppercase;}
 .sb-page-hdr-actions{display:flex;gap:8px;align-items:center;}
 .sb-page-hdr-btn{background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:6px;color:var(--muted);font-size:11px;padding:5px 10px;cursor:pointer;font-family:'Barlow Condensed',sans-serif;letter-spacing:1px;text-transform:uppercase;transition:all .15s;}
 .sb-page-hdr-btn:hover{color:var(--text);border-color:rgba(255,255,255,.2);}
-.sb-page-hdr-btn.primary{background:rgba(232,0,29,.12);border-color:rgba(232,0,29,.3);color:var(--red);}
-.sb-page-hdr-btn.primary:hover{background:rgba(232,0,29,.2);}
+.sb-page-hdr-btn.primary{background:rgba(192,41,46,.12);border-color:rgba(192,41,46,.3);color:var(--red);}
+.sb-page-hdr-btn.primary:hover{background:rgba(192,41,46,.2);}
 
 /* Compact section ticker */
 .section-ticker{background:linear-gradient(90deg,rgba(192,41,46,.07),rgba(6,6,8,.9),rgba(192,41,46,.05));border-bottom:1px solid rgba(192,41,46,.12);overflow:hidden;height:28px;display:flex;align-items:center;}
 .section-ticker-track{display:flex;align-items:center;width:max-content;animation:mqFwd 28s linear infinite;gap:0;}
 .section-ticker-track:hover{animation-play-state:paused;}
-.section-ticker-item{display:flex;align-items:center;gap:6px;padding:0 18px;white-space:nowrap;font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(139,92,246,.6);}
+.section-ticker-item{display:flex;align-items:center;gap:6px;padding:0 18px;white-space:nowrap;font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(180,175,170,.4);}
 .section-ticker-item .st-dot{width:2px;height:2px;border-radius:50%;background:var(--red);flex-shrink:0;}
-.section-ticker-item.lit{color:#777;}
+.section-ticker-item.lit{color:rgba(192,41,46,.6);}
 
 /* Mobile sidebar */
 @media(max-width:900px){
@@ -1255,7 +1258,7 @@ body{font-size:16px;}
 .dqa-tile.gold{border-color:rgba(245,158,11,.2);background:rgba(245,158,11,.04);}
 .dqa-tile.green{border-color:rgba(34,197,94,.18);background:rgba(34,197,94,.04);}
 .dqa-tile.blue{border-color:rgba(59,130,246,.2);background:rgba(59,130,246,.04);}
-.dqa-tile.purple{border-color:rgba(139,92,246,.2);background:rgba(139,92,246,.04);}
+.dqa-tile.purple{border-color:rgba(192,41,46,.2);background:rgba(192,41,46,.04);}
 .dqa-icon{font-size:28px;line-height:1;flex-shrink:0;}
 .dqa-body{}
 .dqa-name{font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:.5px;color:#fff;line-height:1.1;}
@@ -1263,14 +1266,14 @@ body{font-size:16px;}
 
 /* Free-user upgrade nudge inside dashboard */
 #dash-upgrade-nudge{
-  background:linear-gradient(135deg,rgba(232,0,29,.1),rgba(139,92,246,.08));
-  border:1px solid rgba(232,0,29,.25);border-radius:14px;
+  background:linear-gradient(135deg,rgba(192,41,46,.1),rgba(212,168,64,.06));
+  border:1px solid rgba(192,41,46,.25);border-radius:14px;
   padding:20px;margin-bottom:16px;position:relative;overflow:hidden;
   display:none;
 }
 #dash-upgrade-nudge::before{
   content:'';position:absolute;top:0;left:0;right:0;height:2px;
-  background:linear-gradient(90deg,#e8001d,#8b5cf6);
+  background:linear-gradient(90deg,#c0292e,#d4a840);
 }
 .dun-eyebrow{font-size:9px;font-weight:700;letter-spacing:3px;color:var(--red);text-transform:uppercase;margin-bottom:6px;}
 .dun-title{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1px;color:#fff;margin-bottom:10px;line-height:1.1;}
@@ -1298,14 +1301,14 @@ body{font-size:16px;}
 }
 /* Elite plan card */
 .pcard.elite{
-  background:linear-gradient(145deg,#0d0d1f,#080f1e);
-  border:1px solid rgba(139,92,246,.3);position:relative;overflow:hidden;
+  background:linear-gradient(145deg,#0e0e12,#0b0b0f);
+  border:1px solid rgba(212,168,64,.3);position:relative;overflow:hidden;
 }
 .pcard.elite::before{
   content:'';position:absolute;top:0;left:0;right:0;height:3px;
-  background:linear-gradient(90deg,#8b5cf6,#3b82f6,#22c55e);
+  background:linear-gradient(90deg,#d4a840,#c0292e);
 }
-.pbadge.pbelite{background:rgba(139,92,246,.2);color:#a78bfa;border:1px solid rgba(139,92,246,.4);}
+.pbadge.pbelite{background:rgba(212,168,64,.15);color:#d4a840;border:1px solid rgba(212,168,64,.4);}
 .plans2.three{grid-template-columns:repeat(3,1fr);}
 .pcard .p-popular{
   position:absolute;top:-1px;right:24px;
@@ -3318,7 +3321,7 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
       <div class="psp-item"><div class="psp-num" style="color:var(--gold);">4.9★</div><div class="psp-lbl">Member Rating</div></div>
       <div class="psp-item"><div class="psp-num" style="color:var(--green);">108+</div><div class="psp-lbl">PDF Guides</div></div>
       <div class="psp-item"><div class="psp-num" style="color:#60a5fa;">10</div><div class="psp-lbl">Courses</div></div>
-      <div class="psp-item"><div class="psp-num" style="color:#a78bfa;">16</div><div class="psp-lbl">Features</div></div>
+      <div class="psp-item"><div class="psp-num" style="color:var(--red);">16</div><div class="psp-lbl">Features</div></div>
     </div>
 
     <div class="plans2 three">
@@ -3371,21 +3374,21 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
       <!-- Royal Elite -->
       <div class="pcard elite">
         <div class="pbadge pbelite">💎 Royal Elite</div>
-        <div class="pprice" style="color:#a78bfa;"><sup style="color:#a78bfa;">₹</sup>1,999<sub>/mo</sub></div>
+        <div class="pprice" style="color:#d4a840;"><sup style="color:#d4a840;">₹</sup>1,999<sub>/mo</sub></div>
         <div class="pper">Personal coaching · Limited spots</div>
         <ul class="pfeats">
-          <li><span class="fi" style="color:#a78bfa;">✓</span> Everything in Royal Pro</li>
-          <li><span class="fi" style="color:#a78bfa;">✓</span> 1-on-1 Personal Trainer Sessions</li>
-          <li><span class="fi" style="color:#a78bfa;">✓</span> Custom Diet Plan by Nutritionist</li>
-          <li><span class="fi" style="color:#a78bfa;">✓</span> Weekly Check-in Calls</li>
-          <li><span class="fi" style="color:#a78bfa;">✓</span> Priority Support &amp; WhatsApp Access</li>
-          <li><span class="fi" style="color:#a78bfa;">✓</span> Monthly Body Composition Analysis</li>
-          <li><span class="fi" style="color:#a78bfa;">✓</span> Exclusive Elite Badge on Leaderboard</li>
-          <li><span class="fi" style="color:#a78bfa;">✓</span> Early Access to New Features</li>
-          <li><span class="fi" style="color:#a78bfa;">✓</span> Lifetime Coaching Record Access</li>
+          <li><span class="fi" style="color:#d4a840;">✓</span> Everything in Royal Pro</li>
+          <li><span class="fi" style="color:#d4a840;">✓</span> 1-on-1 Personal Trainer Sessions</li>
+          <li><span class="fi" style="color:#d4a840;">✓</span> Custom Diet Plan by Nutritionist</li>
+          <li><span class="fi" style="color:#d4a840;">✓</span> Weekly Check-in Calls</li>
+          <li><span class="fi" style="color:#d4a840;">✓</span> Priority Support &amp; WhatsApp Access</li>
+          <li><span class="fi" style="color:#d4a840;">✓</span> Monthly Body Composition Analysis</li>
+          <li><span class="fi" style="color:#d4a840;">✓</span> Exclusive Elite Badge on Leaderboard</li>
+          <li><span class="fi" style="color:#d4a840;">✓</span> Early Access to New Features</li>
+          <li><span class="fi" style="color:#d4a840;">✓</span> Lifetime Coaching Record Access</li>
         </ul>
-        <div style="margin-bottom:10px;padding:8px 12px;background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.2);border-radius:8px;font-size:11px;color:#a78bfa;text-align:center;letter-spacing:1px;">⚠️ Only 5 spots available this month</div>
-        <button class="bpro apulse" onclick="openModal('elitemodal')" style="width:100%;justify-content:center;background:linear-gradient(90deg,#6d28d9,#4f46e5);">💎 JOIN ELITE — ₹1,999/mo</button>
+        <div style="margin-bottom:10px;padding:8px 12px;background:rgba(212,168,64,.08);border:1px solid rgba(212,168,64,.2);border-radius:8px;font-size:11px;color:#d4a840;text-align:center;letter-spacing:1px;">⚠️ Only 5 spots available this month</div>
+        <button class="bpro apulse" onclick="openModal('elitemodal')" style="width:100%;justify-content:center;background:linear-gradient(90deg,#c0292e,#8a1a1e);">💎 JOIN ELITE — ₹1,999/mo</button>
       </div>
     </div>
 
@@ -4289,11 +4292,11 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
             <div style="font-size:10px;text-decoration:line-through;color:var(--muted);">₹99,999</div>
             <div style="font-size:9px;color:#fbbf24;font-weight:700;margin-top:2px;">99% OFF</div>
           </div>
-          <div style="background:rgba(255,255,255,.05);border:1px solid rgba(167,139,250,.3);border-radius:12px;padding:14px 20px;text-align:center;min-width:120px;">
-            <div style="font-size:10px;font-weight:700;letter-spacing:2px;color:#a78bfa;margin-bottom:4px;">🐯 MASTER</div>
+          <div style="background:rgba(255,255,255,.05);border:1px solid rgba(212,168,64,.3);border-radius:12px;padding:14px 20px;text-align:center;min-width:120px;">
+            <div style="font-size:10px;font-weight:700;letter-spacing:2px;color:#d4a840;margin-bottom:4px;">🐯 MASTER</div>
             <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:#fff;line-height:1;">₹1,499</div>
             <div style="font-size:10px;text-decoration:line-through;color:var(--muted);">₹1,49,999</div>
-            <div style="font-size:9px;color:#a78bfa;font-weight:700;margin-top:2px;">99% OFF</div>
+            <div style="font-size:9px;color:#d4a840;font-weight:700;margin-top:2px;">99% OFF</div>
           </div>
           <div style="background:rgba(255,153,0,.06);border:1px solid rgba(255,153,0,.25);border-radius:12px;padding:14px 20px;display:flex;flex-direction:column;justify-content:center;min-width:160px;">
             <div style="font-size:12px;color:rgba(255,255,255,.7);line-height:1.6;">✅ Lifetime Access<br>✅ RFC Certificate<br>✅ No Hidden Fees<br>✅ Instant Enrollment</div>
@@ -5680,7 +5683,7 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
       <input type="password" class="minp" id="self-pass" placeholder="Create Password (min 6 chars)" autocomplete="new-password">
       <input type="text" class="minp" id="self-referral" placeholder="Referral Code (optional)" autocomplete="off" style="letter-spacing:1px;">
       <div id="self-err" style="font-size:12px;color:#f87171;margin:-4px 0 8px;min-height:16px;"></div>
-      <button class="mbtn" style="background:linear-gradient(135deg,#6366f1,#4f46e5);" onclick="registerSelf()">📝 SUBMIT FOR APPROVAL</button>
+      <button class="mbtn" style="background:linear-gradient(135deg,#c0292e,#8a1a1e);" onclick="registerSelf()">📝 SUBMIT FOR APPROVAL</button>
     </div>
   </div>
 </div>
@@ -6533,7 +6536,7 @@ function drawAnatomy(bf,bfc,weight,gender){
     <div class="aleg"><div class="aleg-dot" style="background:#ff8c00;"></div><span class="aleg-lbl">Body Fat</span><span class="aleg-val">${bf.toFixed(1)}%</span></div>
     <div class="aleg"><div class="aleg-dot" style="background:#38bdf8;"></div><span class="aleg-lbl">Water</span><span class="aleg-val">${waterPct.toFixed(0)}%</span></div>
     <div class="aleg"><div class="aleg-dot" style="background:#22c55e;"></div><span class="aleg-lbl">Lean Mass</span><span class="aleg-val">${leanMass.toFixed(1)}kg</span></div>
-    <div class="aleg"><div class="aleg-dot" style="background:#a78bfa;"></div><span class="aleg-lbl">Bone Mass</span><span class="aleg-val">${boneMass.toFixed(1)}kg</span></div>
+    <div class="aleg"><div class="aleg-dot" style="background:#94a3b8;"></div><span class="aleg-lbl">Bone Mass</span><span class="aleg-val">${boneMass.toFixed(1)}kg</span></div>
     <div class="aleg"><div class="aleg-dot" style="background:${bf<15?'#22c55e':bf<25?'#ffd000':'#e8001d'};"></div><span class="aleg-lbl">Category</span><span class="aleg-val">${bfc}</span></div>`;
 }
 
@@ -9906,7 +9909,7 @@ function renderCourses() {
   const grid = document.getElementById('courses-grid');
   if (!grid) return;
   const LVL_LABEL = { beginner:'🌱 Beginner', advanced:'⚡ Advanced', master:'🐯 Master' };
-  const LVL_COLOR = { beginner:'#059669', advanced:'#f59e0b', master:'#7c3aed' };
+  const LVL_COLOR = { beginner:'#059669', advanced:'#f59e0b', master:'#d4a840' };
   grid.innerHTML = getCourses().map(c => {
     const purchased = isPurchased(c.id);
     const prog = getCourseProgress(c.id);
@@ -9960,7 +9963,7 @@ function openCourseModal(courseId) {
 }
 
 function _renderCourseDetails(c) {
-  const LVL_COLOR = { beginner:'#059669', advanced:'#f59e0b', master:'#7c3aed' };
+  const LVL_COLOR = { beginner:'#059669', advanced:'#f59e0b', master:'#d4a840' };
   const LVL_LABEL = { beginner:'🌱 Beginner', advanced:'⚡ Advanced', master:'🐯 Master' };
   const pharmaNote = c.isPharma ? `<div style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.35);border-radius:8px;padding:14px;margin-bottom:16px;font-size:12px;color:#fca5a5;line-height:1.6;">
     ⚠️ <strong>18+ Educational Course</strong> — This course covers pharmaceutical performance science for educational and harm-reduction purposes only. All content is strictly educational. The use of controlled substances may be illegal in your jurisdiction. By enrolling you confirm you are 18+ and understand this is educational content only.
