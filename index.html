@@ -652,6 +652,10 @@ section::before{content:'';position:absolute;inset:0;background:linear-gradient(
   .meal-block-header{flex-direction:column;align-items:flex-start;gap:4px;}
   .day-total-bar{gap:8px;}
 }
+/* Google Sign-in button */
+.google-signin-btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:11px 16px;background:#fff;color:#3c4043;border:1px solid rgba(255,255,255,.15);border-radius:6px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:.5px;cursor:pointer;transition:background .15s,box-shadow .15s;box-shadow:0 2px 8px rgba(0,0,0,.3);margin-top:4px;}
+.google-signin-btn:hover{background:#f8f8f8;box-shadow:0 4px 16px rgba(0,0,0,.4);}
+.google-signin-btn:disabled{opacity:.6;cursor:not-allowed;}
 /* ── WALLET & REFERRAL ── */
 .wallet-card{background:linear-gradient(135deg,#0e0e12,#0b0b10);border:1px solid rgba(255,208,0,.25);border-radius:12px;padding:20px;position:relative;overflow:hidden;}
 
@@ -2847,7 +2851,7 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
     </select>
     <div id="ntimer">🔥 <span id="ntlbl">--:--:--</span></div>
     <div id="upill"><span>⚡</span><span id="uname" style="cursor:pointer;" onclick="openProfile()" title="View Profile"></span><span class="ppro" id="ppro">PRO</span><button id="btnlo" title="Sign Out">⏻</button></div>
-    <button class="bnav" id="navlbtn" onclick="forceLogin()">Member Login</button>
+    <button class="bnav" id="navlbtn" onclick="switchAuthTab('google');forceLogin()">Join Free / Login</button>
     <button class="hamburger" id="hamburger" onclick="toggleNav()" aria-label="Menu">
       <span></span><span></span><span></span>
     </button>
@@ -3313,7 +3317,17 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
   <div class="container">
     <div class="stag">Choose Your Path</div>
     <div class="sh">UPGRADE YOUR GAME</div>
-    <p class="ssub">Every Royal Fitness Club gym member gets free app access. Upgrade for the full transformation arsenal.</p>
+    <p class="ssub">RFC gym members unlock full PRO free at 3 months. Digital members can subscribe from ₹499/mo.</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:24px;padding:14px 16px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);border-radius:10px;">
+      <div style="display:flex;align-items:flex-start;gap:10px;padding-right:12px;border-right:1px solid rgba(255,255,255,.06);">
+        <span style="font-size:24px;flex-shrink:0;">🏋️</span>
+        <div><div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;color:var(--green);margin-bottom:4px;">RFC GYM MEMBER</div><div style="font-size:11px;color:var(--muted);line-height:1.55;">3+ months membership = Full PRO <strong style="color:var(--gold);">FREE</strong>. Register with your gym code.</div></div>
+      </div>
+      <div style="display:flex;align-items:flex-start;gap:10px;">
+        <span style="font-size:24px;flex-shrink:0;">🌐</span>
+        <div><div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;color:#60a5fa;margin-bottom:4px;">DIGITAL MEMBER</div><div style="font-size:11px;color:var(--muted);line-height:1.55;">Sign in with Google for free access. Upgrade to PRO for ₹499/mo.</div></div>
+      </div>
+    </div>
 
     <!-- Social proof strip -->
     <div class="plans-social-proof">
@@ -3325,26 +3339,26 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
     </div>
 
     <div class="plans2 three">
-      <!-- Free Plan -->
+      <!-- Free / Basic Plan -->
       <div class="pcard">
-        <div class="pbadge pbfree">🏋️ Gym Member</div>
+        <div class="pbadge pbfree">🌐 Free Access</div>
         <div class="pprice">FREE</div>
-        <div class="pper">Included with your gym membership</div>
+        <div class="pper">Google sign-in · Instant access · No payment</div>
         <ul class="pfeats">
           <li><span class="fi r">✓</span> Beast Score Calculator (0–100)</li>
           <li><span class="fi r">✓</span> BMI, BMR &amp; TDEE Calculator</li>
-          <li><span class="fi r">✓</span> Calories &amp; Macro Targets</li>
           <li><span class="fi r">✓</span> Body Fat % Estimator</li>
-          <li><span class="fi r">✓</span> 1-Rep Max Calculator</li>
           <li><span class="fi r">✓</span> Tiger Leaderboard Access</li>
           <li><span class="fi r">✓</span> WOD (Workout of the Day)</li>
-          <li><span class="fi r">✓</span> Water Tracker</li>
+          <li><span class="fi r">✓</span> Water Tracker &amp; Challenges</li>
+          <li><span class="fi r">✓</span> Courses &amp; Knowledge Store</li>
           <li class="flocked"><span class="fi m">🔒</span> Full Meal Planner</li>
           <li class="flocked"><span class="fi m">🔒</span> 12-Week Roadmap</li>
-          <li class="flocked"><span class="fi m">🔒</span> Blood Analyser</li>
-          <li class="flocked"><span class="fi m">🔒</span> 108+ PDF Guides</li>
+          <li class="flocked"><span class="fi m">🔒</span> Progress Tracker &amp; Photos</li>
+          <li class="flocked"><span class="fi m">🔒</span> Blood Analyser &amp; Physio</li>
         </ul>
-        <button class="bfire" style="width:100%;justify-content:center;opacity:.75;" onclick="switchScreen('dashboard',document.querySelector('[data-screen=dashboard]'))">You're on this plan</button>
+        <div style="padding:8px 10px;background:rgba(34,197,94,.07);border:1px solid rgba(34,197,94,.15);border-radius:6px;font-size:10px;color:#86efac;text-align:center;margin-bottom:10px;">🏋️ RFC Gym Member? Use <strong>GYM CODE</strong> tab — PRO free at 3 months!</div>
+        <button class="bfire" style="width:100%;justify-content:center;" onclick="switchAuthTab('google');forceLogin();">🌐 Sign In Free with Google</button>
       </div>
 
       <!-- Pro Plan — MOST POPULAR -->
@@ -3353,7 +3367,7 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
         <div class="pbadge pbpro">👑 Royal Pro</div>
         <div class="promobox"><div>⚡</div><div><div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:2px;color:var(--gold);">LIMITED TIME — 50% OFF</div><div class="ptimer2" id="ptimer2">23:59:59</div></div></div>
         <div class="pprice gold"><sup>₹</sup>499<sub>/mo</sub></div>
-        <div class="pper" style="text-decoration:line-through;color:#555;">Was ₹999/mo</div>
+        <div class="pper">For digital members · RFC gym members get this FREE at 3 months</div>
         <ul class="pfeats">
           <li><span class="fi g">✓</span> Everything in Free</li>
           <li><span class="fi g">✓</span> Full 7-Day Indian Meal Plan</li>
@@ -5642,29 +5656,43 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
   </div>
 </footer>
 <div class="mbg" id="loginmodal">
-  <div class="mbox" style="max-width:420px;">
+  <div class="mbox" style="max-width:440px;">
     <button class="mclose" onclick="closeLoginModal()">✕</button>
     <div class="mlogo">ROYAL FITNESS CLUB</div>
-    <div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--red);margin:4px 0 16px;">Members Portal</div>
+    <div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--red);margin:4px 0 16px;">Member &amp; Digital Access</div>
     <!-- Tab switcher -->
     <div style="display:flex;gap:0;border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:18px;min-width:0;">
-      <button id="tab-login" onclick="switchAuthTab('login')" style="flex:1;min-width:0;padding:9px 6px;background:var(--red);color:#fff;border:none;font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:.5px;cursor:pointer;transition:all .18s;">LOGIN</button>
-      <button id="tab-register" onclick="switchAuthTab('register')" style="flex:1;min-width:0;padding:9px 6px;background:transparent;color:var(--muted);border:none;font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:.5px;cursor:pointer;transition:all .18s;">WITH CODE</button>
-      <button id="tab-self" onclick="switchAuthTab('self')" style="flex:1;min-width:0;padding:9px 6px;background:transparent;color:var(--muted);border:none;font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:.5px;cursor:pointer;transition:all .18s;">SELF REGISTER</button>
+      <button id="tab-login" onclick="switchAuthTab('login')" style="flex:1;min-width:0;padding:9px 5px;background:var(--red);color:#fff;border:none;font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:.5px;cursor:pointer;transition:all .18s;">LOGIN</button>
+      <button id="tab-google" onclick="switchAuthTab('google')" style="flex:1;min-width:0;padding:9px 5px;background:transparent;color:var(--muted);border:none;font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:.5px;cursor:pointer;transition:all .18s;">GOOGLE</button>
+      <button id="tab-register" onclick="switchAuthTab('register')" style="flex:1;min-width:0;padding:9px 5px;background:transparent;color:var(--muted);border:none;font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:.5px;cursor:pointer;transition:all .18s;">GYM CODE</button>
     </div>
     <!-- LOGIN PANEL -->
     <div id="auth-login-panel">
-      <div class="mwarn">🏋️ This portal is exclusively for Royal Fitness Club enrolled members.</div>
+      <div class="mwarn">⚡ For existing gym members and digital members. New? Use the <strong>GOOGLE</strong> tab for instant free access.</div>
       <input type="email" class="minp" id="login-email" placeholder="Email Address" autocomplete="email">
       <input type="password" class="minp" id="login-pass" placeholder="Password" autocomplete="current-password">
-      <button class="mbtn" onclick="loginWithFirebase()">⚡ LOGIN TO PORTAL</button>
-      <div style="text-align:center;margin-top:12px;">
+      <button class="mbtn" onclick="loginWithFirebase()">⚡ LOGIN</button>
+      <div style="text-align:center;margin-top:10px;">
         <button class="auth-guest-btn" onclick="resetPasswordPrompt()">Forgot password?</button>
       </div>
     </div>
-    <!-- REGISTER WITH CODE PANEL -->
+    <!-- GOOGLE / DIGITAL MEMBER PANEL -->
+    <div id="auth-google-panel" style="display:none;">
+      <div class="mwarn" style="background:rgba(66,133,244,.08);border-color:rgba(66,133,244,.25);color:#93b4f8;">🌐 Not an RFC gym member? Sign in with Google for <strong>instant free access</strong>. Upgrade to PRO (₹499/mo) to unlock all features.</div>
+      <button class="google-signin-btn" onclick="signInWithGoogle()">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;"><path d="M17.64 9.2045C17.64 8.5663 17.5827 7.9527 17.4764 7.3636H9V10.845H13.8436C13.635 11.97 13.0009 12.9231 12.0477 13.5613V15.8195H14.9564C16.6582 14.2527 17.64 11.9454 17.64 9.2045Z" fill="#4285F4"/><path d="M9 18C11.43 18 13.4673 17.1941 14.9564 15.8195L12.0477 13.5613C11.2418 14.1013 10.2109 14.4204 9 14.4204C6.65591 14.4204 4.67182 12.8372 3.96409 10.71H0.957275V13.0418C2.43818 15.9831 5.48182 18 9 18Z" fill="#34A853"/><path d="M3.96409 10.71C3.78409 10.17 3.68182 9.5931 3.68182 9C3.68182 8.4069 3.78409 7.83 3.96409 7.29V4.9582H0.957275C0.347727 6.1731 0 7.5477 0 9C0 10.4523 0.347727 11.8269 0.957275 13.0418L3.96409 10.71Z" fill="#FBBC05"/><path d="M9 3.5795C10.3214 3.5795 11.5077 4.0336 12.4405 4.9255L15.0218 2.344C13.4632 0.8918 11.4259 0 9 0C5.48182 0 2.43818 2.0168 0.957275 4.9582L3.96409 7.29C4.67182 5.1627 6.65591 3.5795 9 3.5795Z" fill="#EA4335"/></svg>
+        Sign in with Google
+      </button>
+      <div style="margin-top:14px;padding:12px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:8px;font-size:11px;color:var(--muted);line-height:1.7;">
+        <div style="font-weight:700;color:var(--text);margin-bottom:5px;font-size:12px;">✅ Free access includes:</div>
+        <div>Beast Score · BMI/TDEE · WOD · Water Tracker</div>
+        <div>Leaderboard · Challenges · Courses · Knowledge Store</div>
+        <div style="margin-top:7px;padding-top:7px;border-top:1px solid rgba(255,255,255,.06);color:rgba(192,41,46,.85);">🔒 <strong style="color:var(--text);">PRO ₹499/mo:</strong> Meal Plans · 12-Week Roadmap · Progress Tracker · Physio · Blood AI</div>
+      </div>
+    </div>
+    <!-- REGISTER WITH GYM CODE PANEL -->
     <div id="auth-register-panel" style="display:none;">
-      <div class="mwarn" style="background:rgba(34,197,94,.08);border-color:rgba(34,197,94,.25);color:#86efac;">🎟️ Enter your membership code from the gym to create your account.</div>
+      <div class="mwarn" style="background:rgba(34,197,94,.08);border-color:rgba(34,197,94,.25);color:#86efac;">🎟️ RFC gym member? Enter your membership code. <strong style="color:var(--gold);">3+ months = PRO FREE!</strong></div>
       <input type="text" class="minp" id="reg-code" placeholder="Membership Code (e.g. RFC-A3K9P2)" autocomplete="off" style="text-transform:uppercase;letter-spacing:2px;font-family:monospace;font-size:15px;">
       <input type="text" class="minp" id="reg-name" placeholder="Your Full Name">
       <input type="tel" class="minp" id="reg-phone" placeholder="Mobile Number (optional)">
@@ -5674,17 +5702,6 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
       <div id="reg-err" style="font-size:12px;color:#f87171;margin:-4px 0 8px;min-height:16px;"></div>
       <button class="mbtn" style="background:linear-gradient(135deg,#16a34a,#15803d);" onclick="registerWithCode()">✅ CREATE MY ACCOUNT</button>
     </div>
-    <!-- SELF REGISTER PANEL -->
-    <div id="auth-self-panel" style="display:none;">
-      <div class="mwarn" style="background:rgba(99,102,241,.08);border-color:rgba(99,102,241,.3);color:#a5b4fc;">⏳ Register yourself — your account will be reviewed and approved by the admin before activation.</div>
-      <input type="text" class="minp" id="self-name" placeholder="Your Full Name">
-      <input type="tel" class="minp" id="self-phone" placeholder="Mobile Number">
-      <input type="email" class="minp" id="self-email" placeholder="Email Address" autocomplete="email">
-      <input type="password" class="minp" id="self-pass" placeholder="Create Password (min 6 chars)" autocomplete="new-password">
-      <input type="text" class="minp" id="self-referral" placeholder="Referral Code (optional)" autocomplete="off" style="letter-spacing:1px;">
-      <div id="self-err" style="font-size:12px;color:#f87171;margin:-4px 0 8px;min-height:16px;"></div>
-      <button class="mbtn" style="background:linear-gradient(135deg,#c0292e,#8a1a1e);" onclick="registerSelf()">📝 SUBMIT FOR APPROVAL</button>
-    </div>
   </div>
 </div>
 <div class="mbg" id="promodal">
@@ -5692,6 +5709,7 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
     <button class="mclose" onclick="closeModal('promodal')">✕</button>
     <h2>ROYAL PRO 👑</h2>
     <p style="color:var(--muted);font-size:12px;">The #1 personalised transformation system</p>
+    <div style="margin-bottom:14px;padding:8px 12px;background:rgba(34,197,94,.07);border:1px solid rgba(34,197,94,.2);border-radius:6px;font-size:11px;color:#86efac;text-align:center;line-height:1.5;">🏋️ <strong>RFC Gym Member?</strong> You get PRO FREE after <strong>3 months</strong> of membership — no payment needed!</div>
     <ul class="profl">
       <li><span class="pi">🍛</span><span>Full 7-day meal plan (200+ foods across all diet types)</span></li>
       <li><span class="pi">📊</span><span>Progress tracking with interactive weight chart</span></li>
@@ -5866,11 +5884,31 @@ function initUser(){
           // Check digital subscription expiry
           const planExpired=d.expiryDate?.toDate?.()&&d.expiryDate.toDate()<new Date();
           const effectivePlan=planExpired?'free':(d.plan||'free');
-          user={uid:fbUser.uid,name:d.name||fbUser.email.split('@')[0],email:d.email||fbUser.email,phone:d.phone||'',role:d.role||'member',plan:effectivePlan,membershipExpiry:gymExpiry?.toISOString()||null,memberCode:d.memberCode||null,since:d.createdAt?.toDate?.()?.toISOString()||new Date().toISOString(),last:new Date().toISOString()};
-          isPro=effectivePlan==='royal_pro'||effectivePlan==='royal_elite';
+          // Gym member 3+ months gets PRO free
+          const _joinDateStr=d.joinDate||(d.createdAt?.toDate?.()?.toISOString?.())||null;
+          const _memberStart=_joinDateStr?new Date(_joinDateStr):null;
+          const _threeMonthsAgo=new Date();_threeMonthsAgo.setMonth(_threeMonthsAgo.getMonth()-3);
+          const _hasThreeMonths=d.gymMember===true&&_memberStart&&_memberStart<=_threeMonthsAgo;
+          isPro=_hasThreeMonths||effectivePlan==='royal_pro'||effectivePlan==='royal_elite';
+          user={uid:fbUser.uid,name:d.name||fbUser.displayName||fbUser.email.split('@')[0],email:d.email||fbUser.email,phone:d.phone||'',role:d.role||'member',plan:effectivePlan,gymMember:d.gymMember===true,userType:d.gymMember?'member':'outsider',joinDate:d.joinDate||null,membershipExpiry:gymExpiry?.toISOString()||null,memberCode:d.memberCode||null,since:d.createdAt?.toDate?.()?.toISOString()||new Date().toISOString(),last:new Date().toISOString()};
         }else{
-          // Auth user exists but no Firestore doc — not a registered member
-          showMembershipGate('notfound',null);
+          // No Firestore doc — auto-create outsider (digital member) account
+          const _displayName=fbUser.displayName||fbUser.email.split('@')[0];
+          await firebase.firestore().collection('users').doc(fbUser.uid).set({
+            name:_displayName,email:fbUser.email,phone:'',
+            role:'member',gymMember:false,userType:'outsider',
+            status:'active',plan:'free',memberCode:null,
+            createdAt:firebase.firestore.FieldValue.serverTimestamp(),
+            lastLogin:firebase.firestore.FieldValue.serverTimestamp()
+          });
+          user={uid:fbUser.uid,name:_displayName,email:fbUser.email,phone:'',role:'member',plan:'free',gymMember:false,userType:'outsider',joinDate:null,membershipExpiry:null,memberCode:null,since:new Date().toISOString(),last:new Date().toISOString()};
+          isPro=false;
+          localStorage.setItem('bm_user',JSON.stringify(user));
+          localStorage.setItem('bm_pro','false');
+          firebase.firestore().collection('users').doc(fbUser.uid).update({lastLogin:firebase.firestore.FieldValue.serverTimestamp()}).catch(()=>{});
+          applyUser();
+          if(user.role==='admin')showAdminLink();
+          initPDFStore();
           return;
         }
         localStorage.setItem('bm_user',JSON.stringify(user));
@@ -5944,6 +5982,19 @@ function applyUser(){
   // Show tracker section for all logged-in members
   $('tracker').classList.add('member-on');
   if($('navtr'))$('navtr').style.display='inline';
+  // Gym member PRO unlock countdown
+  if(user.gymMember&&!isPro){
+    const _joinStr=user.joinDate||user.since;
+    if(_joinStr){
+      const _jd=new Date(_joinStr);const _now=new Date();
+      const _mo=Math.floor((_now-_jd)/(1000*60*60*24*30.44));
+      const _left=Math.max(0,3-_mo);
+      if(_left>0&&!sessionStorage.getItem('rfc_pro_unlock_shown')){
+        sessionStorage.setItem('rfc_pro_unlock_shown','1');
+        setTimeout(()=>toast('⏳ PRO unlocks in '+_left+' month'+(_left===1?'':'s')+'! You\'re an RFC member — hang tight.','gold'),2200);
+      }
+    }
+  }
   if(isPro){
     $('ppro').classList.add('on');
     $('tracker').classList.add('pro-on');
@@ -6044,7 +6095,7 @@ async function loginWithFirebase(){
     closeLoginModal();
     toast('Welcome back! 🔥');
   }catch(err){
-    const msg=err.code==='auth/wrong-password'||err.code==='auth/invalid-credential'?'Wrong password. Check with the gym front desk.':err.code==='auth/user-not-found'?'Account not found. Please enroll at Royal Fitness Club.':err.message;
+    const msg=err.code==='auth/wrong-password'||err.code==='auth/invalid-credential'?'Wrong password. Try the GOOGLE tab or use Forgot password.':err.code==='auth/user-not-found'?'No account found. Use the GOOGLE tab for instant sign-in.':err.message;
     toast(msg,'gold');
   }finally{if($('login-pass'))$('login-pass').disabled=false;}
 }
@@ -6052,16 +6103,35 @@ async function loginWithFirebase(){
 // Legacy compatibility
 function loginUser(){loginWithFirebase();}
 
+// ── GOOGLE SIGN-IN (outsiders / digital members) ──
+async function signInWithGoogle(){
+  if(typeof firebase==='undefined'){toast('Service loading… try again.','gold');return;}
+  const btn=document.querySelector('.google-signin-btn');
+  if(btn){btn.disabled=true;btn.textContent='Signing in…';}
+  try{
+    const provider=new firebase.auth.GoogleAuthProvider();
+    provider.addScope('email');
+    provider.addScope('profile');
+    await firebase.auth().signInWithPopup(provider);
+    closeLoginModal();
+    toast('Welcome to Royal Fitness Club! 🎉','green');
+  }catch(err){
+    if(err.code!=='auth/popup-closed-by-user'){toast(err.message||'Google sign-in failed. Try again.','gold');}
+  }finally{
+    if(btn){btn.disabled=false;btn.innerHTML='<svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;"><path d="M17.64 9.2045C17.64 8.5663 17.5827 7.9527 17.4764 7.3636H9V10.845H13.8436C13.635 11.97 13.0009 12.9231 12.0477 13.5613V15.8195H14.9564C16.6582 14.2527 17.64 11.9454 17.64 9.2045Z" fill="#4285F4"/><path d="M9 18C11.43 18 13.4673 17.1941 14.9564 15.8195L12.0477 13.5613C11.2418 14.1013 10.2109 14.4204 9 14.4204C6.65591 14.4204 4.67182 12.8372 3.96409 10.71H0.957275V13.0418C2.43818 15.9831 5.48182 18 9 18Z" fill="#34A853"/><path d="M3.96409 10.71C3.78409 10.17 3.68182 9.5931 3.68182 9C3.68182 8.4069 3.78409 7.83 3.96409 7.29V4.9582H0.957275C0.347727 6.1731 0 7.5477 0 9C0 10.4523 0.347727 11.8269 0.957275 13.0418L3.96409 10.71Z" fill="#FBBC05"/><path d="M9 3.5795C10.3214 3.5795 11.5077 4.0336 12.4405 4.9255L15.0218 2.344C13.4632 0.8918 11.4259 0 9 0C5.48182 0 2.43818 2.0168 0.957275 4.9582L3.96409 7.29C4.67182 5.1627 6.65591 3.5795 9 3.5795Z" fill="#EA4335"/></svg> Sign in with Google';}
+  }
+}
+
 // ── AUTH TAB SWITCH ──
 function switchAuthTab(tab){
-  const panels={login:$('auth-login-panel'),register:$('auth-register-panel'),self:$('auth-self-panel')};
-  const tabs={login:$('tab-login'),register:$('tab-register'),self:$('tab-self')};
+  const panels={login:$('auth-login-panel'),google:$('auth-google-panel'),register:$('auth-register-panel')};
+  const tabs={login:$('tab-login'),google:$('tab-google'),register:$('tab-register')};
   Object.values(panels).forEach(p=>{if(p)p.style.display='none';});
   Object.values(tabs).forEach(t=>{if(t){t.style.background='transparent';t.style.color='var(--muted)';}});
   if(panels[tab])panels[tab].style.display='block';
   if(tabs[tab]){tabs[tab].style.background='var(--red)';tabs[tab].style.color='#fff';}
   if(tab==='register')setTimeout(()=>$('reg-code')?.focus(),100);
-  if(tab==='self')setTimeout(()=>$('self-name')?.focus(),100);
+  if(tab==='google')setTimeout(()=>document.querySelector('.google-signin-btn')?.focus(),100);
 }
 
 // ── REGISTER WITH MEMBERSHIP CODE ──
@@ -6125,38 +6195,31 @@ async function registerSelf(){
   if(!phone){errEl.textContent='Please enter your mobile number.';return;}
   if(pass.length<6){errEl.textContent='Password must be at least 6 characters.';return;}
   if(typeof firebase==='undefined'){errEl.textContent='Service loading, please try again.';return;}
-  const btn=document.querySelector('#auth-self-panel .mbtn');
-  btn.disabled=true;btn.textContent='Submitting…';
+  const btn=document.querySelector('#auth-self-panel .mbtn')||document.querySelector('#auth-google-panel .google-signin-btn');
+  if(btn){btn.disabled=true;btn.textContent='Submitting…';}
   try{
     const cred=await firebase.auth().createUserWithEmailAndPassword(email,pass);
     const uid=cred.user.uid;
     await firebase.firestore().collection('users').doc(uid).set({
-      name,email,phone,role:'member',gymMember:false,
-      status:'pending',
-      plan:'basic',
+      name,email,phone,role:'member',gymMember:false,userType:'outsider',
+      status:'active',
+      plan:'free',
       memberCode:null,
       referralUsed:referral||null,
       createdAt:firebase.firestore.FieldValue.serverTimestamp(),
       lastLogin:firebase.firestore.FieldValue.serverTimestamp()
     });
-    // Notify admin inbox about new pending registration
-    firebase.firestore().collection('admin_inbox').add({
-      type:'new_member_request',
-      uid,name,email,phone,
-      createdAt:firebase.firestore.FieldValue.serverTimestamp(),
-      read:false
-    }).catch(()=>{});
     closeLoginModal();
-    showMembershipGate('pending',null);
+    toast('Welcome to Royal Fitness Club! 🎉 Courses & Store are yours. Upgrade to PRO for ₹499/mo.','green');
   }catch(err){
     if(err.code==='auth/email-already-in-use'){errEl.textContent='An account with this email already exists. Please login.';}
     else{errEl.textContent=err.message||'Registration failed. Please try again.';}
-  }finally{btn.disabled=false;btn.textContent='📝 SUBMIT FOR APPROVAL';}
+  }finally{if(btn){btn.disabled=false;btn.textContent='📝 SUBMIT FOR APPROVAL';}}
 }
 
 function guestAccess(){
-  // Members-only app — no guest access
-  toast('This portal is for Royal Fitness Club members only.','gold');
+  switchAuthTab('google');
+  forceLogin();
 }
 
 function resetPasswordPrompt(){
