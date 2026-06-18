@@ -5604,6 +5604,8 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
     </div><!-- /pdf-anabolic-advanced -->
   </div>
 </section>
+<!-- Landing-page footer zone — hidden when any app screen is active -->
+<div id="landing-footer">
 <!-- Mobile sticky buy bar -->
 <div class="pdf-sticky-bar" id="pdf-sticky-bar">
   <div style="font-size:20px;">📚</div>
@@ -5663,6 +5665,7 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
     </div>
   </div>
 </footer>
+</div><!-- end #landing-footer -->
 <div class="mbg" id="loginmodal">
   <div class="mbox" style="max-width:440px;">
     <button class="mclose" onclick="closeLoginModal()">✕</button>
@@ -11906,7 +11909,7 @@ const SCREEN_MAP = {
 // All element IDs managed by the screen system (hidden/shown by JS)
 const ALL_MANAGED_IDS = ['screen-dashboard','home','profile','plans','calculator',
   'mealplan','roadmap','bodyfat','calculators','physio','tracker','tracker-workout-plan','workoutlog',
-  'arena','challenges','bloodreport','courses','store','dashboard','admin-panel'];
+  'arena','challenges','bloodreport','courses','store','dashboard','admin-panel','landing-footer'];
 
 let currentScreen = 'dashboard';
 
@@ -12001,6 +12004,7 @@ function switchScreen(name, navEl) {
   }
   if (name === 'nutrition') _updateMacroBanner();
   if (name === 'profile') { if (typeof renderProfile === 'function') renderProfile(); }
+  if (name === 'plans') { if (typeof refreshPlansUI === 'function') refreshPlansUI(); }
 
   // Close mobile sidebar on nav
   if (window.innerWidth < 900) {
