@@ -1272,8 +1272,8 @@ body{font-size:16px;}
 #dash-upgrade-nudge{
   background:linear-gradient(135deg,rgba(192,41,46,.1),rgba(212,168,64,.06));
   border:1px solid rgba(192,41,46,.25);border-radius:14px;
-  padding:20px;margin-bottom:16px;position:relative;overflow:hidden;
-  display:none;
+  padding:16px 20px;margin-bottom:16px;position:relative;overflow:hidden;
+  display:none;flex-direction:row;align-items:center;gap:20px;
 }
 #dash-upgrade-nudge::before{
   content:'';position:absolute;top:0;left:0;right:0;height:2px;
@@ -1314,6 +1314,8 @@ body{font-size:16px;}
 }
 .pbadge.pbelite{background:rgba(212,168,64,.15);color:#d4a840;border:1px solid rgba(212,168,64,.4);}
 .plans2.three{grid-template-columns:repeat(3,1fr);}
+.pcard.current-plan{box-shadow:0 0 0 2px rgba(34,197,94,.5),0 16px 48px rgba(34,197,94,.1)!important;border-color:rgba(34,197,94,.5)!important;}
+.plan-yours-ribbon{position:absolute;top:0;left:0;background:linear-gradient(135deg,#16a34a,#15803d);color:#fff;font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;letter-spacing:2px;padding:3px 10px 3px 8px;border-radius:0 0 8px 0;}
 .pcard .p-popular{
   position:absolute;top:-1px;right:24px;
   background:linear-gradient(90deg,var(--red),var(--orange));
@@ -2118,6 +2120,8 @@ img{loading:lazy;}
 .ob-dot.done{background:var(--red);}
 .ob-dot.active{background:var(--gold);}
 .ob-card{width:100%;max-width:560px;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:32px 28px;}
+.ob-skip-link{margin-top:16px;font-size:11px;color:var(--muted);letter-spacing:.5px;cursor:pointer;opacity:.55;transition:opacity .15s,color .15s;text-align:center;}
+.ob-skip-link:hover{opacity:1;color:var(--red);}
 .ob-step{display:none;}
 .ob-step.active{display:block;}
 .ob-title{font-family:'Bebas Neue',sans-serif;font-size:30px;letter-spacing:2px;color:var(--text);margin-bottom:6px;line-height:1.1;}
@@ -2643,6 +2647,25 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
       </div>
     </div>
 
+    <!-- Upgrade nudge — shown only to free-plan users via JS -->
+    <div id="dash-upgrade-nudge">
+      <div style="flex:1;min-width:0;">
+        <div class="dun-eyebrow">🔒 Free Plan — You're Missing Out</div>
+        <div class="dun-title" style="font-size:18px;margin-bottom:8px;">Unlock Your Full Fitness Arsenal</div>
+        <div class="dun-feats" style="flex-direction:row;flex-wrap:wrap;gap:8px 16px;margin-bottom:0;">
+          <div class="dun-feat"><span class="dun-feat-icon">🥗</span>7-Day Meal Plan</div>
+          <div class="dun-feat"><span class="dun-feat-icon">🗺️</span>12-Week Roadmap</div>
+          <div class="dun-feat"><span class="dun-feat-icon">📚</span>108+ PDF Guides</div>
+          <div class="dun-feat"><span class="dun-feat-icon">📈</span>Progress Tracker</div>
+          <div class="dun-feat"><span class="dun-feat-icon">🩸</span>Blood Analyser</div>
+        </div>
+      </div>
+      <div style="flex-shrink:0;text-align:right;">
+        <button class="dun-btn" style="width:auto;padding:10px 24px;white-space:nowrap;" onclick="switchScreen('plans',document.querySelector('[data-screen=plans]'))">⚡ UPGRADE — ₹499/mo</button>
+        <div class="dun-note" style="margin-top:5px;">RFC gym members get PRO <strong style="color:var(--gold);">FREE</strong> at 3 months</div>
+      </div>
+    </div>
+
     <!-- Main grid -->
     <div class="dash-grid">
       <!-- Left: Today's Plan + Quick Actions -->
@@ -2693,21 +2716,6 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
         <div class="dash-card" style="margin-bottom:16px;">
           <div class="dash-card-hdr" style="margin-bottom:12px;"><span class="dash-card-title">🏅 Personal Records</span></div>
           <div id="pr-tracker-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;"></div>
-        </div>
-
-        <!-- Upgrade nudge — shown only to free-plan users via JS -->
-        <div id="dash-upgrade-nudge">
-          <div class="dun-eyebrow">🔒 Free Plan — You're Missing Out</div>
-          <div class="dun-title">Unlock Your Full<br>Fitness Arsenal</div>
-          <div class="dun-feats">
-            <div class="dun-feat"><span class="dun-feat-icon">🥗</span>7-Day Personalised Indian Meal Plan</div>
-            <div class="dun-feat"><span class="dun-feat-icon">🗺️</span>12-Week Transformation Roadmap</div>
-            <div class="dun-feat"><span class="dun-feat-icon">📚</span>108+ Expert PDF Guides (Beginner→Master)</div>
-            <div class="dun-feat"><span class="dun-feat-icon">📈</span>Progress Photos, Streaks & Body Charts</div>
-            <div class="dun-feat"><span class="dun-feat-icon">🩸</span>Blood Report Analyser — 20+ Biomarkers</div>
-          </div>
-          <button class="dun-btn" onclick="switchScreen('plans',document.querySelector('[data-screen=plans]'))">⚡ UPGRADE TO PRO — ₹499/mo</button>
-          <div class="dun-note">No contract · Cancel anytime · Instant access</div>
         </div>
 
         <div class="dash-card">
@@ -3340,7 +3348,7 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
 
     <div class="plans2 three">
       <!-- Free / Basic Plan -->
-      <div class="pcard">
+      <div class="pcard" id="plan-card-free">
         <div class="pbadge pbfree">🌐 Free Access</div>
         <div class="pprice">FREE</div>
         <div class="pper">Google sign-in · Instant access · No payment</div>
@@ -3362,7 +3370,7 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
       </div>
 
       <!-- Pro Plan — MOST POPULAR -->
-      <div class="pcard pro" style="transform:scale(1.03);z-index:2;">
+      <div class="pcard pro" id="plan-card-pro" style="transform:scale(1.03);z-index:2;">
         <div class="p-popular">🔥 MOST POPULAR</div>
         <div class="pbadge pbpro">👑 Royal Pro</div>
         <div class="promobox"><div>⚡</div><div><div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:2px;color:var(--gold);">LIMITED TIME — 50% OFF</div><div class="ptimer2" id="ptimer2">23:59:59</div></div></div>
@@ -3386,7 +3394,7 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
       </div>
 
       <!-- Royal Elite -->
-      <div class="pcard elite">
+      <div class="pcard elite" id="plan-card-elite">
         <div class="pbadge pbelite">💎 Royal Elite</div>
         <div class="pprice" style="color:#d4a840;"><sup style="color:#d4a840;">₹</sup>1,999<sub>/mo</sub></div>
         <div class="pper">Personal coaching · Limited spots</div>
@@ -3542,7 +3550,7 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
       <div class="results-anatomy">
         <div id="emptyst2" class="emptyst">
           <div class="emico">🏋️</div>
-          <div class="emtxt">Login to get your personalised plan</div>
+          <div class="emtxt" id="emptyst2-msg">Run the calculator to get your plan</div>
           <div style="font-size:12px;color:#888;">Your Royal Transformation Plan will appear here</div>
         </div>
         <div id="rescont" style="flex-direction:column;gap:14px;">
@@ -6048,6 +6056,9 @@ function applyUser(){
     }).catch(()=>{});
   }
   setTimeout(checkAndUnlockBadges, 800);
+  setTimeout(refreshPlansUI, 300);
+  setTimeout(function(){if(currentScreen==='dashboard'&&typeof populateDashboard==='function')populateDashboard();},500);
+  var _emMsg=document.getElementById('emptyst2-msg');if(_emMsg)_emMsg.textContent='Run the calculator to get your plan';
   // Apply nav control (hide disabled tabs from members) — deferred so all consts are ready
   setTimeout(function() {
     if (typeof applyNavControl === 'function') {
@@ -11886,6 +11897,8 @@ const ALL_MANAGED_IDS = ['screen-dashboard','home','profile','plans','calculator
 let currentScreen = 'dashboard';
 
 function switchScreen(name, navEl) {
+  // Hide onboarding overlay when navigating to publicly accessible screens
+  if (['plans','courses','store'].includes(name)) hideOnboarding();
   // Check nav control — disabled screens show Notify Me overlay instead
   if (!isAdminUser()) {
     const nc = getNavControl();
@@ -12445,6 +12458,35 @@ function hideOnboarding() {
   document.body.style.overflow = '';
 }
 
+function refreshPlansUI() {
+  if (!user) return;
+  var cards = {free: document.getElementById('plan-card-free'), pro: document.getElementById('plan-card-pro'), elite: document.getElementById('plan-card-elite')};
+  ['free','pro','elite'].forEach(function(k) { if (cards[k]) { cards[k].classList.remove('current-plan'); var r = cards[k].querySelector('.plan-yours-ribbon'); if (r) r.remove(); } });
+  var activeKey = null;
+  if (isAdminUser() || user.plan === 'royal_elite') activeKey = 'elite';
+  else if (isPro || user.plan === 'royal_pro') activeKey = 'pro';
+  else activeKey = 'free';
+  var card = cards[activeKey];
+  if (!card) return;
+  card.classList.add('current-plan');
+  var ribbon = document.createElement('div');
+  ribbon.className = 'plan-yours-ribbon';
+  ribbon.textContent = '✓ YOUR PLAN';
+  card.insertBefore(ribbon, card.firstChild);
+  // Update heading if already on a paid plan
+  var sh = document.querySelector('#plans .sh');
+  if (sh && activeKey !== 'free') sh.textContent = 'YOUR MEMBERSHIP';
+}
+
+function skipOnboarding() {
+  if (!user) return;
+  var plan = Object.assign({ skipped: true, goal: _obData.goal || 'loss' }, { ts: Date.now() });
+  localStorage.setItem('rfc_userplan_' + user.uid, JSON.stringify(plan));
+  localStorage.setItem('rfc_onboarded_' + user.uid, '1');
+  hideOnboarding();
+  toast('You can complete your profile anytime from the Dashboard.', 'gold');
+}
+
 function obRenderProgress() {
   var pg = document.getElementById('ob-progress');
   if (!pg) return;
@@ -12933,6 +12975,7 @@ function saveUpdateStats() {
     </div>
 
   </div>
+  <div class="ob-skip-link" onclick="skipOnboarding()">Skip for now — explore Plans &amp; Courses →</div>
 </div>
 
 <!-- Update Stats Modal -->
