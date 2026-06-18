@@ -6014,6 +6014,8 @@ function applyUser(){
     const pg=$('physio-gate');if(pg)pg.style.display='none';
     const pp=document.getElementById('progress-photos-panel');if(pp)pp.style.display='block';
     loadPD();restorePhotos();
+    // Hide upgrade promo bar for paid members
+    const pb=document.getElementById('rfc-promo-bar');if(pb)pb.style.display='none';
   }else{
     // Free member — show tracker UI but with lock overlay
     const tg=$('tracker-gate');if(tg)tg.style.display='flex';
