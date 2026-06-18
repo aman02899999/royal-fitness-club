@@ -4095,10 +4095,10 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
 
     <!-- Tabs -->
     <div class="lb-tabs" style="margin-bottom:16px;">
-      <button class="lb-tab active" onclick="renderLeaderboard('tiger',this)">🐯 Tiger Score</button>
-      <button class="lb-tab" onclick="renderLeaderboard('streak',this)">🔥 Streak</button>
-      <button class="lb-tab" onclick="renderLeaderboard('referrals',this)">💰 Referrals</button>
-      <button class="lb-refresh" onclick="renderLeaderboard(currentLbBoard,null)" title="Refresh">⟳</button>
+      <button class="lb-tab active" onclick="user&&window.CommunityService?switchBoard('tiger',this):renderLeaderboard('tiger',this)">🐯 Tiger Score</button>
+      <button class="lb-tab" onclick="user&&window.CommunityService?switchBoard('streak',this):renderLeaderboard('streak',this)">🔥 Streak</button>
+      <button class="lb-tab" onclick="user&&window.CommunityService?switchBoard('referrals',this):renderLeaderboard('referrals',this)">💰 Referrals</button>
+      <button class="lb-refresh" onclick="user&&window.CommunityService?switchBoard(currentBoard,null):renderLeaderboard(currentLbBoard,null)" title="Refresh">⟳</button>
     </div>
 
     <div id="lb-list"></div>
@@ -12022,7 +12022,7 @@ function switchScreen(name, navEl) {
   if (name === 'challenges') renderChallenges();
   if (name === 'courses') renderCourses();
   if (name === 'admin') { if (isAdminUser()) renderAdminPanel(); else { toast('🔐 Admin access only.','gold'); switchScreen('dashboard', document.querySelector('[data-screen=dashboard]')); } }
-  if (name === 'leaderboard') { renderLeaderboard(currentLbBoard || 'tiger', null); _updateLbMotivator(); }
+  if (name === 'leaderboard') { renderLeaderboard(currentLbBoard || 'tiger', null); _updateLbMotivator(); if(user&&window.CommunityService)loadLeaderboard(); }
   if (name === 'dashboard') populateDashboard();
   if (name === 'referrals') {
     renderWallet();
