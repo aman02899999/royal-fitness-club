@@ -3374,7 +3374,7 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
         <div class="p-popular">🔥 MOST POPULAR</div>
         <div class="pbadge pbpro">👑 Royal Pro</div>
         <div class="promobox"><div>⚡</div><div><div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:2px;color:var(--gold);">LIMITED TIME — 50% OFF</div><div class="ptimer2" id="ptimer2">23:59:59</div></div></div>
-        <div class="pprice gold"><sup>₹</sup>499<sub>/mo</sub></div>
+        <div class="pprice gold"><span class="px-pro">₹499</span><sub>/mo</sub></div>
         <div class="pper">For digital members · RFC gym members get this FREE at 3 months</div>
         <ul class="pfeats">
           <li><span class="fi g">✓</span> Everything in Free</li>
@@ -3390,13 +3390,13 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
           <li><span class="fi g">✓</span> Tiger Points &amp; Wallet</li>
           <li><span class="fi g">✓</span> Physio &amp; Recovery Plans</li>
         </ul>
-        <button class="bpro apulse" onclick="openModal('promodal')" style="width:100%;justify-content:center;">⚡ GET ROYAL PRO — ₹499/mo</button>
+        <button class="bpro apulse" onclick="openModal('promodal')" style="width:100%;justify-content:center;">⚡ GET ROYAL PRO — <span class="px-pro">₹499</span>/mo</button>
       </div>
 
       <!-- Royal Elite -->
       <div class="pcard elite" id="plan-card-elite">
         <div class="pbadge pbelite">💎 Royal Elite</div>
-        <div class="pprice" style="color:#d4a840;"><sup style="color:#d4a840;">₹</sup>1,999<sub>/mo</sub></div>
+        <div class="pprice" style="color:#d4a840;"><span class="px-elite" style="color:#d4a840;">₹1,999</span><sub>/mo</sub></div>
         <div class="pper">Personal coaching · Limited spots</div>
         <ul class="pfeats">
           <li><span class="fi" style="color:#d4a840;">✓</span> Everything in Royal Pro</li>
@@ -3410,7 +3410,7 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
           <li><span class="fi" style="color:#d4a840;">✓</span> Lifetime Coaching Record Access</li>
         </ul>
         <div style="margin-bottom:10px;padding:8px 12px;background:rgba(212,168,64,.08);border:1px solid rgba(212,168,64,.2);border-radius:8px;font-size:11px;color:#d4a840;text-align:center;letter-spacing:1px;">⚠️ Only 5 spots available this month</div>
-        <button class="bpro apulse" onclick="openModal('elitemodal')" style="width:100%;justify-content:center;background:linear-gradient(90deg,#c0292e,#8a1a1e);">💎 JOIN ELITE — ₹1,999/mo</button>
+        <button class="bpro apulse" onclick="openModal('elitemodal')" style="width:100%;justify-content:center;background:linear-gradient(90deg,#c0292e,#8a1a1e);">💎 JOIN ELITE — <span class="px-elite">₹1,999</span>/mo</button>
       </div>
     </div>
 
@@ -11655,7 +11655,7 @@ function getAdminSiteSettings() {
     whatsapp: '',
     heroHeadline: 'Transform. Dominate. Conquer.',
     proPrice: 499,
-    elitePrice: 999,
+    elitePrice: 1999,
     announcement: '',
     announcementEnabled: false
   };
@@ -11681,7 +11681,7 @@ function applyAdminSiteSettings(s) {
   }
   // Pro price elements
   document.querySelectorAll('.px-pro').forEach(el => { el.textContent = '₹' + (s.proPrice||499); });
-  document.querySelectorAll('.px-elite').forEach(el => { el.textContent = '₹' + (s.elitePrice||999); });
+  document.querySelectorAll('.px-elite').forEach(el => { el.textContent = '₹' + Number(s.elitePrice||1999).toLocaleString('en-IN'); });
   // WhatsApp links — update all 3 from admin-configured number
   const waNum = (s.whatsapp||'918851830081').replace(/\D/g,'');
   const waBase = 'https://wa.me/' + (waNum.startsWith('91') ? waNum : '91' + waNum);
