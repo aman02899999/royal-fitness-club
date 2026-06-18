@@ -8528,7 +8528,7 @@ function drawMemberCard(){
   ctx.fillText(name,18,90);
 
   // Plan badge
-  const plan=(user.plan||'Member').toUpperCase();
+  const plan=(user.plan||'Member').toUpperCase().replace(/_/g,' ');
   const planW=ctx.measureText(plan).width+16;
   const planGrad=ctx.createLinearGradient(18,95,18+planW,110);
   planGrad.addColorStop(0,'#e8001d');planGrad.addColorStop(1,'#ff4444');
