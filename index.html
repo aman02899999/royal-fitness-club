@@ -4455,7 +4455,7 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
           </div>
           <div class="adm-site-field">
             <label>Elite Price (₹/mo)</label>
-            <input id="adm-site-elite-price" type="number" min="0" placeholder="999">
+            <input id="adm-site-elite-price" type="number" min="0" placeholder="1999">
           </div>
         </div>
         <div style="border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:16px;">
@@ -12251,10 +12251,22 @@ function populateDashboard() {
     } catch(e) { rankEl.textContent = '--'; }
   }
 
-  // Upgrade nudge — show only to free-plan users (use global isPro flag)
+  // Upgrade nudge — show for guests and free users; adapt CTA text
   var nudge = document.getElementById('dash-upgrade-nudge');
   if (nudge) {
     nudge.style.display = isPro ? 'none' : 'block';
+    var ctaBtn = nudge.querySelector('.dun-btn');
+    if (ctaBtn) {
+      if (!user) {
+        ctaBtn.textContent = '🌐 Join Free / Sign In';
+        ctaBtn.onclick = function(){ switchAuthTab('google'); forceLogin(); };
+      } else {
+        ctaBtn.textContent = '⚡ UPGRADE — ₹499/mo';
+        ctaBtn.onclick = function(){ switchScreen('plans', document.querySelector('[data-screen=plans]')); };
+      }
+    }
+    var eyebrow = nudge.querySelector('.dun-eyebrow');
+    if (eyebrow) eyebrow.textContent = user ? '🔒 Free Plan — You\'re Missing Out' : '🎯 Create Your Free Account';
   }
 
   // Today's tasks
