@@ -619,13 +619,17 @@ section::before{content:'';position:absolute;inset:0;background:linear-gradient(
 .wu-types{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:4px;}
 .wu-type-btn{padding:9px 18px;border-radius:8px;background:var(--card);border:1.5px solid var(--border);color:var(--text);font-size:13px;font-weight:600;cursor:pointer;letter-spacing:.5px;transition:all .18s;}
 .wu-type-btn:hover,.wu-type-btn.sel{background:var(--red);border-color:var(--red);color:#fff;}
-.wu-steps{display:flex;flex-direction:column;gap:10px;}
-.wu-step{display:flex;align-items:flex-start;gap:12px;background:var(--card2);border-radius:10px;padding:11px 14px;}
-.wu-step-num{font-family:'Bebas Neue',sans-serif;font-size:24px;color:var(--red);line-height:1;min-width:26px;}
-.wu-step-body{}
+.wu-steps{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+@media(max-width:600px){.wu-steps{grid-template-columns:1fr;}}
+.wu-step{display:flex;flex-direction:column;background:var(--card2);border-radius:10px;overflow:hidden;border:1px solid var(--border);transition:border-color .2s;}
+.wu-step:hover{border-color:rgba(192,41,46,.4);}
+.wu-step-img{width:100%;aspect-ratio:21/13;object-fit:cover;object-position:center;display:block;border-bottom:1px solid var(--border);}
+.wu-step-meta{display:flex;align-items:flex-start;gap:10px;padding:10px 13px;}
+.wu-step-num{font-family:'Bebas Neue',sans-serif;font-size:24px;color:var(--red);line-height:1;min-width:26px;flex-shrink:0;}
+.wu-step-body{flex:1;min-width:0;}
 .wu-step-name{font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:.5px;color:var(--text);}
-.wu-step-detail{font-size:11.5px;color:var(--muted);margin-top:2px;}
-.wu-step-sets{font-size:10px;font-weight:700;letter-spacing:1.5px;color:var(--gold);margin-top:4px;text-transform:uppercase;}
+.wu-step-detail{font-size:11px;color:var(--muted);margin-top:2px;line-height:1.4;}
+.wu-step-sets{font-size:10px;font-weight:700;letter-spacing:1.5px;color:var(--gold);margin-top:5px;text-transform:uppercase;}
 .fr-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;}
 @media(max-width:580px){.fr-grid{grid-template-columns:1fr;}}
 .fr-card{background:var(--card2);border-radius:12px;padding:14px 16px;}
@@ -7516,35 +7520,35 @@ document.querySelectorAll('.painbtn').forEach(b=>{b.addEventListener('click',()=
 // ── WARM-UP BUILDER ──
 const WU_DATA={
   upper:[
-    {name:'Arm Circles',detail:'Both directions — small to large.',sets:'30 sec each direction'},
-    {name:'Band Pull-Aparts',detail:'Arms straight, pull band to chest, control return.',sets:'2 × 15 reps'},
-    {name:'Shoulder Dislocates',detail:'Hands wide on band, pass overhead and behind back.',sets:'2 × 10 reps'},
-    {name:'Wall Slides',detail:'Back and arms flat on wall, slide arms overhead.',sets:'2 × 12 reps'},
-    {name:'Thoracic Rotations',detail:'Seated, arms crossed. Rotate upper back left and right.',sets:'10 each side'},
+    {name:'Arm Circles',detail:'Both directions — small to large.',sets:'30 sec each direction',img:'icons/warmup/arm_circles.jpg'},
+    {name:'Band Pull-Aparts',detail:'Arms straight, pull band to chest, control return.',sets:'2 × 15 reps',img:'icons/warmup/band_pull_aparts.jpg'},
+    {name:'Shoulder Dislocates',detail:'Hands wide on band, pass overhead and behind back.',sets:'2 × 10 reps',img:'icons/warmup/shoulder_dislocates.jpg'},
+    {name:'Wall Slides',detail:'Back and arms flat on wall, slide arms overhead.',sets:'2 × 12 reps',img:'icons/warmup/wall_slides.jpg'},
+    {name:'Thoracic Rotations',detail:'Seated, arms crossed. Rotate upper back left and right.',sets:'10 each side',img:'icons/warmup/thoracic_rotations.jpg'},
   ],
   lower:[
-    {name:'Leg Swings (Front/Back)',detail:'Hold wall for balance, swing leg forward and back through full range.',sets:'15 each side'},
-    {name:'Lateral Leg Swings',detail:'Hold wall, swing leg across body and out to side.',sets:'15 each side'},
-    {name:'Hip Circles',detail:'Feet shoulder-width, hands on hips. Large slow circles.',sets:'10 each direction'},
-    {name:'Bodyweight Squat (Slow)',detail:'3-sec descent, pause at bottom, drive up through heels.',sets:'2 × 10 reps'},
-    {name:'Walking Lunge with Rotation',detail:'Step into lunge, rotate torso toward front leg, step through.',sets:'10 each side'},
+    {name:'Leg Swings (Front/Back)',detail:'Hold wall for balance, swing leg forward and back through full range.',sets:'15 each side',img:'icons/warmup/leg_swings_front_back.jpg'},
+    {name:'Lateral Leg Swings',detail:'Hold wall, swing leg across body and out to side.',sets:'15 each side',img:'icons/warmup/lateral_leg_swings.jpg'},
+    {name:'Hip Circles',detail:'Feet shoulder-width, hands on hips. Large slow circles.',sets:'10 each direction',img:'icons/warmup/hip_circles.jpg'},
+    {name:'Bodyweight Squat (Slow)',detail:'3-sec descent, pause at bottom, drive up through heels.',sets:'2 × 10 reps',img:'icons/warmup/bodyweight_squat.jpg'},
+    {name:'Walking Lunge with Rotation',detail:'Step into lunge, rotate torso toward front leg, step through.',sets:'10 each side',img:'icons/warmup/walking_lunge_rotation.jpg'},
   ],
   full:[
-    {name:'Jumping Jacks',detail:'Full range arms and legs. Warm core temp.',sets:'60 sec'},
-    {name:'World\'s Greatest Stretch',detail:'Lunge forward, elbow to floor, rotate arm up to sky. Step through.',sets:'5 each side'},
-    {name:'Inchworm',detail:'Stand, hinge to floor, walk hands out to plank, walk back, stand.',sets:'8 reps'},
-    {name:'Hip Circles',detail:'Large slow circles in both directions.',sets:'10 each direction'},
-    {name:'High Knees (Moderate)',detail:'Drive knees to hip height, pump arms, controlled pace.',sets:'30 sec'},
+    {name:'Jumping Jacks',detail:'Full range arms and legs. Warm core temp.',sets:'60 sec',img:'icons/warmup/jumping_jacks.jpg'},
+    {name:"World's Greatest Stretch",detail:'Lunge forward, elbow to floor, rotate arm up to sky. Step through.',sets:'5 each side',img:'icons/warmup/worlds_greatest_stretch.jpg'},
+    {name:'Inchworm',detail:'Stand, hinge to floor, walk hands out to plank, walk back, stand.',sets:'8 reps',img:'icons/warmup/inchworm.jpg'},
+    {name:'Hip Circles',detail:'Large slow circles in both directions.',sets:'10 each direction',img:'icons/warmup/hip_circles.jpg'},
+    {name:'High Knees (Moderate)',detail:'Drive knees to hip height, pump arms, controlled pace.',sets:'30 sec',img:'icons/warmup/high_knees_moderate.jpg'},
   ],
   cardio:[
-    {name:'March on Spot',detail:'Exaggerated march, drive knees up, pump arms.',sets:'60 sec'},
-    {name:'Leg Swings',detail:'Front/back and lateral — both legs.',sets:'12 each direction'},
-    {name:'Ankle Rotations',detail:'Seated or standing. Full circles both directions.',sets:'10 each direction'},
-    {name:'Calf Raises',detail:'Rise fully onto toes, lower slowly. Warm the Achilles.',sets:'2 × 15 reps'},
-    {name:'High Knees (Build Up)',detail:'Start slow, build to 80% effort over 30 sec.',sets:'60 sec total'},
+    {name:'March on Spot',detail:'Exaggerated march, drive knees up, pump arms.',sets:'60 sec',img:'icons/warmup/march_on_spot.jpg'},
+    {name:'Leg Swings',detail:'Front/back and lateral — both legs.',sets:'12 each direction',img:'icons/warmup/leg_swings.jpg'},
+    {name:'Ankle Rotations',detail:'Seated or standing. Full circles both directions.',sets:'10 each direction',img:'icons/warmup/ankle_rotations.jpg'},
+    {name:'Calf Raises',detail:'Rise fully onto toes, lower slowly. Warm the Achilles.',sets:'2 × 15 reps',img:'icons/warmup/calf_raises.jpg'},
+    {name:'High Knees (Build Up)',detail:'Start slow, build to 80% effort over 30 sec.',sets:'60 sec total',img:'icons/warmup/high_knees_buildup.jpg'},
   ],
 };
-document.querySelectorAll('.wu-type-btn').forEach(b=>{b.addEventListener('click',()=>{document.querySelectorAll('.wu-type-btn').forEach(x=>x.classList.remove('sel'));b.classList.add('sel');const steps=WU_DATA[b.dataset.wu];const el=$('wu-plan');el.style.display='block';el.innerHTML='<div class="wu-steps">'+steps.map((s,i)=>`<div class="wu-step"><div class="wu-step-num">0${i+1}</div><div class="wu-step-body"><div class="wu-step-name">${s.name}</div><div class="wu-step-detail">${s.detail}</div><div class="wu-step-sets">${s.sets}</div></div></div>`).join('')+'</div>';});});
+document.querySelectorAll('.wu-type-btn').forEach(b=>{b.addEventListener('click',()=>{document.querySelectorAll('.wu-type-btn').forEach(x=>x.classList.remove('sel'));b.classList.add('sel');const steps=WU_DATA[b.dataset.wu];const el=$('wu-plan');el.style.display='block';el.innerHTML='<div class="wu-steps">'+steps.map((s,i)=>`<div class="wu-step">${s.img?`<img class="wu-step-img" src="${s.img}" alt="${s.name} demonstration" loading="lazy">`:''}<div class="wu-step-meta"><div class="wu-step-num">0${i+1}</div><div class="wu-step-body"><div class="wu-step-name">${s.name}</div><div class="wu-step-detail">${s.detail}</div><div class="wu-step-sets">${s.sets}</div></div></div></div>`).join('')+'</div>';});});
 // ── PHYSIO TABS ──
 document.querySelectorAll('.ptab').forEach(t=>{t.addEventListener('click',()=>{document.querySelectorAll('.ptab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.ppanel').forEach(x=>x.classList.remove('active'));t.classList.add('active');document.querySelector('.ppanel[data-panel="'+t.dataset.panel+'"]').classList.add('active');if(t.dataset.panel==='aiphysio'&&!document.getElementById('aip-wizard').innerHTML.trim())aipInit();});});
 // ── POSTURE QUESTIONNAIRE ──
