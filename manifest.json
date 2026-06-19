@@ -1,7 +1,7 @@
 {
   "name": "Royal Fitness Club",
   "short_name": "RFC",
-  "description": "India's Most Advanced Gym Ecosystem — AI Meal Plans, Beast Score, Expert Guides",
+  "description": "India's Most Advanced Gym Ecosystem — Smart Meal Plans, Beast Score, Expert PDF Guides",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
@@ -22,9 +22,9 @@
   ],
   "shortcuts": [
     {
-      "name": "AI Meal Planner",
+      "name": "Meal Planner",
       "short_name": "Meals",
-      "description": "Generate your daily meal plan",
+      "description": "View your personalised daily meal plan",
       "url": "/index.html#mealplan",
       "icons": [{ "src": "/icons/icon-96x96.png", "sizes": "96x96" }]
     },

@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Royal Fitness Club — Promo Poster</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@300;400;500;600;700;800;900&family=Barlow:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:#0a0a0a;display:flex;flex-direction:column;align-items:center;gap:60px;padding:40px 20px;font-family:'Barlow',sans-serif;}
+
+/* ===== POSTER 1 — MASTER PROMO ===== */
+.poster{
+  width:794px;
+  background:#0d0d0d;
+  border:1px solid #1a1a1a;
+  position:relative;
+  overflow:hidden;
+  page-break-after:always;
+}
+
+/* corner accents */
+.poster::before,.poster::after{
+  content:'';position:absolute;width:80px;height:80px;
+  border-color:#e8001d;border-style:solid;
+}
+.poster::before{top:12px;left:12px;border-width:3px 0 0 3px;}
+.poster::after{top:12px;right:12px;border-width:3px 3px 0 0;}
+
+.corner-bl,.corner-br{
+  content:'';position:absolute;width:80px;height:80px;
+  border-color:#e8001d;border-style:solid;
+}
+.corner-bl{bottom:12px;left:12px;border-width:0 0 3px 3px;}
+.corner-br{bottom:12px;right:12px;border-width:0 3px 3px 0;}
+
+/* bg decoration */
+.bg-hex{
+  position:absolute;top:-60px;right:-60px;
+  width:380px;height:380px;
+  background:radial-gradient(circle,rgba(232,0,29,.12) 0%,transparent 70%);
+  pointer-events:none;
+}
+.bg-hex2{
+  position:absolute;bottom:-80px;left:-40px;
+  width:300px;height:300px;
+  background:radial-gradient(circle,rgba(255,208,0,.07) 0%,transparent 70%);
+  pointer-events:none;
+}
+.grid-lines{
+  position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);
+  background-size:40px 40px;
+  pointer-events:none;
+}
+
+/* header band */
+.p-header{
+  background:linear-gradient(135deg,#e8001d 0%,#a00015 50%,#e8001d 100%);
+  padding:18px 32px;
+  display:flex;align-items:center;justify-content:space-between;
+  position:relative;overflow:hidden;
+}
+.p-header::after{
+  content:'RFC';
+  position:absolute;right:-10px;top:-20px;
+  font-family:'Bebas Neue',sans-serif;
+  font-size:120px;color:rgba(0,0,0,.15);
+  line-height:1;pointer-events:none;
+}
+.p-logo-area{display:flex;flex-direction:column;}
+.p-logo-tag{font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:4px;color:rgba(255,255,255,.7);text-transform:uppercase;margin-bottom:2px;}
+.p-logo-name{font-family:'Bebas Neue',sans-serif;font-size:44px;color:#fff;line-height:.95;letter-spacing:2px;}
+.p-logo-sub{font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:3px;color:rgba(255,255,255,.6);}
+.p-badge{background:rgba(0,0,0,.25);border:1px solid rgba(255,255,255,.3);border-radius:6px;padding:6px 14px;text-align:center;}
+.p-badge-top{font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:2px;color:rgba(255,255,255,.7);}
+.p-badge-main{font-family:'Bebas Neue',sans-serif;font-size:22px;color:#ffd000;letter-spacing:1px;}
+
+/* hero section */
+.p-hero{padding:32px 32px 0;display:flex;gap:24px;align-items:flex-start;}
+.p-hero-text{flex:1;}
+.p-eyebrow{font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:4px;color:#e8001d;text-transform:uppercase;margin-bottom:8px;}
+.p-headline{font-family:'Bebas Neue',sans-serif;font-size:58px;color:#fff;line-height:.95;letter-spacing:1px;margin-bottom:12px;}
+.p-headline span{color:#ffd000;}
+.p-tagline{font-family:'Barlow Condensed',sans-serif;font-size:16px;color:rgba(255,255,255,.65);letter-spacing:1px;line-height:1.5;max-width:380px;}
+
+/* stats row */
+.p-stats{display:flex;gap:0;margin:24px 32px 0;border:1px solid rgba(232,0,29,.3);border-radius:8px;overflow:hidden;}
+.p-stat{flex:1;padding:14px 10px;text-align:center;border-right:1px solid rgba(232,0,29,.2);}
+.p-stat:last-child{border-right:none;}
+.p-stat-num{font-family:'Bebas Neue',sans-serif;font-size:32px;color:#e8001d;line-height:1;}
+.p-stat-label{font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:2px;color:rgba(255,255,255,.5);text-transform:uppercase;margin-top:2px;}
+
+/* divider */
+.p-divider{display:flex;align-items:center;gap:12px;margin:24px 32px 0;}
+.p-divider-line{flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(232,0,29,.5),transparent);}
+.p-divider-text{font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:3px;color:#ffd000;text-transform:uppercase;}
+
+/* features grid */
+.p-features{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin:16px 32px 0;}
+.p-feat{
+  background:rgba(255,255,255,.03);
+  border:1px solid rgba(255,255,255,.07);
+  border-radius:8px;padding:14px 12px;
+  position:relative;overflow:hidden;
+  transition:border-color .2s;
+}
+.p-feat::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,#e8001d,transparent);
+}
+.p-feat-icon{font-size:22px;margin-bottom:8px;display:block;}
+.p-feat-title{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;color:#fff;letter-spacing:.5px;margin-bottom:4px;}
+.p-feat-desc{font-family:'Barlow',sans-serif;font-size:10px;color:rgba(255,255,255,.5);line-height:1.5;}
+.p-feat-tag{
+  display:inline-block;margin-top:6px;
+  font-family:'Barlow Condensed',sans-serif;font-size:9px;letter-spacing:1px;
+  padding:2px 7px;border-radius:3px;
+}
+.tag-free{background:rgba(34,197,94,.15);color:#4ade80;border:1px solid rgba(34,197,94,.3);}
+.tag-pro{background:rgba(99,102,241,.15);color:#a5b4fc;border:1px solid rgba(99,102,241,.3);}
+.tag-elite{background:rgba(255,208,0,.15);color:#ffd000;border:1px solid rgba(255,208,0,.3);}
+
+/* plans section */
+.p-plans-label{font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:3px;color:#ffd000;text-transform:uppercase;margin:24px 32px 0 32px;}
+.p-plans{display:flex;gap:10px;margin:10px 32px 0;}
+.p-plan{flex:1;border-radius:8px;padding:14px;text-align:center;position:relative;overflow:hidden;}
+.plan-basic{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);}
+.plan-pro{background:rgba(99,102,241,.08);border:1px solid rgba(99,102,241,.35);}
+.plan-elite{background:rgba(255,208,0,.06);border:1px solid rgba(255,208,0,.4);}
+.plan-elite::after{
+  content:'★ BEST';position:absolute;top:0;right:0;
+  background:#ffd000;color:#000;font-family:'Barlow Condensed',sans-serif;
+  font-size:9px;font-weight:700;letter-spacing:1px;padding:3px 8px;
+  border-radius:0 8px 0 6px;
+}
+.p-plan-name{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:1px;margin-bottom:6px;}
+.plan-basic .p-plan-name{color:#94a3b8;}
+.plan-pro .p-plan-name{color:#a5b4fc;}
+.plan-elite .p-plan-name{color:#ffd000;}
+.p-plan-items{font-family:'Barlow',sans-serif;font-size:10px;color:rgba(255,255,255,.55);line-height:1.7;text-align:left;}
+
+/* QR section */
+.p-qr-band{
+  margin:24px 32px 0;
+  background:linear-gradient(135deg,rgba(232,0,29,.12),rgba(255,208,0,.06));
+  border:1px solid rgba(232,0,29,.3);
+  border-radius:10px;
+  padding:20px 24px;
+  display:flex;align-items:center;gap:24px;
+}
+.p-qr-img{
+  width:110px;height:110px;
+  background:#fff;border-radius:8px;
+  padding:6px;flex-shrink:0;
+}
+.p-qr-img img{width:100%;height:100%;display:block;}
+.p-qr-text{}
+.p-qr-headline{font-family:'Bebas Neue',sans-serif;font-size:28px;color:#fff;letter-spacing:1px;line-height:1;}
+.p-qr-headline span{color:#e8001d;}
+.p-qr-sub{font-family:'Barlow Condensed',sans-serif;font-size:13px;color:rgba(255,255,255,.6);letter-spacing:.5px;margin-top:6px;line-height:1.5;}
+.p-qr-steps{display:flex;gap:14px;margin-top:10px;}
+.p-qr-step{display:flex;align-items:center;gap:6px;}
+.p-qr-step-num{width:20px;height:20px;border-radius:50%;background:#e8001d;color:#fff;font-family:'Bebas Neue',sans-serif;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.p-qr-step-txt{font-family:'Barlow',sans-serif;font-size:10px;color:rgba(255,255,255,.55);}
+
+/* footer band */
+.p-footer{
+  margin-top:20px;
+  background:rgba(232,0,29,.08);
+  border-top:1px solid rgba(232,0,29,.2);
+  padding:12px 32px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.p-footer-brand{font-family:'Bebas Neue',sans-serif;font-size:14px;color:rgba(255,255,255,.4);letter-spacing:2px;}
+.p-footer-url{font-family:'Barlow Condensed',sans-serif;font-size:11px;color:#e8001d;letter-spacing:1px;}
+.p-footer-tagline{font-family:'Barlow Condensed',sans-serif;font-size:11px;color:rgba(255,255,255,.3);letter-spacing:2px;text-transform:uppercase;}
+
+/* ===== POSTER 2 — BENEFITS VERTICAL ===== */
+.poster2{
+  width:794px;
+  background:#060606;
+  border:1px solid #1a1a1a;
+  position:relative;overflow:hidden;
+}
+
+.p2-top-stripe{
+  height:8px;
+  background:linear-gradient(90deg,#e8001d 0%,#ffd000 40%,#e8001d 100%);
+}
+.p2-header{
+  padding:28px 36px 22px;
+  display:flex;align-items:center;justify-content:space-between;
+  border-bottom:1px solid rgba(255,255,255,.06);
+}
+.p2-title-block{}
+.p2-pre{font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:5px;color:#e8001d;text-transform:uppercase;}
+.p2-title{font-family:'Bebas Neue',sans-serif;font-size:52px;color:#fff;letter-spacing:2px;line-height:.9;}
+.p2-title em{color:#ffd000;font-style:normal;}
+.p2-sub{font-family:'Barlow Condensed',sans-serif;font-size:14px;color:rgba(255,255,255,.45);letter-spacing:1px;margin-top:4px;}
+
+/* benefit rows */
+.p2-benefits{padding:24px 36px;display:flex;flex-direction:column;gap:12px;}
+.p2-benefit{
+  display:flex;align-items:flex-start;gap:16px;
+  background:rgba(255,255,255,.025);
+  border:1px solid rgba(255,255,255,.06);
+  border-left:3px solid #e8001d;
+  border-radius:8px;padding:14px 16px;
+}
+.p2-benefit.gold{border-left-color:#ffd000;}
+.p2-benefit.violet{border-left-color:#6366f1;}
+.p2-ben-icon{font-size:26px;flex-shrink:0;width:40px;text-align:center;line-height:1;}
+.p2-ben-body{flex:1;}
+.p2-ben-title{font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:700;color:#fff;letter-spacing:.5px;margin-bottom:3px;}
+.p2-ben-desc{font-family:'Barlow',sans-serif;font-size:11px;color:rgba(255,255,255,.5);line-height:1.6;}
+.p2-ben-pills{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px;}
+.p2-pill{font-family:'Barlow Condensed',sans-serif;font-size:9px;letter-spacing:1px;padding:2px 8px;border-radius:3px;border:1px solid;}
+.p2-pill.red{color:#fca5a5;border-color:rgba(232,0,29,.4);background:rgba(232,0,29,.1);}
+.p2-pill.gold{color:#fde68a;border-color:rgba(255,208,0,.4);background:rgba(255,208,0,.08);}
+.p2-pill.blue{color:#a5b4fc;border-color:rgba(99,102,241,.4);background:rgba(99,102,241,.08);}
+.p2-pill.green{color:#86efac;border-color:rgba(34,197,94,.4);background:rgba(34,197,94,.08);}
+
+/* QR band for poster2 */
+.p2-qr-band{
+  margin:0 36px 24px;
+  background:linear-gradient(135deg,#e8001d,#a00015);
+  border-radius:10px;padding:20px 24px;
+  display:flex;align-items:center;gap:20px;
+}
+.p2-qr-img{width:100px;height:100px;background:#fff;border-radius:6px;padding:5px;flex-shrink:0;}
+.p2-qr-img img{width:100%;height:100%;display:block;}
+.p2-qr-right{}
+.p2-qr-cta{font-family:'Bebas Neue',sans-serif;font-size:32px;color:#fff;letter-spacing:2px;line-height:1;}
+.p2-qr-line{font-family:'Barlow Condensed',sans-serif;font-size:13px;color:rgba(255,255,255,.8);letter-spacing:1px;margin-top:4px;}
+.p2-qr-url{font-family:'Barlow Condensed',sans-serif;font-size:14px;color:#ffd000;letter-spacing:2px;margin-top:8px;font-weight:600;}
+
+.p2-footer{
+  padding:12px 36px;
+  border-top:1px solid rgba(255,255,255,.06);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.p2-footer-name{font-family:'Bebas Neue',sans-serif;font-size:16px;color:#e8001d;letter-spacing:3px;}
+.p2-footer-line{font-family:'Barlow Condensed',sans-serif;font-size:11px;color:rgba(255,255,255,.3);letter-spacing:2px;}
+
+/* ===== POSTER 3 — LANDSCAPE WIDE BANNER ===== */
+.poster3{
+  width:1123px;
+  background:#080808;
+  border:1px solid #1a1a1a;
+  position:relative;overflow:hidden;
+}
+.p3-left{
+  background:linear-gradient(135deg,#e8001d 0%,#6b0011 100%);
+  width:340px;padding:32px 28px;
+  position:absolute;top:0;left:0;bottom:0;
+  display:flex;flex-direction:column;justify-content:space-between;
+  overflow:hidden;
+}
+.p3-left::before{
+  content:'RFC';position:absolute;bottom:-30px;right:-20px;
+  font-family:'Bebas Neue',sans-serif;font-size:160px;
+  color:rgba(0,0,0,.2);line-height:1;pointer-events:none;
+}
+.p3-brand{font-family:'Bebas Neue',sans-serif;font-size:38px;color:#fff;letter-spacing:2px;line-height:.95;}
+.p3-brand-sub{font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:4px;color:rgba(255,255,255,.6);}
+.p3-headline{font-family:'Bebas Neue',sans-serif;font-size:46px;color:#fff;line-height:.95;letter-spacing:1px;}
+.p3-headline span{color:#ffd000;}
+.p3-qr-area{background:rgba(0,0,0,.25);border-radius:8px;padding:14px;display:flex;gap:12px;align-items:center;}
+.p3-qr-img{width:80px;height:80px;background:#fff;border-radius:5px;padding:4px;flex-shrink:0;}
+.p3-qr-img img{width:100%;height:100%;display:block;}
+.p3-qr-txt{font-family:'Barlow Condensed',sans-serif;font-size:12px;color:rgba(255,255,255,.8);letter-spacing:.5px;line-height:1.6;}
+.p3-qr-txt strong{display:block;font-family:'Bebas Neue',sans-serif;font-size:18px;color:#ffd000;letter-spacing:1px;}
+.p3-right{margin-left:340px;padding:28px 28px 24px;}
+.p3-right-top{display:flex;gap:10px;margin-bottom:16px;}
+.p3-stat-chip{
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);
+  border-radius:6px;padding:10px 14px;text-align:center;flex:1;
+}
+.p3-stat-chip-num{font-family:'Bebas Neue',sans-serif;font-size:24px;color:#e8001d;line-height:1;}
+.p3-stat-chip-lbl{font-family:'Barlow Condensed',sans-serif;font-size:9px;letter-spacing:2px;color:rgba(255,255,255,.4);}
+.p3-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
+.p3-card{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:7px;padding:12px;}
+.p3-card-icon{font-size:18px;margin-bottom:6px;}
+.p3-card-title{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;color:#fff;letter-spacing:.3px;}
+.p3-card-desc{font-family:'Barlow',sans-serif;font-size:9.5px;color:rgba(255,255,255,.45);line-height:1.5;margin-top:3px;}
+
+/* print styles */
+@media print{
+  body{background:#fff;padding:0;gap:0;}
+  .poster,.poster2,.poster3{break-after:page;margin:0;}
+}
+
+/* screen label */
+.screen-label{
+  font-family:'Barlow Condensed',sans-serif;font-size:13px;letter-spacing:3px;
+  color:rgba(255,255,255,.25);text-transform:uppercase;
+  align-self:flex-start;margin-bottom:-40px;
+}
+</style>
+</head>
+<body>
+
+<!-- ===== POSTER 1: MASTER PROMOTIONAL ===== -->
+<div class="screen-label">Poster 1 — Master Promotional (A4 Portrait)</div>
+<div class="poster">
+  <div class="bg-hex"></div>
+  <div class="bg-hex2"></div>
+  <div class="grid-lines"></div>
+  <div class="corner-bl"></div>
+  <div class="corner-br"></div>
+
+  <!-- Header -->
+  <div class="p-header">
+    <div class="p-logo-area">
+      <div class="p-logo-tag">Est. 2018 · Kota, Rajasthan</div>
+      <div class="p-logo-name">Royal Fitness<br>Club</div>
+      <div class="p-logo-sub">Train Hard · Live Strong</div>
+    </div>
+    <div class="p-badge">
+      <div class="p-badge-top">Now with</div>
+      <div class="p-badge-main">Smart App</div>
+      <div class="p-badge-top" style="color:#fff;">Free on all devices</div>
+    </div>
+  </div>
+
+  <!-- Hero -->
+  <div class="p-hero">
+    <div class="p-hero-text">
+      <div class="p-eyebrow">India's Smartest Gym Platform</div>
+      <div class="p-headline">TRANSFORM<br><span>YOUR BODY.</span><br>TRACK YOUR<br>PROGRESS.</div>
+      <div class="p-tagline">Get a personalised diet plan, track workouts, unlock courses & manage your membership — all in one app.</div>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="p-stats">
+    <div class="p-stat">
+      <div class="p-stat-num">500+</div>
+      <div class="p-stat-label">Members</div>
+    </div>
+    <div class="p-stat">
+      <div class="p-stat-num">17</div>
+      <div class="p-stat-label">Health Protocols</div>
+    </div>
+    <div class="p-stat">
+      <div class="p-stat-num">108</div>
+      <div class="p-stat-label">Training PDFs</div>
+    </div>
+    <div class="p-stat">
+      <div class="p-stat-num">24/7</div>
+      <div class="p-stat-label">Access</div>
+    </div>
+    <div class="p-stat">
+      <div class="p-stat-num">100%</div>
+      <div class="p-stat-label">Digital</div>
+    </div>
+  </div>
+
+  <!-- Divider -->
+  <div class="p-divider">
+    <div class="p-divider-line"></div>
+    <div class="p-divider-text">Everything You Get</div>
+    <div class="p-divider-line"></div>
+  </div>
+
+  <!-- Features -->
+  <div class="p-features">
+
+    <div class="p-feat">
+      <span class="p-feat-icon">🥗</span>
+      <div class="p-feat-title">AI Meal Planner</div>
+      <div class="p-feat-desc">Auto-calculated diet based on your goal, weight, activity & health condition</div>
+      <span class="p-feat-tag tag-free">FREE</span>
+    </div>
+
+    <div class="p-feat">
+      <span class="p-feat-icon">💪</span>
+      <div class="p-feat-title">Workout Tracker</div>
+      <div class="p-feat-desc">Log sets, reps & weight. View weekly history and streaks</div>
+      <span class="p-feat-tag tag-free">FREE</span>
+    </div>
+
+    <div class="p-feat">
+      <span class="p-feat-icon">🏅</span>
+      <div class="p-feat-title">Tiger Score</div>
+      <div class="p-feat-desc">Gamified fitness rating based on streak, check-ins & referrals</div>
+      <span class="p-feat-tag tag-free">FREE</span>
+    </div>
+
+    <div class="p-feat">
+      <span class="p-feat-icon">📚</span>
+      <div class="p-feat-title">PDF Library</div>
+      <div class="p-feat-desc">108 training guides — strength, nutrition, cardio & lifestyle</div>
+      <span class="p-feat-tag tag-pro">PRO</span>
+    </div>
+
+    <div class="p-feat">
+      <span class="p-feat-icon">🎥</span>
+      <div class="p-feat-title">Video Courses</div>
+      <div class="p-feat-desc">Expert-led courses on muscle building, fat loss & wellness</div>
+      <span class="p-feat-tag tag-pro">PRO</span>
+    </div>
+
+    <div class="p-feat">
+      <span class="p-feat-icon">🩺</span>
+      <div class="p-feat-title">Health Protocols</div>
+      <div class="p-feat-desc">17 conditions: PCOS, diabetes, thyroid, BP, cholesterol & more</div>
+      <span class="p-feat-tag tag-pro">PRO</span>
+    </div>
+
+    <div class="p-feat">
+      <span class="p-feat-icon">📊</span>
+      <div class="p-feat-title">Progress Photos</div>
+      <div class="p-feat-desc">Before/after comparison with monthly visual tracking</div>
+      <span class="p-feat-tag tag-pro">PRO</span>
+    </div>
+
+    <div class="p-feat">
+      <span class="p-feat-icon">🏆</span>
+      <div class="p-feat-title">Leaderboard</div>
+      <div class="p-feat-desc">Compete with members, rank by Tiger Score, earn bragging rights</div>
+      <span class="p-feat-tag tag-elite">ELITE</span>
+    </div>
+
+    <div class="p-feat">
+      <span class="p-feat-icon">🤝</span>
+      <div class="p-feat-title">Referral Rewards</div>
+      <div class="p-feat-desc">Earn credits for every friend you bring to Royal Fitness</div>
+      <span class="p-feat-tag tag-elite">ELITE</span>
+    </div>
+
+  </div>
+
+  <!-- Plans -->
+  <div class="p-plans-label">Membership Plans</div>
+  <div class="p-plans">
+    <div class="p-plan plan-basic">
+      <div class="p-plan-name">Basic</div>
+      <div class="p-plan-items">
+        ✓ Gym access<br>
+        ✓ Meal planner<br>
+        ✓ Workout tracker<br>
+        ✓ Tiger Score<br>
+        ✗ PDF Library<br>
+        ✗ Courses
+      </div>
+    </div>
+    <div class="p-plan plan-pro">
+      <div class="p-plan-name">Pro</div>
+      <div class="p-plan-items">
+        ✓ Everything in Basic<br>
+        ✓ PDF Library (108)<br>
+        ✓ Video Courses<br>
+        ✓ Health Protocols<br>
+        ✓ Progress Photos<br>
+        ✗ Leaderboard Priority
+      </div>
+    </div>
+    <div class="p-plan plan-elite">
+      <div class="p-plan-name">Royal Elite</div>
+      <div class="p-plan-items">
+        ✓ Everything in Pro<br>
+        ✓ Leaderboard Priority<br>
+        ✓ Referral Rewards<br>
+        ✓ Personal Coaching<br>
+        ✓ VIP Check-in<br>
+        ✓ Exclusive Events
+      </div>
+    </div>
+  </div>
+
+  <!-- QR Band -->
+  <div class="p-qr-band">
+    <div class="p-qr-img">
+      <img src="qrcode.png" alt="Scan to Register">
+    </div>
+    <div class="p-qr-text">
+      <div class="p-qr-headline">SCAN TO <span>REGISTER</span><br>FOR FREE</div>
+      <div class="p-qr-sub">Point your camera at the QR code to open the app and create your membership instantly.</div>
+      <div class="p-qr-steps">
+        <div class="p-qr-step">
+          <div class="p-qr-step-num">1</div>
+          <div class="p-qr-step-txt">Scan QR</div>
+        </div>
+        <div class="p-qr-step">
+          <div class="p-qr-step-num">2</div>
+          <div class="p-qr-step-txt">Choose plan</div>
+        </div>
+        <div class="p-qr-step">
+          <div class="p-qr-step-num">3</div>
+          <div class="p-qr-step-txt">Start training</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="p-footer">
+    <div class="p-footer-brand">Royal Fitness Club · Kota</div>
+    <div class="p-footer-url">royal-fitness-club-7adc1.web.app</div>
+    <div class="p-footer-tagline">Transform · Perform · Dominate</div>
+  </div>
+</div>
+
+
+<!-- ===== POSTER 2: BENEFITS DEEP DIVE ===== -->
+<div class="screen-label">Poster 2 — Benefits Deep Dive (Portrait)</div>
+<div class="poster2">
+  <div class="p2-top-stripe"></div>
+
+  <div class="p2-header">
+    <div class="p2-title-block">
+      <div class="p2-pre">Why Choose RFC?</div>
+      <div class="p2-title">EVERY BENEFIT.<br><em>ONE APP.</em></div>
+      <div class="p2-sub">Royal Fitness Club · Digital Membership</div>
+    </div>
+    <div style="text-align:right;">
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:40px;color:#e8001d;letter-spacing:2px;line-height:.95;">ROYAL<br>FITNESS<br>CLUB</div>
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:3px;color:rgba(255,255,255,.3);margin-top:4px;">KOTA, RAJASTHAN</div>
+    </div>
+  </div>
+
+  <div class="p2-benefits">
+
+    <div class="p2-benefit">
+      <div class="p2-ben-icon">🧬</div>
+      <div class="p2-ben-body">
+        <div class="p2-ben-title">Personalised AI Nutrition Engine</div>
+        <div class="p2-ben-desc">Enter your goal (fat loss / muscle gain / maintenance), health condition and lifestyle — get a complete macro-split diet plan instantly. Powered by clinically validated protocols.</div>
+        <div class="p2-ben-pills">
+          <span class="p2-pill red">Fat Loss</span>
+          <span class="p2-pill red">Muscle Gain</span>
+          <span class="p2-pill red">Maintenance</span>
+          <span class="p2-pill gold">17 Health Conditions</span>
+          <span class="p2-pill green">Auto Meal Plan</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="p2-benefit gold">
+      <div class="p2-ben-icon">🩺</div>
+      <div class="p2-ben-body">
+        <div class="p2-ben-title">17 Medical Condition Diet Protocols</div>
+        <div class="p2-ben-desc">PCOS, Thyroid, Diabetes, Hypertension, NAFLD, Gout, Cholesterol, IBS, GERD, Anemia, Vitamin D, Osteoporosis, Arthritis, Anxiety & more — each with supplement stacks and foods to avoid.</div>
+        <div class="p2-ben-pills">
+          <span class="p2-pill gold">PCOS/PCOD</span>
+          <span class="p2-pill gold">Type 2 Diabetes</span>
+          <span class="p2-pill gold">Hypertension</span>
+          <span class="p2-pill gold">Thyroid</span>
+          <span class="p2-pill gold">+13 more</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="p2-benefit violet">
+      <div class="p2-ben-icon">📚</div>
+      <div class="p2-ben-body">
+        <div class="p2-ben-title">108 Premium Training PDFs</div>
+        <div class="p2-ben-desc">Organised library covering strength training, cardio programming, fat loss protocols, bodybuilding splits, yoga, mobility, nutrition science and lifestyle guides — accessible anytime.</div>
+        <div class="p2-ben-pills">
+          <span class="p2-pill blue">Strength</span>
+          <span class="p2-pill blue">Cardio</span>
+          <span class="p2-pill blue">Fat Loss</span>
+          <span class="p2-pill blue">Nutrition</span>
+          <span class="p2-pill blue">Yoga & Mobility</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="p2-benefit">
+      <div class="p2-ben-icon">💪</div>
+      <div class="p2-ben-body">
+        <div class="p2-ben-title">Smart Workout Tracker + Streak System</div>
+        <div class="p2-ben-desc">Log every set, rep and weight. View weekly workout history, build daily streaks, earn Tiger Score points and compete on the member leaderboard to stay motivated.</div>
+        <div class="p2-ben-pills">
+          <span class="p2-pill red">Daily Log</span>
+          <span class="p2-pill red">Streak Counter</span>
+          <span class="p2-pill red">History Graph</span>
+          <span class="p2-pill green">Tiger Score</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="p2-benefit gold">
+      <div class="p2-ben-icon">📸</div>
+      <div class="p2-ben-body">
+        <div class="p2-ben-title">Progress Photo Timeline</div>
+        <div class="p2-ben-desc">Upload monthly body photos and see your transformation side-by-side. Visual evidence of progress keeps you consistent and accountable week after week.</div>
+        <div class="p2-ben-pills">
+          <span class="p2-pill gold">Before/After</span>
+          <span class="p2-pill gold">Monthly Tracking</span>
+          <span class="p2-pill gold">Private Gallery</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="p2-benefit violet">
+      <div class="p2-ben-icon">🏆</div>
+      <div class="p2-ben-body">
+        <div class="p2-ben-title">Member Leaderboard & Referral Rewards</div>
+        <div class="p2-ben-desc">See where you rank against all RFC members. Earn Tiger Score from workouts, check-ins, referrals and progress photos. Refer friends and earn credit toward your next plan.</div>
+        <div class="p2-ben-pills">
+          <span class="p2-pill blue">Live Ranking</span>
+          <span class="p2-pill blue">Referral Credits</span>
+          <span class="p2-pill blue">Leaderboard Badges</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- QR Band -->
+  <div class="p2-qr-band">
+    <div class="p2-qr-img">
+      <img src="qrcode.png" alt="Scan to Register">
+    </div>
+    <div class="p2-qr-right">
+      <div class="p2-qr-cta">SCAN & JOIN NOW</div>
+      <div class="p2-qr-line">Point your phone camera at the code to open Royal Fitness Club and register your account in seconds.</div>
+      <div class="p2-qr-url">royal-fitness-club-7adc1.web.app</div>
+    </div>
+  </div>
+
+  <div class="p2-footer">
+    <div class="p2-footer-name">Royal Fitness Club</div>
+    <div class="p2-footer-line">Train Hard · Live Strong · Kota, Rajasthan</div>
+    <div class="p2-footer-line">Available on all devices · No app download needed</div>
+  </div>
+</div>
+
+
+<!-- ===== POSTER 3: LANDSCAPE BANNER ===== -->
+<div class="screen-label">Poster 3 — Wide Banner (A4 Landscape)</div>
+<div class="poster3" style="height:500px;">
+  <div class="grid-lines"></div>
+
+  <!-- Left red panel -->
+  <div class="p3-left">
+    <div>
+      <div class="p3-brand-sub" style="margin-bottom:6px;">India's Smartest Gym</div>
+      <div class="p3-brand">Royal<br>Fitness<br>Club</div>
+      <div class="p3-brand-sub" style="margin-top:4px;">Kota, Rajasthan</div>
+    </div>
+    <div>
+      <div class="p3-headline">TRAIN<br>SMARTER.<br><span>LIVE<br>STRONGER.</span></div>
+    </div>
+    <div class="p3-qr-area">
+      <div class="p3-qr-img">
+        <img src="qrcode.png" alt="QR">
+      </div>
+      <div class="p3-qr-txt">
+        <strong>SCAN TO JOIN</strong>
+        Scan QR code with your phone camera to register instantly
+      </div>
+    </div>
+  </div>
+
+  <!-- Right content -->
+  <div class="p3-right">
+    <!-- Stats chips -->
+    <div class="p3-right-top">
+      <div class="p3-stat-chip">
+        <div class="p3-stat-chip-num">500+</div>
+        <div class="p3-stat-chip-lbl">Members</div>
+      </div>
+      <div class="p3-stat-chip">
+        <div class="p3-stat-chip-num">108</div>
+        <div class="p3-stat-chip-lbl">Training PDFs</div>
+      </div>
+      <div class="p3-stat-chip">
+        <div class="p3-stat-chip-num">17</div>
+        <div class="p3-stat-chip-lbl">Health Protocols</div>
+      </div>
+      <div class="p3-stat-chip">
+        <div class="p3-stat-chip-num">24/7</div>
+        <div class="p3-stat-chip-lbl">Digital Access</div>
+      </div>
+      <div class="p3-stat-chip">
+        <div class="p3-stat-chip-num">3</div>
+        <div class="p3-stat-chip-lbl">Membership Tiers</div>
+      </div>
+    </div>
+
+    <!-- Feature cards grid -->
+    <div class="p3-grid">
+      <div class="p3-card">
+        <div class="p3-card-icon">🥗</div>
+        <div class="p3-card-title">AI Meal Planner</div>
+        <div class="p3-card-desc">Custom diet plans based on your goal, body type, and health conditions. Macros calculated automatically.</div>
+      </div>
+      <div class="p3-card">
+        <div class="p3-card-icon">💪</div>
+        <div class="p3-card-title">Workout Tracker</div>
+        <div class="p3-card-desc">Log workouts daily, build streaks, earn Tiger Score points and compete on the member leaderboard.</div>
+      </div>
+      <div class="p3-card">
+        <div class="p3-card-icon">📚</div>
+        <div class="p3-card-title">108 Training PDFs</div>
+        <div class="p3-card-desc">Expert guides on strength, fat loss, nutrition, cardio and mobility — all in one organised library.</div>
+      </div>
+      <div class="p3-card">
+        <div class="p3-card-icon">🩺</div>
+        <div class="p3-card-title">17 Health Protocols</div>
+        <div class="p3-card-desc">Specialised diet plans for PCOS, diabetes, thyroid, BP, cholesterol and 12 more conditions.</div>
+      </div>
+      <div class="p3-card">
+        <div class="p3-card-icon">📸</div>
+        <div class="p3-card-title">Progress Tracking</div>
+        <div class="p3-card-desc">Monthly before/after photo timeline plus streak history to keep you accountable.</div>
+      </div>
+      <div class="p3-card">
+        <div class="p3-card-icon">🏆</div>
+        <div class="p3-card-title">Leaderboard & Rewards</div>
+        <div class="p3-card-desc">Real-time member rankings, referral credits and gamified Tiger Score badges.</div>
+      </div>
+      <div class="p3-card">
+        <div class="p3-card-icon">🎥</div>
+        <div class="p3-card-title">Video Courses</div>
+        <div class="p3-card-desc">Expert-led courses on muscle building, fat loss, cardio and overall wellness.</div>
+      </div>
+      <div class="p3-card">
+        <div class="p3-card-icon">🔐</div>
+        <div class="p3-card-title">Secure Membership</div>
+        <div class="p3-card-desc">Admin-approved accounts, plan-gated content and secure Razorpay payments.</div>
+      </div>
+      <div class="p3-card">
+        <div class="p3-card-icon">📱</div>
+        <div class="p3-card-title">All Devices · No Download</div>
+        <div class="p3-card-desc">Works on any phone, tablet or laptop. No app install needed — open in browser and go.</div>
+      </div>
+    </div>
+
+    <!-- Bottom tagline -->
+    <div style="margin-top:16px;display:flex;align-items:center;justify-content:space-between;">
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:3px;color:rgba(255,255,255,.25);text-transform:uppercase;">royal-fitness-club-7adc1.web.app</div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:20px;color:#e8001d;letter-spacing:3px;">Transform · Perform · Dominate</div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

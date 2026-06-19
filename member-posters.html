@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Royal Fitness Club — Member Posters</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@300;400;600;700;900&family=Barlow:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --red:#e8001d; --gold:#ffd000; --orange:#ff4500;
+  --dark:#070707; --card:#101010; --card2:#141414;
+  --border:#222; --text:#f0f0f0; --muted:#a0a0a0;
+  --green:#22c55e; --blue:#38bdf8;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:#111;font-family:'Barlow',sans-serif;padding:40px 20px;color:#fff;}
+.page-title{text-align:center;font-family:'Bebas Neue',sans-serif;font-size:32px;letter-spacing:6px;color:var(--gold);margin-bottom:6px;}
+.page-sub{text-align:center;font-family:'Barlow Condensed',sans-serif;font-size:13px;letter-spacing:3px;color:#555;text-transform:uppercase;margin-bottom:56px;}
+.pw{margin-bottom:70px;display:flex;flex-direction:column;align-items:center;gap:12px;}
+.plbl{font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:3px;text-transform:uppercase;color:#555;text-align:center;}
+.plbl span{color:var(--gold);font-weight:700;}
+
+/* ─── POSTER M1 — WELCOME CARD (Digital Membership Card) ─── */
+.m1{
+  width:700px;height:420px;
+  background:linear-gradient(135deg,#0a0a0a 0%,#0e0e0e 100%);
+  border:1px solid #1e1e1e;
+  border-radius:20px;
+  position:relative;overflow:hidden;flex-shrink:0;
+  box-shadow:0 20px 80px rgba(0,0,0,.8);
+}
+.m1-bg{
+  position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse at 10% 50%,rgba(232,0,29,.18) 0%,transparent 50%),
+    radial-gradient(ellipse at 90% 50%,rgba(255,208,0,.1) 0%,transparent 50%);
+}
+.m1-pattern{
+  position:absolute;inset:0;
+  background:repeating-linear-gradient(-45deg,transparent,transparent 30px,rgba(255,255,255,.012) 30px,rgba(255,255,255,.012) 31px);
+}
+.m1-left-bar{position:absolute;left:0;top:0;bottom:0;width:6px;background:linear-gradient(180deg,var(--red),var(--gold),var(--red));}
+.m1-top-strip{position:absolute;top:0;left:6px;right:0;height:4px;background:linear-gradient(90deg,var(--red),var(--gold),var(--orange));}
+.m1-content{position:relative;z-index:2;height:100%;padding:36px 44px 36px 52px;display:grid;grid-template-columns:1fr 220px;gap:30px;align-items:center;}
+.m1-left{display:flex;flex-direction:column;gap:0;}
+.m1-chip{
+  width:46px;height:32px;background:linear-gradient(135deg,#b8860b,#ffd700,#b8860b);
+  border-radius:5px;margin-bottom:24px;
+  box-shadow:0 2px 8px rgba(255,208,0,.3);
+  position:relative;overflow:hidden;
+}
+.m1-chip::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent,transparent 6px,rgba(0,0,0,.1) 6px,rgba(0,0,0,.1) 7px);}
+.m1-chip-line{position:absolute;top:50%;left:0;right:0;height:1px;background:rgba(0,0,0,.2);}
+.m1-club-name{font-family:'Bebas Neue',sans-serif;font-size:11px;letter-spacing:6px;color:var(--red);margin-bottom:4px;}
+.m1-member-name{font-family:'Bebas Neue',sans-serif;font-size:46px;line-height:.9;letter-spacing:1px;color:#fff;margin-bottom:16px;}
+.m1-member-name em{font-style:normal;color:var(--gold);}
+.m1-details{display:flex;flex-direction:column;gap:6px;}
+.m1-detail-row{display:flex;gap:8px;align-items:center;}
+.m1-detail-label{font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#555;min-width:56px;}
+.m1-detail-val{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:600;letter-spacing:1px;color:#c0c0c0;}
+.m1-detail-val.gold{color:var(--gold);}
+.m1-detail-val.red{color:var(--red);}
+.m1-detail-val.green{color:var(--green);}
+.m1-right{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;}
+.m1-plan-badge{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  width:140px;height:140px;border-radius:50%;
+  background:linear-gradient(135deg,#1a0f00,#0e0e0e);
+  border:2px solid var(--gold);
+  box-shadow:0 0 40px rgba(255,208,0,.2),inset 0 0 30px rgba(255,208,0,.04);
+  position:relative;
+}
+.m1-plan-badge::before{content:'';position:absolute;inset:6px;border-radius:50%;border:1px solid rgba(255,208,0,.15);}
+.m1-plan-icon{font-size:36px;margin-bottom:2px;}
+.m1-plan-label{font-family:'Bebas Neue',sans-serif;font-size:11px;letter-spacing:3px;color:var(--gold);}
+.m1-member-id{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;letter-spacing:6px;color:#222;
+  background:linear-gradient(135deg,#1a1a1a,#222);border:1px solid #2a2a2a;border-radius:4px;
+  padding:8px 16px;text-align:center;width:100%;}
+.m1-member-id.show{color:#555;}
+.m1-qr-placeholder{
+  width:70px;height:70px;border:1px solid #222;border-radius:4px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:28px;background:#0a0a0a;
+}
+.m1-bottom-bar{
+  position:absolute;bottom:0;left:6px;right:0;
+  height:38px;background:rgba(0,0,0,.5);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 44px 0 46px;
+  border-top:1px solid #1a1a1a;
+}
+.m1-bottom-item{font-family:'Barlow Condensed',sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#333;display:flex;align-items:center;gap:5px;}
+.m1-bottom-item .dot{width:3px;height:3px;background:var(--red);border-radius:50%;}
+
+/* ─── POSTER M2 — GYM RULES (Wall Poster) ─── */
+.m2{
+  width:595px;height:842px;
+  background:var(--dark);position:relative;overflow:hidden;flex-shrink:0;
+}
+.m2-red-bar{position:absolute;top:0;left:0;right:0;height:5px;background:linear-gradient(90deg,var(--red),var(--gold),var(--red));}
+.m2-bg{
+  position:absolute;inset:0;
+  background:radial-gradient(ellipse at 50% 30%,rgba(232,0,29,.1) 0%,transparent 60%);
+}
+.m2-corner-tl{position:absolute;top:20px;left:20px;width:60px;height:60px;border-top:2px solid rgba(232,0,29,.3);border-left:2px solid rgba(232,0,29,.3);}
+.m2-corner-br{position:absolute;bottom:20px;right:20px;width:60px;height:60px;border-bottom:2px solid rgba(232,0,29,.3);border-right:2px solid rgba(232,0,29,.3);}
+.m2-content{position:relative;z-index:2;padding:44px 52px;height:100%;display:flex;flex-direction:column;}
+.m2-logo{font-family:'Bebas Neue',sans-serif;font-size:11px;letter-spacing:6px;color:var(--red);margin-bottom:6px;}
+.m2-title{font-family:'Bebas Neue',sans-serif;font-size:72px;line-height:.88;letter-spacing:2px;color:#fff;margin-bottom:6px;}
+.m2-title em{font-style:normal;color:var(--gold);}
+.m2-subtitle{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:600;letter-spacing:4px;color:#555;text-transform:uppercase;margin-bottom:30px;}
+.m2-divider{height:1px;background:linear-gradient(90deg,var(--red),transparent);margin-bottom:28px;}
+.m2-rules{display:flex;flex-direction:column;gap:16px;flex:1;}
+.m2-rule{display:flex;align-items:flex-start;gap:18px;}
+.m2-rule-num{
+  font-family:'Bebas Neue',sans-serif;font-size:32px;line-height:1;
+  background:linear-gradient(135deg,var(--red),var(--orange));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  min-width:34px;
+}
+.m2-rule-body{display:flex;flex-direction:column;gap:3px;padding-top:4px;}
+.m2-rule-title{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px;color:#fff;line-height:1;}
+.m2-rule-desc{font-family:'Barlow',sans-serif;font-size:11px;color:#666;line-height:1.5;}
+.m2-bottom{margin-top:auto;padding-top:20px;border-top:1px solid #1a1a1a;display:flex;justify-content:space-between;align-items:center;}
+.m2-footer-logo{font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:4px;color:#333;}
+.m2-footer-url{font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:3px;color:#333;text-transform:uppercase;}
+
+/* ─── POSTER M3 — MONTHLY CHALLENGE ─── */
+.m3{
+  width:700px;height:700px;
+  background:var(--dark);position:relative;overflow:hidden;flex-shrink:0;
+}
+.m3-bg{
+  position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse at 50% -10%,rgba(255,208,0,.2) 0%,transparent 50%),
+    radial-gradient(ellipse at 50% 110%,rgba(232,0,29,.15) 0%,transparent 50%);
+}
+.m3-hex-pattern{
+  position:absolute;inset:0;
+  background-image:radial-gradient(circle,rgba(255,255,255,.04) 1px,transparent 1px);
+  background-size:30px 30px;
+}
+.m3-top{position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--gold),var(--red));}
+.m3-content{position:relative;z-index:2;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:42px 50px;}
+.m3-header{display:flex;align-items:center;justify-content:space-between;width:100%;}
+.m3-logo-sm{font-family:'Bebas Neue',sans-serif;font-size:11px;letter-spacing:5px;color:var(--red);}
+.m3-month-badge{
+  font-family:'Bebas Neue',sans-serif;font-size:11px;letter-spacing:3px;
+  background:linear-gradient(135deg,var(--gold),var(--orange));
+  color:#000;padding:5px 16px;border-radius:2px;
+}
+.m3-center{text-align:center;}
+.m3-challenge-eyebrow{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:6px;color:var(--gold);text-transform:uppercase;margin-bottom:10px;}
+.m3-title{font-family:'Bebas Neue',sans-serif;font-size:96px;line-height:.85;letter-spacing:2px;color:#fff;margin-bottom:8px;}
+.m3-title .fire{background:linear-gradient(135deg,var(--red),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.m3-title .sub-word{font-size:48px;letter-spacing:8px;display:block;color:var(--muted);}
+.m3-desc{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:300;letter-spacing:2px;color:#777;text-transform:uppercase;line-height:1.7;margin-bottom:24px;}
+.m3-targets{display:flex;gap:16px;justify-content:center;margin-bottom:0;}
+.m3-target{
+  background:#111;border:1px solid #222;border-radius:8px;
+  padding:14px 20px;text-align:center;min-width:100px;
+}
+.m3-target.gold-t{border-color:rgba(255,208,0,.2);}
+.m3-target-num{font-family:'Bebas Neue',sans-serif;font-size:36px;line-height:1;color:#fff;}
+.m3-target-num.gold{color:var(--gold);}
+.m3-target-num.red{color:var(--red);}
+.m3-target-unit{font-family:'Barlow Condensed',sans-serif;font-size:9px;letter-spacing:2px;color:#555;text-transform:uppercase;}
+.m3-footer{width:100%;display:flex;align-items:center;justify-content:space-between;}
+.m3-prize{display:flex;align-items:center;gap:10px;}
+.m3-prize-icon{font-size:28px;}
+.m3-prize-text{display:flex;flex-direction:column;}
+.m3-prize-label{font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;letter-spacing:3px;color:#555;text-transform:uppercase;}
+.m3-prize-val{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px;color:var(--gold);}
+.m3-join-btn{
+  background:linear-gradient(135deg,var(--red),var(--orange));
+  color:#fff;font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:2.5px;
+  padding:10px 24px;border-radius:3px;
+  box-shadow:0 6px 20px rgba(232,0,29,.4);
+}
+
+/* ─── POSTER M4 — REFERRAL CARD ─── */
+.m4{
+  width:700px;height:380px;
+  background:var(--dark);position:relative;overflow:hidden;flex-shrink:0;
+  border-radius:16px;
+}
+.m4-left-accent{
+  position:absolute;left:0;top:0;bottom:0;width:46%;
+  background:linear-gradient(160deg,var(--red) 0%,#8c0011 100%);
+  clip-path:polygon(0 0,88% 0,100% 100%,0 100%);
+}
+.m4-left-accent::before{
+  content:'';position:absolute;inset:0;
+  background:repeating-linear-gradient(45deg,transparent,transparent 18px,rgba(0,0,0,.07) 18px,rgba(0,0,0,.07) 19px);
+}
+.m4-gold-slash{position:absolute;left:42%;top:0;bottom:0;width:3px;background:var(--gold);transform:skewX(-3deg);box-shadow:0 0 20px rgba(255,208,0,.6);z-index:3;}
+.m4-top{position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--gold),var(--red));z-index:4;}
+.m4-left-content{position:absolute;left:0;top:0;width:46%;height:100%;padding:34px 44px 34px 36px;z-index:2;display:flex;flex-direction:column;justify-content:space-between;}
+.m4-refer-tag{font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:rgba(255,255,255,.7);}
+.m4-big-text{font-family:'Bebas Neue',sans-serif;font-size:60px;line-height:.87;letter-spacing:1px;color:#fff;}
+.m4-sub-text{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:300;letter-spacing:2px;color:rgba(255,255,255,.65);text-transform:uppercase;}
+.m4-logo-sm{font-family:'Bebas Neue',sans-serif;font-size:10px;letter-spacing:4px;color:rgba(255,255,255,.4);}
+.m4-right-content{
+  position:absolute;right:0;top:0;width:58%;height:100%;
+  padding:32px 36px 32px 60px;z-index:2;
+  display:flex;flex-direction:column;justify-content:space-between;
+}
+.m4-reward-box{
+  background:#111;border:1px solid #222;border-radius:10px;
+  padding:18px 22px;display:flex;flex-direction:column;gap:12px;
+}
+.m4-reward-row{display:flex;align-items:center;gap:16px;}
+.m4-reward-icon{font-size:22px;flex-shrink:0;}
+.m4-reward-text{display:flex;flex-direction:column;gap:2px;}
+.m4-reward-label{font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#555;}
+.m4-reward-val{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;color:#fff;}
+.m4-reward-val.gold{color:var(--gold);}
+.m4-reward-val.red{color:var(--red);}
+.m4-steps{display:flex;gap:14px;}
+.m4-step{flex:1;text-align:center;}
+.m4-step-num{
+  width:28px;height:28px;border-radius:50%;
+  background:linear-gradient(135deg,var(--red),var(--orange));
+  color:#fff;font-family:'Bebas Neue',sans-serif;font-size:15px;
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 6px;
+}
+.m4-step-txt{font-family:'Barlow',sans-serif;font-size:10px;color:#666;line-height:1.4;}
+.m4-code-box{
+  background:rgba(255,208,0,.06);border:1px dashed rgba(255,208,0,.3);border-radius:6px;
+  padding:8px 14px;display:flex;align-items:center;gap:10px;
+}
+.m4-code-label{font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#555;flex-shrink:0;}
+.m4-code-val{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:6px;color:var(--gold);}
+.m4-code-note{font-family:'Barlow',sans-serif;font-size:9px;color:#444;margin-left:auto;white-space:nowrap;}
+
+/* ─── POSTER M5 — WORKOUT OF THE WEEK ─── */
+.m5{
+  width:700px;height:560px;
+  background:var(--dark);position:relative;overflow:hidden;flex-shrink:0;
+}
+.m5-bg{position:absolute;inset:0;background:radial-gradient(ellipse at 80% 50%,rgba(232,0,29,.12) 0%,transparent 60%);}
+.m5-top{position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--red),var(--gold));}
+.m5-content{position:relative;z-index:2;height:100%;padding:36px 46px;display:flex;flex-direction:column;gap:22px;}
+.m5-header{display:flex;justify-content:space-between;align-items:flex-start;}
+.m5-left-head{display:flex;flex-direction:column;gap:4px;}
+.m5-logo-sm{font-family:'Bebas Neue',sans-serif;font-size:10px;letter-spacing:5px;color:var(--red);}
+.m5-week-title{font-family:'Bebas Neue',sans-serif;font-size:52px;line-height:.9;letter-spacing:2px;color:#fff;}
+.m5-week-title em{font-style:normal;color:var(--red);}
+.m5-split-badge{
+  background:rgba(232,0,29,.1);border:1px solid rgba(232,0,29,.25);
+  font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:3px;color:var(--red);
+  padding:6px 14px;border-radius:4px;height:fit-content;
+}
+.m5-days-grid{
+  display:grid;grid-template-columns:repeat(7,1fr);gap:8px;
+}
+.m5-day{
+  background:#0e0e0e;border:1px solid #1e1e1e;border-radius:6px;
+  padding:10px 8px;display:flex;flex-direction:column;align-items:center;gap:5px;
+  position:relative;overflow:hidden;
+}
+.m5-day.active{border-color:rgba(232,0,29,.3);background:rgba(232,0,29,.05);}
+.m5-day.rest{border-color:#1a1a1a;}
+.m5-day-num{font-family:'Bebas Neue',sans-serif;font-size:11px;letter-spacing:2px;color:#555;text-transform:uppercase;}
+.m5-day-name{font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:1px;color:#fff;text-align:center;line-height:1.1;}
+.m5-day-name.red{color:var(--red);}
+.m5-day-name.muted{color:#444;}
+.m5-day-icon{font-size:16px;}
+.m5-stats-row{display:flex;gap:14px;}
+.m5-stat-box{
+  flex:1;background:#0e0e0e;border:1px solid #1e1e1e;border-radius:8px;
+  padding:14px 16px;display:flex;align-items:center;gap:12px;
+}
+.m5-stat-icon{font-size:22px;flex-shrink:0;}
+.m5-stat-info{display:flex;flex-direction:column;}
+.m5-stat-n{font-family:'Bebas Neue',sans-serif;font-size:26px;line-height:1;color:var(--gold);}
+.m5-stat-l{font-family:'Barlow Condensed',sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#555;}
+.m5-tip-box{
+  background:rgba(255,208,0,.04);border:1px solid rgba(255,208,0,.12);border-radius:6px;
+  padding:12px 16px;display:flex;align-items:center;gap:12px;
+}
+.m5-tip-icon{font-size:18px;flex-shrink:0;}
+.m5-tip-text{font-family:'Barlow',sans-serif;font-size:11.5px;color:#888;line-height:1.5;}
+.m5-tip-text strong{color:var(--gold);font-weight:600;}
+
+/* ─── POSTER M6 — MOTIVATIONAL QUOTE WALL ─── */
+.m6-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;width:840px;}
+.m6-tile{
+  height:280px;background:var(--dark);position:relative;overflow:hidden;border-radius:4px;
+}
+.m6-tile-bg{position:absolute;inset:0;}
+.m6-tile-bar{position:absolute;top:0;left:0;right:0;height:3px;}
+.m6-tile-content{position:relative;z-index:2;height:100%;padding:28px 32px;display:flex;flex-direction:column;justify-content:space-between;}
+.m6-tile-logo{font-family:'Bebas Neue',sans-serif;font-size:9px;letter-spacing:4px;color:#333;text-transform:uppercase;}
+.m6-quote{font-family:'Bebas Neue',sans-serif;font-size:36px;line-height:.9;letter-spacing:1px;color:#fff;}
+.m6-quote .hl{color:var(--red);}
+.m6-quote .hlg{color:var(--gold);}
+.m6-attrib{font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:#444;}
+
+/* ─── POSTER M7 — LEADERBOARD / BEAST SCORE WALL ─── */
+.m7{
+  width:700px;height:560px;
+  background:var(--dark);position:relative;overflow:hidden;flex-shrink:0;
+}
+.m7-bg{
+  position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse at 50% 0%,rgba(255,208,0,.12) 0%,transparent 50%),
+    radial-gradient(ellipse at 50% 100%,rgba(232,0,29,.08) 0%,transparent 50%);
+}
+.m7-top{position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--gold),var(--red));}
+.m7-content{position:relative;z-index:2;height:100%;padding:36px 46px;display:flex;flex-direction:column;gap:18px;}
+.m7-header{display:flex;justify-content:space-between;align-items:center;}
+.m7-title{font-family:'Bebas Neue',sans-serif;font-size:44px;line-height:.9;letter-spacing:2px;color:#fff;}
+.m7-title em{font-style:normal;color:var(--gold);}
+.m7-month{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:#555;}
+.m7-logo-sm{font-family:'Bebas Neue',sans-serif;font-size:10px;letter-spacing:4px;color:var(--red);}
+.m7-top3{display:flex;gap:14px;align-items:flex-end;margin-bottom:4px;}
+.m7-podium{display:flex;flex-direction:column;align-items:center;flex:1;}
+.m7-podium.first{flex:.9;}
+.m7-podium-card{
+  width:100%;border-radius:8px;padding:14px 12px;
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+  position:relative;overflow:hidden;
+}
+.m7-podium.first .m7-podium-card{background:linear-gradient(160deg,#1a1200,#0e0e0e);border:1px solid rgba(255,208,0,.35);box-shadow:0 0 30px rgba(255,208,0,.12);}
+.m7-podium.second .m7-podium-card{background:#101010;border:1px solid #252525;}
+.m7-podium.third .m7-podium-card{background:#101010;border:1px solid #252525;}
+.m7-rank-badge{
+  font-family:'Bebas Neue',sans-serif;font-size:28px;line-height:1;
+}
+.m7-rank-badge.gold{color:var(--gold);}
+.m7-rank-badge.silver{color:#a0a0a0;}
+.m7-rank-badge.bronze{color:#cd7f32;}
+.m7-podium-name{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;color:#fff;text-align:center;line-height:1;}
+.m7-podium-score{font-family:'Bebas Neue',sans-serif;font-size:28px;line-height:1;text-align:center;}
+.m7-podium-score.gold{color:var(--gold);}
+.m7-podium-score.silver{color:#a0a0a0;}
+.m7-podium-score.bronze{color:#cd7f32;}
+.m7-podium-label{font-family:'Barlow Condensed',sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#444;}
+.m7-trophy{font-size:24px;}
+.m7-list{display:flex;flex-direction:column;gap:6px;}
+.m7-list-row{
+  display:flex;align-items:center;gap:14px;
+  background:#0e0e0e;border:1px solid #1a1a1a;border-radius:6px;
+  padding:8px 14px;
+}
+.m7-list-rank{font-family:'Bebas Neue',sans-serif;font-size:18px;color:#444;min-width:28px;text-align:center;}
+.m7-list-name{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:1.5px;color:#c0c0c0;flex:1;}
+.m7-list-plan{font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#555;background:#151515;border:1px solid #222;padding:2px 8px;border-radius:10px;}
+.m7-list-score{font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--red);min-width:44px;text-align:right;}
+.m7-cta-strip{
+  background:rgba(232,0,29,.06);border:1px solid rgba(232,0,29,.15);border-radius:6px;
+  padding:10px 18px;display:flex;align-items:center;justify-content:space-between;
+}
+.m7-cta-text{font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#555;}
+.m7-cta-btn-sm{font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:2px;color:var(--red);}
+
+/* ─── POSTER M8 — NUTRITION TIPS ─── */
+.m8{
+  width:700px;height:600px;
+  background:var(--dark);position:relative;overflow:hidden;flex-shrink:0;
+}
+.m8-bg{position:absolute;inset:0;background:radial-gradient(ellipse at 20% 50%,rgba(34,197,94,.06) 0%,transparent 60%);}
+.m8-top{position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--green),var(--gold));}
+.m8-content{position:relative;z-index:2;height:100%;padding:36px 46px;display:flex;flex-direction:column;gap:22px;}
+.m8-header{display:flex;justify-content:space-between;align-items:center;}
+.m8-title{font-family:'Bebas Neue',sans-serif;font-size:44px;line-height:.9;letter-spacing:2px;color:#fff;}
+.m8-title em{font-style:normal;color:var(--green);}
+.m8-logo-sm{font-family:'Bebas Neue',sans-serif;font-size:10px;letter-spacing:4px;color:var(--red);}
+.m8-tips-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;flex:1;}
+.m8-tip{
+  background:#0e0e0e;border:1px solid #1e1e1e;border-radius:8px;
+  padding:16px 18px;display:flex;flex-direction:column;gap:7px;
+  position:relative;overflow:hidden;
+}
+.m8-tip::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;width:3px;
+  background:linear-gradient(180deg,var(--red),var(--orange));
+}
+.m8-tip.green-accent::before{background:linear-gradient(180deg,var(--green),#16a34a);}
+.m8-tip.gold-accent::before{background:linear-gradient(180deg,var(--gold),var(--orange));}
+.m8-tip-num{font-family:'Bebas Neue',sans-serif;font-size:32px;line-height:1;color:#1a1a1a;}
+.m8-tip-icon{font-size:22px;margin-bottom:-4px;}
+.m8-tip-title{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;color:#fff;line-height:1;}
+.m8-tip-desc{font-family:'Barlow',sans-serif;font-size:11px;color:#666;line-height:1.5;}
+.m8-bottom-strip{
+  background:rgba(34,197,94,.05);border:1px solid rgba(34,197,94,.15);border-radius:6px;
+  padding:12px 18px;display:flex;align-items:center;gap:12px;
+}
+.m8-bottom-icon{font-size:20px;flex-shrink:0;}
+.m8-bottom-text{font-family:'Barlow',sans-serif;font-size:11.5px;color:#777;line-height:1.5;}
+.m8-bottom-text strong{color:var(--green);}
+
+.controls{position:fixed;bottom:24px;right:24px;z-index:999;}
+.ctrl-btn{background:var(--red);color:#fff;border:none;padding:12px 22px;font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:2px;cursor:pointer;border-radius:4px;box-shadow:0 4px 20px rgba(232,0,29,.4);}
+@media print{body{background:#000;padding:0;}.controls{display:none;}.pw{margin:0;page-break-after:always;}.plbl,.page-title,.page-sub{display:none;}}
+</style>
+</head>
+<body>
+
+<div class="page-title">ROYAL FITNESS CLUB</div>
+<div class="page-sub">Member Materials · 8 Designs</div>
+
+<!-- M1: MEMBERSHIP CARD -->
+<div class="pw">
+  <div class="plbl"><span>M1</span> — Digital Membership Card (700×420)</div>
+  <div class="m1">
+    <div class="m1-bg"></div>
+    <div class="m1-pattern"></div>
+    <div class="m1-left-bar"></div>
+    <div class="m1-top-strip"></div>
+    <div class="m1-content">
+      <div class="m1-left">
+        <div class="m1-chip"><div class="m1-chip-line"></div></div>
+        <div class="m1-club-name">ROYAL FITNESS CLUB</div>
+        <div class="m1-member-name">RAHUL<br><em>SHARMA</em></div>
+        <div class="m1-details">
+          <div class="m1-detail-row">
+            <div class="m1-detail-label">Plan</div>
+            <div class="m1-detail-val gold">👑 Royal Elite</div>
+          </div>
+          <div class="m1-detail-row">
+            <div class="m1-detail-label">Since</div>
+            <div class="m1-detail-val">Jan 2025</div>
+          </div>
+          <div class="m1-detail-row">
+            <div class="m1-detail-label">Expires</div>
+            <div class="m1-detail-val green">Dec 2025</div>
+          </div>
+          <div class="m1-detail-row">
+            <div class="m1-detail-label">Status</div>
+            <div class="m1-detail-val green">● ACTIVE</div>
+          </div>
+          <div class="m1-detail-row">
+            <div class="m1-detail-label">Beast Score</div>
+            <div class="m1-detail-val red">87 / 100</div>
+          </div>
+        </div>
+      </div>
+      <div class="m1-right">
+        <div class="m1-plan-badge">
+          <div class="m1-plan-icon">👑</div>
+          <div class="m1-plan-label">ROYAL ELITE</div>
+        </div>
+        <div class="m1-member-id show">RFC-2025-0087</div>
+        <div class="m1-qr-placeholder">▦</div>
+      </div>
+    </div>
+    <div class="m1-bottom-bar">
+      <div class="m1-bottom-item"><span class="dot"></span>royalmentality.in</div>
+      <div class="m1-bottom-item"><span class="dot"></span>This card is non-transferable</div>
+      <div class="m1-bottom-item"><span class="dot"></span>Royal Fitness Club © 2025</div>
+    </div>
+  </div>
+</div>
+
+<!-- M2: GYM RULES -->
+<div class="pw">
+  <div class="plbl"><span>M2</span> — Gym Rules Wall Poster / A4 Print (595×842)</div>
+  <div class="m2">
+    <div class="m2-bg"></div>
+    <div class="m2-red-bar"></div>
+    <div class="m2-corner-tl"></div>
+    <div class="m2-corner-br"></div>
+    <div class="m2-content">
+      <div class="m2-logo">ROYAL FITNESS CLUB</div>
+      <div class="m2-title">GYM<br><em>CODE</em></div>
+      <div class="m2-subtitle">Rules every Royal member lives by</div>
+      <div class="m2-divider"></div>
+      <div class="m2-rules">
+        <div class="m2-rule">
+          <div class="m2-rule-num">01</div>
+          <div class="m2-rule-body">
+            <div class="m2-rule-title">RE-RACK YOUR WEIGHTS</div>
+            <div class="m2-rule-desc">Always return dumbbells, plates and barbells to their designated place after every set. Respect the space you share.</div>
+          </div>
+        </div>
+        <div class="m2-rule">
+          <div class="m2-rule-num">02</div>
+          <div class="m2-rule-body">
+            <div class="m2-rule-title">WIPE DOWN EQUIPMENT</div>
+            <div class="m2-rule-desc">Carry a towel. Clean every machine and bench before and after use. Hygiene is a sign of respect for fellow members.</div>
+          </div>
+        </div>
+        <div class="m2-rule">
+          <div class="m2-rule-num">03</div>
+          <div class="m2-rule-body">
+            <div class="m2-rule-title">NO PHONE HOGGING</div>
+            <div class="m2-rule-desc">Limit rest periods to 2–3 minutes during peak hours. Step off equipment while scrolling. Others are waiting.</div>
+          </div>
+        </div>
+        <div class="m2-rule">
+          <div class="m2-rule-num">04</div>
+          <div class="m2-rule-body">
+            <div class="m2-rule-title">RESPECT THE COMMUNITY</div>
+            <div class="m2-rule-desc">No unsolicited advice. No ego lifting. No intimidation. Every member is on their own journey. Encourage, don't discourage.</div>
+          </div>
+        </div>
+        <div class="m2-rule">
+          <div class="m2-rule-num">05</div>
+          <div class="m2-rule-body">
+            <div class="m2-rule-title">DRESS CODE &amp; HYGIENE</div>
+            <div class="m2-rule-desc">Wear proper gym attire. Closed-toe shoes are mandatory on the gym floor. Deodorant is not optional.</div>
+          </div>
+        </div>
+        <div class="m2-rule">
+          <div class="m2-rule-num">06</div>
+          <div class="m2-rule-body">
+            <div class="m2-rule-title">STAY HYDRATED, STAY SAFE</div>
+            <div class="m2-rule-desc">Drink water regularly. Use a spotter for heavy lifts. Inform staff if you feel unwell. Your safety is our priority.</div>
+          </div>
+        </div>
+        <div class="m2-rule">
+          <div class="m2-rule-num">07</div>
+          <div class="m2-rule-body">
+            <div class="m2-rule-title">MEMBERSHIP IS PERSONAL</div>
+            <div class="m2-rule-desc">Your membership card is non-transferable. Entry is for registered members only. Guests must be registered at the front desk.</div>
+          </div>
+        </div>
+      </div>
+      <div class="m2-bottom">
+        <div class="m2-footer-logo">ROYAL FITNESS CLUB</div>
+        <div class="m2-footer-url">royalmentality.in</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- M3: MONTHLY CHALLENGE -->
+<div class="pw">
+  <div class="plbl"><span>M3</span> — Monthly Member Challenge (700×700)</div>
+  <div class="m3">
+    <div class="m3-bg"></div>
+    <div class="m3-hex-pattern"></div>
+    <div class="m3-top"></div>
+    <div class="m3-content">
+      <div class="m3-header">
+        <div class="m3-logo-sm">ROYAL FITNESS CLUB</div>
+        <div class="m3-month-badge">JUNE 2025</div>
+      </div>
+      <div class="m3-center">
+        <div class="m3-challenge-eyebrow">🔥 Member Challenge</div>
+        <div class="m3-title">
+          <span class="fire">BEAST</span>
+          <span class="sub-word">MODE ON</span>
+        </div>
+        <div class="m3-desc">
+          Crush your targets. Track every rep.<br>
+          Top scorer wins the Royal Crown.
+        </div>
+        <div class="m3-targets">
+          <div class="m3-target">
+            <div class="m3-target-num red">20</div>
+            <div class="m3-target-unit">Gym Sessions</div>
+          </div>
+          <div class="m3-target gold-t">
+            <div class="m3-target-num gold">10,000</div>
+            <div class="m3-target-unit">Daily Steps Avg</div>
+          </div>
+          <div class="m3-target">
+            <div class="m3-target-num red">150g</div>
+            <div class="m3-target-unit">Protein / Day</div>
+          </div>
+          <div class="m3-target">
+            <div class="m3-target-num gold">90</div>
+            <div class="m3-target-unit">Beast Score Min</div>
+          </div>
+        </div>
+      </div>
+      <div class="m3-footer">
+        <div class="m3-prize">
+          <div class="m3-prize-icon">🏆</div>
+          <div class="m3-prize-text">
+            <div class="m3-prize-label">Top Prize</div>
+            <div class="m3-prize-val">1 MONTH FREE + RFC MERCH</div>
+          </div>
+        </div>
+        <div class="m3-join-btn">JOIN CHALLENGE →</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- M4: REFERRAL CARD -->
+<div class="pw">
+  <div class="plbl"><span>M4</span> — Member Referral Card (700×380)</div>
+  <div class="m4">
+    <div class="m4-left-accent"></div>
+    <div class="m4-gold-slash"></div>
+    <div class="m4-top"></div>
+    <div class="m4-left-content">
+      <div class="m4-refer-tag">🤝 Member Referral Program</div>
+      <div>
+        <div class="m4-big-text">BRING<br>A BEAST</div>
+        <div class="m4-sub-text">Refer a friend,<br>both of you win</div>
+      </div>
+      <div class="m4-logo-sm">ROYAL FITNESS CLUB</div>
+    </div>
+    <div class="m4-right-content">
+      <div class="m4-reward-box">
+        <div class="m4-reward-row">
+          <div class="m4-reward-icon">🎁</div>
+          <div class="m4-reward-text">
+            <div class="m4-reward-label">You Get</div>
+            <div class="m4-reward-val gold">1 Month FREE Membership</div>
+          </div>
+        </div>
+        <div style="height:1px;background:#1a1a1a;"></div>
+        <div class="m4-reward-row">
+          <div class="m4-reward-icon">🎉</div>
+          <div class="m4-reward-text">
+            <div class="m4-reward-label">Your Friend Gets</div>
+            <div class="m4-reward-val red">20% OFF First Month</div>
+          </div>
+        </div>
+      </div>
+      <div class="m4-steps">
+        <div class="m4-step">
+          <div class="m4-step-num">1</div>
+          <div class="m4-step-txt">Share your code with a friend</div>
+        </div>
+        <div class="m4-step">
+          <div class="m4-step-num">2</div>
+          <div class="m4-step-txt">They join & use your code</div>
+        </div>
+        <div class="m4-step">
+          <div class="m4-step-num">3</div>
+          <div class="m4-step-txt">Both of you get rewarded!</div>
+        </div>
+      </div>
+      <div class="m4-code-box">
+        <div class="m4-code-label">Your Code</div>
+        <div class="m4-code-val">RFC-BEAST</div>
+        <div class="m4-code-note">Get yours from the app</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- M5: WORKOUT OF THE WEEK -->
+<div class="pw">
+  <div class="plbl"><span>M5</span> — Weekly Workout Schedule (700×560)</div>
+  <div class="m5">
+    <div class="m5-bg"></div>
+    <div class="m5-top"></div>
+    <div class="m5-content">
+      <div class="m5-header">
+        <div class="m5-left-head">
+          <div class="m5-logo-sm">ROYAL FITNESS CLUB</div>
+          <div class="m5-week-title">WEEK<br><em>PLAN</em></div>
+        </div>
+        <div>
+          <div class="m5-split-badge">PPL SPLIT</div>
+        </div>
+      </div>
+      <div class="m5-days-grid">
+        <div class="m5-day active">
+          <div class="m5-day-num">MON</div>
+          <div class="m5-day-icon">💪</div>
+          <div class="m5-day-name red">PUSH</div>
+        </div>
+        <div class="m5-day active">
+          <div class="m5-day-num">TUE</div>
+          <div class="m5-day-icon">🦵</div>
+          <div class="m5-day-name red">PULL</div>
+        </div>
+        <div class="m5-day active">
+          <div class="m5-day-num">WED</div>
+          <div class="m5-day-icon">🏃</div>
+          <div class="m5-day-name red">LEGS</div>
+        </div>
+        <div class="m5-day rest">
+          <div class="m5-day-num">THU</div>
+          <div class="m5-day-icon">😴</div>
+          <div class="m5-day-name muted">REST</div>
+        </div>
+        <div class="m5-day active">
+          <div class="m5-day-num">FRI</div>
+          <div class="m5-day-icon">💪</div>
+          <div class="m5-day-name red">PUSH</div>
+        </div>
+        <div class="m5-day active">
+          <div class="m5-day-num">SAT</div>
+          <div class="m5-day-icon">🦵</div>
+          <div class="m5-day-name red">PULL</div>
+        </div>
+        <div class="m5-day active">
+          <div class="m5-day-num">SUN</div>
+          <div class="m5-day-icon">🏋</div>
+          <div class="m5-day-name red">LEGS</div>
+        </div>
+      </div>
+      <div class="m5-stats-row">
+        <div class="m5-stat-box">
+          <div class="m5-stat-icon">⏱️</div>
+          <div class="m5-stat-info">
+            <div class="m5-stat-n">75 min</div>
+            <div class="m5-stat-l">Per Session</div>
+          </div>
+        </div>
+        <div class="m5-stat-box">
+          <div class="m5-stat-icon">🔥</div>
+          <div class="m5-stat-info">
+            <div class="m5-stat-n">6 Days</div>
+            <div class="m5-stat-l">Per Week</div>
+          </div>
+        </div>
+        <div class="m5-stat-box">
+          <div class="m5-stat-icon">🏋</div>
+          <div class="m5-stat-info">
+            <div class="m5-stat-n">18–22</div>
+            <div class="m5-stat-l">Sets per Day</div>
+          </div>
+        </div>
+        <div class="m5-stat-box">
+          <div class="m5-stat-icon">💧</div>
+          <div class="m5-stat-info">
+            <div class="m5-stat-n">3–4 L</div>
+            <div class="m5-stat-l">Water Daily</div>
+          </div>
+        </div>
+      </div>
+      <div class="m5-tip-box">
+        <div class="m5-tip-icon">💡</div>
+        <div class="m5-tip-text"><strong>Coach's Tip:</strong> Progressive overload is the key to continuous growth. Add 2.5kg or 1 extra rep each week on your primary lifts. Track everything on the Royal Fitness app — your gains don't lie.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- M6: MOTIVATIONAL QUOTE TILES -->
+<div class="pw">
+  <div class="plbl"><span>M6</span> — Motivational Wall Tiles (Print × 4)</div>
+  <div class="m6-grid">
+    <!-- Tile 1 -->
+    <div class="m6-tile">
+      <div class="m6-tile-bg" style="background:radial-gradient(ellipse at 30% 70%,rgba(232,0,29,.12) 0%,transparent 60%);"></div>
+      <div class="m6-tile-bar" style="background:linear-gradient(90deg,var(--red),var(--orange));"></div>
+      <div class="m6-tile-content">
+        <div class="m6-tile-logo">ROYAL FITNESS CLUB</div>
+        <div class="m6-quote">THE PAIN<br>YOU FEEL<br><span class="hl">TODAY</span><br>IS THE<br>STRENGTH<br>TOMORROW</div>
+        <div class="m6-attrib">— Royal Mentality</div>
+      </div>
+    </div>
+    <!-- Tile 2 -->
+    <div class="m6-tile">
+      <div class="m6-tile-bg" style="background:radial-gradient(ellipse at 70% 30%,rgba(255,208,0,.1) 0%,transparent 60%);"></div>
+      <div class="m6-tile-bar" style="background:linear-gradient(90deg,var(--gold),var(--orange));"></div>
+      <div class="m6-tile-content">
+        <div class="m6-tile-logo">ROYAL FITNESS CLUB</div>
+        <div class="m6-quote">IRON<br>NEVER<br><span class="hlg">LIES.</span><br>NEITHER<br>DOES YOUR<br>BODY FAT%</div>
+        <div class="m6-attrib">— Royal Fitness Creed</div>
+      </div>
+    </div>
+    <!-- Tile 3 -->
+    <div class="m6-tile">
+      <div class="m6-tile-bg" style="background:radial-gradient(ellipse at 50% 80%,rgba(232,0,29,.1) 0%,transparent 55%);"></div>
+      <div class="m6-tile-bar" style="background:linear-gradient(90deg,var(--red),var(--gold));"></div>
+      <div class="m6-tile-content">
+        <div class="m6-tile-logo">ROYAL FITNESS CLUB</div>
+        <div class="m6-quote">YOUR<br><span class="hl">ONLY</span><br>COMPETITION<br>IS THE<br>PERSON<br>YOU WERE</div>
+        <div class="m6-attrib">— RFC Member Ethos</div>
+      </div>
+    </div>
+    <!-- Tile 4 -->
+    <div class="m6-tile">
+      <div class="m6-tile-bg" style="background:radial-gradient(ellipse at 20% 50%,rgba(255,208,0,.08) 0%,transparent 55%);"></div>
+      <div class="m6-tile-bar" style="background:linear-gradient(90deg,var(--gold),var(--red));"></div>
+      <div class="m6-tile-content">
+        <div class="m6-tile-logo">ROYAL FITNESS CLUB</div>
+        <div class="m6-quote">BEASTS<br>ARE NOT<br>BORN.<br><span class="hlg">BEASTS</span><br>ARE<br>FORGED.</div>
+        <div class="m6-attrib">— Royal Fitness Club</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- M7: LEADERBOARD -->
+<div class="pw">
+  <div class="plbl"><span>M7</span> — Monthly Beast Score Leaderboard (700×560)</div>
+  <div class="m7">
+    <div class="m7-bg"></div>
+    <div class="m7-top"></div>
+    <div class="m7-content">
+      <div class="m7-header">
+        <div>
+          <div class="m7-logo-sm">ROYAL FITNESS CLUB</div>
+          <div class="m7-title">BEAST<br><em>BOARD</em></div>
+          <div class="m7-month">June 2025 · Top Members</div>
+        </div>
+      </div>
+      <div class="m7-top3">
+        <div class="m7-podium second">
+          <div class="m7-podium-card">
+            <div class="m7-trophy" style="opacity:.7;">🥈</div>
+            <div class="m7-rank-badge silver">#2</div>
+            <div class="m7-podium-name">ARJUN K.</div>
+            <div class="m7-podium-score silver">94</div>
+            <div class="m7-podium-label">Beast Score</div>
+          </div>
+        </div>
+        <div class="m7-podium first">
+          <div class="m7-podium-card">
+            <div class="m7-trophy">🏆</div>
+            <div class="m7-rank-badge gold">#1</div>
+            <div class="m7-podium-name">ROHIT S.</div>
+            <div class="m7-podium-score gold">98</div>
+            <div class="m7-podium-label">Beast Score</div>
+          </div>
+        </div>
+        <div class="m7-podium third">
+          <div class="m7-podium-card">
+            <div class="m7-trophy" style="opacity:.6;">🥉</div>
+            <div class="m7-rank-badge bronze">#3</div>
+            <div class="m7-podium-name">PRIYA M.</div>
+            <div class="m7-podium-score bronze">91</div>
+            <div class="m7-podium-label">Beast Score</div>
+          </div>
+        </div>
+      </div>
+      <div class="m7-list">
+        <div class="m7-list-row">
+          <div class="m7-list-rank">4</div>
+          <div class="m7-list-name">VIKRAM SINGH</div>
+          <div class="m7-list-plan">Royal Pro</div>
+          <div class="m7-list-score">89</div>
+        </div>
+        <div class="m7-list-row">
+          <div class="m7-list-rank">5</div>
+          <div class="m7-list-name">AISHA KHAN</div>
+          <div class="m7-list-plan">Royal Elite</div>
+          <div class="m7-list-score">87</div>
+        </div>
+        <div class="m7-list-row">
+          <div class="m7-list-rank">6</div>
+          <div class="m7-list-name">SURESH PATEL</div>
+          <div class="m7-list-plan">Royal Pro</div>
+          <div class="m7-list-score">85</div>
+        </div>
+      </div>
+      <div class="m7-cta-strip">
+        <div class="m7-cta-text">🔥 Check your Beast Score live on the app</div>
+        <div class="m7-cta-btn-sm">royalmentality.in →</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- M8: NUTRITION TIPS -->
+<div class="pw">
+  <div class="plbl"><span>M8</span> — Member Nutrition Guide (700×600)</div>
+  <div class="m8">
+    <div class="m8-bg"></div>
+    <div class="m8-top"></div>
+    <div class="m8-content">
+      <div class="m8-header">
+        <div>
+          <div class="m8-logo-sm">ROYAL FITNESS CLUB</div>
+          <div class="m8-title">EAT LIKE<br>AN <em>ELITE</em></div>
+        </div>
+      </div>
+      <div class="m8-tips-grid">
+        <div class="m8-tip">
+          <div class="m8-tip-icon">🥩</div>
+          <div class="m8-tip-title">PROTEIN FIRST</div>
+          <div class="m8-tip-desc">Target 1.6–2.2g of protein per kg of bodyweight daily. Prioritise chicken, eggs, paneer, daal & whey. Every meal should have a protein source.</div>
+        </div>
+        <div class="m8-tip green-accent">
+          <div class="m8-tip-icon">⏰</div>
+          <div class="m8-tip-title">MEAL TIMING</div>
+          <div class="m8-tip-desc">Eat a protein-carb meal 90 minutes pre-workout. Post-workout: 30g protein + fast carbs within 45 minutes of finishing your session.</div>
+        </div>
+        <div class="m8-tip gold-accent">
+          <div class="m8-tip-icon">💧</div>
+          <div class="m8-tip-title">HYDRATION RULE</div>
+          <div class="m8-tip-desc">Drink at least 35ml per kg bodyweight daily. Add 500ml for every hour of training. Dehydration kills strength and focus.</div>
+        </div>
+        <div class="m8-tip">
+          <div class="m8-tip-icon">🍛</div>
+          <div class="m8-tip-title">INDIAN DIET HACKS</div>
+          <div class="m8-tip-desc">Dal + rice = complete protein. Use ghee over refined oils. Add turmeric for recovery. Curd post-workout beats whey in absorption speed.</div>
+        </div>
+        <div class="m8-tip green-accent">
+          <div class="m8-tip-icon">🚫</div>
+          <div class="m8-tip-title">AVOID THESE</div>
+          <div class="m8-tip-desc">Maida, packaged juices, sugar-loaded protein bars, fried snacks before training. These spike insulin and tank your energy mid-session.</div>
+        </div>
+        <div class="m8-tip gold-accent">
+          <div class="m8-tip-icon">💊</div>
+          <div class="m8-tip-title">SMART SUPPLEMENTS</div>
+          <div class="m8-tip-desc">Creatine 5g/day, Vitamin D3 + K2, Magnesium before bed, Omega-3 with food. These are the only 4 supplements every member actually needs.</div>
+        </div>
+      </div>
+      <div class="m8-bottom-strip">
+        <div class="m8-bottom-icon">🤖</div>
+        <div class="m8-bottom-text"><strong>Get your personalised AI meal plan</strong> — calorie targets, macro split & Indian recipes built around your body type. Open the Royal Fitness app → Beast Score → Meal Plan.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="controls">
+  <button class="ctrl-btn" onclick="window.print()">🖨️ PRINT ALL</button>
+</div>
+
+</body>
+</html>

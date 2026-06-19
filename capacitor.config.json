@@ -1,0 +1,29 @@
+{
+  "appId": "com.apex.app",
+  "appName": "Royal Fitness Club",
+  "webDir": "www",
+  "bundledWebRuntime": false,
+  "server": {
+    "url": "https://royal-fitness-club-7adc1.web.app",
+    "cleartext": false
+  },
+  "android": {
+    "allowMixedContent": false,
+    "backgroundColor": "#070707",
+    "minWebViewVersion": 60
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 2000,
+      "backgroundColor": "#070707",
+      "androidSplashResourceName": "splash",
+      "androidScaleType": "CENTER_CROP",
+      "showSpinner": false,
+      "androidSpinnerStyle": "large",
+      "iosSpinnerStyle": "small",
+      "spinnerColor": "#e8001d",
+      "splashFullScreen": true,
+      "splashImmersive": true
+    }
+  }
+}

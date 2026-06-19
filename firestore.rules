@@ -103,6 +103,12 @@ service cloud.firestore {
       allow write: if isAdmin();
     }
 
+    // users/{uid}/course_purchases/{courseId} - course enrollment records
+    match /users/{uid}/course_purchases/{courseId} {
+      allow read: if request.auth != null && request.auth.uid == uid;
+      allow write: if (request.auth != null && request.auth.uid == uid) || isAdmin();
+    }
+
     // physio_logs/{uid}/logs/{logId} - physio assessment history
     match /physio_logs/{uid}/logs/{logId} {
       allow read, write: if request.auth != null && request.auth.uid == uid;
@@ -143,6 +149,36 @@ service cloud.firestore {
     match /ai_rate_limits/{docId} {
       allow read: if request.auth != null && docId.matches(request.auth.uid + '_.*');
       allow write: if false;
+    }
+
+    // admin_config/{docId} - nav control, challenges, plans config set by admin
+    match /admin_config/{docId} {
+      allow read: if request.auth != null;
+      allow write: if isAdmin();
+    }
+
+    // notify_me/{id} - "notify me" email captures from locked feature overlay
+    match /notify_me/{id} {
+      allow create: if request.auth != null;
+      allow read, update, delete: if isAdmin();
+    }
+
+    // admin_inbox/{id} - new member notifications for admin
+    match /admin_inbox/{id} {
+      allow create: if request.auth != null;
+      allow read, update, delete: if isAdmin();
+    }
+
+    // elite_applications/{id} - Royal Elite coaching applications
+    match /elite_applications/{id} {
+      allow create: if true;
+      allow read, update, delete: if isAdmin();
+    }
+
+    // newsletter_subscribers/{id} - newsletter signups
+    match /newsletter_subscribers/{id} {
+      allow create: if true;
+      allow read, update, delete: if isAdmin();
     }
   }
 }

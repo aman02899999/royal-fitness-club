@@ -1,0 +1,1861 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Royal Fitness Club — Promotional Posters</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@300;400;600;700;900&family=Barlow:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red: #e8001d;
+    --gold: #ffd000;
+    --orange: #ff4500;
+    --dark: #070707;
+    --card: #101010;
+    --card2: #141414;
+    --border: #222;
+    --text: #f0f0f0;
+    --muted: #a0a0a0;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #1a1a1a;
+    font-family: 'Barlow', sans-serif;
+    padding: 40px 20px;
+    color: #fff;
+  }
+  .page-title {
+    text-align: center;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 36px;
+    letter-spacing: 6px;
+    color: var(--gold);
+    margin-bottom: 8px;
+  }
+  .page-sub {
+    text-align: center;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 14px;
+    letter-spacing: 3px;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 60px;
+  }
+  .poster-wrapper {
+    margin-bottom: 80px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+  }
+  .poster-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 13px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #888;
+    text-align: center;
+  }
+  .poster-label span {
+    color: var(--gold);
+    font-weight: 700;
+  }
+
+  /* =========================================
+     POSTER 1 — HERO (Instagram Post 1080×1080)
+     ========================================= */
+  .p1 {
+    width: 800px;
+    height: 800px;
+    background: var(--dark);
+    position: relative;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+  .p1-bg-lines {
+    position: absolute;
+    inset: 0;
+    background:
+      repeating-linear-gradient(
+        -45deg,
+        transparent,
+        transparent 40px,
+        rgba(232,0,29,.035) 40px,
+        rgba(232,0,29,.035) 41px
+      );
+  }
+  .p1-red-slash {
+    position: absolute;
+    top: 0; right: 0;
+    width: 52%;
+    height: 100%;
+    background: linear-gradient(135deg, var(--red) 0%, #b50016 100%);
+    clip-path: polygon(18% 0, 100% 0, 100% 100%, 0% 100%);
+  }
+  .p1-red-slash::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      -45deg,
+      transparent,
+      transparent 14px,
+      rgba(0,0,0,.12) 14px,
+      rgba(0,0,0,.12) 15px
+    );
+  }
+  .p1-gold-accent {
+    position: absolute;
+    top: 0; right: 46%;
+    width: 4px;
+    height: 100%;
+    background: var(--gold);
+    transform: skewX(-3deg);
+    box-shadow: 0 0 30px rgba(255,208,0,.6);
+  }
+  .p1-top-bar {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 5px;
+    background: linear-gradient(90deg, var(--red), var(--gold), var(--red));
+  }
+  .p1-content {
+    position: absolute;
+    top: 0; left: 0;
+    width: 50%;
+    height: 100%;
+    padding: 60px 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .p1-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 14px;
+    letter-spacing: 5px;
+    color: var(--red);
+  }
+  .p1-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(232,0,29,.12);
+    border: 1px solid rgba(232,0,29,.35);
+    color: var(--red);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    padding: 5px 14px;
+    border-radius: 2px;
+    margin-bottom: 18px;
+  }
+  .p1-headline {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 88px;
+    line-height: .88;
+    letter-spacing: 2px;
+    color: #fff;
+    margin-bottom: 8px;
+  }
+  .p1-headline em {
+    font-style: normal;
+    color: var(--gold);
+  }
+  .p1-sub {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 14px;
+    font-weight: 300;
+    letter-spacing: 2px;
+    color: #c0c0c0;
+    text-transform: uppercase;
+    margin-bottom: 28px;
+    line-height: 1.7;
+  }
+  .p1-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: linear-gradient(135deg, var(--red), var(--orange));
+    color: #fff;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    letter-spacing: 3px;
+    padding: 14px 30px;
+    border-radius: 2px;
+    width: fit-content;
+    box-shadow: 0 8px 30px rgba(232,0,29,.45);
+  }
+  .p1-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .p1-stat {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .p1-stat-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    color: var(--gold);
+    line-height: 1;
+    min-width: 60px;
+  }
+  .p1-stat-lbl {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    color: #888;
+    text-transform: uppercase;
+    line-height: 1.3;
+  }
+  .p1-right-content {
+    position: absolute;
+    top: 0; right: 0;
+    width: 52%;
+    height: 100%;
+    padding: 60px 50px 60px 70px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 22px;
+    clip-path: polygon(18% 0, 100% 0, 100% 100%, 0% 100%);
+  }
+  .p1-feature {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .p1-feature-icon {
+    font-size: 22px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .p1-feature-text {
+    display: flex;
+    flex-direction: column;
+  }
+  .p1-feature-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    letter-spacing: 2px;
+    color: #fff;
+    line-height: 1;
+    margin-bottom: 2px;
+  }
+  .p1-feature-desc {
+    font-family: 'Barlow', sans-serif;
+    font-size: 11px;
+    color: rgba(255,255,255,.65);
+    line-height: 1.4;
+  }
+  .p1-url {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    letter-spacing: 4px;
+    color: rgba(255,255,255,.35);
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  /* =========================================
+     POSTER 2 — PLANS PRICING (A4 Landscape 1190×842)
+     ========================================= */
+  .p2 {
+    width: 900px;
+    height: 630px;
+    background: var(--dark);
+    position: relative;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+  .p2-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 50% 120%, rgba(232,0,29,.18) 0%, transparent 60%),
+      repeating-linear-gradient(
+        90deg,
+        transparent,
+        transparent 80px,
+        rgba(255,255,255,.013) 80px,
+        rgba(255,255,255,.013) 81px
+      );
+  }
+  .p2-top {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 6px;
+    background: linear-gradient(90deg, var(--red), var(--gold), var(--orange), var(--red));
+  }
+  .p2-header {
+    padding: 44px 60px 28px;
+    text-align: center;
+    position: relative;
+    z-index: 2;
+  }
+  .p2-eyebrow {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 6px;
+    color: var(--red);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .p2-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 56px;
+    letter-spacing: 4px;
+    line-height: 1;
+    color: #fff;
+  }
+  .p2-title em { font-style: normal; color: var(--gold); }
+  .p2-cards {
+    display: flex;
+    align-items: stretch;
+    gap: 18px;
+    padding: 0 48px;
+    position: relative;
+    z-index: 2;
+  }
+  .p2-card {
+    flex: 1;
+    background: #121212;
+    border: 1px solid #252525;
+    border-radius: 10px;
+    padding: 28px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    position: relative;
+    overflow: hidden;
+  }
+  .p2-card.featured {
+    background: #0e0e0e;
+    border: 1px solid var(--red);
+    box-shadow: 0 0 40px rgba(232,0,29,.22), inset 0 0 60px rgba(232,0,29,.04);
+    transform: scaleY(1.03);
+  }
+  .p2-card.gold-card {
+    background: linear-gradient(160deg, #1a1400 0%, #0e0e0e 100%);
+    border: 1px solid rgba(255,208,0,.4);
+    box-shadow: 0 0 40px rgba(255,208,0,.12);
+  }
+  .p2-card-badge {
+    position: absolute;
+    top: 16px; right: 16px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 2px;
+  }
+  .p2-card.featured .p2-card-badge {
+    background: rgba(232,0,29,.2);
+    border: 1px solid rgba(232,0,29,.5);
+    color: var(--red);
+  }
+  .p2-card.gold-card .p2-card-badge {
+    background: rgba(255,208,0,.15);
+    border: 1px solid rgba(255,208,0,.4);
+    color: var(--gold);
+  }
+  .p2-plan-icon { font-size: 26px; }
+  .p2-plan-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 3px;
+    color: #fff;
+  }
+  .p2-plan-name.red { color: var(--red); }
+  .p2-plan-name.gold { color: var(--gold); }
+  .p2-price-row {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+  }
+  .p2-rupee {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    color: var(--muted);
+    line-height: 1;
+  }
+  .p2-price {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 54px;
+    line-height: 1;
+    color: #fff;
+  }
+  .p2-price.red { color: var(--red); }
+  .p2-price.gold { color: var(--gold); }
+  .p2-mo {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 13px;
+    color: var(--muted);
+    letter-spacing: 1px;
+  }
+  .p2-old-price {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 14px;
+    color: #555;
+    text-decoration: line-through;
+  }
+  .p2-divider {
+    height: 1px;
+    background: #222;
+  }
+  .p2-feat-list {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    flex: 1;
+  }
+  .p2-feat {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Barlow', sans-serif;
+    font-size: 11.5px;
+    color: #c0c0c0;
+    line-height: 1.3;
+  }
+  .p2-feat .ck { color: var(--gold); font-size: 12px; flex-shrink: 0; }
+  .p2-feat .ck-red { color: var(--red); font-size: 12px; flex-shrink: 0; }
+  .p2-feat .x { color: #444; font-size: 12px; flex-shrink: 0; }
+  .p2-feat.dim { color: #555; }
+  .p2-btn {
+    display: block;
+    text-align: center;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 15px;
+    letter-spacing: 2.5px;
+    padding: 11px 16px;
+    border-radius: 3px;
+    cursor: pointer;
+  }
+  .p2-btn.outline {
+    border: 1px solid #333;
+    color: #666;
+  }
+  .p2-btn.fire {
+    background: linear-gradient(135deg, var(--red), var(--orange));
+    color: #fff;
+    box-shadow: 0 6px 24px rgba(232,0,29,.35);
+  }
+  .p2-btn.shine {
+    background: linear-gradient(135deg, var(--gold), #ff8c00);
+    color: #000;
+    box-shadow: 0 6px 24px rgba(255,208,0,.3);
+  }
+  .p2-footer {
+    text-align: center;
+    padding: 20px 60px 0;
+    position: relative;
+    z-index: 2;
+  }
+  .p2-footer-text {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: #444;
+    text-transform: uppercase;
+  }
+
+  /* =========================================
+     POSTER 3 — INSTAGRAM STORY (9:16)
+     ========================================= */
+  .p3 {
+    width: 450px;
+    height: 800px;
+    background: var(--dark);
+    position: relative;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+  .p3-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 50% 0%, rgba(232,0,29,.3) 0%, transparent 55%),
+      radial-gradient(ellipse at 100% 100%, rgba(255,208,0,.12) 0%, transparent 50%);
+  }
+  .p3-grid {
+    position: absolute;
+    inset: 0;
+    background:
+      repeating-linear-gradient(0deg, transparent, transparent 49px, rgba(255,255,255,.02) 49px, rgba(255,255,255,.02) 50px),
+      repeating-linear-gradient(90deg, transparent, transparent 49px, rgba(255,255,255,.02) 49px, rgba(255,255,255,.02) 50px);
+  }
+  .p3-top-bar {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--red), var(--gold));
+  }
+  .p3-content {
+    position: relative;
+    z-index: 2;
+    height: 100%;
+    padding: 36px 36px 36px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .p3-logo-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .p3-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 13px;
+    letter-spacing: 4px;
+    color: var(--red);
+  }
+  .p3-live {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: #22c55e;
+    border: 1px solid rgba(34,197,94,.3);
+    padding: 3px 10px;
+    border-radius: 20px;
+  }
+  .p3-live-dot {
+    width: 5px; height: 5px;
+    background: #22c55e;
+    border-radius: 50%;
+    animation: blink 1.2s infinite;
+  }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+  .p3-main {
+    text-align: center;
+  }
+  .p3-eyebrow {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 5px;
+    color: var(--red);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .p3-big-text {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 82px;
+    line-height: .87;
+    letter-spacing: 2px;
+    color: #fff;
+    margin-bottom: 4px;
+  }
+  .p3-big-text .gold { color: var(--gold); }
+  .p3-big-text .red { color: var(--red); }
+  .p3-tagline {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 13px;
+    font-weight: 300;
+    letter-spacing: 3px;
+    color: #888;
+    text-transform: uppercase;
+    margin-bottom: 30px;
+    line-height: 1.6;
+  }
+  .p3-price-box {
+    background: rgba(232,0,29,.1);
+    border: 1px solid rgba(232,0,29,.3);
+    border-radius: 8px;
+    padding: 20px 24px;
+    margin-bottom: 22px;
+  }
+  .p3-price-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 4px;
+    color: var(--red);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .p3-price-main {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 64px;
+    line-height: 1;
+    color: var(--gold);
+  }
+  .p3-price-mo {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 14px;
+    color: #888;
+    letter-spacing: 2px;
+  }
+  .p3-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+    justify-content: center;
+    margin-bottom: 22px;
+  }
+  .p3-pill {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 5px 12px;
+    border-radius: 20px;
+    background: rgba(255,255,255,.06);
+    border: 1px solid rgba(255,255,255,.1);
+    color: #c0c0c0;
+  }
+  .p3-cta-btn {
+    display: block;
+    background: linear-gradient(135deg, var(--red), var(--orange));
+    color: #fff;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    letter-spacing: 3px;
+    padding: 16px 24px;
+    border-radius: 4px;
+    text-align: center;
+    box-shadow: 0 10px 40px rgba(232,0,29,.5);
+    width: 100%;
+  }
+  .p3-stats-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  .p3-stat-item {
+    text-align: center;
+    flex: 1;
+  }
+  .p3-stat-n {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 30px;
+    line-height: 1;
+    color: var(--gold);
+  }
+  .p3-stat-l {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    color: #666;
+    text-transform: uppercase;
+  }
+  .p3-footer-url {
+    text-align: center;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: #444;
+    text-transform: uppercase;
+    padding-top: 14px;
+    border-top: 1px solid #1c1c1c;
+  }
+
+  /* =========================================
+     POSTER 4 — WIDE BANNER (Facebook/LinkedIn)
+     ========================================= */
+  .p4 {
+    width: 900px;
+    height: 337px;
+    background: var(--dark);
+    position: relative;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+  .p4-bg-r {
+    position: absolute;
+    right: 0; top: 0;
+    width: 55%;
+    height: 100%;
+    background: linear-gradient(135deg, var(--red) 0%, #9c0011 100%);
+    clip-path: polygon(12% 0, 100% 0, 100% 100%, 0 100%);
+  }
+  .p4-bg-r::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 20px,
+      rgba(0,0,0,.08) 20px,
+      rgba(0,0,0,.08) 21px
+    );
+  }
+  .p4-gold-line {
+    position: absolute;
+    left: 42%;
+    top: 0; bottom: 0;
+    width: 3px;
+    background: var(--gold);
+    transform: skewX(-3deg);
+    box-shadow: 0 0 20px rgba(255,208,0,.7);
+    z-index: 3;
+  }
+  .p4-top-bar {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--red), var(--gold), var(--red));
+    z-index: 4;
+  }
+  .p4-left {
+    position: absolute;
+    left: 0; top: 0;
+    width: 44%;
+    height: 100%;
+    padding: 34px 44px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    z-index: 2;
+  }
+  .p4-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 12px;
+    letter-spacing: 5px;
+    color: var(--red);
+  }
+  .p4-headline {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 62px;
+    line-height: .87;
+    letter-spacing: 2px;
+    color: #fff;
+  }
+  .p4-headline em { font-style: normal; color: var(--gold); }
+  .p4-sub {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 12px;
+    font-weight: 300;
+    letter-spacing: 2px;
+    color: #888;
+    text-transform: uppercase;
+    line-height: 1.7;
+  }
+  .p4-right {
+    position: absolute;
+    right: 0; top: 0;
+    width: 60%;
+    height: 100%;
+    padding: 34px 44px 34px 80px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 16px;
+    z-index: 2;
+    clip-path: polygon(8% 0, 100% 0, 100% 100%, 0 100%);
+  }
+  .p4-plan-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: rgba(0,0,0,.25);
+    border: 1px solid rgba(255,255,255,.1);
+    border-radius: 6px;
+    padding: 10px 18px;
+  }
+  .p4-plan-icon { font-size: 20px; }
+  .p4-plan-info { flex: 1; }
+  .p4-plan-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 16px;
+    letter-spacing: 2px;
+    color: #fff;
+    line-height: 1;
+    margin-bottom: 2px;
+  }
+  .p4-plan-features {
+    font-family: 'Barlow', sans-serif;
+    font-size: 10px;
+    color: rgba(255,255,255,.55);
+    line-height: 1.4;
+  }
+  .p4-plan-price {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    line-height: 1;
+    text-align: right;
+  }
+  .p4-plan-price small {
+    font-size: 12px;
+    font-family: 'Barlow Condensed', sans-serif;
+    display: block;
+    color: rgba(255,255,255,.5);
+    letter-spacing: 1px;
+  }
+  .p4-plan-price.gold { color: var(--gold); }
+  .p4-plan-price.white { color: #fff; }
+  .p4-plan-price.muted { color: #aaa; }
+  .p4-footer-bar {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 42px;
+    background: rgba(0,0,0,.5);
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
+    border-top: 1px solid rgba(255,255,255,.06);
+  }
+  .p4-footer-item {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: #555;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .p4-footer-item .dot {
+    width: 3px; height: 3px;
+    background: var(--red);
+    border-radius: 50%;
+  }
+
+  /* =========================================
+     POSTER 5 — TRANSFORMATION CHALLENGE
+     ========================================= */
+  .p5 {
+    width: 700px;
+    height: 700px;
+    background: var(--dark);
+    position: relative;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+  .p5-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 50% 50%, rgba(232,0,29,.15) 0%, transparent 65%);
+  }
+  .p5-circles {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .p5-circle {
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid rgba(232,0,29,.08);
+    top: 50%; left: 50%;
+    transform: translate(-50%,-50%);
+  }
+  .p5-circle:nth-child(1) { width: 500px; height: 500px; }
+  .p5-circle:nth-child(2) { width: 620px; height: 620px; border-color: rgba(255,208,0,.05); }
+  .p5-circle:nth-child(3) { width: 740px; height: 740px; border-color: rgba(232,0,29,.04); }
+  .p5-top { position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg,var(--red),var(--gold)); }
+  .p5-content {
+    position: relative;
+    z-index: 2;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 60px;
+    text-align: center;
+    gap: 0;
+  }
+  .p5-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 11px;
+    letter-spacing: 6px;
+    color: var(--red);
+    margin-bottom: 22px;
+  }
+  .p5-challenge-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(232,0,29,.1);
+    border: 1px solid rgba(232,0,29,.3);
+    color: var(--red);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    padding: 5px 16px;
+    border-radius: 2px;
+    margin-bottom: 24px;
+  }
+  .p5-days {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 140px;
+    line-height: .85;
+    letter-spacing: -4px;
+    background: linear-gradient(135deg, var(--red) 0%, var(--orange) 50%, var(--gold) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: -4px;
+  }
+  .p5-days-label {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 36px;
+    letter-spacing: 14px;
+    color: #fff;
+    margin-bottom: 24px;
+  }
+  .p5-divider {
+    width: 100px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    margin: 0 auto 22px;
+  }
+  .p5-promise {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 15px;
+    font-weight: 300;
+    letter-spacing: 2px;
+    color: #a0a0a0;
+    text-transform: uppercase;
+    line-height: 1.7;
+    max-width: 360px;
+    margin-bottom: 30px;
+  }
+  .p5-results-row {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 30px;
+  }
+  .p5-result {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .p5-result-n {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 36px;
+    line-height: 1;
+    color: var(--gold);
+  }
+  .p5-result-l {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: #666;
+    text-transform: uppercase;
+  }
+  .p5-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: linear-gradient(135deg, var(--red), var(--orange));
+    color: #fff;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 17px;
+    letter-spacing: 3px;
+    padding: 14px 36px;
+    border-radius: 3px;
+    box-shadow: 0 10px 40px rgba(232,0,29,.45);
+    margin-bottom: 20px;
+  }
+  .p5-url {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 10px;
+    letter-spacing: 4px;
+    color: #333;
+    text-transform: uppercase;
+  }
+
+  /* =========================================
+     POSTER 6 — A4 FLYER (Print-ready Portrait)
+     ========================================= */
+  .p6 {
+    width: 595px;
+    height: 842px;
+    background: var(--dark);
+    position: relative;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+  .p6-red-top {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 340px;
+    background: linear-gradient(160deg, #c0001a 0%, var(--red) 60%, #b00015 100%);
+    clip-path: polygon(0 0, 100% 0, 100% 82%, 0 100%);
+  }
+  .p6-red-top::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      -30deg,
+      transparent,
+      transparent 30px,
+      rgba(0,0,0,.06) 30px,
+      rgba(0,0,0,.06) 31px
+    );
+  }
+  .p6-bg-bottom {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 60%;
+    background: radial-gradient(ellipse at 50% 100%, rgba(255,208,0,.06) 0%, transparent 70%);
+  }
+  .p6-top-bar { position: absolute; top: 0; left: 0; right: 0; height: 5px; background: linear-gradient(90deg,#ffd000,#ff4500,#e8001d); z-index: 10; }
+  .p6-content {
+    position: relative;
+    z-index: 5;
+    height: 100%;
+    padding: 34px 46px;
+    display: flex;
+    flex-direction: column;
+  }
+  .p6-logo-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 34px;
+  }
+  .p6-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 15px;
+    letter-spacing: 5px;
+    color: #fff;
+  }
+  .p6-slogan {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    color: rgba(255,255,255,.6);
+    text-transform: uppercase;
+  }
+  .p6-hero-text {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 78px;
+    line-height: .87;
+    letter-spacing: 1px;
+    color: #fff;
+    margin-bottom: 6px;
+  }
+  .p6-hero-sub {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 13px;
+    font-weight: 300;
+    letter-spacing: 4px;
+    color: rgba(255,255,255,.65);
+    text-transform: uppercase;
+    margin-bottom: 44px;
+  }
+  .p6-features-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 28px;
+    flex: 1;
+  }
+  .p6-feature-card {
+    background: #121212;
+    border: 1px solid #1e1e1e;
+    border-radius: 8px;
+    padding: 16px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .p6-feature-card.red-border { border-color: rgba(232,0,29,.25); }
+  .p6-feature-card.gold-border { border-color: rgba(255,208,0,.2); }
+  .p6-fc-icon { font-size: 22px; }
+  .p6-fc-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 16px;
+    letter-spacing: 2px;
+    color: #fff;
+    line-height: 1;
+  }
+  .p6-fc-desc {
+    font-family: 'Barlow', sans-serif;
+    font-size: 10.5px;
+    color: #777;
+    line-height: 1.4;
+  }
+  .p6-price-section {
+    background: #0c0c0c;
+    border: 1px solid #222;
+    border-radius: 10px;
+    padding: 20px 22px;
+    margin-bottom: 22px;
+  }
+  .p6-price-eyebrow {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 4px;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .p6-price-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #1a1a1a;
+  }
+  .p6-price-row:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .p6-plan-col { display: flex; align-items: center; gap: 10px; }
+  .p6-plan-icon-sm { font-size: 14px; }
+  .p6-plan-name-sm {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 14px;
+    letter-spacing: 2px;
+    color: #fff;
+  }
+  .p6-plan-features-sm {
+    font-family: 'Barlow', sans-serif;
+    font-size: 9px;
+    color: #555;
+  }
+  .p6-plan-price-sm {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    line-height: 1;
+    text-align: right;
+  }
+  .p6-plan-price-sm small { font-size: 10px; font-family: 'Barlow Condensed',sans-serif; color: #555; display: block; }
+  .p6-plan-price-sm.gold { color: var(--gold); }
+  .p6-plan-price-sm.red { color: var(--red); }
+  .p6-plan-price-sm.muted { color: #666; }
+  .p6-cta-row {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 18px;
+  }
+  .p6-cta-main {
+    flex: 1;
+    background: linear-gradient(135deg, var(--red), var(--orange));
+    color: #fff;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 16px;
+    letter-spacing: 2.5px;
+    padding: 13px 20px;
+    border-radius: 3px;
+    text-align: center;
+    box-shadow: 0 8px 24px rgba(232,0,29,.35);
+  }
+  .p6-cta-url {
+    flex: 1;
+    border: 1px solid #252525;
+    color: #666;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    letter-spacing: 2px;
+    padding: 13px 20px;
+    border-radius: 3px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-transform: uppercase;
+  }
+  .p6-bottom-strip {
+    background: rgba(232,0,29,.08);
+    border: 1px solid rgba(232,0,29,.15);
+    border-radius: 6px;
+    padding: 10px 16px;
+    display: flex;
+    justify-content: space-around;
+  }
+  .p6-strip-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    color: #888;
+    text-transform: uppercase;
+  }
+  .p6-strip-item .icon-sm { font-size: 13px; }
+
+  /* =========================================
+     POSTER 7 — BEAST SCORE Feature Card
+     ========================================= */
+  .p7 {
+    width: 700px;
+    height: 420px;
+    background: var(--dark);
+    position: relative;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+  .p7-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 80% 50%, rgba(232,0,29,.2) 0%, transparent 55%),
+      radial-gradient(ellipse at 20% 50%, rgba(255,208,0,.08) 0%, transparent 50%);
+  }
+  .p7-top { position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg,var(--gold),var(--red)); z-index: 10; }
+  .p7-content {
+    position: relative;
+    z-index: 2;
+    height: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding: 46px 52px;
+    gap: 40px;
+    align-items: center;
+  }
+  .p7-left { display: flex; flex-direction: column; gap: 16px; }
+  .p7-eyebrow {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 5px;
+    color: var(--gold);
+    text-transform: uppercase;
+  }
+  .p7-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 64px;
+    line-height: .87;
+    letter-spacing: 2px;
+    color: #fff;
+  }
+  .p7-title em { font-style: normal; color: var(--red); }
+  .p7-desc {
+    font-family: 'Barlow', sans-serif;
+    font-size: 12.5px;
+    color: #888;
+    line-height: 1.7;
+  }
+  .p7-features {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+  }
+  .p7-feat-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 12px;
+    letter-spacing: 1px;
+    color: #c0c0c0;
+  }
+  .p7-feat-row::before { content: '▸'; color: var(--red); font-size: 10px; }
+  .p7-right {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+  }
+  .p7-score-circle {
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #1a0000, #0e0e0e);
+    border: 3px solid var(--red);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 50px rgba(232,0,29,.35), inset 0 0 40px rgba(232,0,29,.08);
+    position: relative;
+  }
+  .p7-score-circle::before {
+    content: '';
+    position: absolute;
+    inset: 6px;
+    border-radius: 50%;
+    border: 1px solid rgba(232,0,29,.2);
+  }
+  .p7-score-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 68px;
+    line-height: 1;
+    background: linear-gradient(135deg, var(--red), var(--gold));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .p7-score-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    color: #888;
+    text-transform: uppercase;
+    margin-top: -6px;
+  }
+  .p7-score-legend {
+    text-align: center;
+  }
+  .p7-legend-val {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 2px;
+    color: var(--red);
+  }
+  .p7-legend-lbl {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: #555;
+    text-transform: uppercase;
+  }
+  .p7-mini-stats {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+  }
+  .p7-mini-stat { text-align: center; }
+  .p7-mini-n {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 24px;
+    color: var(--gold);
+    line-height: 1;
+  }
+  .p7-mini-l {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    color: #555;
+    text-transform: uppercase;
+  }
+
+  /* Print controls */
+  .controls {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 999;
+  }
+  .ctrl-btn {
+    background: var(--red);
+    color: #fff;
+    border: none;
+    padding: 12px 22px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 15px;
+    letter-spacing: 2px;
+    cursor: pointer;
+    border-radius: 4px;
+    box-shadow: 0 4px 20px rgba(232,0,29,.4);
+  }
+  @media print {
+    body { background: #000; padding: 0; }
+    .controls { display: none; }
+    .page-title, .page-sub, .poster-label { display: none; }
+    .poster-wrapper { margin: 0; page-break-after: always; }
+  }
+</style>
+</head>
+<body>
+
+<div class="page-title">ROYAL FITNESS CLUB</div>
+<div class="page-sub">Promotional Posters · 7 Designs Ready to Use</div>
+
+<!-- POSTER 1 -->
+<div class="poster-wrapper">
+  <div class="poster-label"><span>POSTER 1</span> — Instagram Post / Social Square (800×800)</div>
+  <div class="p1">
+    <div class="p1-bg-lines"></div>
+    <div class="p1-red-slash"></div>
+    <div class="p1-gold-accent"></div>
+    <div class="p1-top-bar"></div>
+
+    <div class="p1-content">
+      <div>
+        <div class="p1-logo">ROYAL FITNESS CLUB</div>
+      </div>
+      <div>
+        <div class="p1-tag">⚡ India's #1 Beast Ecosystem</div>
+        <div class="p1-headline">UN<br>LEASH<br><em>THE</em><br>BEAST</div>
+        <div class="p1-sub" style="margin-top:12px;">
+          AI meal plans · Beast Score<br>
+          22 expert guides · Pro coaching
+        </div>
+        <div class="p1-cta">JOIN NOW →</div>
+      </div>
+      <div class="p1-stats">
+        <div class="p1-stat">
+          <div class="p1-stat-num">500+</div>
+          <div class="p1-stat-lbl">Active<br>Members</div>
+        </div>
+        <div class="p1-stat">
+          <div class="p1-stat-num">22</div>
+          <div class="p1-stat-lbl">Expert<br>Guides</div>
+        </div>
+        <div class="p1-stat">
+          <div class="p1-stat-num">₹499</div>
+          <div class="p1-stat-lbl">Per<br>Month</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="p1-right-content">
+      <div class="p1-feature">
+        <div class="p1-feature-icon">🤖</div>
+        <div class="p1-feature-text">
+          <div class="p1-feature-title">AI Meal Planner</div>
+          <div class="p1-feature-desc">Personalised macros & diet plans<br>based on your body composition</div>
+        </div>
+      </div>
+      <div class="p1-feature">
+        <div class="p1-feature-icon">⚡</div>
+        <div class="p1-feature-text">
+          <div class="p1-feature-title">Beast Score 2.0</div>
+          <div class="p1-feature-desc">Advanced body analysis calculator<br>with 12-week transformation roadmap</div>
+        </div>
+      </div>
+      <div class="p1-feature">
+        <div class="p1-feature-icon">📚</div>
+        <div class="p1-feature-text">
+          <div class="p1-feature-title">Expert PDF Library</div>
+          <div class="p1-feature-desc">108+ professional guides on nutrition,<br>training & anabolic science</div>
+        </div>
+      </div>
+      <div class="p1-feature">
+        <div class="p1-feature-icon">🏋</div>
+        <div class="p1-feature-text">
+          <div class="p1-feature-title">Workout Tracker</div>
+          <div class="p1-feature-desc">Log workouts, track progress &<br>build unstoppable momentum</div>
+        </div>
+      </div>
+      <div class="p1-feature">
+        <div class="p1-feature-icon">👑</div>
+        <div class="p1-feature-text">
+          <div class="p1-feature-title">Royal Elite Coaching</div>
+          <div class="p1-feature-desc">1-on-1 personal coaching with<br>India's top fitness experts</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="p1-url">royalmentality.in</div>
+  </div>
+</div>
+
+<!-- POSTER 2 -->
+<div class="poster-wrapper">
+  <div class="poster-label"><span>POSTER 2</span> — Pricing Plans Card (900×630)</div>
+  <div class="p2">
+    <div class="p2-bg"></div>
+    <div class="p2-top"></div>
+    <div class="p2-header">
+      <div class="p2-eyebrow">Choose Your Level</div>
+      <div class="p2-title">PICK YOUR <em>PLAN</em></div>
+    </div>
+
+    <div class="p2-cards">
+      <!-- Basic -->
+      <div class="p2-card">
+        <div class="p2-plan-icon">🏋</div>
+        <div class="p2-plan-name red">BASIC</div>
+        <div class="p2-price-row">
+          <div class="p2-rupee">₹</div>
+          <div class="p2-price red">0</div>
+          <div class="p2-mo">/free</div>
+        </div>
+        <div class="p2-divider"></div>
+        <div class="p2-feat-list">
+          <div class="p2-feat"><span class="ck-red">✓</span> Beast Score Calculator</div>
+          <div class="p2-feat"><span class="ck-red">✓</span> Basic Workout Tracker</div>
+          <div class="p2-feat"><span class="ck-red">✓</span> BMI & BMR Analysis</div>
+          <div class="p2-feat dim"><span class="x">✗</span> AI Meal Plans</div>
+          <div class="p2-feat dim"><span class="x">✗</span> PDF Guide Library</div>
+          <div class="p2-feat dim"><span class="x">✗</span> Progress Photos</div>
+          <div class="p2-feat dim"><span class="x">✗</span> 1-on-1 Coaching</div>
+        </div>
+        <div class="p2-btn outline">FREE FOREVER</div>
+      </div>
+
+      <!-- Royal Pro (Featured) -->
+      <div class="p2-card featured">
+        <div class="p2-card-badge">MOST POPULAR</div>
+        <div class="p2-plan-icon">⚡</div>
+        <div class="p2-plan-name red">ROYAL PRO</div>
+        <div class="p2-price-row">
+          <div class="p2-rupee">₹</div>
+          <div class="p2-price red">499</div>
+          <div class="p2-mo">/month</div>
+        </div>
+        <div class="p2-divider"></div>
+        <div class="p2-feat-list">
+          <div class="p2-feat"><span class="ck">✓</span> Everything in Basic</div>
+          <div class="p2-feat"><span class="ck">✓</span> AI Meal Planner</div>
+          <div class="p2-feat"><span class="ck">✓</span> 22+ Expert PDF Guides</div>
+          <div class="p2-feat"><span class="ck">✓</span> Progress Photos & Streak</div>
+          <div class="p2-feat"><span class="ck">✓</span> 12-Week Roadmap</div>
+          <div class="p2-feat"><span class="ck">✓</span> Supplement Tracker</div>
+          <div class="p2-feat dim"><span class="x">✗</span> 1-on-1 Coaching</div>
+        </div>
+        <div class="p2-btn fire">JOIN ROYAL PRO ⚡</div>
+      </div>
+
+      <!-- Royal Elite -->
+      <div class="p2-card gold-card">
+        <div class="p2-card-badge">BEST VALUE</div>
+        <div class="p2-plan-icon">👑</div>
+        <div class="p2-plan-name gold">ROYAL ELITE</div>
+        <div class="p2-price-row">
+          <div class="p2-rupee" style="color:var(--gold)">₹</div>
+          <div class="p2-price gold">1999</div>
+          <div class="p2-mo">/month</div>
+        </div>
+        <div class="p2-old-price" style="margin-top:-8px;">was ₹3,999</div>
+        <div class="p2-divider"></div>
+        <div class="p2-feat-list">
+          <div class="p2-feat"><span class="ck">✓</span> Everything in Royal Pro</div>
+          <div class="p2-feat"><span class="ck">✓</span> 1-on-1 Personal Coaching</div>
+          <div class="p2-feat"><span class="ck">✓</span> Custom Workout Program</div>
+          <div class="p2-feat"><span class="ck">✓</span> Weekly Check-ins</div>
+          <div class="p2-feat"><span class="ck">✓</span> Priority Support</div>
+          <div class="p2-feat"><span class="ck">✓</span> Diet Plan Adjustments</div>
+          <div class="p2-feat"><span class="ck">✓</span> Anabolic Science Guides</div>
+        </div>
+        <div class="p2-btn shine">JOIN ROYAL ELITE 👑</div>
+      </div>
+    </div>
+
+    <div class="p2-footer">
+      <div class="p2-footer-text">royalmentality.in &nbsp;·&nbsp; cancel anytime &nbsp;·&nbsp; secure payment</div>
+    </div>
+  </div>
+</div>
+
+<!-- POSTER 3 -->
+<div class="poster-wrapper">
+  <div class="poster-label"><span>POSTER 3</span> — Instagram Story / Reel Cover (9:16)</div>
+  <div class="p3">
+    <div class="p3-bg"></div>
+    <div class="p3-grid"></div>
+    <div class="p3-top-bar"></div>
+    <div class="p3-content">
+      <div class="p3-logo-row">
+        <div class="p3-logo">ROYAL FITNESS CLUB</div>
+        <div class="p3-live">
+          <div class="p3-live-dot"></div>
+          LIVE NOW
+        </div>
+      </div>
+
+      <div class="p3-main">
+        <div class="p3-eyebrow">India's #1 Fitness Platform</div>
+        <div class="p3-big-text">
+          <span class="red">BUILD</span><br>
+          <span class="gold">YOUR</span><br>
+          BEST<br>BODY
+        </div>
+        <div class="p3-tagline">
+          AI-powered · Expert-guided<br>Results-guaranteed
+        </div>
+
+        <div class="p3-price-box">
+          <div class="p3-price-label">🔥 Royal Pro — Limited Offer</div>
+          <div class="p3-price-main">₹499</div>
+          <div class="p3-price-mo">/month · cancel anytime</div>
+        </div>
+
+        <div class="p3-pills">
+          <div class="p3-pill">🤖 AI Meal Plans</div>
+          <div class="p3-pill">⚡ Beast Score</div>
+          <div class="p3-pill">📚 108+ Guides</div>
+          <div class="p3-pill">🏋 Workout Log</div>
+          <div class="p3-pill">📸 Progress Tracker</div>
+        </div>
+
+        <div class="p3-cta-btn">START YOUR TRANSFORMATION →</div>
+      </div>
+
+      <div>
+        <div class="p3-stats-row">
+          <div class="p3-stat-item">
+            <div class="p3-stat-n">500+</div>
+            <div class="p3-stat-l">Members</div>
+          </div>
+          <div class="p3-stat-item">
+            <div class="p3-stat-n">22</div>
+            <div class="p3-stat-l">Guides</div>
+          </div>
+          <div class="p3-stat-item">
+            <div class="p3-stat-n">108</div>
+            <div class="p3-stat-l">PDFs</div>
+          </div>
+          <div class="p3-stat-item">
+            <div class="p3-stat-n">4.9★</div>
+            <div class="p3-stat-l">Rating</div>
+          </div>
+        </div>
+        <div class="p3-footer-url">royalmentality.in</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- POSTER 4 -->
+<div class="poster-wrapper">
+  <div class="poster-label"><span>POSTER 4</span> — Wide Banner / Facebook Cover (900×337)</div>
+  <div class="p4">
+    <div class="p4-bg-r"></div>
+    <div class="p4-gold-line"></div>
+    <div class="p4-top-bar"></div>
+
+    <div class="p4-left">
+      <div class="p4-logo">ROYAL FITNESS CLUB</div>
+      <div>
+        <div class="p4-headline">
+          BECOME<br>
+          <em>ELITE.</em>
+        </div>
+      </div>
+      <div class="p4-sub">
+        India's most advanced<br>
+        gym ecosystem · Since 2024
+      </div>
+    </div>
+
+    <div class="p4-right">
+      <div class="p4-plan-row">
+        <div class="p4-plan-icon">🏋</div>
+        <div class="p4-plan-info">
+          <div class="p4-plan-name">BASIC</div>
+          <div class="p4-plan-features">Beast Score · BMI Analysis · Workout Log</div>
+        </div>
+        <div class="p4-plan-price muted">FREE<small>/forever</small></div>
+      </div>
+      <div class="p4-plan-row" style="border:1px solid rgba(232,0,29,.35);background:rgba(232,0,29,.08);">
+        <div class="p4-plan-icon">⚡</div>
+        <div class="p4-plan-info">
+          <div class="p4-plan-name">ROYAL PRO</div>
+          <div class="p4-plan-features">AI Meals · 22 Guides · Progress Tracker · Roadmap</div>
+        </div>
+        <div class="p4-plan-price white">₹499<small>/month</small></div>
+      </div>
+      <div class="p4-plan-row" style="border:1px solid rgba(255,208,0,.25);background:rgba(255,208,0,.04);">
+        <div class="p4-plan-icon">👑</div>
+        <div class="p4-plan-info">
+          <div class="p4-plan-name">ROYAL ELITE</div>
+          <div class="p4-plan-features">Everything + 1-on-1 Coaching · Custom Programs</div>
+        </div>
+        <div class="p4-plan-price gold">₹1999<small>/month</small></div>
+      </div>
+    </div>
+
+    <div class="p4-footer-bar">
+      <div class="p4-footer-item"><span class="dot"></span>royalmentality.in</div>
+      <div class="p4-footer-item"><span class="dot"></span>Cancel Anytime</div>
+      <div class="p4-footer-item"><span class="dot"></span>Secure Payment</div>
+      <div class="p4-footer-item"><span class="dot"></span>500+ Members</div>
+    </div>
+  </div>
+</div>
+
+<!-- POSTER 5 -->
+<div class="poster-wrapper">
+  <div class="poster-label"><span>POSTER 5</span> — 90-Day Transformation Challenge (700×700)</div>
+  <div class="p5">
+    <div class="p5-bg"></div>
+    <div class="p5-circles">
+      <div class="p5-circle"></div>
+      <div class="p5-circle"></div>
+      <div class="p5-circle"></div>
+    </div>
+    <div class="p5-top"></div>
+    <div class="p5-content">
+      <div class="p5-logo">ROYAL FITNESS CLUB</div>
+      <div class="p5-challenge-tag">🔥 Official Challenge</div>
+      <div class="p5-days">90</div>
+      <div class="p5-days-label">DAY BEAST MODE</div>
+      <div class="p5-divider"></div>
+      <div class="p5-promise">
+        Transform your body · Build elite habits<br>
+        Get coached by experts · Track every rep
+      </div>
+      <div class="p5-results-row">
+        <div class="p5-result">
+          <div class="p5-result-n">-12kg</div>
+          <div class="p5-result-l">Avg Fat Loss</div>
+        </div>
+        <div class="p5-result">
+          <div class="p5-result-n">+8kg</div>
+          <div class="p5-result-l">Avg Muscle</div>
+        </div>
+        <div class="p5-result">
+          <div class="p5-result-n">97%</div>
+          <div class="p5-result-l">Completion</div>
+        </div>
+      </div>
+      <div class="p5-cta">REGISTER NOW — ₹1999/mo 👑</div>
+      <div class="p5-url">royalmentality.in</div>
+    </div>
+  </div>
+</div>
+
+<!-- POSTER 6 -->
+<div class="poster-wrapper">
+  <div class="poster-label"><span>POSTER 6</span> — A4 Print Flyer (595×842)</div>
+  <div class="p6">
+    <div class="p6-red-top"></div>
+    <div class="p6-bg-bottom"></div>
+    <div class="p6-top-bar"></div>
+    <div class="p6-content">
+      <div class="p6-logo-row">
+        <div class="p6-logo">ROYAL FITNESS CLUB</div>
+        <div class="p6-slogan">Beast Ecosystem v5.0</div>
+      </div>
+      <div class="p6-hero-text">FORGE<br>YOUR<br>LEGACY</div>
+      <div class="p6-hero-sub">India's Most Advanced Gym Platform</div>
+
+      <div class="p6-features-grid">
+        <div class="p6-feature-card red-border">
+          <div class="p6-fc-icon">🤖</div>
+          <div class="p6-fc-title">AI Meal Planner</div>
+          <div class="p6-fc-desc">Custom macros, Indian diet plans & calorie targets built around your body type.</div>
+        </div>
+        <div class="p6-feature-card red-border">
+          <div class="p6-fc-icon">⚡</div>
+          <div class="p6-fc-title">Beast Score 2.0</div>
+          <div class="p6-fc-desc">Advanced body composition score with 12-week personalised transformation roadmap.</div>
+        </div>
+        <div class="p6-feature-card gold-border">
+          <div class="p6-fc-icon">📚</div>
+          <div class="p6-fc-title">Expert PDF Library</div>
+          <div class="p6-fc-desc">108+ professional guides on nutrition, training methodology & advanced protocols.</div>
+        </div>
+        <div class="p6-feature-card gold-border">
+          <div class="p6-fc-icon">🏋</div>
+          <div class="p6-fc-title">Full Workout Tracker</div>
+          <div class="p6-fc-desc">Log sessions, track body measurements, upload progress photos & build streaks.</div>
+        </div>
+      </div>
+
+      <div class="p6-price-section">
+        <div class="p6-price-eyebrow">Membership Plans</div>
+        <div class="p6-price-row">
+          <div class="p6-plan-col">
+            <div class="p6-plan-icon-sm">🏋</div>
+            <div>
+              <div class="p6-plan-name-sm">BASIC</div>
+              <div class="p6-plan-features-sm">Calculator · Tracker · BMI</div>
+            </div>
+          </div>
+          <div class="p6-plan-price-sm muted">FREE<small>/forever</small></div>
+        </div>
+        <div class="p6-price-row">
+          <div class="p6-plan-col">
+            <div class="p6-plan-icon-sm">⚡</div>
+            <div>
+              <div class="p6-plan-name-sm">ROYAL PRO</div>
+              <div class="p6-plan-features-sm">AI Meals · 22 Guides · Roadmap</div>
+            </div>
+          </div>
+          <div class="p6-plan-price-sm red">₹499<small>/month</small></div>
+        </div>
+        <div class="p6-price-row">
+          <div class="p6-plan-col">
+            <div class="p6-plan-icon-sm">👑</div>
+            <div>
+              <div class="p6-plan-name-sm">ROYAL ELITE</div>
+              <div class="p6-plan-features-sm">Everything + 1-on-1 Coaching</div>
+            </div>
+          </div>
+          <div class="p6-plan-price-sm gold">₹1999<small>/month</small></div>
+        </div>
+      </div>
+
+      <div class="p6-cta-row">
+        <div class="p6-cta-main">JOIN NOW — FREE TO START</div>
+        <div class="p6-cta-url">royalmentality.in</div>
+      </div>
+
+      <div class="p6-bottom-strip">
+        <div class="p6-strip-item"><span class="icon-sm">✓</span>Cancel Anytime</div>
+        <div class="p6-strip-item"><span class="icon-sm">🔒</span>Secure Payment</div>
+        <div class="p6-strip-item"><span class="icon-sm">📱</span>Works on All Devices</div>
+        <div class="p6-strip-item"><span class="icon-sm">🇮🇳</span>Made for India</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- POSTER 7 -->
+<div class="poster-wrapper">
+  <div class="poster-label"><span>POSTER 7</span> — Beast Score Feature Ad (700×420)</div>
+  <div class="p7">
+    <div class="p7-bg"></div>
+    <div class="p7-top"></div>
+    <div class="p7-content">
+      <div class="p7-left">
+        <div class="p7-eyebrow">Royal Fitness Club</div>
+        <div class="p7-title">BEAST<br><em>SCORE</em><br>2.0</div>
+        <div class="p7-desc">
+          India's most advanced body composition<br>
+          analysis engine. Get your personalised<br>
+          score, macros, and 12-week roadmap.
+        </div>
+        <div class="p7-features">
+          <div class="p7-feat-row">BMI · BMR · TDEE Analysis</div>
+          <div class="p7-feat-row">Body Fat % & Lean Mass</div>
+          <div class="p7-feat-row">AI Macro Calculator</div>
+          <div class="p7-feat-row">12-Week Transformation Plan</div>
+          <div class="p7-feat-row">Supplement Recommendations</div>
+        </div>
+      </div>
+      <div class="p7-right">
+        <div class="p7-score-circle">
+          <div class="p7-score-num">87</div>
+          <div class="p7-score-label">/ 100</div>
+        </div>
+        <div class="p7-score-legend">
+          <div class="p7-legend-val">ELITE BEAST</div>
+          <div class="p7-legend-lbl">Your Classification</div>
+        </div>
+        <div class="p7-mini-stats">
+          <div class="p7-mini-stat">
+            <div class="p7-mini-n">2,840</div>
+            <div class="p7-mini-l">TDEE kcal</div>
+          </div>
+          <div class="p7-mini-stat">
+            <div class="p7-mini-n">14.2%</div>
+            <div class="p7-mini-l">Body Fat</div>
+          </div>
+          <div class="p7-mini-stat">
+            <div class="p7-mini-n">3.1L</div>
+            <div class="p7-mini-l">Daily Water</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="controls">
+  <button class="ctrl-btn" onclick="window.print()">🖨️ PRINT ALL</button>
+</div>
+
+</body>
+</html>
