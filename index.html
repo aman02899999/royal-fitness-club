@@ -571,6 +571,7 @@ section::before{content:'';position:absolute;inset:0;background:linear-gradient(
 .wkex-no-img{width:100%;aspect-ratio:3/2;display:flex;align-items:center;justify-content:center;font-size:32px;background:rgba(232,0,29,.07);}
 .wkex-info{padding:6px 8px 8px;}
 .wkex-name{font-size:12px;font-weight:700;color:var(--text);letter-spacing:.2px;line-height:1.3;}
+.wkex-muscle{font-size:9px;font-weight:800;letter-spacing:1px;text-transform:uppercase;margin-top:2px;opacity:.85;}
 .wkex-sets{font-size:10px;color:var(--red);font-weight:700;margin-top:2px;font-family:'Barlow Condensed',sans-serif;letter-spacing:.5px;}
 .split-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;}
 .split-tab{padding:8px 14px;border:1px solid var(--border);border-radius:4px;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);transition:all .2s;}
@@ -6672,8 +6673,69 @@ const EX_IMAGES={
   'russian_twists':        'icons/exercises/russian_twists.gif',
   'leg_raises':            'icons/exercises/leg_raises.gif',
 };
+const EX_MUSCLES={
+  'bench_press':           {p:'chest',s:['shoulders','triceps'],c:'#e8001d'},
+  'incline_db_press':      {p:'chest',s:['shoulders','triceps'],c:'#e8001d'},
+  'db_press':              {p:'chest',s:['shoulders','triceps'],c:'#e8001d'},
+  'incline_bench':         {p:'chest',s:['shoulders','triceps'],c:'#e8001d'},
+  'incline_press':         {p:'chest',s:['shoulders','triceps'],c:'#e8001d'},
+  'decline_press':         {p:'chest',s:['shoulders','triceps'],c:'#e8001d'},
+  'cable_fly':             {p:'chest',s:['shoulders'],c:'#e8001d'},
+  'dips':                  {p:'triceps',s:['chest','shoulders'],c:'#ff9500'},
+  'tricep_dips':           {p:'triceps',s:['chest','shoulders'],c:'#ff9500'},
+  'push_ups':              {p:'chest',s:['shoulders','triceps'],c:'#e8001d'},
+  'overhead_press':        {p:'shoulders',s:['triceps'],c:'#ff6b35'},
+  'military_press':        {p:'shoulders',s:['triceps'],c:'#ff6b35'},
+  'arnold_press':          {p:'shoulders',s:['triceps'],c:'#ff6b35'},
+  'lateral_raises':        {p:'shoulders',s:[],c:'#ff6b35'},
+  'front_raises':          {p:'shoulders',s:[],c:'#ff6b35'},
+  'deadlift':              {p:'lower back',s:['hamstrings','glutes'],c:'#7c4dff'},
+  'pull_ups':              {p:'lats',s:['biceps','middle back'],c:'#00a8ff'},
+  'weighted_pull_ups':     {p:'lats',s:['biceps','middle back'],c:'#00a8ff'},
+  'barbell_row':           {p:'middle back',s:['biceps','lats'],c:'#4fc3f7'},
+  't_bar_row':             {p:'middle back',s:['biceps','lats'],c:'#4fc3f7'},
+  'lat_pulldown':          {p:'lats',s:['biceps','middle back'],c:'#00a8ff'},
+  'seated_cable_row':      {p:'middle back',s:['biceps','lats'],c:'#4fc3f7'},
+  'seated_row':            {p:'middle back',s:['biceps','lats'],c:'#4fc3f7'},
+  'cable_row':             {p:'middle back',s:['biceps','lats'],c:'#4fc3f7'},
+  'face_pulls':            {p:'shoulders',s:['middle back'],c:'#ff6b35'},
+  'reverse_fly':           {p:'shoulders',s:[],c:'#ff6b35'},
+  'shrugs':                {p:'traps',s:[],c:'#4fc3f7'},
+  'hyperextensions':       {p:'lower back',s:['glutes','hamstrings'],c:'#7c4dff'},
+  'bicep_curls':           {p:'biceps',s:['forearms'],c:'#f7c948'},
+  'bicep_curl':            {p:'biceps',s:['forearms'],c:'#f7c948'},
+  'barbell_curl':          {p:'biceps',s:['forearms'],c:'#f7c948'},
+  'hammer_curls':          {p:'biceps',s:[],c:'#f7c948'},
+  'hammer_curl':           {p:'biceps',s:[],c:'#f7c948'},
+  'preacher_curl':         {p:'biceps',s:[],c:'#f7c948'},
+  'tricep_pushdown':       {p:'triceps',s:[],c:'#ff9500'},
+  'pushdown':              {p:'triceps',s:[],c:'#ff9500'},
+  'overhead_extension':    {p:'triceps',s:[],c:'#ff9500'},
+  'skull_crushers':        {p:'triceps',s:['forearms'],c:'#ff9500'},
+  'close_grip_bench':      {p:'triceps',s:['chest','shoulders'],c:'#ff9500'},
+  'squat':                 {p:'quadriceps',s:['calves','glutes'],c:'#00c853'},
+  'front_squat':           {p:'quadriceps',s:['calves','glutes'],c:'#00c853'},
+  'romanian_deadlift':     {p:'hamstrings',s:['calves','glutes'],c:'#00e676'},
+  'leg_press':             {p:'quadriceps',s:['calves','glutes'],c:'#00c853'},
+  'leg_curl':              {p:'hamstrings',s:[],c:'#00e676'},
+  'hamstring_curl':        {p:'hamstrings',s:[],c:'#00e676'},
+  'leg_extension':         {p:'quadriceps',s:[],c:'#00c853'},
+  'calf_raises':           {p:'calves',s:[],c:'#00bcd4'},
+  'seated_calf':           {p:'calves',s:[],c:'#00bcd4'},
+  'walking_lunges':        {p:'quadriceps',s:['calves','glutes'],c:'#00c853'},
+  'bulgarian_split_squat': {p:'quadriceps',s:['calves','hamstrings'],c:'#00c853'},
+  'hip_thrust':            {p:'glutes',s:['hamstrings'],c:'#69f0ae'},
+  'hanging_leg_raises':    {p:'abdominals',s:[],c:'#b388ff'},
+  'hanging_leg_raise':     {p:'abdominals',s:[],c:'#b388ff'},
+  'cable_crunches':        {p:'abdominals',s:[],c:'#b388ff'},
+  'cable_crunch':          {p:'abdominals',s:[],c:'#b388ff'},
+  'plank':                 {p:'abdominals',s:[],c:'#b388ff'},
+  'russian_twists':        {p:'abdominals',s:[],c:'#b388ff'},
+  'leg_raises':            {p:'abdominals',s:[],c:'#b388ff'},
+};
 function exKey(n){return n.toLowerCase().replace(/[^a-z0-9]+/g,'_').replace(/^_|_$/g,'');}
-function exImg(name){const k=exKey(name);return EX_IMAGES[k]||null;} // returns gif path string or null
+function exImg(name){const k=exKey(name);return EX_IMAGES[k]||null;}
+function exMuscle(name){const k=exKey(name);return EX_MUSCLES[k]||null;}
 
 // ── 7-DAY WORKOUT SPLITS ──
 const WK={
@@ -6730,10 +6792,12 @@ function buildWorkout(split){
     });
     const cards=exList.map(ex=>{
       const gif=exImg(ex.name);
+      const muscle=exMuscle(ex.name);
       const imgEl=gif
         ?`<div class="wkex-imgs"><img class="wkex-img" src="${gif}" alt="${ex.name}" loading="lazy"></div>`
         :`<div class="wkex-no-img">💪</div>`;
-      return `<div class="wkex-card">${imgEl}<div class="wkex-info"><div class="wkex-name">${ex.name}</div>${ex.sets?`<div class="wkex-sets">${ex.sets}</div>`:''}</div></div>`;
+      const muscleEl=muscle?`<div class="wkex-muscle" style="color:${muscle.c}">${muscle.p.toUpperCase()}</div>`:'';
+      return `<div class="wkex-card">${imgEl}<div class="wkex-info"><div class="wkex-name">${ex.name}</div>${muscleEl}${ex.sets?`<div class="wkex-sets">${ex.sets}</div>`:''}</div></div>`;
     }).join('');
     return `<div class="wkout-day">${dayHead}<div class="wkex-grid">${cards}</div></div>`;
   }).join('');
