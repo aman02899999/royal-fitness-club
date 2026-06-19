@@ -9109,8 +9109,8 @@ function checkLoginBonus(){
   const today=new Date().toDateString();
   if(localStorage.getItem(key)===today)return;
   localStorage.setItem(key,today);
-  walletCredit(20,'Daily login bonus','login_bonus');
-  setTimeout(()=>toast('💰 +₹20 daily login bonus added to your wallet!','gold'),1200);
+  walletCredit(5,'Daily login bonus','login_bonus');
+  setTimeout(()=>toast('💰 +₹5 daily login bonus added to your wallet!','gold'),1200);
 }
 
 function renderWallet(){
@@ -9244,8 +9244,8 @@ function creditReferrer(refCode){
     const ownerUid=ownerKey.replace('rfc_refcode_','');
     const ownerWalletKey=`rfc_wallet_${ownerUid}_data`;
     const ow=JSON.parse(localStorage.getItem(ownerWalletKey)||'{"balance":0,"transactions":[]}');
-    ow.balance=(ow.balance||0)+100;
-    ow.transactions.unshift({id:Date.now(),type:'referral',amount:100,desc:`Referral bonus — ${user?.name||'New member'} joined`,date:new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})});
+    ow.balance=(ow.balance||0)+20;
+    ow.transactions.unshift({id:Date.now(),type:'referral',amount:20,desc:`Referral bonus — ${user?.name||'New member'} joined`,date:new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})});
     localStorage.setItem(ownerWalletKey,JSON.stringify(ow));
     // Increment ref count
     const cntKey=`rfc_ref_count_${ownerUid}`;
