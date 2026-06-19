@@ -578,6 +578,7 @@ section::before{content:'';position:absolute;inset:0;background:linear-gradient(
 @media(max-width:380px){.exgrid{grid-template-columns:1fr;}}
 .excard{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;transition:transform .18s,box-shadow .18s;}
 .excard:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,.25);}
+.excard-img{width:100%;aspect-ratio:16/9;object-fit:cover;object-position:center top;display:block;border-bottom:1px solid var(--border);background:var(--card2);}
 .excard-body{padding:10px 12px 12px;}
 .excard-num{font-family:'Bebas Neue',sans-serif;font-size:28px;line-height:1;color:rgba(255,255,255,.15);float:right;margin-left:6px;}
 .excard-name{font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:.5px;color:var(--text);line-height:1.1;}
@@ -7346,9 +7347,9 @@ function buildCalculators(r){
 
 const painData={
   neck:{title:'Neck Pain Recovery',cause:'Poor posture · Tech neck · Tight upper traps',warning:'See a physio if you have numbness or tingling in your arms.',exercises:[
-    {num:1,name:'Chin Tuck',sets:'3 × 10 reps',hold:'Hold 3 sec',cue:'Retract chin straight back — make a double chin. Gently hold 3 sec. Stretches posterior neck.',svg:'chinTuck'},
-    {num:2,name:'Upper Trap Stretch',sets:'3 × 30 sec',hold:'Each side',cue:'Tilt ear toward shoulder, gently press with opposite hand. Feel stretch down side of neck.',svg:'neckTilt'},
-    {num:3,name:'Neck Rotation',sets:'3 × 10 each side',hold:'2 sec at end range',cue:'Turn head slowly left and right. Keep chin level, shoulders still. Breathe out as you rotate.',svg:'neckRot'},
+    {num:1,name:'Chin Tuck',sets:'3 × 10 reps',hold:'Hold 3 sec',cue:'Retract chin straight back — make a double chin. Gently hold 3 sec. Stretches posterior neck.',svg:'chinTuck',img:'icons/physio_neck_chin_tuck.jpg'},
+    {num:2,name:'Upper Trap Stretch',sets:'3 × 30 sec',hold:'Each side',cue:'Tilt ear toward shoulder, gently press with opposite hand. Feel stretch down side of neck.',svg:'neckTilt',img:'icons/physio_neck_trap_stretch.jpg'},
+    {num:3,name:'Neck Rotation',sets:'3 × 10 each side',hold:'2 sec at end range',cue:'Turn head slowly left and right. Keep chin level, shoulders still. Breathe out as you rotate.',svg:'neckRot',img:'icons/physio_neck_rotation.jpg'},
   ]},
   shoulder:{title:'Shoulder Pain Recovery',cause:'Impingement · Rotator cuff strain · Poor scapular control',warning:'See a physio if you have pain at night or weakness lifting your arm.',exercises:[
     {num:1,name:'Pendulum Swing',sets:'2 × 30 sec',hold:'Circles each direction',cue:'Lean forward, let arm hang free. Use body momentum to swing arm gently in small circles.',svg:'pendulum'},
@@ -7385,7 +7386,7 @@ const painData={
 function renderPainPlan(key){
   const d=painData[key];if(!d)return;
   const el=$('painplan');el.style.display='block';
-  el.innerHTML=`<div class="pain-header"><div class="pain-intro-title">${d.title}</div><div class="pain-cause-row">🩹 <strong>Likely cause:</strong> ${d.cause}</div><div class="pain-warn-row">⚠️ ${d.warning}</div></div><div class="exgrid">${d.exercises.map(ex=>`<div class="excard"><div class="excard-body"><span class="excard-num">0${ex.num}</span><div class="excard-name">${ex.name}</div><div class="excard-sets">${ex.sets} · ${ex.hold}</div><div class="excard-cue">${ex.cue}</div></div></div>`).join('')}</div>`;
+  el.innerHTML=`<div class="pain-header"><div class="pain-intro-title">${d.title}</div><div class="pain-cause-row">🩹 <strong>Likely cause:</strong> ${d.cause}</div><div class="pain-warn-row">⚠️ ${d.warning}</div></div><div class="exgrid">${d.exercises.map(ex=>`<div class="excard">${ex.img?`<img class="excard-img" src="${ex.img}" alt="${ex.name} demonstration" loading="lazy">`:''}<div class="excard-body"><span class="excard-num">0${ex.num}</span><div class="excard-name">${ex.name}</div><div class="excard-sets">${ex.sets} · ${ex.hold}</div><div class="excard-cue">${ex.cue}</div></div></div>`).join('')}</div>`;
 }
 
 document.querySelectorAll('.painbtn').forEach(b=>{b.addEventListener('click',()=>{if(!isPro){openModal('promodal');return;}document.querySelectorAll('.painbtn').forEach(x=>x.classList.remove('sel'));b.classList.add('sel');renderPainPlan(b.dataset.pain);});});
