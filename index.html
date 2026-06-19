@@ -2739,15 +2739,6 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
     </div>
 
     <!-- Android App Download Banner -->
-    <div class="android-dl-banner" onclick="openApkModal()">
-      <div class="android-dl-icon">🤖</div>
-      <div class="android-dl-text">
-        <div class="android-dl-title">Download Android App</div>
-        <div class="android-dl-sub">Get the native app for faster access, offline use &amp; notifications</div>
-      </div>
-      <button class="android-dl-btn" onclick="event.stopPropagation();downloadApk()">⬇ Download APK</button>
-    </div>
-
     <!-- Upgrade nudge — shown only to free-plan users via JS -->
     <div id="dash-upgrade-nudge">
       <div style="flex:1;min-width:0;">
@@ -2861,13 +2852,17 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
       <!-- Right: Body Composition + Activity + Leaderboard rank -->
       <div>
         <div class="dash-card" style="margin-bottom:16px;" id="dash-body-comp">
-          <div class="dash-card-hdr"><span class="dash-card-title">Body Composition</span></div>
-          <div class="dash-bc-row"><span>BMI</span><span id="db-bmi" style="color:var(--gold);">-- (--)</span></div>
+          <div class="dash-card-hdr"><span class="dash-card-title">Body Composition</span><span id="db-goal-badge" style="font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;background:rgba(192,41,46,.15);color:var(--red);border:1px solid rgba(192,41,46,.3);border-radius:4px;padding:2px 8px;display:none;"></span></div>
+          <div class="dash-bc-row"><span>BMI</span><span id="db-bmi" style="color:var(--gold);">--</span><span id="db-bmi-cat" style="font-size:10px;color:var(--muted);margin-left:4px;"></span></div>
           <div class="dash-bc-row"><span>Weight</span><span id="db-weight">-- kg</span></div>
-          <div class="dash-bc-row"><span>Body Fat</span><span id="db-bf">--%</span></div>
+          <div class="dash-bc-row"><span>Body Fat</span><span id="db-bf">--%</span><span id="db-bf-cat" style="font-size:10px;color:var(--muted);margin-left:4px;"></span></div>
+          <div class="dash-bc-row"><span>Lean Mass</span><span id="db-lean">-- kg</span></div>
+          <div class="dash-bc-row" style="border-top:1px solid rgba(255,255,255,.06);margin-top:6px;padding-top:8px;"><span>BMR</span><span id="db-bmr">-- kcal</span></div>
           <div class="dash-bc-row"><span>TDEE</span><span id="db-tdee">-- kcal</span></div>
+          <div class="dash-bc-row"><span>Target Cals</span><span id="db-cals" style="color:var(--green);">-- kcal</span></div>
+          <div class="dash-bc-row" style="border-top:1px solid rgba(255,255,255,.06);margin-top:6px;padding-top:8px;"><span style="color:var(--muted);font-size:11px;">Protein · Carbs · Fat</span><span id="db-macros" style="font-size:11px;color:var(--muted);">--g · --g · --g</span></div>
           <div style="margin-top:14px;">
-            <button class="bsm" style="width:100%;font-size:12px;" onclick="switchScreen('toolbox',document.querySelector('[data-screen=toolbox]'))">📊 Update Metrics →</button>
+            <button class="bsm" style="width:100%;font-size:12px;" onclick="switchScreen('toolbox',null)">📊 Update Metrics →</button>
           </div>
         </div>
 
@@ -6806,6 +6801,10 @@ function calculate(){
   toast('🔥 Your plan is ready! Scroll down to see it.');
   setTimeout(()=>$('rescont').scrollIntoView({behavior:'smooth',block:'nearest'}),400);
   if(user?.uid&&window.TransformationService)window.TransformationService.saveCalculationResult(user.uid,lastRes).catch(()=>{});
+  // Cache locally so Dashboard body-comp card always has data
+  try{localStorage.setItem('bm_last_result',JSON.stringify(lastRes));}catch(e){}
+  // Refresh dashboard body-comp card immediately
+  if(typeof refreshDashBodyComp==='function')refreshDashBodyComp(lastRes);
   if(window.AnalyticsService)window.AnalyticsService.trackEvent('calculator_used',{goal,diet}).catch(()=>{});
 }
 // ── HEALTH CHECKBOX VISUAL + GOAL→CALORIE AUTO-UPDATE + SPLIT TABS ──
@@ -12582,6 +12581,37 @@ function savePR(lift){
   renderPRTracker();
 }
 
+function refreshDashBodyComp(r) {
+  if (!r) return;
+  var set = function(id, val) { var el = document.getElementById(id); if (el) el.textContent = val; };
+  var hide = function(id) { var el = document.getElementById(id); if (el) el.style.display = 'none'; };
+  var show = function(id, val) { var el = document.getElementById(id); if (el) { el.textContent = val; el.style.display = ''; } };
+
+  if (r.bmi) {
+    set('db-bmi', r.bmi.toFixed(1));
+    var bmiCat = r.bmi < 18.5 ? 'Underweight' : r.bmi < 25 ? 'Normal' : r.bmi < 30 ? 'Overweight' : 'Obese';
+    var bmiColor = r.bmi < 18.5 ? 'var(--blue)' : r.bmi < 25 ? 'var(--green)' : r.bmi < 30 ? 'var(--gold)' : 'var(--red)';
+    show('db-bmi-cat', '(' + bmiCat + ')');
+    var bmiEl = document.getElementById('db-bmi'); if (bmiEl) bmiEl.style.color = bmiColor;
+    var bcatEl = document.getElementById('db-bmi-cat'); if (bcatEl) bcatEl.style.color = bmiColor;
+  }
+  if (r.weight) set('db-weight', r.weight + ' kg');
+  if (r.bf != null) {
+    set('db-bf', r.bf.toFixed(1) + '%');
+    show('db-bf-cat', r.bfc ? '(' + r.bfc + ')' : '');
+    var leanMass = r.weight ? (r.weight * (1 - r.bf / 100)).toFixed(1) : null;
+    if (leanMass) set('db-lean', leanMass + ' kg');
+  }
+  if (r.bmr)  set('db-bmr',  Math.round(r.bmr) + ' kcal');
+  if (r.tdee) set('db-tdee', Math.round(r.tdee) + ' kcal');
+  if (r.targetCals) set('db-cals', r.targetCals + ' kcal');
+  if (r.macros) set('db-macros', r.macros.prot + 'g · ' + r.macros.carb + 'g · ' + r.macros.fat + 'g');
+  if (r.goal) {
+    var goalBadge = document.getElementById('db-goal-badge');
+    if (goalBadge) { goalBadge.textContent = r.goal.toUpperCase(); goalBadge.style.display = 'inline-block'; }
+  }
+}
+
 function populateDashboard() {
   // Greeting + date
   var h = new Date().getHours();
@@ -12633,18 +12663,9 @@ function populateDashboard() {
   }
 
   // Body composition from last calculator run
-  var bmiEl = document.getElementById('db-bmi');
-  var wgtEl = document.getElementById('db-weight');
-  var bfEl  = document.getElementById('db-bf');
-  var tdeeEl = document.getElementById('db-tdee');
   try {
-    var lastMeas = JSON.parse(localStorage.getItem('bm_last_result') || 'null');
-    if (lastMeas) {
-      if (bmiEl) bmiEl.textContent = lastMeas.bmi ? lastMeas.bmi.toFixed(1) : '--';
-      if (wgtEl && lastMeas.weight) wgtEl.textContent = lastMeas.weight + ' kg';
-      if (bfEl  && lastMeas.bf)    bfEl.textContent   = lastMeas.bf.toFixed(1) + '%';
-      if (tdeeEl && lastMeas.tdee) tdeeEl.textContent = Math.round(lastMeas.tdee) + ' kcal';
-    }
+    var lastMeas = JSON.parse(localStorage.getItem('bm_last_result') || 'null') || lastRes;
+    if (lastMeas) refreshDashBodyComp(lastMeas);
   } catch(e) {}
 
   // Leaderboard rank
