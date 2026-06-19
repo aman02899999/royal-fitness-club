@@ -1,4 +1,4 @@
-const CACHE = 'rfc-v17';
+const CACHE = 'rfc-v18';
 const STATIC = [
   '/',
   '/index.html',
@@ -7,6 +7,7 @@ const STATIC = [
   '/manifest.json',
   '/icons/icon-192x192.png',
   '/icons/icon-512x512.png',
+  '/icons/icon-180x180.png',
 ];
 
 self.addEventListener('install', e => {

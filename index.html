@@ -25,17 +25,34 @@
 <link rel="icon" href="icons/icon-192x192.png" type="image/png">
 <link rel="shortcut icon" href="icons/icon-192x192.png" type="image/png">
 <link rel="manifest" href="manifest.json">
+<!-- iOS PWA -->
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="RFC">
-<link rel="apple-touch-icon" href="icons/icon-152x152.png">
+<meta name="apple-mobile-web-app-title" content="Royal FC">
+<link rel="apple-touch-icon" sizes="180x180" href="icons/icon-180x180.png">
+<link rel="apple-touch-icon" sizes="152x152" href="icons/icon-152x152.png">
+<!-- iOS Splash Screens -->
+<link rel="apple-touch-startup-image" media="screen and (device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)" href="icons/splash/splash-iphone_se.png">
+<link rel="apple-touch-startup-image" media="screen and (device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)" href="icons/splash/splash-iphone_8.png">
+<link rel="apple-touch-startup-image" media="screen and (device-width: 414px) and (device-height: 736px) and (-webkit-device-pixel-ratio: 3)" href="icons/splash/splash-iphone_8_plus.png">
+<link rel="apple-touch-startup-image" media="screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)" href="icons/splash/splash-iphone_x.png">
+<link rel="apple-touch-startup-image" media="screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3)" href="icons/splash/splash-iphone_xs_max.png">
+<link rel="apple-touch-startup-image" media="screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2)" href="icons/splash/splash-iphone_xr.png">
+<link rel="apple-touch-startup-image" media="screen and (device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3)" href="icons/splash/splash-iphone_12.png">
+<link rel="apple-touch-startup-image" media="screen and (device-width: 360px) and (device-height: 780px) and (-webkit-device-pixel-ratio: 3)" href="icons/splash/splash-iphone_12_mini.png">
+<link rel="apple-touch-startup-image" media="screen and (device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3)" href="icons/splash/splash-iphone_12_max.png">
+<link rel="apple-touch-startup-image" media="screen and (device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3)" href="icons/splash/splash-iphone_14_pro.png">
+<link rel="apple-touch-startup-image" media="screen and (device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3)" href="icons/splash/splash-iphone_14_pro_max.png">
+<link rel="apple-touch-startup-image" media="screen and (device-width: 744px) and (device-height: 1133px) and (-webkit-device-pixel-ratio: 2)" href="icons/splash/splash-ipad_mini.png">
+<link rel="apple-touch-startup-image" media="screen and (device-width: 820px) and (device-height: 1180px) and (-webkit-device-pixel-ratio: 2)" href="icons/splash/splash-ipad_air.png">
+<link rel="apple-touch-startup-image" media="screen and (device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2)" href="icons/splash/splash-ipad_pro_12.png">
 <meta name="mobile-web-app-capable" content="yes">
 <link rel="dns-prefetch" href="https://www.gstatic.com">
 <link rel="dns-prefetch" href="https://firestore.googleapis.com">
 <link rel="dns-prefetch" href="https://checkout.razorpay.com">
 <link rel="dns-prefetch" href="https://human.biodigital.com">
 <link rel="dns-prefetch" href="https://developer.biodigital.com">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Royal Fitness Club | Ultimate Fitness Ecosystem</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -2565,6 +2582,15 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
 <script src="src/communityService.js"></script>
 </head>
 <body>
+<!-- iOS PWA Install Banner — shown only on iOS Safari when not already installed -->
+<div id="ios-install-banner" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:9999;background:linear-gradient(135deg,#0d0d10 60%,#1a0005);border-top:2px solid #e8001d;padding:14px 16px 20px;box-shadow:0 -4px 24px rgba(0,0,0,.7);align-items:center;gap:12px;">
+  <img src="icons/icon-180x180.png" alt="" style="width:44px;height:44px;border-radius:10px;flex-shrink:0;">
+  <div style="flex:1;min-width:0;">
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:17px;color:#fff;letter-spacing:.5px;">Install Royal Fitness Club</div>
+    <div style="font-size:12px;color:#aaa;margin-top:2px;">Tap <strong style="color:#e8001d;">Share</strong> <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#e8001d" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;display:inline;"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg> then <strong style="color:#e8001d;">Add to Home Screen</strong></div>
+  </div>
+  <button onclick="dismissIOSBanner()" style="background:none;border:none;color:#666;font-size:20px;cursor:pointer;padding:4px;flex-shrink:0;line-height:1;">✕</button>
+</div>
 <!-- ANNOUNCEMENT BAR — controlled by admin site settings -->
 <div id="rfc-announce-bar" class="adm-announce-bar" style="display:none;">
   <span id="rfc-announce-text"></span>
@@ -8951,6 +8977,24 @@ function triggerPWAInstall(){
     ['pwa-install-btn','pwa-install-btn2'].forEach(id=>{const b=document.getElementById(id);if(b)b.style.display='none';});
   });
 }
+
+// ── iOS PWA INSTALL BANNER ────────────────────────────────────────────────────
+function dismissIOSBanner(){
+  const b=document.getElementById('ios-install-banner');
+  if(b)b.style.display='none';
+  localStorage.setItem('ios_install_dismissed','1');
+}
+(function initIOSBanner(){
+  const isIOS=/iPad|iPhone|iPod/.test(navigator.userAgent)&&!window.MSStream;
+  const isInStandalone=window.navigator.standalone===true;
+  const isDismissed=localStorage.getItem('ios_install_dismissed');
+  if(isIOS&&!isInStandalone&&!isDismissed){
+    setTimeout(()=>{
+      const b=document.getElementById('ios-install-banner');
+      if(b){b.style.display='flex';}
+    },3000);
+  }
+})();
 
 // ── ANDROID APK DOWNLOAD ──────────────────────────────────────────────────────
 const APK_URL='https://github.com/aman02899999/royal-fitness-club/releases/download/android-latest/royal-fitness-club.apk';
