@@ -9,19 +9,19 @@
   },
   "android": {
     "allowMixedContent": false,
-    "backgroundColor": "#070707",
+    "backgroundColor": "#FAF8F5",
     "minWebViewVersion": 60
   },
   "plugins": {
     "SplashScreen": {
       "launchShowDuration": 2000,
-      "backgroundColor": "#070707",
+      "backgroundColor": "#FAF8F5",
       "androidSplashResourceName": "splash",
       "androidScaleType": "CENTER_CROP",
       "showSpinner": false,
       "androidSpinnerStyle": "large",
       "iosSpinnerStyle": "small",
-      "spinnerColor": "#e8001d",
+      "spinnerColor": "#7C3AED",
       "splashFullScreen": true,
       "splashImmersive": true
     }
