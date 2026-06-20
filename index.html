@@ -1126,6 +1126,37 @@ section::before{content:'';position:absolute;inset:0;background:linear-gradient(
 .wkex-imgs{display:block;background:linear-gradient(90deg,#1c1c1c 25%,#272727 50%,#1c1c1c 75%);background-size:400% 100%;animation:gif-shimmer 1.6s ease infinite;}
 @keyframes gif-shimmer{0%{background-position:100% 0}100%{background-position:-100% 0}}
 .wkex-img{width:100%;aspect-ratio:3/2;object-fit:cover;object-position:center center;display:block;}
+
+/* ═══════════════════════════════════════════════════════
+   SPECIALTY WORKOUTS — Tab System
+═══════════════════════════════════════════════════════ */
+.sp-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:20px 0 16px;overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch;}
+.sp-tab{padding:10px 18px;border-radius:24px;border:1.5px solid rgba(124,58,237,0.2);background:#fff;color:#374151;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;transition:all .2s;letter-spacing:.3px;flex-shrink:0;}
+.sp-tab:hover{border-color:#7C3AED;color:#7C3AED;background:rgba(124,58,237,0.06);}
+.sp-tab.active{background:linear-gradient(135deg,#7C3AED,#6D28D9);border-color:#7C3AED;color:#fff;box-shadow:0 4px 14px rgba(124,58,237,0.3);}
+.sp-banner{border-radius:14px;padding:16px 20px;margin-bottom:20px;display:flex;align-items:center;gap:14px;font-family:Arial,sans-serif;}
+.sp-banner-icon{font-size:32px;flex-shrink:0;}
+.sp-banner-title{font-size:15px;font-weight:700;color:#0F0A1A;margin-bottom:3px;}
+.sp-banner-sub{font-size:12px;color:#64748B;line-height:1.5;}
+.sp-banner-pills{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;}
+.sp-banner-pill{font-size:10px;font-weight:700;letter-spacing:1px;padding:3px 10px;border-radius:20px;background:rgba(124,58,237,0.1);color:#7C3AED;border:1px solid rgba(124,58,237,0.2);}
+.sp-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;}
+@media(max-width:480px){.sp-grid{grid-template-columns:1fr 1fr;gap:10px;}}
+@media(max-width:360px){.sp-grid{grid-template-columns:1fr;}}
+.sp-card{background:#fff;border:1px solid rgba(109,40,217,0.1);border-radius:14px;overflow:hidden;cursor:pointer;transition:transform .15s,box-shadow .15s,border-color .2s;position:relative;}
+.sp-card:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(109,40,217,0.12);border-color:rgba(124,58,237,0.3);}
+.sp-card:active{transform:scale(.98);}
+.sp-card-num{position:absolute;top:8px;left:8px;background:rgba(0,0,0,.55);color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;backdrop-filter:blur(4px);z-index:2;letter-spacing:.5px;}
+.sp-card-gif-wrap{position:relative;width:100%;aspect-ratio:4/3;overflow:hidden;background:#f1f5f9;}
+.sp-card-gif{width:100%;height:100%;object-fit:cover;display:block;}
+.sp-card-body{padding:10px 12px 12px;}
+.sp-card-name{font-size:13px;font-weight:700;color:#0F0A1A;margin-bottom:3px;line-height:1.2;}
+.sp-card-muscle{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;}
+.sp-card-meta{display:flex;justify-content:space-between;align-items:center;}
+.sp-card-sets{font-size:11px;font-weight:700;color:#7C3AED;background:rgba(124,58,237,0.08);padding:3px 8px;border-radius:6px;}
+.sp-card-tip{font-size:10px;color:#9CA3AF;margin-top:5px;line-height:1.4;display:none;}
+.sp-card.open .sp-card-tip{display:block;}
+.sp-card-tag{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#fff;padding:2px 7px;border-radius:4px;}
 .wkex-no-img{width:100%;aspect-ratio:3/2;display:flex;align-items:center;justify-content:center;font-size:32px;background:rgba(232,0,29,.07);}
 .wkex-info{padding:6px 8px 8px;}
 .wkex-name{font-size:12px;font-weight:700;color:var(--text);letter-spacing:.2px;line-height:1.3;}
@@ -4996,6 +5027,34 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
 </section>
 <div class="divider"></div>
 <!-- ══════════════════════════════════════════════════════ -->
+<!-- SPECIALTY WORKOUTS — Home / Abs / HIIT / Tabata / Functional -->
+<!-- ══════════════════════════════════════════════════════ -->
+<section id="specialty-workouts" style="background:var(--bg);">
+  <div class="container">
+    <div class="stag">No Equipment Needed · Any Level · Anywhere</div>
+    <div class="sh">SPECIALTY WORKOUTS</div>
+    <p class="ssub">10 exercises per session · Animated demonstrations · Science-backed protocols</p>
+
+    <!-- Tab Bar -->
+    <div class="sp-tabs" id="sp-tabs">
+      <div class="sp-tab active" data-sp="home" onclick="switchSP(this,'home')">🏠 Home</div>
+      <div class="sp-tab" data-sp="abs" onclick="switchSP(this,'abs')">🔥 Abs</div>
+      <div class="sp-tab" data-sp="hiit" onclick="switchSP(this,'hiit')">⚡ HIIT</div>
+      <div class="sp-tab" data-sp="tabata" onclick="switchSP(this,'tabata')">⏱️ Tabata</div>
+      <div class="sp-tab" data-sp="functional" onclick="switchSP(this,'functional')">🎯 Functional</div>
+    </div>
+
+    <!-- Info Banner (changes per tab) -->
+    <div class="sp-banner" id="sp-banner"></div>
+
+    <!-- Exercise Grid -->
+    <div class="sp-grid" id="sp-grid"></div>
+
+    <p style="font-size:11px;color:var(--muted);text-align:center;margin-top:20px;">Tap any card to expand · GIFs show full movement range</p>
+  </div>
+</section>
+<div class="divider"></div>
+<!-- ══════════════════════════════════════════════════════ -->
 <!-- WORKOUT LOGGER                                        -->
 <!-- ══════════════════════════════════════════════════════ -->
 <section id="workoutlog">
@@ -7505,6 +7564,23 @@ const EX_IMAGES={
   'plank':                 'icons/exercises/plank.gif',
   'russian_twists':        'icons/exercises/russian_twists.gif',
   'leg_raises':            'icons/exercises/leg_raises.gif',
+  /* ── SPECIALTY WORKOUTS (Home / Abs / HIIT / Tabata / Functional) ── */
+  'mountain_climbers':     'icons/exercises/mountain_climbers.gif',
+  'burpees':               'icons/exercises/burpees.gif',
+  'bicycle_crunches':      'icons/exercises/bicycle_crunches.gif',
+  'crunches':              'icons/exercises/crunches.gif',
+  'jump_squats':           'icons/exercises/jump_squats.gif',
+  'high_knees':            'icons/exercises/high_knees.gif',
+  'jumping_jacks':         'icons/exercises/jumping_jacks.gif',
+  'jump_lunges':           'icons/exercises/jump_lunges.gif',
+  'side_plank':            'icons/exercises/side_plank.gif',
+  'box_jumps':             'icons/exercises/box_jumps.gif',
+  'wall_sit':              'icons/exercises/wall_sit.gif',
+  'superman':              'icons/exercises/superman.gif',
+  'step_ups':              'icons/exercises/step_ups.gif',
+  'glute_bridge':          'icons/exercises/hip_thrust.gif',
+  'tricep_dips':           'icons/exercises/dips.gif',
+  'bodyweight_squat':      'icons/exercises/squat.gif',
 };
 const EX_MUSCLES={
   'bench_press':           {p:'chest',s:['shoulders','triceps'],c:'#e8001d'},
@@ -7721,6 +7797,157 @@ updateCalAdj();
 document.querySelectorAll('.split-tab').forEach(t=>{t.addEventListener('click',()=>{document.querySelectorAll('.split-tab').forEach(x=>x.classList.remove('active'));t.classList.add('active');currentSplit=t.dataset.split;buildWorkout(currentSplit);});});
 function switchSplit2(el,split){document.querySelectorAll('[data-split2]').forEach(x=>x.classList.remove('active'));el.classList.add('active');// also sync main calculator split tabs
 document.querySelectorAll('.split-tab').forEach(x=>{x.classList.toggle('active',x.dataset.split===split);});currentSplit=split;buildWorkout(split);};
+
+// ═══════════════════════════════════════════════════════
+// SPECIALTY WORKOUTS DATA & RENDERER
+// ═══════════════════════════════════════════════════════
+const SP_DATA = {
+  home: {
+    title:'🏠 Home Workout',
+    sub:'No gym, no equipment — full body strength at home',
+    pills:['Bodyweight Only','No Equipment','Any Level','30–45 Min'],
+    color:'rgba(124,58,237,0.06)',
+    border:'rgba(124,58,237,0.15)',
+    exercises:[
+      {name:'Push-Ups',            key:'push_ups',          sets:'4×12',   muscle:'Chest/Triceps', color:'#e8001d', tip:'Keep core tight, lower chest to 2cm from floor. Elbows 45° from body.'},
+      {name:'Bodyweight Squats',   key:'bodyweight_squat',  sets:'4×20',   muscle:'Quadriceps',    color:'#00c853', tip:'Feet shoulder-width, chest up, knees track over toes. Go below parallel.'},
+      {name:'Walking Lunges',      key:'walking_lunges',    sets:'3×12ea', muscle:'Legs/Glutes',   color:'#00c853', tip:'Long stride forward, back knee hovers 2cm from floor. Drive through front heel.'},
+      {name:'Glute Bridge',        key:'glute_bridge',      sets:'4×15',   muscle:'Glutes/Hams',   color:'#7c4dff', tip:'Drive hips up, squeeze glutes hard at top. Hold 1 sec. Feet flat on floor.'},
+      {name:'Plank',               key:'plank',             sets:'3×60s',  muscle:'Core',          color:'#ff6b35', tip:'Straight line head to heels. Don\'t let hips sag or pike. Breathe steadily.'},
+      {name:'Mountain Climbers',   key:'mountain_climbers', sets:'3×30s',  muscle:'Core/Cardio',   color:'#00a8ff', tip:'Fast alternating knees to chest. Keep hips level, maintain plank position.'},
+      {name:'Burpees',             key:'burpees',           sets:'3×10',   muscle:'Full Body',     color:'#ff9500', tip:'Jump down, push-up, jump feet in, explode up with overhead clap. Control landing.'},
+      {name:'Tricep Dips',         key:'tricep_dips',       sets:'3×12',   muscle:'Triceps',       color:'#ff9500', tip:'Use a sturdy chair. Elbows point back, lower slowly, full ROM. Feet forward.'},
+      {name:'Superman Hold',       key:'superman',          sets:'3×15',   muscle:'Lower Back',    color:'#4fc3f7', tip:'Lift arms + legs simultaneously, hold 2 sec at top. Slow controlled movement.'},
+      {name:'Pull-Ups',            key:'pull_ups',          sets:'3×8',    muscle:'Lats/Biceps',   color:'#00a8ff', tip:'Full hang, pull chest to bar. Dead hang between reps for full lat activation.'},
+    ]
+  },
+  abs: {
+    title:'🔥 Abdominal Workout',
+    sub:'Sculpt a six-pack with science-backed ab training',
+    pills:['Core Focused','6 Muscle Zones','15–25 Min','Daily Possible'],
+    color:'rgba(220,38,38,0.05)',
+    border:'rgba(220,38,38,0.2)',
+    exercises:[
+      {name:'Crunches',            key:'crunches',          sets:'4×20',   muscle:'Upper Abs',     color:'#e8001d', tip:'Hands behind ears (not head). Curl only shoulder blades off floor — short ROM, high tension.'},
+      {name:'Bicycle Crunches',    key:'bicycle_crunches',  sets:'3×20ea', muscle:'Obliques',      color:'#e8001d', tip:'Slow and controlled. Opposite elbow to knee. Extend leg fully. Don\'t rush.'},
+      {name:'Hanging Leg Raises',  key:'hanging_leg_raises',sets:'4×12',   muscle:'Lower Abs',     color:'#7c4dff', tip:'Avoid swinging. Raise legs to 90°+. Slow 3-sec negative. Most effective lower ab move.'},
+      {name:'Russian Twists',      key:'russian_twists',    sets:'3×20ea', muscle:'Obliques/Core', color:'#ff9500', tip:'Feet off floor, lean 45°. Twist from core not arms. Add weight for progression.'},
+      {name:'Plank',               key:'plank',             sets:'3×60s',  muscle:'Deep Core',     color:'#ff6b35', tip:'Transverse abdominis fully engaged. Breathe — don\'t hold breath. Posterior pelvic tilt.'},
+      {name:'Cable Crunches',      key:'cable_crunches',    sets:'3×15',   muscle:'Upper Abs',     color:'#e8001d', tip:'Hips stay still — ALL movement from abs. Pull elbows to knees. Best weighted ab move.'},
+      {name:'Leg Raises (Flat)',   key:'leg_raises',        sets:'4×15',   muscle:'Lower Abs',     color:'#7c4dff', tip:'Lower back pressed down always. Lower legs slowly — don\'t let them touch floor.'},
+      {name:'Side Plank',          key:'side_plank',        sets:'3×45sea',muscle:'Obliques',      color:'#ff9500', tip:'Hips up, body straight as a board. Stack feet or stagger. Add hip dips for intensity.'},
+      {name:'Mountain Climbers',   key:'mountain_climbers', sets:'3×30s',  muscle:'Core/Cardio',   color:'#00a8ff', tip:'Fast knees to chest engages rectus abdominis hard. Core must stay rigid throughout.'},
+      {name:'Superman',            key:'superman',          sets:'3×15',   muscle:'Lower Back',    color:'#4fc3f7', tip:'Balance the ab work with lower back. Essential for spinal stability and injury prevention.'},
+    ]
+  },
+  hiit: {
+    title:'⚡ HIIT Workout',
+    sub:'Maximum fat burn — 40s work / 20s rest protocol',
+    pills:['Fat Burning','40s ON / 20s OFF','20–30 Min','500+ Cal/hr'],
+    color:'rgba(234,88,12,0.05)',
+    border:'rgba(234,88,12,0.2)',
+    exercises:[
+      {name:'Burpees',             key:'burpees',           sets:'4×40s',  muscle:'Full Body',     color:'#e8001d', tip:'THE most effective HIIT move. Burns 15 cal/min. Jump high, push-up low. Max intensity.'},
+      {name:'Jump Squats',         key:'jump_squats',       sets:'4×40s',  muscle:'Legs/Glutes',   color:'#00c853', tip:'Squat deep, explode up, land softly with bent knees. Maximize height each rep.'},
+      {name:'High Knees',          key:'high_knees',        sets:'4×40s',  muscle:'Cardio/Core',   color:'#00a8ff', tip:'Drive knees to hip height, pump arms hard. Sprint in place — max speed and output.'},
+      {name:'Mountain Climbers',   key:'mountain_climbers', sets:'4×40s',  muscle:'Core/Cardio',   color:'#00a8ff', tip:'Fast as possible. Core locked, hips level. The faster you go the more fat burns.'},
+      {name:'Jumping Jacks',       key:'jumping_jacks',     sets:'4×40s',  muscle:'Full Body',     color:'#ff9500', tip:'Full range arms + legs. Keep moving throughout rest periods (light march).'},
+      {name:'Push-Ups',            key:'push_ups',          sets:'4×40s',  muscle:'Chest/Triceps', color:'#e8001d', tip:'Use push-ups as the "lower intensity" interval. Controls heart rate before explosive moves.'},
+      {name:'Jump Lunges',         key:'jump_lunges',       sets:'3×40s',  muscle:'Legs/Glutes',   color:'#00c853', tip:'Explode up and switch legs mid-air. Land softly, absorb impact. Builds serious power.'},
+      {name:'Box Jumps',           key:'box_jumps',         sets:'3×40s',  muscle:'Power/Legs',    color:'#f87171', tip:'Jump onto platform, land two-feet with soft knees. Step down — never jump down. 100% effort.'},
+      {name:'Plank Hold',          key:'plank',             sets:'3×40s',  muscle:'Core Stability',color:'#ff6b35', tip:'Active rest — keeps heart rate elevated while stabilising. Core under high metabolic demand.'},
+      {name:'Bodyweight Squats',   key:'bodyweight_squat',  sets:'3×40s',  muscle:'Legs/Glutes',   color:'#00c853', tip:'Cooldown move — controlled tempo, full depth. Active recovery before next round.'},
+    ]
+  },
+  tabata: {
+    title:'⏱️ Tabata Protocol',
+    sub:'8 rounds · 20s on / 10s rest — the ultimate fat incinerator',
+    pills:['8 Rounds Each','20s ON / 10s REST','16 Min Total','EPOC Effect'],
+    color:'rgba(5,150,105,0.05)',
+    border:'rgba(5,150,105,0.2)',
+    exercises:[
+      {name:'Jump Squats',         key:'jump_squats',       sets:'8×20s',  muscle:'Legs/Power',    color:'#00c853', tip:'Tabata rule: 100% intensity each interval. Rest 60s between exercises. 4 min per exercise.'},
+      {name:'Push-Ups',            key:'push_ups',          sets:'8×20s',  muscle:'Chest/Triceps', color:'#e8001d', tip:'Max reps in 20s, rest 10s. Don\'t stop — even slow push-ups keep intensity up.'},
+      {name:'Mountain Climbers',   key:'mountain_climbers', sets:'8×20s',  muscle:'Core/Cardio',   color:'#00a8ff', tip:'True Tabata: Izumi Tabata proved this exact protocol beats 60-min steady cardio for VO2 max.'},
+      {name:'Jumping Jacks',       key:'jumping_jacks',     sets:'8×20s',  muscle:'Full Body',     color:'#ff9500', tip:'Full range, arms fully overhead. Use this as a slightly lower-intensity Tabata round.'},
+      {name:'High Knees',          key:'high_knees',        sets:'8×20s',  muscle:'Cardio/Core',   color:'#00a8ff', tip:'Sprint. Literally sprint in place. Pump arms, drive knees. No half-measures in Tabata.'},
+      {name:'Burpees',             key:'burpees',           sets:'8×20s',  muscle:'Full Body',     color:'#e8001d', tip:'The king of Tabata moves. 8 rounds of burpees = 4 minutes of the hardest cardio you\'ll do.'},
+      {name:'Russian Twists',      key:'russian_twists',    sets:'8×20s',  muscle:'Obliques',      color:'#ff9500', tip:'Core-focused Tabata round. Feet off floor, max rotation speed. Goes to failure fast.'},
+      {name:'Leg Raises',          key:'leg_raises',        sets:'8×20s',  muscle:'Lower Abs',     color:'#7c4dff', tip:'Controlled even in Tabata. Back flat, full extension down but don\'t touch. Cumulative burn.'},
+      {name:'Plank',               key:'plank',             sets:'8×20s',  muscle:'Core/Isometric',color:'#ff6b35', tip:'Isometric Tabata. Maximum core tension throughout. Squeeze everything — glutes, abs, lats.'},
+      {name:'Pull-Ups',            key:'pull_ups',          sets:'8×20s',  muscle:'Back/Biceps',   color:'#00a8ff', tip:'Advanced finisher. Max reps per 20s. Use band assistance to maintain intensity all 8 rounds.'},
+    ]
+  },
+  functional: {
+    title:'🎯 Functional Workout',
+    sub:'Movement patterns that build real-world strength & athleticism',
+    pills:['Compound Moves','Athletic Performance','45–60 Min','Progressive Load'],
+    color:'rgba(37,99,235,0.05)',
+    border:'rgba(37,99,235,0.2)',
+    exercises:[
+      {name:'Deadlift',            key:'deadlift',          sets:'4×6',    muscle:'Posterior Chain',color:'#7c4dff', tip:'The king of functional moves. Engages 75%+ of total muscle mass. Hip hinge — NOT a squat.'},
+      {name:'Bulgarian Split Squat',key:'bulgarian_split_squat',sets:'3×10ea',muscle:'Legs/Balance',color:'#00c853', tip:'Single-leg strength is the foundation of athletic movement. Develop left-right balance.'},
+      {name:'Hip Thrust',          key:'hip_thrust',        sets:'4×12',   muscle:'Glutes/Hams',   color:'#7c4dff', tip:'Best glute builder proven by science (Contreras 2015). Stronger glutes = better everything.'},
+      {name:'Romanian Deadlift',   key:'romanian_deadlift', sets:'4×10',   muscle:'Hamstrings',    color:'#00e676', tip:'Hip hinge pattern. Feel hamstring stretch at bottom. Keep bar close to legs throughout.'},
+      {name:'Overhead Press',      key:'overhead_press',    sets:'4×8',    muscle:'Shoulders/Core',color:'#ff6b35', tip:'True functional test of pressing strength. Core braced, don\'t lean back. Strict form.'},
+      {name:'Pull-Ups',            key:'pull_ups',          sets:'4×AMRAP',muscle:'Lats/Biceps',   color:'#00a8ff', tip:'Best bodyweight back exercise. Dead hang to full chin-over-bar. Scapular depression first.'},
+      {name:'Step Ups',            key:'step_ups',          sets:'3×12ea', muscle:'Legs/Stability',color:'#00c853', tip:'Step, don\'t jump. Full hip extension at top. Builds knee stability and single-leg strength.'},
+      {name:'Walking Lunges',      key:'walking_lunges',    sets:'3×12ea', muscle:'Legs/Glutes',   color:'#00c853', tip:'Mimics natural gait. Train locomotion patterns. Add dumbbells for loaded carry combo.'},
+      {name:'Push-Ups (Weighted)', key:'push_ups',          sets:'4×15',   muscle:'Push Pattern',  color:'#e8001d', tip:'Add weight plate on back for overload. The push pattern is fundamental to all pressing sports.'},
+      {name:'Plank (Loaded)',      key:'plank',             sets:'4×60s',  muscle:'Anti-Rotation', color:'#ff6b35', tip:'Add weight plate on back. Core stability under load = functional strength definition.'},
+    ]
+  }
+};
+
+function switchSP(el, tab) {
+  document.querySelectorAll('.sp-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  buildSP(tab);
+}
+
+function buildSP(tab) {
+  const d = SP_DATA[tab];
+  if (!d) return;
+  // Banner
+  const banner = document.getElementById('sp-banner');
+  if (banner) {
+    banner.style.cssText = `background:${d.color};border:1px solid ${d.border};`;
+    banner.innerHTML = `
+      <div class="sp-banner-icon">${d.title.split(' ')[0]}</div>
+      <div>
+        <div class="sp-banner-title">${d.title.substring(3)}</div>
+        <div class="sp-banner-sub">${d.sub}</div>
+        <div class="sp-banner-pills">${d.pills.map(p=>`<span class="sp-banner-pill">${p}</span>`).join('')}</div>
+      </div>`;
+  }
+  // Grid
+  const grid = document.getElementById('sp-grid');
+  if (!grid) return;
+  grid.innerHTML = d.exercises.map((ex, i) => {
+    const gif = EX_IMAGES[ex.key] || '';
+    const imgEl = gif
+      ? `<div class="sp-card-gif-wrap"><img class="sp-card-gif" src="${gif}" alt="${ex.name}" loading="lazy"><span class="sp-card-num">0${i+1}</span></div>`
+      : `<div class="sp-card-gif-wrap" style="background:#f8f5ff;display:flex;align-items:center;justify-content:center;font-size:36px;"><span class="sp-card-num">0${i+1}</span>💪</div>`;
+    return `
+      <div class="sp-card" onclick="this.classList.toggle('open')">
+        ${imgEl}
+        <div class="sp-card-body">
+          <div class="sp-card-name">${ex.name}</div>
+          <div class="sp-card-muscle" style="color:${ex.color}">${ex.muscle.toUpperCase()}</div>
+          <div class="sp-card-meta">
+            <div class="sp-card-sets">${ex.sets}</div>
+            <span style="font-size:10px;color:#9CA3AF">Tap for tip ▾</span>
+          </div>
+          <div class="sp-card-tip">💡 ${ex.tip}</div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+// Init on load
+(function(){
+  try { buildSP('home'); } catch(e) {}
+})();
 
 // ── COUNTER STRIP ANIMATION ──
 (function(){
@@ -13871,7 +14098,7 @@ const SCREEN_META = {
 // Maps sidebar screen names → element IDs to show
 const SCREEN_MAP = {
   dashboard:   ['screen-dashboard'],
-  workouts:    ['tracker','tracker-workout-plan','workoutlog'],
+  workouts:    ['tracker','tracker-workout-plan','specialty-workouts','workoutlog'],
   nutrition:   ['mealplan','calculators'],
   toolbox:     ['calculator','bodyfat'],
   roadmap:     ['roadmap'],
@@ -13891,7 +14118,7 @@ const SCREEN_MAP = {
 
 // All element IDs managed by the screen system (hidden/shown by JS)
 const ALL_MANAGED_IDS = ['screen-dashboard','home','profile','plans','calculator',
-  'mealplan','roadmap','bodyfat','calculators','physio','tracker','tracker-workout-plan','workoutlog',
+  'mealplan','roadmap','bodyfat','calculators','physio','tracker','tracker-workout-plan','specialty-workouts','workoutlog',
   'arena','challenges','bloodreport','courses','store','dashboard','admin-panel','landing-footer','ayurveda-hub'];
 
 let currentScreen = 'dashboard';
@@ -16488,6 +16715,16 @@ tr:hover td { background: rgba(124,58,237,0.03) !important; }
 .achievement-title { color: #0F0A1A !important; }
 .achievement-label { color: #7C3AED !important; }
 .achievement-sub { color: #64748B !important; }
+
+/* ── SPECIALTY WORKOUTS — light theme overrides ── */
+.sp-tab { color: #374151 !important; background: #FFFFFF !important; border-color: rgba(124,58,237,0.2) !important; }
+.sp-tab.active { color: #fff !important; background: linear-gradient(135deg,#7C3AED,#6D28D9) !important; border-color: #7C3AED !important; }
+.sp-card { background: #FFFFFF !important; border-color: rgba(109,40,217,0.1) !important; color: #0F0A1A !important; }
+.sp-card-name { color: #0F0A1A !important; -webkit-text-fill-color: #0F0A1A !important; }
+.sp-banner-title { color: #0F0A1A !important; -webkit-text-fill-color: #0F0A1A !important; }
+.sp-banner-sub { color: #64748B !important; -webkit-text-fill-color: #64748B !important; }
+.sp-card-sets { color: #7C3AED !important; -webkit-text-fill-color: #7C3AED !important; }
+.sp-card-tip { color: #374151 !important; -webkit-text-fill-color: #374151 !important; }
 
 /* ── DASHBOARD UPGRADE NUDGE — force dark text on light card ── */
 #dash-upgrade-nudge {
