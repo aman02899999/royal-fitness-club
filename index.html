@@ -15129,12 +15129,350 @@ const AYUR_DB = {
   }
 };
 
+/* ── 20 NEW CONDITIONS ─────────────────────────────────── */
+Object.assign(AYUR_DB, {
+  obesity:{
+    name:'Obesity / Weight Loss',sanskrit:'Sthaulya',icon:'⚖️',dosha:'Kapha dominant',tag:'metabolic',color:'#F59E0B',
+    desc:'Sthaulya = excessive Meda Dhatu (fat tissue) accumulation. Kapha and Agni dysfunction are root causes. Ayurveda\'s Medohara (fat-reducing) therapy targets metabolism at a cellular level — not just calorie restriction.',
+    herbs:[
+      {name:'Triphala',latin:'Haritaki + Bibhitaki + Amla',dose:'3g powder with warm water at bedtime, 30 min before sleeping',benefit:'Master Kapha reducer. Improves digestion, reduces fat absorption, detoxifies lymph. Most studied Ayurvedic weight herb.'},
+      {name:'Guggul (Commiphora)',latin:'Commiphora wightii',dose:'500mg purified resin twice daily with warm water',benefit:'Guggulsterone activates thyroid function, boosts metabolism 15%. Mobilises stored fat directly.'},
+      {name:'Vijaysar',latin:'Pterocarpus marsupium',dose:'Water stored overnight in Vijaysar tumbler — drink every morning',benefit:'Reduces fat cell proliferation, improves insulin sensitivity, reduces food cravings significantly.'},
+      {name:'Punarnava',latin:'Boerhavia diffusa',dose:'500mg twice daily with warm water',benefit:'Diuretic and fat-metabolism herb. Reduces water retention and oedema. Reduces Kapha accumulation in tissues.'},
+      {name:'Garcinia (Vrikshamla)',latin:'Garcinia cambogia',dose:'500mg extract 30 min before meals twice daily',benefit:'HCA (hydroxycitric acid) blocks ATP-citrate lyase — blocks fat synthesis. Reduces appetite by raising serotonin.'}
+    ],
+    formulation:'Medohar Guggul (2 tabs twice daily) · Triphala Churna (3g bedtime) · Navaka Guggul · Punarnava Mandur · Varanadi Kwath (25ml before meals)',
+    diet_do:['Warm water with lemon + honey morning','Green tea (3 cups)','High fibre: oats, vegetables, legumes','Spices: black pepper, ginger, turmeric, cinnamon (all thermogenic)','Millets over rice/wheat','Small frequent meals','Moong dal soup','Barley water'],
+    diet_avoid:['Cold water and cold foods (slow Agni)','Dairy in excess','Sugar in all forms','Maida and white rice','Fried foods completely','Late night eating','Daytime sleeping (biggest Kapha aggravor)','Alcohol'],
+    lifestyle:['No daytime sleeping ever (worsens Kapha dramatically)','Walk 1 hour daily — minimum','Do not drink water immediately after meals (wait 30 min)','Eat only when truly hungry','Eat dinner before 7pm','Intermittent fasting 16:8'],
+    yoga:'Surya Namaskar (12-24 rounds daily) · Trikonasana · Navasana · Kapalbhati (20 min) · Bhastrika Pranayama · Utkatasana',
+    source:'Charaka Samhita Sthaulya Chikitsa · CCRAS Obesity Protocol · Guggulsterone Research (Journal of Obesity 2018)'
+  },
+  asthma:{
+    name:'Asthma / Respiratory',sanskrit:'Shwasa Roga / Tamaka Shwasa',icon:'🫁',dosha:'Kapha + Vata',tag:'respiratory',color:'#38BDF8',
+    desc:'Shwasa Roga = breathing disorder. Tamaka Shwasa = bronchial asthma specifically. Kapha blocks Pranavaha Srotas (respiratory channels). Vata causes bronchospasm. Ayurveda uses heat to liquefy and expel Kapha.',
+    herbs:[
+      {name:'Vasaka (Malabar Nut)',latin:'Adhatoda vasica',dose:'5ml fresh leaf juice with honey twice daily',benefit:'Vasicine and vasicinone — proven bronchodilators. Reduces bronchospasm. Expectorant. Anti-inflammatory.'},
+      {name:'Pippali (Long Pepper)',latin:'Piper longum',dose:'1g powder with honey twice daily',benefit:'Bronchodilator. Opens airway channels. Piperine improves drug bioavailability. Reduces Kapha in lungs.'},
+      {name:'Sitopaladi Churna',latin:'Sugar candy + Vamshalochana + Pippali + Cardamom + Cinnamon',dose:'3g with honey 3x daily',benefit:'Classic respiratory formula. Reduces cough, phlegm, congestion. Soothes irritated bronchi.'},
+      {name:'Tulsi (Holy Basil)',latin:'Ocimum sanctum',dose:'10 fresh leaves morning + tulsi tea twice daily',benefit:'Eugenol is a COX-2 inhibitor (like ibuprofen). Reduces bronchial inflammation. Antiviral protection.'},
+      {name:'Haridra (Turmeric)',latin:'Curcuma longa',dose:'1 tsp turmeric in warm milk with ghee at bedtime',benefit:'Curcumin reduces airway inflammation and IgE levels. Reduces allergic response in airways.'}
+    ],
+    formulation:'Sitopaladi Churna (3g with honey 3x daily) · Vasaka Avaleha (1 tbsp twice daily) · Chyawanprash (2 tsp morning) · Mahalakshmi Vilas Ras',
+    diet_do:['Warm water only','Tulsi tea (2-3 cups daily)','Turmeric milk at bedtime','Ginger + black pepper tea','Honey (1 tsp — natural bronchodilator)','Pomegranate','Figs (dried)','Warm soups'],
+    diet_avoid:['Dairy — especially cold milk and curd (forms mucus)','Bananas (Kapha-increasing)','Cold foods and drinks completely','Refined sugar (increases mucus)','Ice cream','Fried foods','Heavy grains: urad dal, rajma','Alcohol'],
+    lifestyle:['Steam inhalation with eucalyptus oil daily (loosens mucus)','Avoid cold wind and AC directly','Keep nasal passages clean — Jal Neti daily','Avoid strong chemical smells, perfumes','Mustard oil warm chest massage (Abhyanga on chest)','Identify and avoid allergen triggers'],
+    yoga:'Pranayama is the CURE: Anulom-Vilom (20 min) · Bhastrika · Kapalbhati (gentle, increasing) · Bhramari · Viloma Pranayama · Avoid Shavasana in cold rooms',
+    source:'Charaka Samhita Shwasa Chikitsa · Vasaka Vasicine Research (Journal of Ethnopharmacology) · Ministry of AYUSH Respiratory Protocol'
+  },
+  hair_loss:{
+    name:'Hair Loss / Thinning',sanskrit:'Khalitya / Indralupta',icon:'💇',dosha:'Pitta + Vata',tag:'skin',color:'#D97706',
+    desc:'Khalitya = hair fall. Pitta excess destroys hair follicles from heat. Vata dries the scalp. In Ayurveda, hair is a byproduct of bone (Asthi Dhatu) — poor bone health also causes hair loss.',
+    herbs:[
+      {name:'Bhringraj (False Daisy)',latin:'Eclipta prostrata',dose:'3g powder with warm water daily + Bhringraj oil massage 3x/week',benefit:'King of hair herbs. Stimulates follicle regrowth, reverses premature greying. Clinical study shows regrowth comparable to Minoxidil.'},
+      {name:'Amla (Indian Gooseberry)',latin:'Phyllanthus emblica',dose:'20ml fresh juice daily + amla oil applied to scalp',benefit:'Richest natural Vitamin C. Strengthens hair from the root. Potent antioxidant prevents follicle damage from DHT.'},
+      {name:'Ashwagandha',latin:'Withania somnifera',dose:'600mg KSM-66 daily (high cortisol = #1 cause of hair loss)',benefit:'Reduces cortisol 27.9%. Cortisol is the primary driver of stress-related hair loss (telogen effluvium).'},
+      {name:'Brahmi',latin:'Bacopa monnieri',dose:'300mg extract twice daily + Brahmi oil scalp massage',benefit:'Reduces scalp inflammation, nourishes hair follicles, increases blood flow to scalp dermis.'},
+      {name:'Methi (Fenugreek)',latin:'Trigonella foenum-graecum',dose:'Soak 2 tbsp methi seeds overnight, grind paste, apply to scalp for 45 min, twice weekly',benefit:'Protein and nicotinic acid rebuild hair structure. DHT-blocking properties. Reduces hair fall within 3 weeks.'}
+    ],
+    formulation:'Bhringrajasava (25ml twice daily with water) · Neelbhringadi Taila (scalp oil — daily application) · Trichup Hair Oil · Keshavardhak Vati',
+    diet_do:['Protein at every meal (hair is keratin protein)','Biotin foods: eggs, almonds, sweet potato','Iron: pomegranate, dates, drumstick leaves','Zinc: pumpkin seeds, hemp seeds','Omega-3: flaxseeds, walnuts','Amla daily (fresh or juice)','Copper foods: sesame, cashews','Silica: cucumber, oats'],
+    diet_avoid:['Sugar (feeds scalp fungus, raises DHT)','Alcohol (depletes zinc, biotin)','Crash diets (nutrient deficiency = hair loss)','Excess Vitamin A supplements (toxic level causes hair loss)','Processed junk food','Junk fats / trans fats'],
+    lifestyle:['Oil massage scalp 3x/week with warm Bhringraj or coconut oil — leave overnight','Never tie hair too tight (traction alopecia)','Use wide-tooth comb on wet hair only','Avoid chemical treatments','Wash every 2-3 days, not daily','Manage stress — biggest trigger'],
+    yoga:'Sirsasana (headstand — increased scalp blood flow) · Sarvangasana · Kapalbhati · Anulom-Vilom · Balayam (nail rubbing exercise — 5 min daily)',
+    source:'Charaka Samhita Khalitya Chapter · Bhringraj Clinical Study (Journal of Dermatology 2009) · CCRAS Hair Protocol'
+  },
+  kidney_stone:{
+    name:'Kidney Stones',sanskrit:'Mutrashmari',icon:'🫘',dosha:'Vata + Kapha',tag:'urinary',color:'#64748B',
+    desc:'Mutrashmari = urinary calculi. Vata causes dryness and crystallization. Kapha causes accumulation. Most common stones are calcium oxalate (80%). Ayurveda dissolves small stones and prevents recurrence.',
+    herbs:[
+      {name:'Varuna (Three-leaf Caper)',latin:'Crataeva nurvala',dose:'500mg bark extract twice daily with water',benefit:'Specific Ayurvedic herb for kidney stones. Reduces stone size, prevents new crystal formation, reduces UTI risk.'},
+      {name:'Punarnava',latin:'Boerhavia diffusa',dose:'500mg twice daily or 30ml decoction twice daily',benefit:'Potent diuretic. Increases urine volume and flow, flushing small stones. Reduces inflammation in urinary tract.'},
+      {name:'Pashanabheda (Saxifrage)',latin:'Bergenia ligulata',dose:'3g powder twice daily with water',benefit:'Pashana = stone, Bheda = breaks. Directly dissolves calcium oxalate stones. Traditional Ayurvedic lithotriptic.'},
+      {name:'Gokshura (Tribulus)',latin:'Tribulus terrestris',dose:'500mg extract twice daily',benefit:'Reduces urinary irritation, prevents stone formation, mild diuretic, anti-spasmodic for pain relief.'}
+    ],
+    formulation:'Gokshuradi Guggul (2 tabs twice daily) · Cystone (Himalaya — proven in RCT) · Punarnava Mandur · Chandraprabha Vati (3 tabs twice daily for pain)',
+    diet_do:['Water 3-4 litres daily (most important intervention)','Lemon juice in water (citrate prevents calcium stones)','Coconut water (natural diuretic)','Cranberry juice (prevents UTI)','Magnesium-rich foods (inhibits stone formation)','Barley water (daily)'],
+    diet_avoid:['Oxalate-rich (spinach, beets, chocolate, nuts — for calcium oxalate stones)','Excess animal protein (raises uric acid)','Salt in excess','Vitamin C supplements > 1000mg','Alcohol','Sugary drinks','Cold drinks'],
+    lifestyle:['Drink water even if not thirsty — set reminders every hour','Lemon water 3x daily','Stay cool — sweating concentrates urine','Never hold urine','Daily walk (vibration helps pass small stones)','Ultrasound + urine analysis every 6 months'],
+    yoga:'Ardha Matsyendrasana · Pavanamuktasana · Setu Bandhasana · Bhujangasana · Ustrasana · Anulom-Vilom',
+    source:'Ayurvedic Pharmacopoeia of India · Cystone RCT (Phytomedicine Journal) · CCRAS Urinary Protocol'
+  },
+  migraine:{
+    name:'Migraine / Headache',sanskrit:'Ardhavabhedaka / Shiro Roga',icon:'🤕',dosha:'Pitta + Vata',tag:'mind',color:'#8B5CF6',
+    desc:'Ardhavabhedaka = half-head pain (migraine). Pitta vitiates Rakta (blood) causing vascular inflammation. Vata causes neurological hypersensitivity. Ayurveda addresses both — vascular and neurological pathways.',
+    herbs:[
+      {name:'Shirashooladi Vajra Ras',latin:'Classical compound',dose:'2 tabs with warm water during attack',benefit:'Specific migraine formula. Reduces pain, nausea, photophobia within 20-30 minutes of acute attack.'},
+      {name:'Brahmi',latin:'Bacopa monnieri',dose:'300mg extract twice daily (preventive)',benefit:'Reduces neurological hypersensitivity. Serotonergic activity reduces migraine frequency in 12-week RCT.'},
+      {name:'Shatavari',latin:'Asparagus racemosus',dose:'500mg twice daily (especially for menstrual migraine)',benefit:'Reduces Pitta excess. Hormonal regulation reduces menstrual migraine triggers.'},
+      {name:'Lavender (Usheer)',latin:'Vetiveria zizanioides',dose:'Lavender oil 2 drops + coconut oil massage on temples and forehead',benefit:'Lavender oil inhalation clinically reduces migraine pain faster than oral medication in RCT.'}
+    ],
+    formulation:'Pathyadi Kwath (25ml twice daily — preventive) · Shirashooladi Vajra Ras (acute attack) · Godanti Mishran · Sarpagandha Ghan Vati',
+    diet_do:['Magnesium-rich: almonds, pumpkin seeds, dark chocolate (400mg/day prevents migraine)','Riboflavin (B2): eggs, dairy, almonds','Ginger tea (anti-inflammatory for blood vessels)','Stay very hydrated','Regular meal timings (blood sugar dips trigger migraine)','CoQ10 sources'],
+    diet_avoid:['Alcohol — especially red wine and beer (histamine + tyrosine triggers)','Aged cheese, deli meats (tyramine)','MSG (monosodium glutamate)','Artificial sweeteners (aspartame)','Caffeine (dependency and withdrawal trigger)','Chocolate (phenethylamine)','Skipping meals completely'],
+    lifestyle:['Dark quiet room during attack — immediately','Cold or warm pack on head (individual preference)','Sleep at fixed times — both sleep deprivation AND excess trigger migraine','Identify personal triggers (keep a diary)','Screen brightness reduction','Manage hormonal fluctuations'],
+    yoga:'Yoga Nidra (40 min — most effective preventive) · Shavasana · Anulom-Vilom (calms vascular system) · Sheetali Pranayama (cooling) · AVOID inverted poses during attack',
+    source:'Charaka Samhita Shiroroga Chapter · Migraine Magnesium Meta-Analysis (Neurology Journal) · CCRAS Headache Protocol'
+  },
+  low_immunity:{
+    name:'Low Immunity / Frequent Illness',sanskrit:'Ojas Kshaya / Vyadhi Kshsamatva',icon:'🛡️',dosha:'Vata dominant',tag:'immunity',color:'#059669',
+    desc:'Ojas = vital essence / life force — the master immunity substance in Ayurveda. Ojas Kshaya = depletion of immunity. Built through proper digestion, sleep, wholesome food and positive emotion. Rasayana (rejuvenation) therapy rebuilds Ojas.',
+    herbs:[
+      {name:'Ashwagandha',latin:'Withania somnifera',dose:'600mg KSM-66 daily',benefit:'Increases NK cell count, T-lymphocytes, WBC by 45% in 30-day study. Most evidence-backed immunomodulator.'},
+      {name:'Guduchi / Giloy',latin:'Tinospora cordifolia',dose:'500mg extract or 30ml fresh stem juice daily',benefit:'Amrut = nectar of immortality. Activates macrophages, increases interferon. Powerhouse immunomodulator.'},
+      {name:'Chyawanprash',latin:'41-herb compound (Amla base)',dose:'2 tsp with warm milk every morning — year-round',benefit:'Greatest Rasayana. Proven to increase NK cells, antibody production, T-cell count. Strongest immunity builder.'},
+      {name:'Tulsi (Holy Basil)',latin:'Ocimum sanctum',dose:'10 fresh leaves with honey every morning',benefit:'Antibacterial, antiviral, antifungal. Upregulates Th1 immune response. Reduces cortisol (immune suppressor).'},
+      {name:'Turmeric + Black Pepper',latin:'Curcuma longa + Piper nigrum',dose:'1 tsp turmeric + 1/4 tsp black pepper in warm milk daily',benefit:'Curcumin activates macrophages. Piperine increases bioavailability 2000%. Anti-viral and anti-bacterial.'}
+    ],
+    formulation:'Chyawanprash (2 tsp morning — most important) · Guduchi Ghana Vati (2 tabs twice daily) · Amalaki Rasayan · Brahma Rasayan',
+    diet_do:['Chyawanprash daily (non-negotiable)','Garlic (2 cloves raw morning)','Ginger tea daily','Turmeric milk','Citrus fruits (Vitamin C)','Zinc-rich: pumpkin seeds, hemp seeds','Probiotics: curd, fermented foods','Amla daily'],
+    diet_avoid:['Sugar (suppresses immune function for 5 hours after consumption)','Alcohol (destroys immune cells)','Processed foods','Trans fats','Chronic overeating','Cold water and cold food (reduces Agni)'],
+    lifestyle:['Sleep 7-8 hours fixed schedule (most critical for immune function)','Morning sunlight 20 min (Vitamin D)','Exercise 30-45 min daily (moderate — intense overtraining suppresses immunity)','Manage stress (cortisol is the #1 immune suppressant)','Socialise (social isolation reduces immunity measurably)'],
+    yoga:'Surya Namaskar (daily) · Bhujangasana · Sarvangasana · Kapalbhati (10 min) · Anulom-Vilom · Bhramari',
+    source:'Charaka Samhita Rasayana Adhyaya · Guduchi Immunomodulation Research · CSIR-NEIST Chyawanprash Studies'
+  },
+  constipation:{
+    name:'Constipation / Irregular Bowel',sanskrit:'Vibandha / Anaha',icon:'🌿',dosha:'Vata dominant',tag:'digestive',color:'#78716C',
+    desc:'Vibandha = obstruction of Apana Vata (downward energy). Vata dries out colon, reducing peristalsis. Regular elimination is the foundation of health in Ayurveda — "Shatam Vyadhi" (100 diseases from constipation).',
+    herbs:[
+      {name:'Haritaki (Chebulic Myrobalan)',latin:'Terminalia chebula',dose:'3g powder with warm water at bedtime',benefit:'King of Ayurvedic herbs. Gently stimulates peristalsis. Tones colon wall. Safe for lifelong use. Unlike laxatives — no dependency.'},
+      {name:'Triphala',latin:'Haritaki + Bibhitaki + Amla',dose:'3g with warm water at bedtime (adjust dose for effect)',benefit:'Gentle bowel tonic. Lubricates intestinal tract. Acts over 8-12 hours. Non-habit-forming natural laxative.'},
+      {name:'Castor Oil (Eranda)',latin:'Ricinus communis',dose:'2 tsp warm castor oil in warm milk at bedtime (for acute constipation)',benefit:'Strongest natural Vata-pacifying purgative. Works overnight. Clears colon completely. Specific for chronic Vata constipation.'},
+      {name:'Psyllium Husk (Isabgol)',latin:'Plantago ovata',dose:'2 tsp in 250ml warm water at bedtime',benefit:'Bulk-forming fibre. Hydrates stool. Moves gently through colon without cramping. IBS-C specific relief.'}
+    ],
+    formulation:'Triphala Churna (3g bedtime) · Abhayarishta (25ml after dinner) · Gandharvahastyadi Kwath · Castor oil (acute use)',
+    diet_do:['Water 3+ litres daily (most critical)','Fibre: flaxseeds, oats, vegetables','Papaya morning (papain enzyme)','Figs (dried, soaked overnight)','Prunes/dried plums','Ghee (1-2 tsp with meals)','Warm water morning (stimulates bowel)','Isabgol at bedtime'],
+    diet_avoid:['Refined carbs: maida, white rice','Banana (raw — constipating)','Red meat','Dairy in excess','Fried foods','Processed packaged food','Dehydrating drinks: alcohol, excess coffee','Low-fibre diet'],
+    lifestyle:['Wake at 6am and immediately drink 2 glasses warm water','Sit on toilet at same time daily (train the reflex)','Never suppress the urge — respond immediately','Squat position (Vyagrasana) — most natural posture for elimination','Exercise daily — sedentary lifestyle = constipation','Reduce stress (gut-brain axis)'],
+    yoga:'Pavanamuktasana (wind-relieving — essential) · Apanasana · Malasana (deep squat — best pose for constipation) · Ardha Matsyendrasana · Dhanurasana · Kapalbhati',
+    source:'Charaka Samhita Vibandha Chapter · Triphala Systematic Review (Journal of Alternative Medicine 2017)'
+  },
+  male_fertility:{
+    name:'Male Fertility & Sperm Health',sanskrit:'Shukra Vriddhi / Vajikarna',icon:'🌱',dosha:'Vata (+ Pitta depletion)',tag:'anabolic',color:'#10B981',
+    desc:'Shukra Dhatu (reproductive tissue) quality determines fertility. Vajikarna (virilisation branch of Ayurveda) has 200+ classical formulas for this. Modern parallels: sperm count, motility, morphology, DNA fragmentation.',
+    herbs:[
+      {name:'Shilajit',latin:'Asphaltum punjabianum',dose:'250mg purified Shilajit resin twice daily',benefit:'RCT: increases sperm count 61.4%, sperm motility 12.4-17.4%, total testosterone 23.5% in 90 days. Fulvic acid repairs mitochondria in sperm cells.'},
+      {name:'Ashwagandha KSM-66',latin:'Withania somnifera',dose:'600mg daily — morning',benefit:'RCT (Fertility & Sterility): sperm count +167%, sperm motility +57%, sperm volume +53%. LH +34%. Multiple RCTs confirmed.'},
+      {name:'Kaunch Beej (Velvet Bean)',latin:'Mucuna pruriens',dose:'5g defatted powder with warm milk twice daily',benefit:'L-DOPA precursor. Raises dopamine → LH → testosterone. Reduces DNA fragmentation in sperm by 38%. Increases sperm count.'},
+      {name:'Safed Musli',latin:'Chlorophytum borivilianum',dose:'5g root powder with warm milk twice daily',benefit:'Classic Vajikarna herb. Saponins increase testosterone and FSH. Improves sperm count and sexual stamina. No side effects.'},
+      {name:'Vidarikanda',latin:'Pueraria tuberosa',dose:'5g powder with warm milk twice daily',benefit:'Phytoandrogen. Stimulates Sertoli cells, increases sperm production. Builds Ojas and reproductive tissue.'}
+    ],
+    formulation:'Musli Pak (1-2 tbsp with warm milk daily) · Ashwagandha + Shilajit stack · Virilyam Capsule · Dhatupaushtik Churna (5g twice daily) · Vrihani Gutika',
+    diet_do:['Eggs (cholesterol = hormone precursor)','Zinc: oysters, beef, pumpkin seeds','Selenium: Brazil nuts (2/day)','Folate: leafy greens, lentils','Antioxidants: pomegranate, berries, lycopene (tomatoes)','Walnuts (omega-3 improve sperm morphology)','Ashwagandha milk at bedtime','Ghee daily'],
+    diet_avoid:['Alcohol (every unit reduces sperm quality)','Soy in excess (phytoestrogen)','Processed meats (preservatives damage DNA)','Trans fats (sperm membrane quality)','BPA plastics','Tight underwear heat (use cotton boxers)','Cannabis (reduces sperm count 50%)'],
+    lifestyle:['Testicle temperature must be 2°C below body — avoid hot baths, saunas, laptops on lap','Sleep 8 hours (testosterone + FSH peak during sleep)','Reduce EMF exposure (phone away from pocket)','Exercise moderately (very intense cycling damages sperm)','Abstain 2-3 days before fertility testing'],
+    yoga:'Sarvangasana · Halasana · Mula Bandha (root lock — Vajikarna practice) · Ashwini Mudra (50 reps daily) · Viparita Karani · Kapalbhati',
+    source:'Charaka Samhita Vajikarna Adhyaya · Mucuna pruriens Fertility Study (Fertility & Sterility 2008) · Shilajit Spermatogenesis RCT (Andrologia 2010)'
+  },
+  memory_brain:{
+    name:'Memory / Brain & Focus',sanskrit:'Medhya Rasayana',icon:'🧠',dosha:'Vata dominant',tag:'mind',color:'#6366F1',
+    desc:'Medhya = intellect. Rasayana = rejuvenation. The Medhya Rasayanas are 4 specific herbs proven to enhance intelligence, memory, and concentration. In modern terms — nootropics with thousands of years of clinical use.',
+    herbs:[
+      {name:'Brahmi (Bacopa)',latin:'Bacopa monnieri',dose:'300mg extract (45% Bacosides) twice daily with meals',benefit:'Reduces memory decay rate by 33%. RCT: improves free recall, retention, learning speed in 12 weeks. Stimulates dendritic branching.'},
+      {name:'Shankhapushpi',latin:'Convolvulus pluricaulis',dose:'5g powder with warm milk twice daily',benefit:'Classic Medhya Rasayana. Improves all 3 aspects of memory: acquisition, retention, recall. Calms anxiety that blocks learning.'},
+      {name:'Ashwagandha',latin:'Withania somnifera',dose:'600mg KSM-66 daily',benefit:'Stimulates neurite outgrowth (brain cell extension). Reduces cortisol (stress kills brain cells). Improves reaction time, attention.'},
+      {name:'Jatamansi',latin:'Nardostachys jatamansi',dose:'500mg twice daily',benefit:'Monoamine oxidase inhibitor. Protects brain from oxidative stress. Improves serotonin, dopamine, norepinephrine levels.'},
+      {name:'Saffron (Kesar)',latin:'Crocus sativus',dose:'30mg extract daily (15-20 threads in warm milk)',benefit:'RCT: improves memory comparable to Donepezil (Alzheimer\'s drug) in mild-moderate cognitive decline. Antidepressant. Neuroprotective.'}
+    ],
+    formulation:'Brahmi Ghrita (1 tsp with warm milk at bedtime) · Saraswat Churna (3g twice daily) · Manasamitra Vatakam · Saraswatarishta (25ml twice daily)',
+    diet_do:['Walnuts (omega-3 DHA for brain myelin)','Blueberries (anthocyanins cross blood-brain barrier)','Eggs (choline → acetylcholine = memory molecule)','Fatty fish (EPA/DHA)','Dark chocolate 85%+ (flavanols)','Turmeric milk (neuroprotective)','Saffron milk','Ghee (healthy brain fat)','Almonds soaked overnight'],
+    diet_avoid:['Sugar — neuroinflammatory; reduces BDNF (brain growth protein)','Trans fats (damage brain cell membranes)','Alcohol (kills neurons)','Artificial sweeteners (aspartame is neurotoxic)','Ultra-processed foods','Excess omega-6 oils (inflammatory)'],
+    lifestyle:['Sleep 8h — memory consolidation occurs during sleep (REM critical)','Learn something new daily (neuroplasticity)','Social interaction (keeps brain active)','Physical exercise (BDNF release = brain fertiliser)','Meditation 20 min daily (increases grey matter)','Read books','Cold showers (norepinephrine +300%)'],
+    yoga:'Yoga Nidra (memory consolidation) · Sarvangasana (increases brain blood flow) · Vrikshasana (balance = prefrontal cortex activation) · Nadi Shodhana · Bhramari (vagal nerve tone)',
+    source:'Charaka Samhita Medhya Rasayana Chapter · Bacopa monnieri Meta-Analysis (Journal of Psychopharmacology 2014) · Saffron Memory RCT (Psychopharmacology 2010)'
+  },
+  eczema_psoriasis:{
+    name:'Eczema / Psoriasis',sanskrit:'Vicharchika / Kushtha',icon:'🌡️',dosha:'Pitta + Vata',tag:'skin',color:'#EF4444',
+    desc:'Vicharchika (eczema) = Pitta-Kapha skin vitiation. Kustha (psoriasis) = Tridoshic skin disorder with Ama involvement. Ayurveda treats from inside-out — skin symptoms reflect internal toxicity in Rakta Dhatu.',
+    herbs:[
+      {name:'Neem',latin:'Azadirachta indica',dose:'400mg extract twice daily + neem water bathing + neem oil externally',benefit:'Nimbidin inhibits psoriasis-like skin proliferation. Antibacterial. Reduces itch, redness, scaling. Purifies blood.'},
+      {name:'Manjistha',latin:'Rubia cordifolia',dose:'500mg twice daily',benefit:'Premier blood purifier. Clears Pitta from Rakta dhatu. Reduces autoimmune skin inflammation. Anti-cancer at skin level.'},
+      {name:'Karanj Oil',latin:'Pongamia pinnata',dose:'Apply pure Karanj oil to affected areas twice daily',benefit:'Contains pongamol and karanjin — specifically effective for psoriatic plaques. Reduces scaling and itching rapidly.'},
+      {name:'Indigo (Neel)',latin:'Indigofera tinctoria',dose:'Apply indigo paste to psoriatic patches 2h before bath',benefit:'Indirubin in indigo clinically proven to reduce psoriasis PASI score by 81% in Chinese studies. Anti-proliferative.'}
+    ],
+    formulation:'Mahamanjisthadi Kwath (25ml twice daily) · Gandhak Rasayan (2 tabs twice daily) · Khadirarishta (25ml twice daily) · Arogyavardhini Vati',
+    diet_do:['Anti-inflammatory: turmeric, ginger, omega-3','Bitter vegetables: bitter gourd (blood cleansing)','Pomegranate and berries (antioxidants)','Triphala water (internal cleanser)','Coriander and cumin (cooling spices)','Coconut oil internally and externally'],
+    diet_avoid:['Nightshades: tomato, potato, bell pepper, eggplant (most common trigger)','Gluten (IgG reaction worsens autoimmune skin)','Dairy (inflammatory)','Alcohol (major psoriasis trigger — flares within 24h)','Sugar','Red meat','Citrus (Pitta-aggravating)'],
+    lifestyle:['Sun exposure 15-20 min daily (UV light is proven psoriasis treatment)','No hot showers — lukewarm water only','Moisturise immediately after bath','Avoid scratching (Koebner phenomenon)','Manage stress rigorously (flare correlation is very high)','Cotton clothing only'],
+    yoga:'Sheetali Pranayama (cooling breath — specific for Pitta skin) · Sitkari · Anulom-Vilom · Sarvangasana · Avoid hot Bikram yoga',
+    source:'Charaka Samhita Kushtha Chikitsa · Indigo Naturalis Psoriasis Study (JAMA Dermatology 2017) · CCRAS Skin Protocol'
+  },
+  sinusitis:{
+    name:'Sinusitis / Nasal Allergy',sanskrit:'Pratishyaya / Nasa Roga',icon:'👃',dosha:'Kapha + Vata',tag:'respiratory',color:'#06B6D4',
+    desc:'Pratishyaya = nasal catarrh/sinusitis. Kapha accumulates in nasal passages and sinuses. Vata causes dryness alternating with Kapha congestion. Nasya (nasal therapy) is Ayurveda\'s specific treatment.',
+    herbs:[
+      {name:'Anu Taila (Nasal Oil)',latin:'Sesame oil base + 26 herbs',dose:'2 drops in each nostril every morning after brushing (Nasya therapy)',benefit:'Classical Nasya oil. Lubricates nasal passages, removes Kapha, prevents recurrence of sinusitis. Reduces nasal polyps.'},
+      {name:'Tulsi',latin:'Ocimum sanctum',dose:'10 fresh leaves + 3 black peppercorns + 5 cloves — decoction 2x daily',benefit:'Antimicrobial, decongestant. Eugenol reduces nasal inflammation. Steam with tulsi leaves for immediate relief.'},
+      {name:'Trikatu Churna',latin:'Ginger + Piper longum + Black pepper',dose:'1g with honey twice daily',benefit:'Reduces nasal Kapha accumulation. Drying and heating effect clears sinuses. Enhances immunity.'},
+      {name:'Haridra (Turmeric)',latin:'Curcuma longa',dose:'Warm turmeric milk at bedtime + steam inhalation with turmeric',benefit:'Curcumin reduces nasal polyp growth. Anti-inflammatory for sinus membranes. Antibacterial for secondary infections.'}
+    ],
+    formulation:'Sitopaladi Churna + honey (nasal health) · Shadangapaniya Kwath · Mahalakshmi Vilas Ras · Tribhuvankirti Ras (acute sinusitis)',
+    diet_do:['Warm water and warm foods only','Ginger-tulsi-black pepper tea (3x daily during flare)','Turmeric milk at night','Garlic (raw, morning)','Fenugreek tea','Pineapple (bromelain reduces sinus inflammation)','Steam inhalation twice daily'],
+    diet_avoid:['Dairy completely (classic Kapha-forming mucus producer)','Refined sugar (feeds nasal bacteria)','Cold water and cold foods','Bananas (Kapha-increasing)','White rice','Fermented foods (histamine)','Alcohol'],
+    lifestyle:['Jal Neti daily (saline nasal rinse — most powerful evidence-based intervention)','Nasya (nasal oil) every morning','Avoid AC directly on face','Humidify dry indoor air','Steam inhalation with eucalyptus twice daily','Identify allergic triggers (dust, pollen, mold)'],
+    yoga:'Kapalbhati (primary — clears nasal passages mechanically) · Anulom-Vilom · Bhastrika · Jal Neti before yoga · Sutra Neti',
+    source:'Sushruta Samhita Nasa Roga · Jal Neti RCT (Laryngoscope Journal) · CCRAS ENT Protocol'
+  },
+  back_pain:{
+    name:'Back Pain / Sciatica',sanskrit:'Kati Shoola / Gridhrasi',icon:'🦴',dosha:'Vata dominant',tag:'joints',color:'#F97316',
+    desc:'Kati Shoola = lumbar pain. Gridhrasi = sciatica (shooting pain down leg like an eagle\'s grip). Vata aggravation in Kati (waist region). Most common musculoskeletal condition. Ayurveda focuses on Vata pacification and Snehan (oil therapy).',
+    herbs:[
+      {name:'Nirgundi (Five-leaved Chaste)',latin:'Vitex negundo',dose:'500mg extract twice daily + Nirgundi oil warm massage on back',benefit:'Best analgesic and anti-inflammatory for musculoskeletal pain. Penetrates deep tissues. Reduces nerve compression.'},
+      {name:'Shallaki (Boswellia)',latin:'Boswellia serrata',dose:'400mg AKBA extract 3x daily with meals',benefit:'5-LOX inhibitor. More effective than NSAIDs for back pain with zero gut damage. Reduces disc inflammation.'},
+      {name:'Castor Oil (Eranda)',latin:'Ricinus communis',dose:'1 tsp at bedtime with warm milk (Vata-pacifying purgative) + castor oil hot pack on back',benefit:'Ricinoleic acid penetrates deep tissue. Castor oil pack on lower back for 60 min reduces inflammation dramatically.'},
+      {name:'Yogaraj Guggul',latin:'Compound — Guggul + 27 herbs',dose:'2 tablets twice daily with warm water',benefit:'Primary Ayurvedic formula for Vata musculoskeletal disorders. Reduces back pain, improves mobility in 4-week RCT.'}
+    ],
+    formulation:'Yogaraj Guggul (2 tabs twice daily — primary) · Mahanarayana Taila (daily warm back massage) · Dashamula Kwath (Vata Nashak) · Kshirabala Taila (for sciatica)',
+    diet_do:['Warm, oily foods (Vata-pacifying)','Sesame seeds and sesame oil','Ghee with meals','Warm milk with turmeric','Castor oil (bedtime dose)','Anti-inflammatory spices: ginger, turmeric','Omega-3: flaxseeds, fish'],
+    diet_avoid:['Cold and raw foods (worsen Vata)','Peas and beans (gas → Vata aggravation)','Cabbage and broccoli','Alcohol','Carbonated drinks','Excess caffeine','Nightshades (tomato, potato in excess)'],
+    lifestyle:['Warm sesame oil back massage daily (20 min) — most effective Ayurvedic treatment','Sleep on firm mattress with pillow under knees','Avoid prolonged sitting — stand or walk every 30 min','Hot water bag on back 30 min morning and evening','Castor oil pack 3x/week','Core strengthening exercise (most important prevention)'],
+    yoga:'Balasana (Child pose — immediate relief) · Bhujangasana (Cobra) · Setu Bandha · Supta Matsyendrasana · Cat-Cow (Marjaryasana-Bitilasana) — AVOID: forward bends with sciatica',
+    source:'Sushruta Samhita Vatavyadhi Chapter · Boswellia Back Pain RCT (Phytomedicine 2011) · CCRAS Kati Shoola Protocol'
+  },
+  depression:{
+    name:'Depression / Low Mood',sanskrit:'Vishada / Avasada',icon:'🌅',dosha:'Vata + Kapha',tag:'mind',color:'#7C3AED',
+    desc:'Vishada = sadness, despair. Vata causes anxiety and emptiness; Kapha causes heaviness, lethargy and hopelessness. Ayurveda does not separate mind and body — depression is treated as a whole-person condition.',
+    herbs:[
+      {name:'Ashwagandha',latin:'Withania somnifera',dose:'600mg at bedtime',benefit:'Reduces cortisol 27.9%. RCT: reduces depression by 77% in chronic stressed adults. Improves GABA and serotonin.'},
+      {name:'Saffron (Kesar)',latin:'Crocus sativus',dose:'30mg standardised extract daily (15-20 threads in warm milk)',benefit:'RCT meta-analysis (2019): as effective as antidepressant medication for mild-moderate depression. Increases serotonin and dopamine.'},
+      {name:'Brahmi',latin:'Bacopa monnieri',dose:'300mg twice daily',benefit:'Reduces anxiety and depression via serotonin-5HT(3) receptor modulation. Reduces cortisol. Improves mood scores in 12 weeks.'},
+      {name:'Shankhapushpi',latin:'Convolvulus pluricaulis',dose:'5g powder with warm milk twice daily',benefit:'MAOI-like effect. Increases GABA. Reduces Vata agitation. Specific for Vata-type depression with anxiety overlay.'}
+    ],
+    formulation:'Manasamitra Vatakam (2 tabs twice daily) · Saraswatarishta (25ml twice daily) · Brahmi Ghrita · Ashwagandha + Saffron stack',
+    diet_do:['Saffron milk (daily antidepressant)','Omega-3 (fish oil or flaxseed — brain anti-inflammatory)','Fermented foods (gut microbiome = mood maker)','Dark chocolate 85% (phenethylamine + anandamide)','Turmeric (crosses blood-brain barrier)','Banana (tryptophan → serotonin)','Walnuts','Eggs (choline)'],
+    diet_avoid:['Alcohol (depressant — worsens depression always)','Sugar (blood sugar crash → mood crash)','Processed foods (inflammatory — reduces serotonin)','Caffeine excess (anxiety → depression cycle)','Excessive alone time','Skipping meals'],
+    lifestyle:['Physical exercise 30 min — single most powerful antidepressant known (equals medication)','Morning sunlight 20 min (serotonin synthesis)','Social connection daily — isolation amplifies depression 3x','Purpose-driven activity','Journaling','Cold shower (norepinephrine +300%)','Nature walks'],
+    yoga:'Surya Namaskar (most important — Kapha-reducing, energising) · Bhujangasana · Ustrasana · Kapalbhati · Bhastrika · Yoga Nidra (sleep regulation)',
+    source:'Charaka Samhita Manas Roga · Saffron Meta-Analysis (Human Psychopharmacology 2019) · Ashwagandha Depression RCT (Medicine 2019)'
+  },
+  female_fertility:{
+    name:'Female Fertility / Hormonal Balance',sanskrit:'Vandhyatva / Artava Shodhana',icon:'🌺',dosha:'Vata + Kapha',tag:'hormonal',color:'#F472B6',
+    desc:'Vandhyatva = infertility. Artava Vaha Srotas (reproductive channels) must be nourished and clear. Unlike PCOS which is a specific condition, this covers general female fertility, cycle regulation and reproductive tissue nourishment.',
+    herbs:[
+      {name:'Shatavari',latin:'Asparagus racemosus',dose:'500mg powder with warm milk twice daily',benefit:'Queen of female herbs. Nourishes Artava (menstrual tissue), improves follicular maturity, cervical mucus quality. Phytoestrogenic.'},
+      {name:'Ashoka (Saraca)',latin:'Saraca asoca',dose:'3g bark powder twice daily with warm water (especially in first half of cycle)',benefit:'Most important uterine tonic. Stimulates endometrial growth, regulates menstrual cycle, reduces pain, treats fibroids.'},
+      {name:'Dashamoola',latin:'10 roots compound',dose:'Dashamula Kwath 30ml twice daily',benefit:'Vata-pacifying for reproductive system. Regulates Apana Vata (downward energy governing reproduction). Reduces endometriosis pain.'},
+      {name:'Lodhra',latin:'Symplocos racemosa',dose:'3g powder twice daily',benefit:'Reduces excess Kapha in reproductive organs. Regulates FSH/LH ratio. Reduces ovarian cysts. Improves uterine health.'}
+    ],
+    formulation:'Shatavari Kalpa (twice daily — primary) · Ashokarishta (25ml twice daily) · Phalaghrita (1 tsp twice daily with milk) · Pushyanug Churna',
+    diet_do:['Sesame seeds (highest plant phytoestrogen)','Flaxseeds (lignans — hormonal regulation)','Pomegranate (uterine blood flow)','Iron-rich foods (reproductive health)','Vitamin E: almonds, sunflower seeds','Folic acid: leafy greens, lentils','Shatavari milk daily','Ghee (reproductive tissue nourishment)'],
+    diet_avoid:['Trans fats (disrupt ovulation)','Processed foods','Excess soy (phytoestrogen overload)','Alcohol (reduces fertility 50%)','Caffeine > 200mg (reduces conception)','Plastics (BPA = xenoestrogen)','Pesticide-heavy produce (endocrine disruptors)'],
+    lifestyle:['Track basal body temperature (BBT) + LH surge','BMI 20-25 (both over and underweight reduce fertility)','Avoid extreme exercise','Reduce environmental toxin exposure','Folic acid 400mcg from preconception','Stress management — cortisol disrupts ovulation'],
+    yoga:'Baddha Konasana · Supta Baddha Konasana · Viparita Karani (legs up — after timed intercourse) · Malasana · Nadi Shodhana · Yoga Nidra',
+    source:'Charaka Samhita Artava Chapter · Ashoka Tree Uterotonic Research · Ministry of AYUSH Female Health Protocol'
+  },
+  muscle_building:{
+    name:'Muscle Building (Anabolic)',sanskrit:'Brimhana Chikitsa / Mamsa Vriddhi',icon:'💪',dosha:'Vata deficiency (Kapha needed)',tag:'anabolic',color:'#7C3AED',
+    desc:'🏆 ANABOLIC AYURVEDA — Brimhana = nourishing/bulk-building therapy. Mamsa Dhatu (muscle tissue) is the 3rd Dhatu. Builds through quality protein, Anabolic Rasayanas and targeted strength training. Ayurveda had pre-workout and post-workout protocols.',
+    herbs:[
+      {name:'Ashwagandha KSM-66',latin:'Withania somnifera',dose:'600mg 30-45 min before workout',benefit:'RCT (JISSN 2015): increases bench press strength 20%, squat 25%, muscle size significantly vs placebo. Best sport supplement evidence.'},
+      {name:'Safed Musli',latin:'Chlorophytum borivilianum',dose:'5g with warm milk post-workout',benefit:'Anabolic adaptogen. Reduces post-workout cortisol, improves recovery, increases muscle protein synthesis. The Ayurvedic creatine.'},
+      {name:'Shatavari',latin:'Asparagus racemosus',dose:'500mg twice daily (anti-catabolic)',benefit:'Steroidal saponins — anti-catabolic. Reduces muscle breakdown during caloric deficit. Improves IGF-1 production.'},
+      {name:'Bala (Country Mallow)',latin:'Sida cordifolia',dose:'5g powder with warm milk twice daily',benefit:'Bala = strength. Ephedrine alkaloids improve neuromuscular coordination. Increases stamina and physical endurance.'},
+      {name:'Vidarikanda (Wild Kudzu)',latin:'Pueraria tuberosa',dose:'5g powder with warm milk twice daily',benefit:'Powerful anabolic Rasayana. Increases muscle mass, reduces fat mass. Phytoandrogen — stimulates anabolic pathways.'}
+    ],
+    formulation:'🏆 ANABOLIC STACK: Ashwagandha KSM-66 (pre-workout) + Safed Musli (post-workout) + Shatavari (daily) · Musli Pak (1-2 tbsp daily) · Ashwagandha Pak · Kushmanda Avaleha',
+    diet_do:['Protein 1.6-2.2g per kg bodyweight','Ghee 1-2 tbsp daily (anabolic saturated fat)','Whole milk 500ml daily','Eggs 6-8 daily','Chicken/mutton (non-veg) — highest quality protein','Banana + milk (post-workout)','Dates (pre-workout quick energy)','Almonds (10-12 daily)','Urad dal + ghee (traditional mass gainer)'],
+    diet_avoid:['Excessive alcohol (anti-anabolic, breaks muscle protein)','Low calorie dieting during bulk phase','Low-fat diet (need fat for testosterone)','Excess cardio when bulking','BPA plastics (anti-anabolic xenoestrogen)','Extreme soy (phytoestrogen reduces T)'],
+    lifestyle:['Progressive overload: increase weight/reps every week (primary stimulus)','Sleep 8-9 hours (90% muscle repair during deep sleep)','Train each muscle 2x/week','Post-workout window: protein + carbs within 30 min','Rest days are where you actually grow','Creatine monohydrate 5g daily (most evidence-backed supplement ever studied)'],
+    yoga:'Post-workout: Yin yoga / stretching — Pigeon pose, Downward dog, Seated forward bend · Surya Namaskar as warm-up · Yoga Nidra for recovery',
+    source:'Charaka Samhita Brimhana Adhyaya · Ashwagandha Strength RCT (JISSN 2015) · Safed Musli Anabolic Research'
+  },
+  liver_detox:{
+    name:'Liver Detox / Cleanse',sanskrit:'Yakrit Shodhana',icon:'🍃',dosha:'Pitta dominant',tag:'metabolic',color:'#22C55E',
+    desc:'Yakrit (liver) processes all nutrition, detoxifies blood, produces bile and regulates metabolism. Ayurvedic liver detox is not a 3-day juice cleanse — it\'s a systematic 21-90 day protocol that regenerates hepatocytes.',
+    herbs:[
+      {name:'Katuki (Kutki)',latin:'Picrorhiza kurroa',dose:'250mg powder with honey twice daily',benefit:'Most potent hepatoprotective in Ayurveda. Picrosides I & II regenerate liver cells, improve bile flow, reduce liver enzymes.'},
+      {name:'Bhumyamalaki',latin:'Phyllanthus niruri',dose:'500mg twice daily',benefit:'Phyllanthin inhibits hepatitis viruses. Reduces ALT, AST. Reverses fatty infiltration. Traditional "stone breaker" for liver.'},
+      {name:'Dandelion Root (Dugdhafeena)',latin:'Taraxacum officinale',dose:'5g dried root tea twice daily',benefit:'Diuretic, cholagogue (increases bile). Reduces liver congestion. Antioxidant protection. Widely used in both Ayurveda and Western herbalism.'},
+      {name:'Rohu/Milk Thistle (Silymarin)',latin:'Silybum marianum',dose:'200mg silymarin extract 3x daily',benefit:'Silymarin is the gold standard liver herb in both systems. Stimulates liver protein synthesis, antioxidant, anti-fibrotic.'}
+    ],
+    formulation:'Arogyavardhini Vati (2 tabs twice daily) · Kumariasava (25ml after meals) · Bhumyamalaki Churna · Punarnava Mandur · Liv.52 / Livercare (Himalaya)',
+    diet_do:['Lemon water (morning — bile stimulation)','Beetroot juice (daily — glutathione booster)','Cruciferous vegetables (DIM — liver detox enzyme)','Green tea (catechins liver-protective)','Amla juice','Walnuts (glutathione + omega-3)','Coffee (2 cups — proven hepatoprotective in 9 studies)','Turmeric'],
+    diet_avoid:['Alcohol — zero tolerance during liver detox','Fried foods (toxic lipid peroxides)','Acetaminophen/Paracetamol (hepatotoxic)','Red meat in excess','Refined sugar and high fructose corn syrup','Processed packaged food','Artificial food colours'],
+    lifestyle:['21-day liver cleanse protocol: no alcohol, no fried, no processed','Exercise 30+ min daily (increases glutathione production)','Dry brushing skin (supports lymph drainage)','Castor oil pack on liver area (right side) 3x/week (60 min)','Coffee enema (if supervised)','Test liver enzymes before and after protocol'],
+    yoga:'Twisting poses specifically: Ardha Matsyendrasana · Parivrtta Trikonasana · Parivrtta Janu Sirsasana · Dhanurasana · Kapalbhati',
+    source:'CCRAS Liver Detox Protocol · Phyllanthus niruri Meta-Analysis · Silymarin Systematic Review (Journal of Hepatology)'
+  },
+  heart_health:{
+    name:'Heart Health & Cardio',sanskrit:'Hridroga Chikitsa / Hridbala',icon:'❤️',dosha:'Pitta + Vata',tag:'cardiac',color:'#DC2626',
+    desc:'Hridaya (heart) is the seat of consciousness in Ayurveda — the most important organ. Hridbala = heart strengthening. Ayurveda offers 5000-year-old cardio protocol that modern medicine is now validating.',
+    herbs:[
+      {name:'Arjuna (Terminalia)',latin:'Terminalia arjuna',dose:'500mg bark powder with warm milk twice daily',benefit:'Glycosides + tannins. Reduces LDL 25%, triglycerides 39%. Improves ejection fraction. Reduces angina episodes by 50% in RCT.'},
+      {name:'Pushkarmool (Elecampane)',latin:'Inula racemosa',dose:'3g powder twice daily with honey',benefit:'Coronary vasodilator — relaxes and dilates coronary arteries. Reduces cardiac Pitta. Used for angina and palpitations.'},
+      {name:'Lashuna (Garlic)',latin:'Allium sativum',dose:'3-5 raw cloves every morning, or 600-1200mg allicin supplement',benefit:'Reduces LDL 10-15%, BP 7-11 mmHg systolic, clot risk (anti-platelet). The most studied cardiovascular herb globally.'},
+      {name:'Hawthorn (Vrikshamla related)',latin:'Crataegus oxyacantha',dose:'300mg extract 3x daily',benefit:'Improves coronary blood flow, reduces cardiac workload, improves heart failure symptoms. Centuries of European and Ayurvedic use.'}
+    ],
+    formulation:'Hridayarnava Rasa · Arjunarishta (25ml twice daily — primary) · Prabhakara Vati (cardiac tonic) · Pushkarmoolasava',
+    diet_do:['Mediterranean diet (best evidence for heart)','Omega-3: fatty fish, flaxseed, walnuts','Olive oil (replace refined oil)','Garlic (raw, daily)','Beetroot juice (increases nitric oxide)','Pomegranate (reduces arterial plaque)','Dark leafy greens (nitrates)','Dark chocolate 70%+','Oats (beta-glucan)'],
+    diet_avoid:['Trans fats completely (destroy HDL, raise LDL)','Salt > 5g/day','Refined sugar','Red and processed meat','Alcohol excess','Fried foods','Commercial baked goods'],
+    lifestyle:['Exercise 150 min/week minimum (walking is ideal)','Never smoke (doubles heart attack risk)','Manage stress (emotional heart disease is real)','Heart rate monitoring','Know your numbers: BP, LDL, HDL, triglycerides, HbA1c','Sleep 7-8 hours (poor sleep = 2x heart disease risk)'],
+    yoga:'Shavasana (reduces BP and heart rate) · Setu Bandha · Viparita Karani · Anulom-Vilom (20 min) · Bhramari · AVOID strenuous exercise without cardiac clearance',
+    source:'Charaka Samhita Hridroga Chapter · Arjuna RCT (Journal of Alternative Medicine 2009) · Garlic Meta-Analysis (Cochrane Review)'
+  },
+  premature_aging:{
+    name:'Anti-Aging / Longevity',sanskrit:'Jara Vyadhi / Vayasthapana Rasayana',icon:'⏳',dosha:'Vata (increases with age)',tag:'immunity',color:'#8B5CF6',
+    desc:'Jara = aging. The Rasayana Adhyaya (rejuvenation chapter) of Charaka Samhita is entirely dedicated to preventing premature aging and achieving long, quality life. Rasayana = that which replenishes all tissues and delays aging.',
+    herbs:[
+      {name:'Amla (Indian Gooseberry)',latin:'Phyllanthus emblica',dose:'20ml fresh juice daily or 1g dried powder daily',benefit:'Highest ORAC (antioxidant) score of any natural food. Protects telomere length. Inhibits NF-kB aging pathway. Most important Rasayana.'},
+      {name:'Ashwagandha',latin:'Withania somnifera',dose:'600mg KSM-66 daily',benefit:'Increases DHEA (anti-aging hormone). Reduces cortisol (accelerates aging). Protects telomere length. Improves VO2max.'},
+      {name:'Shatavari',latin:'Asparagus racemosus',dose:'500mg twice daily',benefit:'Phytoestrogens delay menopause-related aging. Antioxidant. Supports all 7 Dhatus (tissues) in women and men.'},
+      {name:'Brahmi',latin:'Bacopa monnieri',dose:'300mg twice daily',benefit:'Neuroprotective — prevents age-related cognitive decline. Increases BDNF (brain growth factor). Telomere protective.'},
+      {name:'Guduchi (Amrut)',latin:'Tinospora cordifolia',dose:'500mg extract or 30ml fresh juice daily',benefit:'Amrut = nectar of immortality. Immunomodulator. Reduces oxidative stress. Used in all classical Rasayana protocols.'}
+    ],
+    formulation:'Chyawanprash (primary — 2 tsp daily) · Brahma Rasayan · Amalaki Rasayan · Narasimha Rasayan · Shatavari Kalpa',
+    diet_do:['Amla daily (most important anti-aging food)','Ashwagandha milk at night','Pomegranate (punicalagins reduce arterial aging)','Blueberries (anthocyanins protect DNA)','Green tea (EGCG extends lifespan in multiple studies)','Turmeric (anti-glycation)','Intermittent fasting (activates autophagy)','Caloric restriction (proven longevity)'],
+    diet_avoid:['Processed foods (AGEs = Advanced Glycation End-products accelerate aging)','Sugar (glycates proteins — skin and organs age faster)','Alcohol (depletes NAD+, the longevity molecule)','Trans fats','Overeating (mTOR activation promotes aging)','Factory-farmed meat (inflammatory)'],
+    lifestyle:['Intermittent fasting 16:8 or 5:2 (activates autophagy — cellular cleaning)','Exercise of all types (most proven longevity intervention)','Cold exposure (cold showers or ice bath — mitohormesis)','Strong social connections (increases longevity 50%)','Purpose and meaning (Blue Zone research)','Sleep 7-8h (growth hormone released in deep sleep)'],
+    yoga:'ALL yoga is anti-aging — emphasis on: Sarvangasana (thyroid, pituitary) · Surya Namaskar · Pranayama daily · Inversions (increase blood to brain) · Yoga Nidra',
+    source:'Charaka Samhita Rasayana Adhyaya · Amla ORAC Studies · Ashwagandha Telomere Research (Journal of Gerontology 2020)'
+  },
+  dental_oral:{
+    name:'Oral Health / Dental',sanskrit:'Danta Swasthya / Mukha Roga',icon:'🦷',dosha:'Pitta + Kapha',tag:'digestive',color:'#10B981',
+    desc:'Mukha (mouth) is the gateway to health. Poor oral health is linked to heart disease, diabetes, preterm birth. Ayurveda had a complete oral health system (Dantadhavana = teeth cleaning, Kavala = oil pulling) described 5000 years ago.',
+    herbs:[
+      {name:'Neem Datun (Neem Twig)',latin:'Azadirachta indica',dose:'Chew fresh neem twig daily as toothbrush OR neem toothpaste twice daily',benefit:'Nimbidin — antibacterial against Streptococcus mutans (decay bacteria) and Porphyromonas gingivalis (gum disease). Equal to chlorhexidine mouthwash in RCT.'},
+      {name:'Oil Pulling (Sesame Oil)',latin:'Sesame oil',dose:'1 tbsp sesame oil swished for 15-20 min every morning on empty stomach',benefit:'Kavala graha. Reduces plaque 18%, gingivitis, Streptococcus mutans by 60%. Whitens teeth. Reduces sensitivity.'},
+      {name:'Triphala Mouthwash',latin:'Haritaki + Bibhitaki + Amla',dose:'1g Triphala in 100ml warm water as mouthwash after brushing',benefit:'As effective as chlorhexidine for plaque and gingival index. Antioxidant. Heals gum inflammation.'},
+      {name:'Clove (Lavanga)',latin:'Syzygium aromaticum',dose:'Clove oil (1 drop on cotton) on aching tooth OR chew 1-2 cloves after meals',benefit:'Eugenol — natural dental anaesthetic used in modern dentistry. Antibacterial. Reduces toothache and gum inflammation.'}
+    ],
+    formulation:'Oil Pulling with sesame oil (daily) · Neem toothpaste · Triphala mouthwash · Dashana Sanskara Churna (Ayurvedic tooth powder)',
+    diet_do:['Green tea (catechins reduce oral bacteria)','Cheese (neutralises acid, provides calcium)','Apples (natural scrubbing)','Celery and carrots (natural tooth cleaners)','Water after every meal','Calcium-rich foods','Vitamin K2 (dental calcification)','Sesame seeds (sesaminol protects enamel)'],
+    diet_avoid:['Sugary foods and drinks (feeds Streptococcus mutans)','Citric acid (erodes enamel: lemon juice, vinegar)','Sticky foods: toffee, dry fruits stuck in teeth','Carbonated drinks (acid erosion)','Tobacco and pan masala completely','Alcohol (dry mouth → bacterial overgrowth)'],
+    lifestyle:['Oil pulling 15-20 min every morning before brushing','Brush twice daily with soft bristle','Tongue scraping (Jihva Nirlekhana) every morning','Floss daily','Never breathe through mouth','6-monthly dental checkup'],
+    yoga:'Simhasana (lion pose — full tongue extension cleans oral bacteria) · Khechari Mudra · Kapalbhati (oral circulation)',
+    source:'Charaka Samhita Mukha Roga Chapter · Oil Pulling RCT (Journal of Indian Society of Pedodontics) · Neem vs Chlorhexidine Study'
+  },
+  libido:{
+    name:'Libido / Sexual Vitality',sanskrit:'Vajikarna / Kama Shakti',icon:'🔥',dosha:'Vata (Shukra depletion)',tag:'anabolic',color:'#EC4899',
+    desc:'🏆 ANABOLIC AYURVEDA — Vajikarna is one of the 8 branches of Ayurveda dedicated entirely to sexual medicine. Kama Shakti (sexual energy) = creative life force. Libido is a vital sign — low libido = low Ojas = systemic decline.',
+    herbs:[
+      {name:'Kapikacchu (Kaunch Beej)',latin:'Mucuna pruriens',dose:'5g powder with warm milk twice daily',benefit:'L-DOPA → dopamine (desire/motivation hormone). Raises testosterone. RCT: improves sexual desire, arousal, performance in both men and women.'},
+      {name:'Ashwagandha',latin:'Withania somnifera',dose:'600mg KSM-66 at bedtime',benefit:'RCT (2015): 300mg twice daily improved FSFI (female sexual function) scores in all domains — desire, arousal, lubrication, orgasm, satisfaction.'},
+      {name:'Shatavari',latin:'Asparagus racemosus',dose:'500mg powder with warm milk twice daily',benefit:'Female aphrodisiac. Increases vaginal lubrication, improves hormonal balance, reduces stress-induced libido loss in women.'},
+      {name:'Akarkara (Pellitory)',latin:'Anacyclus pyrethrum',dose:'3g powder with warm milk twice daily',benefit:'Classic Vajikarna herb. Increases nitric oxide synthesis (like Viagra mechanism). Improves sensitivity and arousal in both sexes.'},
+      {name:'Clove + Saffron + Nutmeg',latin:'Classical Vajikarna spice trio',dose:'Warm milk with saffron + nutmeg + cardamom at bedtime',benefit:'Classical bedtime Vajikarna tonic. Increases warmth, circulation, libido. Saffron raises dopamine; nutmeg is a mild aphrodisiac.'}
+    ],
+    formulation:'Shatavari Kalpa + warm milk (daily) · Kaunch Pak (1 tbsp morning) · Chandraprabha Vati (2 tabs twice daily) · Vangeshwar Ras · Makardhwaj',
+    diet_do:['Ashwagandha milk with saffron + nutmeg at bedtime','Pomegranate (increases testosterone + nitric oxide)','Figs (ancient aphrodisiac — zinc + amino acids)','Dark chocolate (phenethylamine = love molecule + anandamide)','Watermelon (citrulline → arginine → nitric oxide)','Almonds (zinc, E, selenium)','Avocado (B6, heart health)','Oysters (highest zinc — testosterone building)'],
+    diet_avoid:['Alcohol in excess (numbs sensitivity, reduces testosterone)','Soy protein isolate (excess phytoestrogen)','Sugar (reduces testosterone, inflammation)','Processed foods','BPA plastics','Chronic stress (cortisol is anti-libido)','Pornography addiction (dopamine desensitisation)'],
+    lifestyle:['Prioritise sleep — exhaustion = 0 libido','Manage relationship stress (intimacy kills libido more than any physical cause)','Exercise regularly (improves body image, circulation, testosterone)','Stress management — #1 cause of low libido in women','Morning sunlight (testosterone peaks in morning)','Cold showers (testosterone)'],
+    yoga:'Ashwini Mudra (50 reps daily — pelvic floor strengthening) · Mula Bandha · Baddha Konasana · Supta Baddha Konasana · Bhujangasana · Viparita Karani · Vajrasana',
+    source:'Charaka Samhita Vajikarna Adhyaya · Ashwagandha Female Sexual Function RCT (BioMed Research International 2015) · Mucuna pruriens Aphrodisiac Review'
+  }
+});
+
 /* Dosha tag map for filtering */
 const AYUR_DOSHA_MAP = {
   diabetic:'kapha', insulin_resistance:'kapha', fatty_liver:'pitta', cholesterol:'kapha',
   uric_acid:'vata', hypertension:'pitta', pcos:'kapha', thyroid:'kapha',
   low_t:'anabolic', ibs:'vata', acid_reflux:'pitta', anemia:'pitta',
-  vitamin_d:'vata', osteoporosis:'vata', skin_acne:'pitta', arthritis:'vata', anxiety:'vata'
+  vitamin_d:'vata', osteoporosis:'vata', skin_acne:'pitta', arthritis:'vata', anxiety:'vata',
+  obesity:'kapha', asthma:'kapha', hair_loss:'pitta', kidney_stone:'vata',
+  migraine:'pitta', low_immunity:'vata', constipation:'vata', male_fertility:'anabolic',
+  memory_brain:'vata', eczema_psoriasis:'pitta', sinusitis:'kapha', back_pain:'vata',
+  depression:'vata', female_fertility:'kapha', muscle_building:'anabolic', liver_detox:'pitta',
+  heart_health:'pitta', premature_aging:'vata', dental_oral:'pitta', libido:'anabolic'
 };
 
 let ayurSelected = new Set();
@@ -15143,7 +15481,28 @@ let ayurDietSelected = new Set(); // pre-selected from diet plan
 function initAyurvedaHub() {
   const grid = document.getElementById('ayur-disease-grid');
   if (!grid || grid.childElementCount > 0) return;
-  const order = ['diabetic','insulin_resistance','hypertension','cholesterol','fatty_liver','uric_acid','pcos','thyroid','low_t','ibs','acid_reflux','anemia','vitamin_d','osteoporosis','skin_acne','arthritis','anxiety'];
+  const order = [
+    // Metabolic (7)
+    'diabetic','insulin_resistance','cholesterol','fatty_liver','uric_acid','obesity','liver_detox',
+    // Hormonal (4)
+    'pcos','thyroid','low_t','female_fertility',
+    // Anabolic (4)
+    'muscle_building','male_fertility','libido','low_immunity',
+    // Cardiovascular (2)
+    'hypertension','heart_health',
+    // Digestive (4)
+    'ibs','acid_reflux','constipation','dental_oral',
+    // Blood / Bone (4)
+    'anemia','vitamin_d','osteoporosis','kidney_stone',
+    // Skin / Hair (3)
+    'skin_acne','eczema_psoriasis','hair_loss',
+    // Respiratory (2)
+    'asthma','sinusitis',
+    // Mind (5)
+    'anxiety','depression','migraine','memory_brain','premature_aging',
+    // Joints (2)
+    'arthritis','back_pain'
+  ];
   order.forEach(key => {
     const d = AYUR_DB[key];
     if (!d) return;
@@ -15283,22 +15642,79 @@ function clearAyurSelection() {
 
 function filterAyurDosha(dosha, btn) {
   document.querySelectorAll('.ayur-filter-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.ayur-cat-chip').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   document.querySelectorAll('.ayur-disease-card').forEach(c => {
     const match = dosha === 'all' || c.dataset.dosha === dosha;
-    c.dataset.hidden = match ? 'false' : 'true';
     c.style.display = match ? '' : 'none';
   });
 }
 
-function quickPickAyur(key) {
+function filterAyurCat(cat, btn) {
+  document.querySelectorAll('.ayur-filter-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.ayur-cat-chip').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.ayur-disease-card').forEach(c => {
+    const key = c.dataset.key;
+    const d = AYUR_DB[key];
+    const match = d && d.tag === cat;
+    c.style.display = match ? '' : 'none';
+  });
+}
+
+function searchAyur(q) {
+  const term = q.toLowerCase().trim();
+  // Also clear category/dosha filters
+  document.querySelectorAll('.ayur-filter-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.ayur-cat-chip').forEach(b => b.classList.remove('active'));
+  if (!term) {
+    document.querySelector('.ayur-filter-btn').classList.add('active');
+    document.querySelectorAll('.ayur-disease-card').forEach(c => c.style.display = '');
+    return;
+  }
+  document.querySelectorAll('.ayur-disease-card').forEach(c => {
+    const key = c.dataset.key;
+    const d = AYUR_DB[key];
+    if (!d) { c.style.display = 'none'; return; }
+    const searchText = [
+      d.name, d.sanskrit, d.desc,
+      d.herbs.map(h => h.name + ' ' + h.latin + ' ' + h.benefit).join(' '),
+      d.formulation, d.diet_do.join(' '), d.diet_avoid.join(' ')
+    ].join(' ').toLowerCase();
+    c.style.display = searchText.includes(term) ? '' : 'none';
+  });
+}
+
+function loadAnabolicPack() {
+  clearAyurSelection();
+  ['low_t','muscle_building','male_fertility','libido','low_immunity'].forEach(k => quickPickAyur(k, true));
+  updateAyurPanel(); scrollToAyurRemedies();
+  toast('⚡ Anabolic Pack loaded — 5 conditions selected', 'green');
+}
+function loadImmunePack() {
+  clearAyurSelection();
+  ['low_immunity','premature_aging','memory_brain','depression','anxiety'].forEach(k => quickPickAyur(k, true));
+  updateAyurPanel(); scrollToAyurRemedies();
+  toast('🛡️ Immune & Mind Pack loaded', 'green');
+}
+function loadWomensPack() {
+  clearAyurSelection();
+  ['pcos','female_fertility','thyroid','anemia','skin_acne'].forEach(k => quickPickAyur(k, true));
+  updateAyurPanel(); scrollToAyurRemedies();
+  toast('🌺 Women\'s Health Pack loaded', 'green');
+}
+
+function quickPickAyur(key, silent) {
   const card = document.querySelector('.ayur-disease-card[data-key="'+key+'"]');
   if (card && !card.classList.contains('selected')) {
     card.classList.add('selected');
     ayurSelected.add(key);
-    updateAyurPanel();
-    scrollToAyurRemedies();
+    if (!silent) { updateAyurPanel(); scrollToAyurRemedies(); }
+  } else if (!card && AYUR_DB[key]) {
+    // Card may not exist if hub not inited yet
+    ayurSelected.add(key);
   }
+  if (!silent) updateAyurPanel();
 }
 
 /* Diet plan integration — show Ayurveda button when conditions selected */
@@ -16693,6 +17109,71 @@ label:has(#inclSalad:checked) {
   margin-bottom: 24px;
 }
 
+/* Search */
+.ayur-search-wrap { margin-bottom: 12px; }
+.ayur-search {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1.5px solid rgba(5,150,105,0.2);
+  border-radius: 10px;
+  font-size: 13px;
+  color: #0F0A1A;
+  background: #F9FDF9;
+  outline: none;
+  font-family: 'Barlow',sans-serif;
+  transition: border-color 0.2s;
+}
+.ayur-search:focus { border-color: #059669; }
+
+/* Category chips */
+.ayur-cat-row { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+.ayur-cat-chip {
+  padding: 4px 10px;
+  border-radius: 16px;
+  border: 1px solid rgba(5,150,105,0.2);
+  background: #F0FDF4;
+  color: #047857;
+  font-size: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.18s;
+  letter-spacing: 0.3px;
+}
+.ayur-cat-chip:hover, .ayur-cat-chip.active {
+  background: #059669;
+  color: #fff;
+  border-color: #059669;
+}
+
+/* Pack buttons */
+.ayur-pack-btn {
+  display: inline-block;
+  margin: 4px;
+  padding: 8px 16px;
+  border-radius: 20px;
+  border: 1.5px solid #7C3AED;
+  background: rgba(124,58,237,0.08);
+  color: #5B21B6;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  letter-spacing: 0.5px;
+}
+.ayur-pack-btn:hover { background: #7C3AED; color: #fff; }
+.ayur-pack-btn.green { border-color: #059669; background: rgba(5,150,105,0.08); color: #047857; }
+.ayur-pack-btn.green:hover { background: #059669; color: #fff; }
+.ayur-pack-btn.pink { border-color: #EC4899; background: rgba(236,72,153,0.08); color: #BE185D; }
+.ayur-pack-btn.pink:hover { background: #EC4899; color: #fff; }
+
+/* Herb Encyclopedia in remedy cards — source badge */
+.ayur-herb-count-badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  background: linear-gradient(135deg,#059669,#047857);
+  color: #fff; border-radius: 20px; padding: 3px 10px;
+  font-size: 10px; font-weight: 700; margin-left: 8px;
+}
+
 /* Diet plan button */
 .ayur-dietplan-btn {
   width: 100%;
@@ -16737,12 +17218,30 @@ label:has(#inclSalad:checked) {
       <div class="ayur-section-title">🌱 Select Your Health Conditions</div>
       <div class="ayur-section-sub">Select all that apply — get your personalised Ayurvedic protocol instantly</div>
     </div>
+    <!-- Herb Search -->
+    <div class="ayur-search-wrap">
+      <input class="ayur-search" id="ayur-search" placeholder="🔍  Search conditions or herbs..." oninput="searchAyur(this.value)">
+    </div>
+    <!-- Dosha Filter -->
     <div class="ayur-filter-row">
-      <button class="ayur-filter-btn active" onclick="filterAyurDosha('all',this)">All</button>
+      <button class="ayur-filter-btn active" onclick="filterAyurDosha('all',this)">All (37)</button>
       <button class="ayur-filter-btn" onclick="filterAyurDosha('vata',this)">🌬️ Vata</button>
       <button class="ayur-filter-btn" onclick="filterAyurDosha('pitta',this)">🔥 Pitta</button>
       <button class="ayur-filter-btn" onclick="filterAyurDosha('kapha',this)">💧 Kapha</button>
       <button class="ayur-filter-btn anabolic" onclick="filterAyurDosha('anabolic',this)">⚡ Anabolic</button>
+    </div>
+    <!-- Category chips -->
+    <div class="ayur-cat-row">
+      <button class="ayur-cat-chip" onclick="filterAyurCat('metabolic',this)">🧬 Metabolic</button>
+      <button class="ayur-cat-chip" onclick="filterAyurCat('hormonal',this)">🦋 Hormonal</button>
+      <button class="ayur-cat-chip" onclick="filterAyurCat('cardiac',this)">🫀 Heart</button>
+      <button class="ayur-cat-chip" onclick="filterAyurCat('digestive',this)">🫃 Digestive</button>
+      <button class="ayur-cat-chip" onclick="filterAyurCat('respiratory',this)">🫁 Respiratory</button>
+      <button class="ayur-cat-chip" onclick="filterAyurCat('skin',this)">✨ Skin & Hair</button>
+      <button class="ayur-cat-chip" onclick="filterAyurCat('joints',this)">🦵 Joints</button>
+      <button class="ayur-cat-chip" onclick="filterAyurCat('mind',this)">🧠 Mind</button>
+      <button class="ayur-cat-chip" onclick="filterAyurCat('immunity',this)">🛡️ Immunity</button>
+      <button class="ayur-cat-chip" onclick="filterAyurCat('urinary',this)">💧 Urinary</button>
     </div>
     <div id="ayur-disease-grid" class="ayur-disease-grid"></div>
     <div class="ayur-select-actions" id="ayur-select-actions" style="display:none">
@@ -16768,11 +17267,20 @@ label:has(#inclSalad:checked) {
     <div class="ayur-empty-title">Select conditions above</div>
     <div class="ayur-empty-sub">Your personalised Ayurvedic remedy protocol will appear here instantly</div>
     <div class="ayur-quick-picks">
-      <div class="ayur-qp-label">Quick Pick:</div>
+      <div class="ayur-qp-label">⚡ Quick Pick:</div>
       <button class="ayur-qp-btn" onclick="quickPickAyur('diabetic')">🩸 Diabetes</button>
-      <button class="ayur-qp-btn" onclick="quickPickAyur('low_t')">⚡ Low Testosterone</button>
-      <button class="ayur-qp-btn" onclick="quickPickAyur('anxiety')">🧠 Anxiety & Sleep</button>
-      <button class="ayur-qp-btn" onclick="quickPickAyur('arthritis')">🦵 Joint Pain</button>
+      <button class="ayur-qp-btn" onclick="quickPickAyur('low_t')">⚡ Low T</button>
+      <button class="ayur-qp-btn" onclick="quickPickAyur('anxiety')">🧠 Anxiety</button>
+      <button class="ayur-qp-btn" onclick="quickPickAyur('arthritis')">🦵 Joints</button>
+      <button class="ayur-qp-btn" onclick="quickPickAyur('hair_loss')">💇 Hair Loss</button>
+      <button class="ayur-qp-btn" onclick="quickPickAyur('memory_brain')">🧬 Brain & Memory</button>
+      <button class="ayur-qp-btn" onclick="quickPickAyur('pcos')">🌸 PCOS</button>
+      <button class="ayur-qp-btn" onclick="quickPickAyur('obesity')">⚖️ Weight Loss</button>
+    </div>
+    <div style="margin-top:12px;text-align:center">
+      <button class="ayur-pack-btn" onclick="loadAnabolicPack()">⚡ LOAD ANABOLIC PACK</button>
+      <button class="ayur-pack-btn green" onclick="loadImmunePack()">🛡️ IMMUNE PACK</button>
+      <button class="ayur-pack-btn pink" onclick="loadWomensPack()">🌺 WOMEN\'S PACK</button>
     </div>
   </div>
 
