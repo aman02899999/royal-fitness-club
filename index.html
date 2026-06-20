@@ -3663,85 +3663,142 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
 
     <!-- ── PROGRESS VISUALIZATION ── -->
     <div id="dash-progress-viz">
-      <div class="dash-pv-header">
-        <div class="dash-pv-title">📊 Progress Visualization</div>
-        <div class="dash-pv-sub">Your fitness journey at a glance</div>
+      <div class="dash-pv-section-hdr">
+        <div>
+          <div class="dash-pv-section-label">
+            <span class="dash-pv-section-pill">LIVE DATA</span>
+          </div>
+          <div class="dash-pv-section-title">My Progress</div>
+          <div class="dash-pv-section-sub">Updated in real-time from your logs</div>
+        </div>
       </div>
+
       <div class="dash-pv-grid">
 
-        <!-- 1. Weight Graph -->
+        <!-- 1. Weight Journey -->
         <div class="dash-pv-card" id="pv-weight-card">
-          <div class="dash-pv-card-hdr">
-            <div>
-              <div class="dash-pv-card-title">⚖️ Weight Journey</div>
-              <div class="dash-pv-card-sub" id="pv-weight-sub">Track your progress</div>
+          <div class="pv-card-top">
+            <div class="pv-card-icon-wrap">⚖️</div>
+            <div class="pv-card-labels">
+              <div class="pv-card-title">Weight Journey</div>
+              <div class="pv-card-sub" id="pv-weight-sub">Log daily to see trend</div>
             </div>
-            <div class="dash-pv-card-stat" id="pv-weight-stat">-- kg</div>
+            <div class="pv-card-stat-wrap">
+              <div class="pv-big-num" id="pv-weight-stat">-- kg</div>
+              <div class="pv-trend-badge neu" id="pv-weight-trend">no data</div>
+            </div>
           </div>
-          <svg id="pv-weight-svg" class="dash-pv-svg" viewBox="0 0 280 110" preserveAspectRatio="none"></svg>
-          <div class="pv-weight-input-row">
-            <input type="number" id="pv-weight-inp" class="pv-inp" placeholder="kg today" min="30" max="300" step="0.1">
-            <button class="pv-log-btn" onclick="pvLogWeight()">+ Log</button>
+          <svg id="pv-weight-svg" class="dash-pv-svg" height="100" viewBox="0 0 280 100" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="wgrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#f59e0b" stop-opacity=".3"/>
+                <stop offset="100%" stop-color="#f59e0b" stop-opacity="0"/>
+              </linearGradient>
+            </defs>
+          </svg>
+          <div class="pv-log-row">
+            <span style="font-size:16px;">⚖️</span>
+            <input type="number" id="pv-weight-inp" placeholder="Enter today's weight (kg)" min="30" max="300" step="0.1" onkeydown="if(event.key==='Enter')pvLogWeight()">
+            <button onclick="pvLogWeight()">Log</button>
           </div>
         </div>
 
         <!-- 2. Streak Calendar -->
         <div class="dash-pv-card" id="pv-streak-card">
-          <div class="dash-pv-card-hdr">
-            <div>
-              <div class="dash-pv-card-title">🔥 Streak Calendar</div>
-              <div class="dash-pv-card-sub">Last 30 days activity</div>
+          <div class="pv-card-top">
+            <div class="pv-card-icon-wrap">🔥</div>
+            <div class="pv-card-labels">
+              <div class="pv-card-title">Streak Calendar</div>
+              <div class="pv-card-sub">Last 30 days</div>
             </div>
-            <div class="dash-pv-card-stat" id="pv-streak-stat" style="color:#dc2626;">0🔥</div>
+            <div class="pv-card-stat-wrap">
+              <div class="pv-big-num" id="pv-streak-num">0</div>
+              <div style="font-size:9px;color:rgba(255,255,255,.35);text-align:right;">day streak</div>
+            </div>
           </div>
-          <div id="pv-streak-cal" class="pv-streak-cal"></div>
-          <div class="pv-streak-legend">
-            <span class="pv-leg-item"><span class="pv-leg-dot" style="background:rgba(255,255,255,.06)"></span>Rest</span>
-            <span class="pv-leg-item"><span class="pv-leg-dot" style="background:rgba(22,163,74,.45)"></span>Check-in</span>
-            <span class="pv-leg-item"><span class="pv-leg-dot" style="background:rgba(220,38,38,.65)"></span>Workout</span>
-            <span class="pv-leg-item"><span class="pv-leg-dot" style="background:rgba(245,158,11,.8)"></span>Both</span>
+          <!-- Day labels row + 5×6 cal grid rendered by JS -->
+          <div id="pv-streak-cal"></div>
+          <div class="pv-legend-row">
+            <span class="pv-leg"><span class="pv-leg-sq" style="background:rgba(255,255,255,.07)"></span>Rest</span>
+            <span class="pv-leg"><span class="pv-leg-sq" style="background:rgba(34,197,94,.4)"></span>Check-in</span>
+            <span class="pv-leg"><span class="pv-leg-sq" style="background:rgba(239,68,68,.65)"></span>Workout</span>
+            <span class="pv-leg"><span class="pv-leg-sq" style="background:rgba(245,158,11,.85)"></span>Both 🔥</span>
           </div>
         </div>
 
-        <!-- 3. Muscle / Measurement Graph -->
+        <!-- 3. Muscle Gain -->
         <div class="dash-pv-card" id="pv-muscle-card">
-          <div class="dash-pv-card-hdr">
-            <div>
-              <div class="dash-pv-card-title">💪 Muscle Gain</div>
-              <div class="dash-pv-card-sub">Arms · Chest · Waist cm</div>
+          <div class="pv-card-top">
+            <div class="pv-card-icon-wrap">💪</div>
+            <div class="pv-card-labels">
+              <div class="pv-card-title">Muscle Gain</div>
+              <div class="pv-card-sub">Measurements over time</div>
             </div>
-            <div class="dash-pv-card-stat" id="pv-muscle-stat" style="color:#22c55e;">+0 cm</div>
+            <div class="pv-card-stat-wrap">
+              <div class="pv-big-num" id="pv-muscle-stat">+0 cm</div>
+              <div style="font-size:9px;color:rgba(255,255,255,.35);text-align:right;">arm growth</div>
+            </div>
           </div>
-          <svg id="pv-muscle-svg" class="dash-pv-svg" viewBox="0 0 280 110" preserveAspectRatio="none"></svg>
-          <div class="pv-muscle-legend">
-            <span class="pv-leg-item"><span class="pv-leg-line" style="background:#22c55e"></span>Arms</span>
-            <span class="pv-leg-item"><span class="pv-leg-line" style="background:#60a5fa"></span>Chest</span>
-            <span class="pv-leg-item"><span class="pv-leg-line" style="background:#f97316"></span>Waist</span>
+          <svg id="pv-muscle-svg" class="dash-pv-svg" height="100" viewBox="0 0 280 100" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="agrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#22c55e" stop-opacity=".2"/>
+                <stop offset="100%" stop-color="#22c55e" stop-opacity="0"/>
+              </linearGradient>
+              <linearGradient id="cgrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#60a5fa" stop-opacity=".15"/>
+                <stop offset="100%" stop-color="#60a5fa" stop-opacity="0"/>
+              </linearGradient>
+              <filter id="glow-green"><feGaussianBlur in="SourceGraphic" stdDeviation="2" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+              <filter id="glow-blue"><feGaussianBlur in="SourceGraphic" stdDeviation="2" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+            </defs>
+          </svg>
+          <div class="pv-meas-chips" id="pv-meas-chips">
+            <span class="pv-meas-chip"><span class="pv-meas-chip-dot" style="background:#22c55e"></span><span class="pv-meas-chip-val" id="pvc-arms">--</span><span class="pv-meas-chip-lbl">arms</span></span>
+            <span class="pv-meas-chip"><span class="pv-meas-chip-dot" style="background:#60a5fa"></span><span class="pv-meas-chip-val" id="pvc-chest">--</span><span class="pv-meas-chip-lbl">chest</span></span>
+            <span class="pv-meas-chip"><span class="pv-meas-chip-dot" style="background:#f97316"></span><span class="pv-meas-chip-val" id="pvc-waist">--</span><span class="pv-meas-chip-lbl">waist</span></span>
           </div>
         </div>
 
         <!-- 4. Consistency Heatmap -->
         <div class="dash-pv-card" id="pv-heat-card">
-          <div class="dash-pv-card-hdr">
-            <div>
-              <div class="dash-pv-card-title">📅 Consistency Heatmap</div>
-              <div class="dash-pv-card-sub">12 weeks of activity</div>
+          <div class="pv-card-top">
+            <div class="pv-card-icon-wrap">📅</div>
+            <div class="pv-card-labels">
+              <div class="pv-card-title">Consistency</div>
+              <div class="pv-card-sub">12-week activity view</div>
             </div>
-            <div class="dash-pv-card-stat" id="pv-heat-stat" style="color:#7c3aed;">0%</div>
-          </div>
-          <div class="pv-heat-wrap">
-            <div class="pv-heat-day-labels" id="pv-heat-day-labels">
-              <div class="pv-heat-day-lbl">M</div>
-              <div class="pv-heat-day-lbl">T</div>
-              <div class="pv-heat-day-lbl">W</div>
-              <div class="pv-heat-day-lbl">T</div>
-              <div class="pv-heat-day-lbl">F</div>
-              <div class="pv-heat-day-lbl">S</div>
-              <div class="pv-heat-day-lbl">S</div>
+            <div class="pv-card-stat-wrap">
+              <!-- Mini ring chart -->
+              <svg width="52" height="52" viewBox="0 0 52 52">
+                <circle cx="26" cy="26" r="20" fill="none" stroke="rgba(124,58,237,.15)" stroke-width="5"/>
+                <circle id="pv-ring-arc" cx="26" cy="26" r="20" fill="none" stroke="#7c3aed" stroke-width="5"
+                  stroke-linecap="round" stroke-dasharray="125.6" stroke-dashoffset="125.6"
+                  style="transform:rotate(-90deg);transform-origin:center;transition:stroke-dashoffset 1.2s ease"/>
+                <text x="26" y="30" text-anchor="middle" fill="#a78bfa" font-size="12" font-weight="800" font-family="system-ui" id="pv-ring-text">0%</text>
+              </svg>
             </div>
-            <div id="pv-heat-grid" class="pv-heat-grid" style="flex:1;"></div>
           </div>
-          <div class="pv-heat-bottom" id="pv-heat-months"></div>
+          <div class="pv-hm-wrap">
+            <div class="pv-hm-days">
+              <span class="pv-hm-dl">M</span><span class="pv-hm-dl"></span>
+              <span class="pv-hm-dl">W</span><span class="pv-hm-dl"></span>
+              <span class="pv-hm-dl">F</span><span class="pv-hm-dl"></span>
+              <span class="pv-hm-dl">S</span>
+            </div>
+            <div class="pv-hm-inner" style="flex:1;">
+              <div id="pv-hm-grid" class="pv-hm-grid"></div>
+              <div id="pv-hm-months" class="pv-hm-months"></div>
+            </div>
+          </div>
+          <div style="display:flex;gap:8px;margin-top:8px;align-items:center;">
+            <span style="font-size:10px;color:rgba(255,255,255,.3)">Less</span>
+            <span style="width:10px;height:10px;border-radius:2px;background:rgba(124,58,237,.12);display:inline-block"></span>
+            <span style="width:10px;height:10px;border-radius:2px;background:rgba(124,58,237,.35);display:inline-block"></span>
+            <span style="width:10px;height:10px;border-radius:2px;background:rgba(124,58,237,.65);display:inline-block"></span>
+            <span style="width:10px;height:10px;border-radius:2px;background:rgba(124,58,237,.95);display:inline-block"></span>
+            <span style="font-size:10px;color:rgba(255,255,255,.3)">More</span>
+          </div>
         </div>
 
       </div><!-- end pv-grid -->
@@ -14739,229 +14796,235 @@ function renderProgressViz() {
   renderPvHeatmap();
 }
 
-/* ── 1. WEIGHT GRAPH ───────────────────────────────────── */
-function renderPvWeight() {
-  var pd2 = JSON.parse(localStorage.getItem('bm_pd') || '{}');
-  var pts = (pd2.weights || []).slice(-15);  // last 15 entries
+/* ── helpers ── */
+function _pvBezier(pts) {
+  if (pts.length < 2) return '';
+  var d = 'M' + pts[0][0].toFixed(1) + ',' + pts[0][1].toFixed(1);
+  for (var i = 1; i < pts.length; i++) {
+    var cx = (pts[i-1][0] + pts[i][0]) / 2;
+    d += ' C' + cx.toFixed(1) + ',' + pts[i-1][1].toFixed(1) + ' ' + cx.toFixed(1) + ',' + pts[i][1].toFixed(1) + ' ' + pts[i][0].toFixed(1) + ',' + pts[i][1].toFixed(1);
+  }
+  return d;
+}
+function _pvGridLines(mn, mx, W, H, PAD) {
+  var out = '', steps = 4;
+  for (var i = 0; i <= steps; i++) {
+    var v = mn + (mx - mn) * i / steps;
+    var y = PAD.t + (1 - i / steps) * (H - PAD.t - PAD.b);
+    out += '<line x1="' + PAD.l + '" y1="' + y.toFixed(1) + '" x2="' + (W - PAD.r) + '" y2="' + y.toFixed(1) + '" stroke="rgba(255,255,255,.05)" stroke-width="1"/>';
+    out += '<text x="' + (PAD.l - 2) + '" y="' + (y + 3).toFixed(1) + '" text-anchor="end" fill="rgba(255,255,255,.22)" font-size="8" font-family="system-ui">' + v.toFixed(0) + '</text>';
+  }
+  return out;
+}
 
-  var statEl = document.getElementById('pv-weight-stat');
-  var subEl  = document.getElementById('pv-weight-sub');
-  var svg    = document.getElementById('pv-weight-svg');
+/* ── 1. WEIGHT GRAPH ─────────────────────────────────── */
+function renderPvWeight() {
+  var pd2  = JSON.parse(localStorage.getItem('bm_pd') || '{}');
+  var pts  = (pd2.weights || []).slice(-14);
+  var svg  = document.getElementById('pv-weight-svg');
+  var stat = document.getElementById('pv-weight-stat');
+  var sub  = document.getElementById('pv-weight-sub');
+  var trd  = document.getElementById('pv-weight-trend');
   if (!svg) return;
 
+  var W = 280, H = 100, PAD = { t:14, b:20, l:26, r:8 };
+
   if (pts.length < 2) {
-    // Empty state with flat demo line
-    svg.innerHTML = [
-      '<defs><linearGradient id="wg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#f59e0b" stop-opacity=".25"/><stop offset="100%" stop-color="#f59e0b" stop-opacity="0"/></linearGradient></defs>',
-      '<text x="140" y="50" text-anchor="middle" fill="rgba(255,255,255,.2)" font-size="11" font-family="system-ui">Log your weight to see graph</text>',
-    ].join('');
-    if (statEl) statEl.textContent = pts.length === 1 ? pts[0].kg + ' kg' : '-- kg';
-    if (subEl)  subEl.textContent  = 'Log daily for trend';
+    svg.innerHTML = '<text x="140" y="52" text-anchor="middle" fill="rgba(255,255,255,.18)" font-size="11" font-family="system-ui,sans-serif">Log your weight to see trend 📈</text>';
+    if (stat) stat.textContent = pts.length ? pts[0].kg + ' kg' : '-- kg';
     return;
   }
 
-  var W = 280, H = 110, PAD = { t:10, b:22, l:8, r:8 };
-  var vals = pts.map(function(p) { return p.kg; });
-  var mn = Math.min.apply(null, vals), mx = Math.max.apply(null, vals);
+  var vals = pts.map(function(p) { return +p.kg; });
+  var mn = Math.min.apply(null,vals) - 1, mx = Math.max.apply(null,vals) + 1;
   var range = mx - mn || 2;
-  mn -= range * 0.15; mx += range * 0.15; range = mx - mn;
 
-  function sx(i) { return PAD.l + i / (pts.length - 1) * (W - PAD.l - PAD.r); }
-  function sy(v) { return PAD.t + (1 - (v - mn) / range) * (H - PAD.t - PAD.b); }
+  function sx(i) { return PAD.l + i / (pts.length-1) * (W - PAD.l - PAD.r); }
+  function sy(v) { return PAD.t + (1-(v-mn)/range) * (H-PAD.t-PAD.b); }
 
-  // Build smooth bezier path
-  var linePts = pts.map(function(p, i) { return [sx(i), sy(p.kg)]; });
-  var d = 'M' + linePts[0][0] + ',' + linePts[0][1];
-  for (var i = 1; i < linePts.length; i++) {
-    var cx = (linePts[i-1][0] + linePts[i][0]) / 2;
-    d += ' C' + cx + ',' + linePts[i-1][1] + ' ' + cx + ',' + linePts[i][1] + ' ' + linePts[i][0] + ',' + linePts[i][1];
-  }
-  var areaD = d + ' L' + linePts[linePts.length-1][0] + ',' + (H - PAD.b) + ' L' + linePts[0][0] + ',' + (H - PAD.b) + ' Z';
+  var linePts = pts.map(function(p,i){ return [sx(i), sy(+p.kg)]; });
+  var d = _pvBezier(linePts);
+  var areaD = d + ' L' + linePts[linePts.length-1][0].toFixed(1) + ',' + (H-PAD.b) + ' L' + linePts[0][0].toFixed(1) + ',' + (H-PAD.b) + ' Z';
 
-  // Y axis labels
-  var yLbls = '';
-  [mn, (mn+mx)/2, mx].forEach(function(v) {
-    var y = sy(v);
-    yLbls += '<text x="2" y="' + (y+3) + '" fill="rgba(255,255,255,.25)" font-size="8" font-family="system-ui">' + v.toFixed(1) + '</text>';
-  });
+  // Goal line (target from last result)
+  var goalLine = '';
+  try { var lr = JSON.parse(localStorage.getItem('bm_last_result')||'null'); if(lr&&lr.weight){ var gy=sy(+lr.weight); if(gy>PAD.t&&gy<H-PAD.b) goalLine='<line x1="'+PAD.l+'" y1="'+gy.toFixed(1)+'" x2="'+(W-PAD.r)+'" y2="'+gy.toFixed(1)+'" stroke="#22c55e" stroke-width="1" stroke-dasharray="4,3" opacity=".5"/><text x="'+(W-PAD.r+2)+'" y="'+(gy+3)+'" fill="#22c55e" font-size="7" font-family="system-ui" opacity=".7">Goal</text>'; }} catch(e){}
 
-  // X axis date labels (show first, mid, last)
-  var xLbls = '';
-  [0, Math.floor((pts.length-1)/2), pts.length-1].forEach(function(i) {
-    xLbls += '<text x="' + sx(i) + '" y="' + (H - 4) + '" text-anchor="middle" fill="rgba(255,255,255,.3)" font-size="8" font-family="system-ui">' + (pts[i].date || '') + '</text>';
-  });
-
-  // Dots
-  var dots = pts.map(function(p, i) {
-    var isLast = i === pts.length - 1;
-    return '<circle cx="' + sx(i) + '" cy="' + sy(p.kg) + '" r="' + (isLast ? 5 : 3) + '" fill="' + (isLast ? '#f59e0b' : 'rgba(245,158,11,.7)') + '" stroke="#0a0a0a" stroke-width="1.5"><title>' + (p.date || '') + ': ' + p.kg + ' kg</title></circle>';
+  // Dots with hover tooltips
+  var dots = pts.map(function(p,i){
+    var isLast = i===pts.length-1;
+    return '<circle cx="'+sx(i).toFixed(1)+'" cy="'+sy(+p.kg).toFixed(1)+'" r="'+(isLast?5:2.5)+'" fill="'+(isLast?'#fbbf24':'rgba(251,191,36,.55)')+'" stroke="rgba(10,10,20,.8)" stroke-width="'+(isLast?2:1)+'"><title>'+p.date+': '+p.kg+' kg</title></circle>';
   }).join('');
 
-  // Change indicator
-  var diff = vals[vals.length-1] - vals[0];
-  var diffStr = (diff > 0 ? '+' : '') + diff.toFixed(1) + ' kg';
-  if (statEl) { statEl.textContent = vals[vals.length-1] + ' kg'; statEl.style.color = diff <= 0 ? '#22c55e' : '#f97316'; }
-  if (subEl)  subEl.textContent = diffStr + ' since start · ' + pts.length + ' entries';
+  // Last dot glow ring
+  var lastD = linePts[linePts.length-1];
+  var glowRing = '<circle cx="'+lastD[0].toFixed(1)+'" cy="'+lastD[1].toFixed(1)+'" r="9" fill="none" stroke="#fbbf24" stroke-width="1" opacity=".3" style="animation:pvPulseGlow 2s infinite"/>';
 
-  var totalLen = Math.ceil(W * 1.8);
+  // X labels: first, mid, last
+  var xL = '';
+  [0, Math.floor((pts.length-1)/2), pts.length-1].forEach(function(i){
+    xL += '<text x="'+sx(i).toFixed(1)+'" y="'+(H-4)+'" text-anchor="middle" fill="rgba(255,255,255,.28)" font-size="8" font-family="system-ui">'+(pts[i].date||'')+'</text>';
+  });
+
+  var diff = vals[vals.length-1] - vals[0];
+  if (stat) { stat.textContent = vals[vals.length-1] + ' kg'; }
+  if (sub)  sub.textContent = pts.length + ' entries logged';
+  if (trd) {
+    trd.textContent = (diff > 0 ? '▲ +' : '▼ ') + Math.abs(diff).toFixed(1) + ' kg';
+    trd.className = 'pv-trend-badge ' + (diff < 0 ? 'down' : (diff > 0 ? 'up' : 'neu'));
+  }
+
+  var totalLen = Math.ceil((W + H) * 3);
   svg.innerHTML = [
-    '<defs>',
-    '<linearGradient id="wg" x1="0" y1="0" x2="0" y2="1">',
-    '<stop offset="0%" stop-color="#f59e0b" stop-opacity=".35"/>',
-    '<stop offset="100%" stop-color="#f59e0b" stop-opacity="0"/>',
-    '</linearGradient>',
-    '</defs>',
-    '<path d="' + areaD + '" fill="url(#wg)"/>',
-    '<path d="' + d + '" fill="none" stroke="#f59e0b" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="' + totalLen + '" stroke-dashoffset="' + totalLen + '" style="animation:pvLineGrow 1.2s ease forwards"/>',
-    yLbls, xLbls, dots,
+    '<path d="' + areaD + '" fill="url(#wgrad)"/>',
+    goalLine,
+    _pvGridLines(mn, mx, W, H, PAD),
+    '<path d="' + d + '" fill="none" stroke="#fbbf24" stroke-width="2.5" stroke-linecap="round" filter="drop-shadow(0 0 4px rgba(251,191,36,.5))" stroke-dasharray="'+totalLen+'" stroke-dashoffset="'+totalLen+'" style="animation:pvLineGrow 1.4s cubic-bezier(.4,0,.2,1) forwards"/>',
+    glowRing, dots, xL,
   ].join('');
 }
 
-/* ── 2. STREAK CALENDAR (30-day) ───────────────────────── */
+/* ── 2. STREAK CALENDAR (5 weeks × 6 cols = 30 days) ─── */
 function renderPvStreakCal() {
-  var calEl   = document.getElementById('pv-streak-cal');
-  var statEl  = document.getElementById('pv-streak-stat');
+  var calEl  = document.getElementById('pv-streak-cal');
+  var numEl  = document.getElementById('pv-streak-num');
   if (!calEl) return;
 
-  // Collect workout dates
   var wkDates = new Set();
-  try {
-    var logs = JSON.parse(localStorage.getItem('bm_wklogs') || '[]');
-    logs.forEach(function(l) { if (l.ts) wkDates.add(new Date(l.ts).toDateString()); });
-  } catch(e) {}
-  // Collect check-in dates from streak history
+  try { JSON.parse(localStorage.getItem('bm_wklogs')||'[]').forEach(function(l){ if(l.ts) wkDates.add(new Date(l.ts).toDateString()); }); } catch(e){}
   var ciDates = new Set();
-  try {
-    var sd = JSON.parse(localStorage.getItem('rfc_streak_data') || '{}');
-    (sd.history || []).forEach(function(d) { ciDates.add(new Date(d).toDateString()); });
-  } catch(e) {}
+  var streak = 0, best = 0;
+  try { var sd = JSON.parse(localStorage.getItem('rfc_streak_data')||'{}'); streak=sd.streak||0; best=sd.best||0; (sd.history||[]).forEach(function(d){ ciDates.add(new Date(d).toDateString()); }); } catch(e){}
 
   var today = new Date();
-  var html = '';
-  var activeCount = 0;
+  var DAY_LETTERS = ['S','M','T','W','T','F','S'];
+
+  // Header row: day letters for 6 cols
+  var header = '<div class="pv-cal-month-row">';
+  header += '<div></div>'; // spacer for row label col
+  // Find what days of week the 6 columns land on, starting from 29 days ago
+  var startDay = new Date(today); startDay.setDate(today.getDate()-29);
+  for (var c = 0; c < 6; c++) {
+    var colDate = new Date(startDay); colDate.setDate(startDay.getDate() + c * 5);
+    header += '<div class="pv-cal-ml" style="grid-column:span 1;">' + colDate.toLocaleDateString('en-IN',{month:'short',day:'numeric'}) + '</div>';
+  }
+  header += '</div>';
+
+  // 5 rows × 6 cols = 30 days
+  var rows = '';
+  var dayOrder = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  // Render as plain 6-col × 5-row grid (no day labels, just cells)
+  var cells = '';
   for (var i = 29; i >= 0; i--) {
     var d = new Date(today); d.setDate(today.getDate() - i);
     var ds = d.toDateString();
     var hasCi = ciDates.has(ds), hasWk = wkDates.has(ds);
-    var cls = hasWk && hasCi ? 'both' : (hasWk ? 'wk' : (hasCi ? 'ci' : ''));
-    if (cls) activeCount++;
-    var label = d.toLocaleDateString('en-IN', { day:'numeric', month:'short' }) + (hasWk ? ' 🏋️' : '') + (hasCi ? ' ✅' : '') + (!cls ? ' Rest' : '');
-    var delay = (29 - i) * 20;
-    html += '<div class="pv-streak-cell ' + cls + '" style="animation-delay:' + delay + 'ms"><span class="pv-cell-tip">' + label + '</span></div>';
+    var cls = (hasWk && hasCi) ? 'both' : (hasWk ? 'wk' : (hasCi ? 'ci' : ''));
+    var isToday = d.toDateString() === today.toDateString();
+    var label = d.toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short'})
+      + (hasWk?' 🏋️':'') + (hasCi?' ✅':'') + (isToday?' · Today':'') + (!cls&&!isToday?' Rest':'');
+    var delay = (29-i)*15;
+    var todayStyle = isToday ? 'outline:2px solid rgba(245,158,11,.7);outline-offset:1px;' : '';
+    cells += '<div class="pv-cal-cell '+cls+'" style="animation-delay:'+delay+'ms;'+todayStyle+'"><span class="pv-tt">'+label+'</span></div>';
   }
-  calEl.innerHTML = html;
 
-  // Current streak from rfc_streak_data
-  try {
-    var sd2 = JSON.parse(localStorage.getItem('rfc_streak_data') || '{}');
-    if (statEl) { statEl.textContent = (sd2.streak || 0) + '🔥'; }
-  } catch(e) {}
+  calEl.innerHTML = '<div style="display:grid;grid-template-columns:repeat(10,1fr);gap:3.5px;margin-bottom:8px;">' + cells + '</div>';
+  if (numEl) numEl.textContent = streak;
 }
 
-/* ── 3. MUSCLE GAIN / MEASUREMENT GRAPH ────────────────── */
+/* ── 3. MUSCLE GAIN MULTI-LINE ───────────────────────── */
 function renderPvMuscle() {
   var svg    = document.getElementById('pv-muscle-svg');
   var statEl = document.getElementById('pv-muscle-stat');
   if (!svg) return;
 
   var meas = [];
-  try { meas = JSON.parse(localStorage.getItem('bm_meas') || '[]'); } catch(e) {}
+  try { meas = JSON.parse(localStorage.getItem('bm_meas')||'[]'); } catch(e){}
   meas = meas.slice(-10);
 
+  var armsEl  = document.getElementById('pvc-arms');
+  var chestEl = document.getElementById('pvc-chest');
+  var waistEl = document.getElementById('pvc-waist');
+
   if (meas.length < 2) {
-    svg.innerHTML = '<text x="140" y="50" text-anchor="middle" fill="rgba(255,255,255,.2)" font-size="11" font-family="system-ui">Log measurements to see graph</text>';
+    svg.innerHTML = '<text x="140" y="52" text-anchor="middle" fill="rgba(255,255,255,.18)" font-size="11" font-family="system-ui,sans-serif">Log body measurements to see trend 💪</text>';
     return;
   }
 
-  var W = 280, H = 110, PAD = { t:10, b:22, l:8, r:8 };
+  var W = 280, H = 100, PAD = { t:10, b:20, l:26, r:8 };
 
-  function plotLine(vals, color) {
-    if (vals.every(function(v) { return !v; })) return '';
-    var filtered = vals.filter(function(v) { return v > 0; });
+  function plotSeries(vals, color, gradId) {
+    var filtered = vals.filter(function(v){ return v>0; });
     if (filtered.length < 2) return '';
-    var mn = Math.min.apply(null, filtered) - 2;
-    var mx = Math.max.apply(null, filtered) + 2;
-    var range = mx - mn || 1;
-    var points = vals.map(function(v, i) {
-      var x = PAD.l + i / (vals.length - 1) * (W - PAD.l - PAD.r);
-      var y = v ? PAD.t + (1 - (v - mn) / range) * (H - PAD.t - PAD.b) : null;
-      return { x: x, y: y };
-    }).filter(function(p) { return p.y !== null; });
-    if (points.length < 2) return '';
-    var d = 'M' + points[0].x + ',' + points[0].y;
-    for (var i = 1; i < points.length; i++) {
-      var cx = (points[i-1].x + points[i].x) / 2;
-      d += ' C' + cx + ',' + points[i-1].y + ' ' + cx + ',' + points[i].y + ' ' + points[i].x + ',' + points[i].y;
-    }
-    var len = W * 2;
-    return '<path d="' + d + '" fill="none" stroke="' + color + '" stroke-width="2" stroke-linecap="round" opacity=".9" stroke-dasharray="' + len + '" stroke-dashoffset="' + len + '" style="animation:pvLineGrow 1.4s ease forwards"/>';
+    var mn2 = Math.min.apply(null,filtered)-2, mx2 = Math.max.apply(null,filtered)+2, rng = mx2-mn2||1;
+    var sx2 = function(i){ return PAD.l + i/(vals.length-1)*(W-PAD.l-PAD.r); };
+    var sy2 = function(v){ return PAD.t+(1-(v-mn2)/rng)*(H-PAD.t-PAD.b); };
+    var lpts = vals.map(function(v,i){ return v>0?[sx2(i),sy2(v)]:null; }).filter(Boolean);
+    if(lpts.length<2) return '';
+    var d2 = _pvBezier(lpts);
+    var aD = d2+' L'+lpts[lpts.length-1][0].toFixed(1)+','+(H-PAD.b)+' L'+lpts[0][0].toFixed(1)+','+(H-PAD.b)+' Z';
+    var len = W*3;
+    return '<path d="'+aD+'" fill="url(#'+gradId+')" opacity=".5"/>'
+      +'<path d="'+d2+'" fill="none" stroke="'+color+'" stroke-width="2" stroke-linecap="round" filter="drop-shadow(0 0 3px '+color+')" stroke-dasharray="'+len+'" stroke-dashoffset="'+len+'" style="animation:pvLineGrow 1.6s cubic-bezier(.4,0,.2,1) '+(gradId==='agrad'?'0s':(gradId==='cgrad'?'.2s':'.4s'))+ ' forwards"/>'
+      +'<circle cx="'+lpts[lpts.length-1][0].toFixed(1)+'" cy="'+lpts[lpts.length-1][1].toFixed(1)+'" r="4" fill="'+color+'" stroke="rgba(0,0,0,.6)" stroke-width="1.5"/>';
   }
 
-  var arms  = meas.map(function(m) { return parseFloat(m.arms)  || 0; });
-  var chest = meas.map(function(m) { return parseFloat(m.chest) || 0; });
-  var waist = meas.map(function(m) { return parseFloat(m.waist) || 0; });
+  var arms  = meas.map(function(m){ return parseFloat(m.arms)||0; });
+  var chest = meas.map(function(m){ return parseFloat(m.chest)||0; });
+  var waist = meas.map(function(m){ return parseFloat(m.waist)||0; });
 
-  // X date labels
-  var xLbls = '';
-  [0, meas.length - 1].forEach(function(i) {
-    xLbls += '<text x="' + (PAD.l + i / (meas.length-1) * (W - PAD.l - PAD.r)) + '" y="' + (H-4) + '" text-anchor="middle" fill="rgba(255,255,255,.3)" font-size="8" font-family="system-ui">' + (meas[i].date || '') + '</text>';
-  });
-
-  svg.innerHTML = plotLine(arms, '#22c55e') + plotLine(chest, '#60a5fa') + plotLine(waist, '#f97316') + xLbls;
-
-  // Arm gain stat
-  var armsFiltered = arms.filter(function(v) { return v > 0; });
-  if (armsFiltered.length >= 2 && statEl) {
-    var gain = armsFiltered[armsFiltered.length-1] - armsFiltered[0];
-    statEl.textContent = (gain >= 0 ? '+' : '') + gain.toFixed(1) + ' cm';
-    statEl.style.color = gain >= 0 ? '#22c55e' : '#f97316';
+  var xL = '';
+  if (meas.length > 1) {
+    [0, meas.length-1].forEach(function(i){
+      xL += '<text x="'+(PAD.l+i/(meas.length-1)*(W-PAD.l-PAD.r)).toFixed(1)+'" y="'+(H-4)+'" text-anchor="middle" fill="rgba(255,255,255,.25)" font-size="8" font-family="system-ui">'+(meas[i].date||'')+'</text>';
+    });
   }
+
+  svg.innerHTML = plotSeries(arms,'#22c55e','agrad') + plotSeries(chest,'#60a5fa','cgrad') + plotSeries(waist,'#f97316','wgrad') + xL;
+
+  // Update chips
+  var lastArms = arms.filter(function(v){return v>0;}), firstArms = lastArms[0]||0, latestArms = lastArms[lastArms.length-1]||0;
+  var armGain = latestArms - firstArms;
+  if (statEl) { statEl.textContent=(armGain>=0?'+':'')+armGain.toFixed(1)+' cm'; statEl.style.color=armGain>=0?'#4ade80':'#f87171'; }
+  if (armsEl)  armsEl.textContent  = latestArms ? latestArms + ' cm' : '--';
+  if (chestEl) { var lc=chest.filter(function(v){return v>0;}); chestEl.textContent = lc.length ? lc[lc.length-1]+' cm' : '--'; }
+  if (waistEl) { var lw=waist.filter(function(v){return v>0;}); waistEl.textContent = lw.length ? lw[lw.length-1]+' cm' : '--'; }
 }
 
-/* ── 4. CONSISTENCY HEATMAP (12 weeks × 7 days) ─────────── */
+/* ── 4. CONSISTENCY HEATMAP ───────────────────────────── */
 function renderPvHeatmap() {
-  var grid    = document.getElementById('pv-heat-grid');
-  var statEl  = document.getElementById('pv-heat-stat');
-  var months  = document.getElementById('pv-heat-months');
+  var grid   = document.getElementById('pv-hm-grid');
+  var months = document.getElementById('pv-hm-months');
+  var ring   = document.getElementById('pv-ring-arc');
+  var rtxt   = document.getElementById('pv-ring-text');
   if (!grid) return;
 
-  // Collect all workout dates
   var wkDates = new Set();
   try {
-    var logs = JSON.parse(localStorage.getItem('bm_wklogs') || '[]');
-    logs.forEach(function(l) { if (l.ts) wkDates.add(new Date(l.ts).toDateString()); });
-    // Also check rfc_workouts_uid
-    if (user) {
-      var wkLogs2 = JSON.parse(localStorage.getItem('rfc_workouts_' + user.uid) || '[]');
-      wkLogs2.forEach(function(w) { if (w.date) wkDates.add(new Date(w.date).toDateString()); });
-    }
-  } catch(e) {}
+    JSON.parse(localStorage.getItem('bm_wklogs')||'[]').forEach(function(l){ if(l.ts) wkDates.add(new Date(l.ts).toDateString()); });
+    if (user) { JSON.parse(localStorage.getItem('rfc_workouts_'+user.uid)||'[]').forEach(function(w){ if(w.date) wkDates.add(new Date(w.date).toDateString()); }); }
+  } catch(e){}
+  // Also add streak check-in dates
+  try { JSON.parse(localStorage.getItem('rfc_streak_data')||'{}').history?.forEach(function(d){ wkDates.add(new Date(d).toDateString()); }); } catch(e){}
 
-  // Build 12 cols × 7 rows (Mon–Sun), starting from 12 weeks ago
   var today = new Date();
-  // Find most recent Sunday
-  var endDate = new Date(today);
-  endDate.setDate(today.getDate() + (7 - today.getDay()) % 7);
-
-  var startDate = new Date(endDate);
-  startDate.setDate(endDate.getDate() - 12 * 7 + 1);
-
+  // Start from 13 weeks ago, aligned to Mon
+  var start = new Date(today);
+  start.setDate(today.getDate() - 90);
   // Align to Monday
-  var dow = startDate.getDay(); // 0=Sun
-  var offset = dow === 0 ? 1 : (dow === 1 ? 0 : -(dow - 1));
-  startDate.setDate(startDate.getDate() + offset);
+  var dow = start.getDay();
+  start.setDate(start.getDate() - (dow===0?6:dow-1));
 
-  var html = '';
-  var activeCount = 0, totalCount = 0;
-  var monthsSeen = {};
+  var html = '', activeCount = 0, totalCount = 0;
+  var monthMap = {}, monthKeys = [];
 
-  // Grid is filled column-by-column (week by week), rows = Mon(0)–Sun(6)
+  // Fill column by column
   for (var week = 0; week < 13; week++) {
-    for (var dow2 = 0; dow2 < 7; dow2++) {
-      var cellDate = new Date(startDate);
-      cellDate.setDate(startDate.getDate() + week * 7 + dow2);
+    for (var day = 0; day < 7; day++) {
+      var cellDate = new Date(start);
+      cellDate.setDate(start.getDate() + week*7 + day);
       if (cellDate > today) {
-        html += '<div class="pv-heat-cell" style="background:rgba(255,255,255,.02);"></div>';
+        html += '<div class="pv-hm-cell" style="opacity:.2;"></div>';
         continue;
       }
       var ds = cellDate.toDateString();
@@ -14969,26 +15032,28 @@ function renderPvHeatmap() {
       if (worked) activeCount++;
       totalCount++;
       var lv = worked ? 'lv3' : '';
-      var delay = (week * 7 + dow2) * 8;
-      html += '<div class="pv-heat-cell ' + lv + '" style="animation-delay:' + delay + 'ms" title="' + cellDate.toLocaleDateString('en-IN',{day:'numeric',month:'short'}) + (worked?' ✓':'') + '"></div>';
-
-      // Track month label position
-      var mKey = cellDate.toLocaleDateString('en-IN', { month: 'short' });
-      if (!monthsSeen[mKey]) { monthsSeen[mKey] = week; }
+      var delay = (week*7+day)*5;
+      var tip  = cellDate.toLocaleDateString('en-IN',{day:'numeric',month:'short',weekday:'short'}) + (worked?' ✓ Trained':'');
+      html += '<div class="pv-hm-cell '+lv+'" style="animation-delay:'+delay+'ms" title="'+tip+'"></div>';
+      var mk = cellDate.toLocaleDateString('en-IN',{month:'short'});
+      if (!monthMap[mk]) { monthMap[mk] = week; monthKeys.push(mk); }
     }
   }
+
   grid.innerHTML = html;
+  if (months) months.innerHTML = monthKeys.slice(-4).map(function(m){ return '<span class="pv-hm-ml">'+m+'</span>'; }).join('');
 
-  // Month labels
-  if (months) {
-    var mHtml = Object.keys(monthsSeen).slice(-4).map(function(m) {
-      return '<span class="pv-heat-month-lbl">' + m + '</span>';
-    }).join('');
-    months.innerHTML = mHtml;
+  var pct = totalCount ? Math.round(activeCount/totalCount*100) : 0;
+  if (rtxt) rtxt.textContent = pct + '%';
+  if (ring) {
+    var circum = 125.6; // 2π×20
+    var offset = circum - (pct/100)*circum;
+    ring.style.strokeDashoffset = circum; // start at 0
+    requestAnimationFrame(function(){ setTimeout(function(){ ring.style.strokeDashoffset = offset; }, 100); });
+    // Color by consistency level
+    ring.style.stroke = pct >= 70 ? '#22c55e' : pct >= 40 ? '#7c3aed' : '#ef4444';
+    if (rtxt) rtxt.style.fill = pct >= 70 ? '#4ade80' : pct >= 40 ? '#a78bfa' : '#f87171';
   }
-
-  var pct = totalCount > 0 ? Math.round(activeCount / totalCount * 100) : 0;
-  if (statEl) { statEl.textContent = pct + '%'; }
 }
 
 function _populateDashWeek() {
@@ -18302,108 +18367,239 @@ label:has(#inclSalad:checked) {
   animation: confettiFall linear forwards;
 }
 
-/* ── PROGRESS VISUALIZATION ───────────────────────────────────────── */
-@keyframes pvLineGrow { from{stroke-dashoffset:1000} to{stroke-dashoffset:0} }
-@keyframes pvDotPop   { 0%{r:0;opacity:0} 80%{r:5px} 100%{r:4px;opacity:1} }
-@keyframes pvFadeUp   { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
-@keyframes pvCellIn   { from{transform:scale(0);opacity:0} to{transform:scale(1);opacity:1} }
+/* ══════════════════════════════════════════════════════════════════
+   PROGRESS VISUALIZATION — PREMIUM REDESIGN
+   ══════════════════════════════════════════════════════════════════ */
+@keyframes pvLineGrow  { from{stroke-dashoffset:2000} to{stroke-dashoffset:0} }
+@keyframes pvFadeSlide { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+@keyframes pvCellPop   { 0%{transform:scale(0);opacity:0} 70%{transform:scale(1.1)} 100%{transform:scale(1);opacity:1} }
+@keyframes pvPulseGlow { 0%,100%{opacity:.6} 50%{opacity:1} }
+@keyframes pvCountUp   { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
+@keyframes pvRingFill  { from{stroke-dashoffset:251} to{stroke-dashoffset:var(--ring-offset)} }
+@keyframes pvShimmer   { 0%{left:-100%} 100%{left:200%} }
+@keyframes pvGlowPulse { 0%,100%{filter:drop-shadow(0 0 4px currentColor)} 50%{filter:drop-shadow(0 0 12px currentColor)} }
 
-#dash-progress-viz { margin-top: 20px; animation: pvFadeUp .5s ease; }
-.dash-pv-header { margin-bottom: 14px; }
-.dash-pv-title { font-family: 'Barlow Condensed', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); }
-.dash-pv-sub { font-size: 11px; color: rgba(255,255,255,.3); margin-top: 2px; }
+/* Section wrapper */
+#dash-progress-viz {
+  margin-top: 24px;
+  animation: pvFadeSlide .6s cubic-bezier(.34,1.56,.64,1) both;
+}
+.dash-pv-section-hdr {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 16px;
+}
+.dash-pv-section-label {
+  display: flex; align-items: center; gap: 8px;
+}
+.dash-pv-section-pill {
+  background: linear-gradient(135deg,rgba(124,58,237,.25),rgba(109,40,217,.15));
+  border: 1px solid rgba(124,58,237,.35);
+  border-radius: 20px; padding: 3px 10px;
+  font-size: 9px; font-weight: 800; letter-spacing: 1.5px;
+  text-transform: uppercase; color: #c4b5fd;
+}
+.dash-pv-section-title {
+  font-size: 18px; font-weight: 800; color: #fff;
+  letter-spacing: -.3px;
+}
+.dash-pv-section-sub { font-size: 11px; color: rgba(255,255,255,.35); margin-top: 1px; }
 
+/* 2-col grid */
 .dash-pv-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 12px;
+  gap: 14px;
 }
-@media(max-width:640px) { .dash-pv-grid { grid-template-columns: 1fr; } }
+@media(max-width:600px) { .dash-pv-grid { grid-template-columns: 1fr; } }
 
+/* Base card */
 .dash-pv-card {
-  background: var(--card);
-  border: 1px solid rgba(255,255,255,.06);
-  border-radius: 14px;
-  padding: 16px;
+  background: linear-gradient(145deg, rgba(255,255,255,.035), rgba(255,255,255,.015));
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 20px;
+  padding: 18px;
   position: relative;
   overflow: hidden;
-  transition: border-color .2s;
+  transition: transform .2s, border-color .2s, box-shadow .2s;
 }
-.dash-pv-card:hover { border-color: rgba(255,255,255,.12); }
+.dash-pv-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(255,255,255,.15);
+  box-shadow: 0 12px 40px rgba(0,0,0,.35);
+}
+/* Colour stripe at top */
+.dash-pv-card::after {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  border-radius: 20px 20px 0 0;
+}
+#pv-weight-card::after { background: linear-gradient(90deg,#f59e0b,#fcd34d,#f59e0b); }
+#pv-streak-card::after { background: linear-gradient(90deg,#ef4444,#f97316,#ef4444); }
+#pv-muscle-card::after { background: linear-gradient(90deg,#22c55e,#86efac,#22c55e); }
+#pv-heat-card::after   { background: linear-gradient(90deg,#7c3aed,#a78bfa,#7c3aed); }
+/* Subtle glow in bg */
 .dash-pv-card::before {
   content: '';
-  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  position: absolute; inset: 0;
+  pointer-events: none; border-radius: 20px;
 }
-#pv-weight-card::before  { background: linear-gradient(90deg,#f59e0b,#d97706); }
-#pv-streak-card::before  { background: linear-gradient(90deg,#dc2626,#991b1b); }
-#pv-muscle-card::before  { background: linear-gradient(90deg,#22c55e,#16a34a); }
-#pv-heat-card::before    { background: linear-gradient(90deg,#7c3aed,#6d28d9); }
+#pv-weight-card::before { background: radial-gradient(ellipse at top left, rgba(245,158,11,.07) 0%, transparent 60%); }
+#pv-streak-card::before { background: radial-gradient(ellipse at top left, rgba(239,68,68,.07) 0%, transparent 60%); }
+#pv-muscle-card::before { background: radial-gradient(ellipse at top left, rgba(34,197,94,.07) 0%, transparent 60%); }
+#pv-heat-card::before   { background: radial-gradient(ellipse at top left, rgba(124,58,237,.07) 0%, transparent 60%); }
 
-.dash-pv-card-hdr { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 12px; }
-.dash-pv-card-title { font-size: 13px; font-weight: 700; color: #fff; margin-bottom: 2px; }
-.dash-pv-card-sub { font-size: 10px; color: var(--muted); }
-.dash-pv-card-stat { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: var(--gold); white-space: nowrap; }
+/* Card header */
+.pv-card-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 14px; }
+.pv-card-icon-wrap {
+  width: 36px; height: 36px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; flex-shrink: 0;
+}
+#pv-weight-card .pv-card-icon-wrap { background: rgba(245,158,11,.15); }
+#pv-streak-card .pv-card-icon-wrap { background: rgba(239,68,68,.15); }
+#pv-muscle-card .pv-card-icon-wrap { background: rgba(34,197,94,.15); }
+#pv-heat-card   .pv-card-icon-wrap { background: rgba(124,58,237,.15); }
+.pv-card-labels { flex: 1; margin-left: 10px; }
+.pv-card-title { font-size: 13px; font-weight: 700; color: rgba(255,255,255,.9); line-height: 1.2; }
+.pv-card-sub   { font-size: 10px; color: rgba(255,255,255,.35); margin-top: 2px; }
+.pv-card-stat-wrap { text-align: right; }
+.pv-big-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 26px; font-weight: 700; line-height: 1;
+  letter-spacing: -.5px;
+  animation: pvCountUp .5s ease;
+}
+#pv-weight-card .pv-big-num { color: #fbbf24; }
+#pv-streak-card .pv-big-num { color: #f87171; }
+#pv-muscle-card .pv-big-num { color: #4ade80; }
+#pv-heat-card   .pv-big-num { color: #a78bfa; }
+.pv-trend-badge {
+  display: inline-flex; align-items: center; gap: 3px;
+  font-size: 10px; font-weight: 700; padding: 2px 7px;
+  border-radius: 20px; margin-top: 4px;
+}
+.pv-trend-badge.down { background: rgba(34,197,94,.15); color: #4ade80; }
+.pv-trend-badge.up   { background: rgba(239,68,68,.15);  color: #f87171; }
+.pv-trend-badge.neu  { background: rgba(255,255,255,.06); color: rgba(255,255,255,.4); }
 
-.dash-pv-svg { width: 100%; height: 110px; overflow: visible; display: block; }
+/* SVG charts */
+.dash-pv-svg { width: 100%; overflow: visible; display: block; }
 
 /* Weight log input */
-.pv-weight-input-row { display: flex; gap: 8px; margin-top: 10px; }
-.pv-inp { flex: 1; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1); border-radius: 8px; padding: 7px 10px; color: #fff; font-size: 13px; min-width: 0; }
-.pv-inp:focus { outline: none; border-color: rgba(245,158,11,.5); }
-.pv-log-btn { background: linear-gradient(135deg,#f59e0b,#d97706); border: none; border-radius: 8px; color: #1a0a00; font-size: 12px; font-weight: 800; padding: 7px 14px; cursor: pointer; white-space: nowrap; }
-.pv-log-btn:hover { filter: brightness(1.1); }
-
-/* Streak calendar */
-.pv-streak-cal { display: grid; grid-template-columns: repeat(10,1fr); gap: 4px; margin-bottom: 8px; }
-.pv-streak-cell {
-  aspect-ratio: 1;
-  border-radius: 4px;
-  background: rgba(255,255,255,.06);
-  border: 1px solid rgba(255,255,255,.05);
-  position: relative;
-  cursor: default;
-  animation: pvCellIn .3s ease both;
+.pv-log-row {
+  display: flex; gap: 8px; margin-top: 14px;
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 12px; padding: 10px 12px;
+  align-items: center;
 }
-.pv-streak-cell.ci  { background: rgba(22,163,74,.45);  border-color: rgba(22,163,74,.3);  }
-.pv-streak-cell.wk  { background: rgba(220,38,38,.65);  border-color: rgba(220,38,38,.4);  }
-.pv-streak-cell.both{ background: rgba(245,158,11,.8);  border-color: rgba(245,158,11,.5); }
-.pv-streak-cell .pv-cell-tip { display: none; position: absolute; bottom: calc(100% + 4px); left: 50%; transform: translateX(-50%); background: rgba(0,0,0,.85); color: #fff; font-size: 9px; white-space: nowrap; padding: 3px 6px; border-radius: 4px; z-index: 100; pointer-events: none; }
-.pv-streak-cell:hover .pv-cell-tip { display: block; }
-.pv-streak-legend { display: flex; gap: 12px; flex-wrap: wrap; }
-.pv-leg-item { display: flex; align-items: center; gap: 4px; font-size: 10px; color: var(--muted); }
-.pv-leg-dot { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
-.pv-leg-line { width: 18px; height: 3px; border-radius: 2px; flex-shrink: 0; }
+.pv-log-row input {
+  flex: 1; background: none; border: none; outline: none;
+  color: #fff; font-size: 14px; min-width: 0;
+}
+.pv-log-row input::placeholder { color: rgba(255,255,255,.3); }
+.pv-log-row button {
+  background: linear-gradient(135deg,#f59e0b,#d97706);
+  border: none; border-radius: 8px; padding: 6px 14px;
+  color: #1a0800; font-size: 12px; font-weight: 800;
+  cursor: pointer; position: relative; overflow: hidden;
+}
+.pv-log-row button::after {
+  content:''; position:absolute; top:0; left:-100%; width:60%; height:100%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.3),transparent);
+  animation: pvShimmer 2s infinite;
+}
 
-/* Muscle chart legend */
-.pv-muscle-legend { display: flex; gap: 12px; margin-top: 8px; flex-wrap: wrap; }
-
-/* Consistency heatmap */
-.pv-heat-grid {
+/* Streak calendar grid */
+.pv-cal-grid {
   display: grid;
-  grid-template-columns: repeat(13, 1fr);
-  grid-template-rows: repeat(7, 1fr);
-  gap: 2.5px;
+  grid-template-columns: 16px repeat(10,1fr);
+  gap: 3px;
   margin-bottom: 6px;
 }
-.pv-heat-cell {
-  aspect-ratio: 1;
-  border-radius: 2px;
-  background: rgba(255,255,255,.05);
-  animation: pvCellIn .25s ease both;
+.pv-cal-month-row {
+  display: grid;
+  grid-template-columns: 16px repeat(10,1fr);
+  gap: 3px;
+  margin-bottom: 6px;
 }
-.pv-heat-cell.lv1 { background: rgba(124,58,237,.3); }
-.pv-heat-cell.lv2 { background: rgba(124,58,237,.55); }
-.pv-heat-cell.lv3 { background: rgba(124,58,237,.8); }
-.pv-heat-cell.lv4 { background: rgba(124,58,237,1); box-shadow: 0 0 4px rgba(124,58,237,.5); }
-.pv-heat-day-labels { display: flex; flex-direction: column; gap: 2.5px; margin-right: 4px; }
-.pv-heat-wrap { display: flex; align-items: flex-start; }
-.pv-heat-day-lbl { font-size: 8px; color: rgba(255,255,255,.25); height: auto; display: flex; align-items: center; aspect-ratio: 1; }
-.pv-heat-bottom { display: flex; justify-content: space-between; margin-top: 4px; }
-.pv-heat-month-lbl { font-size: 9px; color: rgba(255,255,255,.3); }
+.pv-cal-ml { font-size: 8px; color: rgba(255,255,255,.3); text-align: center; }
+.pv-cal-dl { font-size: 7px; color: rgba(255,255,255,.25); display: flex; align-items: center; justify-content: center; }
+.pv-cal-cell {
+  aspect-ratio: 1; border-radius: 5px;
+  background: rgba(255,255,255,.05);
+  border: 1px solid rgba(255,255,255,.04);
+  cursor: default; position: relative;
+  transition: transform .15s;
+  animation: pvCellPop .25s ease both;
+}
+.pv-cal-cell:hover { transform: scale(1.3); z-index: 5; }
+.pv-cal-cell.ci   { background: rgba(34,197,94,.4);   border-color: rgba(34,197,94,.3); }
+.pv-cal-cell.wk   { background: rgba(239,68,68,.65);  border-color: rgba(239,68,68,.4); }
+.pv-cal-cell.both { background: rgba(245,158,11,.85); border-color: rgba(245,158,11,.6); box-shadow: 0 0 6px rgba(245,158,11,.4); }
+.pv-cal-cell .pv-tt {
+  display: none; position: absolute; bottom: calc(100% + 5px); left: 50%;
+  transform: translateX(-50%); background: rgba(10,10,20,.95);
+  border: 1px solid rgba(255,255,255,.1); color: #fff;
+  font-size: 9px; white-space: nowrap; padding: 4px 8px;
+  border-radius: 6px; z-index: 200; pointer-events: none;
+  box-shadow: 0 4px 12px rgba(0,0,0,.5);
+}
+.pv-cal-cell:hover .pv-tt { display: block; }
+.pv-legend-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 8px; }
+.pv-leg { display: flex; align-items: center; gap: 5px; font-size: 10px; color: rgba(255,255,255,.4); }
+.pv-leg-sq { width: 10px; height: 10px; border-radius: 3px; }
+
+/* Measurement chip row */
+.pv-meas-chips { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
+.pv-meas-chip {
+  display: flex; align-items: center; gap: 5px;
+  background: rgba(255,255,255,.06); border-radius: 20px;
+  padding: 4px 10px; font-size: 11px;
+}
+.pv-meas-chip-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.pv-meas-chip-val { color: #fff; font-weight: 700; }
+.pv-meas-chip-lbl { color: rgba(255,255,255,.4); }
+
+/* Heatmap */
+.pv-hm-wrap { position: relative; }
+.pv-hm-days {
+  display: flex; flex-direction: column;
+  gap: 2px; position: absolute; left: 0; top: 0; bottom: 0;
+  width: 14px; justify-content: space-around;
+}
+.pv-hm-dl { font-size: 7px; color: rgba(255,255,255,.25); }
+.pv-hm-inner { margin-left: 18px; }
+.pv-hm-grid {
+  display: grid;
+  grid-template-columns: repeat(13,1fr);
+  grid-template-rows: repeat(7,1fr);
+  gap: 2px;
+  margin-bottom: 4px;
+}
+.pv-hm-cell {
+  aspect-ratio: 1; border-radius: 2px;
+  background: rgba(255,255,255,.04);
+  transition: transform .1s;
+  animation: pvCellPop .2s ease both;
+}
+.pv-hm-cell:hover { transform: scale(1.5); z-index: 5; }
+.pv-hm-cell.lv1 { background: rgba(124,58,237,.22); }
+.pv-hm-cell.lv2 { background: rgba(124,58,237,.45); }
+.pv-hm-cell.lv3 { background: rgba(124,58,237,.7); }
+.pv-hm-cell.lv4 { background: rgba(124,58,237,.95); box-shadow: 0 0 4px rgba(124,58,237,.5); }
+.pv-hm-months { display: flex; justify-content: space-between; margin-top: 3px; }
+.pv-hm-ml { font-size: 8px; color: rgba(255,255,255,.28); }
+
+/* Ring chart for consistency % */
+.pv-ring-wrap { display: flex; align-items: center; justify-content: center; margin-bottom: 10px; }
+.pv-ring-num { font-size: 20px; font-weight: 800; color: #a78bfa; }
+.pv-ring-lbl { font-size: 9px; color: rgba(255,255,255,.35); text-align: center; margin-top: 1px; }
 
 /* Empty state */
-.pv-empty { text-align: center; padding: 20px 10px; color: var(--muted); font-size: 11px; }
-.pv-empty-icon { font-size: 28px; margin-bottom: 6px; }
+.pv-empty { text-align: center; padding: 24px 10px; }
+.pv-empty-icon { font-size: 32px; margin-bottom: 8px; filter: grayscale(.4); }
+.pv-empty-text { font-size: 11px; color: rgba(255,255,255,.3); line-height: 1.5; }
 </style>
 
 <!-- ═══════════════════════════════════════════════════════════
