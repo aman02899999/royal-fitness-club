@@ -3471,6 +3471,32 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
     <!-- Weekly workout calendar -->
     <div class="dash-week-row" id="dash-week-row"></div>
 
+    <!-- STREAK HERO CARD -->
+    <div id="streak-hero" style="display:none;">
+      <div class="sh-top">
+        <div class="sh-flame-row">
+          <span class="sh-flame-big">🔥</span>
+          <div>
+            <div class="sh-num" id="sh-num">0</div>
+            <div class="sh-label">Day Streak</div>
+          </div>
+        </div>
+        <div class="sh-best">
+          <div class="sh-best-val" id="sh-best-val">0</div>
+          <div class="sh-best-lbl">Best Ever</div>
+        </div>
+      </div>
+      <!-- Milestone dots -->
+      <div class="sh-milestones" id="sh-milestones"></div>
+      <!-- 30-day streak calendar -->
+      <div class="sh-cal" id="sh-cal"></div>
+      <!-- Check-in row -->
+      <div class="sh-checkin-row" style="margin-top:12px;" id="sh-checkin-row">
+        <button class="sh-checkin-btn" id="sh-checkin-btn" onclick="streakCheckIn()">🔥 Check In Today</button>
+        <button class="sh-freeze-btn" id="sh-freeze-btn" onclick="useStreakFreeze()" title="Use Streak Freeze to protect your streak for 1 day">❄️ Freeze</button>
+      </div>
+    </div>
+
     <!-- Android App Download Banner -->
     <!-- Upgrade nudge — shown only to free-plan users via JS -->
     <div id="dash-upgrade-nudge">
@@ -17515,6 +17541,83 @@ label:has(#inclSalad:checked) {
 }
 .ayur-dietplan-btn:hover { opacity: 0.9; }
 
+/* ── STREAK SYSTEM ── */
+
+/* Loss-aversion warning banner (fixed top) */
+#streak-warn-bar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 28000;
+  background: linear-gradient(135deg,#DC2626,#B91C1C);
+  color: #fff; padding: 10px 16px;
+  display: none; align-items: center; gap: 10px;
+  font-size: 13px; font-weight: 600;
+  box-shadow: 0 4px 20px rgba(220,38,38,.4);
+  animation: warnSlideDown .4s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes warnSlideDown { from{transform:translateY(-100%)} to{transform:translateY(0)} }
+#streak-warn-bar .swb-flame { font-size: 20px; animation: flamePulse 1s infinite; }
+@keyframes flamePulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.2)} }
+#streak-warn-bar .swb-text { flex: 1; }
+#streak-warn-bar .swb-countdown { font-size: 11px; opacity:.85; }
+#streak-warn-bar .swb-btn { background:rgba(255,255,255,.2); border:1px solid rgba(255,255,255,.4); color:#fff; border-radius:8px; padding:6px 12px; font-size:12px; font-weight:700; cursor:pointer; white-space:nowrap; flex-shrink:0; }
+#streak-warn-bar .swb-close { background:none; border:none; color:#fff; font-size:18px; cursor:pointer; opacity:.7; padding:0 4px; flex-shrink:0; }
+
+/* Streak hero card on dashboard */
+#streak-hero {
+  background: linear-gradient(135deg,#1C0A00,#3B0000);
+  border: 1px solid rgba(239,68,68,.3);
+  border-radius: 20px; padding: 18px; margin-bottom: 16px;
+  position: relative; overflow: hidden;
+}
+#streak-hero::before {
+  content: '🔥'; position: absolute; right: -10px; top: -10px;
+  font-size: 80px; opacity: .08; line-height: 1;
+  pointer-events: none;
+}
+.sh-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.sh-flame-row { display: flex; align-items: center; gap: 10px; }
+.sh-flame-big { font-size: 40px; animation: flamePulse 2s infinite; }
+.sh-num { font-size: 42px; font-weight: 900; color: #fff; line-height: 1; font-family: 'Bebas Neue', sans-serif; }
+.sh-label { font-size: 11px; color: rgba(255,255,255,.5); letter-spacing: 2px; text-transform: uppercase; }
+.sh-best { text-align: right; }
+.sh-best-val { font-size: 20px; font-weight: 800; color: rgba(255,255,255,.7); }
+.sh-best-lbl { font-size: 9px; color: rgba(255,255,255,.4); letter-spacing: 1.5px; text-transform: uppercase; }
+
+/* Streak milestone progress */
+.sh-milestones { display: flex; gap: 6px; margin-bottom: 12px; overflow-x: auto; padding-bottom: 2px; }
+.sh-mile { flex-shrink: 0; display: flex; flex-direction: column; align-items: center; gap: 3px; }
+.sh-mile-dot { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; border: 2px solid rgba(255,255,255,.1); background: rgba(255,255,255,.05); }
+.sh-mile-dot.done { background: linear-gradient(135deg,#EF4444,#DC2626); border-color: #EF4444; }
+.sh-mile-dot.next { border-color: rgba(239,68,68,.5); animation: milePulse 1.5s infinite; }
+@keyframes milePulse { 0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,.4)} 50%{box-shadow:0 0 0 6px rgba(239,68,68,0)} }
+.sh-mile-lbl { font-size: 8px; color: rgba(255,255,255,.4); }
+
+/* Today check-in status */
+.sh-checkin-row { display: flex; align-items: center; gap: 8px; }
+.sh-checkin-done { display: flex; align-items: center; gap: 6px; color: #4ADE80; font-size: 13px; font-weight: 700; }
+.sh-checkin-btn { flex: 1; background: linear-gradient(135deg,#EF4444,#DC2626); color:#fff; border:none; border-radius:12px; padding:12px; font-size:13px; font-weight:700; cursor:pointer; letter-spacing:.3px; }
+.sh-freeze-btn { background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.15); color:rgba(255,255,255,.7); border-radius:12px; padding:12px 14px; font-size:11px; font-weight:700; cursor:pointer; white-space:nowrap; }
+.sh-freeze-btn.used { opacity:.4; cursor:not-allowed; }
+
+/* Streak calendar (last 30 days) */
+.sh-cal { display: grid; grid-template-columns: repeat(10,1fr); gap: 4px; margin-top: 12px; }
+.sh-cal-dot { height: 8px; border-radius: 2px; background: rgba(255,255,255,.08); }
+.sh-cal-dot.on { background: #EF4444; }
+.sh-cal-dot.freeze { background: #60A5FA; }
+
+/* Streak freeze toast */
+.freeze-badge { display: inline-flex; align-items: center; gap: 4px; background: rgba(96,165,250,.15); border: 1px solid rgba(96,165,250,.3); border-radius: 20px; padding: 2px 8px; font-size: 10px; color: #60A5FA; font-weight: 700; margin-left: 6px; }
+
+/* Streak milestone celebration */
+#streak-milestone-overlay { position:fixed; inset:0; background:rgba(0,0,0,.75); z-index:41000; display:none; align-items:center; justify-content:center; backdrop-filter:blur(8px); }
+#streak-milestone-overlay.show { display:flex; }
+.smo-card { background:linear-gradient(135deg,#1C0A00,#3B0000); border:1px solid rgba(239,68,68,.4); border-radius:28px; padding:36px 28px; text-align:center; max-width:300px; width:90%; box-shadow:0 24px 80px rgba(220,38,38,.4); animation:levelupBounce .5s cubic-bezier(.34,1.56,.64,1); }
+.smo-flame { font-size:64px; display:block; margin-bottom:8px; animation:flamePulse 1s infinite; }
+.smo-days { font-size:56px; font-weight:900; color:#EF4444; font-family:'Bebas Neue',sans-serif; line-height:1; }
+.smo-label { font-size:11px; color:rgba(255,255,255,.5); letter-spacing:2px; text-transform:uppercase; margin-bottom:4px; }
+.smo-title { font-size:20px; font-weight:800; color:#fff; margin-bottom:6px; }
+.smo-sub { font-size:12px; color:rgba(255,255,255,.6); line-height:1.5; margin-bottom:20px; }
+.smo-btn { background:linear-gradient(135deg,#EF4444,#DC2626); color:#fff; border:none; border-radius:14px; padding:13px 32px; font-size:14px; font-weight:700; cursor:pointer; width:100%; }
+
 /* ── GAMIFICATION: XP & LEVEL SYSTEM ── */
 .xp-bar-wrap { background: rgba(124,58,237,.06); border: 1px solid rgba(124,58,237,.15); border-radius: 16px; padding: 14px 16px; margin-bottom: 16px; }
 .xp-bar-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
@@ -17999,6 +18102,287 @@ label:has(#inclSalad:checked) {
   }
 })();
 
+// ── STREAK SYSTEM WITH LOSS AVERSION ────────────────────────────────────────
+(function(){
+  const MILESTONES = [
+    { days:3,   icon:'🌱', title:'3-Day Habit Seed',     sub:'A habit is starting to form. Don\'t stop now!',         xp:'streak_3'  },
+    { days:7,   icon:'🔥', title:'One Week Strong!',     sub:'You\'ve built a real habit. The hardest part is over!', xp:'streak_7'  },
+    { days:14,  icon:'⚡', title:'Two Week Warrior!',    sub:'14 days of pure discipline. You\'re unstoppable.',      xp:null        },
+    { days:21,  icon:'💎', title:'21-Day Beast Mode!',   sub:'Science says 21 days makes a habit. You\'re wired now!',xp:null        },
+    { days:30,  icon:'👑', title:'30-Day Legend!',       sub:'One month of consistency. You\'re in the top 5% now!',  xp:'streak_30' },
+    { days:60,  icon:'🏆', title:'60-Day Warrior King!', sub:'Two months of fire. Absolute elite level reached!',     xp:null        },
+    { days:100, icon:'🌟', title:'100-Day Immortal!',    sub:'100 days! You are now a Royal Fitness Legend.',         xp:null        },
+  ];
+
+  // ── Storage helpers ─────────────────────────────────────────────
+  function getSD(){
+    try{ return JSON.parse(localStorage.getItem('rfc_streak_data')||'{}'); }
+    catch(e){ return {}; }
+  }
+  function saveSD(d){ localStorage.setItem('rfc_streak_data', JSON.stringify(d)); }
+
+  function getStreak(){
+    const d = getSD();
+    return { streak: d.streak||0, best: d.best||0, lastCI: d.lastCI||null,
+             history: d.history||[], freezes: d.freezes||1, freezeUsedDate: d.freezeUsedDate||null };
+  }
+
+  function todayStr(){ return new Date().toDateString(); }
+  function yesterdayStr(){ return new Date(Date.now()-86400000).toDateString(); }
+
+  // ── Core check-in ───────────────────────────────────────────────
+  window.streakCheckIn = function(){
+    if(!user){ forceLogin(); return; }
+    const sd = getStreak();
+    const today = todayStr();
+
+    if(sd.lastCI === today){
+      toast('✅ Already checked in today! Streak: '+sd.streak+' days 🔥','gold');
+      return;
+    }
+
+    // Increment or reset streak
+    let newStreak = 1;
+    if(sd.lastCI === yesterdayStr()){
+      newStreak = sd.streak + 1;
+    } else if(sd.lastCI){
+      // Broken streak — show loss
+      const lostStreak = sd.streak;
+      if(lostStreak > 2){
+        toast(`💔 You lost your ${lostStreak}-day streak. Starting fresh — don\'t let it happen again!`,'red');
+      }
+    }
+
+    const newBest = Math.max(sd.best, newStreak);
+    const today8601 = new Date().toISOString().split('T')[0];
+    const history = [...(sd.history||[]), today8601].slice(-90);
+
+    const newSD = { streak: newStreak, best: newBest, lastCI: today,
+                    history, freezes: sd.freezes, freezeUsedDate: sd.freezeUsedDate };
+    saveSD(newSD);
+    localStorage.setItem('bm_streak', newStreak); // compat with push notif system
+
+    // Sync with old pd system too
+    pd.streak = newStreak; pd.lastCI = today; savePD();
+
+    // Dismiss warning bar
+    const wb = document.getElementById('streak-warn-bar');
+    if(wb) wb.style.display = 'none';
+
+    renderStreakHero();
+    updateDashStreak(newStreak);
+
+    // XP award
+    if(window.awardXP) window.awardXP('checkin');
+
+    // Milestone check
+    const ms = MILESTONES.find(m => m.days === newStreak);
+    if(ms){
+      setTimeout(()=>showMilestone(ms, newStreak), 600);
+      if(ms.xp && window.awardXP) setTimeout(()=>window.awardXP(ms.xp), 1200);
+    } else {
+      toast(`🔥 ${newStreak}-day streak! Keep the fire alive!`,'green');
+    }
+
+    // Push notification scheduled content update
+    if(window.AnalyticsService) window.AnalyticsService.trackEvent('checkin',{streak:newStreak}).catch(()=>{});
+    syncLeaderboard({streak:newStreak});
+    if(user?.uid && window.TransformationService)
+      window.TransformationService.saveActivityData(user.uid,{streak:newStreak}).catch(()=>{});
+  };
+
+  // ── Streak Freeze ───────────────────────────────────────────────
+  window.useStreakFreeze = function(){
+    if(!user){ forceLogin(); return; }
+    const sd = getStreak();
+
+    if(!isPro){
+      toast('❄️ Streak Freeze is a PRO feature — upgrade to protect your streak!','gold');
+      openModal('promodal'); return;
+    }
+
+    const today = todayStr();
+    if(sd.freezeUsedDate === today){
+      toast('❄️ Freeze already used today!','gold'); return;
+    }
+    if(sd.freezes < 1){
+      toast('❄️ No freezes left this month. Earn more by reaching 30-day milestone!','gold'); return;
+    }
+    if(sd.lastCI === today){
+      toast('✅ Already checked in — no freeze needed!','gold'); return;
+    }
+
+    // Apply freeze: maintain streak, mark today with freeze
+    const today8601 = new Date().toISOString().split('T')[0];
+    const history = [...(sd.history||[]), 'freeze:'+today8601].slice(-90);
+    const newSD = { ...sd, lastCI: today, freezeUsedDate: today, freezes: sd.freezes-1, history };
+    saveSD(newSD);
+    pd.lastCI = today; savePD();
+
+    renderStreakHero();
+    const wb = document.getElementById('streak-warn-bar');
+    if(wb) wb.style.display = 'none';
+
+    toast(`❄️ Streak Freeze used! Your ${sd.streak}-day streak is safe. ${newSD.freezes} freeze(s) left.`,'blue');
+  };
+
+  // ── Render streak hero card ─────────────────────────────────────
+  window.renderStreakHero = function(){
+    const hero = document.getElementById('streak-hero');
+    if(!hero || !user) return;
+
+    const sd = getStreak();
+    hero.style.display = 'block';
+
+    document.getElementById('sh-num').textContent = sd.streak;
+    document.getElementById('sh-best-val').textContent = sd.best;
+
+    // Milestone dots
+    const mileEl = document.getElementById('sh-milestones');
+    if(mileEl){
+      mileEl.innerHTML = MILESTONES.map(m=>{
+        const done = sd.streak >= m.days;
+        const next = !done && sd.streak < m.days && MILESTONES.find(x=>x.days>sd.streak)?.days===m.days;
+        return `<div class="sh-mile">
+          <div class="sh-mile-dot ${done?'done':''} ${next?'next':''}">${done?'✓':m.icon}</div>
+          <div class="sh-mile-lbl">${m.days}d</div>
+        </div>`;
+      }).join('');
+    }
+
+    // 30-day calendar
+    const cal = document.getElementById('sh-cal');
+    if(cal){
+      const today8601 = new Date().toISOString().split('T')[0];
+      const dots = [];
+      for(let i=29; i>=0; i--){
+        const d = new Date(Date.now() - i*86400000).toISOString().split('T')[0];
+        const done = sd.history.includes(d);
+        const frozen = sd.history.includes('freeze:'+d);
+        dots.push(`<div class="sh-cal-dot ${done?'on':''} ${frozen?'freeze':''}" title="${d}"></div>`);
+      }
+      cal.innerHTML = dots.join('');
+    }
+
+    // Check-in row
+    const btn = document.getElementById('sh-checkin-btn');
+    const freezeBtn = document.getElementById('sh-freeze-btn');
+    const row = document.getElementById('sh-checkin-row');
+    const today = todayStr();
+
+    if(sd.lastCI === today){
+      if(row) row.innerHTML = `<div class="sh-checkin-done">✅ Checked in today! ${sd.streak > 0?'🔥 '+sd.streak+' day streak!':''}</div>`;
+    } else {
+      if(btn) btn.style.display = '';
+      if(freezeBtn){
+        freezeBtn.classList.toggle('used', sd.freezes < 1);
+        freezeBtn.title = sd.freezes > 0 ? `❄️ Use Streak Freeze (${sd.freezes} left)` : 'No freezes left';
+      }
+    }
+
+    // Update dashboard stat card
+    updateDashStreak(sd.streak);
+  };
+
+  function updateDashStreak(n){
+    const el = document.getElementById('ds-streak');
+    if(el) el.textContent = n + (n===1?' day':' days');
+  }
+
+  // ── Milestone celebration ───────────────────────────────────────
+  function showMilestone(ms, days){
+    const overlay = document.getElementById('streak-milestone-overlay');
+    if(!overlay) return;
+    document.getElementById('smo-days').textContent = days;
+    document.getElementById('smo-title').textContent = ms.title;
+    document.getElementById('smo-sub').textContent   = ms.sub;
+    overlay.classList.add('show');
+
+    // Push notification
+    if(window.sendNotif){
+      sendNotif(ms.icon+' '+ms.title, ms.sub+' Keep going! 🔥', 'rfc-streak-milestone');
+    }
+  }
+
+  // ── Loss aversion warning banner ────────────────────────────────
+  function checkStreakWarning(){
+    if(!user) return;
+    const sd = getStreak();
+    if(sd.streak < 2) return; // only warn if streak worth protecting
+    if(sd.lastCI === todayStr()) return; // already checked in
+
+    const now = new Date();
+    const h = now.getHours();
+    if(h < 18) return; // only show warning from 6 PM onwards
+
+    // Calculate time remaining until midnight
+    const midnight = new Date(now);
+    midnight.setHours(24,0,0,0);
+    const msLeft = midnight - now;
+    const hLeft = Math.floor(msLeft/3600000);
+    const mLeft = Math.floor((msLeft%3600000)/60000);
+    const timeStr = hLeft > 0 ? `${hLeft}h ${mLeft}m` : `${mLeft} min`;
+
+    const bar = document.getElementById('streak-warn-bar');
+    const countdown = document.getElementById('swb-countdown');
+    const msg = document.getElementById('swb-msg');
+    if(!bar) return;
+
+    if(msg) msg.innerHTML = `⚠️ Your <strong>${sd.streak}-day streak</strong> expires in <strong>${timeStr}</strong> — check in before midnight!`;
+    if(countdown) countdown.textContent = timeStr;
+    bar.style.display = 'flex';
+
+    // Escalating urgency color
+    if(hLeft < 2){
+      bar.style.background = 'linear-gradient(135deg,#7C3AED,#6D28D9)';
+    } else if(hLeft < 4){
+      bar.style.background = 'linear-gradient(135deg,#B45309,#92400E)';
+    }
+  }
+
+  // ── Init & hooks ────────────────────────────────────────────────
+  window.initStreakSystem = function(){
+    if(!user) return;
+
+    // Migrate from old pd system if streak data exists there
+    const sd = getSD();
+    if(!sd.streak && pd && pd.streak > 0){
+      const hist = [];
+      const today8601 = new Date().toISOString().split('T')[0];
+      for(let i=0; i<Math.min(pd.streak,30); i++){
+        hist.push(new Date(Date.now()-i*86400000).toISOString().split('T')[0]);
+      }
+      saveSD({ streak:pd.streak, best:pd.streak, lastCI:pd.lastCI, history:hist, freezes:1 });
+    }
+
+    renderStreakHero();
+
+    // Check warning every minute
+    checkStreakWarning();
+    setInterval(checkStreakWarning, 60000);
+  };
+
+  // Patch applyUser
+  const _sApply = window.applyUser;
+  if(typeof _sApply === 'function'){
+    window.applyUser = function(){
+      _sApply.apply(this, arguments);
+      setTimeout(window.initStreakSystem, 700);
+    };
+  }
+
+  // Patch old btncheckin to also call our system (belt + suspenders)
+  document.addEventListener('DOMContentLoaded', ()=>{
+    const oldBtn = document.getElementById('btncheckin');
+    if(oldBtn){
+      // Replace it with our new system's call
+      oldBtn.addEventListener('click', ()=>{
+        if(user && isPro) window.streakCheckIn();
+      });
+    }
+  });
+})();
+
 // ── GAMIFICATION: XP & LEVEL SYSTEM ─────────────────────────────────────────
 (function(){
   const LEVELS = [
@@ -18405,6 +18789,28 @@ label:has(#inclSalad:checked) {
   onload="if(typeof initBioDigital==='function')initBioDigital();"
   onerror="console.info('BioDigital SDK unavailable — postMessage fallback active');"></script>
 <div id="celebration-overlay" style="position:fixed;inset:0;pointer-events:none;z-index:9999;display:none;"></div>
+
+<!-- STREAK LOSS-AVERSION WARNING BAR (fixed top) -->
+<div id="streak-warn-bar">
+  <span class="swb-flame">🔥</span>
+  <div class="swb-text">
+    <span id="swb-msg">Your streak ends in <strong id="swb-countdown">3h 22m</strong> — check in now!</span>
+  </div>
+  <button class="swb-btn" onclick="switchScreen('progress',document.querySelector('[data-screen=progress]'));document.getElementById('streak-warn-bar').style.display='none'">Check In →</button>
+  <button class="swb-close" onclick="this.parentElement.style.display='none'">✕</button>
+</div>
+
+<!-- STREAK MILESTONE CELEBRATION OVERLAY -->
+<div id="streak-milestone-overlay">
+  <div class="smo-card">
+    <span class="smo-flame">🔥</span>
+    <div class="smo-days" id="smo-days">7</div>
+    <div class="smo-label">Day Streak!</div>
+    <div class="smo-title" id="smo-title">One Week Strong!</div>
+    <div class="smo-sub" id="smo-sub">You've built a real habit. The hardest part is over — keep the fire alive!</div>
+    <button class="smo-btn" onclick="document.getElementById('streak-milestone-overlay').classList.remove('show')">🔥 Keep It Burning!</button>
+  </div>
+</div>
 
 <!-- LEVEL UP CELEBRATION OVERLAY -->
 <div id="levelup-overlay">
