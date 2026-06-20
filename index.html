@@ -59,21 +59,13 @@
 <link rel="preload" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@300;400;600;700;900&family=Barlow:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
 <noscript><link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@300;400;600;700;900&family=Barlow:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"></noscript>
 <style>
-:root{
-  /* Brand — Crimson Noir */
-  --red:#c0292e;--orange:#e04045;--gold:#d4a840;
-  /* Pure black backgrounds */
-  --dark:#060608;--card:#0d0d10;--card2:#13131a;
-  /* Borders */
-  --border:rgba(255,255,255,.12);--border2:rgba(255,255,255,.16);
-  /* Typography */
-  --text:#f2f0ed;--muted:#8c8a88;--muted2:#6a6866;
+:root{--red:#7C3AED;--orange:#8B5CF6;--gold:#5B21B6;--green:#059669;--blue:#3B82F6;--dark:#FAF8F5;--card:#FFFFFF;--card2:#F3F0FF;--border:rgba(109,40,217,0.15);--muted:#64748B;--text:#0F0A1A;--violet:#7C3AED;--violet-dark:#5B21B6;--violet-light:#8B5CF6;--violet-pale:#EDE9FE;
   /* Gradients */
-  --pro:linear-gradient(135deg,#d4a840,#c0292e);
-  --fire:linear-gradient(135deg,#c0292e 0%,#e04045 100%);
-  --royal:linear-gradient(135deg,#c0292e 0%,#8a1a1e 100%);
-  /* Status */
-  --green:#10b981;--blue:#22d3ee;--purple:#c0292e;--cyan:#e04045;
+  --pro:linear-gradient(135deg,#7C3AED,#5B21B6);
+  --fire:linear-gradient(135deg,#7C3AED 0%,#8B5CF6 100%);
+  --royal:linear-gradient(135deg,#7C3AED 0%,#5B21B6 100%);
+  /* Extended */
+  --border2:rgba(109,40,217,0.2);--muted2:#94A3B8;--purple:#7C3AED;--cyan:#8B5CF6;
 }
 /* ═══════════════════════════════════════════════
    PREMIUM UI SYSTEM — Royal Fitness Club
@@ -81,17 +73,17 @@
 
 /* ── Premium CSS Variables ── */
 :root {
-  --glass-bg: rgba(255,255,255,0.04);
-  --glass-border: rgba(255,255,255,0.08);
+  --glass-bg: rgba(255,255,255,0.7);
+  --glass-border: rgba(109,40,217,0.15);
   --glass-blur: blur(20px);
-  --glass-shadow: 0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.06);
-  --gold-glow: 0 0 20px rgba(212,168,64,0.3), 0 0 60px rgba(212,168,64,0.1);
-  --red-glow: 0 0 20px rgba(232,0,29,0.3), 0 0 60px rgba(232,0,29,0.1);
-  --green-glow: 0 0 20px rgba(34,197,94,0.3);
+  --glass-shadow: 0 8px 32px rgba(109,40,217,0.1), inset 0 1px 0 rgba(255,255,255,0.9);
+  --gold-glow: 0 0 20px rgba(91,33,182,0.2), 0 0 60px rgba(91,33,182,0.08);
+  --red-glow: 0 0 20px rgba(124,58,237,0.25), 0 0 60px rgba(124,58,237,0.1);
+  --green-glow: 0 0 20px rgba(5,150,105,0.25);
   --premium-transition: all 0.35s cubic-bezier(0.4,0,0.2,1);
-  --lift-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 4px 16px rgba(0,0,0,0.3);
+  --lift-shadow: 0 20px 60px rgba(109,40,217,0.15), 0 4px 16px rgba(0,0,0,0.08);
   --card-radius: 16px;
-  --shine: linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.06) 50%, transparent 60%);
+  --shine: linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.5) 50%, transparent 60%);
 }
 
 /* ── Glassmorphism Base ── */
@@ -14870,6 +14862,440 @@ function saveUpdateStats() {
 @media(max-width:640px){
   footer .container>div:first-child{grid-template-columns:1fr!important;}
 }
+
+/* ═══════════════════════════════════════════════
+   VIOLET + OFF-WHITE THEME OVERRIDES
+═══════════════════════════════════════════════ */
+
+/* Body & page base */
+body { background: #FAF8F5 !important; color: #0F0A1A !important; }
+
+/* Sidebar */
+.sidebar, #sidebar, nav.sidebar {
+  background: linear-gradient(180deg, #F3F0FF 0%, #EDE9FE 100%) !important;
+  border-right: 1px solid rgba(109,40,217,0.12) !important;
+  box-shadow: 4px 0 24px rgba(109,40,217,0.08) !important;
+}
+.mlogo, .logo-wrap { color: #0F0A1A !important; }
+.mlogo span, .logo-sub { color: var(--violet) !important; }
+.mlnk, .nav-item {
+  color: #1A1A2E !important;
+}
+.mlnk:hover, .nav-item:hover {
+  background: rgba(124,58,237,0.08) !important;
+  color: var(--violet) !important;
+}
+.mlnk.active, .nav-item.active {
+  background: rgba(124,58,237,0.12) !important;
+  color: var(--violet) !important;
+}
+.mlico { color: var(--violet) !important; }
+.mltxt { color: var(--violet) !important; }
+
+/* All cards */
+.rcard, .trc, .toolcard, .wkex-card, .dash-stat-card, .pcard,
+.rm-week-card, .rm-setup-card, .hchk, .suppcard, .bfg > div,
+.phbox, .tr3 .trc, .ana-card, .leaderboard-row, .log-entry {
+  background: #FFFFFF !important;
+  border: 1px solid rgba(109,40,217,0.1) !important;
+  color: #0F0A1A !important;
+  box-shadow: 0 2px 12px rgba(109,40,217,0.06) !important;
+}
+.rcard:hover, .trc:hover, .toolcard:hover, .dash-stat-card:hover {
+  box-shadow: 0 8px 32px rgba(109,40,217,0.15) !important;
+  border-color: rgba(124,58,237,0.25) !important;
+}
+
+/* Section backgrounds */
+section { background: #FAF8F5 !important; }
+section:nth-child(even), .bg-card2 {
+  background: #F3F0FF !important;
+}
+#roadmap, #bodyfat, #calculators, #history-sec, #tracker,
+#mealplan, #supplements, #progress, #anatomy {
+  background: #F3F0FF !important;
+}
+
+/* ALL text to dark */
+h1,h2,h3,h4,h5,h6,p,span,div,label,li,td,th,a {
+  color: inherit;
+}
+.sh {
+  font-family: 'Bebas Neue', sans-serif !important;
+  background: linear-gradient(135deg, #0F0A1A 0%, #3B0764 100%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+  filter: none !important;
+}
+.stag {
+  background: linear-gradient(135deg, rgba(124,58,237,0.12), rgba(91,33,182,0.08)) !important;
+  border: 1px solid rgba(124,58,237,0.25) !important;
+  color: var(--violet) !important;
+}
+.ssub { color: #64748B !important; }
+
+/* Titles and labels */
+.rctitle, .tcl, .tcsub { color: #1A1A2E !important; }
+.tcv { color: var(--violet) !important; }
+.tcv.gold { color: var(--violet-dark) !important; }
+.rnum { border-color: var(--violet) !important; color: var(--violet) !important; }
+.rtitle { color: #0F0A1A !important; }
+.rdesc { color: #64748B !important; }
+.rweek { color: #9CA3AF !important; }
+
+/* Buttons */
+.bpro, .btn-primary, [class*="btn-"]:not(.btn-outline) {
+  background: linear-gradient(135deg, #7C3AED, #6D28D9) !important;
+  color: #fff !important;
+  border: none !important;
+  box-shadow: 0 4px 16px rgba(124,58,237,0.3) !important;
+}
+.bpro:hover { box-shadow: 0 8px 24px rgba(124,58,237,0.5) !important; }
+.bsm {
+  background: rgba(124,58,237,0.08) !important;
+  border: 1px solid rgba(124,58,237,0.2) !important;
+  color: var(--violet) !important;
+}
+.bsm:hover {
+  background: rgba(124,58,237,0.15) !important;
+}
+
+/* Form inputs */
+.finp, input[type="number"], input[type="text"], input[type="email"],
+input[type="password"], select, textarea {
+  background: #FFFFFF !important;
+  border: 1px solid rgba(109,40,217,0.2) !important;
+  color: #0F0A1A !important;
+  box-shadow: 0 2px 8px rgba(109,40,217,0.04) !important;
+}
+.finp:focus, input:focus, select:focus, textarea:focus {
+  border-color: #7C3AED !important;
+  box-shadow: 0 0 0 3px rgba(124,58,237,0.12), 0 2px 8px rgba(109,40,217,0.1) !important;
+}
+input::placeholder, textarea::placeholder { color: #9CA3AF !important; }
+label, .finlabel, .rm-label { color: #374151 !important; }
+select option { background: #fff !important; color: #0F0A1A !important; }
+
+/* Stat/metric values */
+.tcv, .bsnum, .bfpct, .stbig { color: var(--violet) !important; }
+.gold { color: var(--violet-dark) !important; }
+
+/* Hero / top section */
+#home, .hero-section, .hero {
+  background: linear-gradient(135deg, #F3F0FF 0%, #FAF8F5 50%, #EDE9FE 100%) !important;
+}
+
+/* Dividers */
+.divider, hr {
+  background: linear-gradient(90deg, transparent, rgba(124,58,237,0.3), rgba(91,33,182,0.3), transparent) !important;
+  box-shadow: 0 0 8px rgba(124,58,237,0.1) !important;
+}
+
+/* Modals */
+.modal, .modal-inner, .modal-content, [id$="modal"] > div {
+  background: #FFFFFF !important;
+  border: 1px solid rgba(109,40,217,0.15) !important;
+  box-shadow: 0 40px 100px rgba(109,40,217,0.15), 0 8px 32px rgba(0,0,0,0.08) !important;
+  color: #0F0A1A !important;
+}
+.modal-overlay, .modal-bg, .moverlay { background: rgba(109,40,217,0.2) !important; backdrop-filter: blur(8px) !important; }
+.modal-title, .mtitle { color: #0F0A1A !important; }
+
+/* Toast */
+#toast, .toast {
+  background: #FFFFFF !important;
+  border: 1px solid rgba(109,40,217,0.2) !important;
+  color: #0F0A1A !important;
+  box-shadow: 0 8px 32px rgba(109,40,217,0.15) !important;
+}
+
+/* Badges and tags */
+.badge, .px-pro, [class*="badge"] {
+  background: linear-gradient(135deg, #7C3AED, #6D28D9) !important;
+  color: #fff !important;
+}
+.wkex-muscle { opacity: 1 !important; }
+
+/* Beast score */
+.bsscore, #bscore { color: var(--violet) !important; }
+.bslbl { color: #64748B !important; }
+
+/* Progress bars */
+.gbar, [class*="bar-fill"], .db-macro-fill { background: linear-gradient(90deg, #7C3AED, #8B5CF6) !important; }
+.gbg, .db-macro-track { background: rgba(124,58,237,0.08) !important; }
+
+/* Tabs */
+.tab-btn, [class*="tab-"] {
+  background: rgba(124,58,237,0.06) !important;
+  border: 1px solid rgba(124,58,237,0.12) !important;
+  color: #64748B !important;
+}
+.tab-btn.active, [class*="tab-"].active {
+  background: var(--violet) !important;
+  color: #fff !important;
+  border-color: var(--violet) !important;
+}
+
+/* Admin panel */
+#admin-panel, .admin-wrap, .admin-content {
+  background: #FAF8F5 !important;
+  color: #0F0A1A !important;
+}
+.admin-tab { color: #64748B !important; }
+.admin-tab.active { color: var(--violet) !important; border-color: var(--violet) !important; }
+
+/* Tables */
+table { border-collapse: collapse; }
+th {
+  background: rgba(124,58,237,0.08) !important;
+  color: var(--violet-dark) !important;
+  border-bottom: 1px solid rgba(124,58,237,0.15) !important;
+}
+td { border-bottom: 1px solid rgba(109,40,217,0.06) !important; color: #374151 !important; }
+tr:hover td { background: rgba(124,58,237,0.03) !important; }
+
+/* Meal plan cards */
+.meal-card, .mcard { background: #FFFFFF !important; border: 1px solid rgba(109,40,217,0.1) !important; }
+.meal-title, .mcard-title { color: #0F0A1A !important; }
+.meal-cals { color: var(--violet) !important; }
+
+/* Workout section */
+.wkex-card {
+  background: #FFFFFF !important;
+  border: 1px solid rgba(109,40,217,0.1) !important;
+}
+.wkex-name { color: #0F0A1A !important; }
+.wkex-sets { color: #64748B !important; }
+
+/* Progress photos */
+.phbox {
+  background: #F3F0FF !important;
+  border: 2px dashed rgba(124,58,237,0.25) !important;
+}
+.ph-upload-btn {
+  background: var(--violet) !important;
+  color: #fff !important;
+}
+
+/* Supplement cards */
+.suppcard { background: #FFFFFF !important; color: #0F0A1A !important; }
+.suppcard .sname { color: #0F0A1A !important; }
+.suppcard .sdose { color: var(--violet) !important; }
+.suppcard .swhen { color: #64748B !important; }
+
+/* Roadmap */
+.rm-gate {
+  background: linear-gradient(135deg, #F3F0FF, #EDE9FE) !important;
+  border: 1px solid rgba(124,58,237,0.2) !important;
+}
+.rm-gate-title { color: #0F0A1A !important; }
+.rm-gate-sub { color: #64748B !important; }
+.rm-gate-feat { color: #374151 !important; }
+.rm-feat-tick { color: var(--violet) !important; }
+.rm-gate-btn { background: linear-gradient(135deg, #7C3AED, #6D28D9) !important; color: #fff !important; }
+.rm-gate-note { color: #9CA3AF !important; }
+.rm-setup-card { background: #FFFFFF !important; border: 1px solid rgba(109,40,217,0.12) !important; }
+.rm-setup-title { color: #0F0A1A !important; }
+.rm-setup-sub { color: #64748B !important; }
+.rm-label { color: #374151 !important; }
+.rm-select, .rm-input { background: #FAF8F5 !important; border: 1px solid rgba(109,40,217,0.2) !important; color: #0F0A1A !important; }
+.rm-goal-btn { border-color: rgba(109,40,217,0.15) !important; background: #FFFFFF !important; }
+.rm-goal-btn.active { border-color: var(--violet) !important; background: rgba(124,58,237,0.06) !important; }
+.rm-goal-name { color: #0F0A1A !important; }
+.rm-goal-sub { color: #64748B !important; }
+.rm-gen-btn { background: linear-gradient(135deg, #7C3AED, #6D28D9) !important; color: #fff !important; }
+.rm-user-bar { background: linear-gradient(135deg, rgba(124,58,237,0.06), rgba(124,58,237,0.02)) !important; border: 1px solid rgba(124,58,237,0.15) !important; }
+.rm-user-stat-val { color: var(--violet-dark) !important; }
+.rm-user-stat-lbl { color: #64748B !important; }
+.rm-phase-tab { background: #FFFFFF !important; border-color: rgba(109,40,217,0.12) !important; color: #64748B !important; }
+.rm-phase-tab.active { background: rgba(124,58,237,0.08) !important; border-color: var(--violet) !important; }
+.rm-pt-label { color: #9CA3AF !important; }
+.rm-pt-name { color: #0F0A1A !important; }
+.rm-phase-tab.active .rm-pt-name { color: var(--violet) !important; }
+.rm-pt-weeks { color: #9CA3AF !important; }
+.rm-phase-desc { background: #FFFFFF !important; border-color: rgba(109,40,217,0.1) !important; color: #374151 !important; }
+.rm-week-card { background: #FFFFFF !important; border: 1px solid rgba(109,40,217,0.1) !important; }
+.rm-week-card:hover { border-color: rgba(124,58,237,0.25) !important; }
+.rm-week-num { color: rgba(124,58,237,0.2) !important; }
+.rm-week-num.active-week { color: var(--violet) !important; }
+.rm-week-title { color: #0F0A1A !important; }
+.rm-week-tag { background: rgba(124,58,237,0.06) !important; border-color: rgba(124,58,237,0.12) !important; color: #64748B !important; }
+.rm-week-arrow { color: #9CA3AF !important; }
+.rm-week-body { border-top-color: rgba(109,40,217,0.08) !important; }
+.rm-week-section { border-color: rgba(109,40,217,0.06) !important; }
+.rm-ws-title { color: #64748B !important; }
+.rm-ws-line { color: #374151 !important; border-left-color: rgba(109,40,217,0.15) !important; }
+.rm-ws-line.highlight { border-left-color: var(--violet) !important; color: #0F0A1A !important; }
+.rm-ws-tag { background: rgba(124,58,237,0.06) !important; border-color: rgba(124,58,237,0.12) !important; color: #64748B !important; }
+.rm-week-mindset { background: rgba(124,58,237,0.04) !important; border-top-color: rgba(124,58,237,0.1) !important; }
+.rm-mindset-label { color: var(--violet) !important; }
+.rm-mindset-text { color: #374151 !important; }
+.rm-week-checkpoint { background: rgba(5,150,105,0.03) !important; border-top-color: rgba(5,150,105,0.12) !important; }
+.rm-ck-label { color: #059669 !important; }
+.rm-ck-text { color: #374151 !important; }
+
+/* Premium glass overrides for light theme */
+.glass {
+  background: rgba(255,255,255,0.75) !important;
+  border: 1px solid rgba(109,40,217,0.12) !important;
+  box-shadow: 0 8px 32px rgba(109,40,217,0.08), inset 0 1px 0 rgba(255,255,255,0.9) !important;
+}
+.glass-gold {
+  background: rgba(124,58,237,0.06) !important;
+  border: 1px solid rgba(124,58,237,0.2) !important;
+  box-shadow: 0 8px 32px rgba(124,58,237,0.08) !important;
+}
+.glass-red {
+  background: rgba(124,58,237,0.06) !important;
+  border: 1px solid rgba(124,58,237,0.2) !important;
+}
+
+/* Pcard for light theme */
+.pcard {
+  background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(243,240,255,0.8)) !important;
+  border: 1px solid rgba(109,40,217,0.12) !important;
+  box-shadow: 0 4px 20px rgba(109,40,217,0.07) !important;
+}
+.pcard:hover {
+  box-shadow: 0 12px 40px rgba(109,40,217,0.15) !important;
+  border-color: rgba(124,58,237,0.25) !important;
+}
+
+/* Badge glow for light */
+.badge-glow {
+  background: linear-gradient(135deg, rgba(124,58,237,0.1), rgba(124,58,237,0.05)) !important;
+  border-color: rgba(124,58,237,0.25) !important;
+  color: var(--violet) !important;
+  box-shadow: 0 0 12px rgba(124,58,237,0.1) !important;
+}
+.badge-glow.red {
+  background: linear-gradient(135deg, rgba(124,58,237,0.1), rgba(124,58,237,0.05)) !important;
+}
+
+/* Gradient text override */
+.gradient-text {
+  background: linear-gradient(135deg, #7C3AED, #5B21B6) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+}
+.gradient-text-red {
+  background: linear-gradient(135deg, #7C3AED, #8B5CF6) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+}
+
+/* Achievement toast for light */
+.achievement-toast {
+  background: linear-gradient(135deg, #FFFFFF, #F3F0FF) !important;
+  border-color: rgba(124,58,237,0.3) !important;
+  box-shadow: 0 20px 60px rgba(109,40,217,0.2) !important;
+  color: #0F0A1A !important;
+}
+.achievement-label { color: var(--violet) !important; }
+.achievement-title { color: #0F0A1A !important; }
+.achievement-sub { color: #64748B !important; }
+
+/* Floating particles: lighter for light bg */
+#premium-particles .fp { filter: blur(60px) !important; opacity: 0.4 !important; }
+
+/* Dashboard stats */
+.dash-week-dot.done { background: var(--violet) !important; color: #fff !important; }
+.dash-week-dot.today { border-color: var(--violet) !important; }
+.dash-week-dname { color: #64748B !important; }
+.dash-week-dname.today { color: var(--violet) !important; font-weight: 700 !important; }
+.dash-week-label, .dash-week-count { color: #64748B !important; }
+.db-macro-label { font-weight: 600 !important; }
+
+/* Skeleton for light */
+.skeleton {
+  background: linear-gradient(90deg, rgba(109,40,217,0.04) 25%, rgba(109,40,217,0.1) 50%, rgba(109,40,217,0.04) 75%) !important;
+  background-size: 200% 100% !important;
+}
+
+/* Sidebar close btn */
+.mclose { color: #64748B !important; }
+.mclose:hover { color: var(--violet) !important; }
+
+/* Pro gate in sections */
+.progate, .psg-wrap {
+  background: rgba(243,240,255,0.95) !important;
+  backdrop-filter: blur(12px) !important;
+}
+.psg-title { color: #0F0A1A !important; }
+.psg-sub { color: #64748B !important; }
+
+/* Input group labels */
+.finlabel, .rm-label, label {
+  color: #374151 !important;
+  font-weight: 600 !important;
+}
+
+/* Streak / score elements */
+.streak-val, #dash-streak { color: var(--violet) !important; }
+.score-ring-svg circle[stroke]:not([stroke="none"]) { stroke: var(--violet) !important; }
+
+/* Body fat ring */
+#bfcirc { --pct: inherit; }
+
+/* Nav pro lock badge */
+.nav-pro-lock {
+  background: var(--violet) !important;
+  color: #fff !important;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar-thumb { background: rgba(124,58,237,0.35) !important; }
+::-webkit-scrollbar-thumb:hover { background: var(--violet) !important; }
+::-webkit-scrollbar-track { background: rgba(124,58,237,0.03) !important; }
+
+/* Section with dark inline style override */
+#roadmap[style], #bodyfat[style], section[style*="background"] {
+  background: #F3F0FF !important;
+}
+
+/* Locked steps */
+.locked-step { opacity: 0.5; filter: blur(3px) !important; }
+
+/* History entries */
+#histlist > div {
+  background: #FFFFFF !important;
+  border: 1px solid rgba(109,40,217,0.1) !important;
+  color: #0F0A1A !important;
+}
+
+/* Measurement cards */
+.mcard { background: #FFFFFF !important; color: #0F0A1A !important; }
+
+/* Share card modal */
+#sharemodal .modal-inner, #promodal .modal-inner {
+  background: linear-gradient(135deg, #FFFFFF, #F3F0FF) !important;
+}
+
+/* Body fat scale */
+.bfscale > div { opacity: 0.85; }
+
+/* Ring chart center text */
+.bfinn { color: #0F0A1A !important; }
+.bfpct { color: var(--violet) !important; }
+.bfcat { color: #64748B !important; }
+
+/* Tool cards value */
+.toolcard .tcv { color: var(--violet) !important; }
+
+/* Anatomy section */
+.ana-badge { background: var(--violet) !important; color: #fff !important; }
+
+/* Admin */
+.admin-card, .admin-stat { background: #FFFFFF !important; border: 1px solid rgba(109,40,217,0.1) !important; }
+.admin-stat-val { color: var(--violet) !important; }
+.admin-stat-lbl { color: #64748B !important; }
+
+/* Particle colors for light theme */
+.fp[style*="rgba(232,0,29"] { background: rgba(124,58,237,0.15) !important; }
+.fp[style*="rgba(212,168"] { background: rgba(91,33,182,0.1) !important; }
 </style>
 
 <!-- ─── ADMIN CONTROL BAR (visible only in admin sessions) ─── -->
