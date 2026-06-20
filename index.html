@@ -15562,6 +15562,241 @@ tr:hover td { background: rgba(124,58,237,0.03) !important; }
 .achievement-title { color: #0F0A1A !important; }
 .achievement-label { color: #7C3AED !important; }
 .achievement-sub { color: #64748B !important; }
+
+/* ═══════════════════════════════════════════════════════
+   PREMIUM OPTION / SELECTION BUTTONS — GLOBAL SYSTEM
+   Applies to: .ro .hchk .painbtn .wu-type-btn .qopt
+               .aip-pill .aip-body-btn .food-card
+               .ob-radio .ob-goal-card .rm-goal-btn
+═══════════════════════════════════════════════════════ */
+
+/* ── SHARED RESET / BASE ── */
+.ro, .hchk, .painbtn, .wu-type-btn, .qopt,
+.aip-pill, .aip-body-btn, .food-card,
+.ob-radio, .ob-goal-card, .rm-goal-btn {
+  background: #FFFFFF !important;
+  border: 1.5px solid rgba(109,40,217,0.18) !important;
+  border-radius: 10px !important;
+  color: #374151 !important;
+  cursor: pointer !important;
+  user-select: none !important;
+  transition: all 0.22s cubic-bezier(0.4,0,0.2,1) !important;
+  position: relative !important;
+  overflow: hidden !important;
+  font-weight: 500 !important;
+  box-shadow: 0 1px 4px rgba(109,40,217,0.05) !important;
+}
+
+/* Ripple-ready */
+.ro::after, .hchk::after, .painbtn::after, .wu-type-btn::after,
+.qopt::after, .aip-pill::after, .ob-radio::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, rgba(124,58,237,0.15) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+/* ── HOVER STATE ── */
+.ro:hover, .hchk:hover, .painbtn:hover, .wu-type-btn:hover,
+.qopt:hover, .aip-pill:hover, .aip-body-btn:hover,
+.food-card:hover, .ob-radio:hover, .ob-goal-card:hover,
+.rm-goal-btn:hover {
+  border-color: #7C3AED !important;
+  background: rgba(124,58,237,0.05) !important;
+  color: #7C3AED !important;
+  transform: translateY(-2px) scale(1.02) !important;
+  box-shadow: 0 4px 16px rgba(124,58,237,0.18) !important;
+}
+.ro:hover::after, .hchk:hover::after, .painbtn:hover::after,
+.wu-type-btn:hover::after, .qopt:hover::after, .aip-pill:hover::after,
+.ob-radio:hover::after { opacity: 1; }
+
+/* ── SELECTED / CHECKED STATE — filled violet ── */
+/* .ro with checked radio */
+.ro:has(input:checked),
+.ro:has(input[type="radio"]:checked),
+.ro:has(input[type="checkbox"]:checked) {
+  background: linear-gradient(135deg,#7C3AED,#6D28D9) !important;
+  border-color: #7C3AED !important;
+  color: #fff !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 6px 20px rgba(124,58,237,0.35) !important;
+  font-weight: 700 !important;
+}
+.ro:has(input:checked)::after { opacity: 0; }
+
+/* .hchk with checked checkbox */
+.hchk:has(input:checked),
+.hchk.on {
+  background: linear-gradient(135deg,#7C3AED,#6D28D9) !important;
+  border-color: #7C3AED !important;
+  color: #fff !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 6px 20px rgba(124,58,237,0.35) !important;
+  font-weight: 700 !important;
+}
+.hchk.on::after { opacity: 0; }
+
+/* .painbtn selected */
+.painbtn.sel {
+  background: linear-gradient(135deg,#7C3AED,#6D28D9) !important;
+  border-color: #7C3AED !important;
+  color: #fff !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 6px 20px rgba(124,58,237,0.35) !important;
+}
+.painbtn.sel .pbl { color: #fff !important; }
+
+/* .wu-type-btn selected */
+.wu-type-btn.sel {
+  background: linear-gradient(135deg,#7C3AED,#6D28D9) !important;
+  border-color: #7C3AED !important;
+  color: #fff !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 6px 20px rgba(124,58,237,0.35) !important;
+}
+
+/* .qopt selected */
+.qopt.sel {
+  background: linear-gradient(135deg,#7C3AED,#6D28D9) !important;
+  border-color: #7C3AED !important;
+  color: #fff !important;
+  box-shadow: 0 4px 14px rgba(124,58,237,0.3) !important;
+}
+
+/* .aip-pill selected */
+.aip-pill.sel {
+  background: linear-gradient(135deg,#7C3AED,#6D28D9) !important;
+  border-color: #7C3AED !important;
+  color: #fff !important;
+  border-radius: 20px !important;
+  box-shadow: 0 4px 14px rgba(124,58,237,0.3) !important;
+}
+
+/* .aip-body-btn selected */
+.aip-body-btn.sel {
+  background: linear-gradient(135deg,#7C3AED,#6D28D9) !important;
+  border-color: #7C3AED !important;
+  color: #fff !important;
+  box-shadow: 0 6px 20px rgba(124,58,237,0.35) !important;
+}
+
+/* .food-card selected */
+.food-card.selected {
+  background: linear-gradient(135deg,rgba(124,58,237,0.1),rgba(109,40,217,0.05)) !important;
+  border-color: #7C3AED !important;
+  box-shadow: 0 0 0 2px rgba(124,58,237,0.2), 0 4px 14px rgba(124,58,237,0.15) !important;
+}
+.food-card.selected .food-card-name { color: #7C3AED !important; font-weight: 700 !important; }
+.food-card.selected::before {
+  content: '✓';
+  position: absolute;
+  top: 5px; right: 7px;
+  font-size: 10px;
+  font-weight: 900;
+  color: #7C3AED;
+  background: rgba(124,58,237,0.12);
+  border-radius: 50%;
+  width: 16px; height: 16px;
+  display: flex; align-items: center; justify-content: center;
+  line-height: 16px;
+  text-align: center;
+}
+
+/* .ob-radio selected */
+.ob-radio.selected {
+  background: linear-gradient(135deg,#7C3AED,#6D28D9) !important;
+  border-color: #7C3AED !important;
+  color: #fff !important;
+  box-shadow: 0 6px 20px rgba(124,58,237,0.35) !important;
+}
+
+/* .ob-goal-card selected */
+.ob-goal-card.selected {
+  background: linear-gradient(135deg,rgba(124,58,237,0.1),rgba(109,40,217,0.05)) !important;
+  border: 2px solid #7C3AED !important;
+  box-shadow: 0 6px 24px rgba(124,58,237,0.25) !important;
+}
+
+/* .rm-goal-btn selected */
+.rm-goal-btn.active {
+  background: linear-gradient(135deg,#7C3AED,#6D28D9) !important;
+  border-color: #7C3AED !important;
+  box-shadow: 0 6px 20px rgba(124,58,237,0.35) !important;
+}
+.rm-goal-btn.active .rm-goal-name { color: #fff !important; }
+.rm-goal-btn.active .rm-goal-sub { color: rgba(255,255,255,0.75) !important; }
+
+/* ── ACTIVE PRESS EFFECT ── */
+.ro:active, .hchk:active, .painbtn:active, .wu-type-btn:active,
+.qopt:active, .aip-pill:active, .aip-body-btn:active,
+.food-card:active, .ob-radio:active, .ob-goal-card:active {
+  transform: translateY(0) scale(0.98) !important;
+  box-shadow: 0 2px 8px rgba(124,58,237,0.2) !important;
+}
+
+/* ── PILL SHAPE for aip-pill ── */
+.aip-pill {
+  border-radius: 100px !important;
+  padding: 7px 16px !important;
+}
+
+/* ── PAINBTN ICON & LABEL ── */
+.painbtn .pbi { display: block; font-size: 26px; margin-bottom: 6px; }
+.painbtn .pbl { font-size: 10px; font-weight: 600; letter-spacing: 0.5px; color: #64748B; }
+.painbtn.sel .pbl, .painbtn:hover .pbl { color: currentColor; }
+
+/* ── FOOD CARD ── */
+.food-card {
+  border-radius: 10px !important;
+  padding: 10px 12px !important;
+  min-height: 52px !important;
+}
+.food-card-name { color: #0F0A1A !important; font-size: 12px !important; font-weight: 600 !important; }
+.food-card-macro { color: #64748B !important; font-size: 10px !important; margin-top: 2px !important; }
+
+/* ── RROW / TOGGLE ROWS ── */
+.rrow, .ob-radio-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* ── MEAL FREQUENCY BUTTONS (.ro with min-width) ── */
+.ro[style*="min-width:56px"] {
+  min-width: 52px !important;
+  padding: 10px 6px !important;
+  justify-content: center !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  border-radius: 10px !important;
+}
+
+/* ── SALAD CHECKBOX ── */
+#inclSalad + label, label:has(#inclSalad) {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #FFFFFF;
+  border: 1.5px solid rgba(109,40,217,0.18);
+  border-radius: 10px;
+  padding: 9px 16px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  color: #374151;
+  transition: all 0.22s;
+}
+label:has(#inclSalad:checked) {
+  background: linear-gradient(135deg,#7C3AED,#6D28D9) !important;
+  border-color: #7C3AED !important;
+  color: #fff !important;
+  box-shadow: 0 4px 14px rgba(124,58,237,0.3) !important;
+}
 </style>
 
 <!-- ─── ADMIN CONTROL BAR (visible only in admin sessions) ─── -->
