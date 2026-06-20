@@ -320,6 +320,99 @@ section::before{content:'';position:absolute;inset:0;background:linear-gradient(
 .mlico{font-size:24px;}.mltxt{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);}
 .rsteps{display:flex;flex-direction:column;gap:0;margin-top:40px;position:relative;}
 .rsteps::before{content:'';position:absolute;left:25px;top:0;bottom:0;width:2px;background:linear-gradient(180deg,var(--red),var(--orange),rgba(255,69,0,0));}
+/* ── Roadmap Premium ── */
+.rm-gate{background:linear-gradient(135deg,#0e0e10,#0f0f18);border:1px solid rgba(212,168,64,.3);border-radius:16px;padding:36px;text-align:center;position:relative;overflow:hidden;margin-top:32px;}
+.rm-gate::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(212,168,64,.08),transparent 60%);pointer-events:none;}
+.rm-gate-badge{display:inline-block;background:linear-gradient(90deg,#d4a840,#f9e08f);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:3px;text-transform:uppercase;margin-bottom:14px;}
+.rm-gate-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(28px,5vw,42px);letter-spacing:2px;color:#fff;line-height:1.1;margin-bottom:12px;}
+.rm-gate-sub{font-size:14px;color:rgba(255,255,255,.55);max-width:520px;margin:0 auto 28px;line-height:1.7;}
+.rm-gate-feats{display:grid;grid-template-columns:repeat(2,1fr);gap:8px 24px;text-align:left;max-width:580px;margin:0 auto 28px;}
+.rm-gate-feat{font-size:13px;color:rgba(255,255,255,.7);display:flex;gap:8px;align-items:flex-start;line-height:1.5;}
+.rm-feat-tick{color:var(--gold);font-size:11px;flex-shrink:0;margin-top:2px;}
+.rm-gate-btn{background:linear-gradient(135deg,var(--red),#ff4d1a);color:#fff;border:none;border-radius:10px;padding:14px 36px;font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;cursor:pointer;transition:opacity .2s;display:inline-block;margin-bottom:12px;}
+.rm-gate-btn:hover{opacity:.88;}
+.rm-gate-note{font-size:11px;color:rgba(255,255,255,.35);letter-spacing:.5px;}
+.rm-preview-blur{position:relative;margin-top:32px;border-radius:12px;overflow:hidden;}
+.rm-preview-week{display:flex;align-items:center;gap:14px;padding:14px 16px;border-bottom:1px solid rgba(255,255,255,.06);background:rgba(255,255,255,.02);}
+.rm-pw-num{font-family:'Bebas Neue',sans-serif;font-size:36px;color:rgba(255,255,255,.15);flex-shrink:0;width:44px;text-align:center;}
+.rm-pw-badge{display:inline-block;font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;letter-spacing:2px;color:#fff;border-radius:4px;padding:2px 7px;margin-bottom:5px;}
+.rm-pw-title{font-family:'Bebas Neue',sans-serif;font-size:17px;color:#fff;letter-spacing:.5px;margin-bottom:4px;}
+.rm-pw-tags{display:flex;gap:6px;flex-wrap:wrap;}
+.rm-pw-tags span{font-size:10px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:4px;padding:2px 8px;color:rgba(255,255,255,.5);}
+.rm-blur-overlay{position:absolute;bottom:0;left:0;right:0;height:100%;background:linear-gradient(transparent 0%,rgba(14,14,16,.97) 55%);display:flex;align-items:flex-end;justify-content:center;padding-bottom:28px;}
+.rm-blur-cta{text-align:center;font-size:13px;color:rgba(255,255,255,.55);}
+@media(max-width:600px){.rm-gate-feats{grid-template-columns:1fr;}}
+/* Setup form */
+.rm-setup-card{background:linear-gradient(135deg,#0e0e10,#0c0c0f);border:1px solid rgba(255,255,255,.07);border-radius:14px;padding:28px;margin-top:28px;}
+.rm-setup-hdr{display:flex;gap:16px;align-items:flex-start;margin-bottom:24px;}
+.rm-setup-icon{font-size:36px;flex-shrink:0;}
+.rm-setup-title{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1px;color:#fff;margin-bottom:4px;}
+.rm-setup-sub{font-size:12px;color:var(--muted);line-height:1.5;}
+.rm-form-grid{display:flex;flex-direction:column;gap:16px;}
+.rm-form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+@media(max-width:520px){.rm-form-row{grid-template-columns:1fr;}}
+.rm-field{display:flex;flex-direction:column;gap:6px;}
+.rm-label{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);}
+.rm-select,.rm-input{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:10px 12px;color:var(--text);font-size:13px;font-family:inherit;transition:border-color .2s;outline:none;width:100%;box-sizing:border-box;}
+.rm-select:focus,.rm-input:focus{border-color:var(--red);}
+.rm-goal-btns{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.rm-goal-btn{border:1px solid var(--border);border-radius:10px;padding:14px 10px;text-align:center;cursor:pointer;transition:all .2s;display:flex;flex-direction:column;align-items:center;gap:4px;}
+.rm-goal-btn.active{border-color:var(--red);background:rgba(232,0,29,.08);}
+.rm-goal-icon{font-size:22px;}
+.rm-goal-name{font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:.5px;color:#fff;}
+.rm-goal-sub{font-size:10px;color:var(--muted);line-height:1.3;}
+.rm-gen-btn{width:100%;background:linear-gradient(135deg,var(--red),#ff4d1a);color:#fff;border:none;border-radius:10px;padding:14px;font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;cursor:pointer;margin-top:20px;transition:opacity .2s;}
+.rm-gen-btn:hover{opacity:.88;}
+/* User bar */
+.rm-user-bar{display:flex;gap:12px;flex-wrap:wrap;background:linear-gradient(135deg,rgba(232,0,29,.08),rgba(232,0,29,.02));border:1px solid rgba(232,0,29,.2);border-radius:12px;padding:16px 20px;margin-bottom:24px;align-items:center;}
+.rm-user-stat{text-align:center;flex:1;min-width:70px;}
+.rm-user-stat-val{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--gold);line-height:1;}
+.rm-user-stat-lbl{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-weight:700;margin-top:2px;}
+.rm-user-divider{width:1px;background:rgba(255,255,255,.08);align-self:stretch;}
+/* Phase tabs */
+.rm-phase-wrap{display:flex;align-items:center;gap:0;margin-bottom:24px;}
+.rm-phase-tab{flex:1;background:var(--card);border:1px solid var(--border);padding:14px 10px;text-align:center;cursor:pointer;transition:all .2s;position:relative;}
+.rm-phase-tab:first-child{border-radius:10px 0 0 10px;}
+.rm-phase-tab:last-child{border-radius:0 10px 10px 0;}
+.rm-phase-tab.active{background:rgba(232,0,29,.1);border-color:var(--red);}
+.rm-phase-connector{width:0;height:0;}
+.rm-pt-label{font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:3px;}
+.rm-pt-name{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:1px;color:var(--text);}
+.rm-phase-tab.active .rm-pt-name{color:var(--red);}
+.rm-pt-weeks{font-size:10px;color:var(--muted);margin-top:2px;}
+.rm-phase-desc{font-size:13px;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 18px;margin-bottom:20px;line-height:1.7;}
+/* Week cards */
+.rm-weeks{display:flex;flex-direction:column;gap:10px;}
+.rm-week-card{background:linear-gradient(135deg,#0e0e10,#0c0c0f);border:1px solid rgba(255,255,255,.06);border-radius:12px;overflow:hidden;transition:border-color .2s;}
+.rm-week-card:hover{border-color:rgba(255,255,255,.12);}
+.rm-week-hdr{display:flex;align-items:center;gap:14px;padding:16px 18px;cursor:pointer;user-select:none;}
+.rm-week-num{font-family:'Bebas Neue',sans-serif;font-size:34px;line-height:1;width:44px;text-align:center;flex-shrink:0;color:rgba(255,255,255,.12);}
+.rm-week-num.active-week{color:var(--red);}
+.rm-week-info{flex:1;min-width:0;}
+.rm-week-badge{display:inline-block;font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;letter-spacing:2px;color:#fff;border-radius:4px;padding:2px 8px;margin-bottom:5px;}
+.rm-week-title{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:.5px;color:#fff;line-height:1.1;margin-bottom:5px;}
+.rm-week-tags{display:flex;gap:5px;flex-wrap:wrap;}
+.rm-week-tag{font-size:10px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);border-radius:4px;padding:2px 8px;color:rgba(255,255,255,.45);}
+.rm-week-arrow{font-size:16px;color:var(--muted);flex-shrink:0;transition:transform .2s;}
+.rm-week-card.open .rm-week-arrow{transform:rotate(180deg);}
+.rm-week-body{display:none;border-top:1px solid rgba(255,255,255,.06);}
+.rm-week-card.open .rm-week-body{display:block;}
+.rm-week-sections{display:grid;grid-template-columns:1fr 1fr;gap:0;}
+@media(max-width:700px){.rm-week-sections{grid-template-columns:1fr;}}
+.rm-week-section{padding:18px 20px;border-bottom:1px solid rgba(255,255,255,.04);}
+.rm-week-section:nth-child(odd){border-right:1px solid rgba(255,255,255,.04);}
+@media(max-width:700px){.rm-week-section:nth-child(odd){border-right:none;}}
+.rm-ws-title{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:10px;display:flex;align-items:center;gap:6px;}
+.rm-ws-title span{font-size:14px;}
+.rm-ws-line{font-size:12px;color:rgba(255,255,255,.6);line-height:1.6;margin-bottom:4px;padding-left:4px;border-left:2px solid rgba(255,255,255,.1);}
+.rm-ws-line.highlight{border-left-color:var(--gold);color:var(--text);}
+.rm-ws-tag{display:inline-block;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:4px;padding:3px 9px;font-size:11px;color:rgba(255,255,255,.55);margin:2px 2px 0 0;}
+.rm-week-mindset{padding:16px 20px;background:rgba(212,168,64,.04);border-top:1px solid rgba(212,168,64,.12);}
+.rm-mindset-label{font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;letter-spacing:2px;color:var(--gold);text-transform:uppercase;margin-bottom:6px;}
+.rm-mindset-text{font-size:13px;color:rgba(255,255,255,.65);line-height:1.7;font-style:italic;}
+.rm-week-checkpoint{padding:14px 20px;background:rgba(34,197,94,.03);border-top:1px solid rgba(34,197,94,.1);}
+.rm-ck-label{font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;letter-spacing:2px;color:var(--green);text-transform:uppercase;margin-bottom:5px;}
+.rm-ck-text{font-size:11.5px;color:rgba(255,255,255,.55);line-height:1.6;}
 .rstep{display:flex;gap:26px;align-items:flex-start;padding:0 0 42px 0;}
 .rnum{width:50px;height:50px;border-radius:50%;border:2px solid var(--red);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'Bebas Neue',sans-serif;font-size:19px;color:var(--red);background:var(--dark);z-index:1;position:relative;}
 .rstep:nth-child(even) .rnum{border-color:var(--gold);color:var(--gold);}
@@ -3895,10 +3988,141 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
 <div class="divider"></div>
 <section id="roadmap" style="background:var(--card2);">
   <div class="container">
-    <div class="stag">Your Blueprint</div><div class="sh">TRANSFORMATION ROADMAP</div>
-    <p class="ssub">Week by week — exactly what to do and when to do it.</p>
-    <div class="rsteps" id="rsteps"></div>
-    <div class="progate" id="rpgate" style="display:none;"><div style="font-size:26px;">👑</div><h3>FULL ROADMAP — PRO ONLY</h3><p>Unlock all 12 weeks of your personalised transformation roadmap.</p><button class="bpro" style="width:auto;padding:11px 32px;font-size:15px;" onclick="openModal('promodal')">Unlock <span class="px-pro">₹499</span>/mo</button></div>
+    <div class="stag">Your Blueprint</div>
+    <div class="sh">12-WEEK TRANSFORMATION ROADMAP</div>
+    <p class="ssub">Week-by-week personalised plan — training, nutrition, supplements, recovery &amp; mindset coaching built in.</p>
+
+    <!-- PRO GATE (shown for non-pro users) -->
+    <div id="rm-gate" class="rm-gate">
+      <div class="rm-gate-badge">👑 ROYAL PRO EXCLUSIVE</div>
+      <div class="rm-gate-title">Your Complete 12-Week Blueprint</div>
+      <div class="rm-gate-sub">The most comprehensive personalised fitness plan available — built around your exact body, goals, and schedule. Every week is different. Every detail matters.</div>
+      <div class="rm-gate-feats">
+        <div class="rm-gate-feat"><span class="rm-feat-tick">✦</span>Week-by-week training plan — exact exercises, sets, reps &amp; progressive overload</div>
+        <div class="rm-gate-feat"><span class="rm-feat-tick">✦</span>Personalised calorie &amp; macro targets — adjusted to your weight</div>
+        <div class="rm-gate-feat"><span class="rm-feat-tick">✦</span>Phase-specific supplement protocol for every stage</div>
+        <div class="rm-gate-feat"><span class="rm-feat-tick">✦</span>Recovery, sleep &amp; mindset coaching in every week</div>
+        <div class="rm-gate-feat"><span class="rm-feat-tick">✦</span>Milestone checkpoints &amp; progress markers</div>
+        <div class="rm-gate-feat"><span class="rm-feat-tick">✦</span>Adapts to Fat Loss · Muscle Gain · Body Recomp goals</div>
+        <div class="rm-gate-feat"><span class="rm-feat-tick">✦</span>Beginner · Intermediate · Advanced variations included</div>
+        <div class="rm-gate-feat"><span class="rm-feat-tick">✦</span>Indian food-first nutrition plans</div>
+      </div>
+      <button class="rm-gate-btn" onclick="openModal('promodal')">⚡ Unlock Royal Pro — ₹499/mo</button>
+      <div class="rm-gate-note">RFC gym members get Pro FREE after 3 months · Cancel anytime · Used by 500+ members</div>
+      <!-- Blurred preview -->
+      <div class="rm-preview-blur">
+        <div class="rm-preview-week"><div class="rm-pw-num">01</div><div class="rm-pw-body"><div class="rm-pw-badge" style="background:#3b82f6">FOUNDATION</div><div class="rm-pw-title">Baseline &amp; Habit Architecture</div><div class="rm-pw-tags"><span>Form</span><span>Tracking</span><span>Habits</span></div></div></div>
+        <div class="rm-preview-week"><div class="rm-pw-num">02</div><div class="rm-pw-body"><div class="rm-pw-badge" style="background:#3b82f6">FOUNDATION</div><div class="rm-pw-title">Movement Mastery &amp; First Deficit</div><div class="rm-pw-tags"><span>Technique</span><span>Deficit</span><span>Protein</span></div></div></div>
+        <div class="rm-preview-week"><div class="rm-pw-num">03</div><div class="rm-pw-body"><div class="rm-pw-badge" style="background:#3b82f6">FOUNDATION</div><div class="rm-pw-title">Momentum &amp; Metabolic Shift</div><div class="rm-pw-tags"><span>HIIT</span><span>Cardio</span><span>Volume</span></div></div></div>
+        <div class="rm-blur-overlay"><div class="rm-blur-cta"><div style="font-size:28px;">🔒</div><div>Unlock 12 weeks of your personalised roadmap</div><button onclick="openModal('promodal')" style="background:var(--red);color:#fff;border:none;padding:10px 28px;border-radius:8px;font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:1px;cursor:pointer;margin-top:12px;font-size:14px;">GET PRO ACCESS</button></div></div>
+      </div>
+    </div>
+
+    <!-- PRO CONTENT -->
+    <div id="rm-content" style="display:none;">
+
+      <!-- SETUP FORM -->
+      <div id="rm-setup" class="rm-setup-card">
+        <div class="rm-setup-hdr">
+          <div class="rm-setup-icon">🎯</div>
+          <div>
+            <div class="rm-setup-title">Personalise Your 12-Week Blueprint</div>
+            <div class="rm-setup-sub">Answer 6 quick questions — we'll build your complete personalised roadmap.</div>
+          </div>
+        </div>
+        <div class="rm-form-grid">
+          <div class="rm-field">
+            <label class="rm-label">Primary Goal</label>
+            <div class="rm-goal-btns" id="rm-goal-btns">
+              <div class="rm-goal-btn active" data-goal="loss" onclick="rmSelectGoal('loss',this)"><span class="rm-goal-icon">🔥</span><span class="rm-goal-name">Fat Loss</span><span class="rm-goal-sub">Burn fat · Reveal physique</span></div>
+              <div class="rm-goal-btn" data-goal="gain" onclick="rmSelectGoal('gain',this)"><span class="rm-goal-icon">💪</span><span class="rm-goal-name">Muscle Gain</span><span class="rm-goal-sub">Build mass · Get stronger</span></div>
+              <div class="rm-goal-btn" data-goal="maintain" onclick="rmSelectGoal('maintain',this)"><span class="rm-goal-icon">⚡</span><span class="rm-goal-name">Recomp</span><span class="rm-goal-sub">Lose fat · Gain muscle</span></div>
+            </div>
+          </div>
+          <div class="rm-form-row">
+            <div class="rm-field">
+              <label class="rm-label">Experience Level</label>
+              <select id="rm-exp" class="rm-select">
+                <option value="beginner">Beginner (0–1 year)</option>
+                <option value="intermediate" selected>Intermediate (1–3 years)</option>
+                <option value="advanced">Advanced (3+ years)</option>
+              </select>
+            </div>
+            <div class="rm-field">
+              <label class="rm-label">Training Days / Week</label>
+              <select id="rm-days" class="rm-select">
+                <option value="3">3 days/week</option>
+                <option value="4" selected>4 days/week</option>
+                <option value="5">5 days/week</option>
+                <option value="6">6 days/week</option>
+              </select>
+            </div>
+          </div>
+          <div class="rm-form-row">
+            <div class="rm-field">
+              <label class="rm-label">Equipment</label>
+              <select id="rm-equip" class="rm-select">
+                <option value="gym" selected>Full Gym</option>
+                <option value="home">Home / Dumbbells</option>
+                <option value="minimal">Minimal Equipment</option>
+              </select>
+            </div>
+            <div class="rm-field">
+              <label class="rm-label">Dietary Preference</label>
+              <select id="rm-diet-pref" class="rm-select">
+                <option value="nonveg" selected>Non-Vegetarian</option>
+                <option value="veg">Vegetarian</option>
+                <option value="vegan">Vegan</option>
+              </select>
+            </div>
+          </div>
+          <div class="rm-form-row">
+            <div class="rm-field">
+              <label class="rm-label">Current Weight (kg)</label>
+              <input type="number" id="rm-weight" class="rm-input" placeholder="e.g. 75" min="30" max="250">
+            </div>
+            <div class="rm-field">
+              <label class="rm-label">TDEE / Daily Calories</label>
+              <input type="number" id="rm-tdee" class="rm-input" placeholder="e.g. 2400 (from calculator)">
+            </div>
+          </div>
+        </div>
+        <button onclick="generateRoadmap()" class="rm-gen-btn">⚡ Generate My 12-Week Roadmap</button>
+      </div>
+
+      <!-- ROADMAP PLAN -->
+      <div id="rm-plan" style="display:none;">
+        <div id="rm-user-bar" class="rm-user-bar"></div>
+
+        <div class="rm-phase-wrap">
+          <div class="rm-phase-tab active" data-phase="1" onclick="rmSwitchPhase(1,this)">
+            <div class="rm-pt-label">PHASE 1</div>
+            <div class="rm-pt-name">Foundation</div>
+            <div class="rm-pt-weeks">Weeks 1–4</div>
+          </div>
+          <div class="rm-phase-connector"></div>
+          <div class="rm-phase-tab" data-phase="2" onclick="rmSwitchPhase(2,this)">
+            <div class="rm-pt-label">PHASE 2</div>
+            <div class="rm-pt-name">Development</div>
+            <div class="rm-pt-weeks">Weeks 5–8</div>
+          </div>
+          <div class="rm-phase-connector"></div>
+          <div class="rm-phase-tab" data-phase="3" onclick="rmSwitchPhase(3,this)">
+            <div class="rm-pt-label">PHASE 3</div>
+            <div class="rm-pt-name">Transformation</div>
+            <div class="rm-pt-weeks">Weeks 9–12</div>
+          </div>
+        </div>
+
+        <div id="rm-phase-desc" class="rm-phase-desc"></div>
+        <div id="rm-weeks" class="rm-weeks"></div>
+
+        <div style="margin-top:24px;display:flex;gap:12px;flex-wrap:wrap;">
+          <button onclick="savePDF()" class="bsm" style="flex:1;justify-content:center;">📄 Export PDF Report</button>
+          <button onclick="rmReset()" class="bsm" style="flex:0 0 auto;background:transparent;border-color:var(--border);color:var(--muted);">🔄 Regenerate</button>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 <div class="divider"></div>
@@ -7428,12 +7652,459 @@ buildMealPlan('gain',2200,{prot:165,carb:220,fat:73},'nonveg');
 
 
 // ── ROADMAP ──
-const RM={
-  loss:[{w:'Week 1-2',t:'Foundation & Baseline',d:'Set up calorie tracking. Establish your TDEE. 3 training sessions per week. Perfect your form. Build your daily water habit.'},{w:'Week 3-4',t:'Deficit Protocol Active',d:'500-kcal deficit chalu. Protein in every meal. HIIT 2x/hafta. Pehle body measurements aur photos lo.'},{w:'Week 5-8',t:'Fat Loss Momentum',d:'Progressive overload across all compound lifts. Fat reduction becomes visible. Reassess calories if you hit a plateau.'},{w:'Week 9-12',t:'Elite Phase',d:'Introduce carb cycling and refeed days. Maintain strength. Take final transformation photos. Set your next goal.'}],
-  gain:[{w:'Week 1-2',t:'Bulk Setup',d:'Establish a 350-kcal surplus. 3-4 sessions per week. Take baseline measurements and photos.'},{w:'Week 3-4',t:'Strength Building',d:'Hit new PRs on compound lifts. Consistently hit protein target. 8-9 hours sleep. Track 0.25-0.5kg weekly gain.'},{w:'Week 5-8',t:'Hypertrophy Phase',d:'Increase volume. Add accessory work. If gaining too fast, reduce surplus by 100 kcal.'},{w:'Week 9-12',t:'Mass Consolidation',d:'Deload in week 10. Strong push for the final 2 weeks. Decide to continue bulk or start a mini-cut.'}],
-  maintain:[{w:'Week 1-2',t:'Maintenance Calibration',d:'Dial in your TDEE through tracking. Maintain a consistent schedule. Track weight daily, use the weekly average.'},{w:'Week 3-4',t:'Body Recomposition',d:'Progressive overload at TDEE. Hit protein daily. Body fat slowly drops as muscle increases.'},{w:'Week 5-8',t:'Strength & Conditioning',d:'Cardio for health. Lifts improve consistently. Body composition shifts in a positive direction.'},{w:'Week 9-12',t:'Advanced Maintenance',d:'Introduce calorie cycling. High carbs on training days, lower on rest days. Peak physique mode.'}]
+const ROADMAP_WEEKS={
+loss:[
+{w:1,phase:1,badge:'FOUNDATION',bc:'#3b82f6',title:'Baseline & Habit Architecture',tags:['Form','Tracking','Habits'],
+training:{split:'Full Body 3×/week (Mon · Wed · Fri)',exercises:'Squat 3×10 · Deadlift 3×8 · Bench Press 3×10 · Bent Row 3×10 · OHP 3×10 · Bicep Curl 3×12 · Tricep Pushdown 3×12',sets:'60–65% 1RM · Rest 90–120 sec between sets',cardio:'20-min brisk walk post-session (3×)',focus:'Film yourself on every major lift. Form is the only goal this week — not weight.'},
+nutrition:{cals:'TDEE (no deficit yet)',protein:'1.8g/kg bodyweight',strategy:'Track everything for 7 days to establish your real calorie baseline. Do not change your diet yet — just observe.',foods:'Eggs · Dal · Paneer · Chicken · Rice · Roti · Oats · Fruits · Curd · Vegetables',avoid:'Sugar drinks · Fried food · Processed snacks · Alcohol'},
+supps:['Whey Protein 25–30g post-workout','Creatine Monohydrate 5g daily (any time)','Multivitamin (with breakfast)'],
+recovery:['8 hours sleep minimum — set a fixed bedtime','5-min static stretch immediately post-workout','8,000+ steps daily — use phone pedometer'],
+mindset:'You are building the SYSTEM this week. Results come from consistency of process, not perfection of a single session. Log everything. Miss nothing.',
+checkpoint:'Baseline photos (front · side · back) · Starting weight (morning, fasted) · Waist & hip measurements · Begin calorie tracking app'},
+
+{w:2,phase:1,badge:'FOUNDATION',bc:'#3b82f6',title:'Movement Mastery & First Deficit',tags:['Technique','Deficit','Protein'],
+training:{split:'Push · Pull · Legs 3×/week',exercises:'Push: Bench+Incline DB+OHP+Lateral Raise+Tricep Pushdown | Pull: Deadlift+Pull-Up+Row+Face Pull+Curl | Legs: Squat+RDL+Leg Press+Calf',sets:'65% 1RM · 3×10–12 · Add 5–10% weight wherever Week 1 reps felt easy',cardio:'2× 20-min LISS (cycling or walk) on non-training days',focus:'RPE tracking starts now. Rate each set 1–10. Aim for 7–8 RPE. Record in your training log.'},
+nutrition:{cals:'TDEE − 300',protein:'2.0g/kg bodyweight',strategy:'Introduce a modest 300 kcal deficit. Small enough to be sustainable without crashing energy.',foods:'Chicken breast · Egg whites + 1 yolk · Paneer (100–150g) · Oats · Sweet potato · Brown rice · Broccoli · Salad',avoid:'White bread · Biscuits · Packaged cereals with sugar · Restaurant food (for now)'},
+supps:['Whey 30–40g post-workout','Creatine 5g daily','Vitamin D3 2000 IU (with fatty meal)','Omega-3 Fish Oil 1g'],
+recovery:['Track sleep hours every morning','Cold shower 2–3 min post-workout — reduces muscle inflammation','Epsom salt bath if lower body is sore'],
+mindset:'Hunger is a signal — not an emergency. If hunger spikes, your first check is protein intake. More protein = less hunger at the same calories.',
+checkpoint:'Weekly weigh-in (Friday morning · fasted · same scale) · Energy level self-rated /10 · Protein target hit X/7 days'},
+
+{w:3,phase:1,badge:'FOUNDATION',bc:'#3b82f6',title:'Momentum & Cardio Introduction',tags:['HIIT','Cardio','Volume'],
+training:{split:'Upper/Lower 4×/week (Mon·Tue·Thu·Fri)',exercises:'Upper A: Bench 4×6·Row 4×6·OHP 3×8·Pull-Up 3×8·Accessories | Lower A: Squat 4×6·RDL 3×8·Leg Press 3×12·Calves | Upper B: Volume 4×10-12 | Lower B: Deadlift 3×5·Bulgarian SS 3×10·Leg Curl 3×12·Abs',sets:'70% 1RM compounds · 65% accessory · Push for progressive overload on every session',cardio:'1× HIIT (20 min: 30s sprint · 90s walk × 8–10 rounds) + 2× 20-min walks',focus:'Progressive overload rule: if you hit all reps, add weight next session. If not, fix form first.'},
+nutrition:{cals:'TDEE − 400',protein:'2.0–2.2g/kg',strategy:'Deepen deficit to 400 kcal. Introduce carb cycling: Higher carbs on training days (+50g), lower on rest days (−50g).',foods:'Fish (Rohu/Tilapia) · Chicken · Tofu · Eggs · Dal · Oats · Banana pre-workout · Curd post-workout · Green vegetables',avoid:'Fruit juices · "Healthy" biscuits · Processed protein bars with <20g protein'},
+supps:['Whey 40g post-workout','Creatine 5g','Caffeine 100–200mg pre-workout (black coffee is ideal)','Vitamin D + Fish Oil daily'],
+recovery:['Foam roll quads · IT band · hip flexors daily (5 min)','Cold shower daily post-workout','Rest day = active rest: 30-min walk minimum'],
+mindset:'The first plateau is coming. When it does, it is NOT a sign to cut more. It is a sign to track more accurately. Weigh your food. Use an app.',
+checkpoint:'Weight trend (take 3 readings and average) · Strength vs Week 1 (all compound lifts) · Energy level vs Week 1 · HIIT completed'},
+
+{w:4,phase:1,badge:'FOUNDATION',bc:'#3b82f6',title:'Phase 1 Review & Planned Deload',tags:['Deload','Assess','Refeed'],
+training:{split:'Deload week — Full Body 3× at 60% effort',exercises:'Same movements as Week 1 — same exercises, 60% of Week 3 weight · 2 sets × 10 reps',sets:'60% 1RM · 2 sets only — this is active recovery, not training',cardio:'3× 30-min brisk walks only. No HIIT. CNS needs this rest.',focus:'Use the free time to plan Week 5 onwards. Research your weak points. Read about your goal. Set up your environment for Phase 2.'},
+nutrition:{cals:'TDEE − 250 (reduce deficit for deload)',protein:'2g/kg maintained even in deload',strategy:'1 refeed day this week (bring carbs up by 100g, keep protein, reduce fat). Pick a training day for the refeed.',foods:'Focus on whole foods this week. 80% of diet from single-ingredient foods. Use this week to find better meal prep strategies.',avoid:'Using deload as license to eat junk. You have earned a refeed day — not a cheat week.'},
+supps:['Whey 30g','Creatine 5g','Magnesium Glycinate 300mg at night (sleep quality + recovery)','Multivitamin · Vitamin D · Fish Oil'],
+recovery:['9 hours sleep this week — your body rebuilds during rest','Get a sports massage if budget allows','Address any nagging pains now before Phase 2 intensity increases'],
+mindset:'Look at your Day 1 photos vs now. The difference may seem invisible to you — but it is real. Fat loss and muscle gain happen at the cellular level first.',
+checkpoint:'Month 1 transformation photos (compare to Week 1) · All body measurements · Strength benchmarks on main lifts · Phase 2 goal decided'},
+
+{w:5,phase:2,badge:'DEVELOPMENT',bc:'#f59e0b',title:'Progressive Overload Ignition',tags:['Strength','Volume','Intensity'],
+training:{split:'Upper/Lower 4×/week — strength and volume split',exercises:'Upper Strength: Bench 5×5·Row 5×5·OHP 4×6 | Upper Volume: Incline DB 4×10·Cable Row 4×10·Lateral+Front Raise 3×15·Arms superset | Lower Strength: Squat 5×5·Deadlift 3×3 | Lower Volume: Leg Press 4×10·Bulgarian SS 3×12·Leg Curl 3×12·Abs circuit',sets:'Heavy days: 80% 1RM · Volume days: 65–70% 1RM · Add weight when all reps completed',cardio:'2× HIIT 25 min + 1× 40-min LISS on off days. 10,000 steps daily.',focus:'Track every single lift. You must beat last week by at least 1 rep or 2.5kg. No exceptions.'},
+nutrition:{cals:'TDEE − 500',protein:'2.2g/kg — highest priority macro',strategy:'500 kcal deficit now active. Diet break first 3 days (TDEE) to reset metabolism and leptin, then deficit Day 4–7.',foods:'Grilled chicken · Egg whites · Cottage cheese · Brown rice · Sweet potato · Broccoli · Almonds · Curd',avoid:'Restaurant meals · White rice daily · Hidden oil in sabzi · Cheat meals until Week 6 refeed'},
+supps:['Whey 40g post-workout','Creatine 5g','Pre-workout (caffeine) 30 min before training','Omega-3 2g','ZMA at night (zinc+magnesium for testosterone and sleep)'],
+recovery:['ZMA before bed — dramatically improves sleep quality and testosterone','Foam roll full body 2× per week (10 min sessions)','Weekly sports massage if possible'],
+mindset:'You survived 4 weeks. Most people quit by now. You are in the top 20% who are still going. Phase 2 is where real transformations are built. Now you go further.',
+checkpoint:'Strength vs Week 1 on all compound lifts · Body fat % trend · Waist measurement change · Cardio capacity (HIIT getting easier?)'},
+
+{w:6,phase:2,badge:'DEVELOPMENT',bc:'#f59e0b',title:'Plateau-Proof Tactics',tags:['Adaptation','Break Plateau','Volume Peak'],
+training:{split:'PPL 5×/week (Push·Pull·Legs·Rest·Push·Pull·Legs)',exercises:'Push: Bench+Incline DB+Cable Fly+OHP+Lateral Raise+Tricep work (16–20 sets) | Pull: Deadlift+Pull-Up+Row+Face Pull+Curl (14–18 sets) | Legs: Squat+RDL+Leg Press+Leg Curl+Calf+Abs (18–22 sets)',sets:'70–75% 1RM · 3–4 sets · 8–15 reps · Use drop sets on last set of each isolation',cardio:'3× HIIT 20 min. Fasted morning walk 30 min daily (separate from weights).',focus:'Change one variable per exercise to break through strength plateaus: grip width, stance, rep tempo, rest time.'},
+nutrition:{cals:'TDEE − 500 (reassess if weight stalled 10+ days)',protein:'2.2g/kg spread across 4–5 meals',strategy:'If plateau: reduce calories by 100 OR add one 20-min cardio session. Do NOT panic-cut by 500+ kcal.',foods:'Increase vegetables to 500g/day. Berries for antioxidants. Oats + banana + whey as standard pre/post workout.',avoid:'Diet products with artificial sweeteners in bulk · Alcohol completely eliminated this phase'},
+supps:['Whey 40–50g (split if needed to hit protein)','Creatine 5g','L-Carnitine 2g pre-cardio (fat oxidation)','B-Complex','Vitamin D3 4000 IU'],
+recovery:['Cold shower daily (2 min post-workout)','Yoga or full-body stretch 1× per week (30-min session)','Sleep must be 7.5+ hours — L-Carnitine works best with adequate rest'],
+mindset:'Plateaus are your body defending itself. They are not failure — they are data. You break them with patience and small adjustments, not extreme measures.',
+checkpoint:'Has scale moved? If not 10+ days: is food tracking accurate? Is calorie count correct? Check before changing the plan. Measure, do not guess.'},
+
+{w:7,phase:2,badge:'DEVELOPMENT',bc:'#f59e0b',title:'Lean Shred Acceleration',tags:['Shred','Cardio Peak','High Intensity'],
+training:{split:'PPL 5×/week with supersets and circuits',exercises:'Push: 3 compounds + 3 isolation. Superset chest isolation with shoulder isolation. | Pull: 3 compounds + 3 isolation. Superset rows with pull-over. | Legs: Quad day + Posterior chain day. Add 30-min HIIT finisher on one leg day.',sets:'70% 1RM · 4 sets · 8–15 reps · 60-sec rest on isolation · Drop set on final set',cardio:'4× HIIT 20 min + 30-min fasted morning walk daily. Total cardio 150–180 min/week.',focus:'Fasted morning cardio (30-min walk before breakfast) is extremely effective for fat loss at this stage. Walk only — not HIIT fasted.'},
+nutrition:{cals:'TDEE − 600 with 1 refeed per week at TDEE',protein:'2.3g/kg — increase to protect muscle during larger deficit',strategy:'Aggressive phase. Carb cycling: Training days = 200–250g carbs. Rest days = 60–80g carbs. Fat fills gaps.',foods:'Egg whites · Fish (Rohu/Basa) · Chicken breast · Paneer (limited) · Oats · Berries · Leafy greens · Almonds',avoid:'Cheat meals until refeed day — earn it properly. Alcohol = zero during this phase.'},
+supps:['Whey 40–50g post-workout','Creatine 5g','L-Carnitine 3g pre-cardio','Caffeine pre-training','Electrolytes daily (sodium·potassium·magnesium critical in 600-kcal deficit)','ZMA at night'],
+recovery:['Sleep 8–9 hrs — absolutely non-negotiable in a 600-kcal deficit','Foam roll full body every day (10 min)','Cortisol management: identify and reduce major life stressors — stress hormones kill fat loss'],
+mindset:'This is the hardest week mentally. Your body will send hunger and fatigue signals. Your brain will invent excuses. The people who push through here are the ones with visible abs in Week 12.',
+checkpoint:'Waist vs Week 1 · Progress photos vs Month 1 · Strength at ≥90% of Week 1 maximum (if lower, reduce cardio or increase calories by 100) · Sleep quality /10'},
+
+{w:8,phase:2,badge:'DEVELOPMENT',bc:'#f59e0b',title:'Mid-Point Assessment & Strategic Reload',tags:['Deload','Assess','Reload'],
+training:{split:'Deload — 3 Full Body sessions at 50% effort',exercises:'All major movements kept. 2 sets × 10 reps at 50% 1RM. Focus purely on feeling each muscle.',sets:'50% 1RM · 2 sets only. This is active recovery — not training.',cardio:'Daily 30-min walks only. No HIIT. Give your CNS and joints a complete week of rest.',focus:'Use this week to research Phase 3 strategies. Read about your weak points. Plan your nutrition for weeks 9–12.'},
+nutrition:{cals:'TDEE − 200 (lighten deficit significantly this week)',protein:'2g/kg — maintain always',strategy:'Moderate increase in carbs this week. Let the body refill glycogen. You will look and feel noticeably better.',foods:'More variety this week. Focus on micronutrient density. Try new healthy recipes. Meal prep for Phase 3.',avoid:'Do NOT use deload as license to eat junk. Still no alcohol. Still clean eating.'},
+supps:['Whey 30g','Creatine 5g','Multivitamin · Vitamin D3 · Fish Oil 2g'],
+recovery:['Massage or deep tissue therapy strongly recommended','9 hours sleep target','Address any nagging pains — physio section of the app for specific protocols'],
+mindset:'You are exactly halfway. Write down: What worked? What did not? What do you want Phase 3 to look like? Where do you want to be in 4 weeks? Be specific.',
+checkpoint:'MIDPOINT PHOTOS (front·side·back) — compare carefully to Week 1 · All measurements vs Week 1 · Strength test on main lifts · Mental health and motivation check-in'},
+
+{w:9,phase:3,badge:'TRANSFORMATION',bc:'#e8001d',title:'Advanced Shred — Supersets & Circuits',tags:['Advanced','Peak Cardio','Compound'],
+training:{split:'PPL 5–6×/week — supersets and tri-sets',exercises:'Push: 3 compound + 3 isolation in supersets | Pull: 3 compound + 3 isolation in supersets | Legs A: Quad focus with HIIT finisher | Legs B: Posterior chain focus',sets:'Compound: 70–75% 1RM · 4×8-12 | Isolation: supersets 3×12–15 | Drop set on every final isolation set — go to failure',cardio:'4× HIIT 15–20 min + 30-min fasted walk daily. Total 170–200 min/week.',focus:'Mind-muscle connection at peak. Squeeze every rep at peak contraction for 1 second. Slow the eccentric phase (3 seconds down).'},
+nutrition:{cals:'TDEE − 600–700 · Refeed 1–2× per week',protein:'2.5g/kg — highest protein of the entire plan',strategy:'Peak deficit phase. Aggressive carb cycling. Training days: 200–250g carbs. Rest days: 60–80g. Protein stays constant.',foods:'Egg whites · Fish · Chicken breast · Paneer (cut days only 50g) · Oats · Banana (pre-workout only) · Leafy greens · Olive oil',avoid:'Dairy if holding water · High-sodium foods · Restaurant food completely · Alcohol'},
+supps:['Whey 50g daily','Creatine 5g','L-Carnitine 3g × 2 daily (morning + pre-cardio)','Pre-workout + Green Tea Extract pre-training','Electrolytes post-workout (critical)','ZMA at night','Vitamin C 1000mg','Turmeric capsule for inflammation'],
+recovery:['Sleep is the #1 anabolic tool. Non-negotiable 8 hours.','Cold showers daily — reduce inflammation and improve recovery','Fish Oil 3g daily — reduces cortisol and inflammation'],
+mindset:'You can see the finish line. This is where champions pull away. The difference between a good result and an elite result is built in these last 4 weeks.',
+checkpoint:'Waist vs Chest ratio improving · Definition/vascularity visible · Strength at ≥85% of Week 1 max · Sleep quality rating'},
+
+{w:10,phase:3,badge:'TRANSFORMATION',bc:'#e8001d',title:'Peak Physique & Body Sculpting',tags:['Sculpting','Detail','Conditioning'],
+training:{split:'Bro Split — Body Part Focus for maximum isolation and detail',exercises:'Mon: Chest 5ex 20 sets | Tue: Back 5ex 20 sets | Wed: Shoulders+Abs 4+3 ex | Thu: Arms (Bi+Tri supersets) 6ex | Fri: Legs full 5ex | Sat: Weak points+Core',sets:'70% 1RM · 4–5 × 10–15 · Slow eccentric (3 sec down) · 1-sec peak contraction squeeze',cardio:'30-min fasted walk daily + 2× HIIT sessions (separate from weights)',focus:'This phase is about DETAIL. You have built the muscle. Now sculpt it. Every rep is intentional. Feel every contraction.'},
+nutrition:{cals:'TDEE − 600',protein:'2.5g/kg · Casein protein or curd before bed',strategy:'Timed nutrition is critical now. Carbs ONLY around the training window. Zero carbs on rest days.',foods:'Meal 1: Egg whites + oats | Meal 2: Whey post-workout | Meal 3: Chicken/fish + rice | Meal 4: Paneer + salad | Meal 5: Casein/curd',avoid:'Ultra-processed food completely · Even "clean" packaged snacks · Read every label now'},
+supps:['Whey + Casein blend','Creatine 5g','L-Carnitine 3g × 2','Pre-workout','Full stack: Multivitamin · D3 · Fish Oil 3g · Zinc · Magnesium'],
+recovery:['9 hrs sleep · Phone charging outside bedroom · No screens 1 hr before bed','Professional massage every 5–7 days if possible','Full body stretch every morning (10 min) before first meal'],
+mindset:'At this point you know your body better than 99% of people. You know what it responds to. Use that knowledge in every decision you make today.',
+checkpoint:'All measurements vs Week 1 · Progress photos in best lighting · Strength comparison across all lifts · Recovery quality · Mental energy levels'},
+
+{w:11,phase:3,badge:'TRANSFORMATION',bc:'#e8001d',title:'Final Drive — Peak Performance Week',tags:['Final Push','Peaking','Elite Output'],
+training:{split:'Upper/Lower 5×/week + 2 HIIT sessions',exercises:'Upper A: Heavy compounds (80–85% 1RM) | Upper B: Volume and pump focus (65–70%) | Lower A: Heavy squat and deadlift | Lower B: Volume + 20-min HIIT finisher | Saturday: Full body circuit 6 exercises × 4 rounds',sets:'Heavy: 80–85% 1RM. Volume: 65–70%. Circuit: bodyweight-based. Reduce rest on volume days to 45–60 sec.',cardio:'Daily 30-min fasted walk. 2× HIIT. 1× 45-min LISS. Highest cardio week of the plan.',focus:'Reduce rest periods on pump days. Increase rest on strength days. Let your body peak for the final week.'},
+nutrition:{cals:'TDEE − 400 (ease up slightly to fuel intense training)',protein:'2.5g/kg',strategy:'2 strategic refeeds this week (high carb days) to fill muscle glycogen and look your absolute best. Refeeds are on training days.',foods:'Standard lean protein + complex carbs schedule. Add 150g extra carbs on refeed days via rice, oats, sweet potato only.',avoid:'Water-retaining foods before photos: High sodium · Processed food · Alcohol · Dairy (if you are prone to bloating)'},
+supps:['All previous supplements','Dandelion root tea (natural diuretic pre-photo for visual peak)','Extra Vitamin C 2000mg daily','Glutamine 5g post-workout for recovery'],
+recovery:['9 hrs sleep · Blackout curtains if possible','Full body stretch every morning','Visualise your final transformation photos and measurements every night'],
+mindset:'The body you have built is real and permanent. No one can take away what you earned in these 11 weeks. Walk into Week 12 with complete confidence.',
+checkpoint:'Pre-final assessment: all measurements · Full photo set comparison · Strength benchmarks on key lifts · List your 3 biggest achievements from this journey'},
+
+{w:12,phase:3,badge:'TRANSFORMATION',bc:'#e8001d',title:'Transformation Complete — The New You',tags:['Final Results','Celebrate','Next Goal'],
+training:{split:'Deload + Final Performance Tests',exercises:'Mon: 1RM strength tests — Squat · Deadlift · Bench Press · OHP · Pull-Ups | Wed: Full body pump session for best visual result | Fri: Active celebration — run · sport · hike · anything physical you enjoy',sets:'Strength tests: true 1RM attempts. Wednesday: 60% effort, pump-focused. Friday: enjoy movement.',cardio:'Minimal — maintain step count. No intense cardio. Let your body show its best.',focus:'Test and document every 1RM. Compare to Week 1. The numbers tell the true story of your transformation.'},
+nutrition:{cals:'TDEE — maintenance mode begins',protein:'2g/kg — maintenance protein',strategy:'Transition to your new maintenance. Increase carbs to refill glycogen and look your fullest. This is your new baseline.',foods:'Eat clean but flexibly. One celebration meal allowed (not a cheat day — one meal). You have earned it.',avoid:'Using "finished" as an excuse to return to old habits. These eating patterns are now your identity.'},
+supps:['Maintain core stack: Creatine · Fish Oil · Multivitamin · Vitamin D3 · Whey as needed'],
+recovery:['Book a massage. Full rest. Celebrate the journey properly.','Write down everything you learned about your body','Begin planning your next 12-week goal — you now have the knowledge and discipline'],
+mindset:'You did what most people only talk about. You transformed your body, your habits, and your relationship with fitness. This is who you are now — not who you were trying to become.',
+checkpoint:'FINAL TRANSFORMATION: All photos (front·side·back) vs Week 1 · All measurements vs Week 1 · Final strength benchmarks · DECIDE: Maintain · Advanced Cut · Muscle Building cycle'}
+],
+
+gain:[
+{w:1,phase:1,badge:'FOUNDATION',bc:'#3b82f6',title:'Baseline, Form & Surplus Introduction',tags:['Form','Baseline','Surplus'],
+training:{split:'Full Body 3×/week (Mon · Wed · Fri)',exercises:'Squat 3×8 · Deadlift 3×5 · Bench 3×8 · Bent Row 3×8 · OHP 3×8 · Pull-Up 3×AMRAP · Bicep Curl 3×12 · Tricep Pushdown 3×12',sets:'65–70% 1RM. Prioritise form over weight. This is your neural foundation.',cardio:'Minimal — 2× 15-min walks. Cardio reduces gains. Keep it low.',focus:'Learn your true 1RM on main lifts by the end of Week 1 (conservative estimate). Log every session.'},
+nutrition:{cals:'TDEE + 250 (lean bulk surplus)',protein:'2g/kg bodyweight — foundation of muscle building',strategy:'Establish a modest 250-kcal surplus. Weigh yourself daily, average weekly. Target 0.25–0.5 kg/week gain.',foods:'Eggs (whole) · Chicken thighs · Red meat 2× per week · Rice · Roti · Oats · Banana · Full-fat dairy · Nuts · Curd',avoid:'Empty calories (chips · sweets) · Alcohol (kills testosterone) · Skipping meals'},
+supps:['Whey 30–40g post-workout','Creatine Monohydrate 5g daily','Multivitamin','Zinc 25mg at night (testosterone support)'],
+recovery:['8–9 hours sleep — this is when muscle is built','No training two days in a row on the same muscle','Pre-sleep nutrition: Paneer + curd + almonds (slow-digesting protein overnight)'],
+mindset:'Bulking is a science. You are trying to maximise muscle gained while minimising fat gained. Every gram of surplus protein that does not go to muscle goes to fat. Track everything.',
+checkpoint:'Baseline photos · Starting weight · Starting measurements · 1RM estimates on main lifts · Calorie tracking begun'},
+
+{w:2,phase:1,badge:'FOUNDATION',bc:'#3b82f6',title:'Progressive Overload Foundation',tags:['Strength','Overload','Volume'],
+training:{split:'Push · Pull · Legs 3×/week',exercises:'Push: Bench+Incline DB+OHP+Lateral Raise+Tricep work | Pull: Deadlift+Pull-Up+Row+Face Pull+Curl | Legs: Squat+RDL+Leg Press+Calf+Abs',sets:'70% 1RM · 3–4 × 8–10 · Add 2.5–5kg when you complete all reps comfortably',cardio:'1× 20-min low intensity walk on rest day only',focus:'Progressive overload every session or every week. If you are not adding weight or reps, you are not growing.'},
+nutrition:{cals:'TDEE + 300',protein:'2.0–2.2g/kg spread across 4 meals',strategy:'Increase surplus to 300 kcal. Adjust if gaining faster than 0.5 kg/week (reduce by 100) or not gaining (add 100).',foods:'Add pre-sleep protein: casein shake or 200g paneer before bed (critical for overnight muscle synthesis)',avoid:'Missing meals · Under-eating protein · Skipping post-workout nutrition'},
+supps:['Whey 40g post-workout','Creatine 5g','Vitamin D3 2000 IU','Fish Oil 1g','Ashwagandha 600mg (cortisol reduction and testosterone support)'],
+recovery:['9 hours sleep with pre-sleep protein','Cold shower 2 min — reduces inflammation between sessions','Aim for only 1 rest day per muscle group maximum before training it again'],
+mindset:'The muscle is built during rest. Your gym session is just the signal. Sleep, food and rest are where the actual growth happens.',
+checkpoint:'Scale trend (gaining 0.25–0.5 kg/week?) · All lifts progressing? · Energy levels adequate? · Sleep quality?'},
+
+{w:3,phase:1,badge:'FOUNDATION',bc:'#3b82f6',title:'Volume Build & First Strength PRs',tags:['Volume','PRs','Hypertrophy'],
+training:{split:'Upper/Lower 4×/week (Mon·Tue·Thu·Fri)',exercises:'Upper A: Bench 4×6·Row 4×6·OHP 3×8·Pull-Up 3×8 | Lower A: Squat 4×6·Deadlift 3×5·Leg Press 3×12 | Upper B: Hypertrophy 4×10–12 | Lower B: Bulgarian SS·Leg Curl·Calf·Abs',sets:'Heavy days: 80% 1RM · Volume days: 65–70% · Total weekly sets: 15–20 per muscle group',cardio:'None required. 5,000 steps daily for general health only.',focus:'Volume is the primary driver of hypertrophy. Start tracking total weekly volume per muscle group. Target 15–20 working sets.'},
+nutrition:{cals:'TDEE + 350',protein:'2.2g/kg',strategy:'Increase surplus to 350 kcal. Add a dedicated post-workout meal (not just a shake). Real food post-workout drives more hypertrophy.',foods:'Post-workout meal: Chicken + Rice (not just whey). Pre-workout: Banana + Oats 60–90 min before. Pre-sleep: Paneer/casein.',avoid:'Cardio sessions longer than 20 min · Skipping the post-workout meal'},
+supps:['Whey 40g post-workout','Creatine 5g','Ashwagandha 600mg','Pre-workout (caffeine) if needed','B-Complex vitamin'],
+recovery:['Foam roll glutes and hip flexors pre-workout (5 min)','Stretch hamstrings and pecs post-workout (5 min)','Take Sunday completely off'],
+mindset:'You are in the adaptation phase. Trust the progressive overload. Small improvements compound into massive results over 12 weeks.',
+checkpoint:'Strength PRs on main lifts vs Week 1 · Body measurement changes · Weight scale trend · Volume handled vs Week 1'},
+
+{w:4,phase:1,badge:'FOUNDATION',bc:'#3b82f6',title:'Deload, Assess & Phase 2 Planning',tags:['Deload','Assess','Plan'],
+training:{split:'Deload — Full Body 3× at 60% load',exercises:'All major movements kept · 2 sets × 10 reps at 60% 1RM only',sets:'60% 1RM · 2 sets. Prioritise recovery of joints and CNS.',cardio:'Daily 20-min walks. Gentle mobility work.',focus:'Plan your Phase 2 split. Research the exercises you are weakest on. Address imbalances.'},
+nutrition:{cals:'TDEE + 150 (reduce surplus during deload)',protein:'2g/kg maintained',strategy:'Reduce surplus during deload week — you are not doing as much work so you need less fuel.',foods:'Focus on micronutrient-dense foods this week. Add variety. Cook something new.',avoid:'Nothing specific — just maintain discipline. No junk food.'},
+supps:['Whey 30g','Creatine 5g','Multivitamin · Vitamin D3 · Fish Oil · Ashwagandha'],
+recovery:['Prioritise 9+ hours sleep this entire week','Book a sports massage if possible','Identify and treat any muscle imbalances — use physio section'],
+mindset:'Deloads are not weakness. They are the phase where everything you trained locks in at a deeper level. Olympic athletes plan deloads months in advance.',
+checkpoint:'Month 1 photos and measurements · Strength benchmarks (compare to Week 1) · Weight gained (was it 1–2 kg this month?) · Phase 2 goals decided'},
+
+{w:5,phase:2,badge:'DEVELOPMENT',bc:'#f59e0b',title:'Hypertrophy Intensification',tags:['Hypertrophy','Volume','Muscle'],
+training:{split:'PPL 5×/week — optimised for hypertrophy',exercises:'Push: Bench+Incline DB+Cable Fly+OHP+Lateral Raise+Tricep work (18–20 sets total) | Pull: Pull-Up+Bent Row+Cable Row+Face Pull+Curl+Hammer Curl (16–18 sets) | Legs: Squat+Leg Press+RDL+Leg Curl+Leg Extension+Calf+Abs (20–22 sets)',sets:'65–75% 1RM · 3–4 sets · 8–15 reps · Controlled tempo (2 up · 1 squeeze · 3 down)',cardio:'Maximum 2× 15-min walks. Cardio is the enemy of muscle gain at this stage.',focus:'Tempo training is the key this phase. Slow the eccentric. Contract the muscle hard at the top of every rep.'},
+nutrition:{cals:'TDEE + 400',protein:'2.2–2.5g/kg',strategy:'Lean bulk with 400-kcal surplus. If scale is not moving, add 100 kcal from carbs. If gaining too fast (>0.6 kg/week), reduce by 100.',foods:'Calorie-dense clean foods: Oats · Banana · Whole eggs · Chicken thighs · Red meat 2× · Rice · Roti · Nuts · Full-fat dairy · Curd',avoid:'Fruit juices as calories · Ultra-processed food · Missing post-workout nutrition'},
+supps:['Whey 40–50g post-workout','Creatine 5g','Ashwagandha 600mg','Pre-workout','ZMA at night','Zinc + Magnesium for testosterone and recovery'],
+recovery:['Sleep 9 hours — GH release peaks at night and builds your muscle','No two heavy sessions consecutive without a rest day','Foam roll back and hip flexors pre-session'],
+mindset:'You should be feeling stronger every week now. If you are not hitting PRs on at least 1 lift per session, something is wrong. Check food, sleep, and stress first.',
+checkpoint:'Strength comparison vs Week 1 on all lifts · Weight gain trend (0.25–0.5 kg/week) · Muscle measurement changes (arms · chest · thighs)'},
+
+{w:6,phase:2,badge:'DEVELOPMENT',bc:'#f59e0b',title:'Strength Block — Lift Heavy',tags:['Strength','Power','Heavy'],
+training:{split:'Upper/Lower 4×/week — strength focus weeks',exercises:'Upper Strength: Bench 5×3-5 · Row 5×5 · OHP 4×5 · Pull-Up 4×6 | Lower Strength: Squat 5×3-5 · Deadlift 4×3 · Front Squat 3×5 | Upper Volume: 4×10–12 | Lower Volume: Bulgarian SS+Leg Press+Hamstring work',sets:'Strength days: 85–90% 1RM. Volume days: 65–70%. Alternate to avoid CNS burnout.',cardio:'2× 15-min walks max. Zero additional cardio.',focus:'You should hit new 1RM bests or very close this week on bench, squat, and deadlift. Track all PRs.'},
+nutrition:{cals:'TDEE + 450 (temporary increase for strength week)',protein:'2.5g/kg',strategy:'Slightly increase surplus to fuel the heavier lifting. Add extra carbs on heavy training days (pre and post workout).',foods:'Higher carb intake on lifting days: +100g from rice or sweet potato · Pre-workout banana+oats · Post-workout whey+rice',avoid:'Low energy = low lifts. Do not undereat on strength days.'},
+supps:['Whey 50g post-workout','Creatine 5g','Pre-workout caffeine · Timing critical on heavy days','Beta-Alanine 3g pre-workout (reduces muscle fatigue)','ZMA at night'],
+recovery:['Full rest day between all heavy sessions','Use chalk on heavy deadlifts and rows — grip failure should not limit your back training','Sleep 9 hours with pre-sleep protein'],
+mindset:'You are getting stronger every week. Write every PR down. In 6 weeks you will look back at these numbers and barely believe you were lifting this little.',
+checkpoint:'All-time PRs on main lifts · Compare to Week 1 starting weights · Scale weight trend · Muscle belly fullness (muscles look bigger in pump)'},
+
+{w:7,phase:2,badge:'DEVELOPMENT',bc:'#f59e0b',title:'Mass Building Momentum',tags:['Mass','Growth','Peak Volume'],
+training:{split:'PPL 6×/week (Push·Pull·Legs·Push·Pull·Legs·Rest)',exercises:'Same PPL template but with more volume — add 1 extra working set per muscle group',sets:'Total volume increases: Push 22 sets · Pull 20 sets · Legs 24 sets · 65–75% 1RM · 8–15 reps',cardio:'Zero cardio during 6-day PPL. 3,000 steps/day minimum to move lymph.',focus:'High frequency PPL ensures each muscle group is trained twice per week. Maximum hypertrophy stimulus.'},
+nutrition:{cals:'TDEE + 400',protein:'2.5g/kg across 5–6 meals',strategy:'Maintain 400-kcal surplus. Increase meal frequency to 5–6 per day to optimise muscle protein synthesis throughout the day.',foods:'Every meal includes protein: Eggs · Whey · Chicken · Paneer · Dal · Curd. No protein-free meals.',avoid:'Skipping any meal · Long gaps between protein sources (>4 hours) · Under-eating post-workout'},
+supps:['Whey 50g post-workout','Creatine 5g','BCAAs 10g intra-workout if training fasted','Ashwagandha 600mg','Pre-workout · ZMA'],
+recovery:['Sleep 9 hours critical on 6-day plan','Take Sunday completely off every week','Weekly full-body stretch session (30 min) to maintain mobility'],
+mindset:'Eating is as important as training on a bulk. If you struggle to eat enough, use calorie-dense whole foods: nuts, banana, full-fat curd, rice, eggs.',
+checkpoint:'Scale weight vs Week 5 (gaining 0.25–0.5 kg/week still?) · Strength vs last month · Visual muscle fullness · Motivation and energy levels'},
+
+{w:8,phase:2,badge:'DEVELOPMENT',bc:'#f59e0b',title:'Mid-Point Check & Planned Deload',tags:['Deload','Midpoint','Assess'],
+training:{split:'Deload — 3 Full Body sessions at 60% effort',exercises:'Major compounds only. 2 sets × 8 reps at 60% 1RM.',sets:'60% 1RM. 2 sets. Deload properly — do not sneak in extra work.',cardio:'Daily 20-min walks. No lifting. Rest.',focus:'Physical and psychological rest. Use the week to assess what has worked and what has not.'},
+nutrition:{cals:'TDEE + 100 (minimal surplus during deload)',protein:'2g/kg maintained',strategy:'Reduce surplus since training volume drops. Body still needs recovery nutrition but not a full 400-kcal surplus.',foods:'Focus on food variety and quality. Cook new recipes. Visit a good restaurant and eat a full clean meal.',avoid:'Using deload as bulk excuse to eat junk. Quality still matters.'},
+supps:['Whey 30g','Creatine 5g','Multivitamin · Vitamin D3 · Ashwagandha'],
+recovery:['Massage or foam roll extensively this week','9+ hours sleep every night','Address all lingering pains — see physio section for protocols'],
+mindset:'You are at the halfway mark. Assess ruthlessly. Where are you vs where you expected? Adjust Phase 3 accordingly. Be honest.',
+checkpoint:'MIDPOINT PHOTOS and measurements · All strength benchmarks vs Week 1 · Scale weight gained total · Muscle measurements · Phase 3 plan decided'},
+
+{w:9,phase:3,badge:'TRANSFORMATION',bc:'#e8001d',title:'Advanced Hypertrophy — Drop Sets & Supersets',tags:['Advanced','Supersets','Growth'],
+training:{split:'PPL 5×/week — advanced techniques',exercises:'Push: Bench+Incline DB superset+Cable Fly drop set+OHP+Lateral Raise superset+Tricep work | Pull: Pull-Up+Row superset+Cable Row+Face Pull+Curl superset | Legs: Squat+Leg Press superset+RDL+Leg Curl+Calf+Abs circuit',sets:'Primary compounds: 70–75% 1RM 4 sets | Isolation supersets: 3×12–15 each | Drop sets: final set of every isolation to failure then drop 30% and go again',cardio:'2× 15-min LISS max. Every other cardio minute burns muscle. Protect the gains.',focus:'Drop sets and supersets increase total volume without increasing session time. This is Phase 3 intensification.'},
+nutrition:{cals:'TDEE + 350 (slight reduction to add quality muscle)',protein:'2.5g/kg · 6 meals · Never more than 4 hours between protein sources',strategy:'Reduce surplus slightly to 350 kcal. At this stage, more calories = more fat. Precision matters.',foods:'Elite nutrition now: Wild fish · Chicken breast + thigh mix · Whole eggs + whites · Brown basmati rice · Oats · Banana · Paneer · Almonds · Avocado (if available)',avoid:'All ultra-processed food completely eliminated · Zero alcohol · Zero smoking'},
+supps:['Whey + Casein blend (post-workout)','Creatine 5g','Pre-workout','L-Glutamine 5g post-workout','Ashwagandha 600mg','Full micronutrient stack'],
+recovery:['Sleep 9 hours with black-out curtains if possible','Professional massage every 7–10 days','Full body mobility work 2× per week'],
+mindset:'You now know more about your body than most people will learn in a lifetime. Apply that knowledge in every rep.',
+checkpoint:'Strength PRs on all major lifts · Body measurements (arms · chest · thighs) vs Week 1 · Visual muscle fullness and definition · Are you still making strength gains?'},
+
+{w:10,phase:3,badge:'TRANSFORMATION',bc:'#e8001d',title:'Peak Muscle Stimulus — High Frequency Block',tags:['High Frequency','Muscle','Strength'],
+training:{split:'Upper/Lower 5×/week — highest frequency of plan',exercises:'Upper A: Heavy 5×3-5 | Lower A: Heavy 5×3-5 | Upper B: Volume 4×8-12 | Lower B: Volume + Single Leg work | Saturday: Full body circuit for conditioning',sets:'Heavy sessions: 85–90% 1RM. Volume sessions: 65–70%. Circuit: moderate intensity.',cardio:'Saturday circuit replaces dedicated cardio. No additional.',focus:'High frequency means faster strength gains. Each session you are practicing the skill of lifting. More practice = more mastery.'},
+nutrition:{cals:'TDEE + 400',protein:'2.5g/kg',strategy:'Return to 400-kcal surplus to fuel the high-frequency training. Track daily and adjust weekly.',foods:'Increase carb intake to match elevated training volume. Carbs fuel performance, protein builds muscle.',avoid:'Under-eating on heavy training days — your strength will suffer'},
+supps:['Whey 50g post-workout','Creatine 5g','Pre-workout every session','Beta-Alanine 3g','ZMA at night','Full micronutrient stack'],
+recovery:['9 hours sleep every night of this week','Daily foam roll and stretch (10 min minimum)','Address any joint pain immediately — do not train through pain'],
+mindset:'10 weeks completed. The person in the gym today is completely different from the person who started 10 weeks ago. Not just physically — mentally.',
+checkpoint:'Final strength comparison across all lifts · Muscle measurements vs Week 1 · Visual physique assessment · Phase 3 week 11–12 final push plan'},
+
+{w:11,phase:3,badge:'TRANSFORMATION',bc:'#e8001d',title:'Final Mass Push — Pre-Peak Phase',tags:['Final Push','Strength','Pump'],
+training:{split:'PPL 5×/week + strength test day',exercises:'Standard PPL with additional volume: Add 1 superset per muscle group. End each session with 1 pump exercise to failure.',sets:'Standard 4×8–12. Add 1 drop set per muscle. Final session: max reps with 70% 1RM on major lifts.',cardio:'None during final push week. Maximum energy goes to building muscle.',focus:'Final volume peak. Push every set to RPE 8–9. Take every set as close to failure as safe.'},
+nutrition:{cals:'TDEE + 400 with 2 high-carb days for maximum muscle fullness',protein:'2.5g/kg',strategy:'2 carbohydrate-heavy days (add 150g carbs) to maximally fill glycogen stores. Muscles look significantly bigger when glycogen is full.',foods:'High-carb days: Brown rice + sweet potato + banana + oats + fruit. Standard days: normal plan.',avoid:'Fat gain trap: Do not exceed TDEE + 400 even on high-carb days — reduce fat to compensate'},
+supps:['Complete supplement stack','Add Vitamin C 2000mg and Glutamine 5g for immune system during high-intensity phase'],
+recovery:['Sleep 9 hours — most important week for recovery','Reduce life stress to minimum this week','Foam roll daily + morning stretch ritual'],
+mindset:'Week 11. Most people who started quit in Week 1–4. You did not. You are about to complete what very few people ever do. Walk into Week 12 knowing you earned every gram of muscle you have built.',
+checkpoint:'Near-final photos · All measurements · Final strength PRs · Recovery quality and energy levels · List your top 5 achievements from this journey'},
+
+{w:12,phase:3,badge:'TRANSFORMATION',bc:'#e8001d',title:'Transformation Complete — New Baseline',tags:['Final Results','Celebrate','Next Level'],
+training:{split:'Final performance test + celebration',exercises:'Mon: True 1RM test day — Squat · Deadlift · Bench · OHP · Pull-Ups | Wed: Pump session for best visual result | Fri: Celebrate physically — sport, run, hike, anything you love',sets:'1RM tests: work up carefully and safely. Wednesday: moderate weight, high pump.',cardio:'None. Walk and enjoy your results.',focus:'Document every 1RM. Compare to Week 1. The numbers will surprise you.'},
+nutrition:{cals:'TDEE + 200 (maintenance mode begins)',protein:'2g/kg — maintenance level',strategy:'Transition from bulk to maintenance. Your new body requires more calories to maintain than your old one. Recalculate your TDEE.',foods:'Flexible clean eating. One celebration meal. Enjoy the process of maintaining what you built.',avoid:'Returning to old habits. The eating pattern is now your identity — it goes beyond the 12 weeks.'},
+supps:['Maintain: Creatine · Whey · Fish Oil · Multivitamin · Vitamin D3 · Ashwagandha'],
+recovery:['Celebrate and rest','Book a massage — you have earned it','Write down what you learned about your body in these 12 weeks — this knowledge is irreplaceable'],
+mindset:'You built real, permanent muscle. You changed your body composition, your strength, your habits, and your relationship with food and training. This is who you are now.',
+checkpoint:'FINAL PHOTOS AND MEASUREMENTS vs Week 1 · Final 1RM on all lifts vs Week 1 · Total weight gained · Total muscle gained · Next goal: Continue bulk · Cut · Advanced strength cycle'}
+],
+
+maintain:[
+{w:1,phase:1,badge:'FOUNDATION',bc:'#3b82f6',title:'TDEE Calibration & Movement Baseline',tags:['Calibration','Tracking','Form'],
+training:{split:'Full Body 3×/week (Mon · Wed · Fri)',exercises:'Squat 3×10 · Deadlift 3×8 · Bench 3×10 · Row 3×10 · OHP 3×10 · Pull-Up 3×AMRAP · Curl 3×12 · Pushdown 3×12',sets:'65% 1RM. Establish baselines. Film and review technique.',cardio:'20-min walks post-session + 2× 20-min low-intensity sessions. Moderate cardio supports recomp.',focus:'Track everything this week — food, weight, sleep, energy, mood. You are building your data set.'},
+nutrition:{cals:'TDEE (exact maintenance — no surplus, no deficit)',protein:'2g/kg bodyweight — the cornerstone of body recomposition',strategy:'Body recomposition works at maintenance calories. Protein fuels muscle building. Calorie deficit is created naturally by training.',foods:'Balanced macro distribution: Eggs · Chicken · Dal · Paneer · Brown rice · Oats · Vegetables · Fruits · Curd',avoid:'Any major calorie excess · Alcohol · Ultra-processed food'},
+supps:['Whey 25–30g post-workout','Creatine 5g daily','Multivitamin','Vitamin D3 2000 IU'],
+recovery:['8 hours sleep — recomp requires optimal hormonal environment','Track daily weight and use weekly averages (recomp weight fluctuates more than cut/bulk)','8,000 steps daily'],
+mindset:'Body recomposition is the most rewarding goal — you get leaner and more muscular simultaneously. It is slower than a dedicated cut or bulk but the results are incredible.',
+checkpoint:'Baseline photos · Weight · All measurements · True TDEE established via tracking'},
+
+{w:2,phase:1,badge:'FOUNDATION',bc:'#3b82f6',title:'Protein Maximisation & Training Frequency',tags:['Protein','Frequency','Recomp'],
+training:{split:'Upper/Lower 4×/week (Mon·Tue·Thu·Fri)',exercises:'Upper A+B alternating: Heavy compounds + volume accessories | Lower A: Squat focus | Lower B: Deadlift focus',sets:'Progressive overload weekly: 70–75% 1RM · 3–4 × 8–12',cardio:'3× 20-min moderate intensity. Heart rate 130–150 bpm. This burns fat without affecting muscle protein synthesis.',focus:'Recomp rule: Train hard enough to build muscle. Eat enough protein to support it. Let the calorie balance take care of fat loss.'},
+nutrition:{cals:'TDEE',protein:'2.2g/kg — hit this every single day',strategy:'Protein drives the recomp. When protein is high at maintenance calories, the body preferentially uses fat for energy.',foods:'High-protein every meal: Egg whites + 1 yolk · Greek-style curd · Paneer 100g · Chicken 150g · Dal + rice balanced',avoid:'Missing the protein target · Low-protein meals · Alcohol (stops fat oxidation for 24+ hours)'},
+supps:['Whey 30–40g post-workout','Creatine 5g','Fish Oil 1g (reduces inflammation · supports fat metabolism)','Vitamin D3'],
+recovery:['Track sleep hours and rate quality 1–10 daily','Foam roll hip flexors and quads 5 min pre-workout','Cold shower post-workout'],
+mindset:'Recomp requires patience. The scale may not move much — that is correct. The body is simultaneously losing fat and building muscle. Trust the mirror and measurements over the scale.',
+checkpoint:'Scale weight average vs Week 1 · Waist measurement (should slowly decrease) · Arm/chest measurement (should slowly increase) · Training performance trending up'},
+
+{w:3,phase:1,badge:'FOUNDATION',bc:'#3b82f6',title:'Cardio Optimisation for Fat Burning',tags:['Cardio','Fat Loss','Conditioning'],
+training:{split:'PPL 4–5×/week',exercises:'Standard PPL with cardio finishers: 10-min moderate cardio after each weights session (heart rate 130–150)',sets:'70% 1RM · 3–4 sets · 8–12 reps. Progressive overload mandatory.',cardio:'Post-session: 10-min moderate HR cardio | 2× dedicated 25-min LISS sessions | Daily 10,000 steps',focus:'Zone 2 cardio (moderate intensity) is optimal for recomp — it burns fat without elevating cortisol enough to impair muscle building.'},
+nutrition:{cals:'TDEE − 100 to −200 (very slight reduction if no fat loss occurring)',protein:'2.2g/kg',strategy:'If body is not leaning out after 3 weeks at TDEE, reduce by 100–200 kcal from carbs or fat (never protein).',foods:'Increase vegetable intake to 600g/day (high volume · low calorie · high micronutrients · improves gut health)',avoid:'Reducing protein to cut calories — this destroys the recomp. Cut carbs or fat instead.'},
+supps:['Whey 40g','Creatine 5g','L-Carnitine 2g pre-cardio (enhances fat utilisation)','B-Complex','Vitamin D3 4000 IU'],
+recovery:['Foam roll full body 2× per week','Yoga or mobility session 1× per week (30 min)','Sleep quality tracking continues'],
+mindset:'The body is changing whether you see it or not. Recomp is like compound interest — slow and invisible early, then suddenly dramatic.',
+checkpoint:'Strength performance vs Week 1 · Waist measurement trend · Body weight average · Cardio capacity improvement'},
+
+{w:4,phase:1,badge:'FOUNDATION',bc:'#3b82f6',title:'Assessment, Deload & Recomp Calibration',tags:['Deload','Assess','Plan'],
+training:{split:'Deload — Full Body 3× at 60%',exercises:'All major movements · 2 sets × 10 reps · 60% 1RM',sets:'60% effort. This week is for recovery and assessment.',cardio:'Daily 30-min walks only. No high-intensity work.',focus:'Critically assess the first month. What needs to change for Phase 2?'},
+nutrition:{cals:'TDEE (full maintenance during deload)',protein:'2g/kg',strategy:'During deload, return to full TDEE. Rest and repair.',foods:'Eat whole foods with variety. Focus on micronutrient density.',avoid:'Treating deload as permission to eat badly. Maintain clean eating throughout.'},
+supps:['Whey 30g','Creatine 5g','Multivitamin · Vitamin D3 · Fish Oil'],
+recovery:['Maximum rest this week','Massage strongly recommended','Stretch all major muscle groups daily'],
+mindset:'Review your photos, measurements, and strength. Are you simultaneously getting stronger AND leaner? If so — recomp is working perfectly. If only one is happening, adjust nutrition.',
+checkpoint:'Month 1 photos + measurements · Strength vs baseline · Weight trend · Phase 2 adjustments needed?'},
+
+{w:5,phase:2,badge:'DEVELOPMENT',bc:'#f59e0b',title:'Progressive Overload Peak & Body Recomp Acceleration',tags:['Overload','Recomp','Accelerate'],
+training:{split:'PPL 5×/week — higher frequency drives more recomp',exercises:'Full PPL with progressive overload on all compound lifts + metabolic finishers',sets:'75% 1RM compounds · Supersets on isolation · 3-4 sets 8–12 reps · Add 1 metabolic circuit at end of 2 sessions',cardio:'3× 25-min moderate intensity (HR 140–155) + daily steps 10,000',focus:'Supersets between antagonist muscles (chest + back, biceps + triceps) maximise pump, increase metabolic rate, and save time.'},
+nutrition:{cals:'TDEE − 100 to −200 (strategic slight deficit for fat loss acceleration)',protein:'2.3g/kg',strategy:'With higher training volume, a slight deficit may now be appropriate. The muscle stimulus is strong enough to preserve (and build) muscle even in a small deficit.',foods:'Higher protein, slightly lower carb: Chicken + fish + eggs + paneer + dal + controlled rice portions',avoid:'Any meal without quality protein · Skipping pre- or post-workout nutrition'},
+supps:['Whey 40–50g post-workout','Creatine 5g','L-Carnitine 2–3g pre-cardio','Pre-workout on heavy days','ZMA at night','Fish Oil 2g'],
+recovery:['Sleep quality is critical for recomp — cortisol disrupts the simultaneous fat-loss/muscle-gain process','Foam roll daily (10 min)','Address any imbalances or weaknesses'],
+mindset:'Phase 2 recomp is where the visible changes start happening simultaneously. You may see the scale barely moving while your body is transforming dramatically. Trust the measurements, not the scale.',
+checkpoint:'Body measurements vs Week 1 · Waist vs arm size ratio improving · Strength PRs · Visual body composition change'},
+
+{w:6,phase:2,badge:'DEVELOPMENT',bc:'#f59e0b',title:'Metabolic Conditioning & Dual Adaptation',tags:['Conditioning','Metabolic','Dual'],
+training:{split:'Upper/Lower 4×/week + 1 Full Body conditioning day',exercises:'Upper A+B: Standard. Lower A+B: Standard. Saturday: Full body circuit for metabolic conditioning — 6 exercises × 3 rounds × 12 reps',sets:'Primary: 70–75% 1RM 4 sets. Circuit: Moderate load, short rest (45 sec).',cardio:'Circuit day replaces cardio. 2× additional LISS 25 min on rest days.',focus:'The conditioning day elevates EPOC (post-exercise calorie burn) for 24–48 hours, dramatically accelerating the recomp process.'},
+nutrition:{cals:'TDEE − 150',protein:'2.3g/kg',strategy:'Maintain slight deficit. Carb cycling: Higher carbs on strength days · Lower on conditioning day · Lowest on rest days.',foods:'Standard recomp nutrition. Add more fibre: Vegetables · Legumes · Oats · help manage hunger in a slight deficit.',avoid:'Alcohol completely during Phase 2 — it stops fat oxidation for 24+ hours'},
+supps:['Whey 40g','Creatine 5g','L-Carnitine 3g pre-cardio/circuit','B-Complex','Vitamin D3 4000 IU','Omega-3 2g'],
+recovery:['Conditioning day is taxing — ensure rest day after if possible','Sleep 8+ hours — critical for GH release and recomp','Foam roll aggressively on conditioning day'],
+mindset:'You are running two biological processes simultaneously: fat oxidation and muscle protein synthesis. Very few people know how to do this. You are becoming one of them.',
+checkpoint:'Waist measurement weekly · Arm and chest measurement weekly · Scale weight average · Energy and performance maintaining while body composition improves'},
+
+{w:7,phase:2,badge:'DEVELOPMENT',bc:'#f59e0b',title:'Advanced Recomp — Peak Protein Synthesis',tags:['Advanced','Protein Timing','Maximise'],
+training:{split:'PPL 5×/week with advanced protein timing protocol',exercises:'Same PPL structure + intra-workout BCAAs + pre-sleep protein tracking',sets:'75% 1RM. Track RPE. Aim 7–8 RPE all working sets.',cardio:'4× 20-min moderate HR. Daily steps 12,000.',focus:'Protein timing matters at this stage. Pre-workout protein (within 2 hrs of training) and post-workout protein (within 45 min) maximise hypertrophy response.'},
+nutrition:{cals:'TDEE − 150 with 1 refeed day per week',protein:'2.5g/kg across 5 meals — maximize muscle protein synthesis with frequent doses',strategy:'Refeed day 1× per week at TDEE. Increases leptin (fat-burning hormone). Resets metabolism. Makes the deficit more effective.',foods:'Prioritise protein quality: Complete proteins (all amino acids) at every meal. Eggs · Chicken · Fish · Paneer · Curd.',avoid:'Protein gaps longer than 4 hours · Skipping pre-sleep protein (casein/paneer/curd before bed)'},
+supps:['Whey + Casein blend post-workout or pre-bed','Creatine 5g','L-Carnitine 3g','BCAAs 10g intra-workout (if training in low-carb state)','ZMA · Fish Oil · Vitamin D3'],
+recovery:['8.5 hours sleep target','Daily protein feeding schedule is part of recovery','Massage or foam roll 2× this week'],
+mindset:'7 weeks in. You have built habits that most people never achieve. Your relationship with food, training, and recovery is fundamentally different from when you started.',
+checkpoint:'Midpoint recomp assessment: Are both processes happening? Leaner AND stronger vs Week 1? Visual change visible to others?'},
+
+{w:8,phase:2,badge:'DEVELOPMENT',bc:'#f59e0b',title:'Phase 2 Complete — Strategic Deload',tags:['Deload','Midpoint','Reset'],
+training:{split:'Deload — Full Body 3× at 50–60% effort',exercises:'Major movements only · 2 sets × 10 reps',sets:'50–60% 1RM · Complete CNS and joint recovery',cardio:'Daily 30-min walks. No structured cardio.',focus:'Use the week for long-form recovery: longer stretches, mobility work, and addressing imbalances.'},
+nutrition:{cals:'TDEE',protein:'2g/kg',strategy:'Return to full maintenance during deload.',foods:'High micronutrient variety this week. Eat colourfully.',avoid:'Using deload as permission to eat poorly.'},
+supps:['Whey 30g','Creatine 5g','Full micronutrient stack'],
+recovery:['Best sleep week of the entire plan','Massage · Deep tissue work · Foam rolling','Address all lingering joint issues'],
+mindset:'Phase 2 complete. Your body composition has changed significantly. The recomp process is deeply established. Phase 3 will accelerate it further.',
+checkpoint:'MIDPOINT TRANSFORMATION: Full photo set · All measurements · Strength on all major lifts · Recomp quality assessment'},
+
+{w:9,phase:3,badge:'TRANSFORMATION',bc:'#e8001d',title:'Elite Recomp — Advanced Protocols',tags:['Elite','Advanced','Peak'],
+training:{split:'PPL 5×/week — advanced intensification techniques',exercises:'All PPL movements with: Rest-Pause sets on compounds · Giant sets on arms · Supersets on chest+back · HIIT finisher on leg days',sets:'Compounds: 80% 1RM 4 sets | Isolations: rest-pause technique (set · rest 15 sec · additional reps) | 1 HIIT finisher per leg session',cardio:'4× 20-min sessions + daily steps 12,000',focus:'Rest-pause training is the most time-efficient hypertrophy technique for advanced trainees. It recruits maximum motor units per set.'},
+nutrition:{cals:'TDEE − 200',protein:'2.5g/kg — 6 feedings',strategy:'Slight increase in deficit to accelerate final phase fat loss while maintaining all strength gains.',foods:'Elite level precision: Weigh all food. Track everything. No estimation.',avoid:'Estimation of food intake — at this stage, precision is the difference between good and elite results'},
+supps:['Full stack: Whey+Casein · Creatine · Pre-workout · L-Carnitine 3g × 2 · BCAAs · ZMA · Full micronutrient stack'],
+recovery:['9 hours sleep — mandatory in 200-kcal deficit','Cold therapy: cold shower or ice bath post-workout','Professional massage fortnightly'],
+mindset:'Phase 3 is the final chapter. The best physical version of yourself is being built right now in these last 4 weeks.',
+checkpoint:'Strength vs Week 1 (should be significantly stronger despite deficit) · Muscle size measurements · Body fat trending down · Visual definition'},
+
+{w:10,phase:3,badge:'TRANSFORMATION',bc:'#e8001d',title:'Peak Recomp — Visible Transformation',tags:['Peak','Visible','Sculpting'],
+training:{split:'Bro Split 5×/week — maximum isolation and definition',exercises:'Mon: Chest | Tue: Back | Wed: Shoulders+Abs | Thu: Arms | Fri: Legs | Each session 18–22 working sets with advanced techniques',sets:'65–75% 1RM · 4 sets × 10–15 · Slow eccentric · Peak contraction · Mind-muscle connection',cardio:'30-min moderate HR after each session (5× per week) + daily steps',focus:'Slow down every rep. 2 sec up · 1 sec squeeze · 3 sec down. Maximum time under tension. This is the phase that creates definition and conditioning.'},
+nutrition:{cals:'TDEE − 200',protein:'2.5g/kg',strategy:'Timed nutrition critical: Carbs strictly around workout window. Zero carbs on rest days.',foods:'Egg whites · Fish · Chicken · Paneer · Oats · Rice (training days only) · Vegetables unlimited · Almonds',avoid:'Carbs on rest days · Late night eating past 9pm · Ultra-processed anything'},
+supps:['Complete stack','Dandelion root tea on high-definition days (natural diuretic for visual peak)'],
+recovery:['9 hours sleep · Phone off at 10pm','Morning stretch routine 10 min before first meal','Evening foam roll 10 min'],
+mindset:'This is the phase where people stop you in the gym and ask "what are you doing?" Your transformation is visible to everyone now.',
+checkpoint:'All measurements vs Week 1 and Month 2 · Visual comparison photos · Strength holding strong in deficit · Energy and mood levels'},
+
+{w:11,phase:3,badge:'TRANSFORMATION',bc:'#e8001d',title:'Final Recomp Push — Peak Physique',tags:['Final Push','Peak','Best Ever'],
+training:{split:'Upper/Lower 5×/week + Conditioning',exercises:'Upper A+B: Heavy + Volume | Lower A+B: Heavy + Volume | Sat: 30-min full body HIIT circuit',sets:'Progressive overload continued: try for new PRs on main lifts while leaner than ever',cardio:'HIIT circuit day + 4× 20-min moderate cardio',focus:'You should be the strongest AND the leanest you have ever been simultaneously. That is recomp working perfectly.'},
+nutrition:{cals:'TDEE − 150 (ease slightly for final push energy)',protein:'2.5g/kg',strategy:'2 strategic carb-up days (add 150g carbs from rice/oats) to fill glycogen and look your absolute best for final photos.',foods:'Same clean protocol. Carb-up days add rice and banana to regular meals.',avoid:'Anything that causes water retention before photos: High sodium · Alcohol · Processed food'},
+supps:['Full stack','Vitamin C 2000mg','Glutamine 5g post-workout'],
+recovery:['9 hours sleep absolute priority','Full body stretch morning ritual','Visualise your final result — mental preparation for the last week'],
+mindset:'You accomplished what is physiologically one of the hardest things in fitness — losing fat and building muscle simultaneously. In 1 more week, you document and celebrate that.',
+checkpoint:'Near-final photos · All measurements · Strength PRs final set · List your 5 biggest achievements from this transformation'},
+
+{w:12,phase:3,badge:'TRANSFORMATION',bc:'#e8001d',title:'Recomp Complete — Your New Baseline',tags:['Complete','New Body','Next Phase'],
+training:{split:'Celebration + Final Testing',exercises:'Mon: 1RM tests on all main lifts | Wed: Pump session for best visual state | Fri: Active celebration',sets:'Tuesday 1RM: Full strength test carefully. Wednesday: pump focus.',cardio:'None for final week. Let your body look its best.',focus:'Document every PR. Every measurement. Every photo. This data is incredibly valuable for your next 12-week cycle.'},
+nutrition:{cals:'TDEE (new baseline — your body is leaner and more muscular, recalculate TDEE)',protein:'2g/kg — maintenance protein',strategy:'Transition to new maintenance calories. Your leaner body will have a slightly lower TDEE. Recalculate using Beast Score calculator.',foods:'Flexible clean eating. You have built the patterns — they are automatic now. One celebration meal.',avoid:'Returning to old dietary habits. The discipline you built is permanent.'},
+supps:['Maintain core stack forever: Creatine · Whey as needed · Fish Oil · Multivitamin · Vitamin D3'],
+recovery:['Celebrate properly','Book a massage — you earned it','Write your body transformation story — it will inspire your next 12-week journey'],
+mindset:'You changed your body while keeping the same weight on the scale — which means you lost fat AND gained muscle simultaneously. Most people cannot do this. You did.',
+checkpoint:'FINAL RECOMP RESULT: Full photo comparison vs Week 1 · All measurements before and after · Strength gains · New TDEE calculated · Next 12-week goal set'}
+]
 };
-function buildRoadmap(goal){const steps=RM[goal]||RM.maintain;$('rsteps').innerHTML=steps.map((s,i)=>{const locked=!isPro&&i>=2;return `<div class="rstep${locked?' locked-step':''}"><div class="rnum">${String(i+1).padStart(2,'0')}</div><div class="rcont"><div class="rweek">${s.w}</div><div class="rtitle">${s.t}</div><div class="rdesc">${s.d}</div></div></div>`;}).join('');$('rpgate').style.display=isPro?'none':'block';}
+
+function rmSelectGoal(g,el){document.querySelectorAll('.rm-goal-btn').forEach(b=>b.classList.remove('active'));el.classList.add('active');el.closest('.rm-form-grid')||el.closest('.rm-setup-card');window._rmGoal=g;}
+
+function generateRoadmap(){
+  var goal=window._rmGoal||(document.querySelector('.rm-goal-btn.active')||{}).dataset&&document.querySelector('.rm-goal-btn.active').dataset.goal||'loss';
+  var exp=document.getElementById('rm-exp')?document.getElementById('rm-exp').value:'intermediate';
+  var days=document.getElementById('rm-days')?document.getElementById('rm-days').value:'4';
+  var equip=document.getElementById('rm-equip')?document.getElementById('rm-equip').value:'gym';
+  var diet=document.getElementById('rm-diet-pref')?document.getElementById('rm-diet-pref').value:'nonveg';
+  var weight=parseFloat(document.getElementById('rm-weight')?document.getElementById('rm-weight').value:0)||0;
+  var tdee=parseFloat(document.getElementById('rm-tdee')?document.getElementById('rm-tdee').value:0)||0;
+  // Fallback to lastRes if available
+  try{var lr=JSON.parse(localStorage.getItem('bm_last_result')||'null');if(lr){goal=goal||lr.goal;weight=weight||lr.weight;tdee=tdee||lr.tdee;diet=diet||lr.diet;}}catch(e){}
+  if(!weight&&!tdee){toast('Enter your weight or TDEE to personalise the roadmap','gold');return;}
+  var d={goal:goal,exp:exp,days:days,equip:equip,diet:diet,weight:weight,tdee:tdee};
+  try{localStorage.setItem('bm_roadmap_prefs',JSON.stringify(d));}catch(e){}
+  _renderRoadmapPlan(d);
+  document.getElementById('rm-setup').style.display='none';
+  document.getElementById('rm-plan').style.display='block';
+}
+
+function _renderRoadmapPlan(d){
+  var goalLabels={loss:'Fat Loss',gain:'Muscle Gain',maintain:'Body Recomp'};
+  var goalColors={loss:'var(--red)',gain:'#22c55e',maintain:'var(--gold)'};
+  // User bar
+  var bar=document.getElementById('rm-user-bar');
+  if(bar){
+    var prot=d.weight?Math.round(d.weight*2.2):null;
+    var calsTarget=d.tdee&&d.goal==='loss'?Math.round(d.tdee-500):(d.tdee&&d.goal==='gain'?Math.round(d.tdee+350):d.tdee||null);
+    bar.innerHTML='<div class="rm-user-stat"><div class="rm-user-stat-val" style="color:'+goalColors[d.goal||'loss']+'">'+goalLabels[d.goal||'loss']+'</div><div class="rm-user-stat-lbl">Your Goal</div></div>'+
+      '<div class="rm-user-divider"></div>'+
+      (d.weight?'<div class="rm-user-stat"><div class="rm-user-stat-val">'+d.weight+'<span style="font-size:13px">kg</span></div><div class="rm-user-stat-lbl">Current Weight</div></div><div class="rm-user-divider"></div>':'') +
+      (prot?'<div class="rm-user-stat"><div class="rm-user-stat-val">'+prot+'<span style="font-size:13px">g</span></div><div class="rm-user-stat-lbl">Daily Protein</div></div><div class="rm-user-divider"></div>':'') +
+      (calsTarget?'<div class="rm-user-stat"><div class="rm-user-stat-val">'+calsTarget+'</div><div class="rm-user-stat-lbl">Target Kcal</div></div><div class="rm-user-divider"></div>':'') +
+      '<div class="rm-user-stat"><div class="rm-user-stat-val" style="font-size:16px;margin-top:2px;">'+d.exp.charAt(0).toUpperCase()+d.exp.slice(1)+'</div><div class="rm-user-stat-lbl">Level</div></div>';
+  }
+  rmSwitchPhase(1,document.querySelector('.rm-phase-tab[data-phase="1"]'));
+}
+
+var _currentRmGoal='loss';
+function rmSwitchPhase(phase,el){
+  document.querySelectorAll('.rm-phase-tab').forEach(t=>t.classList.remove('active'));
+  if(el)el.classList.add('active');
+  var prefs={};try{prefs=JSON.parse(localStorage.getItem('bm_roadmap_prefs')||'{}');}catch(e){}
+  var goal=prefs.goal||_currentRmGoal||'loss';
+  _currentRmGoal=goal;
+  var weeks=(ROADMAP_WEEKS[goal]||ROADMAP_WEEKS.loss).filter(w=>w.phase===phase);
+  var phaseDescs={
+    1:'<strong>🏗 Phase 1 — Foundation (Weeks 1–4):</strong> Build your training habits, establish your baseline measurements, master movement patterns, and set up your nutrition system. This phase creates the infrastructure everything else is built on.',
+    2:'<strong>📈 Phase 2 — Development (Weeks 5–8):</strong> Progressive overload intensifies, cardio increases, nutrition becomes more precise, and advanced techniques are introduced. This is where the transformation visibly accelerates.',
+    3:'<strong>🔥 Phase 3 — Transformation (Weeks 9–12):</strong> Advanced protocols, peak intensity, precise nutrition timing, and final push. This phase produces the elite results that separate those who push through from those who stopped early.'
+  };
+  var pd=document.getElementById('rm-phase-desc');if(pd)pd.innerHTML=phaseDescs[phase]||'';
+  var container=document.getElementById('rm-weeks');
+  if(!container)return;
+  var prefs2={};try{prefs2=JSON.parse(localStorage.getItem('bm_roadmap_prefs')||'{}');}catch(e){}
+  var prot=prefs2.weight?Math.round(prefs2.weight*2.2):null;
+  container.innerHTML=weeks.map(function(w){
+    var suppsHtml=(w.supps||[]).map(s=>'<span class="rm-ws-tag">'+s+'</span>').join('');
+    var recHtml=(w.recovery||[]).map(r=>'<div class="rm-ws-line">'+r+'</div>').join('');
+    var protNote=prot?'<div class="rm-ws-line highlight">Your daily protein target: <strong>'+prot+'g</strong> (2.2g/kg)</div>':'';
+    return '<div class="rm-week-card" id="rmw-'+w.w+'">'+
+      '<div class="rm-week-hdr" onclick="rmToggleWeek('+w.w+')">'+
+        '<div class="rm-week-num">'+String(w.w).padStart(2,'0')+'</div>'+
+        '<div class="rm-week-info">'+
+          '<div class="rm-week-badge" style="background:'+w.bc+'">'+w.badge+'</div>'+
+          '<div class="rm-week-title">'+w.title+'</div>'+
+          '<div class="rm-week-tags">'+(w.tags||[]).map(t=>'<span class="rm-week-tag">'+t+'</span>').join('')+'</div>'+
+        '</div>'+
+        '<div class="rm-week-arrow">▼</div>'+
+      '</div>'+
+      '<div class="rm-week-body">'+
+        '<div class="rm-week-sections">'+
+          '<div class="rm-week-section">'+
+            '<div class="rm-ws-title"><span>🏋️</span>Training</div>'+
+            '<div class="rm-ws-line highlight"><strong>Split:</strong> '+w.training.split+'</div>'+
+            '<div class="rm-ws-line"><strong>Exercises:</strong> '+w.training.exercises+'</div>'+
+            '<div class="rm-ws-line"><strong>Sets/Intensity:</strong> '+w.training.sets+'</div>'+
+            '<div class="rm-ws-line"><strong>Cardio:</strong> '+w.training.cardio+'</div>'+
+            '<div class="rm-ws-line highlight">💡 '+w.training.focus+'</div>'+
+          '</div>'+
+          '<div class="rm-week-section">'+
+            '<div class="rm-ws-title"><span>🥗</span>Nutrition</div>'+
+            '<div class="rm-ws-line highlight"><strong>Target Calories:</strong> '+w.nutrition.cals+'</div>'+
+            '<div class="rm-ws-line"><strong>Protein:</strong> '+w.nutrition.protein+'</div>'+
+            protNote+
+            '<div class="rm-ws-line"><strong>Strategy:</strong> '+w.nutrition.strategy+'</div>'+
+            '<div class="rm-ws-line"><strong>Best Foods:</strong> '+w.nutrition.foods+'</div>'+
+            '<div class="rm-ws-line" style="border-left-color:var(--red);"><strong>Avoid:</strong> '+w.nutrition.avoid+'</div>'+
+          '</div>'+
+          '<div class="rm-week-section">'+
+            '<div class="rm-ws-title"><span>💊</span>Supplement Protocol</div>'+
+            suppsHtml+
+          '</div>'+
+          '<div class="rm-week-section">'+
+            '<div class="rm-ws-title"><span>😴</span>Recovery & Sleep</div>'+
+            recHtml+
+          '</div>'+
+        '</div>'+
+        '<div class="rm-week-mindset">'+
+          '<div class="rm-mindset-label">🧠 Mindset</div>'+
+          '<div class="rm-mindset-text">'+w.mindset+'</div>'+
+        '</div>'+
+        '<div class="rm-week-checkpoint">'+
+          '<div class="rm-ck-label">✅ Week '+w.w+' Checkpoint</div>'+
+          '<div class="rm-ck-text">'+w.checkpoint+'</div>'+
+        '</div>'+
+      '</div>'+
+    '</div>';
+  }).join('');
+  // Auto-open first week
+  var firstCard=document.querySelector('.rm-week-card');if(firstCard)firstCard.classList.add('open');
+}
+
+function rmToggleWeek(n){
+  var card=document.getElementById('rmw-'+n);
+  if(card)card.classList.toggle('open');
+}
+
+function rmReset(){
+  document.getElementById('rm-setup').style.display='block';
+  document.getElementById('rm-plan').style.display='none';
+  // Re-prefill form from lastRes if available
+  try{var lr=JSON.parse(localStorage.getItem('bm_last_result')||'null');if(lr&&lr.weight)document.getElementById('rm-weight').value=lr.weight;if(lr&&lr.tdee)document.getElementById('rm-tdee').value=Math.round(lr.tdee);}catch(e){}
+}
+
+function buildRoadmap(goal){
+  var rGate=document.getElementById('rm-gate');
+  var rContent=document.getElementById('rm-content');
+  if(!isPro){if(rGate)rGate.style.display='block';if(rContent)rContent.style.display='none';return;}
+  if(rGate)rGate.style.display='none';
+  if(rContent)rContent.style.display='block';
+  _currentRmGoal=goal||'loss';
+  // Pre-fill form from lastRes
+  try{
+    var lr=JSON.parse(localStorage.getItem('bm_last_result')||'null');
+    if(lr){
+      var wInp=document.getElementById('rm-weight');if(wInp&&lr.weight)wInp.value=lr.weight;
+      var tInp=document.getElementById('rm-tdee');if(tInp&&lr.tdee)tInp.value=Math.round(lr.tdee);
+      var dInp=document.getElementById('rm-diet-pref');if(dInp&&lr.diet)dInp.value=lr.diet;
+      // Set goal button active
+      document.querySelectorAll('.rm-goal-btn').forEach(b=>{b.classList.toggle('active',b.dataset.goal===(goal||lr.goal||'loss'));});
+      window._rmGoal=goal||lr.goal||'loss';
+    }
+  }catch(e){}
+  // If prefs saved, auto-render
+  var saved=null;try{saved=JSON.parse(localStorage.getItem('bm_roadmap_prefs')||'null');}catch(e){}
+  if(saved&&saved.weight){
+    saved.goal=goal||saved.goal;
+    _currentRmGoal=saved.goal;
+    document.getElementById('rm-setup').style.display='none';
+    document.getElementById('rm-plan').style.display='block';
+    _renderRoadmapPlan(saved);
+  } else {
+    document.getElementById('rm-setup').style.display='block';
+    document.getElementById('rm-plan').style.display='none';
+  }
+}
 buildRoadmap('maintain');
 
 // ── HISTORY ──
