@@ -1,4 +1,4 @@
-const CACHE = 'rfc-v32';
+const CACHE = 'rfc-v33';
 const STATIC = [
   '/',
   '/index.html',
@@ -21,6 +21,40 @@ self.addEventListener('activate', e => {
     caches.keys().then(keys =>
       Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))
     ).then(() => self.clients.claim())
+  );
+});
+
+// ── PUSH NOTIFICATION CLICK ──────────────────────────────────────
+self.addEventListener('notificationclick', e => {
+  e.notification.close();
+  const url = (e.notification.data && e.notification.data.url) || '/';
+  if(e.action === 'dismiss') return;
+  e.waitUntil(
+    clients.matchAll({type:'window', includeUncontrolled:true}).then(list => {
+      // Focus existing tab if open
+      const existing = list.find(c => c.url.includes('royal-fitness-club') || c.url === url);
+      if(existing) return existing.focus();
+      // Open new tab
+      return clients.openWindow('https://royal-fitness-club-7adc1.web.app');
+    })
+  );
+});
+
+// ── PUSH EVENT (for FCM / server-sent pushes) ────────────────────
+self.addEventListener('push', e => {
+  if(!e.data) return;
+  let data = {};
+  try { data = e.data.json(); } catch(_){ data = { title: 'Royal Fitness Club', body: e.data.text() }; }
+  e.waitUntil(
+    self.registration.showNotification(data.title || 'Royal Fitness Club', {
+      body: data.body || '',
+      icon: '/icons/icon-192x192.png',
+      badge: '/icons/icon-72x72.png',
+      vibrate: [200,100,200],
+      tag: data.tag || 'rfc-push',
+      renotify: true,
+      data: { url: data.url || '/' }
+    })
   );
 });
 

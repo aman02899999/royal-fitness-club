@@ -17471,6 +17471,41 @@ label:has(#inclSalad:checked) {
   text-align: left;
 }
 .ayur-dietplan-btn:hover { opacity: 0.9; }
+
+/* ── PUSH NOTIFICATION PERMISSION PROMPT ── */
+#notif-prompt {
+  position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
+  width: calc(100% - 32px); max-width: 420px;
+  background: #fff; border-radius: 20px;
+  box-shadow: 0 12px 48px rgba(0,0,0,.18), 0 0 0 1px rgba(124,58,237,.15);
+  padding: 20px; z-index: 30000;
+  animation: notifSlideUp .4s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes notifSlideUp {
+  from { transform: translateX(-50%) translateY(120%); opacity:0; }
+  to   { transform: translateX(-50%) translateY(0);   opacity:1; }
+}
+#notif-prompt .np-icon { font-size: 36px; text-align: center; margin-bottom: 8px; }
+#notif-prompt .np-title { font-size: 15px; font-weight: 700; color: #0F0A1A; text-align: center; margin-bottom: 4px; }
+#notif-prompt .np-sub { font-size: 12px; color: #64748B; text-align: center; margin-bottom: 14px; line-height: 1.5; }
+#notif-prompt .np-features { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+#notif-prompt .np-feat { display: flex; align-items: center; gap: 8px; font-size: 12px; color: #374151; }
+#notif-prompt .np-feat span:first-child { font-size: 16px; }
+#notif-prompt .np-btns { display: flex; gap: 8px; }
+#notif-prompt .np-allow { flex:1; background: linear-gradient(135deg,#7C3AED,#6D28D9); color:#fff; border:none; border-radius: 12px; padding: 12px; font-size: 13px; font-weight: 700; cursor: pointer; letter-spacing: .3px; }
+#notif-prompt .np-later { padding: 12px 16px; background: rgba(124,58,237,.06); border: 1px solid rgba(124,58,237,.2); border-radius: 12px; font-size: 12px; color: #7C3AED; cursor: pointer; font-weight: 600; white-space: nowrap; }
+#notif-prompt .np-close { position: absolute; top: 12px; right: 14px; font-size: 18px; color: #9CA3AF; cursor: pointer; background: none; border: none; line-height: 1; }
+
+/* ── NOTIFICATION SETTINGS TOGGLE (in profile/settings) ── */
+.notif-toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 14px 0; border-bottom: 1px solid rgba(124,58,237,.08); }
+.notif-toggle-label { font-size: 13px; font-weight: 600; color: #0F0A1A; }
+.notif-toggle-sub { font-size: 11px; color: #9CA3AF; margin-top: 2px; }
+.notif-toggle { position:relative; width:44px; height:24px; }
+.notif-toggle input { opacity:0; width:0; height:0; }
+.notif-slider { position:absolute; inset:0; background:#D1D5DB; border-radius:24px; cursor:pointer; transition:.3s; }
+.notif-slider:before { content:''; position:absolute; width:18px; height:18px; left:3px; bottom:3px; background:#fff; border-radius:50%; transition:.3s; }
+.notif-toggle input:checked + .notif-slider { background: linear-gradient(135deg,#7C3AED,#6D28D9); }
+.notif-toggle input:checked + .notif-slider:before { transform: translateX(20px); }
 </style>
 
 <!-- ═══════════════════════════════════════════════════════════
@@ -17882,11 +17917,219 @@ label:has(#inclSalad:checked) {
     };
   }
 })();
+
+// ── SMART PUSH NOTIFICATIONS ─────────────────────────────────────────────────
+(function(){
+  const DAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const SPLITS_LABEL = { ppl:'Push/Pull/Legs', bro:'Bro Split', fb:'Full Body', ul:'Upper/Lower' };
+
+  function todayKey(){ return new Date().toISOString().split('T')[0]; }
+
+  function workoutLoggedToday(){
+    try {
+      const log = JSON.parse(localStorage.getItem('rfc_workout_log')||'[]');
+      const today = todayKey();
+      return log.some(e => (e.date||e.ts||'').startsWith(today));
+    } catch(e){ return false; }
+  }
+
+  function getStreak(){
+    return parseInt(localStorage.getItem('bm_streak')||'0');
+  }
+
+  function lastWeekWorkouts(){
+    try {
+      const log = JSON.parse(localStorage.getItem('rfc_workout_log')||'[]');
+      const cutoff = Date.now() - 7*24*60*60*1000;
+      return log.filter(e => new Date(e.date||e.ts||0).getTime() > cutoff).length;
+    } catch(e){ return 0; }
+  }
+
+  function canSend(key){
+    const last = parseInt(localStorage.getItem('notif_sent_'+key)||'0');
+    return Date.now() - last > 20*60*60*1000; // once per 20h for same key
+  }
+
+  function markSent(key){ localStorage.setItem('notif_sent_'+key, Date.now()); }
+
+  function sendNotif(title, body, tag, data){
+    if(Notification.permission !== 'granted') return;
+    const opts = {
+      body,
+      icon: '/icons/icon-192x192.png',
+      badge: '/icons/icon-72x72.png',
+      vibrate: [200,100,200],
+      tag: tag||'rfc-notif',
+      renotify: true,
+      data: data||{ url: '/' }
+    };
+    if('serviceWorker' in navigator){
+      navigator.serviceWorker.ready.then(reg => reg.showNotification(title, opts)).catch(()=>{});
+    } else {
+      try { new Notification(title, opts); } catch(e){}
+    }
+  }
+
+  function checkSchedule(){
+    if(Notification.permission !== 'granted') return;
+    const u = (function(){ try{ return JSON.parse(localStorage.getItem('bm_user')||'null'); }catch(e){ return null; } })();
+    if(!u) return;
+    const name = u.name || 'Champion';
+
+    const now = new Date();
+    const h = now.getHours();
+    const m = now.getMinutes();
+    const day = now.getDay();
+    const tk = todayKey();
+
+    // ── 6:00 AM — Morning Workout Reminder ──
+    if(h === 6 && m < 10 && canSend('morning_'+tk)){
+      markSent('morning_'+tk);
+      const split = localStorage.getItem('rfc_split')||'ppl';
+      const splitName = SPLITS_LABEL[split]||split.toUpperCase();
+      sendNotif(
+        '☀️ Good Morning, '+name+'!',
+        'Today is '+DAYS[day]+'. Your '+splitName+' workout is ready. Let\'s crush it! 💪',
+        'rfc-morning'
+      );
+    }
+
+    // ── 8:00 PM — Evening nudge if no workout logged ──
+    if(h === 20 && m < 10 && canSend('evening_'+tk)){
+      if(!workoutLoggedToday()){
+        markSent('evening_'+tk);
+        sendNotif(
+          '⏰ Evening Check-in, '+name,
+          "You haven't logged a workout today. Don't let the day slip! 20 minutes is all it takes. 🔥",
+          'rfc-evening'
+        );
+      }
+    }
+
+    // ── 9:00 PM — Streak warning ──
+    if(h === 21 && m < 10 && canSend('streak_'+tk)){
+      const streak = getStreak();
+      if(streak >= 3 && !workoutLoggedToday()){
+        markSent('streak_'+tk);
+        sendNotif(
+          '⚠️ Your '+streak+'-Day Streak Is at Risk!',
+          'Log any workout before midnight to save your '+streak+'-day streak. Don\'t let it end now! 🔥',
+          'rfc-streak'
+        );
+      }
+    }
+
+    // ── Monday 9:00 AM — Weekly Recap ──
+    if(day === 1 && h === 9 && m < 10 && canSend('weekly_'+tk)){
+      markSent('weekly_'+tk);
+      const wk = lastWeekWorkouts();
+      const msg = wk > 0
+        ? 'Last week you crushed '+wk+' workout'+(wk>1?'s':'')+'! Can you beat that this week? Let\'s go! 💪'
+        : 'New week, fresh start! Your workout plan is ready. Make this week count. 🏆';
+      sendNotif('📊 Weekly Challenge Starts Now!', msg, 'rfc-weekly');
+    }
+
+    // ── Friday 6:00 PM — Weekend motivation ──
+    if(day === 5 && h === 18 && m < 10 && canSend('friday_'+tk)){
+      markSent('friday_'+tk);
+      sendNotif(
+        '🏋️ Weekend Warrior Mode ON!',
+        name+', the weekend is perfect for an extra session. Champions train when others don\'t. 👑',
+        'rfc-friday'
+      );
+    }
+  }
+
+  // Run check every 5 minutes while app is open
+  function startScheduler(){
+    checkSchedule();
+    setInterval(checkSchedule, 5 * 60 * 1000);
+  }
+
+  // ── PERMISSION PROMPT UI ──────────────────────────────────────────
+  window.notifAllow = async function(){
+    const el = document.getElementById('notif-prompt');
+    if(el) el.style.display = 'none';
+    localStorage.setItem('notif_asked', Date.now());
+    if(!('Notification' in window)){
+      toast('❌ Your browser doesn\'t support notifications','red'); return;
+    }
+    const perm = await Notification.requestPermission();
+    if(perm === 'granted'){
+      toast('🔔 Smart notifications enabled!','green');
+      startScheduler();
+    } else {
+      toast('Notifications blocked. Enable in browser settings.','gold');
+    }
+  };
+
+  window.notifDismiss = function(){
+    const el = document.getElementById('notif-prompt');
+    if(el) el.style.display = 'none';
+    // Ask again in 3 days
+    localStorage.setItem('notif_asked', Date.now() - 4*24*60*60*1000);
+  };
+
+  window.notifDisable = function(){
+    localStorage.setItem('notif_disabled','1');
+    toast('Notifications turned off','gold');
+  };
+
+  // ── INIT: called after user logs in ──────────────────────────────
+  window.initPushNotifications = function(){
+    if(!user) return;
+    if(localStorage.getItem('notif_disabled')==='1') return;
+    if(!('Notification' in window)) return;
+
+    if(Notification.permission === 'granted'){
+      startScheduler(); return;
+    }
+    if(Notification.permission === 'denied') return;
+
+    const lastAsked = parseInt(localStorage.getItem('notif_asked')||'0');
+    const daysSinceAsked = (Date.now() - lastAsked) / (24*60*60*1000);
+
+    // Show prompt 15 sec after login, but only if not asked in last 7 days
+    if(daysSinceAsked > 7){
+      setTimeout(function(){
+        const el = document.getElementById('notif-prompt');
+        if(el && user) el.style.display = 'block';
+      }, 15000);
+    }
+  };
+
+  // Hook into applyUser patches
+  const _notifApply = window.applyUser;
+  if(typeof _notifApply === 'function'){
+    window.applyUser = function(){
+      _notifApply.apply(this, arguments);
+      setTimeout(window.initPushNotifications, 500);
+    };
+  }
+})();
 </script>
 <!-- BioDigital Human API SDK — loaded last so it doesn't block page render -->
 <script src="https://developer.biodigital.com/builds/api/2/human-api.min.js" async
   onload="if(typeof initBioDigital==='function')initBioDigital();"
   onerror="console.info('BioDigital SDK unavailable — postMessage fallback active');"></script>
 <div id="celebration-overlay" style="position:fixed;inset:0;pointer-events:none;z-index:9999;display:none;"></div>
+
+<!-- PUSH NOTIFICATION PERMISSION PROMPT -->
+<div id="notif-prompt" style="display:none;">
+  <button class="np-close" onclick="notifDismiss()">✕</button>
+  <div class="np-icon">🔔</div>
+  <div class="np-title">Stay on Track with Smart Alerts</div>
+  <div class="np-sub">Royal Fitness Club sends intelligent reminders at the right moment — never miss a workout again.</div>
+  <div class="np-features">
+    <div class="np-feat"><span>☀️</span><span>6 AM morning workout reminder</span></div>
+    <div class="np-feat"><span>⏰</span><span>8 PM nudge if you haven't trained</span></div>
+    <div class="np-feat"><span>🔥</span><span>Streak warnings before you lose it</span></div>
+    <div class="np-feat"><span>📊</span><span>Weekly progress recap every Monday</span></div>
+  </div>
+  <div class="np-btns">
+    <button class="np-allow" onclick="notifAllow()">🔔 Enable Smart Alerts</button>
+    <button class="np-later" onclick="notifDismiss()">Later</button>
+  </div>
+</div>
 </body>
 </html>
