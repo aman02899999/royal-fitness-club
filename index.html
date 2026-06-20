@@ -3443,6 +3443,31 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
       </div>
     </div>
 
+    <!-- XP & Level Progress Bar -->
+    <div class="xp-bar-wrap" id="xp-bar-wrap">
+      <div class="xp-bar-top">
+        <div class="xp-level-badge">
+          <span class="xp-level-icon" id="xp-level-icon">🥉</span>
+          <div>
+            <div class="xp-level-name" id="xp-level-name">Rookie</div>
+            <div class="xp-level-sub" id="xp-level-sub">Level 1 · 0 XP</div>
+          </div>
+        </div>
+        <div class="xp-total-badge" id="xp-total-badge">0 XP</div>
+      </div>
+      <div class="xp-bar-track"><div class="xp-bar-fill" id="xp-bar-fill" style="width:0%"></div></div>
+      <div class="xp-bar-labels">
+        <span id="xp-bar-cur">0 XP</span>
+        <span id="xp-bar-next">Need 200 XP for ⚔️ Warrior</span>
+      </div>
+      <div class="xp-actions-row">
+        <div class="xp-action-chip">🏋️ Workout +50 XP</div>
+        <div class="xp-action-chip">✅ Check-in +20 XP</div>
+        <div class="xp-action-chip">⚡ Beast Score +100 XP</div>
+        <div class="xp-action-chip">🔥 Streak Bonus +30 XP</div>
+      </div>
+    </div>
+
     <!-- Weekly workout calendar -->
     <div class="dash-week-row" id="dash-week-row"></div>
 
@@ -7786,6 +7811,12 @@ function calculate(){
   // Refresh dashboard body-comp card immediately
   if(typeof refreshDashBodyComp==='function')refreshDashBodyComp(lastRes);
   if(window.AnalyticsService)window.AnalyticsService.trackEvent('calculator_used',{goal,diet}).catch(()=>{});
+  // Award XP for Beast Score calculation (once per day)
+  const bsKey = 'rfc_xp_bs_'+new Date().toISOString().split('T')[0];
+  if(window.awardXP && !localStorage.getItem(bsKey)){
+    localStorage.setItem(bsKey,'1');
+    setTimeout(()=>window.awardXP('beast_score'), 1000);
+  }
 }
 // ── HEALTH CHECKBOX VISUAL + GOAL→CALORIE AUTO-UPDATE + SPLIT TABS ──
 function toggleHipField(){const hf=$('hip-field');if(!hf)return;const f=getGender()==='female';hf.style.visibility=f?'visible':'hidden';hf.style.pointerEvents=f?'auto':'none';}
@@ -9130,7 +9161,17 @@ let pd={streak:0,lastCI:null,wk:0,hy:0,weights:[]};
 function loadPD(){const s=localStorage.getItem('bm_pd');if(s)pd=JSON.parse(s);renderPD();}
 function savePD(){localStorage.setItem('bm_pd',JSON.stringify(pd));}
 function renderPD(){$('stnum').textContent=pd.streak;$('wkc').textContent=pd.wk;$('hyc').textContent=pd.hy;$('wkb').style.width=Math.min(100,pd.wk/5*100)+'%';$('hyb').style.width=Math.min(100,pd.hy/7*100)+'%';renderWC();}
-$('btncheckin').addEventListener('click',()=>{if(!isPro){openModal('promodal');return;}const today=new Date().toDateString();if(pd.lastCI===today){toast('Already checked in today! 🔥','gold');return;}pd.streak=pd.lastCI===new Date(Date.now()-86400000).toDateString()?pd.streak+1:1;pd.lastCI=today;savePD();renderPD();toast(`🔥 ${pd.streak}-day streak! Keep going!`,'gold');if(user?.uid&&window.TransformationService)window.TransformationService.saveActivityData(user.uid,{streak:pd.streak,workouts:pd.wk,hydrationDays:pd.hy}).catch(()=>{});if(window.AnalyticsService)window.AnalyticsService.trackEvent('checkin',{streak:pd.streak}).catch(()=>{});syncLeaderboard({streak:pd.streak});});
+$('btncheckin').addEventListener('click',()=>{if(!isPro){openModal('promodal');return;}const today=new Date().toDateString();if(pd.lastCI===today){toast('Already checked in today! 🔥','gold');return;}pd.streak=pd.lastCI===new Date(Date.now()-86400000).toDateString()?pd.streak+1:1;pd.lastCI=today;savePD();renderPD();toast(`🔥 ${pd.streak}-day streak! Keep going!`,'gold');if(user?.uid&&window.TransformationService)window.TransformationService.saveActivityData(user.uid,{streak:pd.streak,workouts:pd.wk,hydrationDays:pd.hy}).catch(()=>{});if(window.AnalyticsService)window.AnalyticsService.trackEvent('checkin',{streak:pd.streak}).catch(()=>{});syncLeaderboard({streak:pd.streak});
+  // XP for check-in + streak milestones
+  if(window.awardXP){
+    setTimeout(()=>{
+      window.awardXP('checkin');
+      if(pd.streak===3)  window.awardXP('streak_3');
+      if(pd.streak===7)  window.awardXP('streak_7');
+      if(pd.streak===30) window.awardXP('streak_30');
+    },400);
+  }
+});
 function adjG(t,d){if(!isPro){openModal('promodal');return;}if(t==='wk')pd.wk=Math.max(0,Math.min(5,pd.wk+d));if(t==='hy')pd.hy=Math.max(0,Math.min(7,pd.hy+d));savePD();renderPD();}
 $('btnwlog').addEventListener('click',()=>{if(!isPro){openModal('promodal');return;}const v=parseFloat($('wlinp').value);if(!v||v<20||v>400){toast('Please enter a valid weight','gold');return;}pd.weights.push({date:new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short'}),kg:v});if(pd.weights.length>10)pd.weights.shift();savePD();renderWC();$('wlinp').value='';toast(`📈 ${v}kg logged!`);});
 function renderWC(){const c=$('wcht'),e=$('wce');[...c.querySelectorAll('.wcb')].forEach(b=>b.remove());if(!pd.weights.length){e.style.display='flex';return;}e.style.display='none';const vals=pd.weights.map(w=>w.kg),mx=Math.max(...vals),mn=Math.min(...vals),range=mx-mn||1;pd.weights.forEach(w=>{const h=Math.max(10,Math.round(((w.kg-mn)/range)*65+18));const b=document.createElement('div');b.className='wcb';b.style.height=h+'px';b.title=`${w.date}: ${w.kg}kg`;c.appendChild(b);});}
@@ -10506,6 +10547,8 @@ async function saveWorkout(){
   addExerciseRow();
   loadWorkoutHistory();
   toast('💪 Session saved! Keep grinding.','fire');
+  // Award XP for logging a workout
+  if(window.awardXP) setTimeout(()=>window.awardXP('workout_logged'), 500);
 }
 
 function loadWorkoutHistory(){
@@ -17472,6 +17515,44 @@ label:has(#inclSalad:checked) {
 }
 .ayur-dietplan-btn:hover { opacity: 0.9; }
 
+/* ── GAMIFICATION: XP & LEVEL SYSTEM ── */
+.xp-bar-wrap { background: rgba(124,58,237,.06); border: 1px solid rgba(124,58,237,.15); border-radius: 16px; padding: 14px 16px; margin-bottom: 16px; }
+.xp-bar-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.xp-level-badge { display: flex; align-items: center; gap: 8px; }
+.xp-level-icon { font-size: 28px; line-height: 1; }
+.xp-level-name { font-size: 15px; font-weight: 800; color: #0F0A1A; letter-spacing: .5px; }
+.xp-level-sub  { font-size: 10px; color: #9CA3AF; letter-spacing: 1px; text-transform: uppercase; margin-top: 1px; }
+.xp-total-badge { background: linear-gradient(135deg,#7C3AED,#6D28D9); color:#fff; font-size:11px; font-weight:700; padding:4px 10px; border-radius:20px; letter-spacing:.3px; }
+.xp-bar-track { height: 8px; background: rgba(124,58,237,.12); border-radius: 8px; overflow: hidden; }
+.xp-bar-fill  { height: 100%; background: linear-gradient(90deg,#7C3AED,#a855f7); border-radius: 8px; transition: width .8s cubic-bezier(.34,1.56,.64,1); }
+.xp-bar-labels { display: flex; justify-content: space-between; margin-top: 5px; font-size: 10px; color: #9CA3AF; }
+.xp-actions-row { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
+.xp-action-chip { display: flex; align-items: center; gap: 4px; background: rgba(124,58,237,.08); border: 1px solid rgba(124,58,237,.2); border-radius: 20px; padding: 3px 9px; font-size: 10px; color: #7C3AED; font-weight: 600; }
+
+/* Level-up celebration overlay */
+#levelup-overlay { position:fixed; inset:0; background:rgba(0,0,0,.7); z-index:40000; display:none; align-items:center; justify-content:center; backdrop-filter:blur(8px); }
+#levelup-overlay.show { display:flex; animation:fadeIn .3s; }
+.levelup-card { background:#fff; border-radius: 28px; padding: 36px 32px; text-align:center; max-width:320px; width:90%; box-shadow:0 24px 80px rgba(0,0,0,.4); animation: levelupBounce .5s cubic-bezier(.34,1.56,.64,1); }
+@keyframes levelupBounce { from{transform:scale(.5);opacity:0;} to{transform:scale(1);opacity:1;} }
+.lu-icon { font-size: 64px; margin-bottom: 8px; line-height:1; display:block; animation: luSpin 1s; }
+@keyframes luSpin { from{transform:rotate(-20deg) scale(.8);} to{transform:rotate(0deg) scale(1);} }
+.lu-title { font-size:13px; font-weight:700; color:#7C3AED; letter-spacing:2px; text-transform:uppercase; margin-bottom:6px; }
+.lu-name { font-size:28px; font-weight:900; color:#0F0A1A; margin-bottom:8px; }
+.lu-sub { font-size:13px; color:#64748B; line-height:1.5; margin-bottom:20px; }
+.lu-unlock { background: rgba(124,58,237,.08); border:1px solid rgba(124,58,237,.2); border-radius:12px; padding:10px 14px; font-size:12px; color:#7C3AED; font-weight:600; margin-bottom:20px; }
+.lu-btn { background:linear-gradient(135deg,#7C3AED,#6D28D9); color:#fff; border:none; border-radius:14px; padding:13px 32px; font-size:14px; font-weight:700; cursor:pointer; width:100%; letter-spacing:.3px; }
+
+/* Sidebar level badge */
+.sb-level-chip { display:inline-flex; align-items:center; gap:4px; background:linear-gradient(135deg,#7C3AED,#6D28D9); color:#fff; font-size:9px; font-weight:700; padding:2px 7px; border-radius:12px; letter-spacing:.5px; margin-left:4px; vertical-align:middle; }
+
+/* Weekly XP notification chip on dashboard */
+.xp-weekly-recap { background:linear-gradient(135deg,rgba(124,58,237,.08),rgba(109,40,217,.04)); border:1px solid rgba(124,58,237,.15); border-radius:14px; padding:12px 14px; margin-bottom:14px; display:flex; align-items:center; gap:12px; }
+.xp-weekly-icon { font-size:28px; flex-shrink:0; }
+.xp-weekly-text { flex:1; min-width:0; }
+.xp-weekly-title { font-size:13px; font-weight:700; color:#0F0A1A; }
+.xp-weekly-sub { font-size:11px; color:#64748B; margin-top:2px; }
+.xp-weekly-pts { font-size:18px; font-weight:900; color:#7C3AED; flex-shrink:0; }
+
 /* ── PUSH NOTIFICATION PERMISSION PROMPT ── */
 #notif-prompt {
   position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
@@ -17918,6 +17999,217 @@ label:has(#inclSalad:checked) {
   }
 })();
 
+// ── GAMIFICATION: XP & LEVEL SYSTEM ─────────────────────────────────────────
+(function(){
+  const LEVELS = [
+    { name:'Rookie',   icon:'🥉', xpMin:0,    xpMax:199,  color:'#9CA3AF', unlock:'Basic workout plans & Beast Score' },
+    { name:'Warrior',  icon:'⚔️', xpMin:200,  xpMax:499,  color:'#3B82F6', unlock:'Advanced split programs unlocked' },
+    { name:'Beast',    icon:'🦁', xpMin:500,  xpMax:999,  color:'#F59E0B', unlock:'HIIT & Specialty workouts unlocked' },
+    { name:'Royal',    icon:'👑', xpMin:1000, xpMax:1999, color:'#7C3AED', unlock:'12-Week Roadmap + Blood AI unlocked' },
+    { name:'Legend',   icon:'🏆', xpMin:2000, xpMax:9999, color:'#EF4444', unlock:'All features + Leaderboard crown' },
+  ];
+
+  const XP_EVENTS = {
+    workout_logged:  50,
+    checkin:         20,
+    beast_score:     100,
+    streak_3:        30,
+    streak_7:        75,
+    streak_30:       200,
+    meal_logged:     15,
+    water_goal:      10,
+    photo_uploaded:  40,
+    referral:        150,
+    wod_done:        25,
+    profile_complete:50,
+  };
+
+  function loadXP(){ return parseInt(localStorage.getItem('rfc_xp')||'0'); }
+  function saveXP(v){ localStorage.setItem('rfc_xp', v); }
+  function loadWeekXP(){
+    const wk = JSON.parse(localStorage.getItem('rfc_week_xp')||'{"xp":0,"week":""}');
+    const thisWeek = getWeekKey();
+    if(wk.week !== thisWeek) return { xp:0, week: thisWeek };
+    return wk;
+  }
+  function saveWeekXP(v){
+    localStorage.setItem('rfc_week_xp', JSON.stringify({ xp:v, week: getWeekKey() }));
+  }
+  function getWeekKey(){
+    const d = new Date();
+    const jan1 = new Date(d.getFullYear(),0,1);
+    const wk = Math.ceil(((d - jan1)/86400000 + jan1.getDay()+1)/7);
+    return d.getFullYear()+'-W'+wk;
+  }
+
+  function getLevel(xp){
+    for(let i = LEVELS.length-1; i >= 0; i--){
+      if(xp >= LEVELS[i].xpMin) return { ...LEVELS[i], idx: i };
+    }
+    return { ...LEVELS[0], idx: 0 };
+  }
+
+  function getNextLevel(currentIdx){
+    return currentIdx < LEVELS.length-1 ? LEVELS[currentIdx+1] : null;
+  }
+
+  function updateXPBar(xp){
+    const level = getLevel(xp);
+    const next = getNextLevel(level.idx);
+
+    // Update DOM
+    const icon = document.getElementById('xp-level-icon');
+    const name = document.getElementById('xp-level-name');
+    const sub  = document.getElementById('xp-level-sub');
+    const total= document.getElementById('xp-total-badge');
+    const fill = document.getElementById('xp-bar-fill');
+    const cur  = document.getElementById('xp-bar-cur');
+    const nxt  = document.getElementById('xp-bar-next');
+
+    if(!icon) return;
+
+    icon.textContent = level.icon;
+    name.textContent = level.name;
+    sub.textContent  = `Level ${level.idx+1} · ${xp} XP`;
+    total.textContent= xp.toLocaleString()+' XP';
+
+    if(next){
+      const progress = ((xp - level.xpMin) / (next.xpMin - level.xpMin)) * 100;
+      fill.style.width = Math.min(100, progress) + '%';
+      cur.textContent  = xp - level.xpMin + ' / ' + (next.xpMin - level.xpMin) + ' XP';
+      nxt.textContent  = 'Need ' + (next.xpMin - xp) + ' more XP for ' + next.icon + ' ' + next.name;
+    } else {
+      fill.style.width = '100%';
+      cur.textContent  = xp.toLocaleString() + ' XP';
+      nxt.textContent  = '🏆 MAX LEVEL — LEGEND STATUS!';
+    }
+  }
+
+  function showLevelUpModal(newLevel){
+    const el = document.getElementById('levelup-overlay');
+    if(!el) return;
+    document.getElementById('lu-icon').textContent = newLevel.icon;
+    document.getElementById('lu-name').textContent = newLevel.name;
+    document.getElementById('lu-sub').textContent  = `You've crossed ${newLevel.xpMin} XP. The grind is paying off — keep pushing!`;
+    document.getElementById('lu-unlock').textContent = '🔓 Unlocked: ' + newLevel.unlock;
+    el.classList.add('show');
+
+    // Also fire a push notification
+    if(window.sendNotif){
+      sendNotif(
+        newLevel.icon+' LEVEL UP! You are now '+newLevel.name,
+        'You unlocked: '+newLevel.unlock+'. Keep grinding! 💪',
+        'rfc-levelup'
+      );
+    }
+  }
+
+  // Core function: award XP for an event
+  window.awardXP = function(event, multiplier){
+    if(!user) return;
+    const pts = Math.round((XP_EVENTS[event]||0) * (multiplier||1));
+    if(!pts) return;
+
+    const prevXP = loadXP();
+    const newXP  = prevXP + pts;
+    saveXP(newXP);
+
+    // Week XP
+    const wk = loadWeekXP();
+    wk.xp += pts;
+    saveWeekXP(wk.xp);
+
+    // Check level up
+    const prevLevel = getLevel(prevXP);
+    const newLevel  = getLevel(newXP);
+    const leveledUp = newLevel.idx > prevLevel.idx;
+
+    // Animate bar update
+    updateXPBar(newXP);
+
+    // Toast for XP gain
+    toast(`+${pts} XP earned! ${newLevel.icon} ${newLevel.name}`, 'green');
+
+    // Level up celebration
+    if(leveledUp){
+      setTimeout(()=>showLevelUpModal(newLevel), 800);
+    }
+
+    return { xp: newXP, pts, level: newLevel, leveledUp };
+  };
+
+  // Initialize on page load
+  window.initXPSystem = function(){
+    if(!user) return;
+    const xp = loadXP();
+    updateXPBar(xp);
+
+    // Show weekly XP recap on dashboard (Monday only, or always for testing)
+    const wk = loadWeekXP();
+    if(wk.xp > 0){
+      const existing = document.getElementById('xp-weekly-recap');
+      if(!existing){
+        const level = getLevel(loadXP());
+        const next = getNextLevel(level.idx);
+        const recap = document.createElement('div');
+        recap.id = 'xp-weekly-recap';
+        recap.className = 'xp-weekly-recap';
+        recap.innerHTML = `
+          <span class="xp-weekly-icon">⚡</span>
+          <div class="xp-weekly-text">
+            <div class="xp-weekly-title">This Week's XP</div>
+            <div class="xp-weekly-sub">${next ? 'Need '+(next.xpMin - loadXP())+' more for '+next.icon+' '+next.name : '🏆 MAX LEVEL reached!'}</div>
+          </div>
+          <div class="xp-weekly-pts">+${wk.xp}</div>
+        `;
+        const wrap = document.getElementById('xp-bar-wrap');
+        if(wrap && wrap.parentNode) wrap.parentNode.insertBefore(recap, wrap);
+      }
+    }
+
+    // Check profile completion XP (one-time)
+    if(user && !localStorage.getItem('rfc_xp_profile_done')){
+      const fields = [user.name, user.email, user.phone];
+      if(fields.every(Boolean)){
+        localStorage.setItem('rfc_xp_profile_done','1');
+        setTimeout(()=>window.awardXP('profile_complete'), 2000);
+      }
+    }
+  };
+
+  // Patch check-in button to award XP
+  const _origCheckin = window._checkinHandler;
+  document.addEventListener('DOMContentLoaded', ()=>{
+    const btn = document.getElementById('btncheckin');
+    if(btn){
+      btn.addEventListener('click', ()=>{
+        if(user && isPro) setTimeout(()=>window.awardXP('checkin'), 300);
+      });
+    }
+
+    // Patch WOD done button
+    const wodBtn = document.getElementById('wod-btn');
+    if(wodBtn){
+      wodBtn.addEventListener('click', ()=>{
+        if(user) setTimeout(()=>window.awardXP('wod_done'), 300);
+      });
+    }
+  });
+
+  // Hook into applyUser
+  const _xpApply = window.applyUser;
+  if(typeof _xpApply === 'function'){
+    window.applyUser = function(){
+      _xpApply.apply(this, arguments);
+      setTimeout(window.initXPSystem, 600);
+    };
+  }
+
+  // Public helpers
+  window.getLevelInfo = function(){ return getLevel(loadXP()); };
+  window.LEVELS = LEVELS;
+})();
+
 // ── SMART PUSH NOTIFICATIONS ─────────────────────────────────────────────────
 (function(){
   const DAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
@@ -18113,6 +18405,18 @@ label:has(#inclSalad:checked) {
   onload="if(typeof initBioDigital==='function')initBioDigital();"
   onerror="console.info('BioDigital SDK unavailable — postMessage fallback active');"></script>
 <div id="celebration-overlay" style="position:fixed;inset:0;pointer-events:none;z-index:9999;display:none;"></div>
+
+<!-- LEVEL UP CELEBRATION OVERLAY -->
+<div id="levelup-overlay">
+  <div class="levelup-card">
+    <span class="lu-icon" id="lu-icon">🏆</span>
+    <div class="lu-title">LEVEL UP!</div>
+    <div class="lu-name" id="lu-name">Warrior</div>
+    <div class="lu-sub" id="lu-sub">You've crossed 200 XP. Keep pushing — every rep counts!</div>
+    <div class="lu-unlock" id="lu-unlock">🔓 Unlocked: Advanced Workout Programs</div>
+    <button class="lu-btn" onclick="document.getElementById('levelup-overlay').classList.remove('show')">💪 Let's Keep Going!</button>
+  </div>
+</div>
 
 <!-- PUSH NOTIFICATION PERMISSION PROMPT -->
 <div id="notif-prompt" style="display:none;">
