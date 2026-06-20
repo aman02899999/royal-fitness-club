@@ -815,12 +815,33 @@ body.sb-open > *:not(#rfc-sidebar):not(#sb-toggle):not(#rfc-sb-overlay){
 .dash-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px;}
 @media(max-width:900px){.dash-stats{grid-template-columns:repeat(2,1fr);}}
 @media(max-width:500px){.dash-stats{grid-template-columns:1fr 1fr;}}
-.dash-stat-card{background:var(--card);border:1px solid rgba(255,255,255,.05);border-radius:6px;padding:18px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;transition:border-color .2s;}
+.dash-stat-card{background:var(--card);border:1px solid rgba(255,255,255,.05);border-radius:6px;padding:18px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;transition:border-color .2s;position:relative;overflow:hidden;}
+.dash-stat-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;}
+.dash-stats .dash-stat-card:nth-child(1)::after{background:var(--gold);}
+.dash-stats .dash-stat-card:nth-child(2)::after{background:var(--red);}
+.dash-stats .dash-stat-card:nth-child(3)::after{background:var(--green);}
+.dash-stats .dash-stat-card:nth-child(4)::after{background:#60a5fa;}
 .dash-stat-card:hover{border-color:rgba(192,41,46,.25);}
 .dash-stat-lbl{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:7px;}
 .dash-stat-val{font-family:'Playfair Display',serif;font-size:30px;font-weight:400;line-height:1;letter-spacing:-0.5px;}
 .dash-stat-sub{font-size:10px;color:var(--muted);margin-top:2px;}
 .dash-stat-icon{font-size:28px;opacity:.65;flex-shrink:0;}
+.dash-week-row{display:flex;align-items:center;gap:12px;margin-bottom:20px;background:var(--card);border:1px solid rgba(255,255,255,.05);border-radius:8px;padding:12px 16px;}
+.dash-week-label{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-weight:700;white-space:nowrap;flex-shrink:0;}
+.dash-week-days{display:flex;gap:6px;flex:1;justify-content:space-between;}
+.dash-week-day{display:flex;flex-direction:column;align-items:center;gap:5px;flex:1;}
+.dash-week-dot{width:32px;height:32px;border-radius:50%;border:2px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;transition:all .2s;}
+.dash-week-dot.done{background:var(--red);border-color:var(--red);color:#fff;}
+.dash-week-dot.today{border-color:var(--gold);color:var(--gold);}
+.dash-week-dot.future{border-color:rgba(255,255,255,.05);}
+.dash-week-dname{font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);font-family:'Barlow Condensed',sans-serif;}
+.dash-week-dname.today{color:var(--gold);}
+.dash-week-count{font-size:10px;color:var(--muted);margin-left:auto;white-space:nowrap;font-family:'Barlow Condensed',sans-serif;font-weight:700;}
+.db-macro-bar-row{display:flex;align-items:center;gap:8px;margin-bottom:5px;}
+.db-macro-label{font-size:10px;font-weight:700;letter-spacing:.5px;width:46px;flex-shrink:0;font-family:'Barlow Condensed',sans-serif;}
+.db-macro-track{flex:1;height:5px;background:rgba(255,255,255,.07);border-radius:3px;overflow:hidden;}
+.db-macro-fill{height:100%;border-radius:3px;transition:width .8s ease;}
+.db-macro-val{font-size:10px;color:var(--muted);width:32px;text-align:right;flex-shrink:0;font-family:'Barlow Condensed',sans-serif;font-weight:700;}
 .dash-grid{display:grid;grid-template-columns:1fr 340px;gap:20px;align-items:start;}
 @media(max-width:1000px){.dash-grid{grid-template-columns:1fr;}}
 .dash-card{background:linear-gradient(135deg,#0e0e10,#0c0c0f);border:1px solid rgba(255,255,255,.05);border-radius:8px;padding:20px;box-shadow:0 4px 24px rgba(0,0,0,.3),inset 0 1px 0 rgba(255,255,255,.03);transition:border-color .2s;}
@@ -2347,6 +2368,8 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
   .dash-stats{grid-template-columns:1fr 1fr!important;}
   .dash-stat-card{padding:12px 10px!important;}
   .dash-stat-val{font-size:26px!important;}
+  .dash-week-dot{width:26px!important;height:26px!important;font-size:11px!important;}
+  .dash-week-row{padding:10px 12px!important;gap:8px!important;}
   .dash-stat-icon{font-size:22px!important;}
   .dash-grid{grid-template-columns:1fr!important;}
   /* Quick actions — 3 per row */
@@ -2743,6 +2766,9 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
       </div>
     </div>
 
+    <!-- Weekly workout calendar -->
+    <div class="dash-week-row" id="dash-week-row"></div>
+
     <!-- Android App Download Banner -->
     <!-- Upgrade nudge — shown only to free-plan users via JS -->
     <div id="dash-upgrade-nudge">
@@ -2866,6 +2892,19 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
           <div class="dash-bc-row"><span>TDEE</span><span id="db-tdee">-- kcal</span></div>
           <div class="dash-bc-row"><span>Target Cals</span><span id="db-cals" style="color:var(--green);">-- kcal</span></div>
           <div class="dash-bc-row" style="border-top:1px solid rgba(255,255,255,.06);margin-top:6px;padding-top:8px;"><span style="color:var(--muted);font-size:11px;">Protein · Carbs · Fat</span><span id="db-macros" style="font-size:11px;color:var(--muted);">--g · --g · --g</span></div>
+          <div id="db-macro-bars" style="display:none;margin-top:8px;">
+            <div class="db-macro-bar-row"><span class="db-macro-label" style="color:#f7c948;">Protein</span><div class="db-macro-track"><div class="db-macro-fill" id="db-bar-prot" style="background:#f7c948;width:0%"></div></div><span class="db-macro-val" id="db-val-prot">--g</span></div>
+            <div class="db-macro-bar-row"><span class="db-macro-label" style="color:#60a5fa;">Carbs</span><div class="db-macro-track"><div class="db-macro-fill" id="db-bar-carb" style="background:#60a5fa;width:0%"></div></div><span class="db-macro-val" id="db-val-carb">--g</span></div>
+            <div class="db-macro-bar-row"><span class="db-macro-label" style="color:#f97316;">Fat</span><div class="db-macro-track"><div class="db-macro-fill" id="db-bar-fat" style="background:#f97316;width:0%"></div></div><span class="db-macro-val" id="db-val-fat">--g</span></div>
+          </div>
+          <div id="db-bf-gauge" style="display:none;margin-top:12px;text-align:center;">
+            <svg width="120" height="66" viewBox="0 0 120 66" style="overflow:visible;">
+              <path d="M10,60 A50,50 0 0,1 110,60" fill="none" stroke="rgba(255,255,255,.07)" stroke-width="10" stroke-linecap="round"/>
+              <path id="db-bf-arc" d="M10,60 A50,50 0 0,1 110,60" fill="none" stroke="var(--red)" stroke-width="10" stroke-linecap="round" stroke-dasharray="157" stroke-dashoffset="157" style="transition:stroke-dashoffset .8s ease;"/>
+              <text id="db-bf-gauge-val" x="60" y="58" text-anchor="middle" fill="white" font-family="'Bebas Neue',sans-serif" font-size="18">--%</text>
+              <text id="db-bf-gauge-cat" x="60" y="72" text-anchor="middle" fill="rgba(255,255,255,.4)" font-family="Inter,sans-serif" font-size="9" letter-spacing="1">BODY FAT</text>
+            </svg>
+          </div>
           <div id="db-no-data" style="text-align:center;padding:10px 0 4px;font-size:11.5px;color:var(--muted);line-height:1.5;">
             No data yet — run the<br><strong style="color:var(--red);">Beast Score Calculator</strong> to see your stats.
           </div>
@@ -12677,7 +12716,37 @@ function refreshDashBodyComp(r) {
   if (r.bmr)  set('db-bmr',  Math.round(r.bmr) + ' kcal');
   if (r.tdee) set('db-tdee', Math.round(r.tdee) + ' kcal');
   if (r.targetCals) set('db-cals', r.targetCals + ' kcal');
-  if (r.macros) set('db-macros', r.macros.prot + 'g · ' + r.macros.carb + 'g · ' + r.macros.fat + 'g');
+  if (r.macros) {
+    set('db-macros', r.macros.prot + 'g · ' + r.macros.carb + 'g · ' + r.macros.fat + 'g');
+    var barsEl = document.getElementById('db-macro-bars');
+    if (barsEl) {
+      barsEl.style.display = 'block';
+      var total = (r.macros.prot||0)*4 + (r.macros.carb||0)*4 + (r.macros.fat||0)*9;
+      if (total > 0) {
+        var pBar = document.getElementById('db-bar-prot'); if (pBar) pBar.style.width = Math.round((r.macros.prot*4/total)*100) + '%';
+        var cBar = document.getElementById('db-bar-carb'); if (cBar) cBar.style.width = Math.round((r.macros.carb*4/total)*100) + '%';
+        var fBar = document.getElementById('db-bar-fat');  if (fBar) fBar.style.width = Math.round((r.macros.fat*9/total)*100) + '%';
+      }
+      var pv = document.getElementById('db-val-prot'); if (pv) pv.textContent = r.macros.prot + 'g';
+      var cv = document.getElementById('db-val-carb'); if (cv) cv.textContent = r.macros.carb + 'g';
+      var fv = document.getElementById('db-val-fat');  if (fv) fv.textContent = r.macros.fat + 'g';
+    }
+  }
+  if (r.bf != null) {
+    var gaugeEl = document.getElementById('db-bf-gauge');
+    var arcEl   = document.getElementById('db-bf-arc');
+    var gVal    = document.getElementById('db-bf-gauge-val');
+    var gCat    = document.getElementById('db-bf-gauge-cat');
+    if (gaugeEl && arcEl) {
+      gaugeEl.style.display = 'block';
+      var pct = Math.min(r.bf / 45, 1);
+      var arcColor = r.bf < 15 ? '#60a5fa' : r.bf < 25 ? 'var(--green)' : r.bf < 32 ? 'var(--gold)' : 'var(--red)';
+      arcEl.style.strokeDashoffset = (157 * (1 - pct)).toFixed(1);
+      arcEl.setAttribute('stroke', arcColor);
+      if (gVal) { gVal.textContent = r.bf.toFixed(1) + '%'; gVal.setAttribute('fill', arcColor); }
+      if (gCat && r.bfc) gCat.textContent = r.bfc.toUpperCase();
+    }
+  }
   if (r.goal) {
     var goalBadge = document.getElementById('db-goal-badge');
     if (goalBadge) { goalBadge.textContent = r.goal.toUpperCase(); goalBadge.style.display = 'inline-block'; }
@@ -12768,6 +12837,9 @@ function populateDashboard() {
     if (eyebrow) eyebrow.textContent = user ? '🔒 Free Plan — You\'re Missing Out' : '🎯 Create Your Free Account';
   }
 
+  // Weekly workout calendar
+  _populateDashWeek();
+
   // Today's tasks
   _populateDashTasks();
 
@@ -12778,6 +12850,36 @@ function populateDashboard() {
   if (typeof loadWOD === 'function') loadWOD();
   if (typeof updateWaterRing === 'function') updateWaterRing(getWaterData());
   if (typeof renderPRTracker === 'function') renderPRTracker();
+}
+
+function _populateDashWeek() {
+  var el = document.getElementById('dash-week-row');
+  if (!el) return;
+  var days = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  var today = new Date();
+  var dow = today.getDay(); // 0=Sun
+  var weekStart = new Date(today);
+  weekStart.setDate(today.getDate() - (dow === 0 ? 6 : dow - 1));
+  weekStart.setHours(0,0,0,0);
+  var logs = [];
+  try { logs = JSON.parse(localStorage.getItem('bm_wklogs') || '[]'); } catch(e) {}
+  var doneCount = 0;
+  var html = '<span class="dash-week-label">This Week</span><div class="dash-week-days">';
+  days.forEach(function(d, i) {
+    var dayDate = new Date(weekStart); dayDate.setDate(weekStart.getDate() + i);
+    var isToday = dayDate.toDateString() === today.toDateString();
+    var isFuture = dayDate > today && !isToday;
+    var worked = logs.some(function(l) { return l.ts && new Date(l.ts).toDateString() === dayDate.toDateString(); });
+    if (worked) doneCount++;
+    var dotCls = worked ? 'done' : (isToday ? 'today' : (isFuture ? 'future' : ''));
+    var inner = worked ? '✓' : (isToday ? '·' : '');
+    html += '<div class="dash-week-day">' +
+      '<div class="dash-week-dot ' + dotCls + '">' + inner + '</div>' +
+      '<div class="dash-week-dname' + (isToday ? ' today' : '') + '">' + d + '</div>' +
+      '</div>';
+  });
+  html += '</div><span class="dash-week-count">' + doneCount + '/7</span>';
+  el.innerHTML = html;
 }
 
 function _populateDashTasks() {
@@ -12828,43 +12930,49 @@ function _populateDashActivity() {
   if (!feed) return;
 
   var activities = [];
-  // Pull from wallet transaction history
+
+  // Workout logs (highest priority — real fitness activity)
+  try {
+    var logs = JSON.parse(localStorage.getItem('bm_wklogs') || '[]');
+    logs.sort(function(a,b){return (b.ts||0)-(a.ts||0);});
+    logs.slice(0, 6).forEach(function(l) {
+      var label = l.type || l.split || 'Workout';
+      var sub = l.dur ? ' · ' + l.dur + ' min' : '';
+      activities.push({ ts: l.ts, icon: '🏋️', text: label + sub, pts: l.pts });
+    });
+  } catch(e) {}
+
+  // Wallet transactions
   try {
     var w = user ? getWallet() : null;
     if (w && w.txns) {
-      w.txns.slice(0, 4).forEach(function(t) {
-        activities.push({
-          ts: t.ts,
-          icon: t.type === 'credit' ? '💰' : '📤',
-          text: (t.desc || 'Transaction') + ' ' + (t.type === 'credit' ? '+₹' + t.amount : '-₹' + t.amount)
-        });
+      w.txns.slice(0, 3).forEach(function(t) {
+        activities.push({ ts: t.ts, icon: t.type === 'credit' ? '💰' : '📤', text: (t.desc || 'Transaction') + ' ' + (t.type === 'credit' ? '+₹' + t.amount : '-₹' + t.amount) });
       });
     }
   } catch(e) {}
 
-  // Pull joined challenges
+  // Joined challenges
   try {
     var joined = user ? getMyJoinedChallenges() : [];
     joined.forEach(function(chId) {
       var ch = getChallenges().find(function(c) { return c.id === chId; });
-      if (ch) activities.push({ icon: '🏆', text: 'Joined ' + ch.name });
+      if (ch) activities.push({ icon: '🏆', text: 'Joined: ' + ch.name });
     });
   } catch(e) {}
 
   activities.sort(function(a, b) { return (b.ts || 0) - (a.ts || 0); });
 
   if (activities.length === 0) {
-    activities = [
-      { icon:'🏋️', text:'Complete your first workout to see activity here' },
-      { icon:'📊', text:'Use the BMI calculator to track your fitness metrics' },
-      { icon:'🩸', text:'Try Blood Analyser — enter your blood report values for insights' }
-    ];
+    feed.innerHTML = '<div style="text-align:center;padding:20px 0;color:var(--muted);font-size:12px;line-height:1.7;">No activity yet.<br>Log a workout to start your streak 🔥</div>';
+    return;
   }
 
-  feed.innerHTML = activities.slice(0, 5).map(function(a) {
+  feed.innerHTML = activities.slice(0, 6).map(function(a) {
     return '<div class="dash-activity-row">' +
       '<span style="font-size:16px;flex-shrink:0;">' + a.icon + '</span>' +
-      '<span style="flex:1;font-size:12px;color:var(--muted);">' + a.text + '</span>' +
+      '<span style="flex:1;font-size:12px;color:var(--text);">' + a.text + '</span>' +
+      (a.pts ? '<span style="font-size:10px;font-weight:700;color:var(--gold);margin-right:6px;">+' + a.pts + 'pts</span>' : '') +
       (a.ts ? '<span style="font-size:10px;color:var(--muted);white-space:nowrap;">' + _timeAgo(a.ts) + '</span>' : '') +
     '</div>';
   }).join('');
