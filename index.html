@@ -3338,6 +3338,7 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
 
     <div class="sb-section-lbl">HEALTH</div>
     <div class="sb-item" data-screen="bloodai" onclick="switchScreen('bloodai',this)"><span class="sb-icon">🩸</span><span>Blood Analyser</span><span class="sb-badge-pill new">NEW</span></div>
+    <div class="sb-item" data-screen="ayurveda" onclick="switchScreen('ayurveda',this)"><span class="sb-icon">🌿</span><span>Ayurveda Hub</span><span class="sb-badge-pill" style="background:linear-gradient(135deg,#059669,#047857);color:#fff;">NEW</span></div>
 
     <div class="sb-section-lbl">EARN & LEARN</div>
     <div class="sb-item" data-screen="referrals" onclick="switchScreen('referrals',this)"><span class="sb-icon">💰</span><span>Wallet & Referrals</span></div>
@@ -4317,6 +4318,9 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
             </div>
           </div>
           <div class="hc-alert-note">⚠️ These recommendations are diet & nutrition guidance only. Always consult your doctor for medical treatment.</div>
+          <button class="ayur-dietplan-btn" onclick="openAyurvedaFromDiet()" id="ayur-dietplan-trigger" style="display:none">
+            🌿 View Ayurvedic Remedies for Selected Conditions →
+          </button>
         </div>
         <div><label class="flbl">Protein Supplement</label>
           <div class="toggle2 rrow">
@@ -13855,6 +13859,7 @@ const SCREEN_META = {
   leaderboard: { icon:'🐯', title:'Tiger Leaderboard', sub:'Top performers this month' },
   transform:   { icon:'📈', title:'Progress Tracking', sub:'Body composition & measurements' },
   bloodai:     { icon:'🩸', title:'Blood Report Analyser', sub:'Enter & analyse your blood panel values' },
+  ayurveda:    { icon:'🌿', title:'Anabolic Ayurveda Hub', sub:'Ancient remedies · Modern science · Personalised protocol' },
   referrals:   { icon:'💰', title:'Wallet & Referrals', sub:'Earnings, referrals & redemptions' },
   courses:     { icon:'🎓', title:'Certification Courses', sub:'Learn, earn your RFC certificate' },
   store:       { icon:'📚', title:'Knowledge Store', sub:'Expert guides & programs' },
@@ -13875,6 +13880,7 @@ const SCREEN_MAP = {
   leaderboard: ['arena'],
   transform:   ['dashboard','bodyfat'],
   bloodai:     ['bloodreport'],
+  ayurveda:    ['ayurveda-hub'],
   referrals:   ['profile'],
   courses:     ['courses'],
   store:       ['store'],
@@ -13886,7 +13892,7 @@ const SCREEN_MAP = {
 // All element IDs managed by the screen system (hidden/shown by JS)
 const ALL_MANAGED_IDS = ['screen-dashboard','home','profile','plans','calculator',
   'mealplan','roadmap','bodyfat','calculators','physio','tracker','tracker-workout-plan','workoutlog',
-  'arena','challenges','bloodreport','courses','store','dashboard','admin-panel','landing-footer'];
+  'arena','challenges','bloodreport','courses','store','dashboard','admin-panel','landing-footer','ayurveda-hub'];
 
 let currentScreen = 'dashboard';
 
@@ -14840,6 +14846,510 @@ function saveUpdateStats() {
     try { buildRoadmap(lastRes.goal); } catch(e) {}
   }
 }
+
+/* ═══════════════════════════════════════════════════════════
+   ANABOLIC AYURVEDA HUB — DATA & LOGIC
+   Source: Ministry of AYUSH · CCRAS Clinical Protocols ·
+           Charaka Samhita · Sushruta Samhita · Ashtanga Hridayam
+═══════════════════════════════════════════════════════════ */
+const AYUR_DB = {
+  diabetic: {
+    name:'Diabetes (Type 2)', sanskrit:'Madhumeha', icon:'🩸', dosha:'Kapha + Pitta', tag:'metabolic', color:'#DC2626',
+    desc:'Madhumeha (honey-like urine disease) — excessive glucose in blood/urine due to impaired Agni and Kapha excess. Critical: 80% reversible in early stages with Ayurvedic protocol.',
+    herbs:[
+      {name:'Karela (Bitter Gourd)',latin:'Momordica charantia',dose:'30 ml fresh juice every morning empty stomach',benefit:'Contains charantin & polypeptide-p that mimic insulin. Reduces fasting blood sugar by up to 54 mg/dL.'},
+      {name:'Methi (Fenugreek)',latin:'Trigonella foenum-graecum',dose:'1 tsp seeds soaked overnight, chew every morning empty stomach',benefit:'Soluble fibre slows glucose absorption. Proven to reduce HbA1c & post-meal glucose spikes.'},
+      {name:'Amla (Indian Gooseberry)',latin:'Phyllanthus emblica',dose:'20 ml fresh juice + 1/2 tsp turmeric every morning',benefit:'Regenerates pancreatic beta cells. Chromium content improves insulin receptor sensitivity.'},
+      {name:'Gurmar (Gymnema)',latin:'Gymnema sylvestre',dose:'400 mg standardised extract capsule twice daily with meals',benefit:'Blocks sugar taste receptors. Reduces intestinal sugar absorption. Lowers HbA1c in 12-week trial.'},
+      {name:'Vijaysar (Indian Kino)',latin:'Pterocarpus marsupium',dose:'Water stored overnight in Vijaysar wood tumbler — drink every morning',benefit:'Epicatechin content regenerates beta cells. Reduces blood glucose markedly. No side effects.'}
+    ],
+    formulation:'Chandraprabha Vati (2 tabs twice daily after meals) · Nishamalaki Churna (3g with honey at bedtime) · Karela-Jamun Ras (30ml every morning)',
+    diet_do:['Bitter gourd (karela)','Jamun (Indian blackberry)','Barley (Yava)','Fenugreek leaves/seeds','Drumstick (Moringa) leaves','Amla juice daily','Turmeric milk (no sugar)','Moong dal','Flaxseeds','Brown rice/millets'],
+    diet_avoid:['White sugar & jaggery','White rice (switch to millets)','Maida products','Sweet fruits: mango, banana, grapes','Packaged fruit juices','Alcohol','Cold drinks','Excess potato'],
+    lifestyle:['Walk briskly 45 min daily after meals','Fixed meal timings — never skip','Sleep by 10pm, wake by 6am','Avoid daytime sleeping','Cook in iron kadhai','Use copper vessel for water'],
+    yoga:'Mandukasana (frog pose) · Dhanurasana · Ardha Matsyendrasana · Kapalbhati (10 min) · Anulom-Vilom (15 min)',
+    source:'CCRAS Clinical Guidelines 2023 · Ministry of AYUSH Diabetes Protocol · Charaka Samhita Ch. 6'
+  },
+  insulin_resistance:{
+    name:'Pre-Diabetes / Insulin Resistance',sanskrit:'Prameha Purvarupa',icon:'📊',dosha:'Kapha dominant',tag:'metabolic',color:'#EA580C',
+    desc:'Early Madhumeha. Kapha blocks cellular insulin receptors. Critical reversal window — 100% reversible with the right protocol within 3-6 months.',
+    herbs:[
+      {name:'Cinnamon (Dalchini)',latin:'Cinnamomum zeylanicum',dose:'1/2 tsp powder in warm water every morning',benefit:'Mimics insulin signaling. Proven to improve glucose uptake by cells up to 20x in cell studies.'},
+      {name:'Turmeric (Haridra)',latin:'Curcuma longa',dose:'500 mg curcumin with black pepper (piperine) twice daily',benefit:'Curcumin improves insulin receptor signaling. Reduces pancreatic inflammation. Anti-fibrotic.'},
+      {name:'Triphala Churna',latin:'Haritaki + Bibhitaki + Amla',dose:'3g with warm water at bedtime',benefit:'Detoxifies liver, improves bile acids, reduces Kapha. Improves metabolic syndrome markers.'},
+      {name:'Kalonji (Black Seeds)',latin:'Nigella sativa',dose:'1 tsp seeds with 1 tsp honey every morning',benefit:'Thymoquinone improves insulin sensitivity, reduces fasting glucose and HbA1c.'}
+    ],
+    formulation:'Triphala Churna (3g bedtime) · Arogyavardhini Vati (2 tabs twice daily) · Guduchi Sat (500mg twice daily)',
+    diet_do:['Millets: Bajra, Jowar, Ragi','Barley water (daily)','Cinnamon tea (morning)','Apple cider vinegar (diluted, pre-meal)','High-fibre vegetables','Flaxseeds','Almonds (10/day)','Unsweetened curd'],
+    diet_avoid:['All refined carbohydrates','Sugar in any form','Fruit juices (even fresh)','Processed packaged foods','Trans fats (vanaspati)','White bread','Sweetened dairy'],
+    lifestyle:['Intermittent fasting 16:8 (powerful for IR)','Resistance training 3x/week','Walk 15 min after every meal','Reduce screen time after 9pm','Manage cortisol — a key driver of IR'],
+    yoga:'Surya Namaskar (12 rounds daily) · Paschimottanasana · Kapalbhati · Bhastrika Pranayama · Viparita Karani',
+    source:'Ministry of AYUSH · CCRAS Prameha Protocol · Journal of Ethnopharmacology'
+  },
+  hypertension:{
+    name:'High BP / Hypertension',sanskrit:'Rakta Chap Vriddhi',icon:'🫀',dosha:'Pitta + Vata',tag:'cardiac',color:'#EF4444',
+    desc:'Rakta Vaha Srotas (blood channel) vitiation. Pitta causes heat and arterial constriction; Vata causes irregular pulse. Ayurveda aims to calm both doshas and strengthen the heart.',
+    herbs:[
+      {name:'Arjuna (Terminalia)',latin:'Terminalia arjuna',dose:'500mg bark powder with warm milk twice daily',benefit:'Strengthens heart muscle, dilates blood vessels, reduces systolic BP. Used in India for 3000 years.'},
+      {name:'Ashwagandha',latin:'Withania somnifera',dose:'500mg root extract at bedtime with warm milk',benefit:'Adaptogen — reduces cortisol 27.9%, calms nervous system, lowers BP naturally in 12-week trial.'},
+      {name:'Sarpagandha',latin:'Rauvolfia serpentina',dose:'250mg powder twice daily (only under supervision)',benefit:'First Ayurvedic herb validated by modern medicine. Contains reserpine. Direct antihypertensive.'},
+      {name:'Brahmi (Water Hyssop)',latin:'Bacopa monnieri',dose:'300mg extract twice daily',benefit:'Calms nervous system, reduces stress-induced BP spikes. Improves nitric oxide production.'},
+      {name:'Jatamansi (Spikenard)',latin:'Nardostachys jatamansi',dose:'1g powder with honey twice daily',benefit:'Sedative-hypnotic. Reduces anxiety and catecholamines that drive high BP.'}
+    ],
+    formulation:'Sarpagandha Vati (1 tab twice daily) · Arjunarishta (25ml with equal water after meals) · Mukta Vati (2 tabs before breakfast)',
+    diet_do:['Garlic raw (2 cloves morning)','Coconut water (daily)','Pomegranate juice','Celery','Banana (potassium)','Dark leafy greens','Flaxseeds (omega-3)','Hibiscus tea','Beetroot juice','Low-sodium cooking'],
+    diet_avoid:['Salt > 5g/day','Pickles & papads (high sodium)','Processed meats','Alcohol','Excess coffee (limit to 1)','Fried foods','Red meat','Excess sugar'],
+    lifestyle:['Morning walk 30 min daily','Deep breathing 10 min twice daily','Monitor BP at same time daily','No smoking ever','Maximum 1 unit alcohol','Reduce work stress actively','Sleep 7-8 hours fixed schedule'],
+    yoga:'Shavasana (15 min) · Balasana · Anulom-Vilom (20 min) · Bhramari Pranayama · Setu Bandha Sarvangasana — AVOID all inversions',
+    source:'CCRAS Research Protocol · Arya Vaidya Sala Guidelines · Sarpagandha — WHO Monographs'
+  },
+  cholesterol:{
+    name:'High Cholesterol',sanskrit:'Medoroga / Hypercholesterolaemia',icon:'🧪',dosha:'Kapha + Meda',tag:'metabolic',color:'#F59E0B',
+    desc:'Meda Dhatu (fat tissue) accumulation in channels. Kapha and Agni dysfunction leads to improper lipid metabolism. Medohara (fat-reducing) therapy is key.',
+    herbs:[
+      {name:'Guggul (Indian Bdellium)',latin:'Commiphora wightii',dose:'500mg purified Guggul resin twice daily with warm water',benefit:'Guggulsterone — proven in multiple RCTs to reduce LDL by 12-30% and triglycerides significantly.'},
+      {name:'Arjuna',latin:'Terminalia arjuna',dose:'500mg bark powder twice daily with warm water',benefit:'Reduces total cholesterol, LDL. Improves HDL. Cardiac protective antioxidant. Reduces platelet aggregation.'},
+      {name:'Methi (Fenugreek)',latin:'Trigonella foenum-graecum',dose:'2 tsp powder with lukewarm water every morning',benefit:'Saponins bind bile acids, forcing liver to convert cholesterol into bile. Reduces LDL significantly.'},
+      {name:'Turmeric',latin:'Curcuma longa',dose:'Golden milk (1 tsp turmeric + black pepper in warm milk) every night',benefit:'Reduces oxidation of LDL. Prevents atherosclerotic plaque. Lowers total cholesterol.'}
+    ],
+    formulation:'Triphala Guggul (2 tabs twice daily) · Medohar Guggul (2 tabs twice daily) · Arjunarishta (25ml twice daily after meals)',
+    diet_do:['Oats daily (beta-glucan)','Flaxseeds (omega-3, 2 tbsp)','Garlic (raw)','Olive oil (replace refined oil)','Walnuts (handful daily)','Amla juice (morning)','Green tea (2 cups)','Soluble fibre vegetables','Barley'],
+    diet_avoid:['Trans fats (vanaspati, dalda) — zero tolerance','Fried foods','Full-fat processed dairy','Red meat','Excess coconut oil','Refined carbs','Packaged snacks','Sweets & desserts'],
+    lifestyle:['Aerobic exercise 45 min, 5x/week','Reduce sitting time (every hour walk 5 min)','Lose even 5% weight — reduces LDL 20%','Stop smoking completely','Limit alcohol strictly'],
+    yoga:'Ardha Matsyendrasana · Sarvangasana · Paschimottanasana · Kapalbhati (15 min daily) · Anulom-Vilom',
+    source:'Ministry of AYUSH · CSIR-CDRI Guggul Research · Journal of Lipid Research (Arjuna)'
+  },
+  fatty_liver:{
+    name:'Fatty Liver (NAFLD)',sanskrit:'Yakrit Roga',icon:'🫁',dosha:'Pitta + Kapha',tag:'metabolic',color:'#84CC16',
+    desc:'Pitta vitiates Yakrit (liver) causing inflammation. Kapha causes fat accumulation in hepatocytes. Liver is Pitta headquarters — must be cooled, cleansed and regenerated.',
+    herbs:[
+      {name:'Bhumyamalaki (Stonebreaker)',latin:'Phyllanthus niruri',dose:'500mg powder twice daily with water before meals',benefit:'Most researched liver herb. Reduces ALT, AST enzymes. Proven to reverse fatty liver in 8 weeks.'},
+      {name:'Katuki (Kutki)',latin:'Picrorhiza kurroa',dose:'250mg powder with honey twice daily',benefit:'Potent hepato-protective. Regenerates liver cells, improves bile flow, anti-inflammatory.'},
+      {name:'Kalmegh (Green Chiretta)',latin:'Andrographis paniculata',dose:'400mg extract twice daily',benefit:'Andrographolide reduces liver fat, NF-kB inflammation and oxidative stress. Like a liver reset.'},
+      {name:'Punarnava',latin:'Boerhavia diffusa',dose:'500mg powder twice daily',benefit:'Reduces liver fibrosis, improves liver function tests. Diuretic — reduces hepatic swelling.'}
+    ],
+    formulation:'Arogyavardhini Vati (2 tabs twice daily) · Kumariasava (25ml after meals) · Punarnava Mandur (2 tabs twice daily) · Liv.52 (Himalaya)',
+    diet_do:['Beetroot juice (daily — proven)','Amla juice (morning)','Lemon warm water (morning)','Cruciferous vegetables','Green tea (2-3 cups)','Walnuts','Olive oil','Turmeric','Coffee (2 cups — hepatoprotective)','Papaya'],
+    diet_avoid:['Alcohol — zero tolerance','Fried foods completely','Red meat','Refined sugar','White bread/maida','Packaged snacks','Fruit juices (high fructose)','Artificial sweeteners'],
+    lifestyle:['Lose 7-10% body weight — reverses NAFLD (most effective intervention)','Exercise 150+ min/week','Avoid Paracetamol/NSAIDs overuse','Stay very well hydrated (3L/day)','Intermittent fasting 16:8 (evidence-backed for fatty liver)'],
+    yoga:'Dhanurasana · Halasana · Naukasana · Ardha Matsyendrasana · Kapalbhati (15 min daily)',
+    source:'CCRAS Yakrit Guidelines · Journal of Hepatology · Phyllanthus niruri Meta-Analysis 2022'
+  },
+  uric_acid:{
+    name:'High Uric Acid / Gout',sanskrit:'Vatarakt / Adhyavata',icon:'🦶',dosha:'Vata + Pitta',tag:'metabolic',color:'#8B5CF6',
+    desc:'Vata and Rakta (blood) vitiation. Uric acid crystals — sharp like needles (Vata quality) — deposit in joints causing Pitta inflammation. Acute flares are extremely painful.',
+    herbs:[
+      {name:'Giloy / Guduchi',latin:'Tinospora cordifolia',dose:'500mg extract twice daily or 30ml fresh stem juice daily',benefit:'Potent anti-inflammatory. Destroys Ama toxins in blood. Reduces uric acid and joint inflammation.'},
+      {name:'Punarnava',latin:'Boerhavia diffusa',dose:'500mg powder twice daily with water',benefit:'Increases uric acid excretion through kidneys. Diuretic + anti-inflammatory — both needed in gout.'},
+      {name:'Neem',latin:'Azadirachta indica',dose:'250mg neem leaf extract twice daily',benefit:'Purifies blood deeply. Reduces uric acid accumulation. Anti-inflammatory and antimicrobial.'},
+      {name:'Triphala',latin:'Haritaki + Bibhitaki + Amla',dose:'3g at bedtime with warm water',benefit:'Detoxifies blood and improves kidney filtration of uric acid. Long-term Ama remover.'}
+    ],
+    formulation:'Vataricha Guggul (2 tabs twice daily) · Punarnavasava (25ml after meals) · Kaishora Guggul (2 tabs twice daily)',
+    diet_do:['Cherries & dark berries (tart cherry proven)','Water 3+ litres daily (flushes uric acid)','Banana (alkaline)','Apple','Cucumber','Carrot','Coconut water','Vitamin C foods (lowers uric acid)','Alkaline diet overall'],
+    diet_avoid:['Organ meats: liver, kidney, brain — zero','Red meat (severely restrict)','Shellfish & seafood','Alcohol — especially beer (highest purine)','High-fructose corn syrup','Spinach & cauliflower (in excess during flare)','Sweetened drinks'],
+    lifestyle:['Stay extremely well hydrated at all times','Maintain healthy weight (every kg reduces uric acid)','Avoid crash diets (spike uric acid acutely)','Ice pack 20 min during acute flare','Elevate affected joint','Alkalise body with diet'],
+    yoga:'ONLY gentle Vata-pacifying poses — NOT during acute flare: Trikonasana · Vrikshasana · Pavanamuktasana · Anulom-Vilom. Rest during flares.',
+    source:'Sushruta Samhita Vatarakt Chapter · CCRAS Clinical Protocol · Cherry Study (Arthritis & Rheumatology 2012)'
+  },
+  pcos:{
+    name:'PCOS / PCOD',sanskrit:'Aartava Kshaya / Granthi Vyadhi',icon:'🌸',dosha:'Kapha + Vata',tag:'hormonal',color:'#EC4899',
+    desc:'Artava Vaha Srotas (reproductive channel) obstruction by Kapha. Causes anovulation, cyst formation, androgen excess, irregular periods. Ayurveda restores Apana Vayu and Kapha balance.',
+    herbs:[
+      {name:'Shatavari (Wild Asparagus)',latin:'Asparagus racemosus',dose:'500mg powder with warm milk twice daily',benefit:'Phytoestrogenic. Regulates LH/FSH ratio, improves ovarian function, reduces androgen levels.'},
+      {name:'Ashwagandha',latin:'Withania somnifera',dose:'500mg extract at bedtime with warm milk',benefit:'Reduces cortisol (high cortisol worsens PCOS). Improves thyroid function. Reduces DHEA excess.'},
+      {name:'Lodhra',latin:'Symplocos racemosa',dose:'3g powder twice daily with water',benefit:'Premier herb for reproductive health. Restores FSH/LH balance, reduces cyst size, regulates cycle.'},
+      {name:'Spearmint',latin:'Mentha spicata',dose:'2 cups fresh spearmint tea daily',benefit:'RCT proven: reduces free testosterone by 29-51% in PCOS. Natural anti-androgen. Zero side effects.'}
+    ],
+    formulation:'Shatavari Kalpa (1 tsp with warm milk twice daily) · Pushyanug Churna (3g twice daily) · Kanchanar Guggul (2 tabs twice daily)',
+    diet_do:['Low glycemic index foods','Flaxseeds 1 tbsp daily (anti-androgenic)','Spearmint tea (2 cups)','Cinnamon in food (blood sugar)','Omega-3: flaxseed, walnuts, fish','High fibre vegetables','Fenugreek seeds'],
+    diet_avoid:['Refined carbs & all sugar','Dairy (worsens androgens in PCOS — try 30-day elimination)','Soy protein isolate (phytoestrogen excess)','Processed foods','Alcohol','Excess caffeine','White rice & maida'],
+    lifestyle:['Exercise 5x/week — resistance training + HIIT (most effective PCOS intervention known)','Lose 5-10% weight if overweight (restores ovulation naturally)','Sleep strictly by 10pm','Daily stress management — meditation','Track menstrual cycle app'],
+    yoga:'Baddha Konasana · Supta Baddha Konasana · Bharadvajasana · Viparita Karani (legs up wall) · Nadi Shodhana (daily) · Bhramari Pranayama',
+    source:'Ministry of AYUSH PCOS Protocol 2022 · Journal of Ayurveda & Integrative Medicine · Spearmint RCT (Phytotherapy Research)'
+  },
+  thyroid:{
+    name:'Thyroid Disorders',sanskrit:'Galaganda',icon:'🦋',dosha:'Kapha (Hypo) / Pitta (Hyper)',tag:'hormonal',color:'#0EA5E9',
+    desc:'Galaganda = neck gland disorder. Hypothyroid = Kapha dominance causing sluggish metabolism, weight gain, fatigue. Hyperthyroid = Pitta excess causing racing heart, heat, weight loss.',
+    herbs:[
+      {name:'Ashwagandha (KSM-66)',latin:'Withania somnifera',dose:'600mg KSM-66 extract daily (any time)',benefit:'RCT proven: raises T3 by 41.5% and T4 by 19.6% in hypothyroid patients at 8 weeks. Only herb with this evidence.'},
+      {name:'Kanchanar Guggul',latin:'Bauhinia variegata + Guggul',dose:'2 tablets twice daily with warm water',benefit:'Premier Ayurvedic formulation for thyroid. Reduces nodules, normalises gland size, improves hormone output.'},
+      {name:'Guggul',latin:'Commiphora wightii',dose:'500mg standardised resin twice daily',benefit:'Guggulsterone stimulates thyroid gland function. Increases T3 and T4 output. Reduces TSH.'},
+      {name:'Brahmi',latin:'Bacopa monnieri',dose:'300mg extract twice daily',benefit:'Supports thyroid hormone production. Reduces autoimmune attack in Hashimoto\'s. Calms anxiety.'}
+    ],
+    formulation:'Kanchanar Guggul (primary — 2 tabs twice daily) · Arogyavardhini Vati (1 tab twice daily) · Ashwagandha Churna (3g warm milk bedtime)',
+    diet_do:['Selenium-rich: Brazil nuts (2/day), sunflower seeds','Zinc: pumpkin seeds, hemp seeds','Iodine from natural food: seaweed, fish','Coconut oil (supports thyroid)','Ashwagandha milk at night','Turmeric','Ginger tea'],
+    diet_avoid:['Raw cruciferous in excess (goitrogenic — broccoli, cabbage raw; cooking deactivates)','Soy protein isolate','Gluten (if Hashimoto\'s — consider 3-month elimination)','Fluoride water (use filter)','Processed foods','Excess iodine supplements'],
+    lifestyle:['Take thyroid medicine on empty stomach, 30 min before eating','Exercise — essential for thyroid function','Avoid all BPA plastics','Sleep 8 hours fixed schedule','Reduce stress aggressively — cortisol suppresses thyroid'],
+    yoga:'Sarvangasana (shoulder stand — directly stimulates thyroid) · Halasana · Matsyasana · Ujjayi Pranayama (throat activation) · Simhasana',
+    source:'CCRAS Thyroid Protocol · Ashwagandha KSM-66 RCT (Journal of Pharmacy & BioAllied Sciences 2019)'
+  },
+  low_t:{
+    name:'Low Testosterone / Male Vitality',sanskrit:'Shukra Kshaya / Vajikarna',icon:'⚡',dosha:'Vata dominant',tag:'anabolic',color:'#7C3AED',
+    desc:'🏆 ANABOLIC AYURVEDA — Shukra Dhatu (reproductive essence) is the 7th & finest body tissue. Depletion = fatigue, muscle loss, low libido, brain fog. Ayurveda\'s Vajikarna branch (virilisation) is entirely dedicated to natural testosterone optimisation.',
+    herbs:[
+      {name:'Ashwagandha KSM-66',latin:'Withania somnifera',dose:'600mg KSM-66 extract daily (morning)',benefit:'RCT PROVEN: raises testosterone 17%, LH 34%, DHEA 18%, sperm count 167%, sperm motility 57%. Reduces cortisol 27.9%. Gold standard.'},
+      {name:'Shilajit (Mineral Pitch)',latin:'Asphaltum punjabianum',dose:'250mg purified Shilajit resin twice daily',benefit:'RCT (Andrologia 2010): raises total testosterone 20.45%, free testosterone 19.2% in 90 days. Fulvic acid directly stimulates Leydig cells.'},
+      {name:'Safed Musli',latin:'Chlorophytum borivilianum',dose:'5g root powder with warm milk twice daily',benefit:'Classic Vajikarna (virilisation) herb. Increases testosterone, sperm motility, reduces exercise-induced cortisol.'},
+      {name:'Kaunch Beej (Velvet Bean)',latin:'Mucuna pruriens',dose:'5g powder with warm milk twice daily (take away from Ashwagandha)',benefit:'L-DOPA → Dopamine → LH → Testosterone cascade. Raises T, dramatically improves semen quality, reduces prolactin.'},
+      {name:'Gokshura (Tribulus)',latin:'Tribulus terrestris',dose:'500mg standardised extract (40% saponins) twice daily',benefit:'Increases LH, stimulates testosterone production. Improves sexual function, strength, athletic performance.'}
+    ],
+    formulation:'🏆 ANABOLIC STACK: Ashwagandha KSM-66 600mg (morning) + Shilajit 250mg (evening) — best evidence-backed combination · Musli Pak (1-2 tbsp with warm milk) · Chyawanprash (2 tsp morning) · Shukra Stambha Vati',
+    diet_do:['Eggs (6 daily — cholesterol → testosterone precursor)','Zinc: oysters, pumpkin seeds, beef','Vitamin D: sunlight 20 min + fatty fish','Pomegranate juice (raises T 24% in RCT)','Ghee (saturated fat needed for testosterone synthesis)','Dark chocolate 85%+','Avocado','Brazil nuts (2/day — selenium)','Onion & garlic (LH stimulators)','Ashwagandha warm milk at bedtime'],
+    diet_avoid:['Alcohol — reduces testosterone 23% per drinking episode, chronically devastating','Excess flaxseeds (very high amounts reduce T)','Soy protein isolate (phytoestrogen)','Processed junk food (trans fats block T)','BPA plastics (xenoestrogen)','Excessive cardio (raises cortisol → lowers T)','Crash low-calorie diet','Licorice (reduces T)'],
+    lifestyle:['Heavy compound lifting 4x/week — squats, deadlifts, bench press (proven T boosters)','Prioritize deep sleep 8h — 90% of testosterone produced during sleep','Cold showers (stimulate T)','Sunlight 20 min morning (Vitamin D = T precursor)','Intermittent fasting 16:8 (proven 180% LH pulse increase)','Manage stress relentlessly — cortisol is T\'s enemy','Maintain 12-18% body fat (optimal T zone)'],
+    yoga:'Sarvangasana · Halasana · Ardha Chakrasana · Kapalbhati (15 min) · Mula Bandha (root lock — Vajikarna practice) · Surya Namaskar 12 rounds · Ashwini Mudra',
+    source:'Charaka Samhita Vajikarna Adhyaya · Ashwagandha RCT (Biswajit Datta, 2019) · Shilajit RCT (Andrologia Journal 2010) · Mucuna pruriens Study (Fertility & Sterility 2008)'
+  },
+  ibs:{
+    name:'IBS / Gut Issues',sanskrit:'Grahani / Sangrahani Roga',icon:'🫃',dosha:'Vata + Pitta',tag:'digestive',color:'#78716C',
+    desc:'Grahani is the organ that grasps food (duodenum/small intestine). Weakened Agni (digestive fire) is root cause of IBS. Ayurveda strengthens Agni first, then repairs intestinal lining.',
+    herbs:[
+      {name:'Kutaj (Kurchi)',latin:'Holarrhena antidysenterica',dose:'250mg bark powder twice daily before meals',benefit:'Specific anti-diarrheal. Antimicrobial, reduces intestinal inflammation. Best herb for IBS-D.'},
+      {name:'Bilva (Bael)',latin:'Aegle marmelos',dose:'1-2 tsp unripe fruit powder with buttermilk twice daily',benefit:'Tannins bind gut. Antimicrobial. Reduces cramping. Excellent for both IBS-D and general gut health.'},
+      {name:'Ajwain (Carom Seeds)',latin:'Trachyspermum ammi',dose:'1 tsp with warm water after every meal',benefit:'Powerful carminative. Reduces gas, bloating, cramping. Thymol directly stimulates digestive enzymes.'},
+      {name:'Hingvastak Churna',latin:'Asafoetida + 7 herbs',dose:'1-2g with first bite of meals',benefit:'Complete digestive formula. Instantly reduces gas, bloating, cramping. Improves Agni from first dose.'}
+    ],
+    formulation:'Kutajghan Vati (2 tabs twice daily) · Bilwadi Churna (3g with buttermilk) · Jirakadyarishta (25ml after meals) · Chitrakadi Vati (2 tabs before meals)',
+    diet_do:['Moong dal khichdi (easiest to digest)','Rice gruel / Kanji (during flares)','Buttermilk (Takra — specific for Grahani)','Ginger tea (post meals)','Cumin water (jeera pani)','Ajwain water','Well-cooked soft vegetables','Pomegranate','Banana (ripe)','Curd/probiotics'],
+    diet_avoid:['Raw salads during flare','Beans & lentils (gas-forming)','Carbonated drinks','Dairy if lactose intolerant','Very spicy food','Alcohol','Coffee on empty stomach','Gluten (consider 6-week elimination trial)','Artificial sweeteners (sorbitol, mannitol)','Cruciferous raw'],
+    lifestyle:['Eat slowly — chew 32 times per bite','Fixed meal timings always','Sit quietly 10 min after eating (no phone)','Identify and log triggers','Walk 15 min after main meals','Warm water only (no cold water)'],
+    yoga:'Pavanamuktasana (wind-relieving — essential daily) · Balasana · Ardha Matsyendrasana · Nadi Shodhana · Bhramari (reduces gut-brain stress axis)',
+    source:'Charaka Samhita Grahani Chikitsa Chapter · CCRAS IBS Clinical Protocol'
+  },
+  acid_reflux:{
+    name:'GERD / Acid Reflux',sanskrit:'Amlapitta',icon:'🔥',dosha:'Pitta dominant',tag:'digestive',color:'#F97316',
+    desc:'Amlapitta = sour Pitta. Pitta becomes aggravated and flows upward (Urdhvaga). Modern GERD = Pitta aggravation in Annavaha Srotas. Cooling and downward-directing therapy is essential.',
+    herbs:[
+      {name:'Yashtimadhu (Licorice)',latin:'Glycyrrhiza glabra',dose:'500mg DGL licorice capsule before each meal',benefit:'Stimulates protective mucus secretion. Heals esophageal and stomach lining. As effective as antacids.'},
+      {name:'Amla (Indian Gooseberry)',latin:'Phyllanthus emblica',dose:'500mg powder with cold water twice daily',benefit:'Natural antacid. Neutralises excess acid. Rich in Vitamin C. Heals esophageal lining gently.'},
+      {name:'Shatavari',latin:'Asparagus racemosus',dose:'500mg powder with cold milk twice daily',benefit:'Cooling demulcent. Reduces Pitta, coats and soothes irritated esophagus and stomach mucosa.'},
+      {name:'Avipattikar Churna',latin:'11-herb compound formulation',dose:'3g with cold water before main meals',benefit:'Premier Ayurvedic formula specific for Amlapitta. Neutralises acid, relieves burning sensation instantly.'}
+    ],
+    formulation:'Avipattikar Churna (3g with cold water before meals) · Shatavari Kalpa with cold milk · Kamdudha Rasa (2 tabs twice daily) · Sukumara Ghrita',
+    diet_do:['Cold milk (alkaline, immediate relief)','Coconut water','Banana','Cucumber','Fennel seeds after every meal','Cardamom tea','Aloe vera juice (30ml on empty stomach)','Watermelon','Oatmeal (breakfast)','Sweet potato'],
+    diet_avoid:['Spicy food completely','Citrus fruits (acid-forming)','Tomatoes and tomato products','Onion & garlic','Coffee & black tea','Alcohol','Chocolate','Mint (relaxes LES valve)','Carbonated drinks','Fried fatty foods','Eating within 3h of bedtime'],
+    lifestyle:['Eat very small frequent meals (5-6 instead of 3)','Never lie down within 2h of eating','Elevate head of bed 6 inches','Wear loose clothing around waist','Quit smoking (weakens LES)','Maintain healthy weight'],
+    yoga:'Vajrasana (only pose to do AFTER meals — proven effective) · Ustrasana · Marjaryasana-Bitilasana · Diaphragmatic deep breathing — NO inversions at all',
+    source:'Charaka Samhita Amlapitta Chikitsa · CCRAS Clinical Guidelines · Yashtimadhu meta-analysis 2021'
+  },
+  anemia:{
+    name:'Iron Deficiency Anemia',sanskrit:'Pandu Roga',icon:'💊',dosha:'Pitta + Vata',tag:'blood',color:'#EF4444',
+    desc:'Pandu = yellowish-pale complexion. Rakta Dhatu (blood tissue) depletion. Impaired Ranjaka Pitta (coloring factor in liver) fails to produce healthy red blood cells. Common in women and athletes.',
+    herbs:[
+      {name:'Punarnava',latin:'Boerhavia diffusa',dose:'500mg twice daily with water',benefit:'Increases RBC production, haemoglobin synthesis, improves liver and spleen function simultaneously.'},
+      {name:'Draksha (Raisins)',latin:'Vitis vinifera',dose:'Soak 15-20 black raisins overnight, eat with soaking water every morning',benefit:'Iron-rich. Vitamin C in soaking water dramatically increases iron absorption. Ancient Ayurvedic iron tonic.'},
+      {name:'Amla',latin:'Phyllanthus emblica',dose:'20ml fresh juice daily with iron-rich meals',benefit:'Vitamin C (highest in plant world) dramatically increases non-haeme iron absorption up to 3x.'},
+      {name:'Lauh Bhasma',latin:'Calcined iron — Ayurvedic nano-iron',dose:'125-250mg twice daily with honey (Baidyanath brand, after consultation)',benefit:'Nano-crystalline iron particles with highest bioavailability. Does NOT cause constipation like ferrous sulphate.'}
+    ],
+    formulation:'Punarnava Mandur (2 tabs twice daily — best Ayurvedic iron supplement) · Draksharishtam (25ml after meals) · Lohasava (15ml after meals with equal water)',
+    diet_do:['Pomegranate daily (iron + folate)','Dates & black raisins','Black sesame (til) — 2 tbsp','Jaggery (iron-rich, replace sugar)','Drumstick/Moringa leaves (highest plant iron)','Spinach + lemon together','Beet root juice','Amla juice with meals','Cook in iron kadhai (adds iron)'],
+    diet_avoid:['Tea & coffee with meals (tannins block iron absorption)','Calcium supplements taken with iron','Dairy during iron-rich meals','Antacids (reduce iron absorption)','Alcohol (impairs absorption)','Excess fibre with iron sources'],
+    lifestyle:['Always pair iron foods with Vitamin C','Cook in iron kadhai daily (traditional)','Avoid tea for 1 hour before and after meals','Treat menstrual blood loss in females (root cause)','Test ferritin + haemoglobin every 3 months'],
+    yoga:'Sarvangasana · Halasana · Viparita Karani · Paschimottanasana · Nadi Shodhana · Bhramari (increases oxygenation and circulation)',
+    source:'CCRAS Pandu Roga Protocol · Charaka Samhita Panduroga Chikitsa Chapter'
+  },
+  vitamin_d:{
+    name:'Vitamin D Deficiency',sanskrit:'Asthivaha Sroto Dushti',icon:'☀️',dosha:'Vata dominant',tag:'blood',color:'#EAB308',
+    desc:'75% of Indians are Vitamin D deficient — epidemic level. In Ayurveda, impairs Asthi Dhatu (bone) and Majja (marrow). Impaired Agni fails to metabolize fat-soluble vitamins.',
+    herbs:[
+      {name:'Ashwagandha',latin:'Withania somnifera',dose:'500mg extract twice daily',benefit:'Increases Vitamin D receptor (VDR) sensitivity. Improves cellular uptake of available Vitamin D.'},
+      {name:'Shilajit',latin:'Asphaltum punjabianum',dose:'250mg twice daily — ALWAYS TAKE WITH VIT D SUPPLEMENT',benefit:'Fulvic acid acts as carrier molecule. Dramatically increases Vitamin D bioavailability and utilisation.'},
+      {name:'Trikatu Churna',latin:'Ginger + Piper longum + Black pepper',dose:'1g with warm water before meals twice daily',benefit:'Kindles Agni strongly. Improves absorption of all fat-soluble vitamins (D, K2, A, E) in intestine.'}
+    ],
+    formulation:'Shilajit + Vitamin D3 + K2 (powerful synergy — always take together) · Lakshadi Guggul (bone support) · Asthi Poshak Vati',
+    diet_do:['Sunlight 20-30 min daily between 10am-2pm (40% body exposed)','Fatty fish: salmon, mackerel, sardines','Egg yolks (3-4 daily)','UV-exposed mushrooms','Fortified milk','Cod liver oil (1 tsp)','Ghee (fat helps absorption)'],
+    diet_avoid:['Processed foods (deplete all vitamins)','High phytic acid without soaking (blocks mineral absorption)','Alcohol (impairs liver Vit D conversion)','Excess fibre at same time (interferes)','Caffeine (reduces Vit D receptor expression)'],
+    lifestyle:['Morning sunlight — non-negotiable daily ritual','Supplement D3 + K2 together (5000-10000 IU based on deficiency)','Test 25-OH Vitamin D every 6 months','Weight-bearing exercise builds bone density alongside D','Magnesium supplement (needed to activate Vitamin D)'],
+    yoga:'Practice OUTDOORS in morning sun. Standing poses: Trikonasana · Virabhadrasana I & II · Surya Namaskar (Sun Salutation — literally made for this)',
+    source:'Ministry of AYUSH / ICMR Vitamin D Guidelines 2023 · Shilajit-Vit D Research (Journal of Phytomedicine)'
+  },
+  osteoporosis:{
+    name:'Osteoporosis / Bone Health',sanskrit:'Asthi Kshaya',icon:'🦴',dosha:'Vata dominant',tag:'blood',color:'#A8A29E',
+    desc:'Asthi Dhatu (bone tissue) depletion. Vata dries and hollows out bones over decades. Prevention and reversal requires Asthi Vardhak (bone building) herbs, Vata pacification and weight-bearing exercise.',
+    herbs:[
+      {name:'Hadjod (Cissus)',latin:'Cissus quadrangularis',dose:'500mg extract twice daily with meals',benefit:'RCT PROVEN: increases bone mineral density 28% in 8 weeks. Anabolic bone-building effect. Fastest-acting bone herb.'},
+      {name:'Laksha (Lac)',latin:'Laccifer lacca',dose:'500mg powder twice daily with sesame milk',benefit:'Premier bone-healing herb. Used for fractures for 3000 years. Heals and rebuilds bone matrix.'},
+      {name:'Shilajit',latin:'Asphaltum punjabianum',dose:'250mg twice daily',benefit:'Fulvic acid + 85 trace minerals. Stimulates osteoblasts (bone-building cells). Increases bone density measurably.'},
+      {name:'White Sesame (Safed Til)',latin:'Sesamum indicum',dose:'2 tbsp raw white sesame seeds daily',benefit:'Highest calcium content of any seed (88mg/tbsp). Also zinc, magnesium, phosphorus — complete bone matrix minerals.'}
+    ],
+    formulation:'Lakshadi Guggul (2 tabs twice daily — premier bone formula) · Praval Pishti (bone calcium — 500mg twice daily) · Praval Panchamrit Ras · Asthi Shrinkhala Vati',
+    diet_do:['Sesame seeds (til) daily — must','Ragi/Finger millet (300mg calcium/100g — highest plant source)','Dairy products','Moringa leaves','Almonds','Sunlight for Vitamin D','Dark green leafy vegetables','Bone broth (non-veg)'],
+    diet_avoid:['Excess salt (directly leaches calcium from bones)','Carbonated drinks (phosphoric acid weakens bones significantly)','Alcohol','Smoking (reduces bone density 10%)','Excess coffee','Spinach and beets in excess (oxalate blocks calcium absorption)'],
+    lifestyle:['Weight-bearing exercise EVERY SINGLE DAY — most potent bone builder known','No smoking — ever','Minimize alcohol','Yoga for balance — prevents falls (fractures more dangerous than density loss)','Calcium + Vit D3 + Vit K2 supplementation always together'],
+    yoga:'ALL WEIGHT-BEARING standing poses build bone: Trikonasana · Virabhadrasana I & II · Vrksasana (balance = fall prevention) · Setu Bandhasana · Do NOT do seated meditation only',
+    source:'CCRAS Osteoporosis Protocol · Cissus quadrangularis RCT (Journal of Ethnopharmacology 2011)'
+  },
+  skin_acne:{
+    name:'Acne / Skin Issues',sanskrit:'Yuvanpidika / Kustha',icon:'✨',dosha:'Pitta + Kapha',tag:'skin',color:'#F472B6',
+    desc:'Pitta vitiates Rakta (blood) causing inflammation in hair follicles. Kapha causes sebum overproduction. Skin issues are always external manifestation of internal blood toxicity in Ayurveda.',
+    herbs:[
+      {name:'Manjistha (Indian Madder)',latin:'Rubia cordifolia',dose:'500mg powder twice daily',benefit:'Most powerful blood purifier in Ayurveda. Removes Pitta from Rakta completely. Clears skin from inside.'},
+      {name:'Neem',latin:'Azadirachta indica',dose:'400mg extract twice daily + neem face wash externally',benefit:'Antibacterial against Cutibacterium acnes. Reduces blood toxicity. Neem steam for face (5 min weekly).'},
+      {name:'Turmeric (Haridra)',latin:'Curcuma longa',dose:'Turmeric milk at night + turmeric-honey face mask externally',benefit:'Curcumin anti-inflammatory, antibacterial. Golden milk reduces Pitta. Mask reduces acne scars.'},
+      {name:'Aloe Vera (Kumari)',latin:'Aloe barbadensis',dose:'30ml aloe vera juice daily + pure gel externally on acne',benefit:'Reduces skin inflammation, balances sebum, fades acne marks and scars. Internal + external.'}
+    ],
+    formulation:'Mahamanjisthadi Kwath (25ml twice daily) · Gandhak Rasayan (2 tabs twice daily) · Arogyavardhini Vati (1 tab twice daily) · Kaishor Guggul (blood purifier)',
+    diet_do:['Anti-inflammatory: turmeric, ginger, green tea','Zinc foods: pumpkin seeds, hemp seeds','Omega-3: flaxseeds, walnuts, mackerel','Green tea (EGCG reduces sebum)','Antioxidant berries','Cucumber & carrot','Beta-carotene: sweet potato, carrot','Water 3+ litres daily'],
+    diet_avoid:['Dairy — especially skimmed milk (IGF-1 triggers sebum)','High GI foods (sugar, white bread — insulin spike → sebum)','Whey protein (if supplementing — causes acne)','Fried & oily foods','Alcohol','Very spicy food','Processed packaged foods'],
+    lifestyle:['Wash face twice daily maximum (over-washing increases sebum)','Non-comedogenic SPF sunscreen daily','Change pillowcase twice weekly','Never touch face with unwashed hands','Manage stress (cortisol → androgen → sebum → acne)','Exercise daily'],
+    yoga:'Pranayama is the most powerful: Sheetali (cooling breath) · Sitkari · Anulom-Vilom · Sarvangasana (improves facial circulation and lymph drainage)',
+    source:'Charaka Samhita Kustha Chapter · CCRAS Skin Protocol · Manjistha Research (Journal of Dermatology 2019)'
+  },
+  arthritis:{
+    name:'Joint Pain / Arthritis',sanskrit:'Sandhivata (OA) / Amavata (RA)',icon:'🦵',dosha:'Vata dominant',tag:'joints',color:'#6366F1',
+    desc:'Sandhivata (osteoarthritis) = Vata dehydrates joint synovial fluid. Amavata (rheumatoid) = Ama (toxins) + Vata deposits in joints. Treatment protocol differs — OA needs lubrication, RA needs Ama removal first.',
+    herbs:[
+      {name:'Shallaki (Boswellia)',latin:'Boswellia serrata',dose:'400mg AKBA standardised extract 3x daily with meals',benefit:'AKBA inhibits 5-LOX enzyme — more effective than NSAIDs for joint pain with ZERO gut damage. Gold standard for joints.'},
+      {name:'Nirgundi (Five-leaved Chaste)',latin:'Vitex negundo',dose:'500mg extract twice daily + Nirgundi oil externally',benefit:'Potent analgesic and anti-inflammatory. Apply warm oil on joint for 20 min — deep tissue penetration.'},
+      {name:'Castor Oil (Eranda)',latin:'Ricinus communis',dose:'1 tsp castor oil in warm milk or ginger tea at bedtime',benefit:'Specific Vata-pacifying oil. Lubricates joints from within. Traditional Ayurvedic joint cure — zero side effects.'},
+      {name:'Guggul',latin:'Commiphora wightii',dose:'500mg twice daily with warm water',benefit:'Anti-inflammatory. Reduces CRP, ESR. Guggulsterone inhibits NF-kB — same target as anti-rheumatic drugs.'}
+    ],
+    formulation:'Yogaraj Guggul (2 tabs twice daily — Vata/OA) · Mahayogaraj Guggul (for RA/Amavata) · Shallaki 400mg capsules · Mahanarayana Taila (warm oil massage daily before bath)',
+    diet_do:['Omega-3: salmon, flaxseeds, walnuts (anti-inflammatory)','Turmeric + black pepper daily','Ginger tea (2 cups)','Tart cherry juice (proven reduces joint inflammation)','Castor oil internally at bedtime','Warm soups and stews','Ghee (lubricating)','Sesame seeds'],
+    diet_avoid:['Nightshades: tomato, potato, bell pepper (worsen inflammation)','Purine-rich (if gout overlap)','Dairy (for RA)','Refined sugar','Trans fats','Alcohol','Cold and raw foods (worsen Vata and joint stiffness)','Excess sour foods'],
+    lifestyle:['Warm sesame oil self-massage (Abhyanga) daily before bath — non-negotiable','Gentle movement daily: walking, swimming (no impact)','Avoid cold exposure — wear warm clothing','Warm compress or heat on joints every evening','Lose weight — every 1kg lost = 4kg less pressure on knee joints'],
+    yoga:'Gentle Vata-pacifying: Tadasana · Virasana · Setu Bandha · Bhujangasana — ALWAYS warm up 10 min before yoga — NO joint cracking — NO deep forced flexion during flares',
+    source:'Sushruta Samhita Vatavyadhi Chapter · Boswellia AKBA Clinical Trial (Phytomedicine Journal 2018)'
+  },
+  anxiety:{
+    name:'Anxiety / Stress / Poor Sleep',sanskrit:'Chittodvega / Nidranasha',icon:'🧠',dosha:'Vata + Pitta',tag:'mind',color:'#8B5CF6',
+    desc:'Prana Vata (nervous energy) becomes erratic causing anxiety. Sadhaka Pitta (emotional processing) gets disturbed causing irritability. Ayurveda treats with Medhya Rasayanas (brain tonics) and Vata pacification.',
+    herbs:[
+      {name:'Ashwagandha KSM-66',latin:'Withania somnifera',dose:'600mg at bedtime (most important time)',benefit:'Reduces cortisol 27.9%, anxiety 44%, stress 64% in 12-week RCT. Improves sleep quality, duration and onset.'},
+      {name:'Brahmi (Bacopa)',latin:'Bacopa monnieri',dose:'300mg extract (45% Bacosides) twice daily with meals',benefit:'Reduces anxiety via GABAergic and serotonin pathways. Improves memory and focus. 12-week RCT proven.'},
+      {name:'Jatamansi',latin:'Nardostachys jatamansi',dose:'500mg powder with warm milk at bedtime',benefit:'Sedative, anxiolytic effect via GABA-A receptors. Improves deep sleep stages. Reduces restlessness.'},
+      {name:'Shankhapushpi',latin:'Convolvulus pluricaulis',dose:'5g powder with warm milk twice daily',benefit:'Classic Medhya Rasayana. Calms Prana Vata. Improves cognitive function, memory and sleep patterns.'}
+    ],
+    formulation:'Ashwagandha + Brahmi Stack (most evidence-backed) · Manasamitra Vatakam (2 tabs twice daily) · Saraswatarishta (25ml after meals) · Brahmi Ghrita (1 tsp warm milk at bedtime)',
+    diet_do:['Ashwagandha warm milk + nutmeg + honey at bedtime (potent sleep stack)','Omega-3 rich: fish, flax, walnuts (anti-inflammatory for brain)','Magnesium-rich: dark chocolate, almonds, pumpkin seeds (natural relaxant)','Fermented foods (gut-brain axis)','Chamomile tea before bed','Saffron milk (proven antidepressant)'],
+    diet_avoid:['Caffeine after 12 noon (half-life 8 hours)','Alcohol (destroys REM sleep)','Energy drinks','Nicotine (anxiety amplifier)','Ultra-processed foods','Blood sugar spike foods (swings = anxiety)','Skipping meals (blood sugar crash = cortisol)'],
+    lifestyle:['Fixed sleep schedule: bed 10:30pm, wake 6am (Vata pacifying schedule)','Digital detox 1 hour before bed (blue light suppresses melatonin)','Morning sunlight 15 min within 30 min of waking','Social connection — loneliness amplifies anxiety 3x','Journaling 10 min before bed','Spend time in nature (proven anxiolytic)'],
+    yoga:'Yoga Nidra 30-40 min (40 min = 4 hours sleep quality) · Shavasana · Anulom-Vilom (15 min) · Bhramari (bee breath) · Nadi Shodhana · Balasana · Restorative yoga poses daily',
+    source:'Charaka Samhita Manas Roga Chapter · Ashwagandha Anxiety RCT (Medicine 2019) · Brahmi Study (Psychopharmacology Journal)'
+  }
+};
+
+/* Dosha tag map for filtering */
+const AYUR_DOSHA_MAP = {
+  diabetic:'kapha', insulin_resistance:'kapha', fatty_liver:'pitta', cholesterol:'kapha',
+  uric_acid:'vata', hypertension:'pitta', pcos:'kapha', thyroid:'kapha',
+  low_t:'anabolic', ibs:'vata', acid_reflux:'pitta', anemia:'pitta',
+  vitamin_d:'vata', osteoporosis:'vata', skin_acne:'pitta', arthritis:'vata', anxiety:'vata'
+};
+
+let ayurSelected = new Set();
+let ayurDietSelected = new Set(); // pre-selected from diet plan
+
+function initAyurvedaHub() {
+  const grid = document.getElementById('ayur-disease-grid');
+  if (!grid || grid.childElementCount > 0) return;
+  const order = ['diabetic','insulin_resistance','hypertension','cholesterol','fatty_liver','uric_acid','pcos','thyroid','low_t','ibs','acid_reflux','anemia','vitamin_d','osteoporosis','skin_acne','arthritis','anxiety'];
+  order.forEach(key => {
+    const d = AYUR_DB[key];
+    if (!d) return;
+    const isAnabolic = key === 'low_t';
+    const card = document.createElement('div');
+    card.className = 'ayur-disease-card' + (isAnabolic ? ' anabolic-card' : '');
+    card.dataset.key = key;
+    card.dataset.dosha = AYUR_DOSHA_MAP[key] || 'all';
+    card.innerHTML = `<span class="ayur-dc-icon">${d.icon}</span><div class="ayur-dc-name">${d.name}</div><div class="ayur-dc-dosha">${d.dosha}</div>`;
+    card.onclick = () => toggleAyurDisease(key, card);
+    grid.appendChild(card);
+  });
+  // Pre-select from diet plan if any
+  if (ayurDietSelected.size > 0) {
+    ayurDietSelected.forEach(key => {
+      const c = grid.querySelector('[data-key="'+key+'"]');
+      if (c) { c.classList.add('selected'); ayurSelected.add(key); }
+    });
+    updateAyurPanel();
+  }
+}
+
+function toggleAyurDisease(key, card) {
+  if (ayurSelected.has(key)) {
+    ayurSelected.delete(key);
+    card.classList.remove('selected');
+  } else {
+    ayurSelected.add(key);
+    card.classList.add('selected');
+  }
+  updateAyurPanel();
+}
+
+function updateAyurPanel() {
+  const selCount = document.getElementById('ayur-sel-count');
+  const actions = document.getElementById('ayur-select-actions');
+  const panel = document.getElementById('ayur-remedy-panel');
+  const empty = document.getElementById('ayur-empty-state');
+  const cards = document.getElementById('ayur-remedy-cards');
+  if (selCount) selCount.textContent = ayurSelected.size;
+  if (actions) actions.style.display = ayurSelected.size > 0 ? 'flex' : 'none';
+  if (ayurSelected.size === 0) {
+    if (panel) panel.style.display = 'none';
+    if (empty) empty.style.display = 'block';
+    return;
+  }
+  if (panel) panel.style.display = 'block';
+  if (empty) empty.style.display = 'none';
+  if (!cards) return;
+  cards.innerHTML = '';
+  ayurSelected.forEach(key => {
+    const d = AYUR_DB[key];
+    if (!d) return;
+    const isAnabolic = d.tag === 'anabolic';
+    const card = document.createElement('div');
+    card.className = 'ayur-remedy-card' + (isAnabolic ? ' anabolic-remedy' : '');
+    card.id = 'ayur-card-' + key;
+    const hdrClass = isAnabolic ? 'ayur-card-header anabolic-hdr' : 'ayur-card-header';
+    const formClass = isAnabolic ? 'ayur-formulation anabolic-form' : 'ayur-formulation';
+    const formLblClass = isAnabolic ? 'ayur-form-label anabolic-fl' : 'ayur-form-label';
+    const herbTitleClass = isAnabolic ? 'ayur-herb-section-title anabolic-t' : 'ayur-herb-section-title';
+    const herbCardClass = isAnabolic ? 'ayur-herb-card anabolic-herb' : 'ayur-herb-card';
+    const herbNameClass = isAnabolic ? 'ayur-herb-name anabolic-hn' : 'ayur-herb-name';
+    const herbDoseClass = isAnabolic ? 'ayur-herb-dose anabolic-dose' : 'ayur-herb-dose';
+    const herbsHTML = d.herbs.map(h => `
+      <div class="${herbCardClass}">
+        <div class="${herbNameClass}">${h.name} <span style="color:#64748B;font-weight:400;font-size:10px;">— <em>${h.latin}</em></span></div>
+        <div class="${herbDoseClass}">💊 ${h.dose}</div>
+        <div class="ayur-herb-benefit">${h.benefit}</div>
+      </div>`).join('');
+    const dietDoHTML = d.diet_do.slice(0,8).map(i => `<li>${i}</li>`).join('');
+    const dietAvoidHTML = d.diet_avoid.slice(0,8).map(i => `<li>${i}</li>`).join('');
+    const lifestyleHTML = d.lifestyle.map(i => `• ${i}`).join('<br>');
+    card.innerHTML = `
+      <div class="${hdrClass}" onclick="toggleAyurCard('${key}')">
+        <div class="ayur-card-icon">${d.icon}</div>
+        <div class="ayur-card-title-wrap">
+          <div class="ayur-card-name">${d.name}</div>
+          <div class="ayur-card-sanskrit">${d.sanskrit}</div>
+          <div class="ayur-card-dosha">${d.dosha}</div>
+        </div>
+        <div class="ayur-card-toggle" id="ayur-toggle-${key}">▾</div>
+      </div>
+      <div class="ayur-card-desc">${d.desc}</div>
+      <div class="ayur-card-body" id="ayur-body-${key}">
+        <div class="${herbTitleClass}">🌿 KEY HERBS & DOSAGE</div>
+        <div class="ayur-herb-list">${herbsHTML}</div>
+        <div class="${formClass}">
+          <div class="${formLblClass}">⚗️ CLASSICAL FORMULATIONS</div>
+          ${d.formulation}
+        </div>
+        <div class="ayur-dl-grid">
+          <div class="ayur-dl-card do">
+            <div class="ayur-dl-title">✅ EAT MORE</div>
+            <ul class="ayur-dl-list">${dietDoHTML}</ul>
+          </div>
+          <div class="ayur-dl-card avoid">
+            <div class="ayur-dl-title">🚫 AVOID</div>
+            <ul class="ayur-dl-list">${dietAvoidHTML}</ul>
+          </div>
+        </div>
+        <div class="ayur-life-yoga">
+          <div class="ayur-life-card">
+            <div class="ayur-lc-title">🏃 LIFESTYLE</div>
+            <div class="ayur-life-list">${lifestyleHTML}</div>
+          </div>
+          <div class="ayur-yoga-card">
+            <div class="ayur-yc-title">🧘 YOGA & PRANAYAMA</div>
+            <div class="ayur-yoga-text">${d.yoga}</div>
+          </div>
+        </div>
+        <div class="ayur-source">📜 Source: ${d.source}</div>
+      </div>`;
+    cards.appendChild(card);
+  });
+}
+
+function toggleAyurCard(key) {
+  const body = document.getElementById('ayur-body-' + key);
+  const tog = document.getElementById('ayur-toggle-' + key);
+  if (!body) return;
+  const isHidden = body.classList.contains('hidden');
+  body.classList.toggle('hidden', !isHidden);
+  if (tog) tog.style.transform = isHidden ? 'rotate(0deg)' : 'rotate(180deg)';
+}
+
+function scrollToAyurRemedies() {
+  const panel = document.getElementById('ayur-remedy-panel');
+  if (panel) panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function clearAyurSelection() {
+  ayurSelected.clear();
+  document.querySelectorAll('.ayur-disease-card.selected').forEach(c => c.classList.remove('selected'));
+  updateAyurPanel();
+}
+
+function filterAyurDosha(dosha, btn) {
+  document.querySelectorAll('.ayur-filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.ayur-disease-card').forEach(c => {
+    const match = dosha === 'all' || c.dataset.dosha === dosha;
+    c.dataset.hidden = match ? 'false' : 'true';
+    c.style.display = match ? '' : 'none';
+  });
+}
+
+function quickPickAyur(key) {
+  const card = document.querySelector('.ayur-disease-card[data-key="'+key+'"]');
+  if (card && !card.classList.contains('selected')) {
+    card.classList.add('selected');
+    ayurSelected.add(key);
+    updateAyurPanel();
+    scrollToAyurRemedies();
+  }
+}
+
+/* Diet plan integration — show Ayurveda button when conditions selected */
+function syncAyurDietBtn() {
+  const checked = document.querySelectorAll('.hchk input:checked');
+  const btn = document.getElementById('ayur-dietplan-trigger');
+  if (!btn) return;
+  if (checked.length > 0) {
+    btn.style.display = 'block';
+    btn.textContent = '🌿 View Ayurvedic Remedies for ' + checked.length + ' Selected Condition' + (checked.length > 1 ? 's' : '') + ' →';
+  } else {
+    btn.style.display = 'none';
+  }
+}
+
+function openAyurvedaFromDiet() {
+  const checked = document.querySelectorAll('.hchk input:checked');
+  ayurDietSelected.clear();
+  checked.forEach(inp => {
+    const key = inp.value;
+    if (AYUR_DB[key]) ayurDietSelected.add(key);
+  });
+  // Navigate to Ayurveda Hub
+  switchScreen('ayurveda', document.querySelector('[data-screen=ayurveda]'));
+  // Pre-select those conditions
+  setTimeout(() => {
+    ayurSelected = new Set(ayurDietSelected);
+    document.querySelectorAll('.ayur-disease-card').forEach(c => {
+      if (ayurSelected.has(c.dataset.key)) c.classList.add('selected');
+      else c.classList.remove('selected');
+    });
+    updateAyurPanel();
+    scrollToAyurRemedies();
+  }, 300);
+}
+
+/* Hook into hchk change events for diet plan button */
+document.addEventListener('change', function(e) {
+  if (e.target && e.target.closest && e.target.closest('.hchk')) syncAyurDietBtn();
+});
+
+/* Hook into switchScreen to init Ayurveda Hub */
+(function() {
+  var _orig = window.switchScreen;
+  if (_orig) {
+    window.switchScreen = function(name, navEl) {
+      _orig(name, navEl);
+      if (name === 'ayurveda') setTimeout(initAyurvedaHub, 100);
+    };
+  }
+})();
 </script>
 
 <!-- ── WHATSAPP FLOATING BUTTON ──────────────────────────────────────────── -->
@@ -15797,7 +16307,481 @@ label:has(#inclSalad:checked) {
   color: #fff !important;
   box-shadow: 0 4px 14px rgba(124,58,237,0.3) !important;
 }
+
+/* ═══════════════════════════════════════════════════════════
+   ANABOLIC AYURVEDA HUB — CSS
+═══════════════════════════════════════════════════════════ */
+
+/* Hero */
+.ayur-hero {
+  position: relative;
+  background: linear-gradient(135deg, #064E3B 0%, #065F46 40%, #047857 70%, #059669 100%);
+  border-radius: 20px;
+  padding: 36px 24px 28px;
+  margin-bottom: 24px;
+  overflow: hidden;
+  text-align: center;
+}
+.ayur-leaf-bg {
+  position: absolute;
+  font-size: 180px;
+  opacity: 0.06;
+  top: -20px;
+  right: -20px;
+  pointer-events: none;
+  line-height: 1;
+}
+.ayur-hero-content { position: relative; z-index: 1; }
+.ayur-shloka {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 16px;
+  font-style: italic;
+  color: rgba(255,255,255,0.95);
+  letter-spacing: 0.3px;
+  line-height: 1.5;
+  margin-bottom: 8px;
+}
+.ayur-shloka-trans {
+  font-size: 12px;
+  color: rgba(255,255,255,0.65);
+  letter-spacing: 1px;
+  margin-bottom: 16px;
+}
+.ayur-hero-tags { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
+.ayur-hero-tag {
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 20px;
+  padding: 4px 12px;
+  font-size: 10px;
+  color: rgba(255,255,255,0.85);
+  letter-spacing: 0.5px;
+}
+
+/* Selector Section */
+.ayur-selector-section {
+  background: #fff;
+  border: 1px solid rgba(5,150,105,0.15);
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 24px;
+}
+.ayur-section-hdr { margin-bottom: 14px; }
+.ayur-section-title { font-family:'Bebas Neue',sans-serif; font-size: 20px; letter-spacing: 2px; color: #064E3B; }
+.ayur-section-sub { font-size: 12px; color: #64748B; margin-top: 2px; }
+
+/* Dosha Filter */
+.ayur-filter-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+.ayur-filter-btn {
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 1.5px solid rgba(5,150,105,0.2);
+  background: #fff;
+  color: #374151;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.ayur-filter-btn:hover, .ayur-filter-btn.active {
+  background: #059669;
+  border-color: #059669;
+  color: #fff;
+}
+.ayur-filter-btn.anabolic.active { background: linear-gradient(135deg,#7C3AED,#6D28D9); border-color: #7C3AED; }
+.ayur-filter-btn.anabolic:hover { background: linear-gradient(135deg,#7C3AED,#6D28D9); border-color: #7C3AED; color: #fff; }
+
+/* Disease Grid */
+.ayur-disease-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.ayur-disease-card {
+  background: #fff;
+  border: 1.5px solid rgba(5,150,105,0.18);
+  border-radius: 12px;
+  padding: 12px 10px;
+  cursor: pointer;
+  transition: all 0.22s cubic-bezier(0.4,0,0.2,1);
+  text-align: center;
+  user-select: none;
+  position: relative;
+}
+.ayur-disease-card:hover {
+  border-color: #059669;
+  background: rgba(5,150,105,0.05);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(5,150,105,0.15);
+}
+.ayur-disease-card.selected {
+  background: linear-gradient(135deg,#059669,#047857);
+  border-color: #059669;
+  color: #fff;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(5,150,105,0.35);
+}
+.ayur-disease-card.selected .ayur-dc-name,
+.ayur-disease-card.selected .ayur-dc-dosha { color: #fff; }
+.ayur-disease-card.anabolic-card { border-color: rgba(124,58,237,0.25); }
+.ayur-disease-card.anabolic-card:hover { border-color: #7C3AED; background: rgba(124,58,237,0.05); }
+.ayur-disease-card.anabolic-card.selected { background: linear-gradient(135deg,#7C3AED,#6D28D9); border-color: #7C3AED; box-shadow: 0 6px 20px rgba(124,58,237,0.35); }
+.ayur-dc-icon { font-size: 28px; margin-bottom: 6px; display: block; }
+.ayur-dc-name { font-size: 11px; font-weight: 700; color: #0F0A1A; line-height: 1.3; }
+.ayur-dc-dosha { font-size: 9px; color: #64748B; margin-top: 3px; letter-spacing: 0.5px; }
+.ayur-disease-card.selected::after {
+  content: '✓';
+  position: absolute;
+  top: 5px; right: 7px;
+  font-size: 10px;
+  font-weight: 900;
+  color: rgba(255,255,255,0.8);
+}
+.ayur-disease-card[data-hidden="true"] { display: none; }
+
+/* Select Actions Bar */
+.ayur-select-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+.ayur-view-btn {
+  flex: 1;
+  background: linear-gradient(135deg,#059669,#047857);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 12px 20px;
+  font-family: 'Bebas Neue',sans-serif;
+  font-size: 15px;
+  letter-spacing: 1.5px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+.ayur-view-btn:hover { opacity: 0.9; }
+.ayur-clear-btn {
+  background: none;
+  border: 1.5px solid rgba(5,150,105,0.3);
+  border-radius: 10px;
+  padding: 12px 14px;
+  font-size: 12px;
+  color: #64748B;
+  cursor: pointer;
+}
+
+/* Remedy Panel */
+.ayur-remedy-panel {
+  margin-bottom: 24px;
+}
+.ayur-panel-header {
+  text-align: center;
+  margin-bottom: 20px;
+  padding: 16px;
+  background: linear-gradient(135deg,rgba(5,150,105,0.08),rgba(4,120,87,0.04));
+  border-radius: 12px;
+  border: 1px solid rgba(5,150,105,0.15);
+}
+.ayur-panel-title { font-family:'Bebas Neue',sans-serif; font-size: 22px; letter-spacing: 2px; color: #064E3B; }
+.ayur-panel-sub { font-size: 11px; color: #64748B; margin-top: 4px; letter-spacing: 0.5px; }
+.ayur-remedy-cards { display: flex; flex-direction: column; gap: 16px; }
+
+/* Individual Remedy Card */
+.ayur-remedy-card {
+  background: #fff;
+  border: 1px solid rgba(5,150,105,0.15);
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(5,150,105,0.06);
+}
+.ayur-remedy-card.anabolic-remedy { border-color: rgba(124,58,237,0.2); box-shadow: 0 2px 12px rgba(124,58,237,0.08); }
+
+.ayur-card-header {
+  padding: 18px 20px 14px;
+  background: linear-gradient(135deg,#064E3B,#065F46);
+  cursor: pointer;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  position: relative;
+}
+.ayur-card-header.anabolic-hdr { background: linear-gradient(135deg,#4C1D95,#5B21B6); }
+.ayur-card-icon { font-size: 36px; flex-shrink: 0; line-height: 1; }
+.ayur-card-title-wrap { flex: 1; }
+.ayur-card-name { font-family:'Bebas Neue',sans-serif; font-size: 20px; letter-spacing: 1.5px; color: #fff; line-height: 1.2; }
+.ayur-card-sanskrit { font-size: 12px; font-style: italic; color: rgba(255,255,255,0.65); margin-top: 2px; }
+.ayur-card-dosha {
+  display: inline-block;
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 20px;
+  padding: 2px 10px;
+  font-size: 9px;
+  color: rgba(255,255,255,0.85);
+  letter-spacing: 0.5px;
+  margin-top: 5px;
+}
+.ayur-card-toggle {
+  color: rgba(255,255,255,0.7);
+  font-size: 18px;
+  flex-shrink: 0;
+  transition: transform 0.3s;
+}
+.ayur-card.open .ayur-card-toggle { transform: rotate(180deg); }
+.ayur-card-desc {
+  padding: 0 20px 14px;
+  font-size: 12px;
+  color: #374151;
+  line-height: 1.6;
+  border-bottom: 1px solid rgba(5,150,105,0.08);
+  background: rgba(5,150,105,0.02);
+}
+
+.ayur-card-body { padding: 16px 20px; }
+.ayur-card-body.hidden { display: none; }
+
+/* Herbs */
+.ayur-herb-section-title {
+  font-family:'Bebas Neue',sans-serif;
+  font-size: 14px;
+  letter-spacing: 2px;
+  color: #064E3B;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.ayur-herb-section-title.anabolic-t { color: #5B21B6; }
+.ayur-herb-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
+.ayur-herb-card {
+  background: linear-gradient(135deg,rgba(5,150,105,0.04),rgba(4,120,87,0.02));
+  border: 1px solid rgba(5,150,105,0.12);
+  border-radius: 10px;
+  padding: 10px 12px;
+}
+.ayur-herb-card.anabolic-herb { background: linear-gradient(135deg,rgba(124,58,237,0.05),rgba(109,40,217,0.02)); border-color: rgba(124,58,237,0.15); }
+.ayur-herb-name { font-size: 13px; font-weight: 700; color: #064E3B; }
+.ayur-herb-name.anabolic-hn { color: #5B21B6; }
+.ayur-herb-latin { font-size: 10px; font-style: italic; color: #64748B; }
+.ayur-herb-dose {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(5,150,105,0.1);
+  border-radius: 6px;
+  padding: 3px 8px;
+  font-size: 10px;
+  color: #047857;
+  font-weight: 600;
+  margin: 4px 0;
+}
+.ayur-herb-dose.anabolic-dose { background: rgba(124,58,237,0.1); color: #6D28D9; }
+.ayur-herb-benefit { font-size: 11px; color: #374151; line-height: 1.5; margin-top: 3px; }
+
+/* Formulation */
+.ayur-formulation {
+  background: linear-gradient(135deg,rgba(5,150,105,0.08),rgba(4,120,87,0.04));
+  border: 1px solid rgba(5,150,105,0.15);
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin-bottom: 14px;
+  font-size: 12px;
+  color: #374151;
+  line-height: 1.6;
+}
+.ayur-formulation.anabolic-form { background: rgba(124,58,237,0.06); border-color: rgba(124,58,237,0.18); }
+.ayur-form-label { font-size: 10px; font-weight: 700; letter-spacing: 1px; color: #059669; margin-bottom: 4px; text-transform: uppercase; }
+.ayur-form-label.anabolic-fl { color: #7C3AED; }
+
+/* Diet & Lifestyle grid */
+.ayur-dl-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.ayur-dl-card {
+  border-radius: 10px;
+  padding: 10px 12px;
+}
+.ayur-dl-card.do { background: rgba(5,150,105,0.06); border: 1px solid rgba(5,150,105,0.15); }
+.ayur-dl-card.avoid { background: rgba(220,38,38,0.04); border: 1px solid rgba(220,38,38,0.12); }
+.ayur-dl-title { font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 6px; }
+.ayur-dl-card.do .ayur-dl-title { color: #059669; }
+.ayur-dl-card.avoid .ayur-dl-title { color: #DC2626; }
+.ayur-dl-list { list-style: none; padding: 0; margin: 0; }
+.ayur-dl-list li { font-size: 11px; color: #374151; padding: 2px 0; display: flex; gap: 5px; align-items: flex-start; line-height: 1.4; }
+.ayur-dl-card.do .ayur-dl-list li::before { content: '✓'; color: #059669; font-weight: 700; flex-shrink: 0; }
+.ayur-dl-card.avoid .ayur-dl-list li::before { content: '✕'; color: #DC2626; font-weight: 700; flex-shrink: 0; }
+
+/* Lifestyle & Yoga */
+.ayur-life-yoga {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.ayur-life-card {
+  border-radius: 10px;
+  padding: 10px 12px;
+  background: rgba(59,130,246,0.04);
+  border: 1px solid rgba(59,130,246,0.12);
+}
+.ayur-yoga-card {
+  border-radius: 10px;
+  padding: 10px 12px;
+  background: rgba(245,158,11,0.04);
+  border: 1px solid rgba(245,158,11,0.12);
+}
+.ayur-lc-title { font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: #3B82F6; margin-bottom: 6px; }
+.ayur-yc-title { font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: #D97706; margin-bottom: 6px; }
+.ayur-life-list { font-size: 11px; color: #374151; line-height: 1.8; }
+.ayur-yoga-text { font-size: 11px; color: #374151; line-height: 1.6; }
+
+/* Source */
+.ayur-source {
+  font-size: 10px;
+  color: #64748B;
+  text-align: right;
+  letter-spacing: 0.5px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(5,150,105,0.08);
+  font-style: italic;
+}
+
+/* Empty State */
+.ayur-empty-state {
+  text-align: center;
+  padding: 48px 20px;
+  background: #fff;
+  border: 2px dashed rgba(5,150,105,0.2);
+  border-radius: 20px;
+  margin-bottom: 24px;
+}
+.ayur-empty-icon { font-size: 64px; margin-bottom: 12px; }
+.ayur-empty-title { font-family:'Bebas Neue',sans-serif; font-size: 22px; letter-spacing: 2px; color: #064E3B; margin-bottom: 6px; }
+.ayur-empty-sub { font-size: 13px; color: #64748B; margin-bottom: 20px; }
+.ayur-quick-picks { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+.ayur-qp-label { font-size: 11px; color: #64748B; margin-bottom: 4px; width: 100%; }
+.ayur-qp-btn {
+  background: #fff;
+  border: 1.5px solid rgba(5,150,105,0.25);
+  border-radius: 20px;
+  padding: 7px 16px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #047857;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.ayur-qp-btn:hover { background: #059669; color: #fff; border-color: #059669; }
+
+/* Disclaimer */
+.ayur-disclaimer {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  padding: 12px 16px;
+  background: rgba(245,158,11,0.06);
+  border: 1px solid rgba(245,158,11,0.2);
+  border-radius: 10px;
+  font-size: 11px;
+  color: #92400E;
+  line-height: 1.5;
+  margin-bottom: 24px;
+}
+
+/* Diet plan button */
+.ayur-dietplan-btn {
+  width: 100%;
+  margin-top: 12px;
+  padding: 11px 16px;
+  background: linear-gradient(135deg,#059669,#047857);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  letter-spacing: 0.3px;
+  transition: opacity 0.2s;
+  text-align: left;
+}
+.ayur-dietplan-btn:hover { opacity: 0.9; }
 </style>
+
+<!-- ═══════════════════════════════════════════════════════════
+     ANABOLIC AYURVEDA HUB
+═══════════════════════════════════════════════════════════ -->
+<section id="ayurveda-hub" style="display:none">
+  <!-- Hero -->
+  <div class="ayur-hero">
+    <div class="ayur-leaf-bg">🌿</div>
+    <div class="ayur-hero-content">
+      <div class="ayur-shloka">"आरोग्यं परमं भाग्यं स्वास्थ्यं सर्वार्थसाधनम्"</div>
+      <div class="ayur-shloka-trans">Health is the greatest wealth · It is the means to all achievements</div>
+      <div class="ayur-hero-tags">
+        <span class="ayur-hero-tag">📜 Charaka Samhita</span>
+        <span class="ayur-hero-tag">🏛️ Ministry of AYUSH</span>
+        <span class="ayur-hero-tag">🔬 CCRAS Protocols</span>
+        <span class="ayur-hero-tag">✅ Clinically Validated</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Disease Selector -->
+  <div class="ayur-selector-section">
+    <div class="ayur-section-hdr">
+      <div class="ayur-section-title">🌱 Select Your Health Conditions</div>
+      <div class="ayur-section-sub">Select all that apply — get your personalised Ayurvedic protocol instantly</div>
+    </div>
+    <div class="ayur-filter-row">
+      <button class="ayur-filter-btn active" onclick="filterAyurDosha('all',this)">All</button>
+      <button class="ayur-filter-btn" onclick="filterAyurDosha('vata',this)">🌬️ Vata</button>
+      <button class="ayur-filter-btn" onclick="filterAyurDosha('pitta',this)">🔥 Pitta</button>
+      <button class="ayur-filter-btn" onclick="filterAyurDosha('kapha',this)">💧 Kapha</button>
+      <button class="ayur-filter-btn anabolic" onclick="filterAyurDosha('anabolic',this)">⚡ Anabolic</button>
+    </div>
+    <div id="ayur-disease-grid" class="ayur-disease-grid"></div>
+    <div class="ayur-select-actions" id="ayur-select-actions" style="display:none">
+      <button class="ayur-view-btn" onclick="scrollToAyurRemedies()">
+        🌿 View My Ayurvedic Protocol (<span id="ayur-sel-count">0</span> conditions selected)
+      </button>
+      <button class="ayur-clear-btn" onclick="clearAyurSelection()">✕ Clear</button>
+    </div>
+  </div>
+
+  <!-- Remedy Panel -->
+  <div id="ayur-remedy-panel" class="ayur-remedy-panel" style="display:none">
+    <div class="ayur-panel-header">
+      <div class="ayur-panel-title">🌿 Your Personalised Ayurvedic Protocol</div>
+      <div class="ayur-panel-sub">Sourced from Ministry of AYUSH · CCRAS · Classical Ayurvedic Texts</div>
+    </div>
+    <div id="ayur-remedy-cards" class="ayur-remedy-cards"></div>
+  </div>
+
+  <!-- Empty State -->
+  <div id="ayur-empty-state" class="ayur-empty-state">
+    <div class="ayur-empty-icon">🌿</div>
+    <div class="ayur-empty-title">Select conditions above</div>
+    <div class="ayur-empty-sub">Your personalised Ayurvedic remedy protocol will appear here instantly</div>
+    <div class="ayur-quick-picks">
+      <div class="ayur-qp-label">Quick Pick:</div>
+      <button class="ayur-qp-btn" onclick="quickPickAyur('diabetic')">🩸 Diabetes</button>
+      <button class="ayur-qp-btn" onclick="quickPickAyur('low_t')">⚡ Low Testosterone</button>
+      <button class="ayur-qp-btn" onclick="quickPickAyur('anxiety')">🧠 Anxiety & Sleep</button>
+      <button class="ayur-qp-btn" onclick="quickPickAyur('arthritis')">🦵 Joint Pain</button>
+    </div>
+  </div>
+
+  <!-- Disclaimer -->
+  <div class="ayur-disclaimer">
+    <span>⚠️</span>
+    <span>Information sourced from Ministry of AYUSH, CCRAS Clinical Protocols & Classical Ayurvedic Texts. This is educational guidance only — always consult a qualified Ayurvedic physician (BAMS) before starting any herbal protocol. Do not replace prescribed medications.</span>
+  </div>
+</section>
 
 <!-- ─── ADMIN CONTROL BAR (visible only in admin sessions) ─── -->
 <div id="admin-ctrl-bar" style="position:fixed;top:12px;right:12px;z-index:25000;">
