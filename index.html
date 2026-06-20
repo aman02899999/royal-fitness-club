@@ -3660,6 +3660,93 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
         </div>
       </div>
     </div>
+
+    <!-- ── PROGRESS VISUALIZATION ── -->
+    <div id="dash-progress-viz">
+      <div class="dash-pv-header">
+        <div class="dash-pv-title">📊 Progress Visualization</div>
+        <div class="dash-pv-sub">Your fitness journey at a glance</div>
+      </div>
+      <div class="dash-pv-grid">
+
+        <!-- 1. Weight Graph -->
+        <div class="dash-pv-card" id="pv-weight-card">
+          <div class="dash-pv-card-hdr">
+            <div>
+              <div class="dash-pv-card-title">⚖️ Weight Journey</div>
+              <div class="dash-pv-card-sub" id="pv-weight-sub">Track your progress</div>
+            </div>
+            <div class="dash-pv-card-stat" id="pv-weight-stat">-- kg</div>
+          </div>
+          <svg id="pv-weight-svg" class="dash-pv-svg" viewBox="0 0 280 110" preserveAspectRatio="none"></svg>
+          <div class="pv-weight-input-row">
+            <input type="number" id="pv-weight-inp" class="pv-inp" placeholder="kg today" min="30" max="300" step="0.1">
+            <button class="pv-log-btn" onclick="pvLogWeight()">+ Log</button>
+          </div>
+        </div>
+
+        <!-- 2. Streak Calendar -->
+        <div class="dash-pv-card" id="pv-streak-card">
+          <div class="dash-pv-card-hdr">
+            <div>
+              <div class="dash-pv-card-title">🔥 Streak Calendar</div>
+              <div class="dash-pv-card-sub">Last 30 days activity</div>
+            </div>
+            <div class="dash-pv-card-stat" id="pv-streak-stat" style="color:#dc2626;">0🔥</div>
+          </div>
+          <div id="pv-streak-cal" class="pv-streak-cal"></div>
+          <div class="pv-streak-legend">
+            <span class="pv-leg-item"><span class="pv-leg-dot" style="background:rgba(255,255,255,.06)"></span>Rest</span>
+            <span class="pv-leg-item"><span class="pv-leg-dot" style="background:rgba(22,163,74,.45)"></span>Check-in</span>
+            <span class="pv-leg-item"><span class="pv-leg-dot" style="background:rgba(220,38,38,.65)"></span>Workout</span>
+            <span class="pv-leg-item"><span class="pv-leg-dot" style="background:rgba(245,158,11,.8)"></span>Both</span>
+          </div>
+        </div>
+
+        <!-- 3. Muscle / Measurement Graph -->
+        <div class="dash-pv-card" id="pv-muscle-card">
+          <div class="dash-pv-card-hdr">
+            <div>
+              <div class="dash-pv-card-title">💪 Muscle Gain</div>
+              <div class="dash-pv-card-sub">Arms · Chest · Waist cm</div>
+            </div>
+            <div class="dash-pv-card-stat" id="pv-muscle-stat" style="color:#22c55e;">+0 cm</div>
+          </div>
+          <svg id="pv-muscle-svg" class="dash-pv-svg" viewBox="0 0 280 110" preserveAspectRatio="none"></svg>
+          <div class="pv-muscle-legend">
+            <span class="pv-leg-item"><span class="pv-leg-line" style="background:#22c55e"></span>Arms</span>
+            <span class="pv-leg-item"><span class="pv-leg-line" style="background:#60a5fa"></span>Chest</span>
+            <span class="pv-leg-item"><span class="pv-leg-line" style="background:#f97316"></span>Waist</span>
+          </div>
+        </div>
+
+        <!-- 4. Consistency Heatmap -->
+        <div class="dash-pv-card" id="pv-heat-card">
+          <div class="dash-pv-card-hdr">
+            <div>
+              <div class="dash-pv-card-title">📅 Consistency Heatmap</div>
+              <div class="dash-pv-card-sub">12 weeks of activity</div>
+            </div>
+            <div class="dash-pv-card-stat" id="pv-heat-stat" style="color:#7c3aed;">0%</div>
+          </div>
+          <div class="pv-heat-wrap">
+            <div class="pv-heat-day-labels" id="pv-heat-day-labels">
+              <div class="pv-heat-day-lbl">M</div>
+              <div class="pv-heat-day-lbl">T</div>
+              <div class="pv-heat-day-lbl">W</div>
+              <div class="pv-heat-day-lbl">T</div>
+              <div class="pv-heat-day-lbl">F</div>
+              <div class="pv-heat-day-lbl">S</div>
+              <div class="pv-heat-day-lbl">S</div>
+            </div>
+            <div id="pv-heat-grid" class="pv-heat-grid" style="flex:1;"></div>
+          </div>
+          <div class="pv-heat-bottom" id="pv-heat-months"></div>
+        </div>
+
+      </div><!-- end pv-grid -->
+    </div><!-- end progress-viz -->
+
   </div>
 </div>
 
@@ -14622,6 +14709,286 @@ function populateDashboard() {
   if (typeof loadWOD === 'function') loadWOD();
   if (typeof updateWaterRing === 'function') updateWaterRing(getWaterData());
   if (typeof renderPRTracker === 'function') renderPRTracker();
+
+  // Progress Visualization charts
+  setTimeout(renderProgressViz, 200);
+}
+
+// ══════════════════════════════════════════════════════════════
+// PROGRESS VISUALIZATION — 4 charts
+// ══════════════════════════════════════════════════════════════
+
+function pvLogWeight() {
+  var inp = document.getElementById('pv-weight-inp');
+  var val = parseFloat(inp ? inp.value : '');
+  if (!val || val < 20 || val > 400) { toast('Enter a valid weight (20–400 kg)', 'gold'); return; }
+  var pd2 = JSON.parse(localStorage.getItem('bm_pd') || '{}');
+  if (!pd2.weights) pd2.weights = [];
+  pd2.weights.push({ date: new Date().toLocaleDateString('en-IN', { day:'numeric', month:'short' }), kg: val, ts: Date.now() });
+  if (pd2.weights.length > 30) pd2.weights = pd2.weights.slice(-30);
+  localStorage.setItem('bm_pd', JSON.stringify(pd2));
+  if (inp) inp.value = '';
+  toast('⚖️ ' + val + ' kg logged!', 'green');
+  renderPvWeight();
+}
+
+function renderProgressViz() {
+  renderPvWeight();
+  renderPvStreakCal();
+  renderPvMuscle();
+  renderPvHeatmap();
+}
+
+/* ── 1. WEIGHT GRAPH ───────────────────────────────────── */
+function renderPvWeight() {
+  var pd2 = JSON.parse(localStorage.getItem('bm_pd') || '{}');
+  var pts = (pd2.weights || []).slice(-15);  // last 15 entries
+
+  var statEl = document.getElementById('pv-weight-stat');
+  var subEl  = document.getElementById('pv-weight-sub');
+  var svg    = document.getElementById('pv-weight-svg');
+  if (!svg) return;
+
+  if (pts.length < 2) {
+    // Empty state with flat demo line
+    svg.innerHTML = [
+      '<defs><linearGradient id="wg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#f59e0b" stop-opacity=".25"/><stop offset="100%" stop-color="#f59e0b" stop-opacity="0"/></linearGradient></defs>',
+      '<text x="140" y="50" text-anchor="middle" fill="rgba(255,255,255,.2)" font-size="11" font-family="system-ui">Log your weight to see graph</text>',
+    ].join('');
+    if (statEl) statEl.textContent = pts.length === 1 ? pts[0].kg + ' kg' : '-- kg';
+    if (subEl)  subEl.textContent  = 'Log daily for trend';
+    return;
+  }
+
+  var W = 280, H = 110, PAD = { t:10, b:22, l:8, r:8 };
+  var vals = pts.map(function(p) { return p.kg; });
+  var mn = Math.min.apply(null, vals), mx = Math.max.apply(null, vals);
+  var range = mx - mn || 2;
+  mn -= range * 0.15; mx += range * 0.15; range = mx - mn;
+
+  function sx(i) { return PAD.l + i / (pts.length - 1) * (W - PAD.l - PAD.r); }
+  function sy(v) { return PAD.t + (1 - (v - mn) / range) * (H - PAD.t - PAD.b); }
+
+  // Build smooth bezier path
+  var linePts = pts.map(function(p, i) { return [sx(i), sy(p.kg)]; });
+  var d = 'M' + linePts[0][0] + ',' + linePts[0][1];
+  for (var i = 1; i < linePts.length; i++) {
+    var cx = (linePts[i-1][0] + linePts[i][0]) / 2;
+    d += ' C' + cx + ',' + linePts[i-1][1] + ' ' + cx + ',' + linePts[i][1] + ' ' + linePts[i][0] + ',' + linePts[i][1];
+  }
+  var areaD = d + ' L' + linePts[linePts.length-1][0] + ',' + (H - PAD.b) + ' L' + linePts[0][0] + ',' + (H - PAD.b) + ' Z';
+
+  // Y axis labels
+  var yLbls = '';
+  [mn, (mn+mx)/2, mx].forEach(function(v) {
+    var y = sy(v);
+    yLbls += '<text x="2" y="' + (y+3) + '" fill="rgba(255,255,255,.25)" font-size="8" font-family="system-ui">' + v.toFixed(1) + '</text>';
+  });
+
+  // X axis date labels (show first, mid, last)
+  var xLbls = '';
+  [0, Math.floor((pts.length-1)/2), pts.length-1].forEach(function(i) {
+    xLbls += '<text x="' + sx(i) + '" y="' + (H - 4) + '" text-anchor="middle" fill="rgba(255,255,255,.3)" font-size="8" font-family="system-ui">' + (pts[i].date || '') + '</text>';
+  });
+
+  // Dots
+  var dots = pts.map(function(p, i) {
+    var isLast = i === pts.length - 1;
+    return '<circle cx="' + sx(i) + '" cy="' + sy(p.kg) + '" r="' + (isLast ? 5 : 3) + '" fill="' + (isLast ? '#f59e0b' : 'rgba(245,158,11,.7)') + '" stroke="#0a0a0a" stroke-width="1.5"><title>' + (p.date || '') + ': ' + p.kg + ' kg</title></circle>';
+  }).join('');
+
+  // Change indicator
+  var diff = vals[vals.length-1] - vals[0];
+  var diffStr = (diff > 0 ? '+' : '') + diff.toFixed(1) + ' kg';
+  if (statEl) { statEl.textContent = vals[vals.length-1] + ' kg'; statEl.style.color = diff <= 0 ? '#22c55e' : '#f97316'; }
+  if (subEl)  subEl.textContent = diffStr + ' since start · ' + pts.length + ' entries';
+
+  var totalLen = Math.ceil(W * 1.8);
+  svg.innerHTML = [
+    '<defs>',
+    '<linearGradient id="wg" x1="0" y1="0" x2="0" y2="1">',
+    '<stop offset="0%" stop-color="#f59e0b" stop-opacity=".35"/>',
+    '<stop offset="100%" stop-color="#f59e0b" stop-opacity="0"/>',
+    '</linearGradient>',
+    '</defs>',
+    '<path d="' + areaD + '" fill="url(#wg)"/>',
+    '<path d="' + d + '" fill="none" stroke="#f59e0b" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="' + totalLen + '" stroke-dashoffset="' + totalLen + '" style="animation:pvLineGrow 1.2s ease forwards"/>',
+    yLbls, xLbls, dots,
+  ].join('');
+}
+
+/* ── 2. STREAK CALENDAR (30-day) ───────────────────────── */
+function renderPvStreakCal() {
+  var calEl   = document.getElementById('pv-streak-cal');
+  var statEl  = document.getElementById('pv-streak-stat');
+  if (!calEl) return;
+
+  // Collect workout dates
+  var wkDates = new Set();
+  try {
+    var logs = JSON.parse(localStorage.getItem('bm_wklogs') || '[]');
+    logs.forEach(function(l) { if (l.ts) wkDates.add(new Date(l.ts).toDateString()); });
+  } catch(e) {}
+  // Collect check-in dates from streak history
+  var ciDates = new Set();
+  try {
+    var sd = JSON.parse(localStorage.getItem('rfc_streak_data') || '{}');
+    (sd.history || []).forEach(function(d) { ciDates.add(new Date(d).toDateString()); });
+  } catch(e) {}
+
+  var today = new Date();
+  var html = '';
+  var activeCount = 0;
+  for (var i = 29; i >= 0; i--) {
+    var d = new Date(today); d.setDate(today.getDate() - i);
+    var ds = d.toDateString();
+    var hasCi = ciDates.has(ds), hasWk = wkDates.has(ds);
+    var cls = hasWk && hasCi ? 'both' : (hasWk ? 'wk' : (hasCi ? 'ci' : ''));
+    if (cls) activeCount++;
+    var label = d.toLocaleDateString('en-IN', { day:'numeric', month:'short' }) + (hasWk ? ' 🏋️' : '') + (hasCi ? ' ✅' : '') + (!cls ? ' Rest' : '');
+    var delay = (29 - i) * 20;
+    html += '<div class="pv-streak-cell ' + cls + '" style="animation-delay:' + delay + 'ms"><span class="pv-cell-tip">' + label + '</span></div>';
+  }
+  calEl.innerHTML = html;
+
+  // Current streak from rfc_streak_data
+  try {
+    var sd2 = JSON.parse(localStorage.getItem('rfc_streak_data') || '{}');
+    if (statEl) { statEl.textContent = (sd2.streak || 0) + '🔥'; }
+  } catch(e) {}
+}
+
+/* ── 3. MUSCLE GAIN / MEASUREMENT GRAPH ────────────────── */
+function renderPvMuscle() {
+  var svg    = document.getElementById('pv-muscle-svg');
+  var statEl = document.getElementById('pv-muscle-stat');
+  if (!svg) return;
+
+  var meas = [];
+  try { meas = JSON.parse(localStorage.getItem('bm_meas') || '[]'); } catch(e) {}
+  meas = meas.slice(-10);
+
+  if (meas.length < 2) {
+    svg.innerHTML = '<text x="140" y="50" text-anchor="middle" fill="rgba(255,255,255,.2)" font-size="11" font-family="system-ui">Log measurements to see graph</text>';
+    return;
+  }
+
+  var W = 280, H = 110, PAD = { t:10, b:22, l:8, r:8 };
+
+  function plotLine(vals, color) {
+    if (vals.every(function(v) { return !v; })) return '';
+    var filtered = vals.filter(function(v) { return v > 0; });
+    if (filtered.length < 2) return '';
+    var mn = Math.min.apply(null, filtered) - 2;
+    var mx = Math.max.apply(null, filtered) + 2;
+    var range = mx - mn || 1;
+    var points = vals.map(function(v, i) {
+      var x = PAD.l + i / (vals.length - 1) * (W - PAD.l - PAD.r);
+      var y = v ? PAD.t + (1 - (v - mn) / range) * (H - PAD.t - PAD.b) : null;
+      return { x: x, y: y };
+    }).filter(function(p) { return p.y !== null; });
+    if (points.length < 2) return '';
+    var d = 'M' + points[0].x + ',' + points[0].y;
+    for (var i = 1; i < points.length; i++) {
+      var cx = (points[i-1].x + points[i].x) / 2;
+      d += ' C' + cx + ',' + points[i-1].y + ' ' + cx + ',' + points[i].y + ' ' + points[i].x + ',' + points[i].y;
+    }
+    var len = W * 2;
+    return '<path d="' + d + '" fill="none" stroke="' + color + '" stroke-width="2" stroke-linecap="round" opacity=".9" stroke-dasharray="' + len + '" stroke-dashoffset="' + len + '" style="animation:pvLineGrow 1.4s ease forwards"/>';
+  }
+
+  var arms  = meas.map(function(m) { return parseFloat(m.arms)  || 0; });
+  var chest = meas.map(function(m) { return parseFloat(m.chest) || 0; });
+  var waist = meas.map(function(m) { return parseFloat(m.waist) || 0; });
+
+  // X date labels
+  var xLbls = '';
+  [0, meas.length - 1].forEach(function(i) {
+    xLbls += '<text x="' + (PAD.l + i / (meas.length-1) * (W - PAD.l - PAD.r)) + '" y="' + (H-4) + '" text-anchor="middle" fill="rgba(255,255,255,.3)" font-size="8" font-family="system-ui">' + (meas[i].date || '') + '</text>';
+  });
+
+  svg.innerHTML = plotLine(arms, '#22c55e') + plotLine(chest, '#60a5fa') + plotLine(waist, '#f97316') + xLbls;
+
+  // Arm gain stat
+  var armsFiltered = arms.filter(function(v) { return v > 0; });
+  if (armsFiltered.length >= 2 && statEl) {
+    var gain = armsFiltered[armsFiltered.length-1] - armsFiltered[0];
+    statEl.textContent = (gain >= 0 ? '+' : '') + gain.toFixed(1) + ' cm';
+    statEl.style.color = gain >= 0 ? '#22c55e' : '#f97316';
+  }
+}
+
+/* ── 4. CONSISTENCY HEATMAP (12 weeks × 7 days) ─────────── */
+function renderPvHeatmap() {
+  var grid    = document.getElementById('pv-heat-grid');
+  var statEl  = document.getElementById('pv-heat-stat');
+  var months  = document.getElementById('pv-heat-months');
+  if (!grid) return;
+
+  // Collect all workout dates
+  var wkDates = new Set();
+  try {
+    var logs = JSON.parse(localStorage.getItem('bm_wklogs') || '[]');
+    logs.forEach(function(l) { if (l.ts) wkDates.add(new Date(l.ts).toDateString()); });
+    // Also check rfc_workouts_uid
+    if (user) {
+      var wkLogs2 = JSON.parse(localStorage.getItem('rfc_workouts_' + user.uid) || '[]');
+      wkLogs2.forEach(function(w) { if (w.date) wkDates.add(new Date(w.date).toDateString()); });
+    }
+  } catch(e) {}
+
+  // Build 12 cols × 7 rows (Mon–Sun), starting from 12 weeks ago
+  var today = new Date();
+  // Find most recent Sunday
+  var endDate = new Date(today);
+  endDate.setDate(today.getDate() + (7 - today.getDay()) % 7);
+
+  var startDate = new Date(endDate);
+  startDate.setDate(endDate.getDate() - 12 * 7 + 1);
+
+  // Align to Monday
+  var dow = startDate.getDay(); // 0=Sun
+  var offset = dow === 0 ? 1 : (dow === 1 ? 0 : -(dow - 1));
+  startDate.setDate(startDate.getDate() + offset);
+
+  var html = '';
+  var activeCount = 0, totalCount = 0;
+  var monthsSeen = {};
+
+  // Grid is filled column-by-column (week by week), rows = Mon(0)–Sun(6)
+  for (var week = 0; week < 13; week++) {
+    for (var dow2 = 0; dow2 < 7; dow2++) {
+      var cellDate = new Date(startDate);
+      cellDate.setDate(startDate.getDate() + week * 7 + dow2);
+      if (cellDate > today) {
+        html += '<div class="pv-heat-cell" style="background:rgba(255,255,255,.02);"></div>';
+        continue;
+      }
+      var ds = cellDate.toDateString();
+      var worked = wkDates.has(ds);
+      if (worked) activeCount++;
+      totalCount++;
+      var lv = worked ? 'lv3' : '';
+      var delay = (week * 7 + dow2) * 8;
+      html += '<div class="pv-heat-cell ' + lv + '" style="animation-delay:' + delay + 'ms" title="' + cellDate.toLocaleDateString('en-IN',{day:'numeric',month:'short'}) + (worked?' ✓':'') + '"></div>';
+
+      // Track month label position
+      var mKey = cellDate.toLocaleDateString('en-IN', { month: 'short' });
+      if (!monthsSeen[mKey]) { monthsSeen[mKey] = week; }
+    }
+  }
+  grid.innerHTML = html;
+
+  // Month labels
+  if (months) {
+    var mHtml = Object.keys(monthsSeen).slice(-4).map(function(m) {
+      return '<span class="pv-heat-month-lbl">' + m + '</span>';
+    }).join('');
+    months.innerHTML = mHtml;
+  }
+
+  var pct = totalCount > 0 ? Math.round(activeCount / totalCount * 100) : 0;
+  if (statEl) { statEl.textContent = pct + '%'; }
 }
 
 function _populateDashWeek() {
@@ -17934,6 +18301,109 @@ label:has(#inclSalad:checked) {
   z-index: 99999;
   animation: confettiFall linear forwards;
 }
+
+/* ── PROGRESS VISUALIZATION ───────────────────────────────────────── */
+@keyframes pvLineGrow { from{stroke-dashoffset:1000} to{stroke-dashoffset:0} }
+@keyframes pvDotPop   { 0%{r:0;opacity:0} 80%{r:5px} 100%{r:4px;opacity:1} }
+@keyframes pvFadeUp   { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+@keyframes pvCellIn   { from{transform:scale(0);opacity:0} to{transform:scale(1);opacity:1} }
+
+#dash-progress-viz { margin-top: 20px; animation: pvFadeUp .5s ease; }
+.dash-pv-header { margin-bottom: 14px; }
+.dash-pv-title { font-family: 'Barlow Condensed', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); }
+.dash-pv-sub { font-size: 11px; color: rgba(255,255,255,.3); margin-top: 2px; }
+
+.dash-pv-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+@media(max-width:640px) { .dash-pv-grid { grid-template-columns: 1fr; } }
+
+.dash-pv-card {
+  background: var(--card);
+  border: 1px solid rgba(255,255,255,.06);
+  border-radius: 14px;
+  padding: 16px;
+  position: relative;
+  overflow: hidden;
+  transition: border-color .2s;
+}
+.dash-pv-card:hover { border-color: rgba(255,255,255,.12); }
+.dash-pv-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+}
+#pv-weight-card::before  { background: linear-gradient(90deg,#f59e0b,#d97706); }
+#pv-streak-card::before  { background: linear-gradient(90deg,#dc2626,#991b1b); }
+#pv-muscle-card::before  { background: linear-gradient(90deg,#22c55e,#16a34a); }
+#pv-heat-card::before    { background: linear-gradient(90deg,#7c3aed,#6d28d9); }
+
+.dash-pv-card-hdr { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 12px; }
+.dash-pv-card-title { font-size: 13px; font-weight: 700; color: #fff; margin-bottom: 2px; }
+.dash-pv-card-sub { font-size: 10px; color: var(--muted); }
+.dash-pv-card-stat { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: var(--gold); white-space: nowrap; }
+
+.dash-pv-svg { width: 100%; height: 110px; overflow: visible; display: block; }
+
+/* Weight log input */
+.pv-weight-input-row { display: flex; gap: 8px; margin-top: 10px; }
+.pv-inp { flex: 1; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1); border-radius: 8px; padding: 7px 10px; color: #fff; font-size: 13px; min-width: 0; }
+.pv-inp:focus { outline: none; border-color: rgba(245,158,11,.5); }
+.pv-log-btn { background: linear-gradient(135deg,#f59e0b,#d97706); border: none; border-radius: 8px; color: #1a0a00; font-size: 12px; font-weight: 800; padding: 7px 14px; cursor: pointer; white-space: nowrap; }
+.pv-log-btn:hover { filter: brightness(1.1); }
+
+/* Streak calendar */
+.pv-streak-cal { display: grid; grid-template-columns: repeat(10,1fr); gap: 4px; margin-bottom: 8px; }
+.pv-streak-cell {
+  aspect-ratio: 1;
+  border-radius: 4px;
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.05);
+  position: relative;
+  cursor: default;
+  animation: pvCellIn .3s ease both;
+}
+.pv-streak-cell.ci  { background: rgba(22,163,74,.45);  border-color: rgba(22,163,74,.3);  }
+.pv-streak-cell.wk  { background: rgba(220,38,38,.65);  border-color: rgba(220,38,38,.4);  }
+.pv-streak-cell.both{ background: rgba(245,158,11,.8);  border-color: rgba(245,158,11,.5); }
+.pv-streak-cell .pv-cell-tip { display: none; position: absolute; bottom: calc(100% + 4px); left: 50%; transform: translateX(-50%); background: rgba(0,0,0,.85); color: #fff; font-size: 9px; white-space: nowrap; padding: 3px 6px; border-radius: 4px; z-index: 100; pointer-events: none; }
+.pv-streak-cell:hover .pv-cell-tip { display: block; }
+.pv-streak-legend { display: flex; gap: 12px; flex-wrap: wrap; }
+.pv-leg-item { display: flex; align-items: center; gap: 4px; font-size: 10px; color: var(--muted); }
+.pv-leg-dot { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
+.pv-leg-line { width: 18px; height: 3px; border-radius: 2px; flex-shrink: 0; }
+
+/* Muscle chart legend */
+.pv-muscle-legend { display: flex; gap: 12px; margin-top: 8px; flex-wrap: wrap; }
+
+/* Consistency heatmap */
+.pv-heat-grid {
+  display: grid;
+  grid-template-columns: repeat(13, 1fr);
+  grid-template-rows: repeat(7, 1fr);
+  gap: 2.5px;
+  margin-bottom: 6px;
+}
+.pv-heat-cell {
+  aspect-ratio: 1;
+  border-radius: 2px;
+  background: rgba(255,255,255,.05);
+  animation: pvCellIn .25s ease both;
+}
+.pv-heat-cell.lv1 { background: rgba(124,58,237,.3); }
+.pv-heat-cell.lv2 { background: rgba(124,58,237,.55); }
+.pv-heat-cell.lv3 { background: rgba(124,58,237,.8); }
+.pv-heat-cell.lv4 { background: rgba(124,58,237,1); box-shadow: 0 0 4px rgba(124,58,237,.5); }
+.pv-heat-day-labels { display: flex; flex-direction: column; gap: 2.5px; margin-right: 4px; }
+.pv-heat-wrap { display: flex; align-items: flex-start; }
+.pv-heat-day-lbl { font-size: 8px; color: rgba(255,255,255,.25); height: auto; display: flex; align-items: center; aspect-ratio: 1; }
+.pv-heat-bottom { display: flex; justify-content: space-between; margin-top: 4px; }
+.pv-heat-month-lbl { font-size: 9px; color: rgba(255,255,255,.3); }
+
+/* Empty state */
+.pv-empty { text-align: center; padding: 20px 10px; color: var(--muted); font-size: 11px; }
+.pv-empty-icon { font-size: 28px; margin-bottom: 6px; }
 </style>
 
 <!-- ═══════════════════════════════════════════════════════════
