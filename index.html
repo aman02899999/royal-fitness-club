@@ -14339,11 +14339,14 @@ const ALL_MANAGED_IDS = ['screen-dashboard','home','profile','plans','calculator
 
 let currentScreen = 'dashboard';
 
+// Screens that are always public regardless of admin nav control (free content)
+const PUBLIC_SCREENS = ['courses', 'dashboard', 'plans'];
+
 function switchScreen(name, navEl) {
   // Hide onboarding overlay when navigating away from dashboard
   if (name !== 'dashboard') hideOnboarding();
   // Check nav control — disabled screens show Notify Me overlay instead
-  if (!isAdminUser()) {
+  if (!isAdminUser() && !PUBLIC_SCREENS.includes(name)) {
     const nc = getNavControl();
     const cfg = nc[name];
     if (cfg && cfg.enabled === false) {
