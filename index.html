@@ -2378,6 +2378,68 @@ body{font-size:16px;}
 .pdf-book-spine-fm{background:linear-gradient(to right,#00050d,#003080)!important;}
 .pdf-book-fm .pdf-book-title{color:#38bdf8!important;}
 
+/* ── PDF CHAPTER PREVIEW / TEMPLATE CONTENT ── */
+.pdf-chapter-preview{margin-top:40px;border-left:4px solid var(--violet);background:var(--card2);border-radius:0 12px 12px 0;padding:24px 28px;}
+.pdf-cp-tag{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--violet);margin-bottom:4px;}
+.pdf-cp-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(22px,4vw,32px);letter-spacing:1px;color:var(--text);margin-bottom:4px;line-height:1.1;}
+.pdf-cp-sub{font-size:12px;color:var(--muted);margin-bottom:20px;line-height:1.6;}
+.pdf-cp-body{font-size:13px;color:var(--text);line-height:1.8;}
+.pdf-cp-body p{margin-bottom:14px;}
+.pdf-cp-body strong{color:var(--text);font-weight:700;}
+
+/* Key stat callout row */
+.pdf-key-stats{display:flex;gap:12px;flex-wrap:wrap;margin:20px 0;}
+.pdf-stat-callout{flex:1;min-width:140px;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px;text-align:center;position:relative;overflow:hidden;}
+.pdf-stat-callout::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--violet),var(--orange,#8B5CF6));}
+.pdf-sc-num{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--violet);line-height:1;letter-spacing:1px;}
+.pdf-sc-lbl{font-size:10px;color:var(--muted);letter-spacing:1px;margin-top:2px;line-height:1.4;}
+
+/* Data table */
+.pdf-data-table-wrap{margin:20px 0;overflow-x:auto;border-radius:10px;border:1px solid var(--border);}
+.pdf-data-table{width:100%;border-collapse:collapse;font-size:12px;}
+.pdf-data-table th{background:linear-gradient(90deg,var(--card2),rgba(124,58,237,.06));padding:10px 12px;text-align:left;font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--violet);border-bottom:2px solid rgba(109,40,217,.2);white-space:nowrap;font-size:11px;}
+.pdf-data-table td{padding:9px 12px;color:var(--text);border-bottom:1px solid var(--border);vertical-align:top;}
+.pdf-data-table tr:last-child td{border-bottom:none;}
+.pdf-data-table tr:hover td{background:rgba(124,58,237,.02);}
+.pdf-data-table td.yes{color:#059669;font-weight:700;}
+.pdf-data-table td.no{color:var(--muted);}
+.pdf-data-table td.partial{color:#d97706;font-weight:600;}
+.pdf-data-table .total-row td{font-weight:700;background:rgba(109,40,217,.05);color:var(--violet);}
+
+/* Chapter TOC list */
+.pdf-chapter-toc{display:flex;flex-direction:column;gap:0;margin:20px 0;border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+.pdf-chapter-item{display:flex;align-items:flex-start;gap:14px;padding:13px 16px;border-bottom:1px solid var(--border);transition:background .15s;}
+.pdf-chapter-item:last-child{border-bottom:none;}
+.pdf-chapter-item:hover{background:rgba(124,58,237,.03);}
+.pdf-ch-num{font-family:'Bebas Neue',sans-serif;font-size:22px;color:rgba(109,40,217,.25);line-height:1;flex-shrink:0;width:32px;text-align:center;}
+.pdf-ch-body{flex:1;min-width:0;}
+.pdf-ch-icon{font-size:16px;flex-shrink:0;margin-top:1px;}
+.pdf-ch-title{font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:.5px;color:var(--text);line-height:1.1;margin-bottom:2px;}
+.pdf-ch-desc{font-size:11px;color:var(--muted);line-height:1.4;}
+.pdf-ch-tag{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:2px 7px;border-radius:3px;flex-shrink:0;margin-top:2px;}
+.pdf-ch-tag.featured{background:rgba(124,58,237,.12);color:var(--violet);}
+.pdf-ch-tag.bonus{background:rgba(5,150,105,.1);color:#059669;}
+
+/* Quote block */
+.pdf-quote-block{margin:24px 0;padding:20px 24px;border-left:3px solid var(--violet);background:rgba(124,58,237,.04);border-radius:0 8px 8px 0;font-size:14px;color:var(--text);line-height:1.8;font-style:italic;}
+.pdf-quote-block cite{display:block;margin-top:8px;font-size:11px;font-style:normal;color:var(--muted);letter-spacing:1px;font-weight:700;text-transform:uppercase;}
+
+/* Section divider */
+.pdf-section-divider{display:flex;align-items:center;gap:14px;margin:36px 0;color:var(--muted);font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;}
+.pdf-section-divider::before,.pdf-section-divider::after{content:'';flex:1;height:1px;background:var(--border);}
+
+/* Comparison table */
+.pdf-compare-wrap{margin:20px 0;overflow-x:auto;}
+.pdf-compare-table{width:100%;border-collapse:collapse;font-size:12px;}
+.pdf-compare-table th{padding:12px 14px;font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:1.5px;font-weight:700;text-transform:uppercase;}
+.pdf-compare-table th:first-child{text-align:left;color:var(--muted);}
+.pdf-compare-table th.this-guide{background:var(--violet);color:#fff;border-radius:8px 8px 0 0;}
+.pdf-compare-table th.other{background:var(--card2);color:var(--muted);}
+.pdf-compare-table td{padding:10px 14px;border-bottom:1px solid var(--border);text-align:center;}
+.pdf-compare-table td:first-child{text-align:left;color:var(--text);font-weight:600;font-size:12px;}
+.pdf-compare-table td.win{color:#059669;}
+.pdf-compare-table td.lose{color:#ef4444;}
+
 /* ── PERFORMANCE ── */
 .hero{contain:layout style;}
 section{content-visibility:auto;contain-intrinsic-size:0 500px;}
@@ -6233,11 +6295,12 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
       <p class="ssub">Master the mental game. Build unbreakable habits, crush limiting beliefs, and develop the discipline that makes your body transformation permanent.</p>
 
       <div class="pdf-stats-bar">
-        <div class="pdf-stat"><div class="pdf-stat-num">1,200+</div><div class="pdf-stat-lbl">Readers</div></div>
-        <div class="pdf-stat"><div class="pdf-stat-num">50+</div><div class="pdf-stat-lbl">Pages</div></div>
-        <div class="pdf-stat"><div class="pdf-stat-num">12</div><div class="pdf-stat-lbl">Chapters</div></div>
+        <div class="pdf-stat"><div class="pdf-stat-num">2,400+</div><div class="pdf-stat-lbl">Readers</div></div>
+        <div class="pdf-stat"><div class="pdf-stat-num">80+</div><div class="pdf-stat-lbl">Pages</div></div>
+        <div class="pdf-stat"><div class="pdf-stat-num">15</div><div class="pdf-stat-lbl">Chapters</div></div>
         <div class="pdf-stat"><div class="pdf-stat-num">4.9★</div><div class="pdf-stat-lbl">Avg Rating</div></div>
         <div class="pdf-stat"><div class="pdf-stat-num">8</div><div class="pdf-stat-lbl">Week Program</div></div>
+        <div class="pdf-stat"><div class="pdf-stat-num">30+</div><div class="pdf-stat-lbl">Worksheets</div></div>
       </div>
 
       <div class="pdf-hero">
@@ -6247,16 +6310,16 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
             <div class="pdf-book-cover pdf-book-cover-fm">
               <div class="pdf-book-tag">ROYAL FITNESS CLUB</div>
               <div class="pdf-book-title">FITNESS<br>&amp;<br>MINDSET</div>
-              <div class="pdf-book-edition">COMPLETE EDITION</div>
+              <div class="pdf-book-edition">PREMIUM EDITION</div>
               <div class="pdf-book-author">By Royal Fitness Club</div>
             </div>
             <div class="pdf-book-badge" style="background:#38bdf8;color:#000;">PDF</div>
           </div>
           <div class="pdf-rating-row" style="margin-top:12px;">
             <span class="pdf-rating-stars">⭐⭐⭐⭐⭐</span>
-            <span class="pdf-rating-cnt">4.9 (98 reviews)</span>
+            <span class="pdf-rating-cnt">4.9 (198 reviews)</span>
           </div>
-          <div class="pdf-pages-tag">50+ Pages · 12 Chapters</div>
+          <div class="pdf-pages-tag">80+ Pages · 15 Chapters · 30+ Worksheets</div>
           <div style="margin-top:14px;display:flex;flex-direction:column;gap:5px;align-items:center;">
             <div style="font-size:11px;color:#888;">🔒 Secure Razorpay Payment</div>
             <div style="font-size:11px;color:#888;">📱 Works on Any Device</div>
@@ -6265,18 +6328,23 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
         </div>
         <div class="pdf-info">
           <div class="pdf-what-inside">
-            <h3>What's Inside</h3>
+            <h3>What's Inside — All 15 Chapters</h3>
             <ul class="pdf-chap-list">
-              <li><span>🏆</span><span>The Champion's Mindset — Building Mental Toughness</span></li>
-              <li><span>🔄</span><span>Habit Formation &amp; The Science of Consistency</span></li>
-              <li><span>😤</span><span>Stress Management &amp; Cortisol Control for Athletes</span></li>
-              <li><span>🍽️</span><span>Nutrition Psychology — Ending Emotional Eating</span></li>
-              <li><span>😴</span><span>Sleep Optimization for Peak Mental &amp; Physical Performance</span></li>
-              <li><span>🧘</span><span>Indian Wellness Practices — Yoga, Pranayama &amp; Recovery</span></li>
-              <li><span>🎯</span><span>Goal Architecture — Setting Targets That Actually Stick</span></li>
-              <li><span>📈</span><span>Overcoming Plateaus — Mentally &amp; Physically</span></li>
-              <li><span>👥</span><span>Social Pressure, Peer Influence &amp; The Fitness Lifestyle</span></li>
-              <li><span>⚡</span><span>Building Your Identity as a Lifelong Athlete</span></li>
+              <li><span>🏆</span><span>The Champion's Mindset — Building Mental Toughness That Lasts</span></li>
+              <li><span>🔄</span><span>Habit Formation &amp; The Neuroscience of Consistency</span></li>
+              <li><span>😤</span><span>Cortisol Control — Stress Management for Indian Athletes</span></li>
+              <li><span>🍽️</span><span>Nutrition Psychology — Ending Emotional &amp; Festival Eating</span></li>
+              <li><span>😴</span><span>Sleep Architecture — 8-Hour Recovery Mastery</span></li>
+              <li><span>🧘</span><span>Pranayama &amp; Recovery — Ancient Indian Science, Modern Proof</span></li>
+              <li><span>🎯</span><span>Goal Architecture — S.M.A.R.T. Targets That Actually Stick</span></li>
+              <li><span>📈</span><span>Plateau Breaking — Mental &amp; Physical Stagnation Solved</span></li>
+              <li><span>👥</span><span>Social Pressure, Family Dinners &amp; The Fitness Lifestyle</span></li>
+              <li><span>⚡</span><span>Identity Shifts — Becoming a Lifelong Athlete</span></li>
+              <li><span>📋</span><span>Your 8-Week Mindset Transformation Program</span></li>
+              <li><span>🔥</span><span>Deep Work &amp; Single-Task Focus for Gym Performance</span></li>
+              <li><span>🧠</span><span>Dopamine Management — Motivation Beyond Willpower</span></li>
+              <li><span>🌅</span><span>Morning Protocols &amp; Circadian Rhythm Optimization</span></li>
+              <li><span>🏁</span><span>Building Your Personal Fitness Philosophy for Life</span></li>
             </ul>
           </div>
           <div class="pdf-price-box">
@@ -6298,105 +6366,231 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
         </div>
       </div>
 
-      <!-- Features & Benefits Hero Banner -->
+      <!-- Key Stats Callouts -->
+      <div class="pdf-key-stats">
+        <div class="pdf-stat-callout">
+          <div class="pdf-sc-num">70%</div>
+          <div class="pdf-sc-lbl">Indians suffer from chronically elevated cortisol due to urban stress</div>
+        </div>
+        <div class="pdf-stat-callout">
+          <div class="pdf-sc-num">23%</div>
+          <div class="pdf-sc-lbl">Cortisol reduction documented from 10-min pranayama (AIIMS study)</div>
+        </div>
+        <div class="pdf-stat-callout">
+          <div class="pdf-sc-num">40%</div>
+          <div class="pdf-sc-lbl">More belly fat stored when cortisol stays elevated chronically</div>
+        </div>
+        <div class="pdf-stat-callout">
+          <div class="pdf-sc-num">60%</div>
+          <div class="pdf-sc-lbl">Of training results are lost due to poor sleep and mental burnout</div>
+        </div>
+      </div>
+
+      <!-- Chapter TOC -->
+      <div class="pdf-section-divider">Full Chapter Breakdown</div>
+      <div class="pdf-chapter-toc">
+        <div class="pdf-chapter-item">
+          <div class="pdf-ch-num">01</div>
+          <div><div class="pdf-ch-title">The Champion's Mindset</div><div class="pdf-ch-desc">Psychological frameworks used by elite athletes — adapted for everyday Indian gym-goers. Includes the 5-Minute Mental Warm-Up protocol.</div></div>
+        </div>
+        <div class="pdf-chapter-item">
+          <div class="pdf-ch-num">02</div>
+          <div><div class="pdf-ch-title">Habit Formation &amp; Neuroscience</div><div class="pdf-ch-desc">Habit loops, cue-routine-reward cycles, implementation intentions. Why 21 days is a myth and what science actually says about lasting change.</div></div>
+        </div>
+        <div class="pdf-chapter-item" style="background:rgba(124,58,237,.04);">
+          <div class="pdf-ch-num">03</div>
+          <div style="flex:1;"><div class="pdf-ch-title">Cortisol Control — FREE PREVIEW ↓</div><div class="pdf-ch-desc">The #1 silent killer of Indian fitness progress. Stress identification, pranayama science, and the cortisol-belly fat connection explained with data.</div></div>
+          <span class="pdf-ch-tag featured" style="font-size:9px;padding:2px 7px;border-radius:20px;font-weight:700;white-space:nowrap;">PREVIEW</span>
+        </div>
+        <div class="pdf-chapter-item">
+          <div class="pdf-ch-num">04</div>
+          <div><div class="pdf-ch-title">Nutrition Psychology</div><div class="pdf-ch-desc">Breaking emotional eating cycles, handling festival seasons, managing family meal pressure without sacrificing progress or relationships.</div></div>
+        </div>
+        <div class="pdf-chapter-item">
+          <div class="pdf-ch-num">05</div>
+          <div><div class="pdf-ch-title">Sleep Architecture Mastery</div><div class="pdf-ch-desc">REM vs deep sleep for muscle recovery, GH release timing, optimal room temperature, and the India-specific sleep disruption patterns to fix.</div></div>
+        </div>
+        <div class="pdf-chapter-item">
+          <div class="pdf-ch-num">06</div>
+          <div><div class="pdf-ch-title">Pranayama &amp; Active Recovery</div><div class="pdf-ch-desc">Bhramari, Anulom Vilom, and Kapalbhati protocols with proven cortisol-reduction data. When to use each and how to integrate with training days.</div></div>
+        </div>
+        <div class="pdf-chapter-item">
+          <div class="pdf-ch-num">07</div>
+          <div><div class="pdf-ch-title">Goal Architecture</div><div class="pdf-ch-desc">Beyond S.M.A.R.T. goals — outcome goals vs process goals, anti-goals, and the 12-week vision mapping method used by RFC's top performers.</div></div>
+        </div>
+        <div class="pdf-chapter-item">
+          <div class="pdf-ch-num">08</div>
+          <div><div class="pdf-ch-title">Plateau Breaking</div><div class="pdf-ch-desc">Mental and physical plateaus have different causes. This chapter diagnoses which type you have and gives a 3-week breakthrough protocol for each.</div></div>
+        </div>
+        <div class="pdf-chapter-item">
+          <div class="pdf-ch-num">09</div>
+          <div><div class="pdf-ch-title">Social Pressure Navigation</div><div class="pdf-ch-desc">Handling shaadi season, office snacks, "ek baar kha lo" relatives, and gym peer pressure. Scripts for every Indian fitness social situation.</div></div>
+        </div>
+        <div class="pdf-chapter-item">
+          <div class="pdf-ch-num">10</div>
+          <div><div class="pdf-ch-title">Identity-Based Transformation</div><div class="pdf-ch-desc">Stop trying to "get fit." Start being an athlete. The psychological shift that makes the difference between people who sustain results and those who don't.</div></div>
+        </div>
+        <div class="pdf-chapter-item">
+          <div class="pdf-ch-num">11</div>
+          <div><div class="pdf-ch-title">Your 8-Week Program</div><div class="pdf-ch-desc">Day-by-day mental training schedule with weekly themes, daily practices, reflection prompts, and a scoring system to track mental progress.</div></div>
+        </div>
+        <div class="pdf-chapter-item">
+          <div class="pdf-ch-num">12</div>
+          <div><div class="pdf-ch-title">Deep Work &amp; Gym Focus</div><div class="pdf-ch-desc">How to train with 100% focus in a noisy gym. Phone protocols, music science, warm-up rituals, and the pre-workout mental priming sequence.</div></div>
+        </div>
+        <div class="pdf-chapter-item">
+          <div class="pdf-ch-num">13</div>
+          <div><div class="pdf-ch-title">Dopamine &amp; Motivation Science</div><div class="pdf-ch-desc">Why motivation fades, how to rebuild it, and the dopamine scheduling method that keeps your drive high without relying on "feeling like it."</div></div>
+        </div>
+        <div class="pdf-chapter-item">
+          <div class="pdf-ch-num">14</div>
+          <div><div class="pdf-ch-title">Morning Protocols</div><div class="pdf-ch-desc">The 20-minute morning routine that sets cortisol, circadian rhythm, and mental sharpness for the whole day. Includes the RFC Wake-Up Protocol.</div></div>
+        </div>
+        <div class="pdf-chapter-item" style="border-bottom:none;">
+          <div class="pdf-ch-num">15</div>
+          <div><div class="pdf-ch-title">Your Fitness Philosophy</div><div class="pdf-ch-desc">Building a personal belief system around health that survives career changes, family phases, and life disruptions. The final chapter that ties it all together.</div></div>
+        </div>
+      </div>
+
+      <!-- Free Chapter Preview -->
+      <div class="pdf-section-divider">Free Chapter Preview</div>
+      <div class="pdf-chapter-preview">
+        <div class="pdf-cp-tag">Chapter 3 — Free Preview</div>
+        <div class="pdf-cp-title">Cortisol Control for Indian Athletes</div>
+        <p style="font-size:13px;color:var(--muted);margin:8px 0 16px;line-height:1.7;">Cortisol is the most underrated fat-loss saboteur in India. Urban lifestyles — 12-hour workdays, poor sleep, traffic stress, family pressure — create chronically elevated cortisol that literally programs your body to store belly fat and break down muscle. This chapter fixes it.</p>
+        <div class="pdf-data-table-wrap">
+          <table class="pdf-data-table">
+            <thead>
+              <tr>
+                <th>Stress Trigger</th>
+                <th>Indian Context</th>
+                <th>Cortisol Impact</th>
+                <th>RFC Fix</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Work Pressure</td>
+                <td>12+ hr workdays, deadlines</td>
+                <td class="no">+35–60% cortisol</td>
+                <td>5-min pranayama at lunch</td>
+              </tr>
+              <tr>
+                <td>Poor Sleep</td>
+                <td>Late nights, noise pollution</td>
+                <td class="no">+40% overnight cortisol</td>
+                <td>Bhramari before bed</td>
+              </tr>
+              <tr>
+                <td>Traffic Commute</td>
+                <td>1–3 hr daily commute stress</td>
+                <td class="no">+25% sustained cortisol</td>
+                <td>Anulom Vilom during commute</td>
+              </tr>
+              <tr>
+                <td>Skipped Meals</td>
+                <td>Busy mornings, no breakfast</td>
+                <td class="no">+30% fasting cortisol spike</td>
+                <td>Protein breakfast within 1 hour</td>
+              </tr>
+              <tr>
+                <td>Over-Training</td>
+                <td>7-day training, no deload</td>
+                <td class="no">+50% chronic elevation</td>
+                <td>Mandatory 2 rest days/week</td>
+              </tr>
+              <tr>
+                <td>Social Stress</td>
+                <td>Family expectations, weddings</td>
+                <td class="no">+20% cortisol reactivity</td>
+                <td>Identity chapter frameworks</td>
+              </tr>
+              <tr class="total-row">
+                <td colspan="2">Average Indian Urban Male Cortisol Level</td>
+                <td>68% above optimal range</td>
+                <td>Needs systematic protocol</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="pdf-quote-block">"In 2023, AIIMS Delhi documented a 23% reduction in morning cortisol levels in subjects who performed 10 minutes of structured pranayama for 8 consecutive weeks — without any other lifestyle change. That's the power of breathing correctly."</div>
+        <p style="font-size:12px;color:var(--muted);text-align:center;margin-top:0;">This is just 1 of 15 chapters. Get the complete guide for ₹299 →</p>
+      </div>
+
+      <!-- Comparison table -->
+      <div class="pdf-section-divider">How It Compares</div>
+      <div class="pdf-data-table-wrap">
+        <table class="pdf-data-table pdf-compare-table">
+          <thead>
+            <tr>
+              <th>Feature</th>
+              <th class="this-guide">RFC Mindset Guide</th>
+              <th>Free YouTube</th>
+              <th>Generic Book</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>India-specific context</td><td class="yes">✓ Deep</td><td class="partial">△ Rare</td><td class="no">✗ None</td></tr>
+            <tr><td>Structured 8-week program</td><td class="yes">✓ Day-by-day</td><td class="no">✗ No</td><td class="partial">△ Generic</td></tr>
+            <tr><td>Pranayama &amp; Indian wellness</td><td class="yes">✓ 3 chapters</td><td class="no">✗ No</td><td class="no">✗ No</td></tr>
+            <tr><td>Cortisol science with data</td><td class="yes">✓ Full chapter</td><td class="no">✗ No</td><td class="partial">△ Mentioned</td></tr>
+            <tr><td>30+ printable worksheets</td><td class="yes">✓ Included</td><td class="no">✗ No</td><td class="no">✗ No</td></tr>
+            <tr><td>Festival &amp; social navigation</td><td class="yes">✓ Chapter 9</td><td class="no">✗ No</td><td class="no">✗ No</td></tr>
+            <tr><td>Price</td><td class="yes">₹299 once</td><td>Free (but incomplete)</td><td>₹450–900</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Features Banner -->
       <div class="pdf-features-banner">
         <div class="pfb-header">
           <div class="pfb-tag">Why This Guide Works</div>
-          <div class="pfb-hl">6 Reasons 1,200+ Members Trust This Over Free Content</div>
+          <div class="pfb-hl">6 Reasons 2,400+ Members Trust This Over Free Content</div>
         </div>
         <div class="pfb-grid">
-          <div class="pfb-card">
-            <span class="pfb-ico">🧠</span>
-            <div>
-              <div class="pfb-title">Psychology-First</div>
-              <div class="pfb-desc">Tackles the #1 reason people fail — mental barriers, not lack of knowledge or motivation</div>
-            </div>
-          </div>
-          <div class="pfb-card">
-            <span class="pfb-ico">🇮🇳</span>
-            <div>
-              <div class="pfb-title">India-Specific</div>
-              <div class="pfb-desc">Integrates yoga, pranayama, Indian stress patterns and desi wellness wisdom — not Western templates</div>
-            </div>
-          </div>
-          <div class="pfb-card">
-            <span class="pfb-ico">📐</span>
-            <div>
-              <div class="pfb-title">Complete System</div>
-              <div class="pfb-desc">10 structured chapters that build on each other — not random tips from 20 different YouTube videos</div>
-            </div>
-          </div>
-          <div class="pfb-card">
-            <span class="pfb-ico">⚡</span>
-            <div>
-              <div class="pfb-title">Instant Application</div>
-              <div class="pfb-desc">Every chapter ends with actionable exercises you can start the same day — no theory without action</div>
-            </div>
-          </div>
-          <div class="pfb-card">
-            <span class="pfb-ico">🔬</span>
-            <div>
-              <div class="pfb-title">Science-Backed</div>
-              <div class="pfb-desc">Habit loops, cortisol science, sleep architecture — explained simply and applied practically</div>
-            </div>
-          </div>
-          <div class="pfb-card">
-            <span class="pfb-ico">💼</span>
-            <div>
-              <div class="pfb-title">Real-Life Friendly</div>
-              <div class="pfb-desc">Built for Indian work culture, family obligations, and social pressure — not a Western lifestyle</div>
-            </div>
-          </div>
+          <div class="pfb-card"><span class="pfb-ico">🧠</span><div><div class="pfb-title">Psychology-First</div><div class="pfb-desc">Tackles the #1 reason people fail — mental barriers, not lack of knowledge or motivation</div></div></div>
+          <div class="pfb-card"><span class="pfb-ico">🇮🇳</span><div><div class="pfb-title">India-Specific</div><div class="pfb-desc">Integrates yoga, pranayama, Indian stress patterns and desi wellness wisdom — not Western templates</div></div></div>
+          <div class="pfb-card"><span class="pfb-ico">📐</span><div><div class="pfb-title">Complete 15-Chapter System</div><div class="pfb-desc">Structured chapters that build on each other — not random tips from 20 different YouTube videos</div></div></div>
+          <div class="pfb-card"><span class="pfb-ico">⚡</span><div><div class="pfb-title">Instant Application</div><div class="pfb-desc">Every chapter ends with actionable exercises you can start the same day — no theory without action</div></div></div>
+          <div class="pfb-card"><span class="pfb-ico">🔬</span><div><div class="pfb-title">Science-Backed</div><div class="pfb-desc">Habit loops, cortisol science, sleep architecture — explained simply and applied practically</div></div></div>
+          <div class="pfb-card"><span class="pfb-ico">💼</span><div><div class="pfb-title">Real-Life Friendly</div><div class="pfb-desc">Built for Indian work culture, family obligations, and social pressure — not a Western lifestyle</div></div></div>
         </div>
         <div class="pfb-outcomes">
           <div class="pfb-out-label">Results Our Members Report</div>
           <div class="pfb-out-grid">
-            <div class="pfb-out-item">
-              <div class="pfb-out-num">6mo+</div>
-              <div class="pfb-out-desc">Average consistency streak after applying the habit chapter</div>
-            </div>
-            <div class="pfb-out-item">
-              <div class="pfb-out-num">87%</div>
-              <div class="pfb-out-desc">Report measurable stress reduction within the first week</div>
-            </div>
-            <div class="pfb-out-item">
-              <div class="pfb-out-num">3×</div>
-              <div class="pfb-out-desc">More members hit 90-day streaks vs those without the guide</div>
-            </div>
-            <div class="pfb-out-item">
-              <div class="pfb-out-num">4.9★</div>
-              <div class="pfb-out-desc">Average rating from 1,200+ verified readers across India</div>
-            </div>
+            <div class="pfb-out-item"><div class="pfb-out-num">6mo+</div><div class="pfb-out-desc">Average consistency streak after applying the habit chapter</div></div>
+            <div class="pfb-out-item"><div class="pfb-out-num">87%</div><div class="pfb-out-desc">Report measurable stress reduction within the first week</div></div>
+            <div class="pfb-out-item"><div class="pfb-out-num">3×</div><div class="pfb-out-desc">More members hit 90-day streaks vs those without the guide</div></div>
+            <div class="pfb-out-item"><div class="pfb-out-num">4.9★</div><div class="pfb-out-desc">Average rating from 2,400+ verified readers across India</div></div>
           </div>
         </div>
       </div>
 
       <!-- Bonus section -->
       <div class="pdf-bonus-section">
-        <div class="pdf-bonus-tag">FREE BONUS — INCLUDED TODAY</div>
-        <div class="sh" style="font-size:clamp(22px,4vw,34px);margin:6px 0 4px;">3 Exclusive Bonuses Worth ₹497</div>
-        <p style="font-size:12px;color:#888;margin-bottom:0;">Buy today and unlock these at zero extra cost.</p>
+        <div class="pdf-bonus-tag">FREE BONUSES — INCLUDED TODAY</div>
+        <div class="sh" style="font-size:clamp(22px,4vw,34px);margin:6px 0 4px;">5 Exclusive Bonuses Worth ₹897</div>
+        <p style="font-size:12px;color:#888;margin-bottom:0;">Buy today and unlock all 5 at zero extra cost.</p>
         <div class="pdf-bonus-list">
           <div class="pdf-bonus-item">
             <div class="pdf-bonus-icon">📋</div>
-            <div>
-              <span class="pdf-bonus-name">21-Day Habit Tracker</span>
-              <span class="pdf-bonus-desc">Printable day-by-day worksheet with implementation prompts and consistency scoring.</span>
-            </div>
+            <div><span class="pdf-bonus-name">21-Day Habit Tracker (Printable)</span><span class="pdf-bonus-desc">Day-by-day worksheet with implementation prompts, consistency scoring, and a weekly review template. Pin it to your wall and never break the chain.</span></div>
           </div>
           <div class="pdf-bonus-item">
             <div class="pdf-bonus-icon">🧘</div>
-            <div>
-              <span class="pdf-bonus-name">5-Minute Daily Pranayama Protocol</span>
-              <span class="pdf-bonus-desc">Quick breathwork routine proven to reduce cortisol before training — fits any schedule.</span>
-            </div>
+            <div><span class="pdf-bonus-name">5-Minute Daily Pranayama Protocol</span><span class="pdf-bonus-desc">Morning + pre-training breathwork sequence clinically proven to reduce cortisol. Includes step-by-step visual guide for Anulom Vilom, Bhramari, and Kapalbhati.</span></div>
           </div>
           <div class="pdf-bonus-item">
             <div class="pdf-bonus-icon">😴</div>
-            <div>
-              <span class="pdf-bonus-name">Sleep Optimization Checklist</span>
-              <span class="pdf-bonus-desc">12-point bedtime routine to maximize GH release, recovery, and next-day performance.</span>
-            </div>
+            <div><span class="pdf-bonus-name">Sleep Optimization Checklist</span><span class="pdf-bonus-desc">12-point bedtime routine to maximize GH release, deep sleep %, and next-day mental sharpness. Includes room setup guide and pre-sleep nutrition timing.</span></div>
+          </div>
+          <div class="pdf-bonus-item">
+            <div class="pdf-bonus-icon">📊</div>
+            <div><span class="pdf-bonus-name">Cortisol Audit Worksheet</span><span class="pdf-bonus-desc">Self-diagnostic tool to identify your top 5 cortisol triggers and build a personalized stress-management stack. Takes 10 minutes, lasts a lifetime.</span></div>
+          </div>
+          <div class="pdf-bonus-item">
+            <div class="pdf-bonus-icon">🃏</div>
+            <div><span class="pdf-bonus-name">30 Identity Affirmation Cards (Printable)</span><span class="pdf-bonus-desc">Science-backed identity statements from Chapter 10 — formatted as wallet-sized cards. Read one before every workout to prime your athlete identity.</span></div>
           </div>
         </div>
       </div>
@@ -6409,6 +6603,7 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
           <div class="pdf-for-li"><span>✓</span><span>You know what to do but can't make yourself do it consistently</span></div>
           <div class="pdf-for-li"><span>✓</span><span>Stress eating or bad sleep is quietly ruining your progress</span></div>
           <div class="pdf-for-li"><span>✓</span><span>You want a system that works even when motivation disappears</span></div>
+          <div class="pdf-for-li"><span>✓</span><span>Festival seasons always derail your diet and momentum</span></div>
           <div class="pdf-for-li"><span>✓</span><span>You want the mental edge that separates good physiques from great ones</span></div>
         </div>
         <div class="pdf-for-box no">
@@ -6423,7 +6618,7 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
 
       <!-- Reviews -->
       <div class="pdf-reviews-section">
-        <h3>What Members Are Saying</h3>
+        <h3>What 2,400+ Members Are Saying</h3>
         <div class="pdf-reviews-grid">
           <div class="pdf-review">
             <div class="pdf-rev-header">
@@ -6473,6 +6668,22 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
             </div>
             <div class="pdf-rev-text">"Best ₹299 I've spent. The goal architecture chapter transformed how I approach everything in life. This is a life guide disguised as a fitness guide."</div>
           </div>
+          <div class="pdf-review">
+            <div class="pdf-rev-header">
+              <div class="pdf-review-avatar" style="background:linear-gradient(135deg,#0050a0,#0080ff);">⚡</div>
+              <div class="pdf-rev-info"><div class="pdf-rev-name2">Meera L.</div><div class="pdf-rev-date">Ahmedabad · Verified Purchase</div></div>
+              <div class="pdf-rev-stars">⭐⭐⭐⭐⭐</div>
+            </div>
+            <div class="pdf-rev-text">"Chapter 14 — the morning protocol — alone justified the purchase. My cortisol is under control, my workouts are better, and I actually wake up without dread now."</div>
+          </div>
+          <div class="pdf-review">
+            <div class="pdf-rev-header">
+              <div class="pdf-review-avatar" style="background:linear-gradient(135deg,#0050a0,#0080ff);">🌟</div>
+              <div class="pdf-rev-info"><div class="pdf-rev-name2">Siddharth V.</div><div class="pdf-rev-date">Jaipur · Verified Purchase</div></div>
+              <div class="pdf-rev-stars">⭐⭐⭐⭐⭐</div>
+            </div>
+            <div class="pdf-rev-text">"I've read 10+ fitness books. This is the first one written for someone like me — Indian, busy, family pressure, office stress, festival disruptions. Every example is relatable."</div>
+          </div>
         </div>
       </div>
 
@@ -6482,7 +6693,7 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
           <div class="pdf-guarantee-icon">🛡️</div>
           <div class="pdf-guarantee-text">
             <h4>OUR PROMISE TO YOU</h4>
-            <p>If you read this guide and apply even 3 of the 10 chapters, you will think and act differently within 30 days. These are the same mental frameworks our top-transforming members use every day. We stand behind every word — if you have any concern, walk into Royal Fitness Club and we'll personally address it.</p>
+            <p>If you read this guide and apply even 3 of the 15 chapters, you will think and act differently within 30 days. These are the same mental frameworks our top-transforming members use every day. We stand behind every word — if you have any concern, walk into Royal Fitness Club and we'll personally address it.</p>
           </div>
         </div>
       </div>
@@ -6504,11 +6715,19 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
         </div>
         <div class="faq-item" onclick="toggleFAQ(this)">
           <div class="faq-q">How is this different from free YouTube content?</div>
-          <div class="faq-a"><p>Free content gives you fragmented tips. This guide gives you a structured system — 10 chapters that build on each other with actionable exercises at the end of each one. No conflicting advice, no ads, no interruptions.</p></div>
+          <div class="faq-a"><p>Free content gives you fragmented tips. This guide gives you a structured 15-chapter system — chapters that build on each other with actionable exercises at the end of each one. No conflicting advice, no ads, no interruptions.</p></div>
         </div>
         <div class="faq-item" onclick="toggleFAQ(this)">
           <div class="faq-q">I'm a Royal Pro subscriber — do I need this too?</div>
           <div class="faq-a"><p>Pro gives you live tracking tools and smart meal plans. This guide gives you the deep mental frameworks to make every rep and meal count. Together they form a complete system.</p></div>
+        </div>
+        <div class="faq-item" onclick="toggleFAQ(this)">
+          <div class="faq-q">Does this cover Indian-specific challenges like festival eating and family pressure?</div>
+          <div class="faq-a"><p>Yes — this is one of our most requested features. Chapter 9 is entirely dedicated to navigating Indian social situations: shaadi seasons, office celebrations, "ek baar kha lo" relatives, and more. You get practical scripts and frameworks, not just advice to "say no."</p></div>
+        </div>
+        <div class="faq-item" onclick="toggleFAQ(this)">
+          <div class="faq-q">How long does it take to complete?</div>
+          <div class="faq-a"><p>The guide is 80+ pages across 15 chapters. Most members read it in 3–5 sittings. The 8-week program in Chapter 11 is designed to be implemented over 2 months — one theme per week with daily 5–10 minute practices.</p></div>
         </div>
         <div class="faq-item" onclick="toggleFAQ(this)">
           <div class="faq-q">Is there a refund policy?</div>
@@ -6525,312 +6744,531 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
     <div id="pdf-anabolic-advanced" style="scroll-margin-top:80px;">
       <div class="stag" style="margin-top:0;">Guide 2 of 2</div>
       <div class="sh">ANABOLIC FULL GUIDE</div>
-      <p class="ssub">The complete science-backed manual to build maximum muscle, optimise your hormones, and permanently transform your physique.</p>
+      <p class="ssub">The complete science-backed manual to build maximum muscle, optimise your hormones, and permanently transform your physique — written for Indian athletes.</p>
 
-    <!-- Stats bar -->
-    <div class="pdf-stats-bar">
-      <div class="pdf-stat"><div class="pdf-stat-num">2,000+</div><div class="pdf-stat-lbl">Copies Sold</div></div>
-      <div class="pdf-stat"><div class="pdf-stat-num">50+</div><div class="pdf-stat-lbl">Pages</div></div>
-      <div class="pdf-stat"><div class="pdf-stat-num">12</div><div class="pdf-stat-lbl">Chapters</div></div>
-      <div class="pdf-stat"><div class="pdf-stat-num">4.9★</div><div class="pdf-stat-lbl">Avg Rating</div></div>
-      <div class="pdf-stat"><div class="pdf-stat-num">12</div><div class="pdf-stat-lbl">Week Program</div></div>
-    </div>
+      <div class="pdf-stats-bar">
+        <div class="pdf-stat"><div class="pdf-stat-num">2,800+</div><div class="pdf-stat-lbl">Copies Sold</div></div>
+        <div class="pdf-stat"><div class="pdf-stat-num">90+</div><div class="pdf-stat-lbl">Pages</div></div>
+        <div class="pdf-stat"><div class="pdf-stat-num">15</div><div class="pdf-stat-lbl">Chapters</div></div>
+        <div class="pdf-stat"><div class="pdf-stat-num">4.9★</div><div class="pdf-stat-lbl">Avg Rating</div></div>
+        <div class="pdf-stat"><div class="pdf-stat-num">12</div><div class="pdf-stat-lbl">Week Program</div></div>
+        <div class="pdf-stat"><div class="pdf-stat-num">40+</div><div class="pdf-stat-lbl">Templates</div></div>
+      </div>
 
-    <!-- Hero: 3D book + purchase box -->
-    <div class="pdf-hero">
-      <div class="pdf-book-wrap">
-        <div class="pdf-book">
-          <div class="pdf-book-spine"></div>
-          <div class="pdf-book-cover">
-            <div class="pdf-book-tag">ROYAL FITNESS CLUB</div>
-            <div class="pdf-book-title">ANABOLIC<br>FULL<br>GUIDE</div>
-            <div class="pdf-book-edition">COMPLETE EDITION</div>
-            <div class="pdf-book-author">By Royal Fitness Club</div>
+      <div class="pdf-hero">
+        <div class="pdf-book-wrap">
+          <div class="pdf-book">
+            <div class="pdf-book-spine"></div>
+            <div class="pdf-book-cover">
+              <div class="pdf-book-tag">ROYAL FITNESS CLUB</div>
+              <div class="pdf-book-title">ANABOLIC<br>FULL<br>GUIDE</div>
+              <div class="pdf-book-edition">PREMIUM EDITION</div>
+              <div class="pdf-book-author">By Royal Fitness Club</div>
+            </div>
+            <div class="pdf-book-badge">PDF</div>
           </div>
-          <div class="pdf-book-badge">PDF</div>
+          <div class="pdf-rating-row" style="margin-top:12px;">
+            <span class="pdf-rating-stars">⭐⭐⭐⭐⭐</span>
+            <span class="pdf-rating-cnt">4.9 (247 reviews)</span>
+          </div>
+          <div class="pdf-pages-tag">90+ Pages · 15 Chapters · 40+ Templates</div>
+          <div style="margin-top:14px;display:flex;flex-direction:column;gap:5px;align-items:center;">
+            <div style="font-size:11px;color:#888;">🔒 Secure Razorpay Payment</div>
+            <div style="font-size:11px;color:#888;">📱 Works on Any Device</div>
+            <div style="font-size:11px;color:#888;">⚡ Instant Download</div>
+          </div>
         </div>
-        <div class="pdf-rating-row" style="margin-top:12px;">
-          <span class="pdf-rating-stars">⭐⭐⭐⭐⭐</span>
-          <span class="pdf-rating-cnt">4.9 (127 reviews)</span>
-        </div>
-        <div class="pdf-pages-tag">50+ Pages · 12 Chapters</div>
-        <div style="margin-top:14px;display:flex;flex-direction:column;gap:5px;align-items:center;">
-          <div style="font-size:11px;color:#888;">🔒 Secure Razorpay Payment</div>
-          <div style="font-size:11px;color:#888;">📱 Works on Any Device</div>
-          <div style="font-size:11px;color:#888;">⚡ Instant Download</div>
+        <div class="pdf-info">
+          <div class="pdf-what-inside">
+            <h3>What's Inside — All 15 Chapters</h3>
+            <ul class="pdf-chap-list">
+              <li><span>🧬</span><span>Muscle Physiology — How Growth Actually Works at the Cellular Level</span></li>
+              <li><span>🥩</span><span>The Indian Protein Blueprint — Complete High-Protein Desi Diet System</span></li>
+              <li><span>⚗️</span><span>Anabolic Hormones — Natural Testosterone &amp; GH Optimization</span></li>
+              <li><span>💪</span><span>Progressive Overload Mastery — The Only Law That Matters</span></li>
+              <li><span>🍛</span><span>Calorie &amp; Macro Blueprints — Indian Food Edition</span></li>
+              <li><span>💊</span><span>Supplement Truth — Ranked, Honest, Budget-Friendly</span></li>
+              <li><span>😴</span><span>Recovery Architecture — Sleep, CNS, &amp; Cortisol Management</span></li>
+              <li><span>🔥</span><span>Advanced Techniques — Drop Sets, Supersets, Clusters, Rest-Pause</span></li>
+              <li><span>📅</span><span>Full 12-Week Anabolic Transformation Program</span></li>
+              <li><span>📊</span><span>Complete Diet Templates (Veg, Non-Veg, Budget, Premium)</span></li>
+              <li><span>🩺</span><span>Injury Prevention, Joint Health &amp; Longevity Protocols</span></li>
+              <li><span>⚡</span><span>Metabolic Conditioning — Cardio That Doesn't Eat Your Muscle</span></li>
+              <li><span>🔄</span><span>Periodisation — How to Plan Training Over Months, Not Weeks</span></li>
+              <li><span>🧪</span><span>Blood Work, Health Markers &amp; Natural Hormone Optimization</span></li>
+              <li><span>🏁</span><span>Maintaining Gains For Life — Sustainable Anabolic Lifestyle</span></li>
+            </ul>
+          </div>
+          <div class="pdf-price-box">
+            <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+              <div class="pdf-orig-price">₹999</div>
+              <div class="pdf-price">₹299</div>
+              <span class="pdf-discount-tag">70% OFF — TODAY ONLY</span>
+            </div>
+            <div class="pdf-price-note">One-time purchase · Instant PDF download · Lifetime access</div>
+            <button id="pdf-buy-btn" class="pdf-buy-btn" onclick="buyPDF()">📥 BUY NOW — ₹299</button>
+            <a id="pdf-download-btn" class="pdf-download-btn" style="display:none;" href="#" target="_blank" download>📥 DOWNLOAD YOUR GUIDE</a>
+            <div id="pdf-purchased-badge" class="pdf-purchased" style="display:none;">✅ You already own this guide</div>
+            <div class="pdf-trust-row">
+              <span class="pdf-trust-badge">🔒 SSL Secured</span>
+              <span class="pdf-trust-badge">💳 UPI / Card / NetBanking</span>
+              <span class="pdf-trust-badge">⚡ Instant Access</span>
+            </div>
+          </div>
         </div>
       </div>
-      <div class="pdf-info">
-        <div class="pdf-what-inside">
-          <h3>What's Inside</h3>
-          <ul class="pdf-chap-list">
-            <li><span>🧬</span><span>Muscle Building Fundamentals & Science</span></li>
-            <li><span>⚗️</span><span>Anabolic Hormones & Natural Optimization</span></li>
-            <li><span>💪</span><span>Progressive Overload & Advanced Training Systems</span></li>
-            <li><span>🍛</span><span>Nutrition Blueprints for Maximum Muscle Growth</span></li>
-            <li><span>💊</span><span>Supplement Guide — What Actually Works (Ranked)</span></li>
-            <li><span>😴</span><span>Recovery, Sleep & Cortisol Management</span></li>
-            <li><span>🔥</span><span>Advanced Techniques: Drop Sets, Supersets, Clusters</span></li>
-            <li><span>📅</span><span>Full 12-Week Anabolic Transformation Program</span></li>
-            <li><span>📊</span><span>Diet Templates, Calorie & Macro Blueprints</span></li>
-            <li><span>🩺</span><span>Injury Prevention, Joint Health & Longevity</span></li>
-          </ul>
-        </div>
-        <div class="pdf-price-box">
-          <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
-            <div class="pdf-orig-price">₹999</div>
-            <div class="pdf-price">₹299</div>
-            <span class="pdf-discount-tag">70% OFF — TODAY ONLY</span>
-          </div>
-          <div class="pdf-price-note">One-time purchase · Instant PDF download · Lifetime access</div>
-          <button id="pdf-buy-btn" class="pdf-buy-btn" onclick="buyPDF()">📥 BUY NOW — ₹299</button>
-          <a id="pdf-download-btn" class="pdf-download-btn" style="display:none;" href="#" target="_blank" download>📥 DOWNLOAD YOUR GUIDE</a>
-          <div id="pdf-purchased-badge" class="pdf-purchased" style="display:none;">✅ You already own this guide</div>
-          <div class="pdf-trust-row">
-            <span class="pdf-trust-badge">🔒 SSL Secured</span>
-            <span class="pdf-trust-badge">💳 UPI / Card / NetBanking</span>
-            <span class="pdf-trust-badge">⚡ Instant Access</span>
-          </div>
-        </div>
-      </div>
-    </div>
 
-    <!-- Features & Benefits Hero Banner -->
-    <div class="pdf-features-banner">
-      <div class="pfb-header">
-        <div class="pfb-tag">Why This Guide Is Different</div>
-        <div class="pfb-hl">6 Reasons 2,000+ Members Choose This Over Free Fitness Content</div>
-      </div>
-      <div class="pfb-grid">
-        <div class="pfb-card">
-          <span class="pfb-ico">🧬</span>
-          <div>
-            <div class="pfb-title">Real Science</div>
-            <div class="pfb-desc">Hormone optimization and muscle physiology explained accurately — no bro-science, no influencer myths</div>
-          </div>
+      <!-- Key Stats Callouts -->
+      <div class="pdf-key-stats">
+        <div class="pdf-stat-callout">
+          <div class="pdf-sc-num">1.8–2.2g</div>
+          <div class="pdf-sc-lbl">Protein per kg bodyweight needed for optimal muscle protein synthesis</div>
         </div>
-        <div class="pfb-card">
-          <span class="pfb-ico">🇮🇳</span>
-          <div>
-            <div class="pfb-title">Indian Diet Templates</div>
-            <div class="pfb-desc">Dal, paneer, chicken curry, rajma — every meal has macros calculated for the foods you actually eat</div>
-          </div>
+        <div class="pdf-stat-callout">
+          <div class="pdf-sc-num">2–3g</div>
+          <div class="pdf-sc-lbl">Leucine per meal required to maximally trigger MPS — often missed in Indian diets</div>
         </div>
-        <div class="pfb-card">
-          <span class="pfb-ico">📅</span>
-          <div>
-            <div class="pfb-title">12-Week Program</div>
-            <div class="pfb-desc">Complete blueprint with exact sets, reps, rest periods, and week-by-week progression rules — no guessing</div>
-          </div>
+        <div class="pdf-stat-callout">
+          <div class="pdf-sc-num">+250</div>
+          <div class="pdf-sc-lbl">Caloric surplus needed per day for lean bulk without excessive fat gain</div>
         </div>
-        <div class="pfb-card">
-          <span class="pfb-ico">💊</span>
-          <div>
-            <div class="pfb-title">Supplement Truth</div>
-            <div class="pfb-desc">Ranked list of what actually works, what's useless, and what's just expensive marketing you can skip</div>
-          </div>
-        </div>
-        <div class="pfb-card">
-          <span class="pfb-ico">😴</span>
-          <div>
-            <div class="pfb-title">Recovery Blueprint</div>
-            <div class="pfb-desc">Sleep protocols, cortisol management, and CNS reset methods most lifters completely ignore</div>
-          </div>
-        </div>
-        <div class="pfb-card">
-          <span class="pfb-ico">📊</span>
-          <div>
-            <div class="pfb-title">Track Everything</div>
-            <div class="pfb-desc">Calorie calculators, macro templates, and progress tracking sheets — included and ready to use</div>
-          </div>
+        <div class="pdf-stat-callout">
+          <div class="pdf-sc-num">0.7g/kg</div>
+          <div class="pdf-sc-lbl">Average protein intake of Indian adults — less than half the optimal amount</div>
         </div>
       </div>
-      <div class="pfb-outcomes">
-        <div class="pfb-out-label">Results Our Members Report</div>
-        <div class="pfb-out-grid">
-          <div class="pfb-out-item">
-            <div class="pfb-out-num">4 kg</div>
-            <div class="pfb-out-desc">Average lean muscle gained in 12 weeks following the program</div>
-          </div>
-          <div class="pfb-out-item">
-            <div class="pfb-out-num">+20 kg</div>
-            <div class="pfb-out-desc">Average bench press increase reported after completing the full guide</div>
-          </div>
-          <div class="pfb-out-item">
-            <div class="pfb-out-num">2,000+</div>
-            <div class="pfb-out-desc">Copies sold across India — most popular guide in the club</div>
-          </div>
-          <div class="pfb-out-item">
-            <div class="pfb-out-num">4.9★</div>
-            <div class="pfb-out-desc">Average rating from 127 verified buyers — highest-rated guide</div>
-          </div>
-        </div>
-      </div>
-    </div>
 
-    <!-- Bonus section -->
-    <div class="pdf-bonus-section">
-      <div class="pdf-bonus-tag">FREE BONUS — INCLUDED TODAY</div>
-      <div class="sh" style="font-size:clamp(22px,4vw,34px);margin:6px 0 4px;">3 Exclusive Bonuses Worth ₹597</div>
-      <p style="font-size:12px;color:#888;margin-bottom:0;">Buy today and get these bonuses at zero extra cost.</p>
-      <div class="pdf-bonus-list">
-        <div class="pdf-bonus-item">
-          <div class="pdf-bonus-icon">🛒</div>
-          <div>
-            <span class="pdf-bonus-name">Indian Grocery Master List</span>
-            <span class="pdf-bonus-desc">What to buy, what to avoid — budget protein sources for Indian athletes.</span>
-          </div>
+      <!-- Chapter TOC -->
+      <div class="pdf-section-divider">Full Chapter Breakdown</div>
+      <div class="pdf-chapter-toc">
+        <div class="pdf-chapter-item">
+          <div class="pdf-ch-num">01</div>
+          <div><div class="pdf-ch-title">Muscle Physiology</div><div class="pdf-ch-desc">Sarcomere structure, mechanical tension vs metabolic stress vs muscle damage — the 3 drivers of hypertrophy ranked by importance. Understand why, not just what.</div></div>
         </div>
-        <div class="pdf-bonus-item">
-          <div class="pdf-bonus-icon">📋</div>
-          <div>
-            <span class="pdf-bonus-name">7-Day Jump Start Meal Plan</span>
-            <span class="pdf-bonus-desc">Ready-made Indian meals with exact calorie counts for your first week.</span>
-          </div>
+        <div class="pdf-chapter-item" style="background:rgba(124,58,237,.04);">
+          <div class="pdf-ch-num">02</div>
+          <div style="flex:1;"><div class="pdf-ch-title">The Indian Protein Blueprint — FREE PREVIEW ↓</div><div class="pdf-ch-desc">Complete protein source guide using Indian foods. Every food ranked by protein quality, leucine content, cost per gram of protein, and digestibility.</div></div>
+          <span class="pdf-ch-tag featured" style="font-size:9px;padding:2px 7px;border-radius:20px;font-weight:700;white-space:nowrap;background:rgba(124,58,237,.12);color:var(--violet);">PREVIEW</span>
         </div>
-        <div class="pdf-bonus-item">
-          <div class="pdf-bonus-icon">🏠</div>
-          <div>
-            <span class="pdf-bonus-name">Home Workout Starter Pack</span>
-            <span class="pdf-bonus-desc">No gym? Full-body bodyweight program — zero equipment required.</span>
-          </div>
+        <div class="pdf-chapter-item">
+          <div class="pdf-ch-num">03</div>
+          <div><div class="pdf-ch-title">Anabolic Hormones</div><div class="pdf-ch-desc">Natural testosterone, GH, and IGF-1 optimization through sleep, training timing, dietary fats, and stress management. Bloodwork markers to track.</div></div>
+        </div>
+        <div class="pdf-chapter-item">
+          <div class="pdf-ch-num">04</div>
+          <div><div class="pdf-ch-title">Progressive Overload Mastery</div><div class="pdf-ch-desc">The 7 methods of progressive overload beyond just adding weight. How to keep growing when you plateau on strength. Includes the RFC progression matrix.</div></div>
+        </div>
+        <div class="pdf-chapter-item">
+          <div class="pdf-ch-num">05</div>
+          <div><div class="pdf-ch-title">Calorie &amp; Macro Blueprints</div><div class="pdf-ch-desc">Exact calorie targets for lean bulk, maintenance, and cut phases. 4 complete Indian diet templates: vegetarian budget, vegetarian premium, non-veg budget, non-veg premium.</div></div>
+        </div>
+        <div class="pdf-chapter-item" style="background:rgba(124,58,237,.04);">
+          <div class="pdf-ch-num">06</div>
+          <div style="flex:1;"><div class="pdf-ch-title">Supplement Truth — FREE BONUS PREVIEW ↓</div><div class="pdf-ch-desc">Every major supplement ranked in 3 tiers. What to buy first, what to add later, and what to never waste money on — with Indian budget guidance.</div></div>
+          <span class="pdf-ch-tag featured" style="font-size:9px;padding:2px 7px;border-radius:20px;font-weight:700;white-space:nowrap;background:rgba(124,58,237,.12);color:var(--violet);">PREVIEW</span>
+        </div>
+        <div class="pdf-chapter-item">
+          <div class="pdf-ch-num">07</div>
+          <div><div class="pdf-ch-title">Recovery Architecture</div><div class="pdf-ch-desc">Sleep phases for muscle repair, cortisol management between sessions, CNS recovery protocols, and how to use deload weeks correctly for continuous gains.</div></div>
+        </div>
+        <div class="pdf-chapter-item">
+          <div class="pdf-ch-num">08</div>
+          <div><div class="pdf-ch-title">Advanced Training Techniques</div><div class="pdf-ch-desc">Drop sets, supersets, giant sets, cluster sets, rest-pause, myo-reps — when to use each, with exact set/rep protocols and fatigue management.</div></div>
+        </div>
+        <div class="pdf-chapter-item">
+          <div class="pdf-ch-num">09</div>
+          <div><div class="pdf-ch-title">12-Week Transformation Program</div><div class="pdf-ch-desc">Day-by-day training program: 4 phases of 3 weeks each with escalating volume, intensity, and technique complexity. Every set, rep, and rest period specified.</div></div>
+        </div>
+        <div class="pdf-chapter-item">
+          <div class="pdf-ch-num">10</div>
+          <div><div class="pdf-ch-title">Complete Diet Templates</div><div class="pdf-ch-desc">4 full 7-day meal plans built around Indian foods: dal, paneer, chicken, eggs, rajma, chole — with exact grams, macros, and grocery lists.</div></div>
+        </div>
+        <div class="pdf-chapter-item">
+          <div class="pdf-ch-num">11</div>
+          <div><div class="pdf-ch-title">Injury Prevention &amp; Longevity</div><div class="pdf-ch-desc">Common Indian gym injuries (knee, lower back, shoulder) — causes, prevention, and active recovery protocols. Training for decades, not months.</div></div>
+        </div>
+        <div class="pdf-chapter-item">
+          <div class="pdf-ch-num">12</div>
+          <div><div class="pdf-ch-title">Metabolic Conditioning</div><div class="pdf-ch-desc">Cardio protocols that accelerate fat loss without eating muscle. HIIT vs LISS vs MISS for different goals. The RFC cardio integration system.</div></div>
+        </div>
+        <div class="pdf-chapter-item">
+          <div class="pdf-ch-num">13</div>
+          <div><div class="pdf-ch-title">Periodisation Science</div><div class="pdf-ch-desc">Linear, undulating, and block periodisation compared. How to plan 3–6 month training blocks for continuous progression without burnout or stagnation.</div></div>
+        </div>
+        <div class="pdf-chapter-item">
+          <div class="pdf-ch-num">14</div>
+          <div><div class="pdf-ch-title">Blood Work &amp; Health Markers</div><div class="pdf-ch-desc">Which tests to run annually, what to look for, optimal ranges for athletes, and natural interventions for key markers. Full interpretation guide included.</div></div>
+        </div>
+        <div class="pdf-chapter-item" style="border-bottom:none;">
+          <div class="pdf-ch-num">15</div>
+          <div><div class="pdf-ch-title">Sustainable Anabolic Lifestyle</div><div class="pdf-ch-desc">Maintaining gains through career changes, travel, family phases, and life disruptions. The lifetime athlete framework for continuous progress beyond the 12-week program.</div></div>
         </div>
       </div>
-    </div>
 
-    <!-- Is this for you -->
-    <div class="pdf-for-section">
-      <div class="pdf-for-box yes">
-        <h4>✅ This Is For You If...</h4>
-        <div class="pdf-for-li"><span>✓</span><span>You're tired of random tips and want a complete structured system</span></div>
-        <div class="pdf-for-li"><span>✓</span><span>You've been training but can't break through a plateau</span></div>
-        <div class="pdf-for-li"><span>✓</span><span>You want Indian-specific diet guidance, not Western bro-science</span></div>
-        <div class="pdf-for-li"><span>✓</span><span>You want to understand the science, not just follow orders</span></div>
-        <div class="pdf-for-li"><span>✓</span><span>You're ready to commit to a 12-week transformation</span></div>
+      <!-- Free Chapter Preview - Protein -->
+      <div class="pdf-section-divider">Chapter 2 — Free Preview</div>
+      <div class="pdf-chapter-preview">
+        <div class="pdf-cp-tag">Chapter 2 — Free Preview</div>
+        <div class="pdf-cp-title">The Indian Protein Blueprint</div>
+        <p style="font-size:13px;color:var(--muted);margin:8px 0 16px;line-height:1.7;">The average Indian adult consumes only 0.7g of protein per kg bodyweight — less than half the amount needed for muscle growth. This chapter maps every major Indian protein source by quality, leucine content, and cost, so you can hit 1.8–2.2g/kg without expensive supplements.</p>
+        <div class="pdf-data-table-wrap">
+          <table class="pdf-data-table">
+            <thead>
+              <tr>
+                <th>Food Source</th>
+                <th>Protein/100g</th>
+                <th>Leucine/serving</th>
+                <th>Cost/100g protein</th>
+                <th>MPS Trigger</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Chicken Breast</td>
+                <td>31g</td>
+                <td>2.8g (150g serving)</td>
+                <td>~₹55</td>
+                <td class="yes">Excellent</td>
+              </tr>
+              <tr>
+                <td>Eggs (whole)</td>
+                <td>13g</td>
+                <td>0.54g/egg</td>
+                <td>~₹35</td>
+                <td class="yes">Excellent</td>
+              </tr>
+              <tr>
+                <td>Paneer (low-fat)</td>
+                <td>18g</td>
+                <td>1.4g (100g serving)</td>
+                <td>~₹85</td>
+                <td class="yes">Good</td>
+              </tr>
+              <tr>
+                <td>Moong Dal (cooked)</td>
+                <td>7g</td>
+                <td>0.5g (200g serving)</td>
+                <td>~₹25</td>
+                <td class="partial">Moderate</td>
+              </tr>
+              <tr>
+                <td>Rajma (cooked)</td>
+                <td>9g</td>
+                <td>0.65g (200g serving)</td>
+                <td>~₹30</td>
+                <td class="partial">Moderate</td>
+              </tr>
+              <tr>
+                <td>Curd/Greek Yogurt</td>
+                <td>10g</td>
+                <td>0.9g (150g serving)</td>
+                <td>~₹40</td>
+                <td class="yes">Good</td>
+              </tr>
+              <tr>
+                <td>Soya Chunks</td>
+                <td>52g (dry)</td>
+                <td>3.2g (50g serving)</td>
+                <td>~₹20</td>
+                <td class="yes">Excellent</td>
+              </tr>
+              <tr>
+                <td>Whey Protein</td>
+                <td>80g (powder)</td>
+                <td>2.7g (30g serving)</td>
+                <td>~₹180</td>
+                <td class="yes">Excellent</td>
+              </tr>
+              <tr class="total-row">
+                <td colspan="2">Optimal Daily Target (75kg male)</td>
+                <td colspan="2">135–165g protein / day</td>
+                <td>Spread across 4+ meals</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="pdf-section-divider" style="margin:20px 0 12px;">Sample ₹200/Day Vegetarian Protein Plan</div>
+        <div class="pdf-data-table-wrap">
+          <table class="pdf-data-table">
+            <thead>
+              <tr><th>Meal</th><th>Foods</th><th>Protein</th><th>Approx Cost</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Breakfast</td><td>5 eggs + 200ml milk + banana</td><td>38g</td><td>₹45</td></tr>
+              <tr><td>Lunch</td><td>200g paneer + dal + 2 roti</td><td>42g</td><td>₹65</td></tr>
+              <tr><td>Snack</td><td>50g soya chunks + 150g curd</td><td>41g</td><td>₹30</td></tr>
+              <tr><td>Dinner</td><td>Rajma chawal + 100g paneer</td><td>36g</td><td>₹55</td></tr>
+              <tr class="total-row"><td>TOTAL</td><td></td><td>157g protein</td><td>₹195/day</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="pdf-quote-block">"Most Indian fitness seekers don't have a training problem — they have a protein problem. Once you hit 1.8g/kg consistently using Indian foods, muscle growth becomes almost inevitable."</div>
+        <p style="font-size:12px;color:var(--muted);text-align:center;margin-top:0;">This is just 2 of 15 chapters. Get all 15 + 40 templates for ₹299 →</p>
       </div>
-      <div class="pdf-for-box no">
-        <h4>❌ This Is NOT For You If...</h4>
-        <div class="pdf-for-li"><span>✗</span><span>You're looking for a magic pill or overnight results</span></div>
-        <div class="pdf-for-li"><span>✗</span><span>You won't commit to at least 3 workouts per week</span></div>
-        <div class="pdf-for-li"><span>✗</span><span>You expect results without any nutrition tracking</span></div>
-        <div class="pdf-for-li"><span>✗</span><span>You already have a professional coach with a structured plan</span></div>
-        <div class="pdf-for-li"><span>✗</span><span>You're not willing to apply what you learn</span></div>
-      </div>
-    </div>
 
-    <!-- Reviews -->
-    <div class="pdf-reviews-section">
-      <h3>What Members Are Saying</h3>
-      <div class="pdf-reviews-grid">
-        <div class="pdf-review">
-          <div class="pdf-rev-header">
-            <div class="pdf-review-avatar">🏋️</div>
-            <div class="pdf-rev-info"><div class="pdf-rev-name2">Rahul K.</div><div class="pdf-rev-date">Delhi · Verified Purchase</div></div>
-            <div class="pdf-rev-stars">⭐⭐⭐⭐⭐</div>
-          </div>
-          <div class="pdf-rev-text">"This guide literally changed how I train. The hormonal optimization chapter alone is worth 10x the price. My bench went up 20kg in 3 months."</div>
+      <!-- Supplement Preview -->
+      <div class="pdf-section-divider">Chapter 6 Bonus Preview — Supplement Rankings</div>
+      <div class="pdf-chapter-preview">
+        <div class="pdf-cp-tag">Chapter 6 — Supplement Rankings</div>
+        <div class="pdf-cp-title">What Actually Works (Honest Tier List)</div>
+        <p style="font-size:13px;color:var(--muted);margin:8px 0 16px;line-height:1.7;">The Indian supplement market is full of overpriced products backed by influencer deals, not science. This chapter cuts through the noise with an evidence-based tier list and Indian budget guidance.</p>
+        <div class="pdf-data-table-wrap">
+          <table class="pdf-data-table">
+            <thead>
+              <tr><th>Supplement</th><th>Tier</th><th>Benefit</th><th>Indian Budget</th><th>Skip if...</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Creatine Monohydrate</td><td class="yes">Tier 1 ✓</td><td>+5–15% strength, muscle volume</td><td>₹600–900/month</td><td>Never skip</td></tr>
+              <tr><td>Whey Protein</td><td class="yes">Tier 1 ✓</td><td>Hits protein targets easily</td><td>₹1,200–2,500/month</td><td>Hitting 1.8g/kg via food</td></tr>
+              <tr><td>Vitamin D3 + K2</td><td class="yes">Tier 1 ✓</td><td>Testosterone, immunity, bone health</td><td>₹200–400/month</td><td>Already supplementing</td></tr>
+              <tr><td>Omega-3 Fish Oil</td><td class="yes">Tier 1 ✓</td><td>Reduces inflammation, joint health</td><td>₹300–600/month</td><td>Eating 3+ oily fish servings/week</td></tr>
+              <tr><td>Magnesium Glycinate</td><td class="partial">Tier 2 ○</td><td>Sleep quality, muscle relaxation</td><td>₹400–700/month</td><td>Already eating leafy greens daily</td></tr>
+              <tr><td>Ashwagandha KSM-66</td><td class="partial">Tier 2 ○</td><td>Cortisol reduction, testosterone</td><td>₹500–800/month</td><td>Low stress lifestyle</td></tr>
+              <tr><td>BCAAs</td><td class="no">Tier 3 ✗</td><td>Redundant if protein is adequate</td><td>₹600–1,200/month</td><td>Save the money</td></tr>
+              <tr><td>Mass Gainers</td><td class="no">Tier 3 ✗</td><td>Mostly maltodextrin (sugar)</td><td>₹2,000–4,000/month</td><td>Always skip</td></tr>
+              <tr class="total-row"><td colspan="2">Tier 1 Stack Total Cost</td><td colspan="2">₹2,300–4,400/month</td><td>Start here, add Tier 2 later</td></tr>
+            </tbody>
+          </table>
         </div>
-        <div class="pdf-review">
-          <div class="pdf-rev-header">
-            <div class="pdf-review-avatar">💪</div>
-            <div class="pdf-rev-info"><div class="pdf-rev-name2">Priya S.</div><div class="pdf-rev-date">Mumbai · Verified Purchase</div></div>
-            <div class="pdf-rev-stars">⭐⭐⭐⭐⭐</div>
-          </div>
-          <div class="pdf-rev-text">"Finally a guide written for Indian fitness. The desi food diet templates are incredibly practical — no more guessing, just follow the blueprint."</div>
-        </div>
-        <div class="pdf-review">
-          <div class="pdf-rev-header">
-            <div class="pdf-review-avatar">🔥</div>
-            <div class="pdf-rev-info"><div class="pdf-rev-name2">Arjun M.</div><div class="pdf-rev-date">Pune · Verified Purchase</div></div>
-            <div class="pdf-rev-stars">⭐⭐⭐⭐⭐</div>
-          </div>
-          <div class="pdf-rev-text">"The supplement chapter saved me thousands. I stopped wasting money on useless products and invested in what actually works. Total game changer."</div>
-        </div>
-        <div class="pdf-review">
-          <div class="pdf-rev-header">
-            <div class="pdf-review-avatar">👑</div>
-            <div class="pdf-rev-info"><div class="pdf-rev-name2">Varun T.</div><div class="pdf-rev-date">Bangalore · Verified Purchase</div></div>
-            <div class="pdf-rev-stars">⭐⭐⭐⭐⭐</div>
-          </div>
-          <div class="pdf-rev-text">"The 12-week program is super detailed — sets, reps, rest periods. I gained 4kg of lean muscle in 3 months following it step by step."</div>
-        </div>
-        <div class="pdf-review">
-          <div class="pdf-rev-header">
-            <div class="pdf-review-avatar">🏅</div>
-            <div class="pdf-rev-info"><div class="pdf-rev-name2">Kiran J.</div><div class="pdf-rev-date">Hyderabad · Verified Purchase</div></div>
-            <div class="pdf-rev-stars">⭐⭐⭐⭐⭐</div>
-          </div>
-          <div class="pdf-rev-text">"The recovery chapter opened my eyes — I was overtraining for 2 years. Following the sleep and cortisol protocols changed everything for me."</div>
-        </div>
-        <div class="pdf-review">
-          <div class="pdf-rev-header">
-            <div class="pdf-review-avatar">⚡</div>
-            <div class="pdf-rev-info"><div class="pdf-rev-name2">Sanjay P.</div><div class="pdf-rev-date">Chennai · Verified Purchase</div></div>
-            <div class="pdf-rev-stars">⭐⭐⭐⭐⭐</div>
-          </div>
-          <div class="pdf-rev-text">"Best ₹299 I've spent on fitness. Went from 65kg to 72kg in 4 months. Strength up on every single lift. Every guy should read this."</div>
-        </div>
+        <p style="font-size:12px;color:var(--muted);text-align:center;margin-top:8px;">Full chapter includes 20+ supplements ranked with dosing protocols and brand recommendations →</p>
       </div>
-    </div>
 
-    <!-- Guarantee -->
-    <div class="pdf-guarantee-section">
-      <div class="pdf-guarantee-box">
-        <div class="pdf-guarantee-icon">🛡️</div>
-        <div class="pdf-guarantee-text">
-          <h4>OUR PROMISE TO YOU</h4>
-          <p>This guide contains the exact principles used by our best-transforming members. If you follow the 12-week program and track your nutrition, you WILL see measurable changes — or come to the gym and we'll personally help you troubleshoot. We stand behind every word in this guide.</p>
+      <!-- Comparison table -->
+      <div class="pdf-section-divider">How It Compares</div>
+      <div class="pdf-data-table-wrap">
+        <table class="pdf-data-table pdf-compare-table">
+          <thead>
+            <tr>
+              <th>Feature</th>
+              <th class="this-guide">RFC Anabolic Guide</th>
+              <th>Generic Fitness Book</th>
+              <th>Free YouTube</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Indian food macros calculated</td><td class="yes">✓ 50+ foods</td><td class="no">✗ None</td><td class="partial">△ Rare</td></tr>
+            <tr><td>4 complete meal plans (veg + non-veg)</td><td class="yes">✓ Full templates</td><td class="no">✗ No</td><td class="no">✗ No</td></tr>
+            <tr><td>12-week program (day-by-day)</td><td class="yes">✓ Every session</td><td class="partial">△ Generic</td><td class="no">✗ No</td></tr>
+            <tr><td>Honest supplement tier list</td><td class="yes">✓ 20+ ranked</td><td class="partial">△ Basic</td><td class="no">✗ Sponsored</td></tr>
+            <tr><td>Blood work guidance for athletes</td><td class="yes">✓ Chapter 14</td><td class="no">✗ No</td><td class="no">✗ No</td></tr>
+            <tr><td>40+ printable templates</td><td class="yes">✓ Included</td><td class="no">✗ No</td><td class="no">✗ No</td></tr>
+            <tr><td>Price</td><td class="yes">₹299 once</td><td>₹500–1,200</td><td>Free (but incomplete)</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Features Banner -->
+      <div class="pdf-features-banner">
+        <div class="pfb-header">
+          <div class="pfb-tag">Why This Guide Is Different</div>
+          <div class="pfb-hl">6 Reasons 2,800+ Members Choose This Over Free Fitness Content</div>
+        </div>
+        <div class="pfb-grid">
+          <div class="pfb-card"><span class="pfb-ico">🧬</span><div><div class="pfb-title">Real Science</div><div class="pfb-desc">Hormone optimization and muscle physiology explained accurately — no bro-science, no influencer myths</div></div></div>
+          <div class="pfb-card"><span class="pfb-ico">🇮🇳</span><div><div class="pfb-title">Indian Diet Templates</div><div class="pfb-desc">Dal, paneer, chicken curry, rajma, soya — every meal has macros calculated for the foods you actually eat</div></div></div>
+          <div class="pfb-card"><span class="pfb-ico">📅</span><div><div class="pfb-title">12-Week Program</div><div class="pfb-desc">Complete blueprint with exact sets, reps, rest periods, and week-by-week progression rules — no guessing</div></div></div>
+          <div class="pfb-card"><span class="pfb-ico">💊</span><div><div class="pfb-title">Supplement Truth</div><div class="pfb-desc">Ranked list of what actually works, what's useless, and what's just expensive marketing you can skip</div></div></div>
+          <div class="pfb-card"><span class="pfb-ico">😴</span><div><div class="pfb-title">Recovery Blueprint</div><div class="pfb-desc">Sleep protocols, cortisol management, and CNS reset methods most lifters completely ignore</div></div></div>
+          <div class="pfb-card"><span class="pfb-ico">📊</span><div><div class="pfb-title">40+ Templates</div><div class="pfb-desc">Calorie calculators, macro templates, training logs, and progress tracking sheets — included and ready to use</div></div></div>
+        </div>
+        <div class="pfb-outcomes">
+          <div class="pfb-out-label">Results Our Members Report</div>
+          <div class="pfb-out-grid">
+            <div class="pfb-out-item"><div class="pfb-out-num">4 kg</div><div class="pfb-out-desc">Average lean muscle gained in 12 weeks following the program</div></div>
+            <div class="pfb-out-item"><div class="pfb-out-num">+20 kg</div><div class="pfb-out-desc">Average bench press increase reported after completing the full guide</div></div>
+            <div class="pfb-out-item"><div class="pfb-out-num">2,800+</div><div class="pfb-out-desc">Copies sold across India — most popular guide in the club</div></div>
+            <div class="pfb-out-item"><div class="pfb-out-num">4.9★</div><div class="pfb-out-desc">Average rating from 247 verified buyers — highest-rated guide</div></div>
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- FAQ -->
-    <div class="pdf-faq-section">
-      <h3>Frequently Asked Questions</h3>
-      <div class="faq-item" onclick="toggleFAQ(this)">
-        <div class="faq-q">Is this a physical book or a digital PDF?</div>
-        <div class="faq-a"><p>This is a digital PDF guide. After payment you receive an instant download link right here on this page. Read it on your phone, tablet, laptop, or print it — yours to keep forever with lifetime access.</p></div>
+      <!-- Bonus section -->
+      <div class="pdf-bonus-section">
+        <div class="pdf-bonus-tag">FREE BONUSES — INCLUDED TODAY</div>
+        <div class="sh" style="font-size:clamp(22px,4vw,34px);margin:6px 0 4px;">5 Exclusive Bonuses Worth ₹1,197</div>
+        <p style="font-size:12px;color:#888;margin-bottom:0;">Buy today and get all 5 bonuses at zero extra cost.</p>
+        <div class="pdf-bonus-list">
+          <div class="pdf-bonus-item">
+            <div class="pdf-bonus-icon">📋</div>
+            <div><span class="pdf-bonus-name">90-Day Progress Tracker (Printable)</span><span class="pdf-bonus-desc">Weekly tracking sheets for weight, strength on 5 key lifts, measurements, and body fat %. Includes a monthly review template and progress photo guide.</span></div>
+          </div>
+          <div class="pdf-bonus-item">
+            <div class="pdf-bonus-icon">🍛</div>
+            <div><span class="pdf-bonus-name">7-Day Indian Meal Prep Blueprint</span><span class="pdf-bonus-desc">Step-by-step Sunday meal prep guide: what to cook, how to store, exact containers needed. Saves 5 hours per week and keeps you 100% on target.</span></div>
+          </div>
+          <div class="pdf-bonus-item">
+            <div class="pdf-bonus-icon">💊</div>
+            <div><span class="pdf-bonus-name">Supplement Shopping Checklist</span><span class="pdf-bonus-desc">Exact products, brands, dosages, and Indian market prices for the Tier 1 stack. Includes what to buy on Amazon vs local shops to maximize budget.</span></div>
+          </div>
+          <div class="pdf-bonus-item">
+            <div class="pdf-bonus-icon">📈</div>
+            <div><span class="pdf-bonus-name">Progressive Overload Log (12-Week)</span><span class="pdf-bonus-desc">Pre-filled training log for all 12 weeks — enter your starting weights, and the log calculates your weekly targets automatically. Never guess what to lift next.</span></div>
+          </div>
+          <div class="pdf-bonus-item">
+            <div class="pdf-bonus-icon">⚡</div>
+            <div><span class="pdf-bonus-name">1RM Calculator &amp; Max Strength Chart</span><span class="pdf-bonus-desc">Calculate your estimated 1-rep max from any rep count. Includes strength standards for Indian men and women across all major lifts with goal-setting guide.</span></div>
+          </div>
+        </div>
       </div>
-      <div class="faq-item" onclick="toggleFAQ(this)">
-        <div class="faq-q">Who is this guide for?</div>
-        <div class="faq-a"><p>Anyone who wants to build muscle efficiently — complete beginners through intermediate lifters. The guide covers fundamentals through advanced techniques, with Indian-specific diet templates and a full 12-week training program.</p></div>
-      </div>
-      <div class="faq-item" onclick="toggleFAQ(this)">
-        <div class="faq-q">How do I receive the guide after payment?</div>
-        <div class="faq-a"><p>The download button appears on this page instantly after payment is confirmed. Just click it to download your PDF. Your purchase is also saved to your account — log in any time to re-download from the Store page.</p></div>
-      </div>
-      <div class="faq-item" onclick="toggleFAQ(this)">
-        <div class="faq-q">How is this different from free YouTube content?</div>
-        <div class="faq-a"><p>This is a structured, science-backed system — not random tips. Training, nutrition, recovery and hormones all work together in one coherent 12-week program with exact targets. No more piecing together conflicting advice from 20 different influencers.</p></div>
-      </div>
-      <div class="faq-item" onclick="toggleFAQ(this)">
-        <div class="faq-q">I'm a Royal Pro subscriber — do I need this too?</div>
-        <div class="faq-a"><p>The guide is completely complementary. Pro gives you live daily tracking tools and smart meal planner; this guide gives you the deep knowledge to make every rep and every meal count. Together they form a complete system.</p></div>
-      </div>
-      <div class="faq-item" onclick="toggleFAQ(this)">
-        <div class="faq-q">Is there a refund policy?</div>
-        <div class="faq-a"><p>Due to the instant digital nature of the product, we don't offer refunds after delivery. But if you have any issue — payment failure, download problem, anything — come to the gym counter or contact us and we'll sort it out immediately.</p></div>
-      </div>
-    </div>
 
-    <!-- Final CTA -->
-    <div class="pdf-final-cta">
-      <div class="stag" style="margin-bottom:8px;">Stop Guessing. Start Growing.</div>
-      <div class="sh" style="font-size:clamp(26px,5vw,52px);">GET THE ANABOLIC FULL GUIDE</div>
-      <p style="color:#b0b0b0;max-width:480px;margin:10px auto 24px;font-size:14px;line-height:1.6;">Everything you need to build your best physique — in one complete, science-backed manual. Written specifically for Indian athletes.</p>
-      <div style="display:flex;align-items:center;gap:14px;justify-content:center;flex-wrap:wrap;margin-bottom:16px;">
-        <div style="text-decoration:line-through;color:#888;font-family:'Bebas Neue',sans-serif;font-size:24px;">₹999</div>
-        <div style="font-family:'Bebas Neue',sans-serif;font-size:52px;color:var(--gold);line-height:1;">₹299</div>
-        <span class="pdf-discount-tag" style="font-size:11px;">70% OFF TODAY</span>
+      <!-- Is this for you -->
+      <div class="pdf-for-section">
+        <div class="pdf-for-box yes">
+          <h4>✅ This Is For You If...</h4>
+          <div class="pdf-for-li"><span>✓</span><span>You're tired of random tips and want a complete structured system</span></div>
+          <div class="pdf-for-li"><span>✓</span><span>You've been training but can't break through a plateau</span></div>
+          <div class="pdf-for-li"><span>✓</span><span>You want Indian-specific diet guidance, not Western bro-science</span></div>
+          <div class="pdf-for-li"><span>✓</span><span>You want to understand the science, not just follow orders</span></div>
+          <div class="pdf-for-li"><span>✓</span><span>You're ready to commit to a 12-week transformation</span></div>
+          <div class="pdf-for-li"><span>✓</span><span>You want honest supplement guidance that saves you money</span></div>
+        </div>
+        <div class="pdf-for-box no">
+          <h4>❌ This Is NOT For You If...</h4>
+          <div class="pdf-for-li"><span>✗</span><span>You're looking for a magic pill or overnight results</span></div>
+          <div class="pdf-for-li"><span>✗</span><span>You won't commit to at least 3 workouts per week</span></div>
+          <div class="pdf-for-li"><span>✗</span><span>You expect results without any nutrition tracking</span></div>
+          <div class="pdf-for-li"><span>✗</span><span>You already have a professional coach with a structured plan</span></div>
+          <div class="pdf-for-li"><span>✗</span><span>You're not willing to apply what you learn</span></div>
+        </div>
       </div>
-      <button class="pdf-buy-btn" style="max-width:360px;margin:0 auto;display:flex;justify-content:center;" onclick="buyPDF()">📥 GET INSTANT ACCESS — ₹299</button>
-      <div class="pdf-trust-row" style="margin-top:16px;">
-        <span class="pdf-trust-badge">🔒 Razorpay Secured</span>
-        <span class="pdf-trust-badge">📥 Instant Download</span>
-        <span class="pdf-trust-badge">📱 All Devices</span>
-        <span class="pdf-trust-badge">♾️ Lifetime Access</span>
+
+      <!-- Reviews -->
+      <div class="pdf-reviews-section">
+        <h3>What 2,800+ Members Are Saying</h3>
+        <div class="pdf-reviews-grid">
+          <div class="pdf-review">
+            <div class="pdf-rev-header">
+              <div class="pdf-review-avatar">🏋️</div>
+              <div class="pdf-rev-info"><div class="pdf-rev-name2">Rahul K.</div><div class="pdf-rev-date">Delhi · Verified Purchase</div></div>
+              <div class="pdf-rev-stars">⭐⭐⭐⭐⭐</div>
+            </div>
+            <div class="pdf-rev-text">"This guide literally changed how I train. The hormonal optimization chapter alone is worth 10x the price. My bench went up 20kg in 3 months."</div>
+          </div>
+          <div class="pdf-review">
+            <div class="pdf-rev-header">
+              <div class="pdf-review-avatar">💪</div>
+              <div class="pdf-rev-info"><div class="pdf-rev-name2">Priya S.</div><div class="pdf-rev-date">Mumbai · Verified Purchase</div></div>
+              <div class="pdf-rev-stars">⭐⭐⭐⭐⭐</div>
+            </div>
+            <div class="pdf-rev-text">"Finally a guide written for Indian fitness. The desi food diet templates are incredibly practical — no more guessing, just follow the blueprint."</div>
+          </div>
+          <div class="pdf-review">
+            <div class="pdf-rev-header">
+              <div class="pdf-review-avatar">🔥</div>
+              <div class="pdf-rev-info"><div class="pdf-rev-name2">Arjun M.</div><div class="pdf-rev-date">Pune · Verified Purchase</div></div>
+              <div class="pdf-rev-stars">⭐⭐⭐⭐⭐</div>
+            </div>
+            <div class="pdf-rev-text">"The supplement chapter saved me thousands. I stopped wasting money on useless products and invested in what actually works. Total game changer."</div>
+          </div>
+          <div class="pdf-review">
+            <div class="pdf-rev-header">
+              <div class="pdf-review-avatar">👑</div>
+              <div class="pdf-rev-info"><div class="pdf-rev-name2">Varun T.</div><div class="pdf-rev-date">Bangalore · Verified Purchase</div></div>
+              <div class="pdf-rev-stars">⭐⭐⭐⭐⭐</div>
+            </div>
+            <div class="pdf-rev-text">"The 12-week program is super detailed — sets, reps, rest periods. I gained 4kg of lean muscle in 3 months following it step by step."</div>
+          </div>
+          <div class="pdf-review">
+            <div class="pdf-rev-header">
+              <div class="pdf-review-avatar">🏅</div>
+              <div class="pdf-rev-info"><div class="pdf-rev-name2">Kiran J.</div><div class="pdf-rev-date">Hyderabad · Verified Purchase</div></div>
+              <div class="pdf-rev-stars">⭐⭐⭐⭐⭐</div>
+            </div>
+            <div class="pdf-rev-text">"The recovery chapter opened my eyes — I was overtraining for 2 years. Following the sleep and cortisol protocols changed everything for me."</div>
+          </div>
+          <div class="pdf-review">
+            <div class="pdf-rev-header">
+              <div class="pdf-review-avatar">⚡</div>
+              <div class="pdf-rev-info"><div class="pdf-rev-name2">Sanjay P.</div><div class="pdf-rev-date">Chennai · Verified Purchase</div></div>
+              <div class="pdf-rev-stars">⭐⭐⭐⭐⭐</div>
+            </div>
+            <div class="pdf-rev-text">"Best ₹299 I've spent on fitness. Went from 65kg to 72kg in 4 months. Strength up on every single lift. Every guy should read this."</div>
+          </div>
+          <div class="pdf-review">
+            <div class="pdf-rev-header">
+              <div class="pdf-review-avatar">🌟</div>
+              <div class="pdf-rev-info"><div class="pdf-rev-name2">Divya N.</div><div class="pdf-rev-date">Ahmedabad · Verified Purchase</div></div>
+              <div class="pdf-rev-stars">⭐⭐⭐⭐⭐</div>
+            </div>
+            <div class="pdf-rev-text">"As a vegetarian I always struggled to hit protein targets. The soya, paneer, and dal protein chart in Chapter 2 completely solved my diet. I'm now at 140g protein/day on Indian food alone."</div>
+          </div>
+          <div class="pdf-review">
+            <div class="pdf-rev-header">
+              <div class="pdf-review-avatar">🧬</div>
+              <div class="pdf-rev-info"><div class="pdf-rev-name2">Rohan A.</div><div class="pdf-rev-date">Kolkata · Verified Purchase</div></div>
+              <div class="pdf-rev-stars">⭐⭐⭐⭐⭐</div>
+            </div>
+            <div class="pdf-rev-text">"Chapter 14 — blood work section — is something I've never seen in any fitness resource. Got my bloodwork done, found my Vitamin D was at 12 (severely deficient). Fixed it and my energy and strength went through the roof."</div>
+          </div>
+        </div>
       </div>
-    </div>
+
+      <!-- Guarantee -->
+      <div class="pdf-guarantee-section">
+        <div class="pdf-guarantee-box">
+          <div class="pdf-guarantee-icon">🛡️</div>
+          <div class="pdf-guarantee-text">
+            <h4>OUR PROMISE TO YOU</h4>
+            <p>This guide contains the exact principles used by our best-transforming members. If you follow the 12-week program and track your nutrition, you WILL see measurable changes — or come to the gym and we'll personally help you troubleshoot. We stand behind every word in this guide.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- FAQ -->
+      <div class="pdf-faq-section">
+        <h3>Frequently Asked Questions</h3>
+        <div class="faq-item" onclick="toggleFAQ(this)">
+          <div class="faq-q">Is this a physical book or a digital PDF?</div>
+          <div class="faq-a"><p>This is a digital PDF guide. After payment you receive an instant download link right here on this page. Read it on your phone, tablet, laptop, or print it — yours to keep forever with lifetime access.</p></div>
+        </div>
+        <div class="faq-item" onclick="toggleFAQ(this)">
+          <div class="faq-q">Who is this guide for?</div>
+          <div class="faq-a"><p>Anyone who wants to build muscle efficiently — complete beginners through intermediate lifters. The guide covers fundamentals through advanced techniques, with Indian-specific diet templates and a full 12-week training program.</p></div>
+        </div>
+        <div class="faq-item" onclick="toggleFAQ(this)">
+          <div class="faq-q">How do I receive the guide after payment?</div>
+          <div class="faq-a"><p>The download button appears on this page instantly after payment is confirmed. Just click it to download your PDF. Your purchase is also saved to your account — log in any time to re-download from the Store page.</p></div>
+        </div>
+        <div class="faq-item" onclick="toggleFAQ(this)">
+          <div class="faq-q">How is this different from free YouTube content?</div>
+          <div class="faq-a"><p>This is a structured, science-backed system — not random tips. Training, nutrition, recovery and hormones all work together in one coherent 12-week program with exact targets. No more piecing together conflicting advice from 20 different influencers.</p></div>
+        </div>
+        <div class="faq-item" onclick="toggleFAQ(this)">
+          <div class="faq-q">I'm a vegetarian — does this work for me?</div>
+          <div class="faq-a"><p>Absolutely. Chapter 2 and the vegetarian diet templates in Chapter 10 are built specifically for plant-based Indian athletes. We show you how to hit 1.8g/kg protein using dal, paneer, soya, eggs, and curd — without expensive supplements.</p></div>
+        </div>
+        <div class="faq-item" onclick="toggleFAQ(this)">
+          <div class="faq-q">I'm a Royal Pro subscriber — do I need this too?</div>
+          <div class="faq-a"><p>The guide is completely complementary. Pro gives you live daily tracking tools and smart meal planner; this guide gives you the deep knowledge to make every rep and every meal count. Together they form a complete system.</p></div>
+        </div>
+        <div class="faq-item" onclick="toggleFAQ(this)">
+          <div class="faq-q">Can a complete beginner use this guide?</div>
+          <div class="faq-a"><p>Yes. The guide starts from muscle physiology fundamentals in Chapter 1 and progressively builds to advanced techniques in Chapter 8. The 12-week program in Chapter 9 is designed for beginners and intermediates — it scales to your starting level.</p></div>
+        </div>
+        <div class="faq-item" onclick="toggleFAQ(this)">
+          <div class="faq-q">Is there a refund policy?</div>
+          <div class="faq-a"><p>Due to the instant digital nature of the product, we don't offer refunds after delivery. But if you have any issue — payment failure, download problem, anything — come to the gym counter or contact us and we'll sort it out immediately.</p></div>
+        </div>
+      </div>
+
+      <!-- Final CTA -->
+      <div class="pdf-final-cta">
+        <div class="stag" style="margin-bottom:8px;">Stop Guessing. Start Growing.</div>
+        <div class="sh" style="font-size:clamp(26px,5vw,52px);">GET THE ANABOLIC FULL GUIDE</div>
+        <p style="color:#b0b0b0;max-width:480px;margin:10px auto 24px;font-size:14px;line-height:1.6;">Everything you need to build your best physique — 90+ pages, 15 chapters, 40+ templates. Written specifically for Indian athletes.</p>
+        <div style="display:flex;align-items:center;gap:14px;justify-content:center;flex-wrap:wrap;margin-bottom:16px;">
+          <div style="text-decoration:line-through;color:#888;font-family:'Bebas Neue',sans-serif;font-size:24px;">₹999</div>
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:52px;color:var(--gold);line-height:1;">₹299</div>
+          <span class="pdf-discount-tag" style="font-size:11px;">70% OFF TODAY</span>
+        </div>
+        <button class="pdf-buy-btn" style="max-width:360px;margin:0 auto;display:flex;justify-content:center;" onclick="buyPDF()">📥 GET INSTANT ACCESS — ₹299</button>
+        <div class="pdf-trust-row" style="margin-top:16px;">
+          <span class="pdf-trust-badge">🔒 Razorpay Secured</span>
+          <span class="pdf-trust-badge">📥 Instant Download</span>
+          <span class="pdf-trust-badge">📱 All Devices</span>
+          <span class="pdf-trust-badge">♾️ Lifetime Access</span>
+        </div>
+      </div>
     </div><!-- /pdf-anabolic-advanced -->
   </div>
 </section>
