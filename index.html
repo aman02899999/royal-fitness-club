@@ -2423,8 +2423,7 @@ body{font-size:16px;}
   .ndrop-menu a{padding:10px 0 10px 20px!important;font-size:13px!important;border-bottom:1px solid rgba(109,40,217,.1)!important;color:var(--text)!important;}
   .ndrop-caret{display:none;}
 }
-/* ── KNOWLEDGE STORE ── */
-#store{background:var(--bg);}
+/* ── PDF STORE — remove legacy rule, dark theme enforced below ── */
 /* Store product nav tabs */
 .store-product-tabs{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:28px 0 0;}
 .sptab{background:var(--card);border:2px solid var(--border);border-radius:8px;padding:16px 24px;cursor:pointer;text-align:center;min-width:200px;transition:border-color .2s,background .2s;text-decoration:none;display:block;}
@@ -2595,14 +2594,27 @@ img{loading:lazy;}
    PDF STORE — 3D DARK PREMIUM THEME
 ══════════════════════════════════════════════════════ */
 #store{
-  background:linear-gradient(180deg,#05030f 0%,#0a0620 40%,#080418 70%,#040210 100%);
+  background:linear-gradient(180deg,#05030f 0%,#0a0620 40%,#080418 70%,#040210 100%) !important;
   --sv:#a855f7;--sv2:#c084fc;--sv3:#7c3aed;--sv4:#6d28d9;
   --sc:#0f0a1f;--sc2:#16113a;--sc3:#1e1650;
   --sb:rgba(139,92,246,.22);--sb2:rgba(139,92,246,.4);
   --st:#f0eeff;--sm:#8b7ab5;--sg:#22c55e;--sgold:#f59e0b;
-  color:var(--st);
-  position:relative;overflow:hidden;
+  color:var(--st) !important;
+  position:relative;overflow:visible;min-height:100vh;
 }
+/* Override the injected page-header & ticker inside the dark PDF Store */
+#store .sb-page-hdr{
+  background:rgba(5,3,15,.85) !important;
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+  border-bottom:1px solid rgba(139,92,246,.25) !important;
+  border-left:3px solid #a855f7 !important;
+  color:var(--st);
+}
+#store .sb-page-hdr-title{color:var(--st) !important;}
+#store .sb-page-hdr-sub{color:var(--sm) !important;}
+#store .sb-page-hdr-btn{color:var(--sm) !important;border-color:var(--sb) !important;background:rgba(139,92,246,.1) !important;}
+#store .section-ticker{background:linear-gradient(90deg,rgba(139,92,246,.08),rgba(5,3,15,.95),rgba(139,92,246,.06)) !important;border-bottom:1px solid rgba(139,92,246,.18) !important;}
 /* Floating background orbs */
 #store .ps-orb{position:absolute;border-radius:50%;pointer-events:none;z-index:0;filter:blur(80px);}
 #store .ps-orb-1{width:600px;height:600px;background:radial-gradient(circle,rgba(139,92,246,.18),transparent 70%);top:-200px;left:-100px;animation:psFloat1 18s ease-in-out infinite;}
@@ -20407,17 +20419,17 @@ body.admin-logged-in #admin-theme-btn{display:flex;}
 
 /* ── Section pencil edit buttons ── */
 .admin-section-edit{
-  position:absolute;top:10px;right:10px;z-index:300;
-  width:32px;height:32px;border-radius:50%;border:none;
-  background:rgba(124,58,237,.8);color:#fff;font-size:13px;
+  position:fixed !important;z-index:10003;
+  width:36px;height:36px;border-radius:50%;border:2px solid rgba(255,255,255,.2);
+  background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;font-size:14px;
   cursor:pointer;display:none;align-items:center;justify-content:center;
-  box-shadow:0 2px 12px rgba(124,58,237,.45);
-  transition:transform .18s,background .18s,opacity .2s;
-  backdrop-filter:blur(6px);opacity:.7;
+  box-shadow:0 3px 16px rgba(124,58,237,.55);
+  transition:transform .18s,box-shadow .2s;
 }
-.admin-section-edit:hover{transform:scale(1.15);background:#7c3aed;opacity:1;}
+.admin-section-edit:hover{transform:scale(1.15);box-shadow:0 5px 22px rgba(124,58,237,.75);}
 body.admin-logged-in .admin-section-edit{display:flex;}
-.admin-pencil-host{position:relative!important;}
+/* Host sections keep their own position */
+.admin-pencil-host{position:relative;}
 </style>
 
 <!-- ═══ Marketing JS ═══ -->
@@ -20983,27 +20995,52 @@ var SECTION_LABELS = {
   'landing-footer':'Footer'
 };
 
-/* ── Inject pencil buttons into all major sections ── */
-function injectPencilButtons(){
-  var sectionIds = Object.keys(SECTION_LABELS);
-  sectionIds.forEach(function(id){
-    var el = document.getElementById(id);
-    if(!el) return;
-    if(el.querySelector('.admin-section-edit')) return; /* already injected */
-    /* Add positioning context */
-    el.classList.add('admin-pencil-host');
-    var btn = document.createElement('button');
-    btn.className = 'admin-section-edit';
-    btn.setAttribute('title', 'Edit: ' + SECTION_LABELS[id]);
-    btn.setAttribute('aria-label', 'Edit section: ' + SECTION_LABELS[id]);
-    btn.innerHTML = '✏️';
-    btn.dataset.section = id;
-    btn.addEventListener('click', function(e){
-      e.stopPropagation();
-      atpOpen(SECTION_LABELS[id]);
-    });
-    el.insertBefore(btn, el.firstChild);
+/* ── One floating pencil button (position:fixed, repositioned per section) ── */
+var _pencilBtn = null;
+var _pencilObserver = null;
+
+function createFloatingPencil(){
+  if(_pencilBtn) return;
+  _pencilBtn = document.createElement('button');
+  _pencilBtn.className = 'admin-section-edit';
+  _pencilBtn.id = 'admin-pencil-float';
+  _pencilBtn.setAttribute('aria-label','Edit current section theme');
+  _pencilBtn.innerHTML = '✏️';
+  _pencilBtn.style.cssText = 'top:72px;right:14px;';
+  _pencilBtn.dataset.section = '';
+  _pencilBtn.addEventListener('click', function(e){
+    e.stopPropagation();
+    var label = SECTION_LABELS[_pencilBtn.dataset.section] || 'Section';
+    atpOpen(label);
   });
+  document.body.appendChild(_pencilBtn);
+}
+
+/* Update pencil button label when screen changes */
+function updatePencilSection(sectionId){
+  if(!_pencilBtn) return;
+  _pencilBtn.dataset.section = sectionId;
+  var label = SECTION_LABELS[sectionId];
+  _pencilBtn.title = label ? ('Edit: ' + label) : 'Edit theme';
+  _pencilBtn.style.display = label ? 'flex' : 'none';
+}
+
+/* ── Patch switchScreen to update pencil label ── */
+function patchSwitchScreenForPencil(){
+  var _origSwitch = window.switchScreen;
+  if(typeof _origSwitch !== 'function') return;
+  window.switchScreen = function(name, navEl){
+    _origSwitch.call(this, name, navEl);
+    /* Find which element ID is visible for this screen */
+    var SMAP = {
+      dashboard:'screen-dashboard',workouts:'tracker',nutrition:'mealplan',
+      toolbox:'calculator',roadmap:'roadmap',physio:'physio',challenges:'challenges',
+      leaderboard:'arena',transform:'dashboard',bloodai:'bloodreport',
+      ayurveda:'ayurveda-hub',referrals:'profile',courses:'courses',
+      store:'store',plans:'plans',profile:'profile',admin:'admin-panel',wheel:'wheel-screen'
+    };
+    updatePencilSection(SMAP[name] || name);
+  };
 }
 
 /* ── Toggle panel on fab click ── */
@@ -21028,37 +21065,55 @@ function bindPanelToggle(){
 }
 
 /* ── Init — called once admin is confirmed ── */
+var _atpInited = false;
 function initAdminThemeEditor(){
+  if(_atpInited) return;
+  _atpInited = true;
   document.body.classList.add('admin-logged-in');
-  injectPencilButtons();
+  createFloatingPencil();
   bindPanelToggle();
+  patchSwitchScreenForPencil();
   atpLoadSavedTheme();
+  /* Set pencil to current screen */
+  updatePencilSection('screen-dashboard');
 }
 
-/* ── Hook into app's auth flow ── */
+/* ── Hook into applyUser patches so we catch auth events ── */
+function hookApplyUser(){
+  if(typeof window.applyUser !== 'function') return;
+  var _orig = window.applyUser;
+  window.applyUser = function(){
+    _orig.apply(this, arguments);
+    if(window.isAdminUser && window.isAdminUser()){
+      initAdminThemeEditor();
+    }
+  };
+}
+
+/* ── Try init with fallback polling ── */
 function tryInit(){
+  /* Check synchronously first (localStorage-based auth) */
   if(window.isAdminUser && window.isAdminUser()){
     initAdminThemeEditor();
     return;
   }
-  /* Poll until user is resolved (max 8s) */
+  /* Hook applyUser for Firebase auth callback */
+  hookApplyUser();
+  /* Also poll up to 10s as safety net */
   var attempts = 0;
   var t = setInterval(function(){
     attempts++;
     if(window.isAdminUser && window.isAdminUser()){
       clearInterval(t);
       initAdminThemeEditor();
-    } else if(attempts > 80){
+    } else if(attempts > 100){
       clearInterval(t);
     }
   }, 100);
 }
 
-if(document.readyState === 'loading'){
-  document.addEventListener('DOMContentLoaded', tryInit);
-} else {
-  tryInit();
-}
+/* Run as soon as possible — DOM is already parsed at end of body */
+tryInit();
 
 })();
 </script>
