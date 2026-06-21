@@ -12881,58 +12881,301 @@ function openCourseModal(courseId) {
   modal.style.display = 'flex';
 }
 
+
+/* ── COURSE ENRICHMENT DATA ── */
+const COURSE_OUTCOMES = {
+  'cs_b1':['Understand how muscles grow and adapt at a cellular level','Design effective beginner programs (3-4 day splits)','Build sustainable nutrition habits without obsessive calorie tracking','Master the 7 foundational compound movements','Prevent the 10 most common beginner training injuries','Optimize sleep for maximum GH release and overnight recovery','Create SMART goals with a 90-day tracking system','Build habit loops that sustain results beyond initial motivation'],
+  'cs_b2':['Fix the 5 most common micronutrient deficiencies in Indian adults','Build complete high-protein meal plans from Indian foods on any budget','Decode nutrition labels and calculate macros for any Indian dish','Understand the gut microbiome and how fermented foods boost performance','Apply sports nutrition to maximize training fuel and recovery','Distinguish evidence-based supplements from marketing-driven products','Design culturally specific meal plans for vegetarian and vegan athletes','Calculate TDEE and set precise calorie targets for any goal'],
+  'cs_b3':['Measure body composition and set realistic 90-day transformation goals','Understand the 5 hormones driving fat storage and how to manage them','Design an optimal calorie deficit that preserves lean muscle mass','Choose the right cardio (LISS vs HIIT vs Zone 2) for your goal','Track progress beyond the scale with photos, measurements, and lifts','Break the restrict-binge cycle through identity and behavioral change','Manage Indian social pressures (festivals, family, weddings) during transformation','Build NEAT habits that burn 300+ extra calories per day without the gym'],
+  'cs_a1':['Conduct thorough movement assessments and identify muscular imbalances','Design periodized 12-week programs for any client type or goal','Write corrective exercise prescriptions for common movement dysfunctions','Train special populations (seniors, diabetics, prenatal) safely and effectively','Apply motivational interviewing techniques to dramatically improve adherence','Use nutrition scope-of-practice to advise clients without overstepping','Build a profitable PT business with premium positioning and online coaching','Navigate India\'s fitness industry legally and build your professional reputation'],
+  'cs_a2':['Interpret blood work reports and identify nutrition-related deficiencies','Design periodized nutrition plans for strength, endurance, and combat athletes','Apply gut microbiome science to improve client digestion and body composition','Counsel clients with diabetes, PCOS, and cardiovascular conditions','Build evidence-based plans using Indian regional cuisines and fasting protocols','Understand supplement pharmacokinetics and make evidence-based recommendations','Apply nutrient timing and carb periodization for elite performance gains','Build a professional nutrition coaching practice within India\'s legal framework'],
+  'cs_a3':['Assess and triage 20+ common gym and sports injuries with clinical accuracy','Design evidence-based rehab programs for shoulder, knee, and back injuries','Apply POLICE protocol and modern physiotherapy principles in a gym setting','Use functional tests (Y-Balance, hop tests) to clear athletes for return-to-sport','Build injury prevention prehabilitation programs for different sports','Interpret MRI and ultrasound reports for common sports injuries','Apply blood flow restriction training and advanced recovery modalities','Understand scope of practice and when to refer to physiotherapists'],
+  'cs_a4':['Diagnose and fix metabolic adaptation and stalled fat loss in any client','Design individualized calorie deficit strategies that preserve muscle mass','Apply carb cycling and dietary periodization for body recomposition','Program training specifically for maximum fat oxidation and muscle retention','Coach clients through emotional eating, binge cycles, and body image challenges','Use biofeedback monitoring to know when and how to adjust client protocols','Apply flexible dieting frameworks that sustain adherence without perfection','Position yourself as the go-to fat loss specialist other coaches refer to'],
+  'cs_m1':['Design annual training plans with block periodization for elite athletes','Apply force-velocity curve training and plyometrics for explosive power development','Monitor HRV, biometrics, and blood markers to optimize athlete recovery','Program sport-specific conditioning for 6+ different sports at a high level','Apply advanced biomechanical analysis concepts to optimize movement efficiency','Navigate youth athlete development using LTAD principles and PHV timing','Build high-performance coaching teams and athlete management systems','Position yourself as a high-ticket performance coach with a 7-figure practice'],
+  'cs_m2':['Understand the HPG axis and how exogenous hormones interact with natural T','Apply evidence-informed knowledge of anabolic steroids, SARMs, and peptides for harm reduction','Interpret blood work markers before, during, and after pharmacological protocols','Design evidence-based PCT protocols to restore natural hormone production','Manage estrogen safely using AIs and SERMs across different compounds','Apply harm reduction principles for female pharmacology and virilization risk','Protect cardiovascular and liver health using ancillary compound knowledge','Navigate India\'s legal landscape and WADA regulations for informed decisions'],
+  'cs_m3':['Apply clinical reasoning frameworks used by sports medicine physicians','Interpret sports imaging (X-ray, MRI, ultrasound) for common injuries','Manage concussions with SCAT5 protocols and evidence-based RTP criteria','Identify and manage RED-S in female athletes and support return to training','Apply the tendinopathy continuum model and advanced management (isometrics, HSR)','Conduct pre-participation cardiovascular screening and recognize cardiac emergencies','Apply pain neuroscience education to manage chronic musculoskeletal pain','Make clinical decisions about surgical referrals and post-surgical rehab']
+};
+
+const COURSE_REVIEWS = {
+  'cs_b1':[
+    {a:'💪',n:'Rahul M.',c:'Delhi',t:'Started completely clueless about how the body works. This course gave me the anatomy foundation to understand WHY exercises work. My training quality improved from day 1.',s:5},
+    {a:'🌟',n:'Shreya P.',c:'Mumbai',t:'The habit and mindset module is worth the enrollment fee alone. I\'ve been consistent for 4 months straight because of the habit stacking framework — never could do that before.',s:5},
+    {a:'🔥',n:'Karan V.',c:'Bangalore',t:'The nutrition 101 module revealed I was eating completely wrong. Simple corrections made a massive difference — lost 4kg in the first month without even changing my training.',s:5}
+  ],
+  'cs_b2':[
+    {a:'🥗',n:'Divya N.',c:'Hyderabad',t:'The micronutrients chapter was eye-opening. Found out my B12 was critically low from the deficiency checklist. Fixed it and my energy levels completely transformed within 3 weeks.',s:5},
+    {a:'💡',n:'Manish T.',c:'Pune',t:'The Indian superfoods section is unlike anything else available. No other course covers ghee, turmeric, and Indian fermented foods with actual peer-reviewed research. Outstanding.',s:5},
+    {a:'🏆',n:'Anjali S.',c:'Chennai',t:'Completed this to help my husband who was always protein-deficient as a vegetarian. The Indian meal planning section is incredibly practical — we use it every single week.',s:5}
+  ],
+  'cs_b3':[
+    {a:'🔥',n:'Vikram K.',c:'Delhi',t:'The fat loss hormones section completely changed my approach to dieting. I finally understood why my crash diets were failing. Lost 8kg in 10 weeks using the right deficit strategy.',s:5},
+    {a:'⚡',n:'Nisha R.',c:'Bangalore',t:'Was doing 2 hours of cardio daily and losing muscle. The Zone 2 vs HIIT explanation completely restructured my approach. Body composition transformed in just 8 weeks.',s:5},
+    {a:'🏅',n:'Rohit S.',c:'Mumbai',t:'The social pressure and identity chapters are the most underrated parts. I haven\'t missed a single workout in 5 months because of the identity-based change framework.',s:5}
+  ],
+  'cs_a1':[
+    {a:'👑',n:'Arjun M.',c:'Delhi',t:'Most comprehensive CPT course in India. The corrective exercise module alone is worth more than many full-price certifications. I can now help clients others would turn away.',s:5},
+    {a:'💼',n:'Sakshi T.',c:'Mumbai',t:'The PT business module gave me a real roadmap. In 6 months I went from ₹500/hr with 2 clients to ₹1,500/hr with 8 clients using the premium positioning framework from this course.',s:5},
+    {a:'💪',n:'Varun P.',c:'Bangalore',t:'The special populations module let me retain clients I would have referred out before. Seniors, diabetics, prenatal clients — I\'m now the specialist everyone recommends.',s:5}
+  ],
+  'cs_a2':[
+    {a:'🔬',n:'Dr. Meera L.',c:'Hyderabad',t:'As a practicing physician, this is the most clinically accurate nutrition course I\'ve seen online. The blood marker analysis module meets the standard I would expect from postgraduate education.',s:5},
+    {a:'🧬',n:'Aditya K.',c:'Chennai',t:'The gut microbiome and nutrient timing modules are cutting-edge content I haven\'t found in any other Indian fitness resource. This information is worth far more than the enrollment fee.',s:5},
+    {a:'🥗',n:'Preethi S.',c:'Bangalore',t:'The Indian context module addressing vegetarian athletes, regional cuisines, and religious fasting is unique in the market. Years of searching for this. Absolutely invaluable.',s:5}
+  ],
+  'cs_a3':[
+    {a:'🦴',n:'Deepak R.',c:'Delhi',t:'This course made me the most trusted person in my gym for injury management. When someone gets hurt, they come to me. The rehab protocols are clinically accurate and immediately applicable.',s:5},
+    {a:'💪',n:'Kavya S.',c:'Chennai',t:'Used the knee rehab protocols alongside my physiotherapist to recover from ACL surgery. Was back lifting in 8 months. The return-to-sport testing criteria are genuinely science-backed.',s:5},
+    {a:'🏥',n:'Nitin V.',c:'Pune',t:'The return-to-sport testing module covers FMS, hop tests, and limb symmetry index — clinical rehabilitation science I\'ve never seen in any Indian fitness education.',s:5}
+  ],
+  'cs_a4':[
+    {a:'🎯',n:'Saurabh M.',c:'Mumbai',t:'The metabolic adaptation chapter alone has helped me troubleshoot every client plateau since completing this course. My client retention rate jumped from 60% to over 90%.',s:5},
+    {a:'🧠',n:'Ananya R.',c:'Delhi',t:'The behavioral coaching module is what no other fitness certification covers. Understanding fat loss psychology transformed my coaching from information delivery to actual results.',s:5},
+    {a:'🔥',n:'Rahul T.',c:'Bangalore',t:'The carb cycling module gave me a system that works consistently. Six clients have lost 10+ kg in 3 months using these protocols. My reputation as a fat loss specialist is completely transformed.',s:5}
+  ],
+  'cs_m1':[
+    {a:'👑',n:'Coach Vivek S.',c:'Delhi',t:'I work with national-level athletes. This Master course finally gave me the periodization science and energy system programming knowledge to actually elevate their competitive performance.',s:5},
+    {a:'🔬',n:'Priya R.',c:'Mumbai',t:'The biomechanical analysis module is exceptional. Force plate concepts, motion capture principles — this is university-level content at a fraction of the cost of a postgraduate degree.',s:5},
+    {a:'📊',n:'Arjun K.',c:'Bangalore',t:'The research literacy module completely changed how I evaluate coaching claims. I now screen every recommendation against evidence. Game-changing shift to evidence-based practice.',s:5}
+  ],
+  'cs_m2':[
+    {a:'🔬',n:'Anonymous',c:'Delhi',t:'The blood work interpretation module is the most valuable harm-reduction resource I\'ve found. Understanding my own bloodwork in this depth has made my decision-making far safer.',s:5},
+    {a:'📋',n:'Anonymous',c:'Mumbai',t:'The PCT science chapter is the most detailed, evidence-based PCT resource available in India. The harm-reduction framework is responsible and thorough — factual, not glorifying.',s:5},
+    {a:'⚗️',n:'Anonymous',c:'Bangalore',t:'The female pharmacology chapter covers virilization risk more carefully than anything else I\'ve read. Critical harm-reduction information that\'s genuinely hard to find in an organized, accurate format.',s:5}
+  ],
+  'cs_m3':[
+    {a:'🏥',n:'Dr. Rohit N.',c:'Delhi',t:'Even as a sports medicine doctor, I found new perspectives in the pain neuroscience and tendinopathy continuum modules. The evidence-base is current and the clinical application is well thought through.',s:5},
+    {a:'🔬',n:'Anjali M.',c:'Mumbai',t:'The RED-S and female athlete health module is desperately needed in India. I\'ve used this knowledge to identify and refer 3 athletes with disordered eating patterns to appropriate care.',s:5},
+    {a:'🏆',n:'Coach Manish V.',c:'Hyderabad',t:'The cardiovascular screening and concussion management chapters helped me build proper screening protocols for my athletes. This is potentially life-saving information for coaches.',s:5}
+  ]
+};
+
+const COURSE_BONUSES = {
+  'cs_b1':[
+    {i:'📋',n:'8-Week Beginner Training Log',d:'Pre-structured tracking sheet with set/rep/weight columns, weekly progress notes, and a 30-day consistency streak chart.'},
+    {i:'🥗',n:'Beginner Nutrition Kickstart Checklist',d:'One-page guide: what to eat, what to avoid, and simple macro targets for beginners starting their journey.'},
+    {i:'💡',n:'Common Mistakes Quick Reference Card',d:'Printable 1-page guide to the 15 most common beginner mistakes with the fix for each — pin it to your wall.'}
+  ],
+  'cs_b2':[
+    {i:'🥗',n:'Indian Macro Database (60+ Foods)',d:'Reference table with calories, protein, carbs, fat, and fiber per 100g for 60+ common Indian foods and dishes.'},
+    {i:'📊',n:'TDEE Calculator Worksheet',d:'Step-by-step printable to find your exact maintenance, surplus, and deficit calorie targets with activity factor guide.'},
+    {i:'🛒',n:'Indian Grocery Shopping Guide',d:'Budget-conscious shopping list for building a nutrient-dense, high-protein Indian kitchen from scratch.'}
+  ],
+  'cs_b3':[
+    {i:'📏',n:'12-Week Body Composition Tracker',d:'Monthly measurement sheet for weight, waist, hips, arms, legs, and progress photo guide with lighting tips.'},
+    {i:'🥗',n:'Indian Fat Loss Meal Template (7-Day)',d:'Full week of Indian meals at 1,600–1,800 kcal with complete macros calculated per meal and per day.'},
+    {i:'🧘',n:'NEAT Enhancement Protocol',d:'15 proven daily habits that burn an extra 200–400 calories without formal exercise — the lifestyle guide most people miss.'}
+  ],
+  'cs_a1':[
+    {i:'📋',n:'Professional Client Intake Form',d:'Complete assessment form: PAR-Q, health history, goals, availability, movement screening notes, and initial consultation flow.'},
+    {i:'💼',n:'PT Pricing & Business Calculator',d:'Spreadsheet tool to calculate your optimal hourly rate, package pricing, monthly income target, and client capacity.'},
+    {i:'📱',n:'30-Day PT Content Calendar',d:'Ready-made social media content ideas for 30 days — topics, formats, and Instagram/YouTube content strategy for new PTs.'},
+    {i:'📝',n:'Session Programming Template',d:'Pre-built training session template for writing client programs with exercise, sets, reps, rest, cues, and progression notes.'}
+  ],
+  'cs_a2':[
+    {i:'🧪',n:'Blood Work Request Checklist',d:'Complete list of tests to request from your doctor for sports nutrition optimization, with normal vs athlete-optimal ranges.'},
+    {i:'📊',n:'Nutrition Periodization Planner',d:'Spreadsheet for cycling calories and macros across training phases (bulk, cut, maintain) over a 12-week mesocycle.'},
+    {i:'🥗',n:'6 Complete Indian Client Meal Plans',d:'Full 7-day meal plans for all 6 case study profiles from the practical masterclass module — ready to use with clients.'}
+  ],
+  'cs_a3':[
+    {i:'🦴',n:'Injury Assessment Triage Form',d:'Professional form for documenting injury mechanism, pain location, functional testing results, and clinical decision/referral notes.'},
+    {i:'📋',n:'Prehabilitation Exercise Library',d:'50+ exercises categorized by body region with descriptions, sets/reps, and purpose — printable reference for injury prevention programming.'},
+    {i:'🔍',n:'Return-to-Sport Criteria Checklist',d:'Testing criteria for shoulder, knee, and ankle injuries including limb symmetry index standards and cleared-to-train sign-off template.'}
+  ],
+  'cs_a4':[
+    {i:'📊',n:'Metabolic Adaptation Tracker',d:'Weekly check-in form monitoring scale weight, hunger, energy, NEAT behaviors, and biofeedback to catch adaptation early.'},
+    {i:'🥗',n:'Carb Cycling Template (4-Week)',d:'High/medium/low carb day rotation with macro targets for training vs rest days at multiple calorie levels.'},
+    {i:'🧠',n:'Client Behavior Change Workbook',d:'12-page workbook based on Motivational Interviewing principles to improve fat loss client adherence and reduce drop-off.'}
+  ],
+  'cs_m1':[
+    {i:'📅',n:'Annual Training Plan (ATP) Template',d:'Editable spreadsheet for planning mesocycles, microcycles, and competition peaking across a full training year.'},
+    {i:'💼',n:'High-Performance Coaching Contract',d:'Legally formatted coaching agreement with liability, intellectual property, cancellation, and payment clause templates.'},
+    {i:'📊',n:'Athlete Monitoring Dashboard',d:'Spreadsheet system tracking HRV, training load, wellness scores, and injury risk flags across a squad of athletes.'}
+  ],
+  'cs_m2':[
+    {i:'🧪',n:'Pre-Protocol Blood Work Checklist',d:'Complete list of panels to run before any pharmacological protocol, with athlete-optimal ranges for each marker.'},
+    {i:'📊',n:'PCT Protocol Reference Card',d:'Quick-reference dosing guide for common PCT compounds with timing charts and post-PCT panel monitoring checklist.'},
+    {i:'📋',n:'Harm Reduction Log Template',d:'Personal monitoring form for tracking compounds, doses, subjective side effects, and key blood markers across a cycle.'}
+  ],
+  'cs_m3':[
+    {i:'🏥',n:'Sports Medicine Assessment Protocol',d:'Clinical SOAP note template adapted for sports medicine consultations in a gym, clinic, or field setting.'},
+    {i:'🫀',n:'Pre-Participation Cardiovascular Form',d:'Validated pre-exercise questionnaire covering cardiac history, family history, and symptom screening for athlete clearance.'},
+    {i:'🦴',n:'Return-to-Sport Protocol Library',d:'Evidence-based return-to-sport criteria for ACL, shoulder, ankle, and stress fracture injuries with full testing standards.'}
+  ]
+};
+
+const COURSE_FOR = {
+  'cs_b1':['Complete gym beginners who want to start right','Anyone confused by conflicting fitness advice online','People who\'ve tried and quit multiple times before','Anyone building toward a fitness career'],
+  'cs_b2':['Anyone who eats daily but doesn\'t understand nutrition science','Vegetarians struggling to hit protein targets','People with unexplained fatigue that might be nutrient deficiencies','Aspiring nutrition coaches and fitness professionals'],
+  'cs_b3':['Anyone 10+ kg from their goal and unsure where to start','People who\'ve yo-yo dieted and want a sustainable method','Gym-goers who train but can\'t seem to change their body composition','Anyone whose Indian lifestyle (festivals, family) keeps derailing progress'],
+  'cs_a1':['Aspiring personal trainers wanting India\'s best online CPT','Current trainers upgrading their knowledge and earning potential','Fitness enthusiasts ready to turn their passion into a profession','Anyone training special populations who need clinical-level knowledge'],
+  'cs_a2':['Fitness professionals wanting to add nutrition coaching services','Gym trainers whose clients ask nutrition questions they can\'t answer','Anyone with a passion for nutrition science beyond the basics','Health professionals wanting sports nutrition credential'],
+  'cs_a3':['Personal trainers who regularly encounter client injuries','Gym owners who want their staff to handle rehab professionally','Aspiring sports physios wanting a strong academic foundation','Fitness enthusiasts recovering from their own injuries'],
+  'cs_a4':['PTs whose clients plateau and can\'t figure out why','Coaches wanting to specialize as the go-to fat loss expert','Individuals who\'ve tried everything and can\'t lose the last 10 kg','Anyone who wants to understand the full science of sustainable fat loss'],
+  'cs_m1':['Coaches working with competitive or elite athletes','Experienced PTs ready for master-level programming knowledge','Sports scientists wanting applied, practical performance education','Coaches building high-performance programs for sports academies'],
+  'cs_m2':['Adults 18+ seeking science-based harm reduction education','Experienced fitness enthusiasts wanting accurate pharmacology knowledge','Coaches whose clients ask about compounds and deserve accurate information','Fitness professionals needing to understand what clients may be using'],
+  'cs_m3':['Senior personal trainers and strength coaches','Sports medicine students supplementing their formal education','Gym owners wanting a clinically sophisticated injury management protocol','Anyone who has dealt with serious sports injuries and wants deep understanding']
+};
+
+const COURSE_NOT_FOR = {
+  'cs_b1':['Experienced lifters who already understand exercise science','Anyone looking for overnight results without consistent effort','People unwilling to apply what they learn in 4+ weeks'],
+  'cs_b2':['Qualified registered dietitians or clinical nutritionists','People already tracking macros professionally','Anyone seeking a one-diet-fits-all magic plan'],
+  'cs_b3':['People expecting body transformation without any nutritional awareness','Anyone who won\'t commit to 3+ workouts per week','Those looking for a magic supplement, not a system'],
+  'cs_a1':['Those unwilling to invest time in a 10-week comprehensive program','Trainers who only want a quick certification, not real knowledge','People not interested in the business or psychology side of coaching'],
+  'cs_a2':['People who want recipes, not nutritional science','Anyone expecting this to replace a registered dietitian\'s clinical services','Those unwilling to engage with blood marker and biochemistry content'],
+  'cs_a3':['Those who want quick injury fixes, not root cause protocols','Anyone expecting to diagnose medical conditions independently','People unwilling to understand scope of practice and when to refer'],
+  'cs_a4':['People looking for a magic fat loss pill or secret trick','Coaches who only want basic calorie tracking, not metabolic science','Those unwilling to apply behavioral change frameworks with clients'],
+  'cs_m1':['Beginners — this is a Master course requiring prior fitness education','Those not working with athletes or serious training clients','Coaches not ready to invest 16 weeks in master-level study'],
+  'cs_m2':['Minors under 18 — strictly 18+ educational content only','Anyone looking for protocols to use irresponsibly without understanding risks','Those not prepared to prioritize harm reduction and health monitoring'],
+  'cs_m3':['Beginners without prior fitness or anatomy education background','Anyone expecting to practice clinical medicine without a medical degree','Those looking for quick injury fixes rather than comprehensive clinical frameworks']
+};
+
+
 function _renderCourseDetails(c) {
   const LVL_COLOR = { beginner:'#059669', advanced:'#f59e0b', master:'#d4a840' };
   const LVL_LABEL = { beginner:'🌱 Beginner', advanced:'⚡ Advanced', master:'🐯 Master' };
-  const pharmaNote = c.isPharma ? `<div style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.35);border-radius:8px;padding:14px;margin-bottom:16px;font-size:12px;color:#fca5a5;line-height:1.6;">
-    ⚠️ <strong>18+ Educational Course</strong> — This course covers pharmaceutical performance science for educational and harm-reduction purposes only. All content is strictly educational. The use of controlled substances may be illegal in your jurisdiction. By enrolling you confirm you are 18+ and understand this is educational content only.
-  </div>` : '';
-  const heroImg = c.img ? `
-    <div style="position:relative;aspect-ratio:600/340;margin:-20px -20px 20px;overflow:hidden;border-radius:10px 10px 0 0;">
-      <img src="${c.img}" alt="${c.name}" style="width:100%;height:100%;object-fit:cover;object-position:left center;display:block;" loading="lazy">
-      <div style="position:absolute;inset:0;background:linear-gradient(0deg,rgba(9,9,16,.9) 0%,rgba(9,9,16,.2) 60%,transparent 100%);"></div>
-      <div style="position:absolute;bottom:16px;left:16px;right:16px;">
-        <div style="font-size:42px;filter:drop-shadow(0 2px 12px rgba(0,0,0,.8));">${c.emoji}</div>
-        <span style="background:${LVL_COLOR[c.level]||'#444'};color:#fff;font-size:10px;font-weight:700;letter-spacing:1px;padding:2px 10px;border-radius:20px;">${LVL_LABEL[c.level]||c.level}</span>
+
+  /* totals */
+  const totalTopics = (c.mods||[]).reduce((s,m) => s + (m.topics||[]).length, 0);
+  const totalMins   = (c.mods||[]).reduce((s,m) => { const n=parseInt((m.dur||'0'));return s+(n||0); },0);
+  const totalHrs    = (totalMins/60).toFixed(1);
+
+  /* enrichment data */
+  const reviews  = (COURSE_REVIEWS [c.id]||[]);
+  const outcomes = (COURSE_OUTCOMES[c.id]||[]);
+  const bonuses  = (COURSE_BONUSES [c.id]||[]);
+  const forWho   = (COURSE_FOR     [c.id]||[]);
+  const notFor   = (COURSE_NOT_FOR [c.id]||[]);
+
+  const pharmaNote = c.isPharma ? `<div style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.35);border-radius:8px;padding:14px;margin-bottom:16px;font-size:12px;color:#fca5a5;line-height:1.6;">⚠️ <strong>18+ Educational Course</strong> — Pharmaceutical performance science for educational and harm-reduction purposes only. All content is strictly educational. The use of controlled substances may be illegal in your jurisdiction. By enrolling you confirm you are 18+ and understand this is educational content only.</div>` : '';
+
+  const heroImg = c.img
+    ? `<div style="position:relative;aspect-ratio:600/340;margin:-20px -20px 20px;overflow:hidden;border-radius:10px 10px 0 0;">
+        <img src="${c.img}" alt="${c.name}" style="width:100%;height:100%;object-fit:cover;object-position:left center;display:block;" loading="lazy">
+        <div style="position:absolute;inset:0;background:linear-gradient(0deg,rgba(9,9,16,.9) 0%,rgba(9,9,16,.2) 60%,transparent 100%);"></div>
+        <div style="position:absolute;bottom:16px;left:16px;right:16px;">
+          <div style="font-size:42px;filter:drop-shadow(0 2px 12px rgba(0,0,0,.8));">${c.emoji}</div>
+          <span style="background:${LVL_COLOR[c.level]||'#444'};color:#fff;font-size:10px;font-weight:700;letter-spacing:1px;padding:2px 10px;border-radius:20px;">${LVL_LABEL[c.level]||c.level}</span>
+        </div>
+       </div>`
+    : `<div style="text-align:center;padding:16px 0 20px;">
+        <div style="font-size:72px;margin-bottom:8px;">${c.emoji}</div>
+        <span style="background:${LVL_COLOR[c.level]||'#444'};color:#fff;font-size:11px;font-weight:700;letter-spacing:1px;padding:3px 12px;border-radius:20px;">${LVL_LABEL[c.level]||c.level}</span>
+       </div>`;
+
+  /* outcomes */
+  const outcomesHtml = outcomes.length ? `
+    <div style="margin-bottom:18px;">
+      <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:10px;font-weight:700;">🎯 WHAT YOU'LL LEARN</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        ${outcomes.map(o=>`<div style="display:flex;gap:8px;align-items:flex-start;font-size:12px;line-height:1.55;color:var(--text);"><span style="color:#22c55e;flex-shrink:0;margin-top:2px;font-weight:700;">✓</span><span>${o}</span></div>`).join('')}
       </div>
-    </div>` : `
-    <div style="text-align:center;padding:16px 0 20px;">
-      <div style="font-size:72px;margin-bottom:8px;">${c.emoji}</div>
-      <span style="background:${LVL_COLOR[c.level]||'#444'};color:#fff;font-size:11px;font-weight:700;letter-spacing:1px;padding:3px 12px;border-radius:20px;">${LVL_LABEL[c.level]||c.level}</span>
+    </div>` : '';
+
+  /* curriculum */
+  const curriculumHtml = `
+    <div style="margin-bottom:18px;">
+      <div style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:10px;font-weight:700;">📚 COURSE CURRICULUM — ${(c.mods||[]).length} modules · ${totalTopics} topics · ~${totalHrs}h</div>
+      ${(c.mods||[]).map((m,i)=>`
+        <div style="border:1px solid var(--border);border-radius:8px;margin-bottom:8px;overflow:hidden;">
+          <div style="display:flex;gap:10px;padding:12px;background:var(--card2);align-items:center;">
+            <span style="font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--red);width:26px;flex-shrink:0;line-height:1;">${i+1}</span>
+            <div style="flex:1;">
+              <div style="font-size:13px;font-weight:600;margin-bottom:3px;color:var(--text);">${m.title}</div>
+              <div style="font-size:11px;color:var(--muted);">⏱ ${m.dur} · ${(m.topics||[]).length} topics</div>
+            </div>
+          </div>
+          <div style="padding:0 12px 12px 12px;background:var(--card);">
+            <div style="font-size:12px;color:var(--muted);line-height:1.6;margin:8px 0;">${m.desc}</div>
+            <div style="display:flex;flex-wrap:wrap;gap:5px;">
+              ${(m.topics||[]).slice(0,4).map(t=>`<span style="font-size:10px;background:var(--card2);border:1px solid var(--border);border-radius:4px;padding:2px 8px;color:var(--muted);">${t}</span>`).join('')}
+              ${(m.topics||[]).length>4?`<span style="font-size:10px;color:var(--muted);padding:2px 4px;">+${(m.topics||[]).length-4} more</span>`:''}
+            </div>
+          </div>
+        </div>`).join('')}
     </div>`;
+
+  /* reviews */
+  const reviewsHtml = reviews.length ? `
+    <div style="margin-bottom:18px;">
+      <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:12px;font-weight:700;">⭐ STUDENT REVIEWS</div>
+      ${reviews.map(r=>`
+        <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:10px;">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+            <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--violet),#3B82F6);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">${r.a}</div>
+            <div style="flex:1;">
+              <div style="font-size:13px;font-weight:600;color:var(--text);">${r.n}</div>
+              <div style="font-size:11px;color:var(--muted);">${r.c} · Verified Enrollment</div>
+            </div>
+            <div style="font-size:12px;">⭐⭐⭐⭐⭐</div>
+          </div>
+          <div style="font-size:13px;color:var(--muted);line-height:1.6;font-style:italic;">"${r.t}"</div>
+        </div>`).join('')}
+    </div>` : '';
+
+  /* bonuses */
+  const bonusesHtml = bonuses.length ? `
+    <div style="background:var(--card2);border:1px solid rgba(124,58,237,.2);border-radius:10px;padding:16px;margin-bottom:18px;">
+      <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--violet);margin-bottom:12px;font-weight:700;">🎁 FREE BONUSES INCLUDED</div>
+      ${bonuses.map(b=>`
+        <div style="display:flex;gap:10px;margin-bottom:10px;align-items:flex-start;">
+          <span style="font-size:20px;flex-shrink:0;">${b.i}</span>
+          <div>
+            <div style="font-size:13px;font-weight:600;color:var(--text);">${b.n}</div>
+            <div style="font-size:11px;color:var(--muted);line-height:1.5;">${b.d}</div>
+          </div>
+        </div>`).join('')}
+    </div>` : '';
+
+  /* for / not for */
+  const forHtml = (forWho.length||notFor.length) ? `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px;">
+      <div style="background:rgba(34,197,94,.06);border:1px solid rgba(34,197,94,.2);border-radius:8px;padding:12px;">
+        <div style="font-size:11px;font-weight:700;letter-spacing:1px;color:#22c55e;margin-bottom:8px;">✅ FOR YOU IF...</div>
+        ${forWho.map(f=>`<div style="font-size:11px;color:var(--muted);margin-bottom:6px;line-height:1.4;">✓ ${f}</div>`).join('')}
+      </div>
+      <div style="background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.2);border-radius:8px;padding:12px;">
+        <div style="font-size:11px;font-weight:700;letter-spacing:1px;color:#f87171;margin-bottom:8px;">❌ NOT FOR YOU IF...</div>
+        ${notFor.map(f=>`<div style="font-size:11px;color:var(--muted);margin-bottom:6px;line-height:1.4;">✗ ${f}</div>`).join('')}
+      </div>
+    </div>` : '';
+
   return `${heroImg}
     ${pharmaNote}
     <div style="font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:18px;">${c.desc}</div>
-    <div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:18px;">
-      <div style="flex:1;min-width:120px;background:rgba(255,255,255,.03);border-radius:8px;padding:12px;text-align:center;">
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:10px;margin-bottom:18px;">
+      <div style="background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:12px;text-align:center;">
         <div style="font-size:22px;margin-bottom:4px;">📚</div>
-        <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;">${(c.mods||[]).length}</div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:24px;line-height:1;color:var(--text);">${(c.mods||[]).length}</div>
         <div style="font-size:11px;color:var(--muted);">Modules</div>
       </div>
-      <div style="flex:1;min-width:120px;background:rgba(255,255,255,.03);border-radius:8px;padding:12px;text-align:center;">
+      <div style="background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:12px;text-align:center;">
         <div style="font-size:22px;margin-bottom:4px;">⏱</div>
-        <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;">${c.duration}</div>
-        <div style="font-size:11px;color:var(--muted);">Duration</div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:24px;line-height:1;color:var(--text);">${totalHrs}h</div>
+        <div style="font-size:11px;color:var(--muted);">Total Content</div>
       </div>
-      <div style="flex:1;min-width:120px;background:rgba(255,255,255,.03);border-radius:8px;padding:12px;text-align:center;">
+      <div style="background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:12px;text-align:center;">
+        <div style="font-size:22px;margin-bottom:4px;">🎯</div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:24px;line-height:1;color:var(--text);">${totalTopics}</div>
+        <div style="font-size:11px;color:var(--muted);">Topics</div>
+      </div>
+      <div style="background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:12px;text-align:center;">
         <div style="font-size:22px;margin-bottom:4px;">⭐</div>
-        <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;">${c.rating}</div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:24px;line-height:1;color:var(--text);">${c.rating}</div>
         <div style="font-size:11px;color:var(--muted);">${(c.students||0).toLocaleString()} enrolled</div>
       </div>
     </div>
-    <div style="margin-bottom:18px;">
-      <div style="font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:10px;">📚 COURSE CURRICULUM</div>
-      ${(c.mods||[]).map((m,i)=>`<div style="display:flex;gap:10px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.05);">
-        <span style="font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--red);width:26px;flex-shrink:0;line-height:1;">${i+1}</span>
-        <div style="flex:1;">
-          <div style="font-size:13px;font-weight:600;margin-bottom:2px;">${m.title}</div>
-          <div style="font-size:11px;color:var(--muted);">⏱ ${m.dur} · ${(m.topics||[]).length} topics</div>
-        </div>
-      </div>`).join('')}
-    </div>
+
+    ${outcomesHtml}
+    ${curriculumHtml}
+    ${reviewsHtml}
+    ${bonusesHtml}
+    ${forHtml}
+
     <div style="background:rgba(255,208,0,.06);border:1px solid rgba(255,208,0,.2);border-radius:8px;padding:14px;margin-bottom:18px;font-size:12px;color:var(--muted);">
-      🎓 Upon completion, receive an <strong style="color:var(--gold);">RFC Digital Certificate</strong> with a unique serial number — shareable on LinkedIn.
+      🎓 Upon completion, receive an <strong style="color:var(--gold);">RFC Digital Certificate</strong> with a unique serial number — shareable on LinkedIn. Valid for life.
     </div>
+
     <div style="display:flex;align-items:center;gap:12px;margin-bottom:18px;">
       <span style="font-family:'Bebas Neue',sans-serif;font-size:40px;color:var(--gold);">₹${(c.price||0).toLocaleString()}</span>
       <span style="font-size:14px;text-decoration:line-through;color:var(--muted);">₹${(c.origPrice||0).toLocaleString()}</span>
@@ -12941,6 +13184,7 @@ function _renderCourseDetails(c) {
     <button class="bfire" style="width:100%;padding:15px;font-size:16px;" onclick="purchaseCourse('${c.id}')">🎓 ENROLL NOW — ₹${(c.price||0).toLocaleString()}</button>
     <div style="font-size:11px;color:var(--muted);text-align:center;margin-top:8px;">Instant access · Lifetime validity · RFC Certificate</div>`;
 }
+
 
 function _renderCourseViewer(c) {
   const prog = getCourseProgress(c.id);
