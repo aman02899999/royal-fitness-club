@@ -156,6 +156,43 @@
 <!-- ═══ Performance: Font loading ═══ -->
 <link rel="preload" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@300;400;600;700;900&family=Barlow:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
 <noscript><link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@300;400;600;700;900&family=Barlow:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"></noscript>
+<!-- ═══ Verification Meta Tags (paste IDs when you have them) ═══ -->
+<!-- Google Search Console — replace content value after verifying ownership -->
+<meta name="google-site-verification" content="REPLACE_WITH_GOOGLE_SEARCH_CONSOLE_TOKEN">
+<!-- Bing Webmaster -->
+<meta name="msvalidate.01" content="REPLACE_WITH_BING_VERIFICATION_CODE">
+<!-- IndexNow (Bing/Yandex instant indexing) -->
+<meta name="indexnow-key" content="royalfitnessclubrfc2024indexnow">
+<!-- Open Search for browser address-bar search integration -->
+<link rel="search" type="application/opensearchdescription+xml" title="Royal Fitness Club" href="/opensearch.xml">
+<!-- ═══ Google Tag Manager — replace GTM-XXXXXXXX with your container ID ═══ -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-XXXXXXXX');</script>
+<!-- ═══ Google Analytics 4 — replace G-XXXXXXXXXX with your Measurement ID ═══ -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+<script>
+window.dataLayer=window.dataLayer||[];
+function gtag(){dataLayer.push(arguments);}
+gtag('js',new Date());
+gtag('config','G-XXXXXXXXXX',{
+  page_title:'Royal Fitness Club',
+  page_location:window.location.href,
+  send_page_view:true,
+  currency:'INR',
+  country:'IN'
+});
+/* Track key conversions */
+window._trackEvent=function(action,category,label,value){
+  if(typeof gtag==='function') gtag('event',action,{event_category:category,event_label:label,value:value,currency:'INR'});
+  if(typeof fbq==='function') fbq('track','Purchase',{content_name:label,value:value,currency:'INR'});
+};
+</script>
+<!-- ═══ Facebook Pixel — replace YOUR_PIXEL_ID with your Meta Pixel ID ═══ -->
+<script>
+!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+fbq('init','YOUR_PIXEL_ID');
+fbq('track','PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=YOUR_PIXEL_ID&ev=PageView&noscript=1" alt=""></noscript>
 <style>
 :root{--red:#7C3AED;--orange:#8B5CF6;--gold:#5B21B6;--green:#059669;--blue:#3B82F6;--dark:#F5F3FF;--card:#FFFFFF;--card2:#F3F0FF;--border:rgba(109,40,217,.15);--muted:#64748B;--text:#0F0A1A;--violet:#7C3AED;--violet-dark:#5B21B6;--violet-light:#8B5CF6;--violet-pale:#EDE9FE;
   /* Gradients */
@@ -3477,6 +3514,8 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
 <script src="src/communityService.js"></script>
 </head>
 <body>
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-XXXXXXXX" height="0" width="0" style="display:none;visibility:hidden" title="GTM"></iframe></noscript>
 <!-- iOS PWA Install Banner — shown only on iOS Safari when not already installed -->
 <div id="ios-install-banner" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:9999;background:linear-gradient(135deg,#0d0d10 60%,#1a0005);border-top:2px solid #e8001d;padding:14px 16px 20px;box-shadow:0 -4px 24px rgba(0,0,0,.7);align-items:center;gap:12px;">
   <img src="icons/icon-180x180.png" alt="" style="width:44px;height:44px;border-radius:10px;flex-shrink:0;">
@@ -10846,6 +10885,7 @@ async function activatePro() {
       prefill:{name:user.name||'',email:user.email||'',contact:user.phone||''},
       theme:{color:'#e8001d'},
       handler:async function(resp){
+        window._trackEvent('purchase','subscription','royal_pro',CURRENCIES.INR.pro);
         isPro=true;localStorage.setItem('bm_pro','true');
         const nextBilling=new Date(now.getTime()+30*86400000);
         localStorage.setItem('bm_sub',JSON.stringify({plan:'Royal Pro',price:c.pro,currency:currentCurrency,status:'active',started:now.toISOString(),nextBilling:nextBilling.toISOString(),method:'Razorpay',paymentId:resp.razorpay_payment_id||'',history:[{date:now.toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}),desc:'Royal Pro — payment successful',amt:c.sym+c.pro}]}));
@@ -11091,6 +11131,7 @@ async function buyCatalogPDF(productId,title,amountPaise){
       prefill:{name:user.name||'',email:user.email||'',contact:user.phone||''},
       theme:{color:prod.theme||'#7c3aed'},
       handler:async function(resp){
+        window._trackEvent('purchase','pdf_catalog',productId,(prod.amount||0)/100);
         localStorage.setItem(prod.localKey,JSON.stringify({purchased:true,date:new Date().toISOString(),pid:resp.razorpay_payment_id||''}));
         renderCatalog(); // refresh cards to show download buttons
         toast('📥 Payment successful! Your guide is ready to download.','gold');
@@ -11187,6 +11228,7 @@ async function buyPDFProduct(productId){
       prefill:{name:user.name||'',email:user.email||'',contact:user.phone||''},
       theme:{color:prod.theme},
       handler:async function(resp){
+        window._trackEvent('purchase','pdf_product',productId,(prod.amount||0)/100);
         localStorage.setItem(prod.localKey,JSON.stringify({purchased:true,date:new Date().toISOString(),pid:resp.razorpay_payment_id||''}));
         showPDFPurchased(productId);
         toast('📥 Payment successful! Your guide is ready.','gold');
@@ -11262,6 +11304,7 @@ async function buyBundle(bundleId) {
       prefill:{name:user.name,email:user.email},
       theme:{color:'#7c3aed'},
       handler:async function(response){
+        window._trackEvent('purchase','bundle',bundleId,(bundle.amount||0)/100);
         for(const pid of bundle.includes){
           const prod=PDF_PRODUCTS[pid];
           if(prod)localStorage.setItem(prod.localKey,JSON.stringify({purchased:true,bundleId,paymentId:response.razorpay_payment_id}));

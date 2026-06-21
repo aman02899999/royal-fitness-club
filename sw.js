@@ -1,4 +1,4 @@
-const CACHE = 'rfc-v55';
+const CACHE = 'rfc-v56';
 const STATIC = [
   '/',
   '/index.html',
@@ -8,6 +8,9 @@ const STATIC = [
   '/icons/icon-192x192.png',
   '/icons/icon-512x512.png',
   '/icons/icon-180x180.png',
+  '/opensearch.xml',
+  '/sitemap.xml',
+  '/robots.txt',
 ];
 
 self.addEventListener('install', e => {

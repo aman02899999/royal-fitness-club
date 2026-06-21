@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/">
+  <ShortName>Royal Fitness Club</ShortName>
+  <Description>Search fitness guides, meal plans, courses and expert tips at Royal Fitness Club India</Description>
+  <InputEncoding>UTF-8</InputEncoding>
+  <Image width="16" height="16" type="image/png">https://royal-fitness-club-7adc1.web.app/icons/icon-96x96.png</Image>
+  <Url type="text/html" template="https://royal-fitness-club-7adc1.web.app/?q={searchTerms}"/>
+</OpenSearchDescription>
