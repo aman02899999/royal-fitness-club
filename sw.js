@@ -1,4 +1,4 @@
-const CACHE = 'rfc-v58';
+const CACHE = 'rfc-v59';
 const STATIC = [
   '/',
   '/index.html',
