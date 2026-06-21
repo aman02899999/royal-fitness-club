@@ -9631,6 +9631,18 @@ document.querySelectorAll('.reveal,.reveal-left,.reveal-right,.reveal-scale').fo
   _revealObserver.observe(el);
 });
 
+// On load: reveal elements in the viewport. Runs twice to cover dynamic renders (populateDashboard at 500ms).
+function _forceRevealVisible(){
+  document.querySelectorAll('.reveal,.reveal-left,.reveal-right,.reveal-scale').forEach(function(el){
+    var rect=el.getBoundingClientRect();
+    if(rect.top < window.innerHeight && rect.bottom > 0){
+      el.classList.add('visible');
+    }
+  });
+}
+setTimeout(_forceRevealVisible,300);
+setTimeout(_forceRevealVisible,1200);
+
 // ── Progress Ring Builder ──
 function buildProgressRing(container,pct,color,size,strokeW){
   size=size||120;strokeW=strokeW||10;
@@ -15181,6 +15193,20 @@ function switchScreen(name, navEl) {
   }
 
   currentScreen = name;
+
+  // Force-reveal all animate-on-scroll elements in newly shown sections.
+  // IntersectionObserver doesn't reliably fire after display:none→block on mobile Chrome.
+  var _revealIds = ids;
+  setTimeout(function() {
+    _revealIds.forEach(function(id) {
+      var sec = document.getElementById(id);
+      if (sec) {
+        sec.querySelectorAll('.reveal,.reveal-left,.reveal-right,.reveal-scale').forEach(function(r) {
+          r.classList.add('visible');
+        });
+      }
+    });
+  }, 120);
 }
 
 function sbToggle() {
