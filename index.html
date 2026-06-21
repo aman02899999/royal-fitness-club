@@ -2457,179 +2457,209 @@ section{content-visibility:auto;contain-intrinsic-size:0 500px;}
 img{loading:lazy;}
 
 /* ══════════════════════════════════════════════════════
-   STORE SECTION — WHITE / VIOLET PREMIUM PALETTE
-   ══════════════════════════════════════════════════════ */
+   PDF STORE — 3D DARK PREMIUM THEME
+══════════════════════════════════════════════════════ */
 #store{
-  background:linear-gradient(180deg,#0d0a1a 0%,#110d1f 50%,#0a0717 100%);
-  --sv:#b87dff;--sv2:#d0a6ff;--sv3:#8b5cf6;
-  --sc:#1a1025;--sc2:#231540;--sb:rgba(168,85,247,.22);--sb2:rgba(168,85,247,.35);
-  --st:#f0eeff;--sm:#a89bbf;
+  background:linear-gradient(180deg,#05030f 0%,#0a0620 40%,#080418 70%,#040210 100%);
+  --sv:#a855f7;--sv2:#c084fc;--sv3:#7c3aed;--sv4:#6d28d9;
+  --sc:#0f0a1f;--sc2:#16113a;--sc3:#1e1650;
+  --sb:rgba(139,92,246,.22);--sb2:rgba(139,92,246,.4);
+  --st:#f0eeff;--sm:#8b7ab5;--sg:#22c55e;--sgold:#f59e0b;
   color:var(--st);
+  position:relative;overflow:hidden;
 }
+/* Floating background orbs */
+#store .ps-orb{position:absolute;border-radius:50%;pointer-events:none;z-index:0;filter:blur(80px);}
+#store .ps-orb-1{width:600px;height:600px;background:radial-gradient(circle,rgba(139,92,246,.18),transparent 70%);top:-200px;left:-100px;animation:psFloat1 18s ease-in-out infinite;}
+#store .ps-orb-2{width:400px;height:400px;background:radial-gradient(circle,rgba(168,85,247,.14),transparent 70%);bottom:200px;right:-100px;animation:psFloat2 22s ease-in-out infinite;}
+#store .ps-orb-3{width:300px;height:300px;background:radial-gradient(circle,rgba(99,102,241,.1),transparent 70%);top:40%;left:40%;animation:psFloat3 26s ease-in-out infinite;}
+@keyframes psFloat1{0%,100%{transform:translate(0,0) scale(1);}33%{transform:translate(60px,40px) scale(1.05);}66%{transform:translate(-40px,60px) scale(.95);}}
+@keyframes psFloat2{0%,100%{transform:translate(0,0);}50%{transform:translate(-50px,-30px) scale(1.08);}}
+@keyframes psFloat3{0%,100%{transform:translate(0,0) scale(1);}40%{transform:translate(30px,-40px) scale(.9);}80%{transform:translate(-20px,30px) scale(1.1);}}
+
+/* Content above orbs */
+#store>*:not(.ps-bg-orbs){position:relative;z-index:1;}
+#store .container{position:relative;z-index:1;}
+
+/* ── Hero ── */
+.ps-hero{text-align:center;padding:52px 20px 40px;max-width:900px;margin:0 auto;}
+.ps-hero-eyebrow{display:inline-flex;align-items:center;gap:8px;background:rgba(139,92,246,.12);border:1px solid rgba(139,92,246,.3);border-radius:30px;padding:6px 18px;font-size:10px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--sv2);margin-bottom:20px;}
+.ps-hero-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(52px,10vw,110px);line-height:.9;letter-spacing:3px;background:linear-gradient(135deg,#fff 0%,#d8b4fe 40%,#a855f7 70%,#7c3aed 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:16px;filter:drop-shadow(0 0 40px rgba(168,85,247,.4));}
+.ps-hero-sub{font-size:clamp(14px,2.5vw,18px);color:var(--sm);line-height:1.6;max-width:580px;margin:0 auto 32px;font-weight:400;}
+.ps-hero-sub strong{color:var(--sv2);}
+
+/* Hero stats row */
+.ps-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(139,92,246,.18);border:1px solid var(--sb);border-radius:14px;overflow:hidden;max-width:680px;margin:0 auto 40px;}
+.ps-stat{background:rgba(10,6,30,.8);padding:16px 8px;text-align:center;backdrop-filter:blur(8px);}
+.ps-stat-n{font-family:'Bebas Neue',sans-serif;font-size:32px;line-height:1;background:linear-gradient(135deg,var(--sv2),var(--sv));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.ps-stat-l{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--sm);margin-top:3px;}
+
+/* ── Trust badges ── */
+.ps-trust{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:48px;}
+.ps-trust-badge{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:30px;padding:7px 14px;font-size:11px;color:var(--sm);}
+.ps-trust-badge span{font-size:14px;}
+
+/* ── Section wrapper ── */
+.ps-section{position:relative;margin-bottom:60px;}
+.ps-section-hdr{text-align:center;margin-bottom:32px;}
+.ps-eyebrow{display:inline-block;font-size:9px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--sv);background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.2);border-radius:20px;padding:5px 16px;margin-bottom:12px;}
+.ps-section-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(30px,5vw,54px);letter-spacing:2px;line-height:1;background:linear-gradient(135deg,#fff 0%,#d8b4fe 60%,#a855f7 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:10px;}
+.ps-section-sub{color:var(--sm);font-size:13px;line-height:1.6;max-width:540px;margin:0 auto;}
+
+/* ── 3D Bundle Cards ── */
+.ps-bundle-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;perspective:1200px;}
+.ps-bndl{position:relative;background:linear-gradient(160deg,var(--sc) 0%,var(--sc2) 100%);border:1.5px solid var(--sb);border-radius:20px;padding:32px 22px 26px;display:flex;flex-direction:column;gap:14px;
+  transform:perspective(800px) rotateX(2deg);
+  transition:transform .35s cubic-bezier(.4,0,.2,1),box-shadow .35s,border-color .35s;
+  box-shadow:0 8px 32px rgba(0,0,0,.5),0 0 0 0 rgba(139,92,246,0);
+  will-change:transform;}
+.ps-bndl:hover{transform:perspective(800px) rotateX(0deg) translateY(-8px);box-shadow:0 20px 60px rgba(139,92,246,.35),0 0 0 1px rgba(139,92,246,.3);border-color:var(--sv);}
+.ps-bndl-popular{border-color:var(--sv);box-shadow:0 8px 40px rgba(139,92,246,.3),inset 0 1px 0 rgba(255,255,255,.06);}
+.ps-bndl-popular:hover{box-shadow:0 24px 70px rgba(139,92,246,.5),0 0 60px rgba(139,92,246,.2),inset 0 1px 0 rgba(255,255,255,.06);}
+.ps-bndl-gold{border-color:rgba(245,158,11,.4);background:linear-gradient(160deg,#0f0a1f 0%,#1a1200 100%);}
+.ps-bndl-gold:hover{box-shadow:0 20px 60px rgba(245,158,11,.3),0 0 0 1px rgba(245,158,11,.4);border-color:var(--sgold);}
+.ps-bndl-red{border-color:rgba(220,38,38,.3);background:linear-gradient(160deg,var(--sc) 0%,#1a0000 100%);}
+.ps-bndl-red:hover{box-shadow:0 20px 60px rgba(220,38,38,.3),0 0 0 1px rgba(220,38,38,.4);border-color:#ef4444;}
+
+/* Bundle badge */
+.ps-bndl-badge{position:absolute;top:-14px;left:50%;transform:translateX(-50%);font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:5px 18px;border-radius:30px;white-space:nowrap;color:#fff;box-shadow:0 4px 16px rgba(0,0,0,.4);}
+.ps-bndl-badge.violet{background:linear-gradient(135deg,var(--sv3),var(--sv));}
+.ps-bndl-badge.red{background:linear-gradient(135deg,#dc2626,#ea580c);}
+.ps-bndl-badge.gold{background:linear-gradient(135deg,#f59e0b,#d97706);color:#000;}
+
+.ps-bndl-name{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;color:var(--st);text-align:center;margin-top:6px;line-height:1.1;}
+.ps-bndl-count{text-align:center;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--sv);margin-bottom:4px;}
+.ps-bndl-count.red{color:#ef4444;}
+.ps-bndl-count.gold{color:var(--sgold);}
+.ps-bndl-books{display:flex;align-items:center;gap:10px;justify-content:center;}
+.ps-book-chip{padding:8px 12px;border-radius:8px;font-size:9px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;text-align:center;line-height:1.3;flex:1;max-width:80px;}
+.ps-book-blue{background:linear-gradient(135deg,#00050d,#003080);color:#38bdf8;border:1px solid rgba(56,189,248,.2);}
+.ps-book-red{background:linear-gradient(135deg,#1a0000,#4a0000);color:#ffd000;border:1px solid rgba(255,208,0,.2);}
+.ps-bndl-plus{font-size:22px;font-weight:900;color:var(--sv);flex-shrink:0;}
+.ps-bndl-cats{display:flex;flex-wrap:wrap;gap:5px;justify-content:center;}
+.ps-bndl-cats span{background:rgba(139,92,246,.08);border:1px solid rgba(139,92,246,.18);border-radius:20px;padding:3px 10px;font-size:9.5px;color:var(--sm);}
+.ps-bndl-list{list-style:none;display:flex;flex-direction:column;gap:6px;margin:0;padding:0;}
+.ps-bndl-list li{font-size:12px;color:#c4b8d8;display:flex;align-items:flex-start;gap:7px;line-height:1.4;}
+.ps-bndl-list li::before{content:'✓';color:var(--sg);font-weight:700;font-size:11px;flex-shrink:0;margin-top:1px;}
+.ps-bndl-pricing{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:center;padding:14px;background:rgba(139,92,246,.06);border:1px solid rgba(139,92,246,.15);border-radius:12px;}
+.ps-bndl-gold .ps-bndl-pricing{background:rgba(245,158,11,.06);border-color:rgba(245,158,11,.15);}
+.ps-bndl-red .ps-bndl-pricing{background:rgba(220,38,38,.06);border-color:rgba(220,38,38,.15);}
+.ps-bndl-orig{font-family:'Bebas Neue',sans-serif;font-size:18px;text-decoration:line-through;color:#4b5563;}
+.ps-bndl-price{font-family:'Bebas Neue',sans-serif;font-size:42px;color:var(--sv2);line-height:1;}
+.ps-bndl-gold .ps-bndl-price{color:var(--sgold);}
+.ps-bndl-red .ps-bndl-price{color:#f87171;}
+.ps-bndl-save{font-size:10px;font-weight:700;padding:3px 10px;border-radius:4px;background:rgba(139,92,246,.15);color:var(--sv2);letter-spacing:.5px;}
+.ps-bndl-gold .ps-bndl-save{background:rgba(245,158,11,.15);color:var(--sgold);}
+.ps-bndl-red .ps-bndl-save{background:rgba(220,38,38,.15);color:#f87171;}
+.ps-bndl-btn{width:100%;padding:15px;border:none;border-radius:12px;font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;cursor:pointer;transition:all .25s;position:relative;overflow:hidden;}
+.ps-bndl-btn::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.15),transparent);opacity:0;transition:opacity .2s;}
+.ps-bndl-btn:hover::after{opacity:1;}
+.ps-bndl-btn:hover{transform:translateY(-2px);}
+.ps-bndl-btn.violet{background:linear-gradient(135deg,var(--sv3),var(--sv));color:#fff;box-shadow:0 4px 20px rgba(124,58,237,.4);}
+.ps-bndl-btn.violet:hover{box-shadow:0 8px 30px rgba(124,58,237,.6);}
+.ps-bndl-btn.red{background:linear-gradient(135deg,#dc2626,#ea580c);color:#fff;box-shadow:0 4px 20px rgba(220,38,38,.4);}
+.ps-bndl-btn.red:hover{box-shadow:0 8px 30px rgba(220,38,38,.6);}
+.ps-bndl-btn.gold{background:linear-gradient(135deg,#f59e0b,#d97706);color:#000;box-shadow:0 4px 20px rgba(245,158,11,.3);}
+.ps-bndl-btn.gold:hover{box-shadow:0 8px 30px rgba(245,158,11,.5);}
+.ps-bndl-owned{text-align:center;font-size:11px;color:var(--sg);font-weight:600;padding:9px;background:rgba(34,197,94,.07);border:1px solid rgba(34,197,94,.2);border-radius:10px;}
+.ps-bndl-divider{border:none;border-top:1px solid rgba(139,92,246,.12);margin:0 0 28px;}
+
+/* Featured guide tabs */
+#store .store-product-tabs{gap:16px;background:rgba(0,0,0,.35);padding:20px 16px;border-radius:16px;border:1.5px solid rgba(0,0,0,.6);margin:28px 0 0;}
+#store .sptab{background:#0f0a1f;border:2px solid rgba(0,0,0,.8)!important;color:#f0eeff;box-shadow:0 4px 24px rgba(0,0,0,.7),inset 0 1px 0 rgba(255,255,255,.05);border-radius:12px!important;transition:all .25s;}
+#store .sptab:hover,#store .sptab.active{border-color:var(--sv)!important;background:#16113a;box-shadow:0 8px 32px rgba(139,92,246,.4),0 0 0 1px rgba(139,92,246,.3),inset 0 1px 0 rgba(255,255,255,.08);}
+#store .sptab-name{color:#f0eeff!important;font-weight:700;}
+#store .sptab-price{color:var(--sv)!important;}
+#store .sptab-badge{background:linear-gradient(135deg,var(--sv3),var(--sv));color:#fff;}
+
+/* Store general text overrides */
 #store .stag{color:var(--sv)!important;}
 #store .sh{color:#f0eeff!important;}
 #store .ssub{color:var(--sm)!important;}
-#store .divider{background:linear-gradient(90deg,transparent,#000,transparent);}
-
-/* Store product tabs */
-#store .store-product-tabs{gap:16px;background:rgba(0,0,0,.35);padding:20px 16px;border-radius:14px;border:1.5px solid #000;margin:28px 0 0;}
-#store .sptab{background:#120b20;border:2px solid #000 !important;color:#f0eeff;box-shadow:0 4px 18px rgba(0,0,0,.6);border-radius:10px !important;}
-#store .sptab:hover,#store .sptab.active{border-color:var(--sv) !important;background:#1e1035;box-shadow:0 6px 24px rgba(139,92,246,.35);}
-#store .sptab-name{color:#f0eeff !important;font-weight:700;}
-#store .sptab-price{color:var(--sv) !important;}
-#store .sptab-badge{background:linear-gradient(135deg,var(--sv3),var(--sv));}
+#store p{color:#c4b8d8!important;}
+#store .divider{background:linear-gradient(90deg,transparent,rgba(139,92,246,.3),transparent);}
 
 /* Stats bar */
-#store .pdf-stats-bar{background:rgba(168,85,247,.08);border:1px solid var(--sb);box-shadow:0 2px 16px rgba(109,40,217,.18);}
+#store .pdf-stats-bar{background:rgba(139,92,246,.08);border:1px solid var(--sb);box-shadow:0 2px 16px rgba(109,40,217,.2);}
 #store .pdf-stat-num{color:var(--sv);}
 #store .pdf-stat-lbl{color:var(--sm);}
-
-/* ── Force all text readable on dark store bg ── */
-#store p{color:#c4b8d8 !important;}
-#store .ssub{color:var(--sm)!important;}
-
 #store .pdf-pages-tag{color:var(--sm)!important;}
 #store .pdf-rating-cnt{color:var(--sm)!important;}
 
 /* What's inside */
 #store .pdf-what-inside h3{color:var(--sv)!important;}
-#store .pdf-chap-list li{color:#c4b8d8 !important;}
+#store .pdf-chap-list li{color:#c4b8d8!important;}
 
 /* Price box */
 #store .pdf-price-box{background:var(--sc);border:1.5px solid var(--sb);box-shadow:0 4px 20px rgba(109,40,217,.25);}
-#store .pdf-orig-price{color:#6b7280 !important;}
+#store .pdf-orig-price{color:#6b7280!important;}
 #store .pdf-price{color:var(--sv)!important;}
-#store .pdf-discount-tag{background:var(--sv3);color:#fff !important;}
+#store .pdf-discount-tag{background:var(--sv3);color:#fff!important;}
 #store .pdf-price-note{color:var(--sm)!important;}
 #store .pdf-trust-badge{color:var(--sm)!important;}
-
-/* FM buy button keeps blue */
 #store #fm-buy-btn{background:linear-gradient(135deg,#0050a0,#0080ff)!important;}
-
-/* Buy button — violet gradient */
-#store .pdf-buy-btn{
-  background:linear-gradient(135deg,var(--sv3),var(--sv))!important;
-  box-shadow:0 4px 20px rgba(124,58,237,.45)!important;
-  color:#fff!important;
-}
+#store .pdf-buy-btn{background:linear-gradient(135deg,var(--sv3),var(--sv))!important;box-shadow:0 4px 20px rgba(124,58,237,.45)!important;color:#fff!important;}
 #store .pdf-buy-btn:hover{opacity:.9;transform:translateY(-1px);}
-#store .pdf-download-btn{background:linear-gradient(135deg,#22c55e,#16a34a);}
-
-/* Reviews section */
+#store .pdf-download-btn{background:linear-gradient(135deg,#22c55e,#16a34a)!important;}
 #store .pdf-reviews-section h3{color:var(--sv);}
 #store .pdf-review{background:var(--sc);border:1px solid var(--sb);box-shadow:0 2px 12px rgba(109,40,217,.2);}
 #store .pdf-rev-name2{color:var(--st);}
 #store .pdf-rev-date{color:var(--sm)!important;}
-#store .pdf-rev-text{color:#c4b8d8 !important;}
+#store .pdf-rev-text{color:#c4b8d8!important;}
 #store .pdf-review-avatar{background:linear-gradient(135deg,var(--sv3),var(--sv))!important;}
-
-/* FAQ */
 #store .pdf-faq-section h3{color:var(--sv)!important;}
 #store .faq-item{background:var(--sc);border:1px solid var(--sb);}
 #store .faq-q{color:var(--st)!important;}
-#store .faq-a p{color:#c4b8d8 !important;}
+#store .faq-a p{color:#c4b8d8!important;}
 #store .faq-q::after{color:var(--sv);}
-
-/* Bonus section */
-#store .pdf-bonus-section{
-  background:linear-gradient(135deg,rgba(139,92,246,.12),rgba(168,85,247,.08));
-  border:1px solid rgba(139,92,246,.3);
-}
+#store .pdf-bonus-section{background:linear-gradient(135deg,rgba(139,92,246,.12),rgba(168,85,247,.08));border:1px solid rgba(139,92,246,.3);}
 #store .pdf-bonus-tag{background:linear-gradient(135deg,var(--sv3),var(--sv));}
 #store .pdf-bonus-name{color:var(--sv)!important;}
-#store .pdf-bonus-desc{color:#c4b8d8 !important;}
-#store .sh{color:#f0eeff!important;}
-
-/* For/not-for */
+#store .pdf-bonus-desc{color:#c4b8d8!important;}
 #store .pdf-for-box{background:var(--sc);border:1px solid var(--sb);box-shadow:0 2px 8px rgba(109,40,217,.15);}
-#store .pdf-for-li{color:#c4b8d8 !important;}
-
-/* Guarantee */
+#store .pdf-for-li{color:#c4b8d8!important;}
 #store .pdf-guarantee-box{background:rgba(22,163,74,.07);border:2px solid rgba(34,197,94,.25);box-shadow:0 4px 16px rgba(34,197,94,.1);}
-#store .pdf-guarantee-text h4{color:#4ade80 !important;}
-#store .pdf-guarantee-text p{color:#c4b8d8 !important;}
-
-/* Final CTA */
-#store .pdf-final-cta{
-  background:linear-gradient(135deg,rgba(139,92,246,.15),rgba(109,40,217,.1))!important;
-  border:1.5px solid rgba(139,92,246,.3)!important;
-}
+#store .pdf-guarantee-text h4{color:#4ade80!important;}
+#store .pdf-guarantee-text p{color:#c4b8d8!important;}
+#store .pdf-final-cta{background:linear-gradient(135deg,rgba(139,92,246,.15),rgba(109,40,217,.1))!important;border:1.5px solid rgba(139,92,246,.3)!important;}
 #store .pdf-final-cta .stag{color:var(--sv)!important;}
 #store .pdf-final-cta .sh{color:#f0eeff!important;}
 #store .pdf-final-cta p{color:#a89bbf!important;}
-#store .pdf-final-cta .pdf-buy-btn{
-  background:linear-gradient(135deg,var(--sv3),var(--sv))!important;
-  box-shadow:0 6px 24px rgba(109,40,217,.4)!important;
-}
-
-/* Store separator */
-#store .store-section-sep{border-top:2px solid #000 !important;}
-
-/* Sticky bar */
-#pdf-sticky-bar{background:rgba(139,92,246,.97);border-top:2px solid rgba(139,92,246,.5);}
-#pdf-sticky-bar .pdf-buy-btn{background:#fff!important;color:var(--sv3)!important;box-shadow:none!important;}
-
-/* Sub-section stags inside store */
+#store .pdf-final-cta .pdf-buy-btn{background:linear-gradient(135deg,var(--sv3),var(--sv))!important;box-shadow:0 6px 24px rgba(109,40,217,.4)!important;}
+#store .store-section-sep{border-top:2px solid rgba(0,0,0,.6)!important;}
 #store [class="stag"]{color:var(--sv)!important;}
-
-/* Features Banner */
-#store .pfb-tag{color:var(--sv);}
-#store .pfb-hl{color:var(--st);}
+#store .pfb-title{color:var(--st);}
 #store .pfb-card{background:var(--sc);border-color:var(--sb);}
 #store .pfb-card:hover{border-color:var(--sv);}
-#store .pfb-title{color:var(--st);}
 #store .pfb-desc{color:var(--sm);}
 #store .pfb-outcomes{background:linear-gradient(135deg,rgba(139,92,246,.1),rgba(168,85,247,.06));border-color:rgba(139,92,246,.2);}
-#store .pfb-out-label{color:var(--sm);}
-#store .pfb-out-item{background:rgba(139,92,246,.08);}
 #store .pfb-out-num{color:var(--sv);}
-#store .pfb-out-desc{color:var(--sm);}
 
-/* Bundle Deals */
-#store .bundle-section{padding:8px 0 28px;text-align:center;}
-#store .bundle-eyebrow{display:inline-block;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#fff;background:linear-gradient(135deg,var(--sv3),var(--sv));border-radius:20px;padding:6px 18px;margin-bottom:12px;}
-#store .bundle-h{font-size:clamp(28px,5vw,42px)!important;color:var(--st)!important;margin-bottom:6px!important;}
-#store .bundle-sub{font-size:13px;color:var(--sm);margin-bottom:24px;}
-#store .bundle-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
-#store .bndl-card{position:relative;background:var(--sc);border:2px solid var(--sb);border-radius:18px;padding:28px 20px 22px;display:flex;flex-direction:column;gap:13px;box-shadow:0 6px 28px rgba(109,40,217,.2);text-align:left;}
-#store .bndl-popular{border-color:var(--sv);box-shadow:0 8px 32px rgba(139,92,246,.3);}
-#store .bndl-best{border-color:#d97706;background:linear-gradient(160deg,#1a1200,#1f1600);}
-#store .bndl-badge{position:absolute;top:-13px;left:50%;transform:translateX(-50%);font-size:9px;font-weight:700;letter-spacing:1.5px;padding:4px 16px;border-radius:20px;text-transform:uppercase;white-space:nowrap;color:#fff;background:linear-gradient(135deg,var(--sv3),var(--sv));}
-#store .bndl-badge-gold{background:linear-gradient(135deg,#f59e0b,#d97706);color:#000;}
-#store .bndl-name{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px;color:var(--st);text-align:center;margin-top:4px;}
-#store .bndl-count{text-align:center;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--sv);}
-#store .bndl-includes{display:flex;align-items:center;gap:8px;justify-content:center;}
-#store .bndl-book{padding:7px 10px;border-radius:7px;font-size:9px;font-weight:700;letter-spacing:.3px;text-transform:uppercase;text-align:center;line-height:1.3;}
-#store .bndl-book-fm{background:linear-gradient(135deg,#00050d,#003080);color:#38bdf8;}
-#store .bndl-book-ab{background:linear-gradient(135deg,#1a0000,#4a0000);color:#ffd000;}
-#store .bndl-plus{font-size:18px;font-weight:900;color:var(--sv);}
-#store .bndl-cats{display:flex;flex-wrap:wrap;gap:4px;justify-content:center;}
-#store .bndl-cats span{background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.2);border-radius:20px;padding:3px 9px;font-size:10px;color:#a89bbf;}
-#store .bndl-list{list-style:none;display:flex;flex-direction:column;gap:5px;margin:0;padding:0;}
-#store .bndl-list li{font-size:12px;color:#c4b8d8;display:flex;align-items:center;gap:6px;}
-#store .bndl-pricing{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:center;padding:12px;background:rgba(139,92,246,.08);border:1px solid rgba(139,92,246,.18);border-radius:10px;}
-#store .bndl-best .bndl-pricing{background:rgba(217,119,6,.07);border-color:rgba(217,119,6,.2);}
-#store .bndl-orig{font-family:'Bebas Neue',sans-serif;font-size:18px;text-decoration:line-through;color:#6b7280;}
-#store .bndl-price{font-family:'Bebas Neue',sans-serif;font-size:38px;color:var(--sv);line-height:1;}
-#store .bndl-best .bndl-price{color:#f59e0b;}
-#store .bndl-save{font-size:10px;font-weight:700;padding:3px 10px;border-radius:4px;background:rgba(139,92,246,.15);color:var(--sv);}
-#store .bndl-best .bndl-save{background:rgba(217,119,6,.15);color:#f59e0b;}
-#store .bndl-btn{width:100%;padding:14px;background:linear-gradient(135deg,var(--sv3),var(--sv));color:#fff;border:none;border-radius:10px;font-family:'Bebas Neue',sans-serif;font-size:17px;letter-spacing:2px;cursor:pointer;transition:all .2s;box-shadow:0 4px 16px rgba(124,58,237,.35);}
-#store .bndl-btn:hover{transform:translateY(-2px);box-shadow:0 6px 22px rgba(124,58,237,.48);}
-#store .bndl-btn-gold{background:linear-gradient(135deg,#f59e0b,#d97706)!important;color:#000!important;box-shadow:0 4px 16px rgba(245,158,11,.3)!important;}
-#store .bndl-btn-gold:hover{box-shadow:0 6px 22px rgba(245,158,11,.42)!important;}
-#store .bndl-owned{text-align:center;font-size:12px;color:#4ade80;font-weight:600;padding:8px;background:rgba(34,197,94,.07);border:1px solid rgba(34,197,94,.18);border-radius:8px;}
-#store .bndl-divider{margin:10px 0 28px;border:none;border-top:1px solid var(--sb);}
+/* PDF Catalog in store */
+#store .pdf-catalog-intro .sh{color:#f0eeff!important;}
+#store .pdf-catalog-intro .ssub{color:var(--sm)!important;}
+#store .pdf-allstats{background:var(--sc);border-color:rgba(139,92,246,.2);}
+#store .pdf-allstat{border-right-color:rgba(139,92,246,.12);}
+#store .pdf-allstat-n{color:var(--sv);}
+#store .pdf-allstat-l{color:var(--sm);}
+#store .pcf{background:rgba(15,10,31,.8);border-color:rgba(139,92,246,.25);color:var(--sm);}
+#store .pcf:hover,#store .pcf.active{background:var(--sv);border-color:var(--sv);color:#fff;}
+#store .pcc-star-num{color:var(--st)!important;}
+#store .pcc-star-cnt{color:var(--sm)!important;}
+
+/* Sticky bar */
+#pdf-sticky-bar{background:rgba(124,58,237,.97);border-top:2px solid rgba(139,92,246,.5);}
+#pdf-sticky-bar .pdf-buy-btn{background:#fff!important;color:var(--sv3)!important;box-shadow:none!important;}
 
 /* Mobile */
 @media(max-width:768px){
   #store .store-product-tabs{flex-direction:column;align-items:center;}
   #store .sptab{width:100%;max-width:360px;}
-  #store .pdf-hero{gap:20px;}
   #store .pdf-for-section{grid-template-columns:1fr;}
   #store .pdf-bonus-list{grid-template-columns:1fr;}
   #store .pdf-reviews-grid{grid-template-columns:1fr;}
-  #store .bundle-grid{grid-template-columns:1fr;}
+  .ps-bundle-grid{grid-template-columns:1fr;}
+  .ps-stats{grid-template-columns:repeat(2,1fr);}
 }
 
 /* ══════════════════════════════════════════════════════
@@ -3443,7 +3473,7 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
     <div class="sb-item" id="sb-admin-item" data-screen="admin" onclick="switchScreen('admin',this)" style="display:none;"><span class="sb-icon">⚙️</span><span>Admin Panel</span><span class="sb-badge-pill" style="background:#e8001d;color:#fff;border-radius:4px;">ADMIN</span></div>
 
     <div class="sb-section-lbl">STORE</div>
-    <div class="sb-item" data-screen="store" onclick="switchScreen('store',this)"><span class="sb-icon">📚</span><span>Knowledge Store</span></div>
+    <div class="sb-item" data-screen="store" onclick="switchScreen('store',this)"><span class="sb-icon">📚</span><span>PDF Store</span></div>
     <div class="sb-item" data-screen="plans" onclick="switchScreen('plans',this)"><span class="sb-icon">💳</span><span>Plans & Pricing</span></div>
 
     <div class="sb-divider"></div>
@@ -6138,76 +6168,116 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
   </div>
 </section>
 <div class="divider"></div>
-<section id="store">
-  <div class="container">
-    <!-- ═══════════════════════════════════════════════════ -->
-    <!-- BUNDLE DEALS SECTION                               -->
-    <!-- ═══════════════════════════════════════════════════ -->
-    <div class="bundle-section" id="bundle-section">
-      <div class="bundle-eyebrow">⚡ LIMITED TIME OFFER — SAVE UP TO 73%</div>
-      <div class="sh bundle-h">BUNDLE DEALS</div>
-      <p class="bundle-sub">Get more guides, pay less. Biggest savings when you buy together.</p>
+<section id="store" itemscope itemtype="https://schema.org/Store">
+  <!-- Background orbs for 3D atmosphere -->
+  <div class="ps-bg-orbs" aria-hidden="true">
+    <div class="ps-orb ps-orb-1"></div>
+    <div class="ps-orb ps-orb-2"></div>
+    <div class="ps-orb ps-orb-3"></div>
+  </div>
 
-      <div class="bundle-grid">
+  <div class="container">
+    <!-- ══ HERO ══ -->
+    <div class="ps-hero">
+      <div class="ps-hero-eyebrow" role="heading" aria-level="2">📚 22 Expert Guides · Instant Download · Lifetime Access</div>
+      <h1 class="ps-hero-title" itemprop="name">PDF STORE</h1>
+      <p class="ps-hero-sub">Tips and tricks to achieve your goal with <strong>full guidance</strong> — science-backed, India-specific, instant access.</p>
+
+      <div class="ps-stats" itemscope itemtype="https://schema.org/AggregateRating">
+        <div class="ps-stat">
+          <div class="ps-stat-n">22</div>
+          <div class="ps-stat-l">Expert Guides</div>
+        </div>
+        <div class="ps-stat">
+          <div class="ps-stat-n">3,100+</div>
+          <div class="ps-stat-l">Copies Sold</div>
+        </div>
+        <div class="ps-stat">
+          <div class="ps-stat-n" itemprop="ratingValue">4.9★</div>
+          <div class="ps-stat-l" itemprop="reviewCount">Avg Rating</div>
+        </div>
+        <div class="ps-stat">
+          <div class="ps-stat-n">₹199+</div>
+          <div class="ps-stat-l">Starting Price</div>
+        </div>
+      </div>
+
+      <div class="ps-trust">
+        <div class="ps-trust-badge"><span>🔒</span> Razorpay Secured</div>
+        <div class="ps-trust-badge"><span>📥</span> Instant Download</div>
+        <div class="ps-trust-badge"><span>📱</span> All Devices</div>
+        <div class="ps-trust-badge"><span>♾️</span> Lifetime Access</div>
+        <div class="ps-trust-badge"><span>🇮🇳</span> India-Specific Content</div>
+      </div>
+    </div>
+
+    <!-- ══ BUNDLE DEALS ══ -->
+    <div class="ps-section" id="bundle-section">
+      <div class="ps-section-hdr">
+        <div class="ps-eyebrow">⚡ Limited Time Offer — Save Up To 73%</div>
+        <div class="ps-section-title">BUNDLE DEALS</div>
+        <p class="ps-section-sub">Get more guides, pay less. Biggest savings when you buy the complete sets.</p>
+      </div>
+
+      <div class="ps-bundle-grid">
         <!-- Bundle 1: The Duo -->
-        <div class="bndl-card bndl-popular" id="bndl-duo-card">
-          <div class="bndl-badge">MOST POPULAR</div>
-          <div class="bndl-name">THE TRANSFORMATION DUO</div>
-          <div class="bndl-includes">
-            <div class="bndl-book bndl-book-fm">FITNESS<br>&amp;<br>MINDSET</div>
-            <div class="bndl-plus">+</div>
-            <div class="bndl-book bndl-book-ab">ANABOLIC<br>FULL<br>GUIDE</div>
+        <div class="ps-bndl ps-bndl-popular" id="bndl-duo-card">
+          <div class="ps-bndl-badge violet">⭐ Most Popular</div>
+          <div class="ps-bndl-name">THE TRANSFORMATION DUO</div>
+          <div class="ps-bndl-books">
+            <div class="ps-book-chip ps-book-blue">FITNESS<br>&amp;<br>MINDSET</div>
+            <div class="ps-bndl-plus">+</div>
+            <div class="ps-book-chip ps-book-red">ANABOLIC<br>FULL<br>GUIDE</div>
           </div>
-          <ul class="bndl-list">
-            <li>✓ Fitness &amp; Mindset Guidance (50+ pages)</li>
-            <li>✓ Anabolic Full Guide (50+ pages)</li>
-            <li>✓ 6 Bonus resources worth ₹1,094</li>
-            <li>✓ Instant PDF download · Lifetime access</li>
+          <ul class="ps-bndl-list">
+            <li>Fitness &amp; Mindset Guidance (50+ pages)</li>
+            <li>Anabolic Full Guide (50+ pages)</li>
+            <li>6 Bonus resources worth ₹1,094</li>
+            <li>Instant PDF download · Lifetime access</li>
           </ul>
-          <div class="bndl-pricing">
-            <span class="bndl-orig">₹598</span>
-            <span class="bndl-price">₹449</span>
-            <span class="bndl-save">SAVE ₹149</span>
+          <div class="ps-bndl-pricing">
+            <span class="ps-bndl-orig">₹598</span>
+            <span class="ps-bndl-price">₹449</span>
+            <span class="ps-bndl-save">SAVE ₹149</span>
           </div>
-          <button class="bndl-btn" id="bndl-duo-btn" onclick="buyBundle('duo')">📦 GET THE DUO — ₹449</button>
-          <div class="bndl-owned" id="bndl-duo-owned" style="display:none;">✅ You own both guides — check below to download</div>
+          <button class="ps-bndl-btn violet" id="bndl-duo-btn" onclick="buyBundle('duo')">📦 GET THE DUO — ₹449</button>
+          <div class="ps-bndl-owned" id="bndl-duo-owned" style="display:none;">✅ You own both guides — check below to download</div>
         </div>
 
         <!-- Bundle 2: Anabolic Series -->
-        <div class="bndl-card" id="bndl-anabolic-card" style="border-color:rgba(220,38,38,.3);background:linear-gradient(160deg,#fff 60%,rgba(220,38,38,.03) 100%);">
-          <div class="bndl-badge" style="background:linear-gradient(135deg,#dc2626,#ea580c);">🔥 NEW SERIES</div>
-          <div class="bndl-name" style="color:#dc2626;">ANABOLIC SERIES BUNDLE</div>
-          <div class="bndl-count" style="color:#dc2626;">ALL 5 ANABOLIC GUIDES</div>
-          <div class="bndl-cats">
+        <div class="ps-bndl ps-bndl-red" id="bndl-anabolic-card">
+          <div class="ps-bndl-badge red">🔥 New Series</div>
+          <div class="ps-bndl-name" style="color:#f87171;">ANABOLIC SERIES BUNDLE</div>
+          <div class="ps-bndl-count red">All 5 Anabolic Guides</div>
+          <div class="ps-bndl-cats">
             <span>🟢 Beginner Cycle</span>
             <span>🔵 Intermediate</span>
             <span>🔴 Advanced</span>
             <span>🩵 PCT Protocol</span>
             <span>🟠 Cycle Nutrition</span>
           </div>
-          <ul class="bndl-list">
-            <li>✓ Beginner Anabolic Cycle Complete Guide</li>
-            <li>✓ Intermediate Anabolic Cycle Blueprint</li>
-            <li>✓ Advanced Anabolic Cycle Mastery</li>
-            <li>✓ PCT Post Cycle Therapy Bible</li>
-            <li>✓ Anabolic Nutrition &amp; Supplementation Bible</li>
-            <li>✓ Instant download for all 5 PDFs</li>
+          <ul class="ps-bndl-list">
+            <li>Beginner Anabolic Cycle Complete Guide</li>
+            <li>Intermediate Anabolic Cycle Blueprint</li>
+            <li>Advanced Anabolic Cycle Mastery</li>
+            <li>PCT Post Cycle Therapy Bible</li>
+            <li>Anabolic Nutrition &amp; Supplementation Bible</li>
           </ul>
-          <div class="bndl-pricing">
-            <span class="bndl-orig">₹2,345</span>
-            <span class="bndl-price" style="color:#dc2626;">₹999</span>
-            <span class="bndl-save" style="background:#dc2626;">SAVE ₹1,346 (57% OFF)</span>
+          <div class="ps-bndl-pricing">
+            <span class="ps-bndl-orig">₹2,345</span>
+            <span class="ps-bndl-price">₹999</span>
+            <span class="ps-bndl-save">SAVE ₹1,346 (57% OFF)</span>
           </div>
-          <button class="bndl-btn" id="bndl-anabolic-btn" onclick="buyBundle('anabolic')" style="background:linear-gradient(135deg,#dc2626,#ea580c);">🔥 GET ANABOLIC SERIES — ₹999</button>
-          <div class="bndl-owned" id="bndl-anabolic-owned" style="display:none;">✅ You own the Anabolic Series — all 5 guides available below</div>
+          <button class="ps-bndl-btn red" id="bndl-anabolic-btn" onclick="buyBundle('anabolic')">🔥 GET ANABOLIC SERIES — ₹999</button>
+          <div class="ps-bndl-owned" id="bndl-anabolic-owned" style="display:none;">✅ You own the Anabolic Series — all 5 guides available below</div>
         </div>
 
         <!-- Bundle 3: Complete Library -->
-        <div class="bndl-card bndl-best" id="bndl-library-card">
-          <div class="bndl-badge bndl-badge-gold">🏆 BEST VALUE</div>
-          <div class="bndl-name">THE COMPLETE LIBRARY</div>
-          <div class="bndl-count">ALL 22 EXPERT GUIDES</div>
-          <div class="bndl-cats">
+        <div class="ps-bndl ps-bndl-gold" id="bndl-library-card">
+          <div class="ps-bndl-badge gold">🏆 Best Value</div>
+          <div class="ps-bndl-name">THE COMPLETE LIBRARY</div>
+          <div class="ps-bndl-count gold">All 22 Expert Guides</div>
+          <div class="ps-bndl-cats">
             <span>💪 Muscle Building</span>
             <span>🔥 Fat Loss</span>
             <span>🧠 Mindset</span>
@@ -6217,29 +6287,61 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
             <span>😴 Recovery</span>
             <span>🔬 SARMs &amp; Peptides</span>
           </div>
-          <ul class="bndl-list">
-            <li>✓ All 20 Expert Guides (₹6,685 value)</li>
-            <li>✓ Fitness &amp; Mindset Guidance</li>
-            <li>✓ Anabolic Full Guide + Anabolic Series (5 PDFs)</li>
-            <li>✓ Instant download for all 22 PDFs</li>
-            <li>✓ Lifetime access · Works on all devices</li>
+          <ul class="ps-bndl-list">
+            <li>All 20 Expert Guides (₹6,685 value)</li>
+            <li>Fitness &amp; Mindset Guidance + Anabolic Full Guide</li>
+            <li>Anabolic Series (5 PDFs) included</li>
+            <li>Instant download for all 22 PDFs · Lifetime access</li>
           </ul>
-          <div class="bndl-pricing">
-            <span class="bndl-orig">₹7,283</span>
-            <span class="bndl-price">₹1,999</span>
-            <span class="bndl-save">SAVE ₹5,284 (73% OFF)</span>
+          <div class="ps-bndl-pricing">
+            <span class="ps-bndl-orig">₹7,283</span>
+            <span class="ps-bndl-price">₹1,999</span>
+            <span class="ps-bndl-save">SAVE ₹5,284 (73% OFF)</span>
           </div>
-          <button class="bndl-btn bndl-btn-gold" id="bndl-library-btn" onclick="buyBundle('library')">🏆 GET ALL 22 GUIDES — ₹1,999</button>
-          <div class="bndl-owned" id="bndl-library-owned" style="display:none;">✅ You own the complete library — all guides available below</div>
+          <button class="ps-bndl-btn gold" id="bndl-library-btn" onclick="buyBundle('library')">🏆 GET ALL 22 GUIDES — ₹1,999</button>
+          <div class="ps-bndl-owned" id="bndl-library-owned" style="display:none;">✅ You own the complete library — all guides available below</div>
         </div>
       </div>
-      <hr class="bndl-divider">
+      <hr class="ps-bndl-divider">
     </div>
 
-    <div class="stag">Royal Knowledge Store — 22 Expert Guides</div>
-    <div class="sh">KNOWLEDGE GUIDES</div>
-    <p class="ssub">22 expert guides — from cutting cycles to anabolic series and mindset mastery. Pick what you need or build your complete transformation library.</p>
-    <!-- Product selector -->
+    <!-- ══ PDF CATALOG ══ -->
+    <div class="ps-section pdf-catalog-wrap" id="pdf-catalog-wrap">
+      <div class="ps-section-hdr pdf-catalog-intro">
+        <div class="ps-eyebrow">All 22 Expert Guides — Anabolic Series Now Available</div>
+        <div class="ps-section-title">COMPLETE COLLECTION</div>
+        <p class="ps-section-sub">Every guide written by Royal Fitness Club experts. One-time purchase · Instant download · Lifetime access.</p>
+      </div>
+
+      <div class="pdf-allstats">
+        <div class="pdf-allstat"><div class="pdf-allstat-n">22</div><div class="pdf-allstat-l">Guides</div></div>
+        <div class="pdf-allstat"><div class="pdf-allstat-n">3,100+</div><div class="pdf-allstat-l">Copies Sold</div></div>
+        <div class="pdf-allstat"><div class="pdf-allstat-n">4.9★</div><div class="pdf-allstat-l">Rating</div></div>
+        <div class="pdf-allstat"><div class="pdf-allstat-n">₹199+</div><div class="pdf-allstat-l">From</div></div>
+      </div>
+
+      <div class="pdf-cat-filter">
+        <button class="pcf active" onclick="filterCatalog('all',this)">All</button>
+        <button class="pcf" onclick="filterCatalog('anabolic',this)">🔥 Anabolic Series</button>
+        <button class="pcf" onclick="filterCatalog('advanced',this)">Advanced</button>
+        <button class="pcf" onclick="filterCatalog('nutrition',this)">Nutrition</button>
+        <button class="pcf" onclick="filterCatalog('hormones',this)">Hormones</button>
+        <button class="pcf" onclick="filterCatalog('women',this)">Women</button>
+        <button class="pcf" onclick="filterCatalog('training',this)">Training</button>
+        <button class="pcf" onclick="filterCatalog('recovery',this)">Recovery</button>
+        <button class="pcf" onclick="filterCatalog('supplements',this)">Supplements</button>
+      </div>
+
+      <div class="pdf-catalog-grid" id="pdf-catalog-grid"></div>
+    </div>
+    <div class="store-section-sep"></div>
+
+    <!-- Featured Guide Tabs label -->
+    <div class="ps-section-hdr" style="margin-top:48px;">
+      <div class="ps-eyebrow">Featured Guides — Deep Dive</div>
+      <div class="ps-section-title">TOP SELLERS</div>
+      <p class="ps-section-sub">Our two most popular guides — complete content preview, chapter breakdown, and instant purchase.</p>
+    </div>
     <div class="store-product-tabs">
       <a class="sptab" href="#pdf-fitness-mindset">
         <div class="sptab-icon">🧠</div>
@@ -6253,39 +6355,6 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
         <div class="sptab-price">₹299</div>
       </a>
     </div>
-
-    <!-- ═══════════════════════════════════════════════════ -->
-    <!-- ALL 20 PDF GUIDES CATALOG                          -->
-    <!-- ═══════════════════════════════════════════════════ -->
-    <div class="pdf-catalog-wrap" id="pdf-catalog-wrap">
-      <div class="pdf-catalog-intro">
-        <div class="stag">All 22 Expert Guides — Anabolic Series Now Available</div>
-        <div class="sh">COMPLETE COLLECTION</div>
-        <p class="ssub">Every guide written by Royal Fitness Club experts. One-time purchase · Instant download · Lifetime access.</p>
-      </div>
-      <!-- Stats -->
-      <div class="pdf-allstats">
-        <div class="pdf-allstat"><div class="pdf-allstat-n">22</div><div class="pdf-allstat-l">Guides</div></div>
-        <div class="pdf-allstat"><div class="pdf-allstat-n">3,100+</div><div class="pdf-allstat-l">Copies Sold</div></div>
-        <div class="pdf-allstat"><div class="pdf-allstat-n">4.9★</div><div class="pdf-allstat-l">Rating</div></div>
-        <div class="pdf-allstat"><div class="pdf-allstat-n">₹199+</div><div class="pdf-allstat-l">From</div></div>
-      </div>
-      <!-- Filter -->
-      <div class="pdf-cat-filter">
-        <button class="pcf active" onclick="filterCatalog('all',this)">All</button>
-        <button class="pcf" onclick="filterCatalog('anabolic',this)">🔥 Anabolic Series</button>
-        <button class="pcf" onclick="filterCatalog('advanced',this)">Advanced</button>
-        <button class="pcf" onclick="filterCatalog('nutrition',this)">Nutrition</button>
-        <button class="pcf" onclick="filterCatalog('hormones',this)">Hormones</button>
-        <button class="pcf" onclick="filterCatalog('women',this)">Women</button>
-        <button class="pcf" onclick="filterCatalog('training',this)">Training</button>
-        <button class="pcf" onclick="filterCatalog('recovery',this)">Recovery</button>
-        <button class="pcf" onclick="filterCatalog('supplements',this)">Supplements</button>
-      </div>
-      <!-- Cards rendered by JS -->
-      <div class="pdf-catalog-grid" id="pdf-catalog-grid"></div>
-    </div>
-    <div class="store-section-sep"></div>
 
     <!-- ═══════════════════════════════════════════════════ -->
     <!-- PRODUCT 1 — FITNESS & MINDSET GUIDANCE PDF         -->
@@ -15052,7 +15121,7 @@ const SCREEN_META = {
   ayurveda:    { icon:'🌿', title:'Anabolic Ayurveda Hub', sub:'Ancient remedies · Modern science · Personalised protocol' },
   referrals:   { icon:'💰', title:'Wallet & Referrals', sub:'Earnings, referrals & redemptions' },
   courses:     { icon:'🎓', title:'Certification Courses', sub:'Learn, earn your RFC certificate' },
-  store:       { icon:'📚', title:'Knowledge Store', sub:'Expert guides & programs' },
+  store:       { icon:'📚', title:'PDF Store', sub:'Tips & tricks to achieve your goal' },
   plans:       { icon:'💳', title:'Plans & Pricing', sub:'Upgrade to PRO for full access' },
   profile:     { icon:'👤', title:'My Profile', sub:'Account settings & fitness stats' },
   admin:       { icon:'⚙️', title:'Admin Panel', sub:'Manage courses, prices & content' },
