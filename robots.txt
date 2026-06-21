@@ -1,0 +1,13 @@
+User-agent: *
+Allow: /
+Allow: /index.html
+Allow: /admin.html
+Allow: /manifest.json
+Allow: /icons/
+Disallow: /generated_pdfs/
+Disallow: /functions/
+Disallow: /src/
+Disallow: /scripts/
+Disallow: /node_modules/
+
+Sitemap: https://royal-fitness-club-7adc1.web.app/sitemap.xml

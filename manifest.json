@@ -1,15 +1,25 @@
 {
   "name": "Royal Fitness Club",
   "short_name": "RFC",
-  "description": "India's Most Advanced Gym Ecosystem — Smart Meal Plans, Beast Score, Expert PDF Guides",
+  "description": "India's Most Advanced Gym Ecosystem — Smart Meal Plans, Beast Score, Expert PDF Guides & Courses",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait-primary",
-  "background_color": "#070707",
-  "theme_color": "#e8001d",
+  "background_color": "#F5F3FF",
+  "theme_color": "#7C3AED",
   "lang": "en-IN",
-  "categories": ["fitness", "health", "sports"],
+  "dir": "ltr",
+  "categories": ["fitness", "health", "sports", "education"],
+  "screenshots": [
+    {
+      "src": "/icons/icon-512x512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "form_factor": "narrow",
+      "label": "Royal Fitness Club Dashboard"
+    }
+  ],
   "icons": [
     { "src": "/icons/icon-72x72.png",   "sizes": "72x72",   "type": "image/png" },
     { "src": "/icons/icon-96x96.png",   "sizes": "96x96",   "type": "image/png" },
@@ -31,15 +41,22 @@
     {
       "name": "Beast Score",
       "short_name": "Calculator",
-      "description": "Calculate your fitness score",
+      "description": "Calculate your fitness score and body composition",
       "url": "/index.html#calculator",
       "icons": [{ "src": "/icons/icon-96x96.png", "sizes": "96x96" }]
     },
     {
-      "name": "Knowledge Store",
-      "short_name": "Store",
-      "description": "Browse expert guides",
+      "name": "PDF Store",
+      "short_name": "PDF Store",
+      "description": "Browse 22 expert fitness guides — instant download",
       "url": "/index.html#store",
+      "icons": [{ "src": "/icons/icon-96x96.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Courses",
+      "short_name": "Courses",
+      "description": "Enrol in expert fitness courses",
+      "url": "/index.html#courses",
       "icons": [{ "src": "/icons/icon-96x96.png", "sizes": "96x96" }]
     }
   ]
