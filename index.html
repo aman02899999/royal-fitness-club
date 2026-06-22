@@ -17714,8 +17714,9 @@ document.addEventListener('change', function(e) {
 .yoga-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;padding:20px;}
 .yoga-card{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;cursor:pointer;transition:all .2s;position:relative;}
 .yoga-card:hover{transform:translateY(-3px);border-color:rgba(124,58,237,.5);box-shadow:0 8px 30px rgba(124,58,237,.15);}
-.yoga-card-fig{background:linear-gradient(160deg,#0f0a1a,#1a0a3a);padding:24px 16px 14px;display:flex;justify-content:center;align-items:center;min-height:130px;position:relative;}
-.yoga-card-fig svg{width:70px;height:105px;}
+.yoga-card-fig{background:linear-gradient(160deg,#0f0a1a 0%,#1a0a3a 50%,#0d0520 100%);padding:20px 12px 12px;display:flex;justify-content:center;align-items:center;min-height:150px;position:relative;}
+.yoga-card-fig::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 50% at 50% 30%,rgba(168,85,247,.1),transparent 70%);pointer-events:none;}
+.yoga-card-fig svg{width:80px;height:120px;}
 .yoga-card-diff{position:absolute;top:8px;right:8px;font-size:8px;letter-spacing:1.5px;text-transform:uppercase;padding:3px 8px;border-radius:10px;font-weight:700;}
 .yoga-card-diff.beginner{background:rgba(34,197,94,.15);color:#4ade80;border:1px solid rgba(34,197,94,.3);}
 .yoga-card-diff.intermediate{background:rgba(251,191,36,.15);color:#fbbf24;border:1px solid rgba(251,191,36,.3);}
@@ -17729,8 +17730,9 @@ document.addEventListener('change', function(e) {
 .yoga-detail{background:var(--card2);border:1px solid var(--border);border-radius:14px;padding:20px;margin:0 20px 20px;display:none;}
 .yoga-detail.open{display:block;}
 .yoga-detail-top{display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap;margin-bottom:16px;}
-.yoga-detail-fig{background:linear-gradient(160deg,#0f0a1a,#1a0a3a);border-radius:12px;padding:20px 16px;flex-shrink:0;display:flex;justify-content:center;align-items:center;width:110px;height:150px;}
-.yoga-detail-fig svg{width:80px;height:120px;}
+.yoga-detail-fig{background:linear-gradient(160deg,#0f0a1a,#1a0a3a);border-radius:12px;padding:16px;flex-shrink:0;display:flex;justify-content:center;align-items:center;width:130px;height:170px;position:relative;}
+.yoga-detail-fig::after{content:'';position:absolute;inset:0;border-radius:12px;background:radial-gradient(ellipse 80% 60% at 50% 30%,rgba(168,85,247,.12),transparent 70%);pointer-events:none;}
+.yoga-detail-fig svg{width:96px;height:140px;}
 .yoga-detail-info{flex:1;min-width:180px;}
 .yoga-detail-name{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:1px;color:var(--text);line-height:1;margin-bottom:4px;}
 .yoga-detail-sanskrit{font-size:13px;color:var(--violet);font-style:italic;margin-bottom:8px;}
@@ -19902,29 +19904,80 @@ tryInit();
      YOGA & MEDITATION MODULE
 ══════════════════════════════════════════════════════════ -->
 <script>
-/* ─── SVG stick-figure generator ─── */
+/* ─── Premium yoga silhouette generator ─── */
+/* Produces filled-limb human silhouette illustrations (professional yoga-app style) */
 function yogaSVG(p){
-  var s='<svg viewBox="0 0 80 120" xmlns="http://www.w3.org/2000/svg">';
-  // gradient defs
-  s+='<defs><linearGradient id="yg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#a855f7"/><stop offset="100%" stop-color="#6d28d9"/></linearGradient></defs>';
-  var c='url(#yg)';var sw=3.2;var sc='round';
-  function L(x1,y1,x2,y2){return '<line x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'" stroke="'+c+'" stroke-width="'+sw+'" stroke-linecap="'+sc+'"/>';}
-  function C(cx,cy,r){return '<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="'+c+'"/>';}
-  // head
-  s+=C(p[0],p[1],5.5);
-  // torso
-  s+=L(p[0],p[1]+5.5,p[2],p[3]);
-  // left arm: shoulder→elbow→wrist
-  s+=L(p[4],p[5],p[8],p[9]);s+=L(p[8],p[9],p[12],p[13]);
-  // right arm
-  s+=L(p[6],p[7],p[10],p[11]);s+=L(p[10],p[11],p[14],p[15]);
-  // hip
-  s+=L(p[2],p[3],p[16],p[17]);s+=L(p[2],p[3],p[18],p[19]);
-  // left leg: hip→knee→ankle
-  s+=L(p[16],p[17],p[20],p[21]);s+=L(p[20],p[21],p[24],p[25]);
-  // right leg
-  s+=L(p[18],p[19],p[22],p[23]);s+=L(p[22],p[23],p[26],p[27]);
-  s+='</svg>';return s;
+  // p indices: 0-1=head, 2-3=pelvis, 4-7=shoulders(L/R), 8-11=elbows(L/R),
+  //            12-15=wrists(L/R), 16-19=hipJoints(L/R), 20-23=knees(L/R), 24-27=ankles(L/R)
+  var uid='yg'+Math.floor(Math.random()*99999);
+  var s='<svg viewBox="0 0 80 120" xmlns="http://www.w3.org/2000/svg" style="display:block;">';
+  s+='<defs>';
+  s+='<linearGradient id="'+uid+'a" x1="0" y1="0" x2="0" y2="1">';
+  s+='<stop offset="0%" stop-color="#e879f9"/><stop offset="100%" stop-color="#7c3aed"/>';
+  s+='</linearGradient>';
+  s+='<linearGradient id="'+uid+'b" x1="0" y1="0" x2="1" y2="1">';
+  s+='<stop offset="0%" stop-color="#c084fc"/><stop offset="100%" stop-color="#6d28d9"/>';
+  s+='</linearGradient>';
+  s+='<filter id="'+uid+'glow" x="-30%" y="-30%" width="160%" height="160%">';
+  s+='<feGaussianBlur stdDeviation="2.5" result="blur"/>';
+  s+='<feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>';
+  s+='</filter>';
+  s+='</defs>';
+
+  var fa='url(#'+uid+'a)';
+  var fb='url(#'+uid+'b)';
+  var glow='filter="url(#'+uid+'glow)"';
+
+  // Helper: thick rounded limb segment (capsule shape via stroke)
+  function limb(x1,y1,x2,y2,w,col){
+    col=col||fa;
+    return '<line x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'" stroke="'+col+'" stroke-width="'+(w||7)+'" stroke-linecap="round"/>';
+  }
+  function circ(cx,cy,r,col){return '<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="'+(col||fa)+'" '+glow+'/>';}
+
+  // Glow halo around head
+  s+=circ(p[0],p[1],10.5,'rgba(196,130,255,0.18)');
+  // Shadow body outline (slightly offset, blurred)
+  s+='<g opacity="0.18" transform="translate(1.5,2)" filter="url(#'+uid+'glow)">';
+  s+=limb(p[0],p[1]+7,p[2],p[3],10,'#7c3aed');
+  s+=limb(p[4],p[5],p[6],p[7],7,'#7c3aed');
+  s+=limb(p[16],p[17],p[18],p[19],9,'#7c3aed');
+  s+=limb(p[16],p[17],p[20],p[21],9,'#7c3aed');s+=limb(p[20],p[21],p[24],p[25],7,'#7c3aed');
+  s+=limb(p[18],p[19],p[22],p[23],9,'#7c3aed');s+=limb(p[22],p[23],p[26],p[27],7,'#7c3aed');
+  s+='</g>';
+
+  // ── TORSO ──  (neck base → pelvis, thick)
+  s+=limb(p[0],p[1]+7, p[2],p[3], 9, fb);
+  // ── SHOULDER GIRDLE ──
+  s+=limb(p[4],p[5], p[6],p[7], 7, fb);
+  // ── ARMS ──
+  s+=limb(p[4],p[5], p[8],p[9], 7);   // L upper arm
+  s+=limb(p[8],p[9], p[12],p[13], 5.5); // L forearm
+  s+=limb(p[6],p[7], p[10],p[11], 7);  // R upper arm
+  s+=limb(p[10],p[11], p[14],p[15], 5.5); // R forearm
+  // ── HIP GIRDLE ──
+  s+=limb(p[16],p[17], p[18],p[19], 8, fb);
+  // ── LEGS ──
+  s+=limb(p[16],p[17], p[20],p[21], 9);  // L thigh
+  s+=limb(p[20],p[21], p[24],p[25], 7);  // L calf
+  s+=limb(p[18],p[19], p[22],p[23], 9);  // R thigh
+  s+=limb(p[22],p[23], p[26],p[27], 7);  // R calf
+
+  // ── JOINT DOTS (elbows & knees) ──
+  var joints=[[p[8],p[9]],[p[10],p[11]],[p[20],p[21]],[p[22],p[23]]];
+  joints.forEach(function(j){s+=circ(j[0],j[1],3.8,fb);});
+
+  // ── WRIST DOTS ──
+  s+=circ(p[12],p[13],2.8,'#e879f9');
+  s+=circ(p[14],p[15],2.8,'#e879f9');
+
+  // ── HEAD (filled circle, top layer) ──
+  s+=circ(p[0],p[1],7.5,fa);
+  // Face highlight
+  s+='<circle cx="'+(p[0]-2)+'" cy="'+(p[1]-2)+'" r="2.5" fill="rgba(255,255,255,0.25)"/>';
+
+  s+='</svg>';
+  return s;
 }
 // p = [headX,headY, pelvisX,pelvisY, lShX,lShY, rShX,rShY, lElX,lElY, rElX,rElY, lWrX,lWrY, rWrX,rWrY, lHipX,lHipY, rHipX,rHipY, lKnX,lKnY, rKnX,rKnY, lAnX,lAnY, rAnX,rAnY]
 
