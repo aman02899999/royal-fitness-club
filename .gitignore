@@ -31,3 +31,7 @@ www/
 
 # Reel frame captures (raw PNGs — large binary)
 reel-frames/
+
+# Reel frame build artifacts
+reel-frames/
+reel60-frames/
