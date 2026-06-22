@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>RFC Poster — Golden Luxury</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,700&family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:#0a0800;display:flex;justify-content:center;padding:20px;font-family:'Barlow',sans-serif;}
+
+.poster{
+  width:794px;
+  background:linear-gradient(160deg,#0a0800 0%,#120f00 50%,#0a0800 100%);
+  position:relative;overflow:hidden;
+}
+
+/* luxury ornamental border */
+.poster-inner{
+  margin:8px;
+  border:1px solid rgba(212,168,64,.25);
+  position:relative;overflow:hidden;
+}
+
+/* corner ornaments */
+.corner{position:absolute;width:28px;height:28px;z-index:10;}
+.corner.tl{top:0;left:0;border-top:2px solid #d4a840;border-left:2px solid #d4a840;}
+.corner.tr{top:0;right:0;border-top:2px solid #d4a840;border-right:2px solid #d4a840;}
+.corner.bl{bottom:0;left:0;border-bottom:2px solid #d4a840;border-left:2px solid #d4a840;}
+.corner.br{bottom:0;right:0;border-bottom:2px solid #d4a840;border-right:2px solid #d4a840;}
+
+/* subtle shimmer */
+.poster-inner::before{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse at 30% 20%,rgba(212,168,64,.06) 0%,transparent 50%),
+    radial-gradient(ellipse at 80% 80%,rgba(124,58,237,.06) 0%,transparent 50%);
+}
+
+/* ── CREST HEADER ── */
+.crest-header{
+  padding:36px 44px 28px;
+  text-align:center;
+  border-bottom:1px solid rgba(212,168,64,.15);
+  position:relative;z-index:2;
+}
+.crest-ornament{
+  font-size:10px;letter-spacing:6px;text-transform:uppercase;
+  color:rgba(212,168,64,.5);margin-bottom:14px;
+  display:flex;align-items:center;justify-content:center;gap:12px;
+}
+.crest-ornament::before,.crest-ornament::after{content:'';flex:1;max-width:80px;height:1px;background:linear-gradient(90deg,transparent,rgba(212,168,64,.4));}
+.crest-ornament::after{transform:scaleX(-1);}
+
+.crest-icon{
+  font-size:48px;
+  filter:drop-shadow(0 0 20px rgba(212,168,64,.4));
+  margin-bottom:12px;
+}
+.brand-name{
+  font-family:'Cormorant Garamond',serif;
+  font-size:64px;font-weight:700;
+  color:#d4a840;
+  letter-spacing:4px;
+  line-height:.9;
+  text-shadow:0 2px 20px rgba(212,168,64,.3);
+  margin-bottom:6px;
+}
+.brand-sub{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:11px;font-weight:700;letter-spacing:6px;text-transform:uppercase;
+  color:rgba(212,168,64,.5);margin-bottom:20px;
+}
+.headline{
+  font-family:'Cormorant Garamond',serif;
+  font-size:42px;font-weight:400;font-style:italic;
+  color:rgba(255,255,255,.85);
+  line-height:1.15;margin-bottom:14px;
+}
+.headline em{color:#d4a840;font-style:italic;}
+.hero-desc{
+  font-size:12px;color:rgba(255,255,255,.45);
+  line-height:1.8;max-width:520px;margin:0 auto;
+  letter-spacing:.3px;
+}
+.hero-desc strong{color:rgba(212,168,64,.8);}
+
+/* stats row */
+.stats-row{
+  display:grid;grid-template-columns:repeat(6,1fr);
+  border-top:1px solid rgba(212,168,64,.1);
+  border-bottom:1px solid rgba(212,168,64,.1);
+  position:relative;z-index:2;
+  background:rgba(212,168,64,.02);
+}
+.sc{padding:14px 8px;text-align:center;border-right:1px solid rgba(212,168,64,.08);}
+.sc:last-child{border-right:none;}
+.sv{font-family:'Barlow Condensed',sans-serif;font-size:26px;font-weight:700;color:#d4a840;line-height:1;}
+.sl{font-size:8px;letter-spacing:1.5px;color:rgba(255,255,255,.3);text-transform:uppercase;margin-top:2px;}
+
+/* ── SECTIONS ── */
+.section{padding:28px 44px;position:relative;z-index:2;}
+.sec-ornament{
+  display:flex;align-items:center;gap:12px;margin-bottom:18px;
+}
+.sec-ornament::before,.sec-ornament::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(212,168,64,.3));}
+.sec-ornament::after{transform:scaleX(-1);}
+.sec-label{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:10px;font-weight:700;letter-spacing:4px;text-transform:uppercase;
+  color:#d4a840;white-space:nowrap;
+}
+
+/* FEAT GRID */
+.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.fcard{
+  background:rgba(212,168,64,.03);
+  border:1px solid rgba(212,168,64,.12);
+  border-radius:2px;padding:14px 16px;
+  position:relative;
+}
+.fcard::before{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(212,168,64,.3),transparent);
+}
+.fi{font-size:20px;margin-bottom:8px;}
+.fn{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:13px;font-weight:700;letter-spacing:.5px;
+  color:#d4a840;margin-bottom:3px;
+}
+.fd{font-size:10px;color:rgba(255,255,255,.4);line-height:1.55;}
+
+/* 2-COL LIBRARY */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.lib-card{
+  background:rgba(212,168,64,.03);
+  border:1px solid rgba(212,168,64,.12);
+  border-radius:2px;padding:18px;
+}
+.lib-hdr{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+.lib-icon{font-size:26px;}
+.lib-title{font-size:15px;font-weight:700;color:#d4a840;font-family:'Barlow Condensed',sans-serif;letter-spacing:.5px;}
+.lib-sub{font-size:10px;color:rgba(255,255,255,.3);margin-top:1px;}
+.lib-num{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:60px;font-weight:700;color:#d4a840;line-height:1;
+  opacity:.8;margin-bottom:4px;
+}
+.lib-pills{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px;}
+.lpill{
+  background:rgba(212,168,64,.06);border:1px solid rgba(212,168,64,.15);
+  border-radius:2px;padding:2px 8px;
+  font-size:9px;color:rgba(212,168,64,.6);letter-spacing:.5px;
+}
+
+/* PLANS */
+.plans-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+.pcard{
+  background:rgba(212,168,64,.03);
+  border:1px solid rgba(212,168,64,.12);
+  padding:14px;text-align:center;
+}
+.pcard.royal{
+  background:linear-gradient(160deg,rgba(212,168,64,.12),rgba(180,146,46,.06));
+  border-color:rgba(212,168,64,.4);
+  box-shadow:inset 0 0 30px rgba(212,168,64,.05);
+}
+.pe{font-size:20px;margin-bottom:5px;}
+.pn{font-size:8px;letter-spacing:3px;text-transform:uppercase;color:rgba(212,168,64,.5);margin-bottom:6px;font-family:'Barlow Condensed',sans-serif;font-weight:700;}
+.pp{font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:700;color:#d4a840;line-height:1;}
+.pp sub{font-size:10px;color:rgba(255,255,255,.3);font-weight:400;}
+.pp.free-p{color:rgba(255,255,255,.3);font-size:20px;}
+.pdiv{height:1px;background:rgba(212,168,64,.1);margin:10px 0;}
+.pfl{list-style:none;text-align:left;}
+.pfl li{font-size:9.5px;color:rgba(255,255,255,.4);padding:2px 0;display:flex;gap:5px;line-height:1.4;}
+.pfl li::before{content:'◆';color:#d4a840;font-size:6px;flex-shrink:0;margin-top:3px;}
+.royal .pfl li{color:rgba(255,255,255,.6);}
+
+/* BUNDLES */
+.bundle-row{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:8px;
+}
+.bcard{
+  background:rgba(212,168,64,.04);border:1px solid rgba(212,168,64,.15);
+  padding:14px;text-align:center;
+}
+.bcard.best{background:rgba(212,168,64,.08);border-color:rgba(212,168,64,.35);}
+.bp{font-family:'Barlow Condensed',sans-serif;font-size:36px;font-weight:700;color:#d4a840;line-height:1;}
+.bn{font-size:11px;font-weight:600;color:rgba(255,255,255,.5);margin-top:3px;letter-spacing:.5px;}
+.bs{font-size:9px;color:#4ade80;margin-top:2px;}
+
+/* AYUR */
+.ayur-block{
+  background:rgba(22,163,74,.06);
+  border:1px solid rgba(22,163,74,.2);
+  padding:18px 22px;
+  display:flex;align-items:center;gap:18px;
+  position:relative;overflow:hidden;
+}
+.ayur-block::before{
+  content:'ॐ';position:absolute;right:16px;top:50%;transform:translateY(-50%);
+  font-size:80px;color:rgba(22,163,74,.07);pointer-events:none;
+}
+.ayur-icon{font-size:34px;flex-shrink:0;}
+.at{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:700;color:rgba(255,255,255,.85);margin-bottom:5px;font-style:italic;}
+.ad{font-size:10.5px;color:rgba(255,255,255,.4);line-height:1.65;}
+.an{font-family:'Barlow Condensed',sans-serif;font-size:48px;font-weight:700;color:#16a34a;line-height:1;margin-left:auto;flex-shrink:0;text-align:center;}
+.anl{font-size:8px;letter-spacing:2px;color:rgba(22,163,74,.5);text-transform:uppercase;text-align:center;margin-top:2px;}
+
+/* TESTI */
+.trow{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.tcard{
+  background:rgba(212,168,64,.03);border:1px solid rgba(212,168,64,.1);
+  padding:14px 15px;
+}
+.ts{color:#d4a840;font-size:11px;margin-bottom:7px;letter-spacing:1px;}
+.tt{font-size:10px;color:rgba(255,255,255,.45);font-style:italic;line-height:1.65;margin-bottom:8px;font-family:'Cormorant Garamond',serif;font-size:12px;}
+.ta{font-size:9px;color:rgba(255,255,255,.25);letter-spacing:.5px;}
+
+/* FOOTER */
+.footer{
+  border-top:1px solid rgba(212,168,64,.15);
+  padding:22px 44px 28px;
+  display:flex;align-items:center;gap:24px;
+  position:relative;z-index:2;
+}
+.qr-frame{
+  background:rgba(212,168,64,.05);
+  border:1px solid rgba(212,168,64,.3);
+  padding:10px;flex-shrink:0;
+  position:relative;
+}
+.qr-frame::before,.qr-frame::after{
+  content:'';position:absolute;width:12px;height:12px;
+  border-color:#d4a840;border-style:solid;
+}
+.qr-frame::before{top:-1px;left:-1px;border-width:2px 0 0 2px;}
+.qr-frame::after{bottom:-1px;right:-1px;border-width:0 2px 2px 0;}
+.qr-frame img{width:100px;height:100px;display:block;}
+.qr-main{}
+.qr-headline{
+  font-family:'Cormorant Garamond',serif;
+  font-size:24px;font-weight:700;font-style:italic;
+  color:#d4a840;margin-bottom:5px;
+}
+.qr-sub{font-size:11px;color:rgba(255,255,255,.4);line-height:1.7;}
+.qr-url{margin-top:8px;font-size:11px;font-weight:600;letter-spacing:1px;color:rgba(212,168,64,.6);}
+.footer-right{margin-left:auto;text-align:right;}
+.trust-row{display:flex;flex-direction:column;gap:5px;align-items:flex-end;}
+.tbadge{
+  background:rgba(212,168,64,.05);border:1px solid rgba(212,168,64,.15);
+  padding:4px 12px;
+  font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(212,168,64,.5);
+}
+.footer-fin{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:10px;letter-spacing:3px;text-transform:uppercase;
+  color:rgba(255,255,255,.15);margin-top:12px;text-align:center;
+}
+</style>
+</head>
+<body>
+<div class="poster">
+  <div class="poster-inner">
+    <div class="corner tl"></div>
+    <div class="corner tr"></div>
+    <div class="corner bl"></div>
+    <div class="corner br"></div>
+
+    <!-- CREST HEADER -->
+    <div class="crest-header">
+      <div class="crest-ornament">Est. 2024 · India</div>
+      <div class="crest-icon">👑</div>
+      <div class="brand-name">Royal Fitness Club</div>
+      <div class="brand-sub">India's Most Advanced Fitness Ecosystem</div>
+      <div class="headline">
+        Where <em>Ambition</em> Meets<br>
+        <em>Science & Tradition</em>
+      </div>
+      <p class="hero-desc">
+        Smart meal plans · Beast Score body analysis · <strong>Blood Report AI</strong> · Ayurveda Hub · <strong>22 expert PDF guides</strong> · 10 certified courses · PRO coaching. All in one platform, built for India.
+      </p>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats-row">
+      <div class="sc"><div class="sv">3,100+</div><div class="sl">Members</div></div>
+      <div class="sc"><div class="sv">22</div><div class="sl">Expert PDFs</div></div>
+      <div class="sc"><div class="sv">10</div><div class="sl">Courses</div></div>
+      <div class="sc"><div class="sv">37</div><div class="sl">Ayur Conditions</div></div>
+      <div class="sc"><div class="sv">40+</div><div class="sl">Blood Markers</div></div>
+      <div class="sc"><div class="sv">17</div><div class="sl">Medical Conds.</div></div>
+    </div>
+
+    <!-- FEATURES -->
+    <div class="section">
+      <div class="sec-ornament"><span class="sec-label">Core Features</span></div>
+      <div class="feat-grid">
+        <div class="fcard"><div class="fi">🔥</div><div class="fn">Beast Score Calculator</div><div class="fd">BMI · BMR · TDEE · Body Fat % · Lean mass · Macro targets · Fitness score /100</div></div>
+        <div class="fcard"><div class="fi">🥗</div><div class="fn">Smart Indian Meal Planner</div><div class="fd">7-day formula-based desi meal plan. Goal-specific, veg/non-veg, any budget</div></div>
+        <div class="fcard"><div class="fi">🩸</div><div class="fn">Blood Report AI Analyser</div><div class="fd">Upload PDF → smart recs + mapped Ayurvedic protocol per blood marker</div></div>
+        <div class="fcard"><div class="fi">🌿</div><div class="fn">Ayurveda Hub</div><div class="fd">37 conditions · Classical herbs + doses · Dosha analysis · Yoga · Lifestyle</div></div>
+        <div class="fcard"><div class="fi">📊</div><div class="fn">12-Week Transformation Roadmap</div><div class="fd">Personalised week-by-week plan: training phases, nutrition targets, recovery</div></div>
+        <div class="fcard"><div class="fi">📸</div><div class="fn">Progress Tracker</div><div class="fd">Before/after photos · Body measurements · BF% trend charts · Body gauge</div></div>
+        <div class="fcard"><div class="fi">🏋️</div><div class="fn">Workout Tracker</div><div class="fd">50+ animated GIF exercises · 15 specialty tabs · Sets/reps/weight logging</div></div>
+        <div class="fcard"><div class="fi">⚡</div><div class="fn">XP & Gamification</div><div class="fd">5 levels Rookie → Legend · Streak system + Freeze · Challenges · Leaderboard</div></div>
+        <div class="fcard"><div class="fi">🦴</div><div class="fn">Physio & Injury Rehab</div><div class="fd">Evidence-based protocols: shoulder, knee, back, ankle · Return-to-sport criteria</div></div>
+      </div>
+    </div>
+
+    <!-- LIBRARY -->
+    <div class="section" style="padding-top:0;">
+      <div class="sec-ornament"><span class="sec-label">Knowledge Library</span></div>
+      <div class="two-col">
+        <div class="lib-card">
+          <div class="lib-hdr"><div class="lib-icon">📚</div><div><div class="lib-title">Expert PDF Guides</div><div class="lib-sub">From ₹199 · Bundles up to 73% off</div></div></div>
+          <div class="lib-num">22</div>
+          <div style="font-size:9px;color:rgba(255,255,255,.3);">Guides across 8 categories</div>
+          <div class="lib-pills">
+            <span class="lpill">Advanced Cycles</span><span class="lpill">Anabolic Series</span>
+            <span class="lpill">Hormones & TRT</span><span class="lpill">SARMs & Peptides</span>
+            <span class="lpill">Indian Nutrition</span><span class="lpill">Women's Health</span>
+            <span class="lpill">Fat Loss</span><span class="lpill">Hypertrophy</span>
+            <span class="lpill">PCT Recovery</span><span class="lpill">Pre-Workout</span>
+          </div>
+        </div>
+        <div class="lib-card">
+          <div class="lib-hdr"><div class="lib-icon">🎓</div><div><div class="lib-title">RFC Academy Courses</div><div class="lib-sub">₹499 each · RFC Certificate included</div></div></div>
+          <div class="lib-num">10</div>
+          <div style="font-size:9px;color:rgba(255,255,255,.3);">Courses across 3 levels</div>
+          <div class="lib-pills">
+            <span class="lpill">🌱 Fitness Foundations</span><span class="lpill">🌱 Nutrition Science</span>
+            <span class="lpill">🌱 Body Transformation</span><span class="lpill">⚡ Personal Training</span>
+            <span class="lpill">⚡ Sports Nutrition</span><span class="lpill">⚡ Injury Rehab</span>
+            <span class="lpill">⚡ Fat Loss Specialist</span><span class="lpill">🐯 High Performance</span>
+            <span class="lpill">🐯 Sports Medicine</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AYURVEDA -->
+    <div style="padding:0 44px 24px;position:relative;z-index:2;">
+      <div class="ayur-block">
+        <div class="ayur-icon">🌿</div>
+        <div>
+          <div class="at">India's Only Fitness App with Full Ayurvedic Integration</div>
+          <div class="ad">Upload your blood report — every abnormal marker receives a modern fitness recommendation <em>and</em> a complete Ayurvedic protocol: herbs with clinical doses, classical formulations, diet guidance, yoga, and lifestyle recommendations.</div>
+        </div>
+        <div><div class="an">37</div><div class="anl">Conditions<br>Covered</div></div>
+      </div>
+    </div>
+
+    <!-- PLANS -->
+    <div class="section" style="padding-top:0;">
+      <div class="sec-ornament"><span class="sec-label">Membership Plans</span></div>
+      <div class="plans-row">
+        <div class="pcard"><div class="pe">🆓</div><div class="pn">Free</div><div class="pp free-p">₹0<sub>/forever</sub></div><div class="pdiv"></div><ul class="pfl"><li>Google sign-in</li><li>Beast Score calc</li><li>Course catalog</li><li>PDF store browse</li><li>Ayurveda view</li></ul></div>
+        <div class="pcard royal"><div class="pe">⚡</div><div class="pn">Royal Pro</div><div class="pp">₹499<sub>/mo</sub></div><div class="pdiv"></div><ul class="pfl"><li>7-day Indian meal plan</li><li>12-week roadmap</li><li>Blood AI + Ayurveda</li><li>Progress photos + charts</li><li>Streak + freeze system</li><li>Physio & rehab access</li><li>Leaderboard + community</li></ul></div>
+        <div class="pcard"><div class="pe">👑</div><div class="pn">Royal Elite</div><div class="pp">₹1,999<sub>/mo</sub></div><div class="pdiv"></div><ul class="pfl"><li>All Pro features</li><li>1-on-1 coaching x2</li><li>Custom meal plan</li><li>Advanced analytics</li><li>VIP priority support</li></ul></div>
+        <div class="pcard"><div class="pe">🏆</div><div class="pn">Annual</div><div class="pp" style="font-size:22px;">₹4,999<sub>/yr</sub></div><div class="pdiv"></div><ul class="pfl"><li>All Pro + Elite</li><li>12-month access</li><li>RFC merch discount</li><li>Completion certificate</li><li>Best value — save ₹894</li></ul></div>
+      </div>
+    </div>
+
+    <!-- BUNDLES -->
+    <div style="padding:0 44px 24px;position:relative;z-index:2;">
+      <div class="sec-ornament" style="margin-bottom:12px;"><span class="sec-label">Bundle Deals</span></div>
+      <div class="bundle-row">
+        <div class="bcard"><div class="bp">₹449</div><div class="bn">Transformation Duo</div><div class="bs">2 flagship guides · 25% off</div></div>
+        <div class="bcard"><div class="bp">₹999</div><div class="bn">Anabolic Series Bundle</div><div class="bs">5 anabolic guides · 40% off</div></div>
+        <div class="bcard best"><div class="bp">₹1,999</div><div class="bn">Complete Library</div><div class="bs">All 22 guides · 73% off</div></div>
+      </div>
+    </div>
+
+    <!-- TESTIMONIALS -->
+    <div class="section" style="padding-top:0;">
+      <div class="sec-ornament"><span class="sec-label">Member Testimonials</span></div>
+      <div class="trow">
+        <div class="tcard"><div class="ts">★★★★★</div><div class="tt">"₹499 mein itna sab kuch? Yaar ye toh London ka subscription bhi sharminda ho jaye iske samne!"</div><div class="ta">Amit P. · Chennai · Athlete</div></div>
+        <div class="tcard"><div class="ts">★★★★★</div><div class="tt">"The blood report AI discovered my B12 deficiency. Three weeks after fixing it, my energy completely transformed."</div><div class="ta">Divya N. · Hyderabad · Lost 12kg</div></div>
+        <div class="tcard"><div class="ts">★★★★★</div><div class="tt">"The most comprehensive CPT course in India. The corrective exercise module alone surpasses many full-price certifications."</div><div class="ta">Arjun M. · Delhi · Personal Trainer</div></div>
+      </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer">
+      <div class="qr-frame"><img src="icons/qrcode.png" alt="QR Code"></div>
+      <div class="qr-main">
+        <div class="qr-headline">Scan to Register — It's Free</div>
+        <div class="qr-sub">Join 3,100+ members transforming with RFC.<br>Instant access · No credit card · Upgrade to Pro anytime.</div>
+        <div class="qr-url">royal-fitness-club-7adc1.web.app</div>
+      </div>
+      <div class="footer-right">
+        <div class="trust-row">
+          <span class="tbadge">🛡️ Razorpay Secure Payment</span>
+          <span class="tbadge">📱 PWA + Android App · Works Offline</span>
+          <span class="tbadge">🇮🇳 Made in India · Indian Foods Database</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-fin">Royal Fitness Club · India's #1 Fitness Ecosystem · Est. 2024</div>
+
+  </div>
+</div>
+</body>
+</html>
