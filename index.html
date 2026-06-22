@@ -17836,9 +17836,13 @@ document.addEventListener('change', function(e) {
 .med-timer-presets{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;}
 .med-timer-preset{padding:6px 14px;border-radius:20px;background:rgba(99,102,241,.1);border:1px solid rgba(99,102,241,.25);font-size:11px;color:#818cf8;cursor:pointer;transition:all .15s;}
 .med-timer-preset:hover,.med-timer-preset.sel{background:rgba(99,102,241,.25);border-color:#818cf8;}
-/* SVG illustrations */
-.med-illus{display:flex;justify-content:center;margin:16px 0;}
-.med-illus svg{width:120px;opacity:.85;}
+/* Meditation image gallery */
+.med-illus-row{display:flex;gap:16px;justify-content:center;margin:20px 0 28px;flex-wrap:wrap;}
+.med-illus-card{display:flex;flex-direction:column;align-items:center;gap:6px;}
+.med-illus-card img{width:130px;height:130px;object-fit:contain;border-radius:14px;background:linear-gradient(160deg,#0d0a1e,#1a0a3a);padding:10px;border:1px solid rgba(99,102,241,.2);}
+.med-illus-card span{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);}
+.med-type-thumb{width:54px;height:54px;object-fit:contain;border-radius:10px;background:linear-gradient(160deg,#0d0a1e,#1a0a3a);padding:6px;flex-shrink:0;border:1px solid rgba(99,102,241,.15);}
+.med-breath-img{width:100%;max-width:80px;height:80px;object-fit:contain;border-radius:10px;background:linear-gradient(160deg,#0d0a1e,#1a0a3a);padding:8px;margin:0 auto 8px;display:block;border:1px solid rgba(99,102,241,.15);}
 </style>
 
 <!-- ═══════════════════════════════════════════════════════════
@@ -20468,6 +20472,26 @@ var MEDITATION_DATA={
 
 /* ─── RENDER MEDITATION ─── */
 var _medTab='intro', _medTimer={mins:10,secs:0,running:false,interval:null,total:600};
+var MED_TYPE_IMG={
+  'mindfulness':'https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483091/yoga-api/31_ozseum.png',
+  'vipassana':'https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483091/yoga-api/30_gumpl3.png',
+  'tm':'https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483091/yoga-api/31_ozseum.png',
+  'loving_kindness':'https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483074/yoga-api/5_i64gif.png',
+  'zen':'https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483091/yoga-api/31_ozseum.png',
+  'yoga_nidra':'https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483078/yoga-api/11_dczyrp.png',
+  'trataka':'https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483091/yoga-api/32_hafoa0.png',
+  'pranayama':'https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483091/yoga-api/31_ozseum.png'
+};
+var MED_BREATH_IMG={
+  'nadi_shodhana':'https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483091/yoga-api/31_ozseum.png',
+  'kapalabhati':'https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483091/yoga-api/31_ozseum.png',
+  'bhramari':'https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483091/yoga-api/30_gumpl3.png',
+  'ujjayi':'https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483091/yoga-api/31_ozseum.png',
+  'box':'https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483074/yoga-api/5_i64gif.png',
+  '478':'https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483078/yoga-api/11_dczyrp.png',
+  'sheetali':'https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483091/yoga-api/31_ozseum.png',
+  'bhastrika':'https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483091/yoga-api/31_ozseum.png'
+};
 function renderMeditation(){
   var el=document.getElementById('meditation-hub');
   if(!el)return;
@@ -20488,7 +20512,12 @@ function renderMeditation(){
     // Tab content
     if(_medTab==='intro'){
       h+='<div class="med-tab-panel active">';
-      h+='<div class="med-illus"><svg viewBox="0 0 120 130" xmlns="http://www.w3.org/2000/svg"><defs><radialGradient id="mg" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#818cf8"/><stop offset="100%" stop-color="#6366f1" stop-opacity="0.3"/></radialGradient></defs><circle cx="60" cy="10" r="8" fill="#818cf8"/><line x1="60" y1="18" x2="60" y2="56" stroke="#6366f1" stroke-width="3.5" stroke-linecap="round"/><line x1="60" y1="26" x2="36" y2="40" stroke="#6366f1" stroke-width="3" stroke-linecap="round"/><line x1="60" y1="26" x2="84" y2="40" stroke="#6366f1" stroke-width="3" stroke-linecap="round"/><line x1="36" y1="40" x2="28" y2="52" stroke="#6366f1" stroke-width="3" stroke-linecap="round"/><line x1="84" y1="40" x2="92" y2="52" stroke="#6366f1" stroke-width="3" stroke-linecap="round"/><line x1="60" y1="56" x2="42" y2="68" stroke="#6366f1" stroke-width="3" stroke-linecap="round"/><line x1="60" y1="56" x2="78" y2="68" stroke="#6366f1" stroke-width="3" stroke-linecap="round"/><line x1="42" y1="68" x2="38" y2="86" stroke="#6366f1" stroke-width="3" stroke-linecap="round"/><line x1="78" y1="68" x2="82" y2="86" stroke="#6366f1" stroke-width="3" stroke-linecap="round"/><line x1="38" y1="86" x2="36" y2="100" stroke="#6366f1" stroke-width="3" stroke-linecap="round"/><line x1="82" y1="86" x2="84" y2="100" stroke="#6366f1" stroke-width="3" stroke-linecap="round"/><circle cx="60" cy="70" r="28" fill="url(#mg)" opacity="0.15"/><circle cx="60" cy="70" r="18" fill="none" stroke="#818cf8" stroke-width="1" opacity="0.3"/></svg></div>';
+      h+='<div class="med-illus-row">';
+      h+='<div class="med-illus-card"><img src="https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483091/yoga-api/31_ozseum.png" alt="Lotus Pose" loading="lazy"><span>Lotus Seat</span></div>';
+      h+='<div class="med-illus-card"><img src="https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483074/yoga-api/5_i64gif.png" alt="Butterfly Pose" loading="lazy"><span>Open Heart</span></div>';
+      h+='<div class="med-illus-card"><img src="https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483078/yoga-api/11_dczyrp.png" alt="Savasana / Yoga Nidra" loading="lazy"><span>Yoga Nidra</span></div>';
+      h+='<div class="med-illus-card"><img src="https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483091/yoga-api/30_gumpl3.png" alt="Seated Forward Bend" loading="lazy"><span>Deep Sit</span></div>';
+      h+='</div>';
       h+='<div class="med-science-bar"><div class="med-science-bar-title">🔬 What the Science Says</div><div class="med-science-bar-text">Harvard neuroscientists found 8 weeks of mindfulness meditation increased grey matter density in the prefrontal cortex and decreased amygdala volume — measurable structural brain changes. Cortisol reduction: 23%. Anxiety reduction: 43%. Sleep quality improvement: 38%. Over 600 peer-reviewed studies support meditation\'s effects on mental and physical health.</div></div>';
       h+='<div class="med-intro-grid">';
       var cards=[{icon:'🧠',t:'What Is Meditation',txt:'Meditation is training attention and awareness. It is NOT emptying the mind — that is a myth. It is learning to observe mental activity without being controlled by it. The wandering mind is not a failure — returning to the anchor is the practice.'},
@@ -20504,7 +20533,8 @@ function renderMeditation(){
       h+='<div class="med-tab-panel active"><div class="med-types-grid">';
       MEDITATION_DATA.types.forEach(function(t){
         h+='<div class="med-type-card"><div class="med-type-header" onclick="medTypeToggle(\'med-type-body-'+t.id+'\')">';
-        h+='<div class="med-type-icon">'+t.icon+'</div>';
+        var medThumb=MED_TYPE_IMG[t.id]||'https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483091/yoga-api/31_ozseum.png';
+        h+='<img src="'+medThumb+'" alt="'+t.name+'" loading="lazy" class="med-type-thumb">';
         h+='<div class="med-type-meta"><div class="med-type-name">'+t.name+'</div><div class="med-type-origin">'+t.origin+'</div></div>';
         h+='<span class="med-type-level '+t.levelCls+'" style="padding:3px 10px;border-radius:10px;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;'+(t.levelCls==='beginner'?'background:rgba(74,222,128,.12);color:#4ade80;':t.levelCls==='intermediate'?'background:rgba(251,191,36,.12);color:#fbbf24;':'background:rgba(239,68,68,.12);color:#f87171;')+'">'+t.level+'</span>';
         h+='<span style="color:var(--muted);margin-left:8px;font-size:12px;">▾</span>';
@@ -20544,9 +20574,17 @@ function renderMeditation(){
     if(_medTab==='breathing'){
       h+='<div class="med-tab-panel active">';
       h+='<div class="med-science-bar" style="margin-bottom:16px;"><div class="med-science-bar-title">💨 The Science of Pranayama</div><div class="med-science-bar-text">Breathing is the only autonomic nervous system function you can consciously control — making it the fastest gateway to changing your physiological state. Each breath pattern below directly modulates vagal tone, HRV, cortisol, adrenaline and neurotransmitter levels. Master these and you have a pharmacy at your disposal.</div></div>';
+      var breathImgs=[
+        'https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483078/yoga-api/11_dczyrp.png',
+        'https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483074/yoga-api/5_i64gif.png',
+        'https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483091/yoga-api/31_ozseum.png',
+        'https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483091/yoga-api/31_ozseum.png',
+        'https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483091/yoga-api/30_gumpl3.png',
+        'https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483091/yoga-api/32_hafoa0.png'
+      ];
       h+='<div class="med-breath-grid">';
-      MEDITATION_DATA.breathing.forEach(function(b){
-        h+='<div class="med-breath-card"><div class="med-breath-name">'+b.name+'</div><div class="med-breath-pattern">'+b.pattern+'</div><div class="med-breath-desc">'+b.desc+'</div><div class="med-breath-benefit">'+b.benefit+'</div></div>';
+      MEDITATION_DATA.breathing.forEach(function(b,bi){
+        h+='<div class="med-breath-card"><img src="'+breathImgs[bi%breathImgs.length]+'" alt="'+b.name+'" loading="lazy" class="med-breath-img"><div class="med-breath-name">'+b.name+'</div><div class="med-breath-pattern">'+b.pattern+'</div><div class="med-breath-desc">'+b.desc+'</div><div class="med-breath-benefit">'+b.benefit+'</div></div>';
       });
       h+='</div></div>';
     }
