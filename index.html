@@ -3738,7 +3738,7 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
 
     <div class="sb-section-lbl">EARN & LEARN</div>
     <div class="sb-item" data-screen="referrals" onclick="switchScreen('referrals',this)"><span class="sb-icon">💰</span><span>Wallet & Referrals</span></div>
-    <div class="sb-item" data-screen="pdfshop" onclick="switchScreen('pdfshop',this)"><span class="sb-icon">📚</span><span>PDF Store</span><span class="sb-badge-pill" style="background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;">22 GUIDES</span></div>
+    <div class="sb-item" data-screen="pdfshop" onclick="switchScreen('pdfshop',this)"><span class="sb-icon">📚</span><span>PDF Store</span><span class="sb-badge-pill" style="background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;">24 GUIDES</span></div>
     <div class="sb-item" data-screen="courses" onclick="switchScreen('courses',this)"><span class="sb-icon">🎓</span><span>Courses</span></div>
 
     <div class="sb-section-lbl" id="sb-admin-lbl" style="display:none;">ADMIN</div>
@@ -6134,6 +6134,8 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
       <button class="pshop-flt" onclick="filterPDFShop('women',this)">👩 WOMEN</button>
       <button class="pshop-flt" onclick="filterPDFShop('supplements',this)">⚡ SUPPS</button>
       <button class="pshop-flt" onclick="filterPDFShop('recovery',this)">😴 RECOVERY</button>
+      <button class="pshop-flt" onclick="filterPDFShop('yoga',this)">🧘 YOGA</button>
+      <button class="pshop-flt" onclick="filterPDFShop('meditation',this)">🧘‍♂️ MEDITATION</button>
     </div>
     <div id="pdfshop-catalog-grid"></div>
   </div>
@@ -10106,6 +10108,8 @@ const PDF_PRODUCTS = {
   pdf_18:{desc:'Advanced Anabolic Cycle Mastery',amount:59900,theme:'#dc2626',localKey:'bm_pdf_18',getUrl:()=>'/generated_pdfs/18_Advanced_Anabolic_Cycle_Mastery.pdf'},
   pdf_19:{desc:'PCT Post Cycle Therapy Complete Bible',amount:39900,theme:'#0891b2',localKey:'bm_pdf_19',getUrl:()=>'/generated_pdfs/19_PCT_Post_Cycle_Therapy_Complete_Bible.pdf'},
   pdf_20:{desc:'Anabolic Cycle Nutrition & Supplementation Bible',amount:44900,theme:'#ea580c',localKey:'bm_pdf_20',getUrl:()=>'/generated_pdfs/20_Anabolic_Cycle_Nutrition_Supplementation_Bible.pdf'},
+  yoga_guide:{desc:'Yoga Complete Guide — 50+ Poses with Step-by-Step Instructions',amount:29900,theme:'#7c3aed',localKey:'bm_pdf_yoga',getUrl:()=>'/generated_pdfs/yoga_complete_guide.pdf'},
+  meditation_guide:{desc:'Meditation Science Guide — 9 Stages · 8 Types · Complete Roadmap',amount:29900,theme:'#4f46e5',localKey:'bm_pdf_meditation',getUrl:()=>'/generated_pdfs/meditation_science_guide.pdf'},
 };
 
 // ── PDF CATALOG DATA ──────────────────────────────────────────────────────
@@ -10185,6 +10189,16 @@ const PDF_CATALOG = [
   {id:'pdf_20',icon:'🍊',badge:'anabolic',cat:'ANABOLIC',title:'Anabolic Nutrition Bible',sub:'Macros · Indian Meal Plans · Complete Supplement Stack',orig:799,price:449,pages:'62+ pages',rating:5.0,reviews:42,hot:'🆕 NEW',
    thumb:'linear-gradient(145deg,#1c0700 0%,#92400e 40%,#ea580c 72%,#fbbf24 100%)',ct:'ANABOLIC<br>NUTRITION<br>BIBLE',ed:'NUTRITION EDITION 2024',
    feats:['Macro framework for bulking, cutting, and recomp on-cycle','Step-by-step TDEE & surplus/deficit calculator (printable)','Weekly carb cycling template for training vs rest days','Indian bulking meal plan: 4,000+ kcal/day with full macros','Indian cutting meal plan: 2,600 kcal/day with full macros','19-item on-cycle supplement stack with doses and timing','Optimal food sources ranked by protein quality and leucine content','Foods to avoid on-cycle: anti-androgens, liver stressors, estrogen triggers']},
+
+  /* ── Yoga & Meditation ── */
+  {id:'yoga_guide',icon:'🧘',badge:'yoga',cat:'YOGA',title:'Yoga Complete Guide',sub:'50+ Poses · Benefits · Step-by-Step · Beginner to Advanced',orig:599,price:299,pages:'72+ pages',rating:4.9,reviews:127,hot:'🆕 NEW',
+   thumb:'linear-gradient(160deg,rgba(15,6,30,0.92) 0%,rgba(88,28,135,0.78) 55%,rgba(168,85,247,0.6) 100%),url(https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483094/yoga-api/41_veknug.png) center/cover no-repeat',
+   ct:'YOGA<br>COMPLETE<br>GUIDE',ed:'50+ POSES EDITION',
+   feats:['50+ expert-curated yoga poses with full step-by-step breakdown','Benefits mapped per pose: physical, mental and pranic benefits','6-category system: Standing, Seated, Balancing, Backbends, Floor, Core','12-week progressive yoga roadmap: Beginner → Intermediate → Advanced','Sanskrit & English names with phonetic pronunciation guide','Injury prevention: contraindications & modifications for every pose','3 complete sequences: morning energiser, evening restore, power flow','Pranayama pairing guide: matching breath techniques to pose categories','Ayurvedic integration: yoga sequences for Vata, Pitta and Kapha dosha','Anatomy of each pose: which muscles stretch, strengthen and stabilise']},
+  {id:'meditation_guide',icon:'🧘‍♂️',badge:'meditation',cat:'MEDITATION',title:'Meditation Science Guide',sub:'9 Stages · 8 Types · Beginner-to-Master Roadmap · Neuroscience-Backed',orig:599,price:299,pages:'68+ pages',rating:4.9,reviews:98,hot:'🆕 NEW',
+   thumb:'linear-gradient(160deg,rgba(8,6,28,0.92) 0%,rgba(49,46,129,0.78) 55%,rgba(99,102,241,0.6) 100%),url(https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483091/yoga-api/31_ozseum.png) center/cover no-repeat',
+   ct:'MEDITATION<br>SCIENCE<br>GUIDE',ed:'9 STAGES · COMPLETE',
+   feats:['Neuroscience of meditation: 600+ studies distilled into actionable science','8 meditation traditions compared: Mindfulness, Vipassana, TM, Metta, Zazen & more','Complete 9-stage progression map from restless beginner to effortless mastery','Beginner 5-day starter program (5 min → 20 min progressive protocol)','6 pranayama techniques with patterns, benefits and step-by-step practice guides','Brain changes timeline: cortisol, grey matter, amygdala mapped to practice hours','Meditation troubleshooting guide: 12 common obstacles and science-based solutions','Retreat selection guide: how to choose, prepare for and integrate retreat experiences','Ayurvedic meditation: dosha-specific techniques, timing and environment setup','Daily + weekly practice schedule templates from beginner to advanced practitioner']},
 ];
 
 // ══ PDF SHOP — New Earn & Learn section ══════════════════════════
