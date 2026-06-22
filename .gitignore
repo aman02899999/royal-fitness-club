@@ -35,3 +35,10 @@ reel-frames/
 # Reel frame build artifacts
 reel-frames/
 reel60-frames/
+
+# Build/capture scripts (one-off tooling)
+capture-screens.js
+make-poster.js
+record-reel.js
+record-reel60.js
+reel60.html
