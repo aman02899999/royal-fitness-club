@@ -3733,6 +3733,8 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
     <div class="sb-section-lbl">HEALTH</div>
     <div class="sb-item" data-screen="bloodai" onclick="switchScreen('bloodai',this)"><span class="sb-icon">🩸</span><span>Blood Analyser</span><span class="sb-badge-pill new">NEW</span></div>
     <div class="sb-item" data-screen="ayurveda" onclick="switchScreen('ayurveda',this)"><span class="sb-icon">🌿</span><span>Ayurveda Hub</span><span class="sb-badge-pill" style="background:linear-gradient(135deg,#059669,#047857);color:#fff;">NEW</span></div>
+    <div class="sb-item" data-screen="yoga" onclick="switchScreen('yoga',this)"><span class="sb-icon">🧘</span><span>Yoga Library</span><span class="sb-badge-pill" style="background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;">PRO</span></div>
+    <div class="sb-item" data-screen="meditation" onclick="switchScreen('meditation',this)"><span class="sb-icon">🧘‍♂️</span><span>Meditation</span><span class="sb-badge-pill" style="background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;">PRO</span></div>
 
     <div class="sb-section-lbl">EARN & LEARN</div>
     <div class="sb-item" data-screen="referrals" onclick="switchScreen('referrals',this)"><span class="sb-icon">💰</span><span>Wallet & Referrals</span></div>
@@ -14586,6 +14588,8 @@ const SCREEN_META = {
   transform:   { icon:'📈', title:'Progress Tracking', sub:'Body composition & measurements' },
   bloodai:     { icon:'🩸', title:'Blood Report Analyser', sub:'Enter & analyse your blood panel values' },
   ayurveda:    { icon:'🌿', title:'Anabolic Ayurveda Hub', sub:'Ancient remedies · Modern science · Personalised protocol' },
+  yoga:        { icon:'🧘', title:'Yoga & Poses Library', sub:'50+ poses · step-by-step guidance · beginner to advanced' },
+  meditation:  { icon:'🧘‍♂️', title:'Meditation & Mindfulness', sub:'Science-backed techniques · 9 stages · complete roadmap' },
   referrals:   { icon:'💰', title:'Wallet & Referrals', sub:'Earnings, referrals & redemptions' },
   courses:     { icon:'🎓', title:'Certification Courses', sub:'Learn, earn your RFC certificate' },
   pdfshop:     { icon:'📚', title:'PDF Store', sub:'22 expert guides — instant download · lifetime access' },
@@ -14607,6 +14611,8 @@ const SCREEN_MAP = {
   transform:   ['dashboard','bodyfat'],
   bloodai:     ['bloodreport'],
   ayurveda:    ['ayurveda-hub'],
+  yoga:        ['yoga-hub'],
+  meditation:  ['meditation-hub'],
   referrals:   ['profile'],
   courses:     ['courses'],
   pdfshop:     ['pdfshop'],
@@ -14618,7 +14624,7 @@ const SCREEN_MAP = {
 // All element IDs managed by the screen system (hidden/shown by JS)
 const ALL_MANAGED_IDS = ['screen-dashboard','home','profile','plans','calculator',
   'mealplan','roadmap','bodyfat','calculators','physio','tracker','tracker-workout-plan','specialty-workouts','workoutlog',
-  'arena','challenges','bloodreport','courses','pdfshop','dashboard','admin-panel','landing-footer','ayurveda-hub'];
+  'arena','challenges','bloodreport','courses','pdfshop','dashboard','admin-panel','landing-footer','ayurveda-hub','yoga-hub','meditation-hub'];
 
 let currentScreen = 'dashboard';
 
@@ -14718,6 +14724,8 @@ function switchScreen(name, navEl) {
   if (name === 'nutrition') _updateMacroBanner();
   if (name === 'profile') { if (typeof renderProfile === 'function') renderProfile(); }
   if (name === 'plans') { if (typeof refreshPlansUI === 'function') refreshPlansUI(); }
+  if (name === 'yoga') renderYoga();
+  if (name === 'meditation') renderMeditation();
 
   // Close mobile sidebar on nav
   if (window.innerWidth < 900) {
@@ -17676,6 +17684,159 @@ document.addEventListener('change', function(e) {
 .pv-empty { text-align: center; padding: 24px 10px; }
 .pv-empty-icon { font-size: 32px; margin-bottom: 8px; filter: grayscale(.4); }
 .pv-empty-text { font-size: 11px; color: rgba(255,255,255,.3); line-height: 1.5; }
+
+/* ══════════════════════════════════════════════════════
+   YOGA HUB
+══════════════════════════════════════════════════════ */
+#yoga-hub{padding:0 0 60px;}
+.yoga-hero{background:linear-gradient(135deg,#0f0a1a 0%,#1a0a3a 40%,#2d1065 70%,#0f0a1a 100%);padding:40px 24px 36px;position:relative;overflow:hidden;text-align:center;}
+.yoga-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(124,58,237,.35),transparent 70%);pointer-events:none;}
+.yoga-hero-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(38px,7vw,60px);letter-spacing:3px;color:#fff;line-height:.9;margin-bottom:10px;position:relative;z-index:1;}
+.yoga-hero-title span{color:#a855f7;text-shadow:0 0 30px rgba(168,85,247,.5);}
+.yoga-hero-sub{font-size:13px;color:rgba(255,255,255,.6);line-height:1.7;max-width:540px;margin:0 auto 20px;position:relative;z-index:1;}
+.yoga-hero-pills{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;position:relative;z-index:1;}
+.yoga-hero-pill{background:rgba(124,58,237,.2);border:1px solid rgba(124,58,237,.4);border-radius:20px;padding:5px 14px;font-size:11px;color:rgba(255,255,255,.8);letter-spacing:.5px;}
+.yoga-stats-row{display:grid;grid-template-columns:repeat(4,1fr);background:#0a0612;border-bottom:2px solid rgba(124,58,237,.2);}
+.yoga-stat{padding:14px 8px;text-align:center;border-right:1px solid rgba(124,58,237,.1);}
+.yoga-stat:last-child{border-right:none;}
+.yoga-stat-num{font-family:'Bebas Neue',sans-serif;font-size:28px;color:#a855f7;line-height:1;}
+.yoga-stat-lbl{font-size:9px;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;margin-top:2px;}
+.yoga-filters{padding:16px 20px;background:var(--card);border-bottom:1px solid var(--border);display:flex;flex-wrap:wrap;gap:8px;align-items:center;}
+.yoga-filter-label{font-size:10px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-right:4px;white-space:nowrap;}
+.yoga-cat-btn{padding:6px 14px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:11px;cursor:pointer;transition:all .15s;font-family:inherit;}
+.yoga-cat-btn:hover,.yoga-cat-btn.active{background:var(--violet);border-color:var(--violet);color:#fff;}
+.yoga-diff-btn{padding:4px 12px;border-radius:20px;font-size:10px;cursor:pointer;border:1px solid transparent;transition:all .15s;font-family:inherit;}
+.yoga-diff-btn.b-all{background:rgba(255,255,255,.06);border-color:var(--border);color:var(--text);}
+.yoga-diff-btn.b-beginner{background:rgba(34,197,94,.1);border-color:rgba(34,197,94,.3);color:#4ade80;}
+.yoga-diff-btn.b-intermediate{background:rgba(251,191,36,.1);border-color:rgba(251,191,36,.3);color:#fbbf24;}
+.yoga-diff-btn.b-advanced{background:rgba(239,68,68,.1);border-color:rgba(239,68,68,.3);color:#f87171;}
+.yoga-diff-btn.active{filter:brightness(1.4);border-width:2px;}
+.yoga-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;padding:20px;}
+.yoga-card{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;cursor:pointer;transition:all .2s;position:relative;}
+.yoga-card:hover{transform:translateY(-3px);border-color:rgba(124,58,237,.5);box-shadow:0 8px 30px rgba(124,58,237,.15);}
+.yoga-card-fig{background:linear-gradient(160deg,#0f0a1a,#1a0a3a);padding:24px 16px 14px;display:flex;justify-content:center;align-items:center;min-height:130px;position:relative;}
+.yoga-card-fig svg{width:70px;height:105px;}
+.yoga-card-diff{position:absolute;top:8px;right:8px;font-size:8px;letter-spacing:1.5px;text-transform:uppercase;padding:3px 8px;border-radius:10px;font-weight:700;}
+.yoga-card-diff.beginner{background:rgba(34,197,94,.15);color:#4ade80;border:1px solid rgba(34,197,94,.3);}
+.yoga-card-diff.intermediate{background:rgba(251,191,36,.15);color:#fbbf24;border:1px solid rgba(251,191,36,.3);}
+.yoga-card-diff.advanced{background:rgba(239,68,68,.15);color:#f87171;border:1px solid rgba(239,68,68,.3);}
+.yoga-card-body{padding:12px 14px 14px;}
+.yoga-card-name{font-size:13px;font-weight:700;color:var(--text);margin-bottom:2px;}
+.yoga-card-sanskrit{font-size:10px;color:var(--violet);margin-bottom:6px;font-style:italic;}
+.yoga-card-benefit{font-size:10px;color:var(--muted);line-height:1.5;}
+.yoga-card-dur{font-size:9px;color:rgba(124,58,237,.7);margin-top:6px;font-weight:600;letter-spacing:.5px;}
+/* Yoga detail modal */
+.yoga-detail{background:var(--card2);border:1px solid var(--border);border-radius:14px;padding:20px;margin:0 20px 20px;display:none;}
+.yoga-detail.open{display:block;}
+.yoga-detail-top{display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap;margin-bottom:16px;}
+.yoga-detail-fig{background:linear-gradient(160deg,#0f0a1a,#1a0a3a);border-radius:12px;padding:20px 16px;flex-shrink:0;display:flex;justify-content:center;align-items:center;width:110px;height:150px;}
+.yoga-detail-fig svg{width:80px;height:120px;}
+.yoga-detail-info{flex:1;min-width:180px;}
+.yoga-detail-name{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:1px;color:var(--text);line-height:1;margin-bottom:4px;}
+.yoga-detail-sanskrit{font-size:13px;color:var(--violet);font-style:italic;margin-bottom:8px;}
+.yoga-detail-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;}
+.yoga-dtag{padding:3px 10px;border-radius:12px;font-size:9px;letter-spacing:1px;text-transform:uppercase;font-weight:700;background:rgba(124,58,237,.12);color:var(--violet);border:1px solid rgba(124,58,237,.2);}
+.yoga-detail-main-benefit{font-size:12px;color:var(--text);line-height:1.6;}
+.yoga-section-title{font-size:10px;letter-spacing:2.5px;text-transform:uppercase;color:var(--violet);font-weight:700;margin:14px 0 8px;display:flex;align-items:center;gap:8px;}
+.yoga-section-title::after{content:'';flex:1;height:1px;background:rgba(124,58,237,.2);}
+.yoga-benefits-list{list-style:none;display:flex;flex-direction:column;gap:5px;}
+.yoga-benefits-list li{font-size:11px;color:var(--text);padding:6px 10px;background:rgba(124,58,237,.06);border-left:2px solid var(--violet);border-radius:0 6px 6px 0;line-height:1.5;}
+.yoga-steps-list{display:flex;flex-direction:column;gap:8px;}
+.yoga-step{display:flex;gap:12px;align-items:flex-start;}
+.yoga-step-num{width:22px;height:22px;border-radius:50%;background:var(--violet);color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+.yoga-step-text{font-size:11px;color:var(--text);line-height:1.6;}
+.yoga-caution{background:rgba(251,191,36,.07);border:1px solid rgba(251,191,36,.2);border-radius:8px;padding:10px 12px;font-size:10px;color:#fbbf24;line-height:1.6;margin-top:8px;}
+
+/* ══════════════════════════════════════════════════════
+   MEDITATION HUB
+══════════════════════════════════════════════════════ */
+#meditation-hub{padding:0 0 60px;}
+.med-hero{background:linear-gradient(160deg,#050510 0%,#0a0a2e 40%,#0d1547 70%,#050510 100%);padding:44px 24px 38px;position:relative;overflow:hidden;text-align:center;}
+.med-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 50% at 50% 0%,rgba(99,102,241,.3),transparent 70%);pointer-events:none;}
+.med-hero::after{content:'☯';position:absolute;bottom:-30px;right:-10px;font-size:200px;opacity:.03;line-height:1;pointer-events:none;}
+.med-hero-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(36px,7vw,58px);letter-spacing:3px;color:#fff;line-height:.9;margin-bottom:10px;position:relative;z-index:1;}
+.med-hero-title span{color:#818cf8;text-shadow:0 0 30px rgba(129,140,248,.5);}
+.med-hero-sub{font-size:13px;color:rgba(255,255,255,.55);line-height:1.7;max-width:560px;margin:0 auto 18px;position:relative;z-index:1;}
+.med-hero-pills{display:flex;flex-wrap:wrap;justify-content:center;gap:7px;position:relative;z-index:1;}
+.med-hero-pill{background:rgba(99,102,241,.15);border:1px solid rgba(99,102,241,.35);border-radius:20px;padding:4px 13px;font-size:11px;color:rgba(255,255,255,.75);}
+.med-nav-tabs{display:flex;overflow-x:auto;background:var(--card);border-bottom:1px solid var(--border);gap:0;scrollbar-width:none;}
+.med-nav-tabs::-webkit-scrollbar{display:none;}
+.med-tab-btn{padding:12px 18px;font-size:11px;font-weight:700;letter-spacing:.5px;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;white-space:nowrap;background:none;border-top:none;border-left:none;border-right:none;font-family:inherit;}
+.med-tab-btn.active{color:#818cf8;border-bottom-color:#818cf8;}
+.med-tab-panel{display:none;padding:20px;}
+.med-tab-panel.active{display:block;}
+/* What is meditation */
+.med-intro-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px;}
+@media(max-width:600px){.med-intro-grid{grid-template-columns:1fr;}}
+.med-intro-card{background:var(--card2);border:1px solid var(--border);border-radius:12px;padding:16px;}
+.med-intro-card-icon{font-size:28px;margin-bottom:8px;}
+.med-intro-card-title{font-size:12px;font-weight:700;color:var(--text);margin-bottom:6px;}
+.med-intro-card-text{font-size:11px;color:var(--muted);line-height:1.7;}
+.med-science-bar{background:linear-gradient(135deg,rgba(99,102,241,.08),rgba(129,140,248,.04));border:1px solid rgba(99,102,241,.2);border-left:3px solid #818cf8;border-radius:0 10px 10px 0;padding:14px 16px;margin-bottom:16px;}
+.med-science-bar-title{font-size:11px;font-weight:700;color:#818cf8;margin-bottom:6px;letter-spacing:.5px;}
+.med-science-bar-text{font-size:11px;color:var(--text);line-height:1.7;}
+/* Types of meditation */
+.med-types-grid{display:flex;flex-direction:column;gap:12px;}
+.med-type-card{background:var(--card2);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+.med-type-header{padding:14px 16px;cursor:pointer;display:flex;align-items:center;gap:12px;transition:background .15s;}
+.med-type-header:hover{background:rgba(99,102,241,.05);}
+.med-type-icon{font-size:24px;flex-shrink:0;width:42px;height:42px;border-radius:10px;background:rgba(99,102,241,.1);display:flex;align-items:center;justify-content:center;}
+.med-type-meta{flex:1;}
+.med-type-name{font-size:13px;font-weight:700;color:var(--text);}
+.med-type-origin{font-size:10px;color:var(--violet);font-style:italic;}
+.med-type-level{font-size:9px;padding:2px 8px;border-radius:10px;font-weight:700;letter-spacing:1px;}
+.med-type-body{display:none;padding:0 16px 14px;border-top:1px solid var(--border);}
+.med-type-body.open{display:block;}
+.med-type-desc{font-size:11px;color:var(--text);line-height:1.7;margin-bottom:10px;padding-top:12px;}
+.med-how-steps{display:flex;flex-direction:column;gap:7px;}
+.med-how-step{display:flex;gap:10px;align-items:flex-start;}
+.med-how-num{width:20px;height:20px;border-radius:50%;background:#818cf8;color:#fff;font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+.med-how-text{font-size:11px;color:var(--text);line-height:1.6;}
+/* Stages / Jhanas */
+.med-stages-timeline{position:relative;padding:0 0 0 36px;}
+.med-stages-timeline::before{content:'';position:absolute;left:14px;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,#818cf8,rgba(99,102,241,.1));}
+.med-stage{position:relative;margin-bottom:18px;}
+.med-stage-dot{position:absolute;left:-28px;top:4px;width:16px;height:16px;border-radius:50%;background:var(--card);border:2px solid #818cf8;display:flex;align-items:center;justify-content:center;font-size:7px;font-weight:700;color:#818cf8;}
+.med-stage-title{font-size:12px;font-weight:700;color:var(--text);margin-bottom:4px;}
+.med-stage-level{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;padding:2px 8px;border-radius:10px;font-weight:700;display:inline-block;margin-bottom:6px;}
+.med-stage-level.novice{background:rgba(34,197,94,.1);color:#4ade80;}
+.med-stage-level.intermediate{background:rgba(251,191,36,.1);color:#fbbf24;}
+.med-stage-level.advanced{background:rgba(239,68,68,.1);color:#f87171;}
+.med-stage-level.master{background:rgba(129,140,248,.15);color:#818cf8;}
+.med-stage-desc{font-size:11px;color:var(--muted);line-height:1.6;}
+/* Roadmap */
+.med-roadmap{display:flex;flex-direction:column;gap:16px;}
+.med-roadmap-phase{background:var(--card2);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+.med-roadmap-phase-hdr{padding:14px 16px;display:flex;align-items:center;gap:12px;}
+.med-phase-badge{padding:4px 12px;border-radius:20px;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;}
+.med-phase-title{font-size:13px;font-weight:700;color:var(--text);}
+.med-phase-duration{font-size:10px;color:var(--muted);margin-left:auto;}
+.med-roadmap-items{padding:0 16px 14px;display:flex;flex-direction:column;gap:7px;}
+.med-roadmap-item{font-size:11px;color:var(--text);padding:7px 10px;background:rgba(99,102,241,.05);border-left:2px solid rgba(99,102,241,.4);border-radius:0 6px 6px 0;line-height:1.5;}
+/* Breathing */
+.med-breath-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;}
+.med-breath-card{background:var(--card2);border:1px solid var(--border);border-radius:12px;padding:16px;}
+.med-breath-name{font-size:13px;font-weight:700;color:var(--text);margin-bottom:4px;}
+.med-breath-pattern{font-family:'Bebas Neue',sans-serif;font-size:20px;color:#818cf8;margin-bottom:8px;letter-spacing:1px;}
+.med-breath-desc{font-size:10px;color:var(--muted);line-height:1.6;margin-bottom:8px;}
+.med-breath-benefit{font-size:10px;color:#4ade80;font-weight:600;}
+/* Timer */
+.med-timer-wrap{text-align:center;padding:20px 10px;}
+.med-timer-circle{width:180px;height:180px;border-radius:50%;border:4px solid rgba(129,140,248,.3);margin:0 auto 16px;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;background:radial-gradient(circle,rgba(99,102,241,.08),transparent 70%);}
+.med-timer-circle svg{position:absolute;inset:0;transform:rotate(-90deg);}
+.med-timer-time{font-family:'Bebas Neue',sans-serif;font-size:44px;color:#818cf8;letter-spacing:2px;line-height:1;}
+.med-timer-label{font-size:10px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;}
+.med-timer-controls{display:flex;gap:10px;justify-content:center;margin-bottom:14px;}
+.med-timer-btn{padding:10px 22px;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;border:none;font-family:inherit;transition:all .15s;}
+.med-timer-btn.start{background:linear-gradient(135deg,#6366f1,#818cf8);color:#fff;}
+.med-timer-btn.stop{background:rgba(239,68,68,.15);color:#f87171;border:1px solid rgba(239,68,68,.3);}
+.med-timer-btn.reset{background:rgba(255,255,255,.06);color:var(--text);border:1px solid var(--border);}
+.med-timer-presets{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;}
+.med-timer-preset{padding:6px 14px;border-radius:20px;background:rgba(99,102,241,.1);border:1px solid rgba(99,102,241,.25);font-size:11px;color:#818cf8;cursor:pointer;transition:all .15s;}
+.med-timer-preset:hover,.med-timer-preset.sel{background:rgba(99,102,241,.25);border-color:#818cf8;}
+/* SVG illustrations */
+.med-illus{display:flex;justify-content:center;margin:16px 0;}
+.med-illus svg{width:120px;opacity:.85;}
 </style>
 
 <!-- ═══════════════════════════════════════════════════════════
@@ -17775,6 +17936,16 @@ document.addEventListener('change', function(e) {
     <span>Information sourced from Ministry of AYUSH, CCRAS Clinical Protocols & Classical Ayurvedic Texts. This is educational guidance only — always consult a qualified Ayurvedic physician (BAMS) before starting any herbal protocol. Do not replace prescribed medications.</span>
   </div>
 </section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     YOGA HUB
+═══════════════════════════════════════════════════════════ -->
+<section id="yoga-hub" style="display:none"></section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     MEDITATION HUB
+═══════════════════════════════════════════════════════════ -->
+<section id="meditation-hub" style="display:none"></section>
 
 <!-- ─── ADMIN CONTROL BAR (visible only in admin sessions) ─── -->
 <div id="admin-ctrl-bar" style="position:fixed;top:12px;right:12px;z-index:25000;">
@@ -19726,5 +19897,664 @@ tryInit();
 
 })();
 </script>
+
+<!-- ══════════════════════════════════════════════════════════
+     YOGA & MEDITATION MODULE
+══════════════════════════════════════════════════════════ -->
+<script>
+/* ─── SVG stick-figure generator ─── */
+function yogaSVG(p){
+  var s='<svg viewBox="0 0 80 120" xmlns="http://www.w3.org/2000/svg">';
+  // gradient defs
+  s+='<defs><linearGradient id="yg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#a855f7"/><stop offset="100%" stop-color="#6d28d9"/></linearGradient></defs>';
+  var c='url(#yg)';var sw=3.2;var sc='round';
+  function L(x1,y1,x2,y2){return '<line x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'" stroke="'+c+'" stroke-width="'+sw+'" stroke-linecap="'+sc+'"/>';}
+  function C(cx,cy,r){return '<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="'+c+'"/>';}
+  // head
+  s+=C(p[0],p[1],5.5);
+  // torso
+  s+=L(p[0],p[1]+5.5,p[2],p[3]);
+  // left arm: shoulder→elbow→wrist
+  s+=L(p[4],p[5],p[8],p[9]);s+=L(p[8],p[9],p[12],p[13]);
+  // right arm
+  s+=L(p[6],p[7],p[10],p[11]);s+=L(p[10],p[11],p[14],p[15]);
+  // hip
+  s+=L(p[2],p[3],p[16],p[17]);s+=L(p[2],p[3],p[18],p[19]);
+  // left leg: hip→knee→ankle
+  s+=L(p[16],p[17],p[20],p[21]);s+=L(p[20],p[21],p[24],p[25]);
+  // right leg
+  s+=L(p[18],p[19],p[22],p[23]);s+=L(p[22],p[23],p[26],p[27]);
+  s+='</svg>';return s;
+}
+// p = [headX,headY, pelvisX,pelvisY, lShX,lShY, rShX,rShY, lElX,lElY, rElX,rElY, lWrX,lWrY, rWrX,rWrY, lHipX,lHipY, rHipX,rHipY, lKnX,lKnY, rKnX,rKnY, lAnX,lAnY, rAnX,rAnY]
+
+/* ─── YOGA POSES DATA ─── */
+var YOGA_POSES=[
+  {id:'tadasana',name:'Tadasana',sanskrit:'ताड़ासन',english:'Mountain Pose',cat:'standing',diff:'beginner',dur:'30-60s',
+   main:'Foundation of all standing poses — aligns posture, grounds energy, builds body awareness',
+   benefits:['Corrects poor posture & spinal alignment','Strengthens thighs, knees and ankles','Reduces flat feet','Improves balance and steadiness','Calms the mind and relieves stress'],
+   steps:['Stand with feet together, big toes touching','Distribute weight evenly across both feet','Engage quadriceps and lift kneecaps','Tuck tailbone slightly, engage core','Roll shoulders back and down, chest open','Arms hang naturally at sides, palms forward','Lengthen neck, crown of head toward ceiling','Breathe steadily for 30–60 seconds'],
+   caution:'Avoid if you have low blood pressure or headache.',
+   p:[40,8, 40,52, 26,20, 54,20, 16,32, 64,32, 10,44, 70,44, 32,52, 48,52, 32,74, 48,74, 32,96, 48,96]},
+  {id:'vrikshasana',name:'Vrikshasana',sanskrit:'वृक्षासन',english:'Tree Pose',cat:'standing',diff:'beginner',dur:'30-60s each side',
+   main:'Improves balance and concentration; strengthens legs and core',
+   benefits:['Develops single-leg balance and stability','Strengthens calf, thigh and hip muscles','Improves focus and concentration','Opens hip joint of raised leg','Builds proprioception'],
+   steps:['Stand in Tadasana','Shift weight to left foot','Bend right knee, place right sole on left inner thigh','Bring palms together at chest (Namaste)','Gaze at a fixed point for balance','Raise arms overhead, palms together','Hold 30–60 sec, repeat other side'],
+   caution:'Avoid if you have knee or ankle injury.',
+   p:[40,8, 40,50, 26,20, 54,20, 22,10, 58,10, 22,4, 58,4, 32,50, 48,50, 32,72, 64,60, 32,94, 68,75]},
+  {id:'trikonasana',name:'Trikonasana',sanskrit:'त्रिकोणासन',english:'Triangle Pose',cat:'standing',diff:'beginner',dur:'30-60s each side',
+   main:'Opens hips and chest; stretches hamstrings and inner thighs; improves spinal flexibility',
+   benefits:['Stretches inner thighs, hamstrings and hips','Strengthens legs, shoulders and chest','Improves spinal flexibility','Stimulates digestion','Reduces stress and anxiety'],
+   steps:['Stand with feet 3–4 feet apart','Turn right foot out 90°, left foot in 15°','Extend arms parallel to floor','Shift hips left as you reach right arm down','Right hand to shin, ankle or floor','Left arm reaches straight up','Turn gaze up toward left hand','Hold 30–60 sec each side'],
+   caution:'Avoid if you have neck injury — look down instead of up.',
+   p:[40,10, 40,44, 8,28, 72,28, 4,44, 76,14, 4,60, 76,6, 30,52, 50,52, 18,72, 62,74, 18,92, 62,92]},
+  {id:'virabhadrasana1',name:'Virabhadrasana I',sanskrit:'वीरभद्रासन I',english:'Warrior I',cat:'standing',diff:'beginner',dur:'30-60s each side',
+   main:'Builds strength and confidence; opens chest, hip flexors and shoulders',
+   benefits:['Strengthens legs, glutes and core','Stretches hip flexors and psoas','Opens chest and lungs','Improves focus and determination','Increases stamina'],
+   steps:['From Tadasana, step left foot back 3–4 feet','Turn left foot out 45°','Bend right knee over right ankle','Square hips toward front','Raise arms overhead, palms facing each other','Draw shoulder blades down','Look forward or gently up','Hold 30–60 sec each side'],
+   caution:'High blood pressure: arms parallel to floor instead of overhead.',
+   p:[40,6, 40,44, 26,18, 54,18, 26,6, 54,6, 26,2, 54,2, 30,52, 50,52, 22,70, 58,70, 15,92, 65,90]},
+  {id:'virabhadrasana2',name:'Virabhadrasana II',sanskrit:'वीरभद्रासन II',english:'Warrior II',cat:'standing',diff:'beginner',dur:'30-60s each side',
+   main:'Develops strength, stability and endurance; opens hips and chest',
+   benefits:['Strengthens legs, core and shoulders','Opens hips and inner thighs','Builds stamina and endurance','Develops focus and willpower','Relieves backache and sciatica'],
+   steps:['Stand feet 4 feet apart','Turn right foot out 90°, left foot in slightly','Bend right knee to 90°','Extend arms parallel to floor in opposite directions','Right arm over right leg, left arm behind','Look past right fingertips','Keep torso upright, core engaged','Hold 30–60 sec each side'],
+   caution:'Avoid deep knee bend if knee is injured.',
+   p:[40,12, 40,48, 6,24, 74,24, 4,36, 76,36, 4,48, 76,48, 28,56, 52,56, 18,74, 58,68, 12,94, 62,92]},
+  {id:'virabhadrasana3',name:'Virabhadrasana III',sanskrit:'वीरभद्रासन III',english:'Warrior III',cat:'balancing',diff:'intermediate',dur:'20-30s each side',
+   main:'Ultimate balance challenge — builds full-body strength, core stability and focus',
+   benefits:['Builds core and lumbar strength','Improves balance and proprioception','Tones legs and glutes','Strengthens shoulders and upper back','Develops mental focus'],
+   steps:['From Warrior I, shift weight to front foot','Hinge forward as back leg rises','Aim for torso and back leg parallel to floor','Arms extend forward parallel to floor','Flex back foot, engage glutes','Keep hips square to floor','Gaze at floor 6 inches ahead','Hold 20–30 sec each side'],
+   caution:'High blood pressure: arms back along sides.',
+   p:[40,40, 12,40, 26,38, 54,38, 24,34, 54,34, 2,36, 54,36, 8,46, 16,46, 8,40, 66,40, 8,40, 76,38]},
+  {id:'utkatasana',name:'Utkatasana',sanskrit:'उत्कटासन',english:'Chair Pose',cat:'standing',diff:'beginner',dur:'30-60s',
+   main:'Deep thigh and glute burner; builds lower body strength and endurance',
+   benefits:['Strengthens quadriceps, glutes and calves','Tones abdominal muscles','Improves ankle stability','Builds heat and stamina','Develops mental perseverance'],
+   steps:['Stand in Tadasana','Inhale and raise arms overhead','Exhale, bend knees as if sitting in a chair','Thighs parallel to floor if possible','Keep chest lifting, core engaged','Look forward and slightly up','Hold 30–60 sec breathing steadily'],
+   caution:'Avoid if knee or hip injury is present.',
+   p:[40,8, 40,50, 26,20, 54,20, 22,10, 58,10, 22,4, 58,4, 30,58, 50,58, 22,76, 58,76, 28,96, 52,96]},
+  {id:'garudasana',name:'Garudasana',sanskrit:'गरुड़ासन',english:'Eagle Pose',cat:'balancing',diff:'intermediate',dur:'20-30s each side',
+   main:'Improves balance while opening shoulders, hips and IT band',
+   benefits:['Strengthens calves and ankles','Opens upper back and shoulders','Improves hip flexibility','Builds intense concentration','Stretches IT band and outer hip'],
+   steps:['Stand in Tadasana, slight bend in knees','Lift right leg and cross over left thigh','Hook right foot behind left calf if possible','Cross left arm over right at elbow','Wrap forearms so palms face each other','Lift elbows level with shoulders','Sink hips lower for intensity','Hold 20–30 sec each side'],
+   caution:'Avoid if shoulder or knee injury.',
+   p:[40,8, 40,52, 32,22, 48,22, 28,16, 52,16, 26,12, 54,12, 32,60, 48,60, 36,78, 52,72, 36,96, 52,88]},
+  {id:'parsvottanasana',name:'Parsvottanasana',sanskrit:'पार्श्वोत्तानासन',english:'Pyramid Pose',cat:'standing',diff:'intermediate',dur:'30-60s each side',
+   main:'Intense hamstring stretch with hip alignment; improves balance and focus',
+   benefits:['Deep hamstring and calf stretch','Improves hip alignment','Strengthens legs and core','Stimulates digestion','Calms the mind'],
+   steps:['Step left foot back 3 feet','Square hips to front','Place hands on lower back or prayer behind','Hinge forward from hips over front leg','Keep spine long as you fold','Hands to floor or blocks beside foot','Relax neck and head down','Hold 30–60 sec each side'],
+   caution:'Hamstring injury: use blocks and keep slight bend in front knee.',
+   p:[40,16, 40,54, 28,26, 52,26, 28,36, 52,36, 28,46, 52,46, 30,60, 50,60, 24,76, 56,76, 18,96, 58,92]},
+  {id:'ardha_chandrasana',name:'Ardha Chandrasana',sanskrit:'अर्धचन्द्रासन',english:'Half Moon Pose',cat:'balancing',diff:'intermediate',dur:'20-30s each side',
+   main:'Builds balance, strength and body awareness in three planes simultaneously',
+   benefits:['Strengthens thighs, ankles and core','Opens chest and hips','Improves balance and coordination','Builds confidence and concentration','Relieves backache'],
+   steps:['From Triangle Pose, bend right knee','Place right hand on floor 12 inches ahead','Shift weight onto right foot and hand','Raise left leg parallel to floor','Stack left hip over right','Extend left arm up, look up','Flex left foot, engage glutes','Hold 20–30 sec each side'],
+   caution:'Avoid if low blood pressure or neck injury.',
+   p:[40,14, 14,50, 14,26, 66,26, 14,38, 66,14, 14,50, 66,6, 10,56, 18,56, 6,60, 66,50, 6,60, 66,42]},
+  {id:'sukhasana',name:'Sukhasana',sanskrit:'सुखासन',english:'Easy Pose',cat:'seated',diff:'beginner',dur:'5-20 min',
+   main:'Comfortable meditation seat that opens hips and lengthens spine',
+   benefits:['Calms the mind for meditation','Opens hips and groins','Lengthens spine','Reduces anxiety and fatigue','Grounds energy'],
+   steps:['Sit on floor or folded blanket','Cross legs comfortably (not full lotus)','Rest hands on knees, palms up or down','Sit tall — no slouching','Relax shoulders away from ears','Close eyes or soft downward gaze','Breathe naturally','Hold 5–20 minutes'],
+   caution:'Use a folded blanket under hips to reduce hip strain.',
+   p:[40,8, 40,46, 26,20, 54,20, 14,30, 66,30, 10,42, 70,42, 26,56, 54,56, 16,72, 64,72, 20,82, 60,82]},
+  {id:'padmasana',name:'Padmasana',sanskrit:'पद्मासन',english:'Lotus Pose',cat:'seated',diff:'advanced',dur:'5-30 min',
+   main:'Supreme meditation posture — channels energy upward; requires significant hip flexibility',
+   benefits:['Deepens meditation practice','Maximises spinal extension','Activates Kundalini energy','Reduces mental distractions','Stimulates pelvis and spine'],
+   steps:['Sit on floor, legs extended','Bend right knee, place right foot on left thigh','Bend left knee, place left foot on right thigh','Both feet sole-up facing ceiling','Spine tall, root down','Chin Mudra or Gyan Mudra on knees','Close eyes, breathe deeply','Do not force — build flexibility gradually'],
+   caution:'Never force into lotus — knee ligament injury risk is high.',
+   p:[40,8, 40,44, 26,18, 54,18, 14,28, 66,28, 12,40, 68,40, 20,56, 60,56, 10,72, 70,72, 18,76, 62,76]},
+  {id:'dandasana',name:'Dandasana',sanskrit:'दण्डासन',english:'Staff Pose',cat:'seated',diff:'beginner',dur:'30-60s',
+   main:'Foundation of all seated poses — builds core strength and improves posture',
+   benefits:['Strengthens core and back muscles','Improves posture awareness','Stretches hamstrings','Teaches correct spinal alignment','Grounds and calms energy'],
+   steps:['Sit on floor with legs extended forward','Flex feet, press heels away','Hands on floor beside hips, fingers forward','Lengthen spine tall — no slouching','Engage core and thighs','Relax shoulders back and down','Hold 30–60 sec breathing steadily'],
+   caution:'Sit on folded blanket if hamstrings are very tight.',
+   p:[40,8, 40,44, 26,20, 54,20, 18,32, 62,32, 12,44, 68,44, 30,52, 50,52, 30,68, 50,68, 30,86, 50,86]},
+  {id:'paschimottanasana',name:'Paschimottanasana',sanskrit:'पश्चिमोत्तानासन',english:'Seated Forward Bend',cat:'seated',diff:'beginner',dur:'1-3 min',
+   main:'Deep full-body stretch — calms nervous system, stretches entire back body',
+   benefits:['Stretches hamstrings, calves and spine','Calms the nervous system and reduces anxiety','Stimulates liver, kidneys and ovaries','Relieves menstrual discomfort','Improves digestion'],
+   steps:['Sit in Dandasana, legs extended','Inhale, lengthen spine upward','Exhale, hinge forward from hips (not waist)','Reach for feet, ankles or shins','Lead with chest, not forehead','Keep spine long on each inhale','Fold deeper on each exhale','Hold 1–3 minutes'],
+   caution:'Back injury: keep spine long, do not round deeply.',
+   p:[40,14, 28,40, 24,20, 56,20, 14,28, 56,32, 10,38, 50,44, 20,50, 40,50, 20,62, 40,62, 20,76, 40,76]},
+  {id:'baddha_konasana',name:'Baddha Konasana',sanskrit:'बद्ध कोणासन',english:'Butterfly / Bound Angle Pose',cat:'seated',diff:'beginner',dur:'1-5 min',
+   main:'Opens hips and inner thighs; stimulates reproductive organs and improves circulation',
+   benefits:['Opens inner thighs, groin and hips','Stimulates ovaries, prostate and kidneys','Improves posture and spinal alignment','Soothes menstrual pain','Improves circulation in pelvic area'],
+   steps:['Sit in Dandasana','Bend knees and bring soles of feet together','Heels close to pelvis','Hold feet or ankles with hands','Let knees drop toward floor','Spine tall, crown reaching up','Optionally fold forward for deeper stretch','Hold 1–5 min'],
+   caution:'Groin or knee injury: keep feet further from body.',
+   p:[40,8, 40,44, 26,20, 54,20, 14,30, 66,30, 14,42, 66,42, 20,56, 60,56, 12,72, 68,72, 20,80, 60,80]},
+  {id:'ardha_matsyendrasana',name:'Ardha Matsyendrasana',sanskrit:'अर्धमत्स्येन्द्रासन',english:'Half Spinal Twist',cat:'seated',diff:'intermediate',dur:'30-60s each side',
+   main:'Detoxifies spine and abdominal organs; the essential twist for digestive health',
+   benefits:['Rotates and lengthens the spine','Stimulates liver, kidneys and intestines','Massages abdominal organs','Increases hip and shoulder flexibility','Tones the spinal nerves'],
+   steps:['Sit with legs extended','Bend right knee, place right foot outside left thigh','Left leg stays extended or bends in','Twist right, place left elbow outside right knee','Right hand on floor behind hip','Inhale to lengthen, exhale to twist deeper','Look over right shoulder','Hold 30–60 sec each side'],
+   caution:'Recent back or spine injury: twist gently.',
+   p:[40,10, 40,48, 26,20, 54,20, 62,30, 68,20, 62,24, 72,14, 28,58, 52,58, 28,74, 52,70, 28,90, 48,82]},
+  {id:'janu_sirsasana',name:'Janu Sirsasana',sanskrit:'जानुशीर्षासन',english:'Head-to-Knee Pose',cat:'seated',diff:'beginner',dur:'1-3 min each side',
+   main:'Asymmetric hamstring stretch that calms the mind and improves digestion',
+   benefits:['Deep unilateral hamstring stretch','Stretches groin and spine','Calms mind and relieves anxiety','Stimulates liver and spleen','Improves digestion'],
+   steps:['Sit with legs extended','Bend left knee, place left sole at right inner thigh','Inhale, lengthen spine upward','Exhale, rotate and fold over right leg','Reach for right foot with both hands','Keep extended knee straight','Breathe and release deeper with each exhale','Hold 1–3 min each side'],
+   caution:'Keep slight bend in extended knee if hamstrings are tight.',
+   p:[40,12, 30,46, 24,20, 56,20, 14,28, 50,32, 8,38, 44,44, 18,54, 42,54, 18,68, 42,68, 18,84, 42,84]},
+  {id:'balasana',name:'Balasana',sanskrit:'बालासन',english:"Child's Pose",cat:'floor',diff:'beginner',dur:'1-5 min',
+   main:'Ultimate resting pose — releases back tension, calms nervous system, restores energy',
+   benefits:['Releases tension in back, shoulders and chest','Calms the nervous system','Stretches hips, thighs and ankles','Gently stretches lower back','Relieves stress and fatigue'],
+   steps:['Kneel on floor, big toes touching','Sit back on heels','Exhale and fold torso over thighs','Extend arms forward or rest beside body','Rest forehead on floor','Close eyes, breathe into back','Allow body to completely relax','Stay 1–5 minutes'],
+   caution:'Knee injury: place rolled blanket behind knees.',
+   p:[40,16, 22,40, 26,18, 54,18, 6,22, 66,22, 4,18, 68,18, 20,48, 44,48, 18,60, 44,60, 16,72, 42,70]},
+  {id:'bhujangasana',name:'Bhujangasana',sanskrit:'भुजंगासन',english:'Cobra Pose',cat:'floor',diff:'beginner',dur:'15-30s',
+   main:'Opens chest and heart; strengthens spine; energises body',
+   benefits:['Strengthens spine and back muscles','Opens chest and lungs','Stimulates abdominal organs','Soothes sciatica','Elevates mood — stretches chest'],
+   steps:['Lie prone, legs together','Place hands under shoulders, fingers spread','Elbows close to body','Inhale, press floor, lift chest','Roll shoulders back and down','Keep elbows slightly bent','Pubic bone stays on floor (low cobra)','Hold 15–30 sec, breathe steadily'],
+   caution:'Back injury, carpal tunnel: practice Sphinx pose (elbows on floor).',
+   p:[40,20, 40,52, 26,28, 54,28, 18,40, 62,40, 14,50, 66,50, 30,60, 50,60, 30,76, 50,76, 30,90, 50,90]},
+  {id:'adho_mukha',name:'Adho Mukha Svanasana',sanskrit:'अधोमुखश्वानासन',english:'Downward Facing Dog',cat:'floor',diff:'beginner',dur:'1-3 min',
+   main:'Full-body rejuvenating inversion — strengthens arms, opens hamstrings and calves',
+   benefits:['Stretches hamstrings, calves and spine','Strengthens arms, shoulders and core','Energises and relieves fatigue','Relieves headache, insomnia, back pain','Builds full-body strength'],
+   steps:['Start on hands and knees','Tuck toes under, lift hips up and back','Press palms firmly into floor, spread fingers','Lengthen spine, tailbone high','Straighten legs, push heels toward floor','Head between arms — no tension in neck','Hold 1–3 min, breathe deeply','Pedal feet to warm up calves'],
+   caution:'Wrist injury: use fists or do Dolphin Pose (forearms on floor).',
+   p:[40,24, 28,48, 12,28, 56,28, 10,36, 44,44, 8,42, 38,48, 24,54, 52,54, 20,70, 58,70, 18,88, 62,88]},
+  {id:'cat_cow',name:'Marjaryasana-Bitilasana',sanskrit:'मार्जरासन-बितिलासन',english:'Cat-Cow Pose',cat:'floor',diff:'beginner',dur:'1-3 min (10-20 cycles)',
+   main:'Warms up spine; syncs breath with movement; releases tension in back and neck',
+   benefits:['Warms and mobilises entire spine','Relieves lower back tension','Improves breath-body coordination','Massages spinal discs gently','Calms mind and reduces stress'],
+   steps:['Start on hands and knees, wrists under shoulders','Cow: inhale, drop belly, lift tailbone and head','Cat: exhale, round spine up, tuck chin and pelvis','Flow smoothly between both on breath','Move only within pain-free range','10–20 cycles, then rest in Childs Pose'],
+   caution:'Wrist pain: make fists or use forearms.',
+   p:[40,24, 40,50, 16,30, 64,30, 14,42, 66,42, 12,52, 68,52, 26,58, 54,58, 24,74, 56,74, 24,90, 56,90]},
+  {id:'setu_bandha',name:'Setu Bandha Sarvangasana',sanskrit:'सेतुबन्धसर्वाङ्गासन',english:'Bridge Pose',cat:'floor',diff:'beginner',dur:'30-60s',
+   main:'Strengthens glutes, hamstrings and lower back; opens chest and hip flexors',
+   benefits:['Strengthens glutes, hamstrings and spine','Stretches chest, neck and spine','Stimulates thyroid and lungs','Reduces anxiety and fatigue','Relieves menstrual discomfort'],
+   steps:['Lie on back, knees bent, feet flat on floor','Feet hip-width apart, close to hips','Arms alongside body, palms down','Press feet into floor, lift hips up','Interlace hands under back (optional)','Roll shoulders under, lift chest toward chin','Hold 30–60 sec, breathe into chest','Lower slowly on exhale'],
+   caution:'Neck injury: do not turn head in this pose.',
+   p:[40,12, 40,44, 26,22, 54,22, 20,34, 60,34, 16,46, 64,46, 30,52, 50,52, 24,68, 56,68, 18,84, 62,84]},
+  {id:'savasana',name:'Savasana',sanskrit:'शवासन',english:'Corpse Pose',cat:'floor',diff:'beginner',dur:'5-15 min',
+   main:'Integration pose — allows nervous system to absorb all yoga benefits',
+   benefits:['Integrates all yoga benefits','Allows complete nervous system relaxation','Reduces blood pressure and anxiety','Improves sleep quality','Restores energy at cellular level'],
+   steps:['Lie flat on back, arms slightly away from body','Feet fall naturally apart','Palms facing up, eyes closed','Release all effort and control','Scan body from feet to crown and relax','Let breathing become natural','Remain completely still','Stay 5–15 minutes — do not skip'],
+   caution:'Pregnancy: lie on left side with support between knees.',
+   p:[40,46, 40,76, 26,60, 54,60, 12,68, 68,68, 6,78, 74,78, 28,82, 52,82, 24,94, 56,94, 22,108, 58,108]},
+  {id:'supta_baddha',name:'Supta Baddha Konasana',sanskrit:'सुप्त बद्ध कोणासन',english:'Reclining Butterfly',cat:'floor',diff:'beginner',dur:'3-10 min',
+   main:'Ultimate hip opener and relaxation pose; restores and integrates',
+   benefits:['Deep passive hip and groin opening','Reduces stress and fatigue completely','Stimulates reproductive and digestive organs','Relieves symptoms of menopause and PMS','Activates parasympathetic nervous system'],
+   steps:['Lie on back','Bring soles of feet together, knees drop apart','Place hands on belly or extend arms at sides','Close eyes and breathe naturally','Let gravity do all the work','Add bolster under spine for heart-opening version','Stay 3–10 minutes'],
+   caution:'Groin injury: place blocks under knees for support.',
+   p:[40,46, 40,74, 24,58, 56,58, 12,66, 68,66, 6,76, 74,76, 22,80, 58,80, 12,94, 68,94, 20,96, 60,96]},
+  {id:'ananda_balasana',name:'Ananda Balasana',sanskrit:'आनन्दबालासन',english:'Happy Baby',cat:'floor',diff:'beginner',dur:'1-3 min',
+   main:'Joyful hip and inner groin opener; releases lower back and sacrum',
+   benefits:['Opens inner thighs and hips','Releases lower back and sacrum','Calms brain and relieves stress','Gently stretches spine','Increases joy and playfulness'],
+   steps:['Lie on back','Exhale, bend knees toward belly','Inhale, grip outer feet with hands','Open knees wider than torso','Bring knees toward armpits','Flex feet — soles face ceiling','Rock gently side to side if desired','Hold 1–3 min'],
+   caution:'Neck injury: rest head on folded blanket.',
+   p:[40,44, 40,70, 24,54, 56,54, 14,40, 66,40, 10,28, 70,28, 28,76, 52,76, 14,88, 66,88, 14,78, 66,78]},
+  {id:'pawanmuktasana',name:'Pawanmuktasana',sanskrit:'पवनमुक्तासन',english:'Wind-Relieving Pose',cat:'floor',diff:'beginner',dur:'30-60s each side',
+   main:'Releases trapped gas; massages intestines; relieves bloating and lower back pain',
+   benefits:['Releases trapped abdominal gas','Massages intestines and improves digestion','Relieves bloating and constipation','Strengthens lower back','Massages reproductive organs'],
+   steps:['Lie on back','Exhale, bend both knees to chest','Wrap arms around shins','Lift head toward knees (optional)','Press thighs into abdomen on exhale','Hold and breathe deeply into belly','Rock gently side to side','Hold 30–60 sec'],
+   caution:'Neck injury: keep head on floor.',
+   p:[40,42, 40,66, 24,50, 56,50, 18,40, 62,40, 18,32, 62,32, 28,72, 52,72, 24,84, 56,84, 24,84, 56,84]},
+  {id:'bhujangasana2',name:'Urdhva Mukha Svanasana',sanskrit:'ऊर्ध्वमुखश्वानासन',english:'Upward Facing Dog',cat:'floor',diff:'intermediate',dur:'15-30s',
+   main:'Powerful backbend that opens chest and strengthens entire back body',
+   benefits:['Strengthens wrists, arms and spine','Opens chest and shoulders fully','Firms the buttocks','Stimulates abdominal organs','Improves posture significantly'],
+   steps:['Lie prone, legs hip-width apart','Place hands beside lower ribs, fingers spread','Inhale, straighten arms and lift torso AND thighs off floor','Only hands and tops of feet on floor','Roll shoulders back, lift chest high','Keep elbows slightly bent if needed','Gaze forward or gently up','Hold 15–30 sec'],
+   caution:'Wrist injury: use fists or blocks.',
+   p:[40,18, 40,52, 22,28, 58,28, 12,36, 68,36, 8,46, 72,46, 28,60, 52,60, 28,76, 52,76, 28,90, 52,90]},
+  {id:'chakrasana',name:'Chakrasana',sanskrit:'चक्रासन',english:'Wheel Pose',cat:'backbend',diff:'advanced',dur:'15-30s',
+   main:'Full spinal extension — opens chest, heart and hip flexors; builds upper body strength',
+   benefits:['Full extension of entire spine','Opens chest, lungs and heart chakra','Strengthens arms, wrists and legs','Stimulates thyroid and pituitary','Increases energy and mood dramatically'],
+   steps:['Lie on back, bend knees, feet flat near hips','Place hands beside ears, fingers pointing toward feet','Press hands and feet into floor','Inhale and lift hips and chest simultaneously','Straighten arms, press floor away','Open chest toward chin','Hold 15–30 sec','Lower slowly, rest in Savasana'],
+   caution:'Wrist or shoulder injury, high blood pressure: do bridge instead.',
+   p:[40,18, 40,52, 18,28, 62,28, 10,40, 70,40, 6,52, 74,52, 26,62, 54,62, 22,78, 58,78, 24,96, 56,96]},
+  {id:'ustrasana',name:'Ustrasana',sanskrit:'उष्ट्रासन',english:'Camel Pose',cat:'backbend',diff:'intermediate',dur:'20-40s',
+   main:'Deep backbend that opens front body; counteracts forward-hunching from screens',
+   benefits:['Opens chest, abdomen and hip flexors','Strengthens back muscles','Stimulates thyroid','Relieves back pain from desk work','Opens throat chakra'],
+   steps:['Kneel on floor, hips over knees','Place hands on lower back, fingers down','Inhale, open chest upward','Exhale, gently arch back','Reach hands to heels one at a time','Drop head back only if comfortable','Push hips forward over knees','Hold 20–40 sec'],
+   caution:'Neck injury: keep chin tucked. Low blood pressure: rise slowly.',
+   p:[40,14, 40,50, 24,22, 56,22, 14,34, 66,34, 10,48, 70,48, 30,60, 50,60, 28,76, 52,76, 28,94, 52,94]},
+  {id:'dhanurasana',name:'Dhanurasana',sanskrit:'धनुरासन',english:'Bow Pose',cat:'backbend',diff:'intermediate',dur:'20-30s',
+   main:'Opens entire front body; strengthens entire back; energises and uplifts mood',
+   benefits:['Strengthens entire back body simultaneously','Opens chest, shoulders and neck','Stretches entire front body','Stimulates digestive and reproductive organs','Relieves depression — activates energy'],
+   steps:['Lie prone, arms alongside body','Exhale, bend knees toward buttocks','Reach back and grasp both ankles','Inhale, lift chest and thighs off floor simultaneously','Kick feet against hands — both lift higher','Keep shoulders back, look forward','Hold 20–30 sec, breathe into chest','Rest in Savasana after'],
+   caution:'Hernia, recent abdominal surgery, pregnancy: avoid.',
+   p:[40,18, 40,52, 24,24, 56,24, 16,14, 64,14, 24,8, 56,8, 28,60, 52,60, 22,76, 58,76, 22,62, 58,62]},
+  {id:'matsyasana',name:'Matsyasana',sanskrit:'मत्स्यासन',english:'Fish Pose',cat:'backbend',diff:'intermediate',dur:'30-60s',
+   main:'Counterpose to shoulder stand; opens throat and chest; stimulates thyroid',
+   benefits:['Opens chest and throat','Stimulates thyroid and parathyroid glands','Stretches intercostal muscles','Relieves respiratory congestion','Improves posture when combined with Sarvangasana'],
+   steps:['Lie on back, palms under hips','Inhale, press elbows into floor','Arch chest up, tilt head back','Crown of head on floor (lightly)','Keep weight on elbows, not head','Legs stay together, active','Hold 30–60 sec','Counterpose: hug knees to chest'],
+   caution:'Neck or lower back injury: place bolster under thoracic spine.',
+   p:[40,22, 40,56, 22,30, 58,30, 18,42, 62,42, 14,54, 66,54, 30,64, 50,64, 30,80, 50,80, 30,96, 50,96]},
+  {id:'shalabhasana',name:'Shalabhasana',sanskrit:'शलभासन',english:'Locust Pose',cat:'backbend',diff:'beginner',dur:'20-30s',
+   main:'Foundational backbend that strengthens entire posterior chain without compression',
+   benefits:['Strengthens entire back chain safely','Tones glutes and hamstrings','Improves posture and reduces back pain','Stimulates digestive organs','Relieves sciatica'],
+   steps:['Lie prone, arms alongside body','Turn palms to face down or make fists','Inhale, lift chest, arms and legs simultaneously','Squeeze glutes, engage core','Balance on pelvis and lower abdomen','Look forward and slightly down','Hold 20–30 sec each rep','3–5 rounds with Savasana between'],
+   caution:'Recent abdominal or back surgery: avoid.',
+   p:[40,20, 40,52, 18,28, 62,28, 10,18, 70,18, 6,10, 74,10, 28,60, 52,60, 24,74, 56,74, 20,88, 60,88]},
+  {id:'navasana',name:'Navasana',sanskrit:'नावासन',english:'Boat Pose',cat:'core',diff:'intermediate',dur:'20-30s',
+   main:'Most demanding core pose — builds deep abdominal, hip flexor and back strength',
+   benefits:['Builds deep core and hip flexor strength','Strengthens spine and legs','Stimulates thyroid and kidneys','Improves digestion and elimination','Builds mental toughness'],
+   steps:['Sit with knees bent, feet flat','Lean back slightly, lift feet off floor','Balance on sitting bones','Straighten legs to 45° if possible','Arms parallel to floor or reach forward','Keep spine straight — chest lifted','Hold 20–30 sec, breathe','5–10 repetitions'],
+   caution:'Pregnancy, menstruation, low back pain: modify or avoid.',
+   p:[40,12, 38,48, 26,22, 54,22, 18,34, 62,34, 12,46, 68,46, 26,56, 52,56, 18,70, 58,66, 12,84, 64,78]},
+  {id:'plank',name:'Phalakasana',sanskrit:'फलकासन',english:'Plank Pose',cat:'core',diff:'beginner',dur:'30-60s',
+   main:'Foundation of core strength — builds full-body tension and wrist endurance',
+   benefits:['Builds core, shoulder and wrist strength','Improves posture','Tones abdominal muscles','Strengthens arms and wrists','Builds mental endurance'],
+   steps:['Start in push-up position','Wrists under shoulders, arms straight','Body in one straight line head to heels','Core braced, glutes engaged','Push floor away, widen shoulder blades','Avoid sagging hips or raised hips','Breathe steadily','Hold 30–60 sec (build to 3 min)'],
+   caution:'Wrist injury: use forearms (Forearm Plank).',
+   p:[40,32, 40,50, 24,36, 56,36, 16,42, 64,42, 10,50, 70,50, 30,56, 50,56, 28,70, 52,70, 26,84, 54,84]},
+  {id:'vasisthasana',name:'Vasisthasana',sanskrit:'वसिष्ठासन',english:'Side Plank',cat:'core',diff:'intermediate',dur:'15-30s each side',
+   main:'Lateral stabiliser — builds obliques, hip abductors and single-arm strength',
+   benefits:['Strengthens obliques and lateral core','Builds single-arm and wrist strength','Improves balance and body awareness','Opens chest in rotation','Tones inner and outer thighs'],
+   steps:['Start in Plank Pose','Shift weight to right hand and outer right foot','Stack left foot on right','Raise left arm toward ceiling','Keep body in one diagonal line','Engage inner thighs, press floor away','Option: lift top leg','Hold 15–30 sec each side'],
+   caution:'Wrist injury: bottom forearm on floor.',
+   p:[40,24, 14,58, 14,28, 64,28, 14,38, 64,26, 14,50, 64,16, 14,62, 14,62, 14,72, 50,74, 14,84, 50,88]},
+  {id:'sarvangasana',name:'Sarvangasana',sanskrit:'सर्वाङ्गासन',english:'Shoulder Stand',cat:'balancing',diff:'intermediate',dur:'3-5 min',
+   main:'Queen of asanas — stimulates thyroid, reverses gravity on circulatory system',
+   benefits:['Stimulates thyroid and parathyroid glands','Reverses venous blood flow — reduces varicose veins','Calms nervous system and reduces anxiety','Strengthens shoulders, neck and core','Balances hormonal system'],
+   steps:['Lie on back, arms at sides','Swing legs over head, support back with hands','Lift legs toward ceiling — body vertical','Weight on shoulders and arms, NOT neck','Chin to chest, legs together and active','Hold 3–5 minutes breathing smoothly','Lower to Halasana then to floor','Always follow with Fish Pose (Matsyasana)'],
+   caution:'High blood pressure, neck injury, menstruation, glaucoma: avoid.',
+   p:[40,10, 40,46, 26,22, 54,22, 24,34, 56,34, 22,44, 58,44, 28,54, 52,54, 28,70, 52,70, 28,88, 52,88]},
+  {id:'halasana',name:'Halasana',sanskrit:'हलासन',english:'Plough Pose',cat:'balancing',diff:'intermediate',dur:'1-5 min',
+   main:'Extends Shoulder Stand — deep stretch for spine, shoulders and hamstrings',
+   benefits:['Deeply stretches spine and shoulders','Stimulates abdominal organs and thyroid','Calms the brain and relieves stress','Stretches hamstrings and calves','Relieves fatigue and insomnia'],
+   steps:['From Shoulder Stand, lower legs overhead','Toes touch floor behind head','Hands can interlace on floor or support back','Keep legs together and active','Spine lengthens away from floor','Hold 1–5 min breathing smoothly','Slowly unroll back to floor'],
+   caution:'Never turn head in this pose. Neck injury: avoid.',
+   p:[40,16, 40,44, 24,24, 56,24, 20,36, 60,36, 18,46, 62,46, 28,52, 52,52, 24,66, 56,66, 20,82, 60,82]},
+  {id:'bakasana',name:'Bakasana',sanskrit:'बकासन',english:'Crow Pose',cat:'balancing',diff:'advanced',dur:'10-30s',
+   main:'First arm balance — transforms mental fear into strength; builds wrist and core power',
+   benefits:['Builds wrist, forearm and core strength','Improves balance and body control','Overcomes mental fear barrier','Opens inner thighs','Develops proprioception'],
+   steps:['Squat with feet close together','Place hands shoulder-width, fingers spread','Knees on upper arms (not elbows)','Lean forward, shifting weight into hands','One foot lifts, then the other','Core pulls in, gaze forward','Hold 10–30 sec — work up gradually','Land on feet, not face! Practice over cushion'],
+   caution:'Practice with cushion in front until comfortable.',
+   p:[40,14, 40,44, 22,24, 58,24, 14,36, 66,36, 8,48, 72,48, 26,52, 54,52, 20,66, 60,66, 20,72, 60,72]},
+  {id:'sirsasana',name:'Sirsasana',sanskrit:'शीर्षासन',english:'Headstand',cat:'balancing',diff:'advanced',dur:'1-5 min',
+   main:'King of asanas — reverses entire circulatory system; builds elite upper body and core strength',
+   benefits:['Reverses blood flow to brain and glands','Builds exceptional shoulder and core strength','Calms brain, reduces anxiety and depression','Stimulates pituitary and pineal glands','Improves focus and clarity dramatically'],
+   steps:['Kneel, interlock fingers, place forearms on floor','Place crown of head on floor, cradled in hands','Tuck toes, walk feet toward face','Core tight, lift both legs slowly','Body straight from head to heels','Micro-adjust balance with shoulders','Breathe steadily — hold 1–5 min','Lower VERY slowly, rest in Childs Pose 1 min'],
+   caution:'Learn with a teacher first. Neck injury, high BP, glaucoma: avoid.',
+   p:[40,14, 40,50, 24,24, 56,24, 20,36, 60,36, 18,46, 62,46, 28,58, 52,58, 28,74, 52,74, 28,92, 52,92]},
+  {id:'natarajasana',name:'Natarajasana',sanskrit:'नटराजासन',english:'Dancer Pose',cat:'balancing',diff:'advanced',dur:'20-30s each side',
+   main:'The most beautiful balance pose — opens heart while building strength and grace',
+   benefits:['Develops exceptional balance and focus','Opens chest, shoulders and hip flexors','Strengthens standing leg and core','Stretches quadriceps and groin','Embodies grace and confidence'],
+   steps:['Stand in Tadasana','Bend right knee behind you','Grasp right ankle with right hand','Extend left arm forward parallel to floor','Inhale, kick right foot back and up','Hinge forward slightly as leg rises','Keep hips square to front','Hold 20–30 sec each side'],
+   caution:'Back or shoulder injury: keep kick lower.',
+   p:[40,8, 40,46, 26,18, 54,18, 20,8, 66,10, 16,2, 70,4, 32,54, 48,54, 32,72, 62,62, 32,92, 56,56]},
+  {id:'eka_pada',name:'Eka Pada Koundinyasana',sanskrit:'एक पाद कौण्डिन्यासन',english:'Flying Splits',cat:'balancing',diff:'advanced',dur:'5-15s each side',
+   main:'Advanced arm balance combining twist, split and flight',
+   benefits:['Develops extraordinary arm and core strength','Deep inner thigh and hip flexor stretch','Builds body control and spatial awareness','Develops wrist strength and stability','Ultimate confidence builder'],
+   steps:['Start in arm balance prep (like Crow)','Extend one leg forward, other back','Weight distributed on hands','Both legs parallel to floor','Core extremely active — no sagging','Gaze slightly forward','Build gradually from Crow','Hold 5–15 sec — extraordinary achievement'],
+   caution:'Master Crow and side crow first.',
+   p:[40,38, 14,38, 22,34, 58,34, 14,38, 58,34, 4,36, 66,36, 14,44, 14,44, 8,44, 74,44, 8,44, 74,44]},
+  {id:'virasana',name:'Virasana',sanskrit:'वीरासन',english:'Hero Pose',cat:'seated',diff:'beginner',dur:'1-5 min',
+   main:'Therapeutic knee and quadriceps stretch; builds ankle flexibility',
+   benefits:['Stretches quadriceps deeply','Opens ankles and knees','Improves posture','Reduces tiredness in legs','Therapeutic for flat feet'],
+   steps:['Kneel on floor, knees together','Sit between feet (not on feet)','Use block under hips if uncomfortable','Hands on thighs, spine tall','Draw shoulder blades together','Close eyes, breathe into quadriceps','Hold 1–5 min, work up gradually','Counterpose: forward fold'],
+   caution:'Use block under hips until knee/ankle flexibility improves.',
+   p:[40,8, 40,46, 26,18, 54,18, 20,30, 60,30, 16,42, 64,42, 28,56, 52,56, 22,72, 58,72, 22,86, 58,86]},
+  {id:'gomukhasana',name:'Gomukhasana',sanskrit:'गोमुखासन',english:'Cow Face Pose',cat:'seated',diff:'intermediate',dur:'1-3 min each side',
+   main:'Deep hip and shoulder opener — unwinds years of tightness in IT band and rotator cuff',
+   benefits:['Deep IT band and outer hip stretch','Opens shoulder joint fully','Relieves chronic lower back pain','Strengthens ankles','Improves posture and alignment'],
+   steps:['Sit, stack right knee on top of left','Both feet beside hips','Right arm reaches up and bends behind head','Left arm reaches down and bends up behind back','Clasp hands or use strap between hands','Keep spine tall, breathe into stretch','Hold 1–3 min each side','Counter with forward fold'],
+   caution:'Shoulder injury: keep top arm extended upward only.',
+   p:[40,8, 40,46, 26,18, 54,18, 22,10, 62,32, 18,4, 64,46, 28,56, 52,56, 22,72, 58,72, 20,84, 60,84]},
+  {id:'marichyasana',name:'Marichyasana A',sanskrit:'मरीच्यासन',english:'Sage Marichi Pose',cat:'seated',diff:'intermediate',dur:'30-60s each side',
+   main:'Forward-fold twist that compresses and stimulates digestive organs',
+   benefits:['Stimulates digestion and liver','Stretches spine and shoulders','Tones kidneys','Calms the mind','Reduces menstrual pain'],
+   steps:['Sit in Dandasana','Bend right knee, place right foot flat near hip','Wrap right arm around right shin, clasp left wrist','Inhale, lengthen spine','Exhale, fold forward over extended left leg','Hold 30–60 sec each side'],
+   caution:'Lower back injury: keep spine longer, less forward fold.',
+   p:[40,10, 30,48, 24,18, 56,18, 30,28, 56,22, 30,38, 48,42, 18,56, 42,56, 18,68, 42,68, 18,82, 42,82]},
+  {id:'upavista',name:'Upavista Konasana',sanskrit:'उपविष्ट कोणासन',english:'Wide-Angle Seated Forward Bend',cat:'seated',diff:'intermediate',dur:'1-3 min',
+   main:'Opens inner thighs and hamstrings; stimulates pelvic organs',
+   benefits:['Deep inner thigh and hamstring stretch','Stimulates abdominal organs','Calms mind and relieves anxiety','Therapeutic for sciatica','Opens hips for deeper seated poses'],
+   steps:['Sit in Dandasana','Open legs wide (90-120° angle)','Flex feet, engage thighs','Inhale, lengthen spine tall','Exhale, fold forward keeping spine long','Walk hands forward on floor','Hold 1–3 min','Do not round lower back'],
+   caution:'Hamstring injury: sit on blanket and keep legs slightly bent.',
+   p:[40,10, 40,44, 22,20, 58,20, 12,30, 68,30, 8,42, 72,42, 22,52, 58,52, 8,68, 72,68, 4,84, 76,84]},
+  {id:'surya_namaskar',name:'Surya Namaskar',sanskrit:'सूर्य नमस्कार',english:'Sun Salutation',cat:'standing',diff:'beginner',dur:'10-12 rounds daily',
+   main:'Complete full-body flow sequence — the foundation of all yoga practice',
+   benefits:['Complete cardiovascular workout','Stretches and strengthens every muscle group','Balances nervous and endocrine systems','Builds heat and burns calories','Synchronises breath with movement — meditation in motion'],
+   steps:['Pranamasana: hands in prayer, breathe','Hasta Uttanasana: arms up, arch back','Pada Hastasana: fold forward to floor','Ashwa Sanchalanasana: lunge back right','Adho Mukha: downward dog','Ashtanga Namaskara: lower to floor','Bhujangasana: cobra','Adho Mukha again','Lunge with left foot','Fold forward','Arch up','Return to prayer'],
+   caution:'High blood pressure: omit back arches. Wrist injury: use fists.',
+   p:[40,8, 40,46, 26,18, 54,18, 26,8, 54,8, 26,4, 54,4, 32,54, 48,54, 32,72, 48,72, 32,92, 48,92]},
+  {id:'anjaneyasana',name:'Anjaneyasana',sanskrit:'अञ्जनेयासन',english:'Low Lunge / Crescent Pose',cat:'standing',diff:'beginner',dur:'30-60s each side',
+   main:'Opens hip flexors and psoas deeply; strengthens legs; builds heart opening',
+   benefits:['Deep hip flexor and psoas stretch','Strengthens quads and glutes','Opens chest and shoulders','Stimulates digestive organs','Energises and builds confidence'],
+   steps:['From Downward Dog, step right foot between hands','Lower left knee to floor (use padding)','Right knee over right ankle','Raise arms overhead, palms facing','Gently arch upper back','Roll shoulder blades together','Sink hips toward floor','Hold 30–60 sec each side'],
+   caution:'Knee injury: fold blanket under back knee.',
+   p:[40,8, 40,46, 26,18, 54,18, 26,6, 54,6, 26,2, 54,2, 26,54, 54,54, 16,70, 58,70, 6,88, 58,96]},
+  {id:'uttanasana',name:'Uttanasana',sanskrit:'उत्तानासन',english:'Standing Forward Fold',cat:'standing',diff:'beginner',dur:'30-60s',
+   main:'Calming inversion that stretches entire posterior chain and relieves anxiety',
+   benefits:['Stretches hamstrings, calves and hips','Calms brain and relieves stress','Stimulates liver and kidneys','Improves digestion','Relieves headache and insomnia'],
+   steps:['Stand in Tadasana','Inhale, arms overhead','Exhale, hinge from hips — not waist','Fold forward, chest toward thighs','Hands to floor, shins or blocks','Slight bend in knees if needed','Let head hang completely','Hold 30–60 sec'],
+   caution:'Glaucoma or detached retina: do not fully invert.',
+   p:[40,14, 40,52, 26,24, 54,24, 22,38, 58,38, 18,52, 62,52, 30,60, 50,60, 28,74, 52,74, 28,92, 52,92]},
+  {id:'parsvakonasana',name:'Utthita Parsvakonasana',sanskrit:'उत्थित पार्श्वकोणासन',english:'Extended Side Angle',cat:'standing',diff:'beginner',dur:'30-60s each side',
+   main:'Builds lateral strength; opens side body from ankle to fingertips',
+   benefits:['Strengthens legs and core laterally','Opens entire side body','Stretches groin and hamstrings','Stimulates abdominal organs','Builds stamina'],
+   steps:['Wide stance, right foot out 90°','Bend right knee over right ankle','Right forearm on right thigh (or hand to floor)','Left arm extends over ear diagonally','One diagonal line from left ankle to left fingertips','Look under left arm or up','Core engaged throughout','Hold 30–60 sec each side'],
+   caution:'Avoid deep knee bend with knee injury.',
+   p:[40,12, 40,48, 6,26, 74,26, 4,38, 76,14, 4,50, 76,4, 28,58, 52,58, 18,74, 58,74, 12,94, 60,92]},
+  {id:'purvottanasana',name:'Purvottanasana',sanskrit:'पूर्वोत्तानासन',english:'Reverse Plank',cat:'backbend',diff:'intermediate',dur:'15-30s',
+   main:'Counterpose to forward folds — opens chest and strengthens posterior chain',
+   benefits:['Strengthens wrists, arms and legs','Opens chest and anterior shoulders','Stretches front ankles and feet','Counteracts forward-fold effects','Tones core and glutes'],
+   steps:['Sit in Dandasana','Place hands slightly behind hips, fingers forward','Bend knees or keep legs straight','Inhale, press floor and lift hips','Open chest toward ceiling','Drop head back gently if comfortable','Press feet flat to floor','Hold 15–30 sec'],
+   caution:'Wrist injury: make fists.',
+   p:[40,14, 40,48, 22,24, 58,24, 14,36, 66,36, 10,48, 70,48, 26,58, 54,58, 24,72, 56,72, 22,88, 58,88]},
+  {id:'prasarita_padottanasana',name:'Prasarita Padottanasana',sanskrit:'प्रसारित पादोत्तानासन',english:'Wide-Stance Forward Fold',cat:'standing',diff:'beginner',dur:'30-60s',
+   main:'Head-below-heart inversion — calms mind and stretches inner thighs and hamstrings',
+   benefits:['Stretches inner thighs and hamstrings','Tones abdominal organs','Calms brain and relieves mild depression','Relieves mild backache','Strengthens and tones leg muscles'],
+   steps:['Wide stance 4-5 feet','Hands on hips, spine tall','Inhale and lengthen spine','Exhale, fold from hips, hands to floor','Crown of head toward floor','Keep legs straight if possible','Hold 30–60 sec'],
+   caution:'Lower back injury: keep slight bend in knees.',
+   p:[40,18, 40,52, 22,28, 58,28, 18,40, 62,40, 18,52, 62,52, 30,62, 50,62, 18,76, 62,76, 10,94, 70,94]},
+  {id:'supta_padangusthasana',name:'Supta Padangusthasana',sanskrit:'सुप्त पादांगुष्ठासन',english:'Reclining Hand-to-Big-Toe',cat:'floor',diff:'beginner',dur:'1-3 min each side',
+   main:'Therapeutic hamstring stretch accessible to all levels; relieves lower back pain',
+   benefits:['Stretches hamstrings safely','Relieves lower back pain','Tones kidneys','Improves digestion','Calms mind and reduces fatigue'],
+   steps:['Lie on back','Extend left leg flat on floor','Bend right knee, loop strap/belt around right foot','Straighten right leg toward ceiling','Flex foot, engage thigh','Keep both hips on floor','Hold 1–3 min each side','Option: take leg to side for inner thigh stretch'],
+   caution:'Hamstring injury: keep generous bend in raised leg.',
+   p:[40,44, 40,68, 24,54, 56,54, 18,66, 62,66, 14,78, 66,78, 28,74, 52,74, 26,84, 58,76, 26,96, 58,86]},
+  {id:'supta_virasana',name:'Supta Virasana',sanskrit:'सुप्त वीरासन',english:'Reclining Hero Pose',cat:'floor',diff:'advanced',dur:'1-5 min',
+   main:'Deep quadriceps and hip flexor stretch; opens entire front body',
+   benefits:['Deep quadriceps and psoas stretch','Opens chest and abdomen','Therapeutic for knee disorders when done correctly','Relieves tired legs','Stimulates digestive organs'],
+   steps:['Start in Virasana (seated between heels)','Place hands behind feet','Lean back on forearms, then fully to floor','Arms extended overhead or on floor','Keep knees on floor or use bolster under back','Hold 1–5 min (start with bolster)'],
+   caution:'Use bolster under back. Knee discomfort: do not proceed.',
+   p:[40,18, 40,52, 24,28, 56,28, 16,18, 64,18, 10,14, 70,14, 26,60, 54,60, 22,76, 58,76, 22,92, 58,92]},
+  {id:'yoga_nidra',name:'Yoga Nidra Pose',sanskrit:'योग निद्रा',english:'Yogic Sleep Posture',cat:'floor',diff:'beginner',dur:'20-40 min',
+   main:'Conscious deep relaxation — 40 min equals 4 hours sleep in restoration value',
+   benefits:['40 min = 4 hours deep sleep quality','Complete nervous system restoration','Releases deep-seated trauma and stress','Improves sleep quality dramatically','Activates parasympathetic healing mode'],
+   steps:['Lie in Savasana on padded surface','Eyes closed, body perfectly still','Follow audio or teacher guidance','Rotate awareness through body parts (Nyasa)','Become aware of breath and sensations','Enter hypnagogic state between waking and sleep','Do not move — even an itch','Allow 20–40 minutes'],
+   caution:'Use eye pillow, blanket and bolster under knees for comfort.',
+   p:[40,46, 40,76, 26,58, 54,58, 12,66, 68,68, 6,76, 74,78, 28,82, 52,82, 24,94, 56,94, 22,108, 58,108]},
+  {id:'chaturanga',name:'Chaturanga Dandasana',sanskrit:'चतुरङ्ग दण्डासन',english:'Four-Limbed Staff Pose',cat:'core',diff:'intermediate',dur:'3-10s',
+   main:'The yoga push-up — builds shoulder, tricep and core strength; key in Vinyasa flows',
+   benefits:['Builds shoulder, tricep and wrist strength','Tones abdominal muscles','Improves alignment awareness','Foundation of vinyasa flow','Prepares for arm balances'],
+   steps:['Start in Plank','Lower body until upper arms parallel to floor','Elbows track back (not flared)','Body stays in one plank line','Chest, not head, leads down','Avoid dropping hips or raising them','Hold 3–10 sec','Press up to Plank or flow to Updog'],
+   caution:'Build strength with knees down first (Modified Chaturanga).',
+   p:[40,34, 40,52, 22,38, 58,38, 14,44, 66,44, 8,52, 72,52, 28,58, 52,58, 26,72, 54,72, 24,86, 56,86]},
+  {id:'karnapidasana',name:'Karnapidasana',sanskrit:'कर्णपीड़ासन',english:'Ear Pressure Pose',cat:'floor',diff:'advanced',dur:'1-3 min',
+   main:'Deep extension of Plough — maximum spine stretch with nerve pathway activation',
+   benefits:['Maximum full-spine stretch','Calms nervous system deeply','Stimulates abdominal organs','Relieves sciatica','Deepens introspection'],
+   steps:['From Halasana','Bend knees toward ears','Knees rest beside ears (hence the name)','Hands can interlace or support back','Completely relax in the shape','Breathe naturally for 1–3 min','Slowly return to Halasana then unroll'],
+   caution:'Only attempt if comfortable in Halasana. Neck injury: avoid.',
+   p:[40,16, 40,42, 22,22, 58,22, 18,32, 62,32, 16,22, 64,22, 28,50, 52,50, 20,62, 60,62, 14,74, 66,74]},
+  {id:'pincha_mayurasana',name:'Pincha Mayurasana',sanskrit:'पिञ्च मयूरासन',english:'Forearm Stand',cat:'balancing',diff:'advanced',dur:'30-60s',
+   main:'Advanced inversion that builds extraordinary shoulder and core strength',
+   benefits:['Builds shoulder and upper arm strength','Strengthens core and spine','Improves balance and body control','Opens chest and shoulders','Develops courage and overcome fear'],
+   steps:['Kneel, place forearms on floor shoulder-width','Tuck toes, walk feet toward face','Dolphin Pose to warm up','Kick up one leg then follow with the other','Body vertical, engage core','Squeeze elbows toward each other','Hold 30–60 sec (build up from wall)','Lower slowly, rest in Childs Pose'],
+   caution:'Learn at wall first. Shoulder or elbow injury: avoid.',
+   p:[40,14, 40,50, 24,26, 56,26, 22,38, 58,38, 22,50, 58,50, 28,58, 52,58, 28,74, 52,74, 28,92, 52,92]},
+  {id:'astavakrasana',name:'Astavakrasana',sanskrit:'अष्टावक्रासन',english:'Eight-Angle Pose',cat:'balancing',diff:'advanced',dur:'5-20s each side',
+   main:'Complex arm balance requiring strength, coordination and hip flexibility',
+   benefits:['Builds arm, wrist and core strength','Deep hip opener','Improves coordination','Develops spatial awareness','Ultimate confidence builder'],
+   steps:['Sit, bend right knee over right upper arm','Right leg hooks over right arm above elbow','Cross left ankle over right ankle','Lean forward, both hands on floor','Extend legs to right parallel to floor','Squeeze legs together for balance','Hold 5–20 sec each side','Build from Crow Pose'],
+   caution:'Master Crow and Side Plank first.',
+   p:[40,16, 30,48, 16,24, 62,24, 12,36, 68,36, 8,48, 72,48, 18,56, 52,56, 10,70, 66,70, 8,66, 62,66]},
+  {id:'tittibhasana',name:'Tittibhasana',sanskrit:'तित्तिभासन',english:'Firefly Pose',cat:'balancing',diff:'advanced',dur:'5-20s',
+   main:'Advanced arm balance with legs in a deep forward fold position',
+   benefits:['Builds wrist, arm and core strength','Deep hamstring and groin stretch','Improves balance and coordination','Tones abdominal muscles','Develops inner body awareness'],
+   steps:['Wide squat (Malasana) position','Thread arms under and behind thighs','Place hands on floor shoulder-width','Lean forward, shift weight to hands','Lift feet, extend legs wide','Straighten arms if possible','Hold 5–20 sec'],
+   caution:'Hamstring injury: do not force.',
+   p:[40,18, 28,50, 10,30, 70,30, 6,42, 74,42, 6,54, 74,54, 16,58, 64,58, 4,74, 76,74, 4,64, 76,64]},
+  {id:'malasana',name:'Malasana',sanskrit:'मालासन',english:'Garland Pose / Deep Squat',cat:'standing',diff:'beginner',dur:'1-3 min',
+   main:'Primal hip and ankle opener — the most natural human resting position',
+   benefits:['Opens hips, groin and inner thighs','Strengthens and stretches ankles','Activates digestive fire','Tones lower abdominal muscles','Therapeutic for constipation'],
+   steps:['Stand feet slightly wider than hips','Turn feet out 45°','Lower into deep squat','Bring palms together in prayer','Elbows gently pry knees apart','Keep heels on floor (use rolled mat if needed)','Spine tall, relax completely','Hold 1–3 min'],
+   caution:'Knee injury: sit on yoga block at lowest height.',
+   p:[40,10, 40,48, 22,20, 58,20, 16,32, 64,32, 12,44, 68,44, 24,58, 56,58, 18,74, 62,74, 20,88, 60,88]},
+];
+
+/* ─── RENDER YOGA ─── */
+function renderYoga(){
+  var el=document.getElementById('yoga-hub');
+  if(!el)return;
+  if(!isPro){
+    el.innerHTML='<div style="min-height:400px;display:flex;align-items:center;justify-content:center;padding:40px 20px;"><div class="progate" style="max-width:380px;"><div style="font-size:40px;margin-bottom:10px;">🧘</div><h3>UNLOCK YOGA LIBRARY</h3><p>50+ expert yoga poses with step-by-step guidance, benefits, and human figure demonstrations. Beginner to Advanced · 6 categories · PRO exclusive.</p><button class="bpro" style="width:auto;padding:11px 32px;font-size:15px;" onclick="openModal(\'promodal\')">Go Pro — <span class="px-pro">₹499</span>/mo</button></div></div>';
+    return;
+  }
+  var activeCat='all', activeDiff='all', openId=null;
+  function render(){
+    var cats=[{k:'all',l:'All Poses'},{k:'standing',l:'Standing'},{k:'seated',l:'Seated'},{k:'balancing',l:'Balancing'},{k:'floor',l:'Floor'},{k:'backbend',l:'Backbends'},{k:'core',l:'Core'}];
+    var diffs=[{k:'all',l:'All Levels'},{k:'beginner',l:'🟢 Beginner'},{k:'intermediate',l:'🟡 Intermediate'},{k:'advanced',l:'🔴 Advanced'}];
+    var poses=YOGA_POSES.filter(function(p){return (activeCat==='all'||p.cat===activeCat)&&(activeDiff==='all'||p.diff===activeDiff);});
+    var h='<div class="yoga-hero">';
+    h+='<div class="yoga-hero-title">YOGA<span> LIBRARY</span></div>';
+    h+='<div class="yoga-hero-sub">50+ expert-curated poses with benefits, step-by-step guidance, and human figure demonstrations. Ancient science for modern bodies.</div>';
+    h+='<div class="yoga-hero-pills"><span class="yoga-hero-pill">🧘 50+ Poses</span><span class="yoga-hero-pill">📖 Step-by-Step</span><span class="yoga-hero-pill">🎯 Beginner to Advanced</span><span class="yoga-hero-pill">⚕️ Ayurveda Integrated</span></div>';
+    h+='</div>';
+    h+='<div class="yoga-stats-row"><div class="yoga-stat"><div class="yoga-stat-num">50+</div><div class="yoga-stat-lbl">Poses</div></div><div class="yoga-stat"><div class="yoga-stat-num">6</div><div class="yoga-stat-lbl">Categories</div></div><div class="yoga-stat"><div class="yoga-stat-num">3</div><div class="yoga-stat-lbl">Levels</div></div><div class="yoga-stat"><div class="yoga-stat-num">5K+</div><div class="yoga-stat-lbl">Cal/Week</div></div></div>';
+    h+='<div class="yoga-filters"><span class="yoga-filter-label">Category:</span>';
+    cats.forEach(function(c){h+='<button class="yoga-cat-btn'+(activeCat===c.k?' active':'')+'" onclick="ySetCat(\''+c.k+'\')">'+c.l+'</button>';});
+    h+='&nbsp;&nbsp;<span class="yoga-filter-label">Level:</span>';
+    diffs.forEach(function(d){h+='<button class="yoga-diff-btn b-'+d.k+(activeDiff===d.k?' active':'')+'" onclick="ySetDiff(\''+d.k+'\')">'+d.l+'</button>';});
+    h+='</div>';
+    // Grid
+    h+='<div class="yoga-grid">';
+    poses.forEach(function(p){
+      h+='<div class="yoga-card" onclick="yOpen(\''+p.id+'\',this)">';
+      h+='<div class="yoga-card-fig">'+yogaSVG(p.p)+'<span class="yoga-card-diff '+p.diff+'">'+p.diff+'</span></div>';
+      h+='<div class="yoga-card-body"><div class="yoga-card-name">'+p.name+'</div><div class="yoga-card-sanskrit">'+p.sanskrit+' · '+p.english+'</div><div class="yoga-card-benefit">'+p.main+'</div><div class="yoga-card-dur">⏱ '+p.dur+'</div></div>';
+      h+='</div>';
+    });
+    if(!poses.length)h+='<div style="grid-column:1/-1;text-align:center;padding:40px 20px;color:var(--muted);">No poses match this filter. Try "All Poses".</div>';
+    h+='</div>';
+    // Detail panel placeholder
+    h+='<div id="yoga-detail-panel"></div>';
+    el.innerHTML=h;
+    if(openId){var p=YOGA_POSES.find(function(x){return x.id===openId;});if(p)_renderYogaDetail(p);}
+  }
+  window.ySetCat=function(c){activeCat=c;render();};
+  window.ySetDiff=function(d){activeDiff=d;render();};
+  window.yOpen=function(id,card){
+    if(openId===id){openId=null;render();return;}
+    openId=id;
+    // scroll card into view after render
+    render();
+    var det=document.getElementById('yoga-detail-panel');
+    if(det)det.scrollIntoView({behavior:'smooth',block:'start'});
+  };
+  render();
+}
+
+function _renderYogaDetail(p){
+  var el=document.getElementById('yoga-detail-panel');
+  if(!el)return;
+  var h='<div class="yoga-detail open" style="background:var(--card2);border:1px solid rgba(124,58,237,.25);border-radius:14px;padding:22px;margin:0 20px 24px;">';
+  h+='<div class="yoga-detail-top">';
+  h+='<div class="yoga-detail-fig" style="background:linear-gradient(160deg,#0f0a1a,#1a0a3a);border-radius:12px;padding:20px;flex-shrink:0;display:flex;align-items:center;justify-content:center;">'+yogaSVG(p.p)+'</div>';
+  h+='<div class="yoga-detail-info">';
+  h+='<div class="yoga-detail-name">'+p.name+'</div>';
+  h+='<div class="yoga-detail-sanskrit">'+p.sanskrit+'</div>';
+  h+='<div class="yoga-detail-tags"><span class="yoga-dtag">'+p.english+'</span><span class="yoga-dtag">'+p.cat+'</span><span class="yoga-dtag '+p.diff+'">'+p.diff+'</span><span class="yoga-dtag">⏱ '+p.dur+'</span></div>';
+  h+='<div class="yoga-detail-main-benefit" style="font-size:12px;color:var(--text);line-height:1.6;">'+p.main+'</div>';
+  h+='</div></div>';
+  h+='<div class="yoga-section-title">Key Benefits</div>';
+  h+='<ul class="yoga-benefits-list">'+p.benefits.map(function(b){return '<li>✓ '+b+'</li>';}).join('')+'</ul>';
+  h+='<div class="yoga-section-title">Step-by-Step Instructions</div>';
+  h+='<div class="yoga-steps-list">'+p.steps.map(function(s,i){return '<div class="yoga-step"><div class="yoga-step-num">'+(i+1)+'</div><div class="yoga-step-text">'+s+'</div></div>';}).join('')+'</div>';
+  if(p.caution){h+='<div class="yoga-caution">⚠️ <strong>Caution:</strong> '+p.caution+'</div>';}
+  h+='<button onclick="window.yOpen(\''+p.id+'\')" style="margin-top:14px;background:rgba(124,58,237,.1);border:1px solid rgba(124,58,237,.3);color:var(--violet);padding:8px 18px;border-radius:8px;cursor:pointer;font-size:12px;font-family:inherit;">✕ Close</button>';
+  h+='</div>';
+  el.innerHTML=h;
+}
+
+/* ─── MEDITATION DATA ─── */
+var MEDITATION_DATA={
+  types:[
+    {id:'mindfulness',name:'Mindfulness Meditation',origin:'Theravada Buddhism / MBSR',icon:'🧠',level:'beginner',levelCls:'beginner',
+     desc:'The scientific gold standard of meditation — training present-moment awareness without judgment. Reduces cortisol by 23%, grey matter density in prefrontal cortex increases measurably after 8 weeks.',
+     steps:['Find a comfortable seated position — chair or floor','Set a timer for 5–20 minutes','Close your eyes or soften your gaze downward','Bring attention to your breath — the physical sensation','When mind wanders (it will), gently return attention to breath — no frustration','Notice thoughts like clouds passing — observe, do not engage','Each return to breath is a "rep" — builds attentional muscle','End by slowly widening awareness to the whole body']},
+    {id:'vipassana',name:'Vipassana (Insight Meditation)',origin:'Early Buddhism · 10-day silent retreats',icon:'👁️',level:'intermediate',levelCls:'intermediate',
+     desc:'Direct observation of impermanence, suffering and non-self as they arise in direct experience. The most transformative tradition — leads to structural personality change with sustained practice.',
+     steps:['Start with 20–60 min sessions in silence','Observe breath at nostrils — natural, unmanipulated','When sensation, emotion or thought arises — note it: "thinking", "pain", "fear"','Watch it arise... peak... pass. Nothing is permanent','Do not suppress or indulge — pure observation','Note the space between stimulus and response growing over time','Practice requires ethical foundation (Sila) for maximum depth','10-day Goenka retreat highly recommended']},
+    {id:'tm',name:'Transcendental Meditation (TM)',origin:'Maharishi Mahesh Yogi',icon:'✨',level:'beginner',levelCls:'beginner',
+     desc:'Silent mantra repetition technique. 600+ peer-reviewed studies. Reduces anxiety, PTSD, cardiovascular disease. Unique "transcending" state distinct from other meditation types.',
+     steps:['Sit comfortably with eyes closed','Silently repeat a given mantra (traditionally received from teacher)','Allow the mantra to become faint and effortless','Do not control the process — allow the mind to "settle"','Transcending occurs automatically when technique is done correctly','Practice 20 minutes twice daily (morning and afternoon)','Thoughts are not a problem — return to mantra gently','End by sitting quietly 2 min before opening eyes']},
+    {id:'loving_kindness',name:'Metta (Loving-Kindness)',origin:'Early Buddhism',icon:'💗',level:'beginner',levelCls:'beginner',
+     desc:'Cultivation of unconditional compassion toward self and all beings. Dramatically reduces self-criticism, increases positive emotions and social connection. Neurologically activates insula and prefrontal cortex.',
+     steps:['Sit comfortably, close eyes, breathe naturally','Start with yourself: "May I be happy. May I be healthy. May I be peaceful. May I be free from suffering."','Feel the warmth of these wishes — do not just recite','Extend to a loved one, picturing them clearly','Extend to a neutral person','Extend to a difficult person (do not skip — this is where depth lies)','Extend to all beings: all humans, all creatures, all life','Close by returning to yourself with expanded warmth']},
+    {id:'zen',name:'Zazen (Zen Meditation)',origin:'Chan Buddhism / Japan',icon:'☯️',level:'intermediate',levelCls:'intermediate',
+     desc:'Sitting meditation with no goal — pure presence. Counts breath or uses koans (paradoxical questions like "What was your face before your parents were born?"). Demands exceptional posture discipline.',
+     steps:['Sit in full or half lotus on zafu cushion','Spine perfectly upright — not rigid, not slumped','Hands in cosmic mudra (left on right, thumbs touching lightly)','Eyes 45° down, open — soft focus, not staring','Count exhales 1–10, return to 1. If you lose count — that is practice','Or simply sit with "just sitting" — Shikantaza','No goals, no progress to achieve, nothing to fix','Traditionally 25-45 min periods (Zazen rounds)']},
+    {id:'yoga_nidra',name:'Yoga Nidra',origin:'Tantric / Swami Satyananda Saraswati',icon:'🌙',level:'beginner',levelCls:'beginner',
+     desc:'Conscious deep sleep — a systematic rotation of awareness through body, breath and mind. 1 hour = 4 hours sleep in restoration value. Used in US Veterans Affairs for PTSD treatment.',
+     steps:['Lie in Savasana — completely comfortable, warmed if cold','Physical relaxation: tense every muscle simultaneously for 5 sec, release','Set a Sankalpa (intention): short positive statement, 3× mentally','Rotation of awareness: move attention rapidly through body parts in sequence','Pairs of opposites: heavy/light, warm/cold — feel each','Visualization: allow spontaneous images to arise and pass','Return to Sankalpa 3×','Return to wakefulness slowly — wiggle fingers, open eyes']},
+    {id:'trataka',name:'Trataka (Candle Gazing)',origin:'Classical Hatha Yoga',icon:'🕯️',level:'intermediate',levelCls:'intermediate',
+     desc:'Steady gazing at a fixed point (traditionally a candle flame) until eyes water. Purifies eyes, develops one-pointed concentration and awakens Ajna chakra.',
+     steps:['Place candle flame at eye level 2 feet away in dark room','Sit comfortably, close eyes, breathe naturally for 2 min','Open eyes and gaze softly at the flame — do not blink for as long as comfortable','When eyes water or strain — close them and visualize the afterimage at the third eye','When image fades — open eyes and repeat','3–5 rounds of 2–5 min each','Do not force or strain — increase duration gradually','Follow with Palming (warm cupped palms over closed eyes)']},
+    {id:'pranayama',name:'Pranayama (Breath-Based)',origin:'Classical Yoga / Patanjali',icon:'💨',level:'beginner',levelCls:'beginner',
+     desc:'The science of breath control. Directly modulates the autonomic nervous system via the vagus nerve. Each technique produces specific neurological and physiological effects.',
+     steps:['Morning: Nadi Shodhana (alternate nostril) — balances left/right brain hemispheres','Evening: Bhramari (bee breath) — rapidly reduces anxiety via vagal activation','Energising: Kapalbhati (skull-shining breath) — 60-120 pumps/min','Cooling: Sheetali (curled tongue) — reduces heat and anger','Before sleep: 4-7-8 breathing — activates deep relaxation','For focus: Box breathing (4-4-4-4) — used by Navy SEALs','Practice on empty stomach, seated, spine upright','Start with 5 min and build to 20-30 min']}
+  ],
+  stages:[
+    {num:1,title:'Stage 1: Directed Attention',level:'novice',levelCls:'novice',desc:'Mind still completely distracted. You remember to meditate, begin, and forget within seconds. Mind wanders constantly. This is normal — it is SUPPOSED to feel impossible at first. Duration: Weeks 1-4.'},
+    {num:2,title:'Stage 2: Interrupted Attention',level:'novice',levelCls:'novice',desc:'Mind wanders but you notice it has wandered and return. This returning IS the practice. Each return is a "rep" — you are literally strengthening prefrontal cortex control pathways. Duration: Weeks 2-8.'},
+    {num:3,title:'Stage 3: Extended Attention',level:'novice',levelCls:'novice',desc:'You can maintain some attention for minutes before major distraction. Occasional moments of actual stillness. The practice starts feeling worthwhile. Duration: Month 2-4.'},
+    {num:4,title:'Stage 4: Continuous Attention',level:'intermediate',levelCls:'intermediate',desc:'Attention stays with object for extended periods. Drowsiness and dullness become the main obstacles (replace distraction). Meditative joy (Piti) begins to arise. Duration: Month 3-6.'},
+    {num:5,title:'Stage 5: Tamed Attention',level:'intermediate',levelCls:'intermediate',desc:'Deep calm. Subtle dullness remains. Body sensations may shift or disappear. A pleasant meditative equanimity develops. The mind feels like it wants to meditate. Duration: Month 4-8.'},
+    {num:6,title:'Stage 6: Pacified Attention',level:'intermediate',levelCls:'intermediate',desc:'Subtle distractions and dullness largely resolved. Access concentration (Upacara Samadhi) available. Practice becomes effortless and joyful. Duration: Month 6-12.'},
+    {num:7,title:'Stage 7: Single-Pointed Attention',level:'advanced',levelCls:'advanced',desc:'Full absorption (First Jhana). Mind locked on object with complete stability. Physical and mental bliss (Piti + Sukha). Effortless, requires no forcing. Duration: Year 1-3 of consistent daily practice.'},
+    {num:8,title:'Stage 8: Mental Pliancy',level:'advanced',levelCls:'advanced',desc:'Second and Third Jhanas. Bliss becomes very refined — joy without excitement. Equanimity as the dominant quality. Deep insights into impermanence arise spontaneously. Duration: Years of practice.'},
+    {num:9,title:'Stage 9: Equanimity & Cessation',level:'master',levelCls:'master',desc:'Fourth Jhana and beyond. Perfect equanimity — utterly still, completely present. Neither pleasure nor pain move the mind. This is the doorway to enlightenment (Nibbana) described in all traditions as the end of compulsive suffering. Duration: Rare — years of sustained daily practice, ideally with retreat support.'}
+  ],
+  phases:[
+    {phase:'Phase 1',title:'Foundation',duration:'Days 1-14',clr:'#4ade80',items:['Practice 5 minutes daily — non-negotiable minimum','Use guided app (Insight Timer, Waking Up, Calm)','Choose same time daily (morning strongly recommended)','Track streak — habit consistency is everything','Technique: Simple breath awareness (mindfulness)','Expectation: Mostly distraction and frustration — totally normal','Key metric: Did you sit? That is 100% success at this stage','Read: "Why Buddhism is True" by Robert Wright']},
+    {phase:'Phase 2',title:'Establishing',duration:'Weeks 3-8',clr:'#fbbf24',items:['Increase to 10-15 minutes daily','Add 1 weekly longer session (30-45 min)','Experiment with different techniques — find your anchor','Notice real-world effects beginning: less reactivity, better focus','Start a meditation journal — note observations after sessions','Try your first 1-day silent retreat or half-day self-retreat','Key challenge: Restlessness and doubt ("Is this working?")','Keep going — neurological changes are accumulating']},
+    {phase:'Phase 3',title:'Deepening',duration:'Months 3-6',clr:'#60a5fa',items:['20-30 min daily becomes natural and enjoyable','Try Vipassana as secondary technique','Add evening practice of 5-10 min body scan','Attend a weekend retreat (highly transformative)','Study: pick one tradition deeply (Vipassana, Zen, TM, etc.)','Physical sensations during practice: tingles, warmth, lightness — normal','Meditation influencing daily life — pausing before reactions','Journal: patterns in thoughts and emotions becoming visible']},
+    {phase:'Phase 4',title:'Established Practice',duration:'Months 6-12',clr:'#a855f7',items:['30-45 min daily — often two sessions','10-day silent retreat (Vipassana) — life-changing if ready','Teacher or sangha (community) adds depth','Pranayama integrated as preparation for meditation','Spiritual study paired with practice','Sleep quality noticeably improved, cortisol measurably lower','Relationships transform — response over reaction dominant','Begin teaching others — strongest accelerant for your own practice']},
+    {phase:'Phase 5',title:'Mastery Path',duration:'Year 1+',clr:'#f87171',items:['45-90 min daily as lifestyle — not effort','Multiple retreat experiences per year','Working with teacher/lineage for advanced guidance','Jhana practice available if desired','Integration: entire life becomes the meditation','Compassionate action flows naturally from practice','The meditator and the meditation begin to dissolve','The practice disappears — it becomes how you are']}
+  ],
+  breathing:[
+    {name:'4-7-8 Breathing',pattern:'4s IN · 7s HOLD · 8s OUT',desc:'Dr Andrew Weil\'s "natural tranquilizer" — activates parasympathetic nervous system within 2-4 cycles. Proven for anxiety and sleep.',benefit:'Best for: anxiety, insomnia, panic attacks'},
+    {name:'Box Breathing',pattern:'4s IN · 4s HOLD · 4s OUT · 4s HOLD',desc:'Used by Navy SEALs, elite athletes and surgeons. Balances autonomic nervous system instantly. Reduces cortisol and increases focus under pressure.',benefit:'Best for: stress, high-pressure situations'},
+    {name:'Nadi Shodhana',pattern:'Block L · 4s R IN · 4s hold · 8s L OUT',desc:'Alternate nostril breathing from classical yoga. Synchronises left and right brain hemispheres. Ancient technique with modern neuroscience validation.',benefit:'Best for: balance, focus, anxiety'},
+    {name:'Kapalabhati',pattern:'60-120 sharp exhales/min',desc:'Skull-shining breath — forceful exhales with passive inhales. Energises, detoxifies, fires up digestive system. Not for evenings.',benefit:'Best for: energy, focus, digestion'},
+    {name:'Bhramari (Bee Breath)',pattern:'Inhale · Long mmm exhale',desc:'Humming breath that activates vagus nerve via vibration. Fastest known method to reduce acute anxiety. Works within 3-5 breaths.',benefit:'Best for: anxiety, anger, before sleep'},
+    {name:'Sheetali (Cooling Breath)',pattern:'Curled tongue inhale · Nose exhale',desc:'Cooling breath through curled tongue. Lowers body temperature, reduces pitta (heat/anger). Classical Ayurvedic cooling technique.',benefit:'Best for: anger, heat, hypertension'}
+  ]
+};
+
+/* ─── RENDER MEDITATION ─── */
+var _medTab='intro', _medTimer={mins:10,secs:0,running:false,interval:null,total:600};
+function renderMeditation(){
+  var el=document.getElementById('meditation-hub');
+  if(!el)return;
+  if(!isPro){
+    el.innerHTML='<div style="min-height:400px;display:flex;align-items:center;justify-content:center;padding:40px 20px;"><div class="progate" style="max-width:380px;"><div style="font-size:40px;margin-bottom:10px;">🧘‍♂️</div><h3>UNLOCK MEDITATION</h3><p>Complete meditation science — 8 types, 9 jhana stages, beginner-to-advanced roadmap, breathing techniques and built-in timer. PRO exclusive.</p><button class="bpro" style="width:auto;padding:11px 32px;font-size:15px;" onclick="openModal(\'promodal\')">Go Pro — <span class="px-pro">₹499</span>/mo</button></div></div>';
+    return;
+  }
+  function renderTab(){
+    var tabs=[{k:'intro',l:'📖 What is Meditation'},{k:'types',l:'🌀 8 Types'},{k:'stages',l:'🪜 9 Stages'},{k:'roadmap',l:'🗺️ Roadmap'},{k:'breathing',l:'💨 Breathing'},{k:'timer',l:'⏱ Timer'}];
+    var h='<div class="med-hero">';
+    h+='<div class="med-hero-title">MEDITATION<br><span>&amp; MINDFULNESS</span></div>';
+    h+='<div class="med-hero-sub">The science-backed path from restless beginner to masterful practitioner. Ancient wisdom meets modern neuroscience.</div>';
+    h+='<div class="med-hero-pills"><span class="med-hero-pill">🔬 600+ Research Studies</span><span class="med-hero-pill">🧠 Neuroplasticity</span><span class="med-hero-pill">⏱ Built-in Timer</span><span class="med-hero-pill">🌿 Ayurveda Integrated</span></div>';
+    h+='</div>';
+    h+='<div class="med-nav-tabs">';
+    tabs.forEach(function(t){h+='<button class="med-tab-btn'+(t.k===_medTab?' active':'')+'" onclick="medTab(\''+t.k+'\')">'+t.l+'</button>';});
+    h+='</div>';
+    // Tab content
+    if(_medTab==='intro'){
+      h+='<div class="med-tab-panel active">';
+      h+='<div class="med-illus"><svg viewBox="0 0 120 130" xmlns="http://www.w3.org/2000/svg"><defs><radialGradient id="mg" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#818cf8"/><stop offset="100%" stop-color="#6366f1" stop-opacity="0.3"/></radialGradient></defs><circle cx="60" cy="10" r="8" fill="#818cf8"/><line x1="60" y1="18" x2="60" y2="56" stroke="#6366f1" stroke-width="3.5" stroke-linecap="round"/><line x1="60" y1="26" x2="36" y2="40" stroke="#6366f1" stroke-width="3" stroke-linecap="round"/><line x1="60" y1="26" x2="84" y2="40" stroke="#6366f1" stroke-width="3" stroke-linecap="round"/><line x1="36" y1="40" x2="28" y2="52" stroke="#6366f1" stroke-width="3" stroke-linecap="round"/><line x1="84" y1="40" x2="92" y2="52" stroke="#6366f1" stroke-width="3" stroke-linecap="round"/><line x1="60" y1="56" x2="42" y2="68" stroke="#6366f1" stroke-width="3" stroke-linecap="round"/><line x1="60" y1="56" x2="78" y2="68" stroke="#6366f1" stroke-width="3" stroke-linecap="round"/><line x1="42" y1="68" x2="38" y2="86" stroke="#6366f1" stroke-width="3" stroke-linecap="round"/><line x1="78" y1="68" x2="82" y2="86" stroke="#6366f1" stroke-width="3" stroke-linecap="round"/><line x1="38" y1="86" x2="36" y2="100" stroke="#6366f1" stroke-width="3" stroke-linecap="round"/><line x1="82" y1="86" x2="84" y2="100" stroke="#6366f1" stroke-width="3" stroke-linecap="round"/><circle cx="60" cy="70" r="28" fill="url(#mg)" opacity="0.15"/><circle cx="60" cy="70" r="18" fill="none" stroke="#818cf8" stroke-width="1" opacity="0.3"/></svg></div>';
+      h+='<div class="med-science-bar"><div class="med-science-bar-title">🔬 What the Science Says</div><div class="med-science-bar-text">Harvard neuroscientists found 8 weeks of mindfulness meditation increased grey matter density in the prefrontal cortex and decreased amygdala volume — measurable structural brain changes. Cortisol reduction: 23%. Anxiety reduction: 43%. Sleep quality improvement: 38%. Over 600 peer-reviewed studies support meditation\'s effects on mental and physical health.</div></div>';
+      h+='<div class="med-intro-grid">';
+      var cards=[{icon:'🧠',t:'What Is Meditation',txt:'Meditation is training attention and awareness. It is NOT emptying the mind — that is a myth. It is learning to observe mental activity without being controlled by it. The wandering mind is not a failure — returning to the anchor is the practice.'},
+      {icon:'⚡',t:'Why It Works (Science)',txt:'Meditation activates the parasympathetic nervous system, reduces cortisol and adrenaline, thickens prefrontal cortex (executive function), shrinks the amygdala (fear center), and increases GABA, serotonin and dopamine production.'},
+      {icon:'🕐',t:'How Long?',txt:'Measurable stress reduction: 8 weeks of daily practice. First noticeable calm: 2-3 weeks. Deep structural brain changes: 6+ months. Daily 20 min = more impactful than any supplement, nootropic or biohack. Non-negotiable investment.'},
+      {icon:'🌿',t:'Ayurvedic View',txt:'Called "Dhyana" in yoga — the 7th of 8 limbs. Balances all three doshas simultaneously. Reduces Vata (anxiety/restlessness), cools Pitta (anger/inflammation), lifts Kapha (depression/inertia). The highest Ayurvedic prescription.'}];
+      cards.forEach(function(c){h+='<div class="med-intro-card"><div class="med-intro-card-icon">'+c.icon+'</div><div class="med-intro-card-title">'+c.t+'</div><div class="med-intro-card-text">'+c.txt+'</div></div>';});
+      h+='</div>';
+      h+='<div class="med-science-bar" style="border-left-color:#4ade80;background:linear-gradient(135deg,rgba(74,222,128,.07),transparent);"><div class="med-science-bar-title" style="color:#4ade80;">📊 Proven Benefits of Regular Practice</div><div class="med-science-bar-text">✓ Reduces anxiety and depression — equal to antidepressants in mild-moderate cases (JAMA 2014) &nbsp;|&nbsp; ✓ Improves focus and working memory &nbsp;|&nbsp; ✓ Reduces blood pressure by 5-10 mmHg &nbsp;|&nbsp; ✓ Decreases chronic pain perception by 40% &nbsp;|&nbsp; ✓ Increases telomere length (slower cellular ageing) &nbsp;|&nbsp; ✓ Reduces inflammatory markers (IL-6, CRP) &nbsp;|&nbsp; ✓ Improves immune function &nbsp;|&nbsp; ✓ Increases empathy and emotional intelligence &nbsp;|&nbsp; ✓ Reduces IBS and irritable bowel symptoms by 38%</div></div>';
+      h+='</div>';
+    }
+    if(_medTab==='types'){
+      h+='<div class="med-tab-panel active"><div class="med-types-grid">';
+      MEDITATION_DATA.types.forEach(function(t){
+        h+='<div class="med-type-card"><div class="med-type-header" onclick="medTypeToggle(\'med-type-body-'+t.id+'\')">';
+        h+='<div class="med-type-icon">'+t.icon+'</div>';
+        h+='<div class="med-type-meta"><div class="med-type-name">'+t.name+'</div><div class="med-type-origin">'+t.origin+'</div></div>';
+        h+='<span class="med-type-level '+t.levelCls+'" style="padding:3px 10px;border-radius:10px;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;'+(t.levelCls==='beginner'?'background:rgba(74,222,128,.12);color:#4ade80;':t.levelCls==='intermediate'?'background:rgba(251,191,36,.12);color:#fbbf24;':'background:rgba(239,68,68,.12);color:#f87171;')+'">'+t.level+'</span>';
+        h+='<span style="color:var(--muted);margin-left:8px;font-size:12px;">▾</span>';
+        h+='</div><div class="med-type-body" id="med-type-body-'+t.id+'">';
+        h+='<div class="med-type-desc">'+t.desc+'</div>';
+        h+='<div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#818cf8;font-weight:700;margin-bottom:8px;">HOW TO PRACTICE</div>';
+        h+='<div class="med-how-steps">'+t.steps.map(function(s,i){return '<div class="med-how-step"><div class="med-how-num">'+(i+1)+'</div><div class="med-how-text">'+s+'</div></div>';}).join('')+'</div>';
+        h+='</div></div>';
+      });
+      h+='</div></div>';
+    }
+    if(_medTab==='stages'){
+      h+='<div class="med-tab-panel active">';
+      h+='<div style="background:linear-gradient(135deg,rgba(99,102,241,.08),transparent);border:1px solid rgba(99,102,241,.2);border-radius:12px;padding:14px 16px;margin-bottom:20px;font-size:11px;color:var(--text);line-height:1.7;">These 9 stages represent the universal progression through meditation depth — a map drawn from both ancient Buddhist texts and modern contemplative science. Progress is not linear and varies by individual, technique and retreat experience. Use this as a compass, not a competition.</div>';
+      h+='<div class="med-stages-timeline">';
+      MEDITATION_DATA.stages.forEach(function(s){
+        h+='<div class="med-stage">';
+        h+='<div class="med-stage-dot">'+s.num+'</div>';
+        h+='<div class="med-stage-title">'+s.title+'</div>';
+        h+='<span class="med-stage-level '+s.levelCls+'">'+s.level+'</span>';
+        h+='<div class="med-stage-desc">'+s.desc+'</div>';
+        h+='</div>';
+      });
+      h+='</div></div>';
+    }
+    if(_medTab==='roadmap'){
+      h+='<div class="med-tab-panel active"><div class="med-roadmap">';
+      MEDITATION_DATA.phases.forEach(function(p){
+        h+='<div class="med-roadmap-phase"><div class="med-roadmap-phase-hdr">';
+        h+='<span class="med-phase-badge" style="background:'+p.clr+'22;color:'+p.clr+';border:1px solid '+p.clr+'44;">'+p.phase+'</span>';
+        h+='<span class="med-phase-title">'+p.title+'</span>';
+        h+='<span class="med-phase-duration">'+p.duration+'</span>';
+        h+='</div><div class="med-roadmap-items">'+p.items.map(function(i){return '<div class="med-roadmap-item">'+i+'</div>';}).join('')+'</div></div>';
+      });
+      h+='</div></div>';
+    }
+    if(_medTab==='breathing'){
+      h+='<div class="med-tab-panel active">';
+      h+='<div class="med-science-bar" style="margin-bottom:16px;"><div class="med-science-bar-title">💨 The Science of Pranayama</div><div class="med-science-bar-text">Breathing is the only autonomic nervous system function you can consciously control — making it the fastest gateway to changing your physiological state. Each breath pattern below directly modulates vagal tone, HRV, cortisol, adrenaline and neurotransmitter levels. Master these and you have a pharmacy at your disposal.</div></div>';
+      h+='<div class="med-breath-grid">';
+      MEDITATION_DATA.breathing.forEach(function(b){
+        h+='<div class="med-breath-card"><div class="med-breath-name">'+b.name+'</div><div class="med-breath-pattern">'+b.pattern+'</div><div class="med-breath-desc">'+b.desc+'</div><div class="med-breath-benefit">'+b.benefit+'</div></div>';
+      });
+      h+='</div></div>';
+    }
+    if(_medTab==='timer'){
+      var m=_medTimer.mins, s2=_medTimer.secs;
+      var total=_medTimer.total, elapsed=total-(m*60+s2);
+      var pct=total>0?Math.round(elapsed/total*100):0;
+      var circ=2*Math.PI*80; var dash=circ-(pct/100*circ);
+      h+='<div class="med-tab-panel active"><div class="med-timer-wrap">';
+      h+='<div style="font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:16px;">MEDITATION TIMER</div>';
+      h+='<div class="med-timer-circle">';
+      h+='<svg viewBox="0 0 180 180" style="position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)"><circle cx="90" cy="90" r="80" fill="none" stroke="rgba(99,102,241,.15)" stroke-width="6"/><circle cx="90" cy="90" r="80" fill="none" stroke="#818cf8" stroke-width="6" stroke-linecap="round" stroke-dasharray="'+circ+'" stroke-dashoffset="'+dash+'" id="med-timer-arc"/></svg>';
+      h+='<div class="med-timer-time" id="med-timer-display">'+String(m).padStart(2,'0')+':'+String(s2).padStart(2,'0')+'</div>';
+      h+='<div class="med-timer-label">MINUTES</div>';
+      h+='</div>';
+      h+='<div class="med-timer-controls">';
+      h+=_medTimer.running?'<button class="med-timer-btn stop" onclick="medTimerStop()">⏸ Pause</button>':'<button class="med-timer-btn start" onclick="medTimerStart()">▶ Start</button>';
+      h+='<button class="med-timer-btn reset" onclick="medTimerReset()">↺ Reset</button>';
+      h+='</div>';
+      h+='<div class="med-timer-presets">';
+      [5,10,15,20,30,45].forEach(function(n){h+='<span class="med-timer-preset'+(_medTimer.total===n*60&&!_medTimer.running?' sel':'')+'" onclick="medTimerSet('+n+')">'+n+' min</span>';});
+      h+='</div>';
+      h+='<div style="margin-top:20px;font-size:11px;color:var(--muted);max-width:320px;line-height:1.7;">💡 Sit comfortably with spine upright. Close your eyes. Follow your chosen technique. When the timer sounds, sit quietly for 1-2 more minutes before opening eyes.</div>';
+      h+='</div></div>';
+    }
+    el.innerHTML=h;
+  }
+  window.medTab=function(t){_medTab=t;renderTab();};
+  window.medTypeToggle=function(id){var b=document.getElementById(id);if(b)b.classList.toggle('open');};
+  window.medTimerStart=function(){
+    if(_medTimer.mins===0&&_medTimer.secs===0)return;
+    _medTimer.running=true;
+    _medTimer.interval=setInterval(function(){
+      if(_medTimer.secs===0){
+        if(_medTimer.mins===0){clearInterval(_medTimer.interval);_medTimer.running=false;_medTimer.secs=0;renderTab();return;}
+        _medTimer.mins--;_medTimer.secs=59;
+      }else{_medTimer.secs--;}
+      var d=document.getElementById('med-timer-display');
+      if(d)d.textContent=String(_medTimer.mins).padStart(2,'0')+':'+String(_medTimer.secs).padStart(2,'0');
+      var total=_medTimer.total, elapsed=total-(_medTimer.mins*60+_medTimer.secs);
+      var circ=2*Math.PI*80; var dash=circ-(elapsed/total*circ);
+      var arc=document.getElementById('med-timer-arc');
+      if(arc)arc.setAttribute('stroke-dashoffset',dash);
+    },1000);
+    renderTab();
+  };
+  window.medTimerStop=function(){clearInterval(_medTimer.interval);_medTimer.running=false;renderTab();};
+  window.medTimerReset=function(){clearInterval(_medTimer.interval);_medTimer.running=false;var t=_medTimer.total;_medTimer.mins=Math.floor(t/60);_medTimer.secs=0;renderTab();};
+  window.medTimerSet=function(m){clearInterval(_medTimer.interval);_medTimer.running=false;_medTimer.total=m*60;_medTimer.mins=m;_medTimer.secs=0;renderTab();};
+  renderTab();
+}
+</script>
+
 </body>
 </html>
