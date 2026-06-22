@@ -17716,7 +17716,7 @@ document.addEventListener('change', function(e) {
 .yoga-card:hover{transform:translateY(-3px);border-color:rgba(124,58,237,.5);box-shadow:0 8px 30px rgba(124,58,237,.15);}
 .yoga-card-fig{background:linear-gradient(160deg,#0f0a1a 0%,#1a0a3a 50%,#0d0520 100%);padding:20px 12px 12px;display:flex;justify-content:center;align-items:center;min-height:150px;position:relative;}
 .yoga-card-fig::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 50% at 50% 30%,rgba(168,85,247,.1),transparent 70%);pointer-events:none;}
-.yoga-card-fig svg{width:80px;height:120px;}
+.yoga-card-fig img{width:100%;height:100%;object-fit:contain;display:block;}
 .yoga-card-diff{position:absolute;top:8px;right:8px;font-size:8px;letter-spacing:1.5px;text-transform:uppercase;padding:3px 8px;border-radius:10px;font-weight:700;}
 .yoga-card-diff.beginner{background:rgba(34,197,94,.15);color:#4ade80;border:1px solid rgba(34,197,94,.3);}
 .yoga-card-diff.intermediate{background:rgba(251,191,36,.15);color:#fbbf24;border:1px solid rgba(251,191,36,.3);}
@@ -17732,7 +17732,7 @@ document.addEventListener('change', function(e) {
 .yoga-detail-top{display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap;margin-bottom:16px;}
 .yoga-detail-fig{background:linear-gradient(160deg,#0f0a1a,#1a0a3a);border-radius:12px;padding:16px;flex-shrink:0;display:flex;justify-content:center;align-items:center;width:130px;height:170px;position:relative;}
 .yoga-detail-fig::after{content:'';position:absolute;inset:0;border-radius:12px;background:radial-gradient(ellipse 80% 60% at 50% 30%,rgba(168,85,247,.12),transparent 70%);pointer-events:none;}
-.yoga-detail-fig svg{width:96px;height:140px;}
+.yoga-detail-fig img{width:140px;height:160px;object-fit:contain;display:block;}
 .yoga-detail-info{flex:1;min-width:180px;}
 .yoga-detail-name{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:1px;color:var(--text);line-height:1;margin-bottom:4px;}
 .yoga-detail-sanskrit{font-size:13px;color:var(--violet);font-style:italic;margin-bottom:8px;}
@@ -19906,80 +19906,69 @@ tryInit();
 <script>
 /* ─── Premium yoga silhouette generator ─── */
 /* Produces filled-limb human silhouette illustrations (professional yoga-app style) */
-function yogaSVG(p){
-  // p indices: 0-1=head, 2-3=pelvis, 4-7=shoulders(L/R), 8-11=elbows(L/R),
-  //            12-15=wrists(L/R), 16-19=hipJoints(L/R), 20-23=knees(L/R), 24-27=ankles(L/R)
-  var uid='yg'+Math.floor(Math.random()*99999);
-  var s='<svg viewBox="0 0 80 120" xmlns="http://www.w3.org/2000/svg" style="display:block;">';
-  s+='<defs>';
-  s+='<linearGradient id="'+uid+'a" x1="0" y1="0" x2="0" y2="1">';
-  s+='<stop offset="0%" stop-color="#e879f9"/><stop offset="100%" stop-color="#7c3aed"/>';
-  s+='</linearGradient>';
-  s+='<linearGradient id="'+uid+'b" x1="0" y1="0" x2="1" y2="1">';
-  s+='<stop offset="0%" stop-color="#c084fc"/><stop offset="100%" stop-color="#6d28d9"/>';
-  s+='</linearGradient>';
-  s+='<filter id="'+uid+'glow" x="-30%" y="-30%" width="160%" height="160%">';
-  s+='<feGaussianBlur stdDeviation="2.5" result="blur"/>';
-  s+='<feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>';
-  s+='</filter>';
-  s+='</defs>';
-
-  var fa='url(#'+uid+'a)';
-  var fb='url(#'+uid+'b)';
-  var glow='filter="url(#'+uid+'glow)"';
-
-  // Helper: thick rounded limb segment (capsule shape via stroke)
-  function limb(x1,y1,x2,y2,w,col){
-    col=col||fa;
-    return '<line x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'" stroke="'+col+'" stroke-width="'+(w||7)+'" stroke-linecap="round"/>';
-  }
-  function circ(cx,cy,r,col){return '<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="'+(col||fa)+'" '+glow+'/>';}
-
-  // Glow halo around head
-  s+=circ(p[0],p[1],10.5,'rgba(196,130,255,0.18)');
-  // Shadow body outline (slightly offset, blurred)
-  s+='<g opacity="0.18" transform="translate(1.5,2)" filter="url(#'+uid+'glow)">';
-  s+=limb(p[0],p[1]+7,p[2],p[3],10,'#7c3aed');
-  s+=limb(p[4],p[5],p[6],p[7],7,'#7c3aed');
-  s+=limb(p[16],p[17],p[18],p[19],9,'#7c3aed');
-  s+=limb(p[16],p[17],p[20],p[21],9,'#7c3aed');s+=limb(p[20],p[21],p[24],p[25],7,'#7c3aed');
-  s+=limb(p[18],p[19],p[22],p[23],9,'#7c3aed');s+=limb(p[22],p[23],p[26],p[27],7,'#7c3aed');
-  s+='</g>';
-
-  // ── TORSO ──  (neck base → pelvis, thick)
-  s+=limb(p[0],p[1]+7, p[2],p[3], 9, fb);
-  // ── SHOULDER GIRDLE ──
-  s+=limb(p[4],p[5], p[6],p[7], 7, fb);
-  // ── ARMS ──
-  s+=limb(p[4],p[5], p[8],p[9], 7);   // L upper arm
-  s+=limb(p[8],p[9], p[12],p[13], 5.5); // L forearm
-  s+=limb(p[6],p[7], p[10],p[11], 7);  // R upper arm
-  s+=limb(p[10],p[11], p[14],p[15], 5.5); // R forearm
-  // ── HIP GIRDLE ──
-  s+=limb(p[16],p[17], p[18],p[19], 8, fb);
-  // ── LEGS ──
-  s+=limb(p[16],p[17], p[20],p[21], 9);  // L thigh
-  s+=limb(p[20],p[21], p[24],p[25], 7);  // L calf
-  s+=limb(p[18],p[19], p[22],p[23], 9);  // R thigh
-  s+=limb(p[22],p[23], p[26],p[27], 7);  // R calf
-
-  // ── JOINT DOTS (elbows & knees) ──
-  var joints=[[p[8],p[9]],[p[10],p[11]],[p[20],p[21]],[p[22],p[23]]];
-  joints.forEach(function(j){s+=circ(j[0],j[1],3.8,fb);});
-
-  // ── WRIST DOTS ──
-  s+=circ(p[12],p[13],2.8,'#e879f9');
-  s+=circ(p[14],p[15],2.8,'#e879f9');
-
-  // ── HEAD (filled circle, top layer) ──
-  s+=circ(p[0],p[1],7.5,fa);
-  // Face highlight
-  s+='<circle cx="'+(p[0]-2)+'" cy="'+(p[1]-2)+'" r="2.5" fill="rgba(255,255,255,0.25)"/>';
-
-  s+='</svg>';
-  return s;
-}
-// p = [headX,headY, pelvisX,pelvisY, lShX,lShY, rShX,rShY, lElX,lElY, rElX,rElY, lWrX,lWrY, rWrX,rWrY, lHipX,lHipY, rHipX,rHipY, lKnX,lKnY, rKnX,rKnY, lAnX,lAnY, rAnX,rAnY]
+/* ─── YOGA POSE IMAGES — Cloudinary PNG illustrations (alexcumplido/yoga-api) ─── */
+var YOGA_IMG={
+  'tadasana':'https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483094/yoga-api/41_veknug.png',
+  'vrikshasana':'https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483094/yoga-api/41_veknug.png',
+  'trikonasana':'https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483096/yoga-api/42_jawxqw.png',
+  'virabhadrasana1':'https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483096/yoga-api/44_dqeayo.png',
+  'virabhadrasana2':'https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483096/yoga-api/45_ehimr1.png',
+  'virabhadrasana3':'https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483097/yoga-api/46_lz6v7i.png',
+  'utkatasana':'https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483078/yoga-api/9_ewvoun.png',
+  'garudasana':'https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483081/yoga-api/16_g7ueht.png',
+  'parsvottanasana':'https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483089/yoga-api/28_uu58tt.png',
+  'ardha_chandrasana':'https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483085/yoga-api/21_etedlp.png',
+  'sukhasana':'https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483091/yoga-api/31_ozseum.png',
+  'padmasana':'https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483091/yoga-api/31_ozseum.png',
+  'dandasana':'https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483091/yoga-api/30_gumpl3.png',
+  'paschimottanasana':'https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483091/yoga-api/30_gumpl3.png',
+  'baddha_konasana':'https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483074/yoga-api/5_i64gif.png',
+  'ardha_matsyendrasana':'https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483091/yoga-api/32_hafoa0.png',
+  'janu_sirsasana':'https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483091/yoga-api/30_gumpl3.png',
+  'balasana':'https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483079/yoga-api/10_wzpo85.png',
+  'bhujangasana':'https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483092/yoga-api/35_dytwvz.png',
+  'adho_mukha':'https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483081/yoga-api/15_vkviqn.png',
+  'cat_cow':'https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483075/yoga-api/7_a6aspg.png',
+  'setu_bandha':'https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483074/yoga-api/4_qq6nxw.png',
+  'savasana':'https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483078/yoga-api/11_dczyrp.png',
+  'supta_baddha':'https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483074/yoga-api/5_i64gif.png',
+  'ananda_balasana':'https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483079/yoga-api/10_wzpo85.png',
+  'pawanmuktasana':'https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483078/yoga-api/11_dczyrp.png',
+  'bhujangasana2':'https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483096/yoga-api/43_m3nxjk.png',
+  'chakrasana':'https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483097/yoga-api/47_w2jsof.png',
+  'ustrasana':'https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483075/yoga-api/6_ri1w0e.png',
+  'dhanurasana':'https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483072/yoga-api/3_aa0fgk.png',
+  'matsyasana':'https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483092/yoga-api/35_dytwvz.png',
+  'shalabhasana':'https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483072/yoga-api/3_aa0fgk.png',
+  'navasana':'https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483071/yoga-api/1_txmirf.png',
+  'plank':'https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483088/yoga-api/26_mxkzlo.png',
+  'vasisthasana':'https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483093/yoga-api/34_qle5tp.png',
+  'sarvangasana':'https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483091/yoga-api/33_r7motl.png',
+  'halasana':'https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483088/yoga-api/27_m4yux9.png',
+  'bakasana':'https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483083/yoga-api/13_hdjxuz.png',
+  'sirsasana':'https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483085/yoga-api/22_ojzmr8.png',
+  'natarajasana':'https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483097/yoga-api/48_unoav6.png',
+  'eka_pada':'https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483092/yoga-api/36_a2z20a.png',
+  'virasana':'https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483091/yoga-api/31_ozseum.png',
+  'gomukhasana':'https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483077/yoga-api/8_wi10sn.png',
+  'marichyasana':'https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483091/yoga-api/32_hafoa0.png',
+  'upavista':'https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483083/yoga-api/18_aqufak.png',
+  'surya_namaskar':'https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483096/yoga-api/44_dqeayo.png',
+  'anjaneyasana':'https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483086/yoga-api/23_k2jccj.png',
+  'uttanasana':'https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483093/yoga-api/38_yb3thk.png',
+  'parsvakonasana':'https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483083/yoga-api/18_aqufak.png',
+  'purvottanasana':'https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483088/yoga-api/26_mxkzlo.png',
+  'prasarita_padottanasana':'https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483093/yoga-api/38_yb3thk.png',
+  'supta_padangusthasana':'https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483084/yoga-api/17_l9joyu.png',
+  'supta_virasana':'https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483078/yoga-api/11_dczyrp.png',
+  'yoga_nidra':'https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483078/yoga-api/11_dczyrp.png',
+  'chaturanga':'https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483088/yoga-api/26_mxkzlo.png',
+  'karnapidasana':'https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483088/yoga-api/27_m4yux9.png',
+  'pincha_mayurasana':'https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483084/yoga-api/19_jadqwc.png',
+  'astavakrasana':'https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483083/yoga-api/13_hdjxuz.png',
+  'tittibhasana':'https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483092/yoga-api/36_a2z20a.png',
+  'malasana':'https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483093/yoga-api/37_moh7ii.png'
+};
 
 /* ─── YOGA POSES DATA ─── */
 var YOGA_POSES=[
@@ -20373,7 +20362,8 @@ function renderYoga(){
     h+='<div class="yoga-grid">';
     poses.forEach(function(p){
       h+='<div class="yoga-card" onclick="yOpen(\''+p.id+'\',this)">';
-      h+='<div class="yoga-card-fig">'+yogaSVG(p.p)+'<span class="yoga-card-diff '+p.diff+'">'+p.diff+'</span></div>';
+      var imgUrl=YOGA_IMG[p.id]||'https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483094/yoga-api/41_veknug.png';
+      h+='<div class="yoga-card-fig"><img src="'+imgUrl+'" alt="'+p.english+'" loading="lazy" style="width:100%;height:100%;object-fit:contain;display:block;"><span class="yoga-card-diff '+p.diff+'">'+p.diff+'</span></div>';
       h+='<div class="yoga-card-body"><div class="yoga-card-name">'+p.name+'</div><div class="yoga-card-sanskrit">'+p.sanskrit+' · '+p.english+'</div><div class="yoga-card-benefit">'+p.main+'</div><div class="yoga-card-dur">⏱ '+p.dur+'</div></div>';
       h+='</div>';
     });
@@ -20402,7 +20392,8 @@ function _renderYogaDetail(p){
   if(!el)return;
   var h='<div class="yoga-detail open" style="background:var(--card2);border:1px solid rgba(124,58,237,.25);border-radius:14px;padding:22px;margin:0 20px 24px;">';
   h+='<div class="yoga-detail-top">';
-  h+='<div class="yoga-detail-fig" style="background:linear-gradient(160deg,#0f0a1a,#1a0a3a);border-radius:12px;padding:20px;flex-shrink:0;display:flex;align-items:center;justify-content:center;">'+yogaSVG(p.p)+'</div>';
+  var detImgUrl=YOGA_IMG[p.id]||'https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483094/yoga-api/41_veknug.png';
+  h+='<div class="yoga-detail-fig" style="background:linear-gradient(160deg,#0f0a1a,#1a0a3a);border-radius:12px;padding:12px;flex-shrink:0;display:flex;align-items:center;justify-content:center;"><img src="'+detImgUrl+'" alt="'+p.english+' pose demonstration" style="width:140px;height:160px;object-fit:contain;display:block;"></div>';
   h+='<div class="yoga-detail-info">';
   h+='<div class="yoga-detail-name">'+p.name+'</div>';
   h+='<div class="yoga-detail-sanskrit">'+p.sanskrit+'</div>';
