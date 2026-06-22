@@ -1733,6 +1733,27 @@ body.sb-open #screen-dashboard .dash-wrap{padding-top:calc(78px + env(safe-area-
 .br-rec-icon{font-size:22px;margin-bottom:8px;}
 .br-rec-title{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;margin-bottom:4px;}
 .br-rec-body{font-size:12px;color:var(--muted);line-height:1.6;}
+/* Compact Ayurvedic card (blood report + diet plan) */
+.bra-card{background:linear-gradient(135deg,rgba(22,163,74,.06),rgba(132,204,22,.04));border:1px solid rgba(22,163,74,.28);border-left:4px solid #16a34a;border-radius:12px;padding:16px;margin-bottom:12px;}
+.bra-hdr{display:flex;align-items:flex-start;gap:12px;margin-bottom:12px;}
+.bra-ic{font-size:26px;line-height:1;}
+.bra-hdr-txt{flex:1;min-width:0;}
+.bra-name{font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:700;color:var(--text);line-height:1.15;}
+.bra-skt{font-size:11px;font-style:italic;font-weight:400;color:#16a34a;}
+.bra-dosha{font-size:10px;letter-spacing:.5px;color:var(--muted);margin-top:2px;}
+.bra-sec-t{font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:#15803d;font-weight:700;margin:12px 0 6px;}
+.bra-herbs{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px;}
+.bra-herbs li{font-size:12px;color:var(--text);line-height:1.5;background:rgba(22,163,74,.05);border-radius:8px;padding:8px 10px;}
+.bra-latin{color:var(--muted);font-size:10px;}
+.bra-dose{color:#15803d;font-size:11px;font-weight:600;}
+.bra-form{font-size:11.5px;color:var(--muted);line-height:1.6;margin-top:10px;background:rgba(124,58,237,.05);border-radius:8px;padding:9px 11px;}
+.bra-form-l{display:block;font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--violet);font-weight:700;margin-bottom:3px;}
+.bra-pills{display:flex;flex-wrap:wrap;gap:6px;}
+.bra-pill{font-size:10.5px;border-radius:14px;padding:3px 10px;font-weight:600;}
+.bra-pill.do{background:rgba(22,163,74,.12);color:#15803d;border:1px solid rgba(22,163,74,.25);}
+.bra-pill.no{background:rgba(220,38,38,.1);color:#b91c1c;border:1px solid rgba(220,38,38,.22);}
+.bra-link{margin-top:14px;width:100%;background:linear-gradient(135deg,#16a34a,#15803d);color:#fff;border:none;border-radius:9px;padding:11px;font-size:11.5px;font-weight:700;letter-spacing:.4px;cursor:pointer;transition:opacity .18s;}
+.bra-link:hover{opacity:.88;}
 .br-manual-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:10px;margin:16px 0;}
 .br-inp-group label{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:4px;}
 .br-inp-group input{width:100%;background:rgba(124,58,237,.06);border:1px solid var(--border);border-radius:6px;padding:8px 10px;color:var(--text);font-size:14px;outline:none;}
@@ -4889,6 +4910,7 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
           <button class="ayur-dietplan-btn" onclick="openAyurvedaFromDiet()" id="ayur-dietplan-trigger" style="display:none">
             🌿 View Ayurvedic Remedies for Selected Conditions →
           </button>
+          <div id="ayur-diet-inline" style="display:none;margin-top:14px;"></div>
         </div>
         <div><label class="flbl">Protein Supplement</label>
           <div class="toggle2 rrow">
@@ -5823,8 +5845,22 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
       <div class="br-marker-grid" id="br-marker-grid"></div>
 
       <div style="margin-top:28px;">
-        <div class="stag" style="margin-bottom:14px;">Fitness & Nutrition Recommendations</div>
+        <div class="stag" style="margin-bottom:14px;">💪 Modern Approach — Fitness & Nutrition</div>
         <div id="br-recs"></div>
+      </div>
+
+      <!-- Ayurvedic approach — one card per issue, mapped to the Ayurveda Hub -->
+      <div id="br-ayur-section" style="margin-top:30px;display:none;">
+        <div class="stag" style="margin-bottom:6px;">🌿 Ayurvedic Approach — Natural Healing</div>
+        <p style="font-size:11.5px;color:var(--muted);line-height:1.6;margin-bottom:16px;">
+          Every issue above also has a science-backed Ayurvedic protocol below. You can follow the
+          <strong>modern approach</strong>, the <strong>Ayurvedic approach</strong>, or combine both — your choice.
+          Always consult your doctor before starting any new protocol.
+        </p>
+        <div id="br-ayur-cards"></div>
+        <div style="text-align:center;margin-top:16px;">
+          <button class="bfire" style="padding:12px 24px;" onclick="openAyurvedaFromBlood()">🌿 Open Full Ayurvedic Protocols in Ayurveda Hub →</button>
+        </div>
       </div>
 
       <div style="text-align:center;margin-top:28px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
@@ -11636,6 +11672,92 @@ const BLOOD_RECS = {
   all_ok:           { icon:'🏆', title:'Excellent Blood Health!', body:'All your markers are within healthy ranges. Maintain your current diet and training protocol. Schedule a comprehensive blood panel annually to track trends over time. Focus on optimizing sleep quality, recovery, and performance consistency. You\'re in great health — keep it up!' }
 };
 
+// Maps a blood recommendation key (markerId_status) → an AYUR_DB condition key.
+// Every entry below points to a real key in AYUR_DB so the "🌿 Ayurvedic Approach"
+// shown on each blood-report issue stays in sync with the Ayurveda Hub tab.
+const BLOOD_TO_AYUR = {
+  // CBC — anaemia family → Anemia (Pandu Roga)
+  hb_low:'anemia', rbc_low:'anemia', mcv_low:'anemia', mcv_high:'anemia', mch_low:'anemia',
+  // Immune markers → Low Immunity (Ojas Kshaya)
+  wbc_low:'low_immunity', neutrophils_low:'low_immunity',
+  // Metabolic — blood sugar → Diabetes (Madhumeha)
+  glucose_high:'diabetic', hba1c_high:'diabetic',
+  // Uric acid → Gout (Vatarakt)
+  uricacid_high:'uric_acid',
+  // Electrolytes / BP related
+  sodium_high:'hypertension', potassium_low:'heart_health',
+  // Bone minerals → Osteoporosis (Asthi Kshaya)
+  calcium_low:'osteoporosis',
+  // Magnesium (sleep/stress) → Anxiety (Chittodvega)
+  magnesium_low:'anxiety',
+  // Lipids → Cholesterol (Medoroga)
+  chol_high:'cholesterol', ldl_high:'cholesterol', hdl_low:'cholesterol', trig_high:'cholesterol',
+  // Liver enzymes → Liver Detox / Fatty Liver
+  alt_high:'liver_detox', ast_high:'liver_detox', ggt_high:'liver_detox', bilirubin_high:'liver_detox',
+  // Thyroid → Thyroid (Galaganda)
+  tsh_high:'thyroid', tsh_low:'thyroid', freet4_low:'thyroid', freet4_high:'thyroid',
+  // Male hormones → Low Testosterone (Shukra Kshaya)
+  testo_low:'low_t', freetesto_low:'low_t', shbg_high:'low_t', prolactin_high:'low_t', igf1_low:'muscle_building',
+  // Stress hormone → Anxiety
+  cortisol_high:'anxiety',
+  // Vitamins & minerals
+  vitd_low:'vitamin_d', b12_low:'anemia', folate_low:'anemia', iron_low:'anemia', ferritin_low:'anemia', zinc_low:'low_immunity',
+  // Inflammation
+  crp_high:'arthritis', homocysteine_high:'heart_health'
+};
+
+// Conditions mapped from the most recent blood analysis (used by openAyurvedaFromBlood)
+let ayurBloodSelected = new Set();
+
+// Compact Ayurvedic card used inside blood-report results and the diet plan.
+function _ayurMiniCardHTML(key) {
+  const d = AYUR_DB[key];
+  if (!d) return '';
+  const herbs = d.herbs.slice(0, 3).map(h =>
+    `<li><strong>${h.name}</strong> <span class="bra-latin"><em>${h.latin}</em></span><br><span class="bra-dose">💊 ${h.dose}</span></li>`
+  ).join('');
+  const eat = d.diet_do.slice(0, 6).map(i => `<span class="bra-pill do">${i}</span>`).join('');
+  const avoid = d.diet_avoid.slice(0, 5).map(i => `<span class="bra-pill no">${i}</span>`).join('');
+  return `<div class="bra-card">
+    <div class="bra-hdr">
+      <span class="bra-ic">${d.icon}</span>
+      <div class="bra-hdr-txt">
+        <div class="bra-name">${d.name} <span class="bra-skt">${d.sanskrit}</span></div>
+        <div class="bra-dosha">Dosha balance: ${d.dosha}</div>
+      </div>
+    </div>
+    <div class="bra-sec-t">🌿 Key Ayurvedic Herbs</div>
+    <ul class="bra-herbs">${herbs}</ul>
+    <div class="bra-form"><span class="bra-form-l">⚗️ Classical Formulation</span> ${d.formulation}</div>
+    <div class="bra-sec-t">🍽️ Diet Guidance</div>
+    <div class="bra-pills">${eat}${avoid}</div>
+    <button class="bra-link" onclick="openAyurvedaFromBlood('${key}')">📖 View full protocol — herbs · diet · lifestyle · yoga →</button>
+  </div>`;
+}
+
+// Navigate to the Ayurveda Hub with a given set of condition keys pre-selected.
+function gotoAyurvedaWith(keys) {
+  const valid = (keys || []).filter(k => AYUR_DB[k]);
+  ayurDietSelected = new Set(valid);
+  switchScreen('ayurveda', document.querySelector('[data-screen=ayurveda]'));
+  setTimeout(() => {
+    ayurSelected = new Set(valid);
+    document.querySelectorAll('.ayur-disease-card').forEach(c => {
+      if (ayurSelected.has(c.dataset.key)) c.classList.add('selected');
+      else c.classList.remove('selected');
+    });
+    updateAyurPanel();
+    scrollToAyurRemedies();
+  }, 300);
+}
+
+// Opens the Ayurveda Hub from a blood-report card. With a key → that one condition;
+// without → all conditions mapped from the latest blood analysis.
+function openAyurvedaFromBlood(key) {
+  if (key) gotoAyurvedaWith([key]);
+  else gotoAyurvedaWith([...ayurBloodSelected]);
+}
+
 function brSwitchTab(tab) {
   document.getElementById('br-panel-upload').style.display = tab === 'upload' ? '' : 'none';
   document.getElementById('br-panel-manual').style.display = tab === 'manual' ? '' : 'none';
@@ -11782,6 +11904,18 @@ function brShowResults(vals, gender) {
       <div class="br-rec-body">${r.body}</div>
     </div>`;
   }).join('');
+
+  // Build the matching Ayurvedic approach for each flagged issue
+  const ayurKeys = [];
+  recKeys.forEach(k => {
+    const aKey = BLOOD_TO_AYUR[k];
+    if (aKey && AYUR_DB[aKey] && !ayurKeys.includes(aKey)) ayurKeys.push(aKey);
+  });
+  ayurBloodSelected = new Set(ayurKeys);
+  const ayurSection = document.getElementById('br-ayur-section');
+  const ayurCards = document.getElementById('br-ayur-cards');
+  if (ayurCards) ayurCards.innerHTML = ayurKeys.map(_ayurMiniCardHTML).join('');
+  if (ayurSection) ayurSection.style.display = ayurKeys.length ? 'block' : 'none';
 
   document.getElementById('br-results').style.display = 'block';
   document.getElementById('br-results').scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -16615,38 +16749,42 @@ function quickPickAyur(key, silent) {
   if (!silent) updateAyurPanel();
 }
 
-/* Diet plan integration — show Ayurveda button when conditions selected */
+/* Diet plan integration — show Ayurveda button + inline remedies when conditions selected */
 function syncAyurDietBtn() {
   const checked = document.querySelectorAll('.hchk input:checked');
   const btn = document.getElementById('ayur-dietplan-trigger');
-  if (!btn) return;
-  if (checked.length > 0) {
-    btn.style.display = 'block';
-    btn.textContent = '🌿 View Ayurvedic Remedies for ' + checked.length + ' Selected Condition' + (checked.length > 1 ? 's' : '') + ' →';
-  } else {
-    btn.style.display = 'none';
+  const inline = document.getElementById('ayur-diet-inline');
+  // Collect valid AYUR_DB keys from the ticked health conditions (skip the salad toggle etc.)
+  const keys = [];
+  checked.forEach(inp => { if (inp.value && AYUR_DB[inp.value] && !keys.includes(inp.value)) keys.push(inp.value); });
+  if (btn) {
+    if (keys.length > 0) {
+      btn.style.display = 'block';
+      btn.textContent = '🌿 Open Full Ayurvedic Hub for ' + keys.length + ' Selected Condition' + (keys.length > 1 ? 's' : '') + ' →';
+    } else {
+      btn.style.display = 'none';
+    }
+  }
+  // Render inline Ayurvedic suggestion cards directly in the diet plan
+  if (inline) {
+    if (keys.length > 0) {
+      inline.innerHTML =
+        '<div class="stag" style="margin:4px 0 10px;">🌿 Ayurvedic Approach for Your Selected Conditions</div>' +
+        '<p style="font-size:11px;color:var(--muted);line-height:1.6;margin-bottom:12px;">Alongside your diet plan, here are matching Ayurvedic protocols. Use the diet approach, the Ayurvedic approach, or both.</p>' +
+        keys.map(_ayurMiniCardHTML).join('');
+      inline.style.display = 'block';
+    } else {
+      inline.innerHTML = '';
+      inline.style.display = 'none';
+    }
   }
 }
 
 function openAyurvedaFromDiet() {
   const checked = document.querySelectorAll('.hchk input:checked');
-  ayurDietSelected.clear();
-  checked.forEach(inp => {
-    const key = inp.value;
-    if (AYUR_DB[key]) ayurDietSelected.add(key);
-  });
-  // Navigate to Ayurveda Hub
-  switchScreen('ayurveda', document.querySelector('[data-screen=ayurveda]'));
-  // Pre-select those conditions
-  setTimeout(() => {
-    ayurSelected = new Set(ayurDietSelected);
-    document.querySelectorAll('.ayur-disease-card').forEach(c => {
-      if (ayurSelected.has(c.dataset.key)) c.classList.add('selected');
-      else c.classList.remove('selected');
-    });
-    updateAyurPanel();
-    scrollToAyurRemedies();
-  }, 300);
+  const keys = [];
+  checked.forEach(inp => { if (inp.value && AYUR_DB[inp.value] && !keys.includes(inp.value)) keys.push(inp.value); });
+  gotoAyurvedaWith(keys);
 }
 
 /* Hook into hchk change events for diet plan button */
