@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>RFC Story — Bold Red</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:ital,wght@0,700;0,800;0,900;1,900&family=Barlow:wght@500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:#111;display:flex;justify-content:center;}
+.story{
+  width:540px;min-height:960px;
+  background:#0a0a0a;
+  position:relative;overflow:hidden;
+  display:flex;flex-direction:column;
+}
+.story::before{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background:repeating-linear-gradient(45deg,rgba(255,255,255,.01) 0px,rgba(255,255,255,.01) 1px,transparent 1px,transparent 10px);
+}
+
+/* RED HERO BAND */
+.hero-band{
+  background:linear-gradient(140deg,#1a0000 0%,#e8001d 50%,#b8001a 100%);
+  padding:28px 32px 24px;
+  position:relative;overflow:hidden;flex-shrink:0;
+}
+.hero-band::after{
+  content:'RFC';position:absolute;right:-10px;top:-10px;
+  font-family:'Bebas Neue',sans-serif;font-size:160px;
+  color:rgba(0,0,0,.15);letter-spacing:-3px;line-height:1;pointer-events:none;
+}
+.hero-inner{position:relative;z-index:1;}
+.eyebrow{font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:rgba(255,255,255,.6);margin-bottom:8px;}
+.brand{font-family:'Bebas Neue',sans-serif;font-size:54px;letter-spacing:2px;color:#fff;line-height:.88;text-shadow:2px 4px 12px rgba(0,0,0,.4);margin-bottom:6px;}
+.tagline{font-family:'Bebas Neue',sans-serif;font-size:30px;letter-spacing:1px;color:#fff;line-height:.95;margin-bottom:10px;}
+.tagline .outlined{-webkit-text-stroke:1.5px #fff;color:transparent;}
+.hero-sub{font-size:11px;font-weight:600;letter-spacing:.3px;color:rgba(255,255,255,.8);text-transform:uppercase;line-height:1.6;font-family:'Barlow Condensed',sans-serif;}
+
+/* STATS */
+.stats{
+  background:#000;
+  display:grid;grid-template-columns:repeat(3,1fr);
+  border-bottom:3px solid #e8001d;
+  flex-shrink:0;position:relative;z-index:2;
+}
+.sc{padding:12px 8px;text-align:center;border-right:1px solid rgba(255,255,255,.05);}
+.sc:last-child{border-right:none;}
+.sv{font-family:'Bebas Neue',sans-serif;font-size:26px;color:#e8001d;line-height:1;}
+.sl{font-size:7.5px;letter-spacing:1.5px;color:rgba(255,255,255,.3);text-transform:uppercase;margin-top:2px;font-family:'Barlow Condensed',sans-serif;}
+
+/* BODY */
+.body{padding:16px 32px;flex:1;position:relative;z-index:1;}
+.sec-t{
+  font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:#e8001d;
+  margin-bottom:10px;display:flex;align-items:center;gap:8px;
+}
+.sec-t::after{content:'';flex:1;height:1px;background:rgba(232,0,29,.3);}
+
+.feat-list{display:flex;flex-direction:column;gap:6px;margin-bottom:16px;}
+.fi{
+  display:flex;align-items:flex-start;gap:10px;
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);
+  border-left:3px solid var(--a,#e8001d);padding:9px 12px;
+}
+.fi-icon{font-size:16px;flex-shrink:0;line-height:1.3;}
+.fi-name{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.3px;color:#fff;margin-bottom:2px;text-transform:uppercase;}
+.fi-desc{font-size:9.5px;color:rgba(255,255,255,.4);line-height:1.4;font-family:'Barlow',sans-serif;}
+
+/* LIBRARY BAR */
+.lib-bar{
+  display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:14px;
+}
+.lb{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);border-top:2px solid var(--la,#e8001d);padding:10px 12px;}
+.lb-num{font-family:'Bebas Neue',sans-serif;font-size:36px;color:var(--la,#e8001d);line-height:1;}
+.lb-name{font-size:11px;font-weight:700;color:#fff;text-transform:uppercase;font-family:'Barlow Condensed',sans-serif;letter-spacing:.5px;}
+.lb-sub{font-size:8.5px;color:rgba(255,255,255,.35);margin-top:2px;}
+
+/* PLANS */
+.plans-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-bottom:14px;}
+.pc{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);padding:9px 6px;text-align:center;}
+.pc.hot{background:rgba(232,0,29,.1);border-color:rgba(232,0,29,.4);}
+.pe{font-size:14px;margin-bottom:3px;}
+.pn{font-size:7px;letter-spacing:2px;color:rgba(255,255,255,.35);text-transform:uppercase;margin-bottom:3px;font-family:'Barlow Condensed',sans-serif;}
+.pp{font-family:'Bebas Neue',sans-serif;font-size:18px;color:#e8001d;line-height:1;}
+.pp sub{font-size:8px;color:rgba(255,255,255,.3);}
+.pp.free{color:rgba(255,255,255,.3);font-size:14px;}
+.pp.gold{color:#fbbf24;}
+
+/* AYUR */
+.ayur-bar{
+  background:rgba(22,163,74,.07);border:1px solid rgba(22,163,74,.2);
+  border-left:3px solid #16a34a;padding:10px 12px;
+  display:flex;align-items:center;gap:10px;margin-bottom:0;
+}
+.ayur-icon{font-size:22px;flex-shrink:0;}
+.at{font-size:11px;font-weight:700;color:#fff;text-transform:uppercase;font-family:'Barlow Condensed',sans-serif;letter-spacing:.3px;margin-bottom:2px;}
+.ad{font-size:8.5px;color:rgba(255,255,255,.4);line-height:1.4;}
+.an{font-family:'Bebas Neue',sans-serif;font-size:30px;color:#16a34a;margin-left:auto;flex-shrink:0;line-height:1;text-align:center;}
+.anl{font-size:7px;letter-spacing:1px;text-transform:uppercase;color:rgba(22,163,74,.6);text-align:center;font-family:'Barlow Condensed',sans-serif;}
+
+/* FOOTER */
+.footer{
+  background:#000;border-top:3px solid #e8001d;
+  padding:14px 32px 18px;
+  display:flex;align-items:center;gap:14px;
+  flex-shrink:0;position:relative;z-index:2;
+}
+.qr-box{background:#fff;padding:5px;flex-shrink:0;box-shadow:0 0 15px rgba(232,0,29,.25);}
+.qr-box img{width:72px;height:72px;display:block;}
+.qr-headline{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:1px;color:#fff;line-height:1;margin-bottom:3px;}
+.qr-headline em{color:#e8001d;font-style:normal;}
+.qr-sub{font-size:9.5px;color:rgba(255,255,255,.4);line-height:1.55;font-family:'Barlow',sans-serif;}
+.qr-url{margin-top:4px;font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#e8001d;font-family:'Barlow Condensed',sans-serif;}
+</style>
+</head>
+<body>
+<div class="story">
+  <div class="hero-band">
+    <div class="hero-inner">
+      <div class="eyebrow">India's #1 Fitness Ecosystem</div>
+      <div class="brand">ROYAL<br>FITNESS CLUB</div>
+      <div class="tagline">NO LIMITS.<br><span class="outlined">NO EXCUSES.</span><br>ONLY RESULTS.</div>
+      <div class="hero-sub">Meal Plans · Beast Score · Blood AI · Ayurveda<br>22 PDF Guides · 10 Courses · PRO Coaching</div>
+    </div>
+  </div>
+
+  <div class="stats">
+    <div class="sc"><div class="sv">3,100+</div><div class="sl">Members</div></div>
+    <div class="sc"><div class="sv">22+10</div><div class="sl">PDFs + Courses</div></div>
+    <div class="sc"><div class="sv">₹499</div><div class="sl">Pro/Month</div></div>
+  </div>
+
+  <div class="body">
+    <div class="sec-t">Core Features</div>
+    <div class="feat-list">
+      <div class="fi" style="--a:#e8001d;"><div class="fi-icon">🔥</div><div><div class="fi-name">Beast Score</div><div class="fi-desc">BMI · BMR · TDEE · Body Fat % · Macro targets · Score /100</div></div></div>
+      <div class="fi" style="--a:#fbbf24;"><div class="fi-icon">🥗</div><div><div class="fi-name">Smart Indian Meal Planner</div><div class="fi-desc">7-day desi meal plan · Veg & non-veg · 17 health conditions</div></div></div>
+      <div class="fi" style="--a:#e8001d;"><div class="fi-icon">🩸</div><div><div class="fi-name">Blood Report AI</div><div class="fi-desc">Upload PDF → smart recs + Ayurvedic protocols mapped per marker</div></div></div>
+      <div class="fi" style="--a:#4ade80;"><div class="fi-icon">🌿</div><div><div class="fi-name">Ayurveda Hub</div><div class="fi-desc">37 conditions · Herbs + doses · Dosha analysis · Yoga</div></div></div>
+      <div class="fi" style="--a:#60a5fa;"><div class="fi-icon">📊</div><div><div class="fi-name">12-Week Roadmap + Progress</div><div class="fi-desc">Week-by-week plan · Before/after photos · BF% charts</div></div></div>
+      <div class="fi" style="--a:#e8001d;"><div class="fi-icon">⚡</div><div><div class="fi-name">XP · Streaks · Leaderboard</div><div class="fi-desc">5 levels Rookie→Legend · Streak freeze · Global challenges</div></div></div>
+    </div>
+
+    <div class="lib-bar">
+      <div class="lb" style="--la:#e8001d;"><div class="lb-num">22</div><div class="lb-name">Expert PDFs</div><div class="lb-sub">From ₹199 · 73% bundle savings</div></div>
+      <div class="lb" style="--la:#fbbf24;"><div class="lb-num">10</div><div class="lb-name">RFC Courses</div><div class="lb-sub">₹499 each · RFC Certificate</div></div>
+    </div>
+
+    <div class="sec-t">Plans</div>
+    <div class="plans-grid">
+      <div class="pc"><div class="pe">🆓</div><div class="pn">Free</div><div class="pp free">₹0</div></div>
+      <div class="pc hot"><div class="pe">⚡</div><div class="pn">Royal Pro</div><div class="pp">₹499<sub>/mo</sub></div></div>
+      <div class="pc"><div class="pe">👑</div><div class="pn">Elite</div><div class="pp gold">₹1,999<sub>/mo</sub></div></div>
+    </div>
+
+    <div class="ayur-bar">
+      <div class="ayur-icon">🌿</div>
+      <div><div class="at">Full Ayurvedic Integration</div><div class="ad">Blood report → Ayurvedic protocols auto-mapped per marker</div></div>
+      <div><div class="an">37</div><div class="anl">Conditions</div></div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div class="qr-box"><img src="icons/qrcode.png" alt="QR"></div>
+    <div>
+      <div class="qr-headline">SCAN TO <em>JOIN FREE</em></div>
+      <div class="qr-sub">No credit card · Instant access<br>3,100+ members already transforming</div>
+      <div class="qr-url">royal-fitness-club-7adc1.web.app</div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

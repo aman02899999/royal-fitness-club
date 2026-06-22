@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>RFC Story — Original Dark</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:#0a0612;display:flex;justify-content:center;align-items:flex-start;}
+.story{
+  width:540px;min-height:960px;
+  background:linear-gradient(160deg,#0a0612 0%,#0f0820 50%,#0a0612 100%);
+  position:relative;overflow:hidden;
+  display:flex;flex-direction:column;
+}
+/* bg orbs */
+.orb{position:absolute;border-radius:50%;pointer-events:none;filter:blur(70px);}
+/* top accent */
+.top-bar{height:4px;background:linear-gradient(90deg,#e8001d,#7c3aed,#d4a840,#7c3aed,#e8001d);flex-shrink:0;}
+
+/* ── HERO BLOCK ── */
+.hero{
+  padding:32px 32px 24px;
+  position:relative;z-index:2;flex-shrink:0;
+}
+.eyebrow{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:10px;font-weight:700;letter-spacing:4px;text-transform:uppercase;
+  color:#7c3aed;margin-bottom:10px;
+  display:flex;align-items:center;gap:8px;
+}
+.eyebrow::before{content:'';width:20px;height:1.5px;background:#7c3aed;}
+.brand{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:52px;letter-spacing:2px;color:#fff;line-height:.9;
+  margin-bottom:6px;
+}
+.brand span{color:#7c3aed;}
+.tagline{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:36px;letter-spacing:1px;line-height:.95;color:#fff;
+  margin-bottom:12px;
+}
+.tagline em{color:#e8001d;font-style:normal;}
+.tagline b{color:#d4a840;}
+.hero-sub{
+  font-size:12px;color:rgba(255,255,255,.55);line-height:1.65;
+  border-left:2px solid #7c3aed;padding-left:10px;
+}
+.hero-sub strong{color:#fff;}
+
+/* ── STATS ROW ── */
+.stats{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  border-top:1px solid rgba(124,58,237,.2);
+  border-bottom:1px solid rgba(124,58,237,.2);
+  margin:0;flex-shrink:0;position:relative;z-index:2;
+}
+.sc{padding:14px 8px;text-align:center;border-right:1px solid rgba(124,58,237,.1);}
+.sc:last-child{border-right:none;}
+.sv{font-family:'Bebas Neue',sans-serif;font-size:32px;color:#7c3aed;line-height:1;}
+.sl{font-size:8px;letter-spacing:1.5px;color:rgba(255,255,255,.3);text-transform:uppercase;margin-top:2px;}
+
+/* ── FEATURES ── */
+.feats{padding:20px 32px;flex:1;position:relative;z-index:2;}
+.sec-t{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:9px;font-weight:700;letter-spacing:3px;text-transform:uppercase;
+  color:#7c3aed;margin-bottom:12px;
+  display:flex;align-items:center;gap:8px;
+}
+.sec-t::after{content:'';flex:1;height:1px;background:rgba(124,58,237,.25);}
+.feat-list{display:flex;flex-direction:column;gap:8px;}
+.fi{
+  display:flex;align-items:flex-start;gap:10px;
+  background:rgba(255,255,255,.03);
+  border:1px solid rgba(124,58,237,.12);
+  border-left:3px solid var(--a,#7c3aed);
+  border-radius:6px;padding:10px 12px;
+}
+.fi-icon{font-size:18px;flex-shrink:0;line-height:1.2;}
+.fi-text{}
+.fi-name{font-size:12px;font-weight:700;color:#fff;margin-bottom:2px;font-family:'Barlow Condensed',sans-serif;letter-spacing:.5px;}
+.fi-desc{font-size:9.5px;color:rgba(255,255,255,.45);line-height:1.4;}
+
+/* ── PLANS STRIP ── */
+.plans{padding:0 32px 16px;position:relative;z-index:2;flex-shrink:0;}
+.plans-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;}
+.pc{
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(124,58,237,.15);
+  border-radius:6px;padding:10px 8px;text-align:center;
+}
+.pc.hot{background:rgba(124,58,237,.12);border-color:rgba(124,58,237,.5);}
+.pe{font-size:16px;margin-bottom:3px;}
+.pn{font-size:7.5px;letter-spacing:2px;color:rgba(255,255,255,.4);text-transform:uppercase;margin-bottom:3px;}
+.pp{font-family:'Bebas Neue',sans-serif;font-size:20px;color:#7c3aed;line-height:1;}
+.pp sub{font-size:9px;color:rgba(255,255,255,.35);}
+.pp.free{color:rgba(255,255,255,.3);font-size:15px;}
+.pp.gold{color:#d4a840;}
+
+/* ── QR FOOTER ── */
+.footer{
+  border-top:1px solid rgba(124,58,237,.2);
+  padding:18px 32px 24px;
+  display:flex;align-items:center;gap:16px;
+  flex-shrink:0;position:relative;z-index:2;
+  background:rgba(0,0,0,.2);
+}
+.qr-box{
+  background:#fff;border-radius:8px;padding:6px;flex-shrink:0;
+  box-shadow:0 0 20px rgba(124,58,237,.25);
+}
+.qr-box img{width:78px;height:78px;display:block;}
+.qr-t{flex:1;}
+.qr-headline{
+  font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:1px;color:#fff;line-height:1;margin-bottom:4px;
+}
+.qr-headline span{color:#7c3aed;}
+.qr-sub{font-size:10px;color:rgba(255,255,255,.45);line-height:1.55;}
+.qr-url{margin-top:5px;font-size:9px;letter-spacing:1.5px;color:rgba(124,58,237,.7);font-family:'Barlow Condensed',sans-serif;font-weight:700;}
+.bottom-bar{height:3px;background:linear-gradient(90deg,#e8001d,#7c3aed,#d4a840);flex-shrink:0;}
+</style>
+</head>
+<body>
+<div class="story">
+  <div class="orb" style="width:350px;height:350px;top:-80px;right:-80px;background:radial-gradient(#7c3aed22,transparent 70%);"></div>
+  <div class="orb" style="width:280px;height:280px;bottom:150px;left:-80px;background:radial-gradient(#e8001d15,transparent 70%);"></div>
+  <div class="top-bar"></div>
+
+  <div class="hero">
+    <div class="eyebrow">India's #1 Fitness Ecosystem</div>
+    <div class="brand">ROYAL <span>FITNESS</span><br>CLUB</div>
+    <div class="tagline">
+      TRANSFORM YOUR BODY.<br>
+      <em>MASTER</em> THE SCIENCE.<br>
+      <b>OWN YOUR RESULTS.</b>
+    </div>
+    <div class="hero-sub">
+      Smart meal plans · Beast Score · Blood AI · Ayurveda Hub ·<br>
+      <strong>22 PDF Guides</strong> · <strong>10 Courses</strong> · PRO Coaching
+    </div>
+  </div>
+
+  <div class="stats">
+    <div class="sc"><div class="sv">3,100+</div><div class="sl">Members</div></div>
+    <div class="sc"><div class="sv">22</div><div class="sl">PDF Guides</div></div>
+    <div class="sc"><div class="sv">₹499</div><div class="sl">Pro/Month</div></div>
+  </div>
+
+  <div class="feats">
+    <div class="sec-t">What You Get</div>
+    <div class="feat-list">
+      <div class="fi" style="--a:#e8001d;"><div class="fi-icon">🔥</div><div class="fi-text"><div class="fi-name">Beast Score Calculator</div><div class="fi-desc">BMI · BMR · TDEE · Body Fat % · Macro targets · Fitness Score /100</div></div></div>
+      <div class="fi" style="--a:#7c3aed;"><div class="fi-icon">🥗</div><div class="fi-text"><div class="fi-name">Smart Indian Meal Planner</div><div class="fi-desc">7-day formula-based desi plan · Veg & non-veg · 17 health conditions</div></div></div>
+      <div class="fi" style="--a:#d4a840;"><div class="fi-icon">🩸</div><div class="fi-text"><div class="fi-name">Blood Report AI</div><div class="fi-desc">Upload blood test → smart recs + Ayurvedic protocols per marker</div></div></div>
+      <div class="fi" style="--a:#16a34a;"><div class="fi-icon">🌿</div><div class="fi-text"><div class="fi-name">Ayurveda Hub</div><div class="fi-desc">37 conditions · Classical herbs · Dosha analysis · Yoga protocols</div></div></div>
+      <div class="fi" style="--a:#0891b2;"><div class="fi-icon">📊</div><div class="fi-text"><div class="fi-name">12-Week Roadmap</div><div class="fi-desc">Personalised week-by-week: training phases · nutrition · recovery</div></div></div>
+      <div class="fi" style="--a:#e8001d;"><div class="fi-icon">⚡</div><div class="fi-text"><div class="fi-name">XP Gamification & Streaks</div><div class="fi-desc">5 levels Rookie→Legend · Streak freeze · Challenges · Leaderboard</div></div></div>
+    </div>
+  </div>
+
+  <div class="plans">
+    <div class="sec-t" style="margin-bottom:10px;">Membership Plans</div>
+    <div class="plans-grid">
+      <div class="pc"><div class="pe">🆓</div><div class="pn">Free</div><div class="pp free">₹0</div></div>
+      <div class="pc hot"><div class="pe">⚡</div><div class="pn">Royal Pro</div><div class="pp">₹499<sub>/mo</sub></div></div>
+      <div class="pc"><div class="pe">👑</div><div class="pn">Elite</div><div class="pp gold">₹1,999<sub>/mo</sub></div></div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div class="qr-box"><img src="icons/qrcode.png" alt="QR"></div>
+    <div class="qr-t">
+      <div class="qr-headline">SCAN TO <span>JOIN FREE</span></div>
+      <div class="qr-sub">No credit card · Instant access<br>3,100+ members transforming</div>
+      <div class="qr-url">royal-fitness-club-7adc1.web.app</div>
+    </div>
+  </div>
+  <div class="bottom-bar"></div>
+</div>
+</body>
+</html>
