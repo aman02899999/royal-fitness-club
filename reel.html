@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>RFC Promo Reel</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --red:#e8001d;--gold:#f59e0b;--purple:#7c3aed;--indigo:#4f46e5;
+  --green:#22c55e;--cyan:#06b6d4;--bg:#050508;--t:0s;
+  --bebas:'Bebas Neue',sans-serif;
+  --barlow:'Barlow Condensed',sans-serif;
+}
+html,body{width:1080px;height:1920px;overflow:hidden;background:var(--bg);}
+canvas-wrap{display:block;width:1080px;height:1920px;position:relative;overflow:hidden;}
+/* ── all animated elements share this setup ── */
+.A{animation-duration:20s;animation-fill-mode:both;animation-play-state:paused;animation-delay:var(--t);}
+
+/* ═══════════════════════════════════════════════
+   GLOBAL NOISE TEXTURE OVERLAY
+════════════════════════════════════════════════ */
+#noise{position:fixed;inset:0;z-index:999;pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  opacity:.5;}
+
+/* ═══════════════════════════════════════════════
+   SCENE LAYERS
+════════════════════════════════════════════════ */
+.scene{position:absolute;inset:0;overflow:hidden;}
+
+/* ────────────────────────────────────────────────
+   SCENE 1  ·  HERO LOGO  ·  0s – 2s
+──────────────────────────────────────────────── */
+#s1{background:radial-gradient(ellipse 120% 80% at 50% 40%,#1a0008 0%,var(--bg) 70%);}
+@keyframes s1bg{0%{opacity:1}9%{opacity:1}11%{opacity:0}100%{opacity:0}}
+#s1.A{animation-name:s1bg;animation-timing-function:ease-in-out;}
+
+/* Red orb top */
+#s1-orb1{position:absolute;width:700px;height:700px;border-radius:50%;
+  background:radial-gradient(circle,rgba(232,0,29,.55),transparent 70%);
+  top:-250px;left:190px;filter:blur(40px);}
+@keyframes s1o1{0%{opacity:0;transform:scale(.5)}3%{opacity:1;transform:scale(1)}9%{opacity:1}11%{opacity:0}100%{opacity:0}}
+#s1-orb1.A{animation-name:s1o1;animation-timing-function:ease-out;}
+
+/* Purple orb bottom */
+#s1-orb2{position:absolute;width:600px;height:600px;border-radius:50%;
+  background:radial-gradient(circle,rgba(124,58,237,.45),transparent 70%);
+  bottom:-200px;left:50px;filter:blur(50px);}
+@keyframes s1o2{0%{opacity:0}2%{opacity:1}9%{opacity:1}11%{opacity:0}100%{opacity:0}}
+#s1-orb2.A{animation-name:s1o2;animation-timing-function:ease-out;}
+
+/* Logo mark */
+#s1-logo{position:absolute;top:580px;left:50%;transform:translateX(-50%);
+  width:200px;height:200px;border-radius:50%;
+  background:linear-gradient(135deg,var(--red),#a00015);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--bebas);font-size:120px;color:#fff;
+  box-shadow:0 0 80px rgba(232,0,29,.7),0 0 160px rgba(232,0,29,.3);}
+@keyframes s1logo{0%{opacity:0;transform:translateX(-50%) scale(.3)}2%{opacity:1;transform:translateX(-50%) scale(1.08)}3%{transform:translateX(-50%) scale(1)}9%{opacity:1;transform:translateX(-50%) scale(1)}11%{opacity:0}100%{opacity:0}}
+#s1-logo.A{animation-name:s1logo;animation-timing-function:cubic-bezier(.175,.885,.32,1.275);}
+
+/* Main Title */
+#s1-title{position:absolute;top:820px;left:50%;transform:translateX(-50%);
+  font-family:var(--bebas);font-size:96px;color:#fff;white-space:nowrap;letter-spacing:6px;
+  text-align:center;text-shadow:0 0 40px rgba(232,0,29,.5);}
+@keyframes s1title{0%{opacity:0;transform:translateX(-50%) translateY(40px)}2.5%{opacity:1;transform:translateX(-50%) translateY(0)}9%{opacity:1}11%{opacity:0}100%{opacity:0}}
+#s1-title.A{animation-name:s1title;animation-timing-function:cubic-bezier(.175,.885,.32,1.275);}
+
+/* Red divider line */
+#s1-line{position:absolute;top:944px;left:50%;transform:translateX(-50%);
+  height:4px;background:linear-gradient(90deg,transparent,var(--red),transparent);}
+@keyframes s1line{0%{opacity:0;width:0}3%{opacity:1;width:0}4.5%{opacity:1;width:460px}9%{opacity:1;width:460px}11%{opacity:0}100%{opacity:0}}
+#s1-line.A{animation-name:s1line;animation-timing-function:ease-out;}
+
+/* Subtitle */
+#s1-sub{position:absolute;top:966px;left:50%;transform:translateX(-50%);
+  font-family:var(--bebas);font-size:38px;letter-spacing:12px;
+  color:rgba(255,255,255,.7);white-space:nowrap;text-align:center;}
+@keyframes s1sub{0%{opacity:0}4%{opacity:0}5%{opacity:1}9%{opacity:1}11%{opacity:0}100%{opacity:0}}
+#s1-sub.A{animation-name:s1sub;animation-timing-function:ease-out;}
+
+/* Pills row */
+#s1-pills{position:absolute;top:1050px;left:50%;transform:translateX(-50%);
+  display:flex;gap:16px;white-space:nowrap;}
+@keyframes s1pills{0%{opacity:0;transform:translateX(-50%) translateY(20px)}4.5%{opacity:0;transform:translateX(-50%) translateY(20px)}5.5%{opacity:1;transform:translateX(-50%) translateY(0)}9%{opacity:1}11%{opacity:0}100%{opacity:0}}
+#s1-pills.A{animation-name:s1pills;animation-timing-function:ease-out;}
+.s1pill{padding:10px 22px;border-radius:40px;font-family:var(--barlow);font-size:22px;font-weight:700;letter-spacing:2px;border:1.5px solid rgba(255,255,255,.25);color:rgba(255,255,255,.85);}
+
+/* Bottom tagline */
+#s1-tag{position:absolute;bottom:340px;left:50%;transform:translateX(-50%);
+  font-family:var(--barlow);font-size:28px;font-weight:600;letter-spacing:3px;
+  color:rgba(255,255,255,.45);white-space:nowrap;text-align:center;}
+@keyframes s1tag{0%{opacity:0}5%{opacity:0}6%{opacity:1}9%{opacity:1}11%{opacity:0}100%{opacity:0}}
+#s1-tag.A{animation-name:s1tag;}
+
+/* ────────────────────────────────────────────────
+   SCENE 2  ·  DASHBOARD / STATS  ·  2s – 4s
+──────────────────────────────────────────────── */
+@keyframes s2bg{0%{opacity:0}9%{opacity:0}11%{opacity:1}19%{opacity:1}21%{opacity:0}100%{opacity:0}}
+#s2.A{animation-name:s2bg;animation-timing-function:ease-in-out;}
+#s2{background:linear-gradient(180deg,#080810 0%,#0d0d1a 50%,#060608 100%);}
+
+#s2-grid{position:absolute;inset:0;opacity:.06;
+  background-image:linear-gradient(rgba(99,102,241,.8) 1px,transparent 1px),linear-gradient(90deg,rgba(99,102,241,.8) 1px,transparent 1px);
+  background-size:80px 80px;}
+@keyframes s2grid{0%{opacity:0}9%{opacity:0}10.5%{opacity:.06}19%{opacity:.06}21%{opacity:0}100%{opacity:0}}
+#s2-grid.A{animation-name:s2grid;}
+
+#s2-orb{position:absolute;width:900px;height:900px;border-radius:50%;top:300px;left:90px;
+  background:radial-gradient(circle,rgba(79,70,229,.22),transparent 70%);filter:blur(60px);}
+@keyframes s2orb{0%{opacity:0}9%{opacity:0}11%{opacity:1}19%{opacity:1}21%{opacity:0}100%{opacity:0}}
+#s2-orb.A{animation-name:s2orb;}
+
+#s2-eyebrow{position:absolute;top:340px;left:80px;
+  font-family:var(--barlow);font-size:24px;font-weight:700;letter-spacing:6px;
+  color:var(--indigo);text-transform:uppercase;}
+@keyframes s2eb{0%{opacity:0}9%{opacity:0}10.5%{opacity:0;transform:translateX(-30px)}11.5%{opacity:1;transform:translateX(0)}19%{opacity:1}21%{opacity:0}100%{opacity:0}}
+#s2-eyebrow.A{animation-name:s2eb;}
+
+#s2-h{position:absolute;top:390px;left:80px;right:80px;
+  font-family:var(--bebas);font-size:98px;line-height:.95;color:#fff;
+  text-shadow:0 0 60px rgba(79,70,229,.3);}
+@keyframes s2h{0%{opacity:0}9%{opacity:0}10.5%{opacity:0;transform:translateY(30px)}11.5%{opacity:1;transform:translateY(0)}19%{opacity:1}21%{opacity:0}100%{opacity:0}}
+#s2-h.A{animation-name:s2h;}
+
+/* 4 big stat cards */
+.s2card{position:absolute;border-radius:20px;padding:30px 28px;
+  background:linear-gradient(135deg,rgba(255,255,255,.05),rgba(255,255,255,.02));
+  border:1px solid rgba(255,255,255,.1);backdrop-filter:blur(10px);}
+.s2num{font-family:var(--bebas);font-size:80px;line-height:1;color:#fff;}
+.s2lbl{font-family:var(--barlow);font-size:22px;font-weight:600;letter-spacing:2px;color:rgba(255,255,255,.55);margin-top:4px;}
+
+#sc1{left:80px;top:680px;width:450px;}
+#sc1 .s2num{color:var(--red);}
+@keyframes sc1{0%{opacity:0}9%{opacity:0}11%{opacity:0;transform:translateY(40px)}12.5%{opacity:1;transform:translateY(0)}19%{opacity:1}21%{opacity:0}100%{opacity:0}}
+#sc1.A{animation-name:sc1;animation-timing-function:cubic-bezier(.175,.885,.32,1.275);}
+
+#sc2{right:80px;top:680px;width:450px;}
+#sc2 .s2num{color:var(--gold);}
+@keyframes sc2{0%{opacity:0}9.5%{opacity:0}11.5%{opacity:0;transform:translateY(40px)}13%{opacity:1;transform:translateY(0)}19%{opacity:1}21%{opacity:0}100%{opacity:0}}
+#sc2.A{animation-name:sc2;animation-timing-function:cubic-bezier(.175,.885,.32,1.275);}
+
+#sc3{left:80px;top:910px;width:450px;}
+#sc3 .s2num{color:var(--green);}
+@keyframes sc3{0%{opacity:0}10%{opacity:0}12%{opacity:0;transform:translateY(40px)}13.5%{opacity:1;transform:translateY(0)}19%{opacity:1}21%{opacity:0}100%{opacity:0}}
+#sc3.A{animation-name:sc3;animation-timing-function:cubic-bezier(.175,.885,.32,1.275);}
+
+#sc4{right:80px;top:910px;width:450px;}
+#sc4 .s2num{color:var(--purple);}
+@keyframes sc4{0%{opacity:0}10.5%{opacity:0}12.5%{opacity:0;transform:translateY(40px)}14%{opacity:1;transform:translateY(0)}19%{opacity:1}21%{opacity:0}100%{opacity:0}}
+#sc4.A{animation-name:sc4;animation-timing-function:cubic-bezier(.175,.885,.32,1.275);}
+
+/* Feature row */
+#s2-feats{position:absolute;top:1150px;left:80px;right:80px;display:flex;flex-direction:column;gap:14px;}
+@keyframes s2feats{0%{opacity:0}12.5%{opacity:0;transform:translateY(20px)}14%{opacity:1;transform:translateY(0)}19%{opacity:1}21%{opacity:0}100%{opacity:0}}
+#s2-feats.A{animation-name:s2feats;}
+.s2feat{display:flex;align-items:center;gap:16px;
+  font-family:var(--barlow);font-size:30px;font-weight:600;color:rgba(255,255,255,.75);letter-spacing:1px;}
+.s2feat-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+
+/* ────────────────────────────────────────────────
+   SCENE 3  ·  TRAINING + NUTRITION  ·  4s – 5.5s
+──────────────────────────────────────────────── */
+@keyframes s3bg{0%{opacity:0}19%{opacity:0}21%{opacity:1}27%{opacity:1}28.5%{opacity:0}100%{opacity:0}}
+#s3.A{animation-name:s3bg;animation-timing-function:ease-in-out;}
+#s3{background:var(--bg);}
+
+#s3-left{position:absolute;left:0;top:0;bottom:0;width:540px;
+  background:linear-gradient(180deg,#1a0004 0%,#2d0008 100%);}
+#s3-right{position:absolute;right:0;top:0;bottom:0;width:540px;
+  background:linear-gradient(180deg,#001a07 0%,#002d0f 100%);}
+@keyframes s3sides{0%{opacity:0}19%{opacity:0}21%{opacity:1}27%{opacity:1}28.5%{opacity:0}100%{opacity:0}}
+#s3-left.A,#s3-right.A{animation-name:s3sides;}
+
+#s3-divider{position:absolute;left:537px;top:0;bottom:0;width:6px;
+  background:linear-gradient(180deg,transparent,rgba(255,255,255,.15),transparent);}
+@keyframes s3div{0%{opacity:0}19%{opacity:0}21%{opacity:1}27%{opacity:1}28.5%{opacity:0}100%{opacity:0}}
+#s3-divider.A{animation-name:s3div;}
+
+/* Left panel - Workouts */
+#s3-lico{position:absolute;left:100px;top:360px;font-size:110px;}
+#s3-lh{position:absolute;left:60px;top:510px;right:0;
+  font-family:var(--bebas);font-size:74px;line-height:.95;color:var(--red);letter-spacing:2px;}
+#s3-lsub{position:absolute;left:60px;top:680px;right:0;
+  font-family:var(--barlow);font-size:28px;font-weight:600;color:rgba(255,255,255,.7);line-height:1.5;}
+#s3-lfeats{position:absolute;left:60px;top:820px;
+  font-family:var(--barlow);font-size:24px;font-weight:600;color:rgba(255,255,255,.6);
+  line-height:1.9;letter-spacing:.5px;}
+
+@keyframes s3lp{0%{opacity:0}19.5%{opacity:0;transform:translateX(-30px)}21%{opacity:1;transform:translateX(0)}27%{opacity:1}28.5%{opacity:0}100%{opacity:0}}
+#s3-lico.A,#s3-lh.A,#s3-lsub.A,#s3-lfeats.A{animation-name:s3lp;animation-timing-function:ease-out;}
+
+/* Right panel - Nutrition */
+#s3-rico{position:absolute;left:602px;top:360px;font-size:110px;}
+#s3-rh{position:absolute;left:568px;top:510px;right:30px;
+  font-family:var(--bebas);font-size:74px;line-height:.95;color:var(--green);letter-spacing:2px;}
+#s3-rsub{position:absolute;left:568px;top:680px;right:30px;
+  font-family:var(--barlow);font-size:28px;font-weight:600;color:rgba(255,255,255,.7);line-height:1.5;}
+#s3-rfeats{position:absolute;left:568px;top:820px;
+  font-family:var(--barlow);font-size:24px;font-weight:600;color:rgba(255,255,255,.6);
+  line-height:1.9;letter-spacing:.5px;}
+
+@keyframes s3rp{0%{opacity:0}20%{opacity:0;transform:translateX(30px)}21.5%{opacity:1;transform:translateX(0)}27%{opacity:1}28.5%{opacity:0}100%{opacity:0}}
+#s3-rico.A,#s3-rh.A,#s3-rsub.A,#s3-rfeats.A{animation-name:s3rp;animation-timing-function:ease-out;}
+
+/* PRO badge */
+#s3-pro{position:absolute;bottom:360px;left:50%;transform:translateX(-50%);
+  padding:16px 48px;border-radius:50px;
+  background:linear-gradient(135deg,var(--purple),#9333ea);
+  font-family:var(--bebas);font-size:34px;letter-spacing:4px;color:#fff;
+  box-shadow:0 0 40px rgba(124,58,237,.5);white-space:nowrap;}
+@keyframes s3pro{0%{opacity:0}21.5%{opacity:0;transform:translateX(-50%) scale(.8)}23%{opacity:1;transform:translateX(-50%) scale(1)}27%{opacity:1}28.5%{opacity:0}100%{opacity:0}}
+#s3-pro.A{animation-name:s3pro;animation-timing-function:cubic-bezier(.175,.885,.32,1.275);}
+
+/* ────────────────────────────────────────────────
+   SCENE 4  ·  YOGA LIBRARY  ·  5.5s – 7s
+──────────────────────────────────────────────── */
+@keyframes s4bg{0%{opacity:0}27%{opacity:0}28.5%{opacity:1}34.5%{opacity:1}36%{opacity:0}100%{opacity:0}}
+#s4.A{animation-name:s4bg;animation-timing-function:ease-in-out;}
+#s4{background:linear-gradient(180deg,#0d0520 0%,#1a0a3a 40%,#0a0318 100%);}
+
+#s4-orb{position:absolute;width:800px;height:800px;border-radius:50%;top:200px;left:140px;
+  background:radial-gradient(circle,rgba(168,85,247,.28),transparent 70%);filter:blur(50px);}
+@keyframes s4orb{0%{opacity:0}27%{opacity:0}28.5%{opacity:1}34.5%{opacity:1}36%{opacity:0}100%{opacity:0}}
+#s4-orb.A{animation-name:s4orb;}
+
+#s4-eyebrow{position:absolute;top:220px;left:80px;
+  font-family:var(--barlow);font-size:26px;font-weight:700;letter-spacing:8px;
+  color:rgba(168,85,247,.9);text-transform:uppercase;}
+@keyframes s4eb{0%{opacity:0}27.5%{opacity:0;transform:translateX(-20px)}29%{opacity:1;transform:translateX(0)}34.5%{opacity:1}36%{opacity:0}100%{opacity:0}}
+#s4-eyebrow.A{animation-name:s4eb;}
+
+#s4-h{position:absolute;top:265px;left:80px;right:80px;
+  font-family:var(--bebas);font-size:120px;line-height:.9;
+  background:linear-gradient(135deg,#e879f9,var(--purple),#818cf8);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+@keyframes s4h{0%{opacity:0}27.5%{opacity:0;transform:translateY(30px)}29%{opacity:1;transform:translateY(0)}34.5%{opacity:1}36%{opacity:0}100%{opacity:0}}
+#s4-h.A{animation-name:s4h;animation-timing-function:ease-out;}
+
+/* Pose image grid: 3×3 */
+#s4-grid{position:absolute;top:520px;left:60px;right:60px;
+  display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+@keyframes s4grid{0%{opacity:0}28.5%{opacity:0;transform:scale(.9)}30%{opacity:1;transform:scale(1)}34.5%{opacity:1}36%{opacity:0}100%{opacity:0}}
+#s4-grid.A{animation-name:s4grid;animation-timing-function:cubic-bezier(.175,.885,.32,1.275);}
+
+.s4img{aspect-ratio:1;border-radius:16px;overflow:hidden;
+  background:linear-gradient(160deg,#1a0a3a,#0d0520);
+  border:1.5px solid rgba(168,85,247,.3);
+  display:flex;align-items:center;justify-content:center;}
+.s4img img{width:100%;height:100%;object-fit:contain;padding:8px;}
+
+#s4-badge{position:absolute;top:1250px;left:80px;
+  font-family:var(--bebas);font-size:52px;letter-spacing:3px;
+  color:rgba(255,255,255,.9);}
+@keyframes s4badge{0%{opacity:0}30%{opacity:0}31%{opacity:1}34.5%{opacity:1}36%{opacity:0}100%{opacity:0}}
+#s4-badge.A{animation-name:s4badge;}
+
+#s4-levels{position:absolute;top:1320px;left:80px;display:flex;gap:12px;}
+@keyframes s4lvl{0%{opacity:0}30.5%{opacity:0;transform:translateY(15px)}32%{opacity:1;transform:translateY(0)}34.5%{opacity:1}36%{opacity:0}100%{opacity:0}}
+#s4-levels.A{animation-name:s4lvl;}
+.s4lv{padding:10px 28px;border-radius:30px;font-family:var(--barlow);font-size:22px;font-weight:700;letter-spacing:2px;}
+
+/* ────────────────────────────────────────────────
+   SCENE 5  ·  MEDITATION  ·  7s – 8.5s
+──────────────────────────────────────────────── */
+@keyframes s5bg{0%{opacity:0}34.5%{opacity:0}36%{opacity:1}42%{opacity:1}43.5%{opacity:0}100%{opacity:0}}
+#s5.A{animation-name:s5bg;animation-timing-function:ease-in-out;}
+#s5{background:linear-gradient(180deg,#080618 0%,#0e0d30 50%,#06050f 100%);}
+
+#s5-orb{position:absolute;width:700px;height:700px;border-radius:50%;top:280px;left:190px;
+  background:radial-gradient(circle,rgba(99,102,241,.32),transparent 65%);filter:blur(50px);}
+@keyframes s5orb{0%{opacity:0}34.5%{opacity:0}36%{opacity:1}42%{opacity:1}43.5%{opacity:0}100%{opacity:0}}
+#s5-orb.A{animation-name:s5orb;}
+
+#s5-h{position:absolute;top:240px;left:80px;right:80px;
+  font-family:var(--bebas);font-size:106px;line-height:.9;
+  background:linear-gradient(135deg,#818cf8,var(--indigo),#a5b4fc);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+@keyframes s5h{0%{opacity:0}34.5%{opacity:0;transform:translateY(30px)}36%{opacity:1;transform:translateY(0)}42%{opacity:1}43.5%{opacity:0}100%{opacity:0}}
+#s5-h.A{animation-name:s5h;animation-timing-function:ease-out;}
+
+/* Lotus image center */
+#s5-img{position:absolute;top:480px;left:50%;transform:translateX(-50%);
+  width:300px;height:300px;border-radius:50%;
+  border:3px solid rgba(99,102,241,.4);overflow:hidden;
+  background:linear-gradient(160deg,#0d0a1e,#1a0a3a);
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 0 80px rgba(99,102,241,.35),0 0 160px rgba(99,102,241,.15);}
+#s5-img img{width:100%;height:100%;object-fit:contain;padding:16px;}
+@keyframes s5img{0%{opacity:0}35%{opacity:0;transform:translateX(-50%) scale(.7)}36.5%{opacity:1;transform:translateX(-50%) scale(1)}42%{opacity:1}43.5%{opacity:0}100%{opacity:0}}
+#s5-img.A{animation-name:s5img;animation-timing-function:cubic-bezier(.175,.885,.32,1.275);}
+
+/* Floating rings around lotus */
+.s5ring{position:absolute;border-radius:50%;border:1.5px solid rgba(99,102,241,.2);left:50%;transform:translateX(-50%);}
+#sr1{width:400px;height:400px;top:430px;}
+#sr2{width:500px;height:500px;top:380px;}
+#sr3{width:600px;height:600px;top:330px;}
+@keyframes s5rings{0%{opacity:0}35%{opacity:0}37%{opacity:1}42%{opacity:1}43.5%{opacity:0}100%{opacity:0}}
+.s5ring.A{animation-name:s5rings;}
+
+/* Stats row */
+#s5-stats{position:absolute;top:820px;left:60px;right:60px;
+  display:flex;justify-content:space-between;}
+@keyframes s5stats{0%{opacity:0}36.5%{opacity:0;transform:translateY(25px)}38%{opacity:1;transform:translateY(0)}42%{opacity:1}43.5%{opacity:0}100%{opacity:0}}
+#s5-stats.A{animation-name:s5stats;animation-timing-function:ease-out;}
+.s5stat{text-align:center;}
+.s5statnum{font-family:var(--bebas);font-size:70px;color:#818cf8;}
+.s5statlbl{font-family:var(--barlow);font-size:20px;font-weight:600;letter-spacing:3px;color:rgba(255,255,255,.5);}
+
+/* Features */
+#s5-feats{position:absolute;top:1020px;left:80px;right:80px;}
+@keyframes s5feats{0%{opacity:0}37.5%{opacity:0}39%{opacity:1}42%{opacity:1}43.5%{opacity:0}100%{opacity:0}}
+#s5-feats.A{animation-name:s5feats;}
+.s5feat{font-family:var(--barlow);font-size:28px;font-weight:600;color:rgba(255,255,255,.7);
+  padding:12px 0;border-bottom:1px solid rgba(99,102,241,.15);letter-spacing:1px;}
+.s5feat span{color:#818cf8;}
+
+/* ────────────────────────────────────────────────
+   SCENE 6  ·  PDF STORE  ·  8.5s – 10s
+──────────────────────────────────────────────── */
+@keyframes s6bg{0%{opacity:0}42%{opacity:0}43.5%{opacity:1}49.5%{opacity:1}51%{opacity:0}100%{opacity:0}}
+#s6.A{animation-name:s6bg;animation-timing-function:ease-in-out;}
+#s6{background:linear-gradient(180deg,#0f0a02 0%,#1a1204 50%,#070501 100%);}
+
+#s6-orb{position:absolute;width:800px;height:600px;border-radius:50%;top:100px;left:140px;
+  background:radial-gradient(circle,rgba(245,158,11,.18),transparent 70%);filter:blur(60px);}
+@keyframes s6orb{0%{opacity:0}42%{opacity:0}43.5%{opacity:1}49.5%{opacity:1}51%{opacity:0}100%{opacity:0}}
+#s6-orb.A{animation-name:s6orb;}
+
+#s6-h{position:absolute;top:230px;left:80px;right:80px;
+  font-family:var(--bebas);font-size:116px;line-height:.9;
+  background:linear-gradient(135deg,#fcd34d,var(--gold),#f59e0b);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+@keyframes s6h{0%{opacity:0}42.5%{opacity:0;transform:translateY(30px)}44%{opacity:1;transform:translateY(0)}49.5%{opacity:1}51%{opacity:0}100%{opacity:0}}
+#s6-h.A{animation-name:s6h;animation-timing-function:ease-out;}
+
+#s6-sub{position:absolute;top:490px;left:80px;
+  font-family:var(--barlow);font-size:36px;font-weight:600;letter-spacing:2px;color:rgba(255,255,255,.55);}
+@keyframes s6sub{0%{opacity:0}43%{opacity:0}44.5%{opacity:1}49.5%{opacity:1}51%{opacity:0}100%{opacity:0}}
+#s6-sub.A{animation-name:s6sub;}
+
+/* Book covers grid */
+#s6-books{position:absolute;top:570px;left:60px;right:60px;
+  display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+@keyframes s6books{0%{opacity:0}43.5%{opacity:0;transform:translateY(30px) scale(.92)}45%{opacity:1;transform:translateY(0) scale(1)}49.5%{opacity:1}51%{opacity:0}100%{opacity:0}}
+#s6-books.A{animation-name:s6books;animation-timing-function:cubic-bezier(.175,.885,.32,1.275);}
+
+.s6book{border-radius:10px;aspect-ratio:3/4;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:10px 6px;text-align:center;position:relative;overflow:hidden;
+  border:1px solid rgba(255,255,255,.08);}
+.s6book-title{font-family:var(--barlow);font-size:15px;font-weight:800;letter-spacing:1px;color:#fff;line-height:1.2;position:relative;z-index:1;}
+.s6book-tag{font-family:var(--barlow);font-size:11px;font-weight:700;letter-spacing:1px;color:rgba(255,255,255,.6);position:relative;z-index:1;margin-top:4px;}
+.s6book::before{content:'PDF';position:absolute;top:8px;right:8px;
+  background:rgba(255,255,255,.15);border-radius:4px;
+  font-family:var(--barlow);font-size:10px;font-weight:700;color:#fff;padding:2px 6px;letter-spacing:1px;}
+
+/* Price badge */
+#s6-price{position:absolute;top:1240px;left:80px;
+  display:flex;align-items:baseline;gap:16px;}
+@keyframes s6price{0%{opacity:0}44.5%{opacity:0;transform:translateX(-20px)}46%{opacity:1;transform:translateX(0)}49.5%{opacity:1}51%{opacity:0}100%{opacity:0}}
+#s6-price.A{animation-name:s6price;}
+#s6-price-big{font-family:var(--bebas);font-size:100px;color:var(--gold);line-height:1;}
+#s6-price-lbl{font-family:var(--barlow);font-size:28px;font-weight:600;color:rgba(255,255,255,.5);letter-spacing:2px;}
+
+#s6-dl{position:absolute;top:1360px;left:80px;right:80px;
+  background:linear-gradient(135deg,rgba(245,158,11,.15),rgba(245,158,11,.05));
+  border:1.5px solid rgba(245,158,11,.3);border-radius:16px;
+  padding:20px 30px;font-family:var(--barlow);font-size:26px;font-weight:600;
+  color:rgba(255,255,255,.7);letter-spacing:1px;text-align:center;}
+@keyframes s6dl{0%{opacity:0}45%{opacity:0}46.5%{opacity:1}49.5%{opacity:1}51%{opacity:0}100%{opacity:0}}
+#s6-dl.A{animation-name:s6dl;}
+
+/* ────────────────────────────────────────────────
+   SCENE 7  ·  BLOOD AI + PREMIUM TOOLS  ·  10s – 11.5s
+──────────────────────────────────────────────── */
+@keyframes s7bg{0%{opacity:0}49.5%{opacity:0}51%{opacity:1}57%{opacity:1}58.5%{opacity:0}100%{opacity:0}}
+#s7.A{animation-name:s7bg;animation-timing-function:ease-in-out;}
+#s7{background:linear-gradient(180deg,#150002 0%,#230006 50%,#0d0001 100%);}
+
+#s7-orb{position:absolute;width:900px;height:700px;border-radius:50%;top:200px;left:90px;
+  background:radial-gradient(circle,rgba(232,0,29,.25),transparent 70%);filter:blur(60px);}
+@keyframes s7orb{0%{opacity:0}49.5%{opacity:0}51%{opacity:1}57%{opacity:1}58.5%{opacity:0}100%{opacity:0}}
+#s7-orb.A{animation-name:s7orb;}
+
+#s7-badge{position:absolute;top:230px;left:80px;
+  display:inline-flex;align-items:center;gap:10px;
+  background:rgba(232,0,29,.15);border:1px solid rgba(232,0,29,.3);border-radius:30px;
+  padding:10px 24px;font-family:var(--barlow);font-size:22px;font-weight:700;
+  letter-spacing:3px;color:var(--red);text-transform:uppercase;}
+@keyframes s7badge{0%{opacity:0}50%{opacity:0;transform:translateX(-20px)}51.5%{opacity:1;transform:translateX(0)}57%{opacity:1}58.5%{opacity:0}100%{opacity:0}}
+#s7-badge.A{animation-name:s7badge;}
+
+#s7-h{position:absolute;top:310px;left:80px;right:80px;
+  font-family:var(--bebas);font-size:100px;line-height:.92;
+  color:#fff;text-shadow:0 0 60px rgba(232,0,29,.4);}
+@keyframes s7h{0%{opacity:0}50%{opacity:0;transform:translateY(25px)}51.5%{opacity:1;transform:translateY(0)}57%{opacity:1}58.5%{opacity:0}100%{opacity:0}}
+#s7-h.A{animation-name:s7h;animation-timing-function:ease-out;}
+
+/* Premium feature cards */
+#s7-cards{position:absolute;top:620px;left:60px;right:60px;
+  display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+@keyframes s7cards{0%{opacity:0}51.5%{opacity:0;transform:scale(.92)}53%{opacity:1;transform:scale(1)}57%{opacity:1}58.5%{opacity:0}100%{opacity:0}}
+#s7-cards.A{animation-name:s7cards;animation-timing-function:cubic-bezier(.175,.885,.32,1.275);}
+
+.s7card{border-radius:18px;padding:26px 22px;
+  background:linear-gradient(135deg,rgba(255,255,255,.06),rgba(255,255,255,.02));
+  border:1px solid rgba(255,255,255,.1);}
+.s7card-icon{font-size:48px;margin-bottom:10px;}
+.s7card-title{font-family:var(--barlow);font-size:28px;font-weight:800;letter-spacing:1px;color:#fff;margin-bottom:6px;}
+.s7card-desc{font-family:var(--barlow);font-size:20px;font-weight:500;color:rgba(255,255,255,.5);line-height:1.4;}
+
+/* ────────────────────────────────────────────────
+   SCENE 8  ·  COURSES  ·  11.5s – 13s
+──────────────────────────────────────────────── */
+@keyframes s8bg{0%{opacity:0}57%{opacity:0}58.5%{opacity:1}64.5%{opacity:1}66%{opacity:0}100%{opacity:0}}
+#s8.A{animation-name:s8bg;animation-timing-function:ease-in-out;}
+#s8{background:linear-gradient(180deg,#020a15 0%,#050f1e 50%,#020810 100%);}
+
+#s8-orb{position:absolute;width:800px;height:700px;border-radius:50%;top:150px;left:140px;
+  background:radial-gradient(circle,rgba(6,182,212,.2),transparent 70%);filter:blur(60px);}
+@keyframes s8orb{0%{opacity:0}57%{opacity:0}58.5%{opacity:1}64.5%{opacity:1}66%{opacity:0}100%{opacity:0}}
+#s8-orb.A{animation-name:s8orb;}
+
+#s8-h{position:absolute;top:230px;left:80px;right:80px;
+  font-family:var(--bebas);font-size:110px;line-height:.9;
+  background:linear-gradient(135deg,#38bdf8,var(--cyan),#0ea5e9);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+@keyframes s8h{0%{opacity:0}57.5%{opacity:0;transform:translateY(25px)}59%{opacity:1;transform:translateY(0)}64.5%{opacity:1}66%{opacity:0}100%{opacity:0}}
+#s8-h.A{animation-name:s8h;animation-timing-function:ease-out;}
+
+#s8-sub{position:absolute;top:470px;left:80px;right:80px;
+  font-family:var(--barlow);font-size:30px;font-weight:600;letter-spacing:2px;color:rgba(255,255,255,.55);}
+@keyframes s8sub{0%{opacity:0}58%{opacity:0}59.5%{opacity:1}64.5%{opacity:1}66%{opacity:0}100%{opacity:0}}
+#s8-sub.A{animation-name:s8sub;}
+
+/* Course row */
+#s8-courses{position:absolute;top:550px;left:60px;right:60px;
+  display:flex;flex-direction:column;gap:14px;}
+@keyframes s8courses{0%{opacity:0}59%{opacity:0;transform:translateX(-25px)}60.5%{opacity:1;transform:translateX(0)}64.5%{opacity:1}66%{opacity:0}100%{opacity:0}}
+#s8-courses.A{animation-name:s8courses;}
+
+.s8course{display:flex;align-items:center;gap:18px;
+  background:linear-gradient(135deg,rgba(255,255,255,.05),rgba(255,255,255,.02));
+  border:1px solid rgba(6,182,212,.15);border-radius:14px;padding:16px 20px;}
+.s8course-num{font-family:var(--bebas);font-size:36px;color:var(--cyan);width:42px;flex-shrink:0;}
+.s8course-title{font-family:var(--barlow);font-size:24px;font-weight:700;color:#fff;letter-spacing:.5px;}
+.s8course-tag{margin-left:auto;padding:6px 14px;border-radius:20px;
+  background:rgba(6,182,212,.12);border:1px solid rgba(6,182,212,.25);
+  font-family:var(--barlow);font-size:16px;font-weight:700;color:var(--cyan);letter-spacing:1px;white-space:nowrap;}
+
+/* ────────────────────────────────────────────────
+   SCENE 9  ·  AYURVEDA + PHYSIO + ARENA  ·  13s – 14.5s
+──────────────────────────────────────────────── */
+@keyframes s9bg{0%{opacity:0}64.5%{opacity:0}66%{opacity:1}72%{opacity:1}73.5%{opacity:0}100%{opacity:0}}
+#s9.A{animation-name:s9bg;animation-timing-function:ease-in-out;}
+#s9{background:linear-gradient(180deg,#040f06 0%,#081408 50%,#030b04 100%);}
+
+#s9-orb{position:absolute;width:700px;height:700px;border-radius:50%;top:200px;left:190px;
+  background:radial-gradient(circle,rgba(34,197,94,.22),transparent 70%);filter:blur(50px);}
+@keyframes s9orb{0%{opacity:0}64.5%{opacity:0}66%{opacity:1}72%{opacity:1}73.5%{opacity:0}100%{opacity:0}}
+#s9-orb.A{animation-name:s9orb;}
+
+#s9-h{position:absolute;top:230px;left:80px;right:80px;
+  font-family:var(--bebas);font-size:104px;line-height:.9;
+  background:linear-gradient(135deg,#86efac,var(--green),#4ade80);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+@keyframes s9h{0%{opacity:0}65%{opacity:0;transform:translateY(25px)}66.5%{opacity:1;transform:translateY(0)}72%{opacity:1}73.5%{opacity:0}100%{opacity:0}}
+#s9-h.A{animation-name:s9h;animation-timing-function:ease-out;}
+
+#s9-features{position:absolute;top:500px;left:60px;right:60px;
+  display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+@keyframes s9feats{0%{opacity:0}66%{opacity:0;transform:scale(.92)}67.5%{opacity:1;transform:scale(1)}72%{opacity:1}73.5%{opacity:0}100%{opacity:0}}
+#s9-features.A{animation-name:s9feats;animation-timing-function:cubic-bezier(.175,.885,.32,1.275);}
+.s9feat{border-radius:18px;padding:30px 24px;
+  background:linear-gradient(135deg,rgba(34,197,94,.08),rgba(34,197,94,.02));
+  border:1px solid rgba(34,197,94,.15);}
+.s9feat-icon{font-size:50px;margin-bottom:12px;}
+.s9feat-title{font-family:var(--barlow);font-size:28px;font-weight:800;color:#fff;letter-spacing:1px;margin-bottom:6px;}
+.s9feat-desc{font-family:var(--barlow);font-size:21px;font-weight:500;color:rgba(255,255,255,.5);line-height:1.4;}
+
+/* ────────────────────────────────────────────────
+   SCENE 10  ·  COMMUNITY  ·  14.5s – 16s
+──────────────────────────────────────────────── */
+@keyframes s10bg{0%{opacity:0}72%{opacity:0}73.5%{opacity:1}79.5%{opacity:1}81%{opacity:0}100%{opacity:0}}
+#s10.A{animation-name:s10bg;animation-timing-function:ease-in-out;}
+#s10{background:linear-gradient(180deg,#100800 0%,#1a0d00 50%,#0a0600 100%);}
+
+#s10-orb{position:absolute;width:800px;height:700px;border-radius:50%;top:150px;left:140px;
+  background:radial-gradient(circle,rgba(245,158,11,.22),transparent 70%);filter:blur(60px);}
+@keyframes s10orb{0%{opacity:0}72%{opacity:0}73.5%{opacity:1}79.5%{opacity:1}81%{opacity:0}100%{opacity:0}}
+#s10-orb.A{animation-name:s10orb;}
+
+#s10-h{position:absolute;top:240px;left:80px;right:80px;
+  font-family:var(--bebas);font-size:100px;line-height:.9;
+  background:linear-gradient(135deg,#fde68a,var(--gold),#f59e0b);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+@keyframes s10h{0%{opacity:0}72.5%{opacity:0;transform:translateY(25px)}74%{opacity:1;transform:translateY(0)}79.5%{opacity:1}81%{opacity:0}100%{opacity:0}}
+#s10-h.A{animation-name:s10h;animation-timing-function:ease-out;}
+
+#s10-count{position:absolute;top:500px;left:80px;
+  font-family:var(--bebas);font-size:140px;line-height:1;color:var(--gold);
+  text-shadow:0 0 80px rgba(245,158,11,.5);}
+@keyframes s10count{0%{opacity:0}73%{opacity:0;transform:scale(.7)}75%{opacity:1;transform:scale(1)}79.5%{opacity:1}81%{opacity:0}100%{opacity:0}}
+#s10-count.A{animation-name:s10count;animation-timing-function:cubic-bezier(.175,.885,.32,1.275);}
+
+#s10-members{position:absolute;top:660px;left:80px;
+  font-family:var(--barlow);font-size:36px;font-weight:700;letter-spacing:4px;color:rgba(255,255,255,.55);}
+@keyframes s10members{0%{opacity:0}74%{opacity:0}75.5%{opacity:1}79.5%{opacity:1}81%{opacity:0}100%{opacity:0}}
+#s10-members.A{animation-name:s10members;}
+
+#s10-cols{position:absolute;top:740px;left:60px;right:60px;
+  display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+@keyframes s10cols{0%{opacity:0}75%{opacity:0;transform:translateY(25px)}76.5%{opacity:1;transform:translateY(0)}79.5%{opacity:1}81%{opacity:0}100%{opacity:0}}
+#s10-cols.A{animation-name:s10cols;animation-timing-function:ease-out;}
+.s10col{border-radius:16px;padding:24px 22px;
+  background:linear-gradient(135deg,rgba(245,158,11,.08),rgba(245,158,11,.02));
+  border:1px solid rgba(245,158,11,.18);}
+.s10col-num{font-family:var(--bebas);font-size:60px;color:var(--gold);}
+.s10col-lbl{font-family:var(--barlow);font-size:22px;font-weight:600;letter-spacing:2px;color:rgba(255,255,255,.5);}
+
+/* ────────────────────────────────────────────────
+   SCENE 11  ·  PRO PRICING  ·  16s – 18s
+──────────────────────────────────────────────── */
+@keyframes s11bg{0%{opacity:0}79.5%{opacity:0}81%{opacity:1}89.5%{opacity:1}91%{opacity:0}100%{opacity:0}}
+#s11.A{animation-name:s11bg;animation-timing-function:ease-in-out;}
+#s11{background:linear-gradient(180deg,#08050f 0%,#100820 50%,#060410 100%);}
+
+#s11-orb{position:absolute;width:900px;height:700px;border-radius:50%;top:200px;left:90px;
+  background:radial-gradient(circle,rgba(124,58,237,.25),transparent 70%);filter:blur(60px);}
+@keyframes s11orb{0%{opacity:0}79.5%{opacity:0}81%{opacity:1}89.5%{opacity:1}91%{opacity:0}100%{opacity:0}}
+#s11-orb.A{animation-name:s11orb;}
+
+#s11-badge{position:absolute;top:230px;left:80px;
+  display:inline-flex;align-items:center;gap:12px;
+  background:linear-gradient(135deg,var(--purple),#9333ea);
+  border-radius:30px;padding:12px 30px;
+  font-family:var(--bebas);font-size:30px;letter-spacing:4px;color:#fff;
+  box-shadow:0 0 40px rgba(124,58,237,.4);}
+@keyframes s11badge{0%{opacity:0}80%{opacity:0;transform:translateX(-20px)}81.5%{opacity:1;transform:translateX(0)}89.5%{opacity:1}91%{opacity:0}100%{opacity:0}}
+#s11-badge.A{animation-name:s11badge;}
+
+#s11-price{position:absolute;top:310px;left:80px;
+  display:flex;align-items:baseline;gap:10px;}
+@keyframes s11price{0%{opacity:0}80.5%{opacity:0;transform:translateY(30px)}82%{opacity:1;transform:translateY(0)}89.5%{opacity:1}91%{opacity:0}100%{opacity:0}}
+#s11-price.A{animation-name:s11price;animation-timing-function:cubic-bezier(.175,.885,.32,1.275);}
+#s11-rupee{font-family:var(--bebas);font-size:60px;color:var(--purple);}
+#s11-amt{font-family:var(--bebas);font-size:160px;line-height:.85;
+  background:linear-gradient(135deg,#c084fc,var(--purple),#818cf8);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+#s11-permonth{font-family:var(--barlow);font-size:30px;font-weight:600;letter-spacing:2px;color:rgba(255,255,255,.45);}
+
+/* Feature checklist */
+#s11-list{position:absolute;top:680px;left:80px;right:80px;
+  display:grid;grid-template-columns:1fr 1fr;gap:12px 20px;}
+@keyframes s11list{0%{opacity:0}82%{opacity:0;transform:translateY(20px)}83.5%{opacity:1;transform:translateY(0)}89.5%{opacity:1}91%{opacity:0}100%{opacity:0}}
+#s11-list.A{animation-name:s11list;animation-timing-function:ease-out;}
+.s11item{display:flex;align-items:center;gap:12px;
+  font-family:var(--barlow);font-size:24px;font-weight:600;color:rgba(255,255,255,.7);}
+.s11check{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--purple),#9333ea);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  font-size:14px;color:#fff;}
+
+/* CTA button */
+#s11-cta{position:absolute;top:1220px;left:80px;right:80px;
+  background:linear-gradient(135deg,var(--purple),#9333ea,#7c3aed);
+  border-radius:20px;padding:32px;text-align:center;
+  box-shadow:0 0 60px rgba(124,58,237,.4);}
+#s11-cta-title{font-family:var(--bebas);font-size:52px;letter-spacing:4px;color:#fff;}
+#s11-cta-sub{font-family:var(--barlow);font-size:24px;font-weight:600;letter-spacing:2px;color:rgba(255,255,255,.65);margin-top:6px;}
+@keyframes s11cta{0%{opacity:0}84%{opacity:0;transform:scale(.92)}85.5%{opacity:1;transform:scale(1)}89.5%{opacity:1}91%{opacity:0}100%{opacity:0}}
+#s11-cta.A{animation-name:s11cta;animation-timing-function:cubic-bezier(.175,.885,.32,1.275);}
+
+/* ────────────────────────────────────────────────
+   SCENE 12  ·  OUTRO CTA  ·  18s – 20s
+──────────────────────────────────────────────── */
+@keyframes s12bg{0%{opacity:0}89.5%{opacity:0}91%{opacity:1}100%{opacity:1}}
+#s12.A{animation-name:s12bg;animation-timing-function:ease-in-out;}
+#s12{background:radial-gradient(ellipse 120% 100% at 50% 50%,#180005 0%,#050508 60%);}
+
+#s12-orb1{position:absolute;width:800px;height:800px;border-radius:50%;
+  background:radial-gradient(circle,rgba(232,0,29,.4),transparent 70%);
+  top:-200px;left:140px;filter:blur(60px);}
+#s12-orb2{position:absolute;width:600px;height:600px;border-radius:50%;
+  background:radial-gradient(circle,rgba(124,58,237,.35),transparent 70%);
+  bottom:-100px;left:240px;filter:blur(60px);}
+@keyframes s12orbs{0%{opacity:0}89.5%{opacity:0}91%{opacity:1}100%{opacity:1}}
+#s12-orb1.A,#s12-orb2.A{animation-name:s12orbs;}
+
+/* Glow ring */
+#s12-ring{position:absolute;width:420px;height:420px;border-radius:50%;
+  top:560px;left:330px;
+  border:3px solid rgba(232,0,29,.3);
+  box-shadow:0 0 120px rgba(232,0,29,.3),inset 0 0 80px rgba(232,0,29,.1);}
+@keyframes s12ring{0%{opacity:0}90%{opacity:0;transform:scale(.7)}92%{opacity:1;transform:scale(1)}100%{opacity:1}}
+#s12-ring.A{animation-name:s12ring;animation-timing-function:cubic-bezier(.175,.885,.32,1.275);}
+
+/* Logo mark */
+#s12-logo{position:absolute;top:640px;left:50%;transform:translateX(-50%);
+  width:260px;height:260px;border-radius:50%;
+  background:linear-gradient(135deg,var(--red),#a00015);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--bebas);font-size:150px;color:#fff;
+  box-shadow:0 0 100px rgba(232,0,29,.7),0 0 200px rgba(232,0,29,.2);}
+@keyframes s12logo{0%{opacity:0}90.5%{opacity:0;transform:translateX(-50%) scale(.5)}92.5%{opacity:1;transform:translateX(-50%) scale(1)}100%{opacity:1}}
+#s12-logo.A{animation-name:s12logo;animation-timing-function:cubic-bezier(.175,.885,.32,1.275);}
+
+#s12-title{position:absolute;top:940px;left:50%;transform:translateX(-50%);
+  font-family:var(--bebas);font-size:88px;letter-spacing:6px;color:#fff;
+  white-space:nowrap;text-shadow:0 0 40px rgba(232,0,29,.4);}
+@keyframes s12title{0%{opacity:0}91.5%{opacity:0;transform:translateX(-50%) translateY(30px)}93%{opacity:1;transform:translateX(-50%) translateY(0)}100%{opacity:1}}
+#s12-title.A{animation-name:s12title;animation-timing-function:ease-out;}
+
+#s12-line{position:absolute;top:1060px;left:50%;transform:translateX(-50%);
+  height:3px;background:linear-gradient(90deg,transparent,var(--red),transparent);}
+@keyframes s12line{0%{opacity:0;width:0}91%{opacity:0;width:0}93%{opacity:1;width:0}95%{opacity:1;width:500px}100%{opacity:1;width:500px}}
+#s12-line.A{animation-name:s12line;animation-timing-function:ease-out;}
+
+#s12-url{position:absolute;top:1086px;left:50%;transform:translateX(-50%);
+  font-family:var(--barlow);font-size:36px;font-weight:600;letter-spacing:4px;
+  color:rgba(255,255,255,.6);white-space:nowrap;}
+@keyframes s12url{0%{opacity:0}92.5%{opacity:0}94%{opacity:1}100%{opacity:1}}
+#s12-url.A{animation-name:s12url;}
+
+#s12-free{position:absolute;top:1160px;left:50%;transform:translateX(-50%);
+  font-family:var(--barlow);font-size:26px;font-weight:700;letter-spacing:3px;
+  color:rgba(255,255,255,.35);white-space:nowrap;}
+@keyframes s12free{0%{opacity:0}93%{opacity:0}94.5%{opacity:1}100%{opacity:1}}
+#s12-free.A{animation-name:s12free;}
+
+/* Bottom pill buttons */
+#s12-pills{position:absolute;bottom:520px;left:50%;transform:translateX(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:16px;width:800px;}
+@keyframes s12pills{0%{opacity:0}93.5%{opacity:0;transform:translateX(-50%) translateY(30px)}95%{opacity:1;transform:translateX(-50%) translateY(0)}100%{opacity:1}}
+#s12-pills.A{animation-name:s12pills;animation-timing-function:ease-out;}
+#s12-free-btn{width:100%;padding:28px;border-radius:16px;text-align:center;
+  background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.15);
+  font-family:var(--bebas);font-size:40px;letter-spacing:4px;color:rgba(255,255,255,.7);}
+#s12-pro-btn{width:100%;padding:28px;border-radius:16px;text-align:center;
+  background:linear-gradient(135deg,var(--red),#a00015);
+  box-shadow:0 0 50px rgba(232,0,29,.4);
+  font-family:var(--bebas);font-size:42px;letter-spacing:4px;color:#fff;}
+</style>
+</head>
+<body>
+
+<div id="noise"></div>
+
+<!-- SCENE 1 — HERO -->
+<div class="scene A" id="s1">
+  <div id="s1-orb1" class="A"></div>
+  <div id="s1-orb2" class="A"></div>
+  <div id="s1-logo" class="A">R</div>
+  <div id="s1-title" class="A">ROYAL FITNESS CLUB</div>
+  <div id="s1-line" class="A"></div>
+  <div id="s1-sub" class="A">THE ULTIMATE FITNESS ECOSYSTEM</div>
+  <div id="s1-pills" class="A">
+    <div class="s1pill" style="background:rgba(232,0,29,.12);border-color:rgba(232,0,29,.3);color:#ff6b6b;">🏋️ Training</div>
+    <div class="s1pill" style="background:rgba(34,197,94,.12);border-color:rgba(34,197,94,.3);color:#86efac;">🥗 Nutrition</div>
+    <div class="s1pill" style="background:rgba(124,58,237,.12);border-color:rgba(124,58,237,.3);color:#c4b5fd;">🧘 Mindfulness</div>
+    <div class="s1pill" style="background:rgba(245,158,11,.12);border-color:rgba(245,158,11,.3);color:#fde68a;">🏆 Community</div>
+  </div>
+  <div id="s1-tag" class="A">YOUR COMPLETE HEALTH OS — ALL IN ONE APP</div>
+</div>
+
+<!-- SCENE 2 — STATS -->
+<div class="scene A" id="s2">
+  <div id="s2-grid" class="A"></div>
+  <div id="s2-orb" class="A"></div>
+  <div id="s2-eyebrow" class="A">EVERYTHING YOU NEED</div>
+  <div id="s2-h" class="A">YOUR COMPLETE<br>FITNESS OS</div>
+  <div class="s2card A" id="sc1"><div class="s2num">50K+</div><div class="s2lbl">ACTIVE MEMBERS</div></div>
+  <div class="s2card A" id="sc2"><div class="s2num">24</div><div class="s2lbl">EXPERT PDF GUIDES</div></div>
+  <div class="s2card A" id="sc3"><div class="s2num">10</div><div class="s2lbl">PRO COURSES</div></div>
+  <div class="s2card A" id="sc4"><div class="s2num">50+</div><div class="s2lbl">YOGA POSES</div></div>
+  <div id="s2-feats" class="A">
+    <div class="s2feat"><div class="s2feat-dot" style="background:#e8001d;"></div>AI-Powered Blood Report Analyser</div>
+    <div class="s2feat"><div class="s2feat-dot" style="background:#22c55e;"></div>Anabolic Ayurveda Hub — Ancient + Modern Science</div>
+    <div class="s2feat"><div class="s2feat-dot" style="background:#7c3aed;"></div>Yoga Library + Meditation Science Hub</div>
+    <div class="s2feat"><div class="s2feat-dot" style="background:#f59e0b;"></div>Live Challenges + Global Leaderboard</div>
+  </div>
+</div>
+
+<!-- SCENE 3 — TRAINING + NUTRITION -->
+<div class="scene A" id="s3">
+  <div id="s3-left" class="A"></div>
+  <div id="s3-right" class="A"></div>
+  <div id="s3-divider" class="A"></div>
+  <div id="s3-lico" class="A">🏋️</div>
+  <div id="s3-lh" class="A">SMART<br>WORKOUTS</div>
+  <div id="s3-lsub" class="A">AI-powered training<br>plans for every goal</div>
+  <div id="s3-lfeats" class="A">
+    ✓ Custom Programs<br>
+    ✓ Video Guides<br>
+    ✓ Progress Tracking<br>
+    ✓ Beast Score™<br>
+    ✓ Physio Rehab
+  </div>
+  <div id="s3-rico" class="A">🥗</div>
+  <div id="s3-rh" class="A">SMART<br>NUTRITION</div>
+  <div id="s3-rsub" class="A">Macro-precise Indian<br>meal plans built for you</div>
+  <div id="s3-rfeats" class="A">
+    ✓ Calorie Calculator<br>
+    ✓ Indian Food DB<br>
+    ✓ Bulking & Cutting<br>
+    ✓ Supplement Stack<br>
+    ✓ Keto / Veg Plans
+  </div>
+  <div id="s3-pro" class="A">✦ PRO FEATURES UNLOCKED</div>
+</div>
+
+<!-- SCENE 4 — YOGA -->
+<div class="scene A" id="s4">
+  <div id="s4-orb" class="A"></div>
+  <div id="s4-eyebrow" class="A">PRO EXCLUSIVE</div>
+  <div id="s4-h" class="A">YOGA<br>LIBRARY</div>
+  <div id="s4-grid" class="A">
+    <div class="s4img"><img src="https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483096/yoga-api/44_dqeayo.png" alt="Warrior I"></div>
+    <div class="s4img"><img src="https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483096/yoga-api/42_jawxqw.png" alt="Triangle"></div>
+    <div class="s4img"><img src="https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483097/yoga-api/47_w2jsof.png" alt="Wheel"></div>
+    <div class="s4img"><img src="https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483083/yoga-api/13_hdjxuz.png" alt="Crow"></div>
+    <div class="s4img"><img src="https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483091/yoga-api/31_ozseum.png" alt="Lotus"></div>
+    <div class="s4img"><img src="https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483081/yoga-api/15_vkviqn.png" alt="Downward Dog"></div>
+    <div class="s4img"><img src="https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483094/yoga-api/41_veknug.png" alt="Tree"></div>
+    <div class="s4img"><img src="https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483081/yoga-api/16_g7ueht.png" alt="Eagle"></div>
+    <div class="s4img"><img src="https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483096/yoga-api/45_ehimr1.png" alt="Warrior II"></div>
+  </div>
+  <div id="s4-badge" class="A">50+ POSES · BENEFITS · STEP-BY-STEP</div>
+  <div id="s4-levels" class="A">
+    <div class="s4lv" style="background:rgba(74,222,128,.12);border:1px solid rgba(74,222,128,.3);color:#4ade80;">🟢 BEGINNER</div>
+    <div class="s4lv" style="background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.3);color:#fbbf24;">🟡 INTERMEDIATE</div>
+    <div class="s4lv" style="background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.3);color:#f87171;">🔴 ADVANCED</div>
+  </div>
+</div>
+
+<!-- SCENE 5 — MEDITATION -->
+<div class="scene A" id="s5">
+  <div id="s5-orb" class="A"></div>
+  <div class="s5ring A" id="sr1"></div>
+  <div class="s5ring A" id="sr2"></div>
+  <div class="s5ring A" id="sr3"></div>
+  <div id="s5-h" class="A">MEDITATION<br>SCIENCE HUB</div>
+  <div id="s5-img" class="A">
+    <img src="https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483091/yoga-api/31_ozseum.png" alt="Lotus">
+  </div>
+  <div id="s5-stats" class="A">
+    <div class="s5stat"><div class="s5statnum">9</div><div class="s5statlbl">STAGES</div></div>
+    <div class="s5stat"><div class="s5statnum">8</div><div class="s5statlbl">TRADITIONS</div></div>
+    <div class="s5stat"><div class="s5statnum">600+</div><div class="s5statlbl">STUDIES</div></div>
+  </div>
+  <div id="s5-feats" class="A">
+    <div class="s5feat">🧠 <span>Neuroscience-backed</span> meditation science</div>
+    <div class="s5feat">💨 <span>6 Pranayama</span> breathing techniques with timer</div>
+    <div class="s5feat">🗺️ Beginner → <span>Master roadmap</span> with milestones</div>
+    <div class="s5feat">🌙 Yoga Nidra · Vipassana · <span>TM · Zazen</span></div>
+  </div>
+</div>
+
+<!-- SCENE 6 — PDF STORE -->
+<div class="scene A" id="s6">
+  <div id="s6-orb" class="A"></div>
+  <div id="s6-h" class="A">24 EXPERT<br>GUIDES</div>
+  <div id="s6-sub" class="A">INSTANT DOWNLOAD · LIFETIME ACCESS</div>
+  <div id="s6-books" class="A">
+    <div class="s6book" style="background:linear-gradient(145deg,#7f1d1d,#dc2626);"><div class="s6book-title">ADVANCED CUTTING CYCLE</div><div class="s6book-tag">12-WEEK PROTOCOL</div></div>
+    <div class="s6book" style="background:linear-gradient(145deg,#1e1b4b,#7c3aed);"><div class="s6book-title">ANABOLIC MASTERY</div><div class="s6book-tag">ELITE EDITION</div></div>
+    <div class="s6book" style="background:linear-gradient(145deg,#052e16,#16a34a);"><div class="s6book-title">INDIAN NUTRITION BIBLE</div><div class="s6book-tag">BODYBUILDER ED.</div></div>
+    <div class="s6book" style="background:linear-gradient(145deg,#500724,#be185d);"><div class="s6book-title">FEMALE BODY TRANSFORM</div><div class="s6book-tag">HORMONE-SAFE</div></div>
+    <div class="s6book" style="background:linear-gradient(145deg,#0f0b35,#4338ca);"><div class="s6book-title">SARMs SCIENTIFIC HANDBOOK</div><div class="s6book-tag">RESEARCH ED.</div></div>
+    <div class="s6book" style="background:linear-gradient(145deg,#422006,#f59e0b);"><div class="s6book-title">TRT HORMONE GUIDE</div><div class="s6book-tag">OPTIMIZATION</div></div>
+    <div class="s6book" style="background:linear-gradient(145deg,#0d0520,#7c3aed);"><div class="s6book-title">YOGA COMPLETE GUIDE</div><div class="s6book-tag">50+ POSES</div></div>
+    <div class="s6book" style="background:linear-gradient(145deg,#08061c,#4f46e5);"><div class="s6book-title">MEDITATION SCIENCE GUIDE</div><div class="s6book-tag">9 STAGES</div></div>
+  </div>
+  <div id="s6-price" class="A">
+    <div id="s6-price-big">₹199</div>
+    <div id="s6-price-lbl">STARTING FROM</div>
+  </div>
+  <div id="s6-dl" class="A">📥 Download instantly after purchase · Works on all devices</div>
+</div>
+
+<!-- SCENE 7 — AI + PREMIUM TOOLS -->
+<div class="scene A" id="s7">
+  <div id="s7-orb" class="A"></div>
+  <div id="s7-badge" class="A">🔬 AI-POWERED</div>
+  <div id="s7-h" class="A">PREMIUM<br>TOOLS &amp;<br>FEATURES</div>
+  <div id="s7-cards" class="A">
+    <div class="s7card">
+      <div class="s7card-icon">🩸</div>
+      <div class="s7card-title">BLOOD AI</div>
+      <div class="s7card-desc">Upload any blood report — get instant AI health analysis</div>
+    </div>
+    <div class="s7card">
+      <div class="s7card-icon">🐯</div>
+      <div class="s7card-title">BEAST SCORE</div>
+      <div class="s7card-desc">AI fitness score — track your transformation progress</div>
+    </div>
+    <div class="s7card">
+      <div class="s7card-icon">🩺</div>
+      <div class="s7card-title">PHYSIO REHAB</div>
+      <div class="s7card-desc">5 injury zones · Science-based rehabilitation protocols</div>
+    </div>
+    <div class="s7card">
+      <div class="s7card-icon">📈</div>
+      <div class="s7card-title">PROGRESS TRACKER</div>
+      <div class="s7card-desc">Weight, measurements, body fat — visual trend charts</div>
+    </div>
+    <div class="s7card">
+      <div class="s7card-icon">🧮</div>
+      <div class="s7card-title">FITNESS TOOLBOX</div>
+      <div class="s7card-desc">BMI, TDEE, 1RM, macro calculator — 10+ tools</div>
+    </div>
+    <div class="s7card">
+      <div class="s7card-icon">🗺️</div>
+      <div class="s7card-title">ROADMAP</div>
+      <div class="s7card-desc">Personalised 16-week body transformation roadmap</div>
+    </div>
+  </div>
+</div>
+
+<!-- SCENE 8 — COURSES -->
+<div class="scene A" id="s8">
+  <div id="s8-orb" class="A"></div>
+  <div id="s8-h" class="A">10 EXPERT<br>COURSES</div>
+  <div id="s8-sub" class="A">CERTIFICATE · LIFETIME ACCESS · VIDEO + PDF</div>
+  <div id="s8-courses" class="A">
+    <div class="s8course"><div class="s8course-num">01</div><div class="s8course-title">Complete Strength &amp; Hypertrophy</div><div class="s8course-tag">BESTSELLER</div></div>
+    <div class="s8course"><div class="s8course-num">02</div><div class="s8course-title">Body Transformation Blueprint</div><div class="s8course-tag">NEW</div></div>
+    <div class="s8course"><div class="s8course-num">03</div><div class="s8course-title">Elite Anabolic Fundamentals</div><div class="s8course-tag">PRO</div></div>
+    <div class="s8course"><div class="s8course-num">04</div><div class="s8course-title">Sports Nutrition Masterclass</div><div class="s8course-tag">POPULAR</div></div>
+    <div class="s8course"><div class="s8course-num">05</div><div class="s8course-title">Female Fitness &amp; Hormones</div><div class="s8course-tag">TOP RATED</div></div>
+    <div class="s8course"><div class="s8course-num">06</div><div class="s8course-title">Supplement Science Deep Dive</div><div class="s8course-tag">NEW</div></div>
+  </div>
+</div>
+
+<!-- SCENE 9 — AYURVEDA + PREMIUM FEATURES -->
+<div class="scene A" id="s9">
+  <div id="s9-orb" class="A"></div>
+  <div id="s9-h" class="A">PREMIUM<br>SECTIONS</div>
+  <div id="s9-features" class="A">
+    <div class="s9feat">
+      <div class="s9feat-icon">🌿</div>
+      <div class="s9feat-title">AYURVEDA HUB</div>
+      <div class="s9feat-desc">Dosha analysis · Ancient herbs · Charaka Samhita protocols</div>
+    </div>
+    <div class="s9feat">
+      <div class="s9feat-icon">🩺</div>
+      <div class="s9feat-title">PHYSIO REHAB</div>
+      <div class="s9feat-desc">Neck, shoulder, back, knee, elbow · 15 guided exercises</div>
+    </div>
+    <div class="s9feat">
+      <div class="s9feat-icon">⚔️</div>
+      <div class="s9feat-title">ARENA BATTLES</div>
+      <div class="s9feat-desc">Weekly fitness battles · Leaderboard · Win real rewards</div>
+    </div>
+    <div class="s9feat">
+      <div class="s9feat-icon">🏆</div>
+      <div class="s9feat-title">CHALLENGES</div>
+      <div class="s9feat-desc">30-day transformation · Streak tracking · Community</div>
+    </div>
+    <div class="s9feat">
+      <div class="s9feat-icon">🧘</div>
+      <div class="s9feat-title">YOGA LIBRARY</div>
+      <div class="s9feat-desc">50+ poses · Step-by-step · Beginner to advanced</div>
+    </div>
+    <div class="s9feat">
+      <div class="s9feat-icon">🧘‍♂️</div>
+      <div class="s9feat-title">MEDITATION HUB</div>
+      <div class="s9feat-desc">9 stages · 8 types · Built-in timer · Science-backed</div>
+    </div>
+  </div>
+</div>
+
+<!-- SCENE 10 — COMMUNITY -->
+<div class="scene A" id="s10">
+  <div id="s10-orb" class="A"></div>
+  <div id="s10-h" class="A">JOIN THE<br>RFC WARRIOR<br>COMMUNITY</div>
+  <div id="s10-count" class="A">50,000+</div>
+  <div id="s10-members" class="A">ACTIVE WARRIORS &amp; GROWING</div>
+  <div id="s10-cols" class="A">
+    <div class="s10col"><div class="s10col-num">🏆</div><div class="s10col-lbl">LIVE CHALLENGES</div></div>
+    <div class="s10col"><div class="s10col-num">🐯</div><div class="s10col-lbl">BEAST LEADERBOARD</div></div>
+    <div class="s10col"><div class="s10col-num">💰</div><div class="s10col-lbl">WALLET &amp; REFERRALS</div></div>
+    <div class="s10col"><div class="s10col-num">📸</div><div class="s10col-lbl">PROGRESS SHARING</div></div>
+  </div>
+</div>
+
+<!-- SCENE 11 — PRICING -->
+<div class="scene A" id="s11">
+  <div id="s11-orb" class="A"></div>
+  <div id="s11-badge" class="A">⚡ GO PRO TODAY</div>
+  <div id="s11-price" class="A">
+    <div id="s11-rupee">₹</div>
+    <div id="s11-amt">499</div>
+    <div id="s11-permonth">/month</div>
+  </div>
+  <div id="s11-list" class="A">
+    <div class="s11item"><div class="s11check">✓</div>Yoga Library (50+ Poses)</div>
+    <div class="s11item"><div class="s11check">✓</div>Meditation Science Hub</div>
+    <div class="s11item"><div class="s11check">✓</div>AI Blood Analyser</div>
+    <div class="s11item"><div class="s11check">✓</div>Ayurveda Hub</div>
+    <div class="s11item"><div class="s11check">✓</div>Physio Rehab Protocols</div>
+    <div class="s11item"><div class="s11check">✓</div>All 24 PDF Guides</div>
+    <div class="s11item"><div class="s11check">✓</div>10 Expert Courses</div>
+    <div class="s11item"><div class="s11check">✓</div>Arena &amp; Challenges</div>
+    <div class="s11item"><div class="s11check">✓</div>Full Roadmap Access</div>
+    <div class="s11item"><div class="s11check">✓</div>Wallet &amp; Rewards</div>
+  </div>
+  <div id="s11-cta" class="A">
+    <div id="s11-cta-title">START FREE · UPGRADE ANYTIME</div>
+    <div id="s11-cta-sub">No lock-in · Cancel anytime · Instant access</div>
+  </div>
+</div>
+
+<!-- SCENE 12 — OUTRO CTA -->
+<div class="scene A" id="s12">
+  <div id="s12-orb1" class="A"></div>
+  <div id="s12-orb2" class="A"></div>
+  <div id="s12-ring" class="A"></div>
+  <div id="s12-logo" class="A">R</div>
+  <div id="s12-title" class="A">ROYAL FITNESS CLUB</div>
+  <div id="s12-line" class="A"></div>
+  <div id="s12-url" class="A">royal-fitness-club-7adc1.web.app</div>
+  <div id="s12-free" class="A">FREE TO START · PRO AT ₹499/MONTH</div>
+  <div id="s12-pills" class="A">
+    <div id="s12-free-btn">START FREE — NO CREDIT CARD</div>
+    <div id="s12-pro-btn">🔥 GO PRO — ₹499/MONTH</div>
+  </div>
+</div>
+
+</body>
+</html>
