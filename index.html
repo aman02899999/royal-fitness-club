@@ -19227,18 +19227,6 @@ body.admin-logged-in #admin-theme-btn{display:flex;}
 .atp-reset-btn:hover{background:rgba(225,29,72,.15);border-color:#e11d48;color:#fb7185;}
 
 /* ── Section pencil edit buttons ── */
-.admin-section-edit{
-  position:fixed !important;z-index:10003;
-  width:36px;height:36px;border-radius:50%;border:2px solid rgba(255,255,255,.2);
-  background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;font-size:14px;
-  cursor:pointer;display:none;align-items:center;justify-content:center;
-  box-shadow:0 3px 16px rgba(124,58,237,.55);
-  transition:transform .18s,box-shadow .2s;
-}
-.admin-section-edit:hover{transform:scale(1.15);box-shadow:0 5px 22px rgba(124,58,237,.75);}
-body.admin-logged-in .admin-section-edit{display:flex;}
-/* Host sections keep their own position */
-.admin-pencil-host{position:relative;}
 </style>
 
 <!-- ═══ Marketing JS ═══ -->
@@ -19783,66 +19771,6 @@ function atpClose(){
 window.atpOpen = atpOpen;
 window.atpClose = atpClose;
 
-/* ── Section labels map ── */
-var SECTION_LABELS = {
-  'screen-dashboard':'Dashboard Screen','home':'Hero / Landing',
-  'profile':'My Profile','plans':'Plans & Pricing',
-  'calculator':'Beast Score Calculator','dashboard':'Member Dashboard',
-  'arena':'Challenge Arena','challenges':'Challenges',
-  'bloodreport':'Blood Report','courses':'Courses',
-  'store':'PDF Store','admin-panel':'Admin Panel',
-  'ayurveda-hub':'Ayurveda Hub',
-  'landing-footer':'Footer'
-};
-
-/* ── One floating pencil button (position:fixed, repositioned per section) ── */
-var _pencilBtn = null;
-var _pencilObserver = null;
-
-function createFloatingPencil(){
-  if(_pencilBtn) return;
-  _pencilBtn = document.createElement('button');
-  _pencilBtn.className = 'admin-section-edit';
-  _pencilBtn.id = 'admin-pencil-float';
-  _pencilBtn.setAttribute('aria-label','Edit current section theme');
-  _pencilBtn.innerHTML = '✏️';
-  _pencilBtn.style.cssText = 'top:72px;right:14px;';
-  _pencilBtn.dataset.section = '';
-  _pencilBtn.addEventListener('click', function(e){
-    e.stopPropagation();
-    var label = SECTION_LABELS[_pencilBtn.dataset.section] || 'Section';
-    atpOpen(label);
-  });
-  document.body.appendChild(_pencilBtn);
-}
-
-/* Update pencil button label when screen changes */
-function updatePencilSection(sectionId){
-  if(!_pencilBtn) return;
-  _pencilBtn.dataset.section = sectionId;
-  var label = SECTION_LABELS[sectionId];
-  _pencilBtn.title = label ? ('Edit: ' + label) : 'Edit theme';
-  _pencilBtn.style.display = label ? 'flex' : 'none';
-}
-
-/* ── Patch switchScreen to update pencil label ── */
-function patchSwitchScreenForPencil(){
-  var _origSwitch = window.switchScreen;
-  if(typeof _origSwitch !== 'function') return;
-  window.switchScreen = function(name, navEl){
-    _origSwitch.call(this, name, navEl);
-    /* Find which element ID is visible for this screen */
-    var SMAP = {
-      dashboard:'screen-dashboard',workouts:'tracker',nutrition:'mealplan',
-      toolbox:'calculator',roadmap:'roadmap',physio:'physio',challenges:'challenges',
-      leaderboard:'arena',transform:'dashboard',bloodai:'bloodreport',
-      ayurveda:'ayurveda-hub',referrals:'profile',courses:'courses',
-      store:'store',plans:'plans',profile:'profile',admin:'admin-panel',
-    };
-    updatePencilSection(SMAP[name] || name);
-  };
-}
-
 /* ── Toggle panel on fab click ── */
 function bindPanelToggle(){
   var btn = document.getElementById('admin-theme-btn');
@@ -19870,12 +19798,8 @@ function initAdminThemeEditor(){
   if(_atpInited) return;
   _atpInited = true;
   document.body.classList.add('admin-logged-in');
-  createFloatingPencil();
   bindPanelToggle();
-  patchSwitchScreenForPencil();
   atpLoadSavedTheme();
-  /* Set pencil to current screen */
-  updatePencilSection('screen-dashboard');
 }
 
 /* ── Hook into applyUser patches so we catch auth events ── */
