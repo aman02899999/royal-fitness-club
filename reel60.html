@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1080">
+<title>Royal Fitness Club — 60s Reel</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{width:1080px;height:1920px;overflow:hidden;background:#05030f;}
+:root{--t:0ms;}
+
+/* Base animation class - all elements share 60s timeline */
+.A{
+  animation-duration:60s;
+  animation-timing-function:ease-in-out;
+  animation-fill-mode:both;
+  animation-play-state:paused;
+  animation-delay:var(--t);
+  will-change:transform,opacity;
+}
+
+/* ─── BACKGROUND ─── */
+#bg{
+  position:fixed;inset:0;
+  background:radial-gradient(ellipse at 50% 0%,#1a0a3a 0%,#05030f 60%);
+  z-index:0;
+}
+#bg-glow{
+  position:fixed;inset:0;z-index:1;
+  background:
+    radial-gradient(ellipse 600px 400px at 20% 30%,rgba(139,92,246,.12) 0%,transparent 70%),
+    radial-gradient(ellipse 500px 350px at 80% 70%,rgba(99,102,241,.10) 0%,transparent 70%);
+}
+.scanline{
+  position:fixed;inset:0;z-index:2;pointer-events:none;
+  background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,.06) 3px,rgba(0,0,0,.06) 4px);
+}
+
+/* ─── LOGO/CROWN watermark ─── */
+#watermark{position:fixed;top:44px;left:50%;transform:translateX(-50%);z-index:100;
+  display:flex;align-items:center;gap:14px;opacity:0;}
+#watermark.A{animation-name:wm-in;}
+@keyframes wm-in{
+  0%{opacity:0} 3%{opacity:0} 5%{opacity:1} 90%{opacity:.7} 100%{opacity:.7}
+}
+#watermark .crown{font-size:40px;filter:drop-shadow(0 0 12px rgba(250,204,21,.6));}
+#watermark .name{font-family:'Bebas Neue',sans-serif;font-size:36px;letter-spacing:5px;color:#fbbf24;
+  text-shadow:0 0 20px rgba(251,191,36,.5);}
+
+/* ─── SCENE WRAPPER ─── */
+.scene{position:absolute;inset:0;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;}
+
+/* ─── SCENE 1: HERO (0-5s = 0%-8.3%) ─── */
+#s1{animation-name:s1-fade;}
+@keyframes s1-fade{
+  0%{opacity:0} 1.7%{opacity:1} 6.7%{opacity:1} 8.3%{opacity:0}
+}
+.s1-crown{font-size:160px;line-height:1;filter:drop-shadow(0 0 40px rgba(250,204,21,.8));
+  animation-name:crown-drop;animation-duration:60s;animation-fill-mode:both;animation-play-state:paused;animation-delay:var(--t);}
+@keyframes crown-drop{
+  0%{transform:translateY(-80px) scale(.7);opacity:0} 1.7%{transform:translateY(0) scale(1);opacity:1}
+  6.7%{transform:scale(1);opacity:1} 8.3%{opacity:0}
+}
+.s1-title{font-family:'Bebas Neue',sans-serif;font-size:108px;letter-spacing:8px;color:#fff;text-align:center;line-height:1.05;
+  text-shadow:0 0 60px rgba(139,92,246,.8),0 4px 20px rgba(0,0,0,.8);
+  animation-name:s1-title-in;animation-duration:60s;animation-fill-mode:both;animation-play-state:paused;animation-delay:var(--t);}
+@keyframes s1-title-in{
+  0%{transform:scale(.8);opacity:0} 2.5%{transform:scale(1);opacity:1}
+  6.7%{opacity:1} 8.3%{opacity:0}
+}
+.s1-sub{font-family:'Barlow Condensed',sans-serif;font-size:36px;font-weight:700;letter-spacing:12px;
+  color:rgba(196,181,253,.9);text-transform:uppercase;margin-top:16px;text-align:center;
+  animation-name:s1-sub-in;animation-duration:60s;animation-fill-mode:both;animation-play-state:paused;animation-delay:var(--t);}
+@keyframes s1-sub-in{
+  0%{opacity:0;letter-spacing:28px} 3.3%{opacity:1;letter-spacing:12px}
+  6.7%{opacity:1} 8.3%{opacity:0}
+}
+.s1-tagline{font-family:'Barlow Condensed',sans-serif;font-size:30px;font-weight:400;
+  color:rgba(250,204,21,.95);margin-top:30px;letter-spacing:3px;text-align:center;
+  animation-name:s1-tag-in;animation-duration:60s;animation-fill-mode:both;animation-play-state:paused;animation-delay:var(--t);}
+@keyframes s1-tag-in{
+  0%{opacity:0} 3.8%{opacity:1} 6.7%{opacity:1} 8.3%{opacity:0}
+}
+
+/* ─── SCENE 2: DASHBOARD (5-11s = 8.3%-18.3%) ─── */
+#s2{animation-name:s2-fade;}
+@keyframes s2-fade{
+  0%{opacity:0} 8.3%{opacity:0} 10%{opacity:1} 16.7%{opacity:1} 18.3%{opacity:0}
+}
+.s2-label{font-family:'Bebas Neue',sans-serif;font-size:52px;letter-spacing:6px;color:#8b5cf6;
+  margin-bottom:40px;text-align:center;}
+.s2-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;width:900px;}
+.s2-card{background:linear-gradient(135deg,rgba(139,92,246,.15),rgba(99,102,241,.08));
+  border:1px solid rgba(139,92,246,.3);border-radius:20px;padding:32px 20px;text-align:center;}
+.s2-card .ico{font-size:52px;margin-bottom:12px;}
+.s2-card .val{font-family:'Bebas Neue',sans-serif;font-size:56px;color:#fbbf24;line-height:1;}
+.s2-card .lbl{font-family:'Barlow Condensed',sans-serif;font-size:18px;color:rgba(196,181,253,.8);
+  text-transform:uppercase;letter-spacing:2px;margin-top:6px;}
+.s2-card .sub{font-size:14px;color:rgba(139,92,246,.8);margin-top:4px;}
+.s2-bar{width:900px;margin-top:28px;background:rgba(139,92,246,.1);border-radius:14px;padding:24px 28px;
+  display:flex;align-items:center;gap:24px;border:1px solid rgba(139,92,246,.2);}
+.s2-bar .bio{font-size:38px;}
+.s2-bar-info{flex:1;}
+.s2-bar-info .bname{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;color:#a78bfa;letter-spacing:2px;}
+.s2-bar-info .bsub{font-size:15px;color:rgba(196,181,253,.7);margin-top:4px;}
+.s2-score{font-family:'Bebas Neue',sans-serif;font-size:64px;color:#fbbf24;line-height:1;}
+
+/* ─── SCENE 3: TRAINING (11-17s = 18.3%-28.3%) ─── */
+#s3{animation-name:s3-fade;}
+@keyframes s3-fade{
+  0%{opacity:0} 18.3%{opacity:0} 20%{opacity:1} 26.7%{opacity:1} 28.3%{opacity:0}
+}
+.s3-label{font-family:'Bebas Neue',sans-serif;font-size:52px;letter-spacing:6px;color:#ef4444;
+  margin-bottom:36px;text-align:center;}
+.s3-split{display:grid;grid-template-columns:1fr 1fr;gap:24px;width:940px;}
+.s3-panel{border-radius:20px;padding:32px 28px;border:1px solid rgba(255,255,255,.1);}
+.s3-panel.train{background:linear-gradient(135deg,rgba(239,68,68,.15),rgba(251,146,60,.08));}
+.s3-panel.nutr{background:linear-gradient(135deg,rgba(34,197,94,.15),rgba(74,222,128,.08));}
+.s3-panel-title{font-family:'Bebas Neue',sans-serif;font-size:42px;letter-spacing:4px;margin-bottom:22px;}
+.s3-panel.train .s3-panel-title{color:#ef4444;}
+.s3-panel.nutr .s3-panel-title{color:#22c55e;}
+.s3-item{display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid rgba(255,255,255,.07);}
+.s3-item:last-child{border-bottom:none;}
+.s3-item .dot{width:10px;height:10px;border-radius:50%;}
+.s3-panel.train .s3-item .dot{background:#ef4444;}
+.s3-panel.nutr .s3-item .dot{background:#22c55e;}
+.s3-item-text{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:600;color:rgba(226,232,240,.9);}
+.s3-item-badge{font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;
+  padding:3px 10px;border-radius:8px;margin-left:auto;letter-spacing:1px;}
+.s3-panel.train .s3-item-badge{background:rgba(239,68,68,.2);color:#fca5a5;}
+.s3-panel.nutr .s3-item-badge{background:rgba(34,197,94,.2);color:#86efac;}
+
+/* ─── SCENE 4: NUTRITION + AI (17-23s = 28.3%-38.3%) ─── */
+#s4{animation-name:s4-fade;}
+@keyframes s4-fade{
+  0%{opacity:0} 28.3%{opacity:0} 30%{opacity:1} 36.7%{opacity:1} 38.3%{opacity:0}
+}
+.s4-label{font-family:'Bebas Neue',sans-serif;font-size:52px;letter-spacing:6px;color:#22c55e;
+  margin-bottom:36px;text-align:center;}
+.s4-macro-row{display:flex;gap:20px;width:900px;margin-bottom:28px;}
+.s4-macro{flex:1;background:linear-gradient(135deg,rgba(34,197,94,.15),rgba(74,222,128,.05));
+  border:1px solid rgba(34,197,94,.3);border-radius:18px;padding:28px 20px;text-align:center;}
+.s4-macro .mv{font-family:'Bebas Neue',sans-serif;font-size:64px;color:#fbbf24;}
+.s4-macro .mu{font-size:18px;color:rgba(134,239,172,.8);font-family:'Barlow Condensed',sans-serif;font-weight:700;}
+.s4-macro .ml{font-size:16px;color:rgba(196,181,253,.7);margin-top:6px;text-transform:uppercase;letter-spacing:2px;font-family:'Barlow Condensed',sans-serif;}
+.s4-ai{width:900px;background:linear-gradient(135deg,rgba(99,102,241,.2),rgba(139,92,246,.1));
+  border:1px solid rgba(139,92,246,.4);border-radius:20px;padding:30px 32px;
+  display:flex;align-items:center;gap:24px;}
+.s4-ai .aiico{font-size:60px;}
+.s4-ai-text .aitt{font-family:'Bebas Neue',sans-serif;font-size:36px;letter-spacing:3px;color:#a78bfa;}
+.s4-ai-text .aitd{font-size:18px;color:rgba(196,181,253,.8);margin-top:8px;font-family:'Barlow Condensed',sans-serif;font-weight:600;line-height:1.4;}
+.s4-chips{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px;}
+.s4-chip{background:rgba(139,92,246,.2);border:1px solid rgba(139,92,246,.3);border-radius:20px;
+  padding:6px 16px;font-size:15px;color:#c4b5fd;font-family:'Barlow Condensed',sans-serif;font-weight:600;letter-spacing:1px;}
+
+/* ─── SCENE 5: YOGA (23-30s = 38.3%-50%) ─── */
+#s5{animation-name:s5-fade;}
+@keyframes s5-fade{
+  0%{opacity:0} 38.3%{opacity:0} 40%{opacity:1} 48.3%{opacity:1} 50%{opacity:0}
+}
+.s5-label{font-family:'Bebas Neue',sans-serif;font-size:52px;letter-spacing:6px;color:#a78bfa;
+  margin-bottom:36px;text-align:center;}
+.s5-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;width:940px;}
+.s5-pose{background:linear-gradient(160deg,rgba(15,6,30,.9),rgba(88,28,135,.4));
+  border:1px solid rgba(139,92,246,.25);border-radius:18px;padding:18px 14px;text-align:center;}
+.s5-pose img{width:100px;height:100px;object-fit:contain;border-radius:12px;
+  background:linear-gradient(160deg,#0d0a1e,#1a0a3a);padding:8px;display:block;margin:0 auto 10px;}
+.s5-pose .pname{font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:700;color:#c4b5fd;letter-spacing:1px;}
+.s5-pose .pdiff{font-size:13px;color:rgba(167,139,250,.6);text-transform:uppercase;letter-spacing:1px;margin-top:3px;}
+.s5-stats{display:flex;gap:24px;margin-top:24px;width:940px;}
+.s5-stat{flex:1;background:rgba(139,92,246,.1);border-radius:14px;padding:20px;text-align:center;
+  border:1px solid rgba(139,92,246,.2);}
+.s5-stat .sv{font-family:'Bebas Neue',sans-serif;font-size:52px;color:#fbbf24;}
+.s5-stat .sl{font-family:'Barlow Condensed',sans-serif;font-size:16px;color:rgba(196,181,253,.7);
+  text-transform:uppercase;letter-spacing:2px;margin-top:4px;}
+
+/* ─── SCENE 6: MEDITATION (30-36s = 50%-60%) ─── */
+#s6{animation-name:s6-fade;}
+@keyframes s6-fade{
+  0%{opacity:0} 50%{opacity:0} 51.7%{opacity:1} 58.3%{opacity:1} 60%{opacity:0}
+}
+.s6-label{font-family:'Bebas Neue',sans-serif;font-size:52px;letter-spacing:6px;color:#6366f1;
+  margin-bottom:36px;text-align:center;}
+.s6-row{display:flex;gap:20px;width:940px;}
+.s6-types{flex:1;display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.s6-type{background:linear-gradient(135deg,rgba(99,102,241,.15),rgba(139,92,246,.08));
+  border:1px solid rgba(99,102,241,.25);border-radius:16px;padding:20px 16px;display:flex;align-items:center;gap:12px;}
+.s6-type img{width:52px;height:52px;object-fit:contain;border-radius:10px;
+  background:linear-gradient(160deg,#0d0a1e,#1a0a3a);padding:6px;flex-shrink:0;}
+.s6-type-info .tn{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:700;color:#a78bfa;letter-spacing:1px;}
+.s6-type-info .td{font-size:13px;color:rgba(196,181,253,.6);margin-top:3px;}
+.s6-right{width:320px;display:flex;flex-direction:column;gap:16px;}
+.s6-breath{background:linear-gradient(135deg,rgba(16,185,129,.15),rgba(52,211,153,.05));
+  border:1px solid rgba(16,185,129,.3);border-radius:16px;padding:20px;text-align:center;}
+.s6-breath .bt{font-family:'Bebas Neue',sans-serif;font-size:32px;letter-spacing:3px;color:#10b981;}
+.s6-breath .bc{font-size:14px;color:rgba(110,231,183,.7);margin-top:8px;font-family:'Barlow Condensed',sans-serif;}
+.s6-timer{background:linear-gradient(135deg,rgba(139,92,246,.2),rgba(99,102,241,.1));
+  border:1px solid rgba(139,92,246,.3);border-radius:16px;padding:24px;text-align:center;}
+.s6-timer .ring{font-size:64px;}
+.s6-timer .tl{font-family:'Bebas Neue',sans-serif;font-size:28px;color:#8b5cf6;letter-spacing:3px;margin-top:8px;}
+
+/* ─── SCENE 7: PDF STORE (36-42s = 60%-70%) ─── */
+#s7{animation-name:s7-fade;}
+@keyframes s7-fade{
+  0%{opacity:0} 60%{opacity:0} 61.7%{opacity:1} 68.3%{opacity:1} 70%{opacity:0}
+}
+.s7-label{font-family:'Bebas Neue',sans-serif;font-size:52px;letter-spacing:6px;color:#f59e0b;
+  margin-bottom:32px;text-align:center;}
+.s7-books{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;width:940px;}
+.s7-book{border-radius:16px;padding:24px 16px 20px;display:flex;flex-direction:column;align-items:center;
+  gap:10px;border:1px solid rgba(255,255,255,.1);}
+.s7-book .bico{font-size:48px;}
+.s7-book .btit{font-family:'Barlow Condensed',sans-serif;font-size:17px;font-weight:700;color:#fff;
+  text-align:center;letter-spacing:.5px;line-height:1.3;}
+.s7-book .bprice{font-family:'Bebas Neue',sans-serif;font-size:24px;color:#fbbf24;margin-top:4px;}
+.s7-book .borig{font-size:13px;color:rgba(255,255,255,.4);text-decoration:line-through;}
+.s7-total{width:940px;margin-top:24px;background:linear-gradient(135deg,rgba(245,158,11,.15),rgba(251,191,36,.08));
+  border:1px solid rgba(245,158,11,.3);border-radius:16px;padding:22px 28px;
+  display:flex;align-items:center;justify-content:space-between;}
+.s7-total .tl{font-family:'Bebas Neue',sans-serif;font-size:36px;letter-spacing:3px;color:#fbbf24;}
+.s7-total .tr{font-family:'Barlow Condensed',sans-serif;font-size:20px;color:rgba(251,191,36,.8);font-weight:700;}
+
+/* ─── SCENE 8: COURSES (42-48s = 70%-80%) ─── */
+#s8{animation-name:s8-fade;}
+@keyframes s8-fade{
+  0%{opacity:0} 70%{opacity:0} 71.7%{opacity:1} 78.3%{opacity:1} 80%{opacity:0}
+}
+.s8-label{font-family:'Bebas Neue',sans-serif;font-size:52px;letter-spacing:6px;color:#06b6d4;
+  margin-bottom:32px;text-align:center;}
+.s8-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;width:900px;}
+.s8-course{background:linear-gradient(135deg,rgba(6,182,212,.12),rgba(14,165,233,.06));
+  border:1px solid rgba(6,182,212,.25);border-radius:16px;padding:22px 20px;
+  display:flex;align-items:center;gap:16px;}
+.s8-course .cico{font-size:40px;flex-shrink:0;}
+.s8-course-info .cn{font-family:'Barlow Condensed',sans-serif;font-size:21px;font-weight:700;color:#7dd3fc;letter-spacing:1px;}
+.s8-course-info .cd{font-size:14px;color:rgba(186,230,253,.6);margin-top:4px;}
+.s8-course-info .cr{font-size:13px;color:rgba(6,182,212,.7);margin-top:6px;font-weight:600;}
+.s8-cta-bar{width:900px;margin-top:20px;background:rgba(6,182,212,.1);border-radius:14px;padding:20px 24px;
+  display:flex;align-items:center;justify-content:space-between;border:1px solid rgba(6,182,212,.2);}
+.s8-cta-bar .cl{font-family:'Bebas Neue',sans-serif;font-size:32px;letter-spacing:3px;color:#06b6d4;}
+.s8-cta-bar .cr2{font-family:'Barlow Condensed',sans-serif;font-size:18px;color:rgba(125,211,252,.8);font-weight:700;}
+
+/* ─── SCENE 9: PREMIUM TOOLS (48-53s = 80%-88.3%) ─── */
+#s9{animation-name:s9-fade;}
+@keyframes s9-fade{
+  0%{opacity:0} 80%{opacity:0} 81.7%{opacity:1} 86.7%{opacity:1} 88.3%{opacity:0}
+}
+.s9-label{font-family:'Bebas Neue',sans-serif;font-size:52px;letter-spacing:6px;color:#ec4899;
+  margin-bottom:36px;text-align:center;}
+.s9-tools{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;width:920px;}
+.s9-tool{background:linear-gradient(135deg,rgba(236,72,153,.12),rgba(217,70,239,.06));
+  border:1px solid rgba(236,72,153,.25);border-radius:18px;padding:28px 20px;text-align:center;}
+.s9-tool .tio{font-size:52px;margin-bottom:12px;}
+.s9-tool .tname{font-family:'Barlow Condensed',sans-serif;font-size:19px;font-weight:700;color:#f9a8d4;letter-spacing:1px;}
+.s9-tool .tdesc{font-size:14px;color:rgba(249,168,212,.5);margin-top:6px;line-height:1.4;}
+
+/* ─── SCENE 10: PRO PRICING + CTA (53-60s = 88.3%-100%) ─── */
+#s10{animation-name:s10-fade;}
+@keyframes s10-fade{
+  0%{opacity:0} 88.3%{opacity:0} 90%{opacity:1} 100%{opacity:1}
+}
+.s10-crown{font-size:80px;filter:drop-shadow(0 0 30px rgba(250,204,21,.8));margin-bottom:16px;
+  animation-name:s10-crown-pulse;animation-duration:60s;animation-fill-mode:both;animation-play-state:paused;animation-delay:var(--t);}
+@keyframes s10-crown-pulse{
+  0%{opacity:0} 88.3%{opacity:0} 90%{opacity:1}
+  91%{transform:scale(1.15)} 92%{transform:scale(1)} 94%{transform:scale(1.08)} 95%{transform:scale(1)}
+  100%{opacity:1}
+}
+.s10-title{font-family:'Bebas Neue',sans-serif;font-size:90px;letter-spacing:6px;color:#fbbf24;text-align:center;
+  text-shadow:0 0 40px rgba(251,191,36,.6);line-height:1;}
+.s10-sub{font-family:'Barlow Condensed',sans-serif;font-size:30px;font-weight:700;letter-spacing:6px;
+  color:rgba(196,181,253,.9);text-transform:uppercase;margin:10px 0 36px;text-align:center;}
+.s10-price-box{background:linear-gradient(135deg,rgba(139,92,246,.25),rgba(99,102,241,.15));
+  border:2px solid rgba(139,92,246,.5);border-radius:28px;padding:36px 48px;text-align:center;
+  width:800px;margin-bottom:32px;position:relative;}
+.s10-price-box::before{content:'';position:absolute;inset:-2px;border-radius:28px;
+  background:linear-gradient(135deg,rgba(139,92,246,.4),rgba(99,102,241,.2),rgba(236,72,153,.3));z-index:-1;}
+.s10-price{font-family:'Bebas Neue',sans-serif;font-size:130px;color:#fbbf24;line-height:.9;}
+.s10-price sup{font-size:50px;vertical-align:top;margin-top:20px;}
+.s10-per{font-family:'Barlow Condensed',sans-serif;font-size:26px;color:rgba(196,181,253,.8);
+  letter-spacing:4px;text-transform:uppercase;margin-top:8px;}
+.s10-features{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:20px;text-align:left;}
+.s10-feat{font-family:'Barlow Condensed',sans-serif;font-size:18px;color:rgba(196,181,253,.9);
+  display:flex;align-items:center;gap:8px;}
+.s10-feat::before{content:'✓';color:#22c55e;font-weight:900;font-size:18px;flex-shrink:0;}
+.s10-btns{display:flex;gap:20px;width:800px;}
+.s10-btn{flex:1;padding:30px 20px;border-radius:20px;font-family:'Bebas Neue',sans-serif;
+  font-size:36px;letter-spacing:3px;text-align:center;cursor:pointer;transition:transform .2s;}
+.s10-btn.primary{background:linear-gradient(135deg,#8b5cf6,#6366f1);color:#fff;
+  box-shadow:0 0 40px rgba(139,92,246,.5);}
+.s10-btn.secondary{background:rgba(139,92,246,.15);color:#a78bfa;
+  border:2px solid rgba(139,92,246,.4);}
+.s10-url{font-family:'Barlow Condensed',sans-serif;font-size:22px;letter-spacing:4px;
+  color:rgba(196,181,253,.6);margin-top:24px;text-transform:uppercase;}
+
+/* ─── SECTION LABEL ENTRY ANIMATIONS ─── */
+#s2 .s2-label,.s3 .s3-label,.s4 .s4-label,.s5 .s5-label,
+#s6 .s6-label,.s7 .s7-label,.s8 .s8-label,.s9 .s9-label{
+  animation-name:label-in;animation-duration:60s;animation-fill-mode:both;
+  animation-play-state:paused;animation-delay:var(--t);
+}
+@keyframes label-in{
+  0%{opacity:0;transform:translateX(-30px)} .5%{opacity:1;transform:translateX(0)}
+  99%{opacity:1} 100%{opacity:0}
+}
+
+/* ─── STAT/CARD STAGGER (reuse for multiple scenes) ─── */
+.stag>*{animation-name:stag-in;animation-duration:60s;animation-fill-mode:both;animation-play-state:paused;animation-delay:var(--t);}
+@keyframes stag-in{
+  0%{opacity:0;transform:translateY(20px)} .8%{opacity:1;transform:translateY(0)}
+  99%{opacity:1} 100%{opacity:0}
+}
+
+/* Book colors */
+.bk1{background:linear-gradient(160deg,rgba(139,92,246,.3),rgba(109,40,217,.15));}
+.bk2{background:linear-gradient(160deg,rgba(239,68,68,.25),rgba(185,28,28,.1));}
+.bk3{background:linear-gradient(160deg,rgba(34,197,94,.25),rgba(21,128,61,.1));}
+.bk4{background:linear-gradient(160deg,rgba(245,158,11,.25),rgba(180,83,9,.1));}
+.bk5{background:linear-gradient(160deg,rgba(6,182,212,.25),rgba(8,145,178,.1));}
+.bk6{background:linear-gradient(160deg,rgba(236,72,153,.25),rgba(190,24,93,.1));}
+.bk7{background:linear-gradient(160deg,rgba(99,102,241,.3),rgba(67,56,202,.15));}
+.bk8{background:linear-gradient(160deg,rgba(167,139,250,.25),rgba(124,58,237,.1));}
+</style>
+</head>
+<body>
+<div id="bg"></div>
+<div id="bg-glow"></div>
+<div class="scanline"></div>
+
+<!-- Watermark -->
+<div id="watermark" class="A">
+  <span class="crown">👑</span>
+  <span class="name">ROYAL FITNESS CLUB</span>
+</div>
+
+<!-- ════ SCENE 1: HERO ════ -->
+<div id="s1" class="scene A">
+  <div class="s1-crown A">👑</div>
+  <div class="s1-title A">ROYAL<br>FITNESS CLUB</div>
+  <div class="s1-sub A">YOUR COMPLETE FITNESS PLATFORM</div>
+  <div class="s1-tagline A">TRAINING · NUTRITION · YOGA · WELLNESS · MIND</div>
+</div>
+
+<!-- ════ SCENE 2: DASHBOARD ════ -->
+<div id="s2" class="scene A">
+  <div class="s2-label">📊 YOUR DAILY DASHBOARD</div>
+  <div class="s2-grid stag">
+    <div class="s2-card"><div class="ico">🔥</div><div class="val">2,847</div><div class="lbl">Calories Burned</div><div class="sub">Goal: 3,000 kcal</div></div>
+    <div class="s2-card"><div class="ico">💪</div><div class="val">18</div><div class="lbl">Exercises Done</div><div class="sub">Upper Body Day</div></div>
+    <div class="s2-card"><div class="ico">🥗</div><div class="val">186g</div><div class="lbl">Protein Today</div><div class="sub">Goal: 200g</div></div>
+    <div class="s2-card"><div class="ico">💧</div><div class="val">2.8L</div><div class="lbl">Water Intake</div><div class="sub">Goal: 3.5L</div></div>
+    <div class="s2-card"><div class="ico">😴</div><div class="val">7.5h</div><div class="lbl">Sleep Quality</div><div class="sub">Deep: 2.1h</div></div>
+    <div class="s2-card"><div class="ico">⚡</div><div class="val">50K+</div><div class="lbl">Members</div><div class="sub">Warriors Online</div></div>
+  </div>
+  <div class="s2-bar stag">
+    <div class="bio">🦁</div>
+    <div class="s2-bar-info">
+      <div class="bname">BEAST SCORE TODAY</div>
+      <div class="bsub">Track strength · consistency · nutrition · recovery</div>
+    </div>
+    <div class="s2-score">847</div>
+  </div>
+</div>
+
+<!-- ════ SCENE 3: TRAINING + CARDIO ════ -->
+<div id="s3" class="scene A">
+  <div class="s3-label">💪 COMPLETE TRAINING HUB</div>
+  <div class="s3-split">
+    <div class="s3-panel train">
+      <div class="s3-panel-title">🏋️ WORKOUTS</div>
+      <div class="s3-item"><div class="dot"></div><div class="s3-item-text">Chest & Triceps</div><span class="s3-item-badge">PPL</span></div>
+      <div class="s3-item"><div class="dot"></div><div class="s3-item-text">Back & Biceps</div><span class="s3-item-badge">PPL</span></div>
+      <div class="s3-item"><div class="dot"></div><div class="s3-item-text">Legs — Squat Focus</div><span class="s3-item-badge">LEG</span></div>
+      <div class="s3-item"><div class="dot"></div><div class="s3-item-text">Shoulders & Abs</div><span class="s3-item-badge">PUSH</span></div>
+      <div class="s3-item"><div class="dot"></div><div class="s3-item-text">Full Body HIIT</div><span class="s3-item-badge">HIIT</span></div>
+      <div class="s3-item"><div class="dot"></div><div class="s3-item-text">Arms Specialisation</div><span class="s3-item-badge">ARM</span></div>
+    </div>
+    <div class="s3-panel nutr">
+      <div class="s3-panel-title">🥦 NUTRITION</div>
+      <div class="s3-item"><div class="dot"></div><div class="s3-item-text">Calorie Tracking</div><span class="s3-item-badge">KCAL</span></div>
+      <div class="s3-item"><div class="dot"></div><div class="s3-item-text">Macro Breakdown</div><span class="s3-item-badge">P·C·F</span></div>
+      <div class="s3-item"><div class="dot"></div><div class="s3-item-text">Meal Logger</div><span class="s3-item-badge">LOG</span></div>
+      <div class="s3-item"><div class="dot"></div><div class="s3-item-text">Food Database</div><span class="s3-item-badge">DB</span></div>
+      <div class="s3-item"><div class="dot"></div><div class="s3-item-text">AI Meal Plan</div><span class="s3-item-badge">AI✨</span></div>
+      <div class="s3-item"><div class="dot"></div><div class="s3-item-text">Supplement Guide</div><span class="s3-item-badge">SUPP</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ SCENE 4: NUTRITION AI DETAIL ════ -->
+<div id="s4" class="scene A">
+  <div class="s4-label">🤖 AI NUTRITION PLANNER</div>
+  <div class="s4-macro-row stag">
+    <div class="s4-macro"><div class="mv">186</div><div class="mu">g</div><div class="ml">Protein</div></div>
+    <div class="s4-macro"><div class="mv">248</div><div class="mu">g</div><div class="ml">Carbs</div></div>
+    <div class="s4-macro"><div class="mv">67</div><div class="mu">g</div><div class="ml">Fats</div></div>
+    <div class="s4-macro"><div class="mv">2847</div><div class="mu">kcal</div><div class="ml">Total</div></div>
+  </div>
+  <div class="s4-ai">
+    <div class="aiico">🤖</div>
+    <div class="s4-ai-text">
+      <div class="aitt">AI MEAL GENERATOR</div>
+      <div class="aitd">Tell the AI your goal — bulk, cut, or maintain — and get a full day's meal plan with calories, macros, and recipes instantly.</div>
+      <div class="s4-chips">
+        <span class="s4-chip">🥩 Muscle Gain</span>
+        <span class="s4-chip">🔥 Fat Loss</span>
+        <span class="s4-chip">⚖️ Maintain</span>
+        <span class="s4-chip">🌱 Veg-Friendly</span>
+        <span class="s4-chip">💊 Supplements</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ SCENE 5: YOGA ════ -->
+<div id="s5" class="scene A">
+  <div class="s5-label">🧘 YOGA LIBRARY — 50+ POSES</div>
+  <div class="s5-grid stag">
+    <div class="s5-pose">
+      <img src="https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483094/yoga-api/41_veknug.png" alt="Mountain">
+      <div class="pname">Tadasana</div><div class="pdiff">Beginner</div>
+    </div>
+    <div class="s5-pose">
+      <img src="https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483096/yoga-api/44_dqeayo.png" alt="Warrior 1">
+      <div class="pname">Warrior I</div><div class="pdiff">Beginner</div>
+    </div>
+    <div class="s5-pose">
+      <img src="https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483096/yoga-api/45_ehimr1.png" alt="Warrior 2">
+      <div class="pname">Warrior II</div><div class="pdiff">Intermediate</div>
+    </div>
+    <div class="s5-pose">
+      <img src="https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483096/yoga-api/42_jawxqw.png" alt="Triangle">
+      <div class="pname">Trikonasana</div><div class="pdiff">Beginner</div>
+    </div>
+    <div class="s5-pose">
+      <img src="https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483091/yoga-api/31_ozseum.png" alt="Lotus">
+      <div class="pname">Padmasana</div><div class="pdiff">Advanced</div>
+    </div>
+    <div class="s5-pose">
+      <img src="https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483078/yoga-api/11_dczyrp.png" alt="Savasana">
+      <div class="pname">Savasana</div><div class="pdiff">Beginner</div>
+    </div>
+    <div class="s5-pose">
+      <img src="https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483074/yoga-api/5_i64gif.png" alt="Butterfly">
+      <div class="pname">Baddha Konasana</div><div class="pdiff">Beginner</div>
+    </div>
+    <div class="s5-pose">
+      <img src="https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483096/yoga-api/46_lz6v7i.png" alt="Warrior 3">
+      <div class="pname">Warrior III</div><div class="pdiff">Intermediate</div>
+    </div>
+  </div>
+  <div class="s5-stats stag">
+    <div class="s5-stat"><div class="sv">50+</div><div class="sl">Yoga Poses</div></div>
+    <div class="s5-stat"><div class="sv">3</div><div class="sl">Difficulty Levels</div></div>
+    <div class="s5-stat"><div class="sv">10+</div><div class="sl">Focus Areas</div></div>
+    <div class="s5-stat"><div class="sv">Full</div><div class="sl">Instructions</div></div>
+  </div>
+</div>
+
+<!-- ════ SCENE 6: MEDITATION ════ -->
+<div id="s6" class="scene A">
+  <div class="s6-label">🧘‍♂️ MEDITATION HUB</div>
+  <div class="s6-row">
+    <div class="s6-types stag">
+      <div class="s6-type">
+        <img src="https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483091/yoga-api/31_ozseum.png" alt="Mindfulness">
+        <div class="s6-type-info"><div class="tn">Mindfulness</div><div class="td">Present moment awareness</div></div>
+      </div>
+      <div class="s6-type">
+        <img src="https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483091/yoga-api/30_gumpl3.png" alt="Vipassana">
+        <div class="s6-type-info"><div class="tn">Vipassana</div><div class="td">Deep insight meditation</div></div>
+      </div>
+      <div class="s6-type">
+        <img src="https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483074/yoga-api/5_i64gif.png" alt="Loving Kindness">
+        <div class="s6-type-info"><div class="tn">Loving Kindness</div><div class="td">Open heart, compassion</div></div>
+      </div>
+      <div class="s6-type">
+        <img src="https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483078/yoga-api/11_dczyrp.png" alt="Yoga Nidra">
+        <div class="s6-type-info"><div class="tn">Yoga Nidra</div><div class="td">Yogic sleep restoration</div></div>
+      </div>
+      <div class="s6-type">
+        <img src="https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483091/yoga-api/32_hafoa0.png" alt="Trataka">
+        <div class="s6-type-info"><div class="tn">Trataka</div><div class="td">Candle flame focus</div></div>
+      </div>
+      <div class="s6-type">
+        <img src="https://res.cloudinary.com/dko1be2jy/image/upload/fl_sanitize/v1676483091/yoga-api/31_ozseum.png" alt="Pranayama">
+        <div class="s6-type-info"><div class="tn">Pranayama</div><div class="td">Breath control mastery</div></div>
+      </div>
+    </div>
+    <div class="s6-right">
+      <div class="s6-breath">
+        <div class="bt">🌬️ 6 BREATHING<br>TECHNIQUES</div>
+        <div class="bc">Box · 4-7-8 · Wim Hof<br>Nadi Shodhana · Kapalabhati<br>Bhramari</div>
+      </div>
+      <div class="s6-timer">
+        <div class="ring">⏱️</div>
+        <div class="tl">GUIDED TIMER</div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:16px;color:rgba(167,139,250,.7);margin-top:8px;">9 Stages of Mastery<br>Beginner → Master</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ SCENE 7: PDF STORE ════ -->
+<div id="s7" class="scene A">
+  <div class="s7-label">📚 PDF STORE — 24 PREMIUM GUIDES</div>
+  <div class="s7-books stag">
+    <div class="s7-book bk1"><div class="bico">💪</div><div class="btit">Fitness &amp; Mindset Guide</div><div class="bprice">₹299</div><div class="borig">₹599</div></div>
+    <div class="s7-book bk2"><div class="bico">🔥</div><div class="btit">Anabolic Full Guide</div><div class="bprice">₹299</div><div class="borig">₹599</div></div>
+    <div class="s7-book bk3"><div class="bico">🥗</div><div class="btit">Nutrition Bible</div><div class="bprice">₹299</div><div class="borig">₹599</div></div>
+    <div class="s7-book bk4"><div class="bico">🧬</div><div class="btit">Gut Health Science</div><div class="bprice">₹299</div><div class="borig">₹599</div></div>
+    <div class="s7-book bk5"><div class="bico">😴</div><div class="btit">Sleep Science Guide</div><div class="bprice">₹299</div><div class="borig">₹599</div></div>
+    <div class="s7-book bk6"><div class="bico">🧘</div><div class="btit">Yoga Complete Guide</div><div class="bprice">₹299</div><div class="borig">₹599</div></div>
+    <div class="s7-book bk7"><div class="bico">🧘‍♂️</div><div class="btit">Meditation Science</div><div class="bprice">₹299</div><div class="borig">₹599</div></div>
+    <div class="s7-book bk8"><div class="bico">📖</div><div class="btit">+17 More Guides...</div><div class="bprice">₹299</div><div class="borig">₹599</div></div>
+  </div>
+  <div class="s7-total stag">
+    <div class="tl">📚 24 TOTAL GUIDES · ALL FORMATS</div>
+    <div class="tr">Each with TOC · Preview · Bonuses · Reviews</div>
+  </div>
+</div>
+
+<!-- ════ SCENE 8: COURSES ════ -->
+<div id="s8" class="scene A">
+  <div class="s8-label">🎓 10 EXPERT-LED COURSES</div>
+  <div class="s8-grid stag">
+    <div class="s8-course"><div class="cico">🏋️</div><div class="s8-course-info"><div class="cn">Muscle Building Mastery</div><div class="cd">Progressive overload · compound lifts · periodisation</div><div class="cr">⭐ 4.9 · 3,247 enrolled</div></div></div>
+    <div class="s8-course"><div class="cico">🔥</div><div class="s8-course-info"><div class="cn">Fat Loss Blueprint</div><div class="cd">Deficit strategy · HIIT · hormonal optimisation</div><div class="cr">⭐ 4.8 · 2,891 enrolled</div></div></div>
+    <div class="s8-course"><div class="cico">🥗</div><div class="s8-course-info"><div class="cn">Nutrition Mastery</div><div class="cd">Macros · meal timing · supplements · food science</div><div class="cr">⭐ 4.9 · 4,102 enrolled</div></div></div>
+    <div class="s8-course"><div class="cico">🧘</div><div class="s8-course-info"><div class="cn">Yoga for Athletes</div><div class="cd">Flexibility · mobility · recovery · strength yoga</div><div class="cr">⭐ 4.8 · 1,847 enrolled</div></div></div>
+    <div class="s8-course"><div class="cico">🧠</div><div class="s8-course-info"><div class="cn">Mental Toughness</div><div class="cd">Discipline · focus · mindset · habit formation</div><div class="cr">⭐ 4.9 · 2,654 enrolled</div></div></div>
+    <div class="s8-course"><div class="cico">🩺</div><div class="s8-course-info"><div class="cn">Physio &amp; Recovery</div><div class="cd">Injury prevention · rehab · mobility protocols</div><div class="cr">⭐ 4.7 · 1,432 enrolled</div></div></div>
+  </div>
+  <div class="s8-cta-bar stag">
+    <div class="cl">🎓 10 COURSES TOTAL</div>
+    <div class="cr2">Full curriculum · outcomes · reviews · bonus modules</div>
+  </div>
+</div>
+
+<!-- ════ SCENE 9: PREMIUM TOOLS + CTA BRIDGE ════ -->
+<div id="s9" class="scene A">
+  <div class="s9-label">⚡ PREMIUM TOOLS &amp; FEATURES</div>
+  <div class="s9-tools stag">
+    <div class="s9-tool"><div class="tio">🩸</div><div class="tname">Blood Report AI</div><div class="tdesc">Upload blood tests · get AI analysis · personalised health insights</div></div>
+    <div class="s9-tool"><div class="tio">🦁</div><div class="tname">Beast Score</div><div class="tdesc">Daily score tracking strength · consistency · recovery · nutrition</div></div>
+    <div class="s9-tool"><div class="tio">🩺</div><div class="tname">Physio Guide</div><div class="tdesc">Injury diagnosis · rehab protocols · physiotherapy exercises</div></div>
+    <div class="s9-tool"><div class="tio">🌿</div><div class="tname">Ayurveda Hub</div><div class="tdesc">Ancient wellness · dosha assessment · herbal recommendations</div></div>
+    <div class="s9-tool"><div class="tio">⚔️</div><div class="tname">Member Arena</div><div class="tdesc">Challenges · leaderboards · achievements · community battles</div></div>
+    <div class="s9-tool"><div class="tio">🏆</div><div class="tname">50K+ Community</div><div class="tdesc">Warriors · coaches · accountability partners · progress sharing</div></div>
+  </div>
+</div>
+
+<!-- ════ SCENE 10: PRO PRICING + CTA ════ -->
+<div id="s10" class="scene A">
+  <div class="s10-crown A">👑</div>
+  <div class="s10-title">GO PRO TODAY</div>
+  <div class="s10-sub">ROYAL FITNESS CLUB</div>
+  <div class="s10-price-box stag">
+    <div class="s10-price"><sup>₹</sup>499</div>
+    <div class="s10-per">PER MONTH · CANCEL ANYTIME</div>
+    <div class="s10-features">
+      <div class="s10-feat">All 24 Premium PDF Guides</div>
+      <div class="s10-feat">All 10 Expert Courses</div>
+      <div class="s10-feat">Full Yoga Library (50+ poses)</div>
+      <div class="s10-feat">Complete Meditation Hub</div>
+      <div class="s10-feat">AI Nutrition Planner</div>
+      <div class="s10-feat">Blood Report AI Analyzer</div>
+      <div class="s10-feat">Beast Score Tracker</div>
+      <div class="s10-feat">Physio Injury Guide</div>
+      <div class="s10-feat">Ayurveda Wellness Hub</div>
+      <div class="s10-feat">Member Arena + Challenges</div>
+    </div>
+  </div>
+  <div class="s10-btns stag">
+    <div class="s10-btn primary">🚀 START YOUR TRANSFORMATION</div>
+    <div class="s10-btn secondary">👑 JOIN 50,000+ WARRIORS</div>
+  </div>
+  <div class="s10-url">ROYAL FITNESS CLUB · YOUR TRANSFORMATION STARTS TODAY</div>
+</div>
+
+<script>
+// Set initial time to 0
+document.documentElement.style.setProperty('--t','0ms');
+</script>
+</body>
+</html>
