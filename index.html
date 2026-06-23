@@ -6764,6 +6764,7 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
         <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;"><path d="M17.64 9.2045C17.64 8.5663 17.5827 7.9527 17.4764 7.3636H9V10.845H13.8436C13.635 11.97 13.0009 12.9231 12.0477 13.5613V15.8195H14.9564C16.6582 14.2527 17.64 11.9454 17.64 9.2045Z" fill="#4285F4"/><path d="M9 18C11.43 18 13.4673 17.1941 14.9564 15.8195L12.0477 13.5613C11.2418 14.1013 10.2109 14.4204 9 14.4204C6.65591 14.4204 4.67182 12.8372 3.96409 10.71H0.957275V13.0418C2.43818 15.9831 5.48182 18 9 18Z" fill="#34A853"/><path d="M3.96409 10.71C3.78409 10.17 3.68182 9.5931 3.68182 9C3.68182 8.4069 3.78409 7.83 3.96409 7.29V4.9582H0.957275C0.347727 6.1731 0 7.5477 0 9C0 10.4523 0.347727 11.8269 0.957275 13.0418L3.96409 10.71Z" fill="#FBBC05"/><path d="M9 3.5795C10.3214 3.5795 11.5077 4.0336 12.4405 4.9255L15.0218 2.344C13.4632 0.8918 11.4259 0 9 0C5.48182 0 2.43818 2.0168 0.957275 4.9582L3.96409 7.29C4.67182 5.1627 6.65591 3.5795 9 3.5795Z" fill="#EA4335"/></svg>
         Sign in with Google
       </button>
+      <div style="font-size:10px;color:var(--muted);text-align:center;margin-top:6px;">A Google sign-in window will open. If nothing happens, allow popups for this site.</div>
       <div style="margin-top:14px;padding:12px;background:rgba(124,58,237,.04);border:1px solid rgba(109,40,217,.1);border-radius:8px;font-size:11px;color:var(--muted);line-height:1.7;">
         <div style="font-weight:700;color:var(--text);margin-bottom:5px;font-size:12px;">✅ Free access includes:</div>
         <div>Beast Score · BMI/TDEE · WOD · Water Tracker</div>
@@ -6935,6 +6936,17 @@ function initUser(){
     // No auto-popup — user can browse freely; login triggered by tool use
     return;
   }
+  // Handle redirect sign-in result (fallback from signInWithRedirect)
+  firebase.auth().getRedirectResult().then(function(result){
+    if(result&&result.user){
+      // Success via redirect — onAuthStateChanged will fire and call applyUser()
+      toast('Welcome to Royal Fitness Club! 🎉','green');
+    }
+  }).catch(function(err){
+    if(err.code&&err.code!=='auth/no-auth-event'){
+      toast(err.message||'Google sign-in failed. Try again.','gold');
+    }
+  });
   firebase.auth().onAuthStateChanged(async function(fbUser){
     if(fbUser){
       // Admin bypass — always grant full access without gym-membership gate
@@ -7200,21 +7212,43 @@ async function loginWithFirebase(){
 function loginUser(){loginWithFirebase();}
 
 // ── GOOGLE SIGN-IN (outsiders / digital members) ──
+var _googleSignInBusy = false;
 async function signInWithGoogle(){
-  if(typeof firebase==='undefined'){toast('Service loading… try again.','gold');return;}
+  if(typeof firebase==='undefined'){toast('⭐ Service loading… please try again in a moment.','gold');return;}
+  if(_googleSignInBusy) return;
+  _googleSignInBusy = true;
   const btn=document.querySelector('.google-signin-btn');
+  const _btnHTML = btn ? btn.innerHTML : '';
   if(btn){btn.disabled=true;btn.textContent='Signing in…';}
+  const provider=new firebase.auth.GoogleAuthProvider();
+  provider.addScope('email');
+  provider.addScope('profile');
+  provider.setCustomParameters({prompt:'select_account'});
   try{
-    const provider=new firebase.auth.GoogleAuthProvider();
-    provider.addScope('email');
-    provider.addScope('profile');
+    // Try popup first (desktop / modern browsers)
     await firebase.auth().signInWithPopup(provider);
-    closeLoginModal();
-    toast('Welcome to Royal Fitness Club! 🎉','green');
+    // onAuthStateChanged + applyUser() will close the modal automatically
   }catch(err){
-    if(err.code!=='auth/popup-closed-by-user'){toast(err.message||'Google sign-in failed. Try again.','gold');}
+    if(err.code==='auth/popup-blocked'||err.code==='auth/popup-closed-by-user'||err.code==='auth/cancelled-popup-request'){
+      // Popup was blocked or closed — fall back to redirect flow
+      try{
+        toast('Redirecting to Google sign-in…','gold');
+        await firebase.auth().signInWithRedirect(provider);
+        // Page will reload; result handled in initUser()
+        return;
+      }catch(redirErr){
+        toast('Google sign-in failed. Please allow popups and try again.','gold');
+      }
+    } else if(err.code==='auth/network-request-failed'){
+      toast('Network error. Please check your connection and try again.','gold');
+    } else if(err.code==='auth/unauthorized-domain'){
+      toast('Domain not authorised for Google sign-in. Contact admin.','gold');
+    } else {
+      toast(err.message||'Google sign-in failed. Try again.','gold');
+    }
   }finally{
-    if(btn){btn.disabled=false;btn.innerHTML='<svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;"><path d="M17.64 9.2045C17.64 8.5663 17.5827 7.9527 17.4764 7.3636H9V10.845H13.8436C13.635 11.97 13.0009 12.9231 12.0477 13.5613V15.8195H14.9564C16.6582 14.2527 17.64 11.9454 17.64 9.2045Z" fill="#4285F4"/><path d="M9 18C11.43 18 13.4673 17.1941 14.9564 15.8195L12.0477 13.5613C11.2418 14.1013 10.2109 14.4204 9 14.4204C6.65591 14.4204 4.67182 12.8372 3.96409 10.71H0.957275V13.0418C2.43818 15.9831 5.48182 18 9 18Z" fill="#34A853"/><path d="M3.96409 10.71C3.78409 10.17 3.68182 9.5931 3.68182 9C3.68182 8.4069 3.78409 7.83 3.96409 7.29V4.9582H0.957275C0.347727 6.1731 0 7.5477 0 9C0 10.4523 0.347727 11.8269 0.957275 13.0418L3.96409 10.71Z" fill="#FBBC05"/><path d="M9 3.5795C10.3214 3.5795 11.5077 4.0336 12.4405 4.9255L15.0218 2.344C13.4632 0.8918 11.4259 0 9 0C5.48182 0 2.43818 2.0168 0.957275 4.9582L3.96409 7.29C4.67182 5.1627 6.65591 3.5795 9 3.5795Z" fill="#EA4335"/></svg> Sign in with Google';}
+    _googleSignInBusy = false;
+    if(btn){btn.disabled=false;btn.innerHTML=_btnHTML||'<svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;"><path d="M17.64 9.2045C17.64 8.5663 17.5827 7.9527 17.4764 7.3636H9V10.845H13.8436C13.635 11.97 13.0009 12.9231 12.0477 13.5613V15.8195H14.9564C16.6582 14.2527 17.64 11.9454 17.64 9.2045Z" fill="#4285F4"/><path d="M9 18C11.43 18 13.4673 17.1941 14.9564 15.8195L12.0477 13.5613C11.2418 14.1013 10.2109 14.4204 9 14.4204C6.65591 14.4204 4.67182 12.8372 3.96409 10.71H0.957275V13.0418C2.43818 15.9831 5.48182 18 9 18Z" fill="#34A853"/><path d="M3.96409 10.71C3.78409 10.17 3.68182 9.5931 3.68182 9C3.68182 8.4069 3.78409 7.83 3.96409 7.29V4.9582H0.957275C0.347727 6.1731 0 7.5477 0 9C0 10.4523 0.347727 11.8269 0.957275 13.0418L3.96409 10.71Z" fill="#FBBC05"/><path d="M9 3.5795C10.3214 3.5795 11.5077 4.0336 12.4405 4.9255L15.0218 2.344C13.4632 0.8918 11.4259 0 9 0C5.48182 0 2.43818 2.0168 0.957275 4.9582L3.96409 7.29C4.67182 5.1627 6.65591 3.5795 9 3.5795Z" fill="#EA4335"/></svg> Sign in with Google';}
   }
 }
 
