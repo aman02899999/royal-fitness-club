@@ -7054,6 +7054,8 @@ function showMembershipGate(type,expDate){
 function applyUser(){
   if(!user)return;
   if(!user.name && user.displayName) user.name = user.displayName;
+  // Close login modal if it's open (handles Google sign-in redirect & popup flows)
+  const _lm=$('loginmodal');if(_lm&&_lm.classList.contains('open'))closeLoginModal();
   $('upill').classList.add('on');
   $('uname').textContent=user.name||user.email;
   $('navlbtn').style.display='none';
