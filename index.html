@@ -7377,6 +7377,7 @@ $('btnlo').addEventListener('click',async function(){
   $('navlbtn').style.display='block';$('tracker').classList.remove('pro-on');if($('navtr'))$('navtr').style.display='none';
   $('rescont').style.display='none';
   if($('emptyst2'))$('emptyst2').style.display='flex';
+  if(typeof renderCourses==='function')renderCourses();
   toast('Logged out successfully.');
 });
 async function logout(){
@@ -12643,7 +12644,6 @@ function saveExamState(courseId, state) {
 
 var _examTimer = null;
 var _examAnswers = {};
-var _examCourseId = null;
 
 function renderExamTab(courseId) {
   var state = getExamState(courseId);
@@ -12675,7 +12675,7 @@ function renderExamTab(courseId) {
   }
 
   var attemptsLeft = MAX_ATTEMPTS - state.attempts;
-  var lastScoreHtml = state.attempts > 0 ? '<div style="font-size:12px;color:var(--muted);margin-bottom:12px;">Last attempt: ' + state.score + '/' + questions.length + ' (' + Math.round(state.score/questions.length*100) + '%) — Need ' + PASS_PCT + '%</div>' : '';
+  var lastScoreHtml = (state.attempts > 0 && questions.length) ? '<div style="font-size:12px;color:var(--muted);margin-bottom:12px;">Last attempt: ' + state.score + '/' + questions.length + ' (' + Math.round(state.score/questions.length*100) + '%) — Need ' + PASS_PCT + '%</div>' : '';
 
   return '<div id="exam-start-view">' +
     '<div style="text-align:center;padding:24px 0 16px;">' +
@@ -12696,7 +12696,6 @@ function renderExamTab(courseId) {
 }
 
 function startExam(courseId) {
-  _examCourseId = courseId;
   _examAnswers = {};
   var questions = COURSE_EXAMS[courseId] || [];
   var startView = document.getElementById('exam-start-view');
@@ -12842,7 +12841,7 @@ function renderCourses() {
     const hidden = _courseFilter !== 'all' && c.level !== _courseFilter ? ' hidden-by-filter' : '';
     const pharmaWarn = c.isPharma ? `<div style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);border-radius:6px;padding:8px 12px;font-size:11px;color:#f87171;margin-bottom:10px;">⚠️ 18+ Educational Course — Pharmaceutical Science (Harm Reduction)</div>` : '';
     const examState = getExamState(c.id);
-    const examPassed = examState && examState.passed;
+    const examPassed = examState.passed;
     return `<div class="cr-card${hidden}" data-level="${c.level}">
       <div class="cr-banner" style="${c.img ? `background:url('${c.img}') center/cover no-repeat;` : `background:${c.banner};`}">
         <div class="cr-banner-overlay"></div>
