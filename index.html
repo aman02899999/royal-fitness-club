@@ -12704,7 +12704,7 @@ function startExam(courseId) {
   var quizView = document.getElementById('exam-quiz-view');
   if (!quizView) return;
   quizView.style.display = 'block';
-  var timeLeft = 30 * 60;
+  var _examDeadline = Date.now() + 30 * 60 * 1000;
 
   quizView.innerHTML = '<div style="position:sticky;top:0;background:var(--dark);z-index:10;padding:10px 0 8px;border-bottom:1px solid var(--border);margin-bottom:16px;">' +
     '<div style="display:flex;justify-content:space-between;align-items:center;">' +
@@ -12728,7 +12728,7 @@ function startExam(courseId) {
 
   clearInterval(_examTimer);
   _examTimer = setInterval(function() {
-    timeLeft--;
+    var timeLeft = Math.max(0, Math.round((_examDeadline - Date.now()) / 1000));
     var m = Math.floor(timeLeft/60), s = timeLeft % 60;
     var timerEl = document.getElementById('exam-timer');
     if (timerEl) {
@@ -13343,6 +13343,7 @@ function purchaseCourse(courseId) {
 }
 
 function closeCourseModal() {
+  clearInterval(_examTimer);
   const m = document.getElementById('course-modal');
   if (m) m.style.display = 'none';
 }
@@ -14810,7 +14811,7 @@ function admSaveSiteSettings() {
 const DEFAULT_PLANS = [
   {id:'plan_pro', name:'Royal Pro', price:499, period:'month', features:['Full workout tracker','Nutrition plans','Blood Analyser reports','Leaderboard access','Priority support'], badge:'👑', active:true},
   {id:'plan_elite', name:'Royal Elite', price:1999, period:'month', features:['Everything in Pro','1-on-1 coaching (2 sessions)','Custom meal plan','Advanced analytics'], badge:'⚡', active:true},
-  {id:'plan_royal', name:'Royal Annual', price:4999, period:'year', features:['All Pro & Elite features','12-month access','Exclusive RFC merchandise discount','Certificate of completion'], badge:'🏆', active:true},
+  {id:'plan_royal', name:'Royal Annual', price:4999, period:'year', features:['All Pro & Elite features','12-month access','Exclusive RFC merchandise discount','Passing Badge on all courses'], badge:'🏆', active:true},
 ];
 
 function getAdminPlans() {
@@ -15099,12 +15100,13 @@ function switchScreen(name, navEl) {
   if (name === 'yoga') renderYoga();
   if (name === 'meditation') renderMeditation();
 
-  // Scroll to top AFTER render — instant to avoid mobile repaint glitch where
-  // content injected during smooth-scroll leaves viewport at wrong position
-  requestAnimationFrame(function() {
+  // Scroll to top AFTER render — double-rAF ensures injected content has committed
+  // layout before the scroll assignment (single rAF fires too early on iOS Safari 16-).
+  // Direct scrollTop assignment bypasses CSS scroll-behavior:smooth.
+  requestAnimationFrame(function() { requestAnimationFrame(function() {
     document.documentElement.scrollTop = 0;
     document.body.scrollTop = 0;
-  });
+  }); });
 
   // Close mobile sidebar on nav
   if (window.innerWidth < 900) {
