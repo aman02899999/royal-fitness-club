@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=430,initial-scale=1">
+<title>RFC Reel 2 — Members Get PRO Free</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;700;900&display=swap');
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{width:430px;height:932px;overflow:hidden;background:#0a0a0a;}
+.reel{width:430px;height:932px;position:relative;overflow:hidden;font-family:'Inter',sans-serif;}
+
+.bg{position:absolute;inset:0;background:radial-gradient(ellipse at 80% 20%,#001a07 0%,#0a0a0a 60%);z-index:0;}
+.gold-glow{position:absolute;width:400px;height:400px;background:radial-gradient(circle,rgba(34,197,94,.2) 0%,transparent 70%);top:100px;right:-100px;z-index:1;animation:breathe 3s ease-in-out infinite;}
+@keyframes breathe{0%,100%{transform:scale(1);}50%{transform:scale(1.2);}}
+
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+@keyframes slideUp{from{opacity:0;transform:translateY(25px);}to{opacity:1;transform:translateY(0);}}
+@keyframes slideLeft{from{opacity:0;transform:translateX(40px);}to{opacity:1;transform:translateX(0);}}
+@keyframes pop{from{opacity:0;transform:scale(0.6);}to{opacity:1;transform:scale(1);}}
+
+/* HOOK */
+.hook{position:absolute;inset:0;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:50px 32px;animation:s-fade 4s .2s forwards;}
+@keyframes s-fade{0%{opacity:0;}10%{opacity:1;}85%{opacity:1;}100%{opacity:0;}}
+.hook-emoji{font-size:72px;opacity:0;animation:pop .5s .5s forwards;}
+.hook-q{font-family:'Bebas Neue',sans-serif;font-size:38px;color:#fff;text-align:center;letter-spacing:2px;line-height:1.2;margin-top:18px;opacity:0;animation:slideUp .5s .9s forwards;}
+.hook-q span{color:#22c55e;}
+
+/* REVEAL */
+.reveal{position:absolute;inset:0;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:60px 28px 40px;animation:s-fade2 14s 4s forwards;}
+@keyframes s-fade2{0%{opacity:0;}5%{opacity:1;}92%{opacity:1;}100%{opacity:0;}}
+.reveal-tag{background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.4);border-radius:30px;padding:7px 20px;font-size:11px;font-weight:700;color:#22c55e;letter-spacing:2px;text-transform:uppercase;opacity:0;animation:slideUp .4s 4.3s forwards;}
+.reveal-head{font-family:'Bebas Neue',sans-serif;font-size:52px;color:#fff;text-align:center;letter-spacing:3px;line-height:1;margin-top:14px;opacity:0;animation:slideUp .5s 4.7s forwards;}
+.reveal-head .red{color:#e8001d;}
+.reveal-head .green{color:#22c55e;}
+.price-strike{font-size:15px;color:rgba(255,255,255,.4);text-decoration:line-through;text-align:center;margin-top:8px;opacity:0;animation:fadeIn .4s 5.2s forwards;}
+.price-free{font-family:'Bebas Neue',sans-serif;font-size:56px;color:#22c55e;text-align:center;letter-spacing:3px;opacity:0;animation:pop .5s 5.6s forwards;}
+
+.checklist{width:100%;margin-top:22px;display:flex;flex-direction:column;gap:10px;}
+.check-item{display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.04);border:1px solid rgba(34,197,94,.15);border-radius:12px;padding:13px 16px;opacity:0;transform:translateX(40px);}
+.check-item:nth-child(1){animation:slideLeft .4s 6.1s forwards;}
+.check-item:nth-child(2){animation:slideLeft .4s 6.5s forwards;}
+.check-item:nth-child(3){animation:slideLeft .4s 6.9s forwards;}
+.check-item:nth-child(4){animation:slideLeft .4s 7.3s forwards;}
+.check-item:nth-child(5){animation:slideLeft .4s 7.7s forwards;}
+.check-item:nth-child(6){animation:slideLeft .4s 8.1s forwards;}
+.check-icon{width:28px;height:28px;background:rgba(34,197,94,.2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;}
+.check-name{font-size:14px;font-weight:700;color:#fff;}
+.check-sub{font-size:11px;color:rgba(255,255,255,.4);margin-top:1px;}
+
+/* HOW TO */
+.howto{position:absolute;inset:0;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 28px;animation:s-fade3 5s 18s forwards;}
+@keyframes s-fade3{0%{opacity:0;}10%{opacity:1;}80%{opacity:1;}100%{opacity:0;}}
+.ht-title{font-family:'Bebas Neue',sans-serif;font-size:30px;color:rgba(255,255,255,.6);letter-spacing:3px;opacity:0;animation:slideUp .4s 18.3s forwards;}
+.ht-steps{width:100%;margin-top:18px;display:flex;flex-direction:column;gap:12px;}
+.ht-step{display:flex;align-items:center;gap:16px;opacity:0;}
+.ht-step:nth-child(1){animation:slideUp .4s 18.7s forwards;}
+.ht-step:nth-child(2){animation:slideUp .4s 19.1s forwards;}
+.ht-step:nth-child(3){animation:slideUp .4s 19.5s forwards;}
+.ht-num{width:40px;height:40px;background:linear-gradient(135deg,#e8001d,#7c0010);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:20px;color:#fff;flex-shrink:0;}
+.ht-text{font-size:15px;font-weight:700;color:#fff;line-height:1.3;}
+.ht-text span{color:rgba(255,255,255,.45);font-weight:400;font-size:12px;display:block;margin-top:2px;}
+.ht-url{background:linear-gradient(135deg,#e8001d,#b00010);color:#fff;padding:16px 36px;border-radius:50px;font-size:14px;font-weight:700;letter-spacing:1px;margin-top:28px;box-shadow:0 8px 24px rgba(232,0,29,.45);opacity:0;animation:pop .5s 20.1s forwards;}
+
+.progress{position:absolute;bottom:0;left:0;height:3px;background:linear-gradient(90deg,#22c55e,#e8001d);z-index:20;animation:prog 23s linear forwards;}
+@keyframes prog{from{width:0;}to{width:100%;}}
+.wm{position:absolute;bottom:28px;left:0;right:0;text-align:center;font-size:11px;color:rgba(255,255,255,.2);letter-spacing:2px;z-index:20;}
+</style>
+</head>
+<body>
+<div class="reel">
+  <div class="bg"></div>
+  <div class="gold-glow"></div>
+
+  <!-- HOOK -->
+  <div class="hook">
+    <div class="hook-emoji">🎁</div>
+    <div class="hook-q">Did you know your RFC<br>membership includes a<br><span>FREE fitness app?</span></div>
+  </div>
+
+  <!-- REVEAL: CHECKLIST -->
+  <div class="reveal">
+    <div class="reveal-tag">🐯 ROYAL FITNESS CLUB MEMBERS</div>
+    <div class="reveal-head">GET<br><span class="green">PRO</span> <span class="red">FREE</span></div>
+    <div class="price-strike">Worth ₹499/month</div>
+    <div class="price-free">₹0</div>
+    <div class="checklist">
+      <div class="check-item"><div class="check-icon">⚡</div><div><div class="check-name">Beast Score Calculator</div><div class="check-sub">Full body analysis — BMI, BMR, body fat, fitness score</div></div></div>
+      <div class="check-item"><div class="check-icon">🩸</div><div><div class="check-name">Blood Report Analyser</div><div class="check-sub">20+ biomarkers decoded — no doctor needed</div></div></div>
+      <div class="check-item"><div class="check-icon">📚</div><div><div class="check-name">108+ Expert PDF Guides</div><div class="check-sub">Anabolic science, fat loss, nutrition — all free</div></div></div>
+      <div class="check-item"><div class="check-icon">🎓</div><div><div class="check-name">RFC Academy — 10 Courses</div><div class="check-sub">₹499 each — included in your PRO</div></div></div>
+      <div class="check-item"><div class="check-icon">🏆</div><div><div class="check-name">Tiger Leaderboard</div><div class="check-sub">Compete India-wide · Win ₹15,000 monthly</div></div></div>
+      <div class="check-item"><div class="check-icon">🥗</div><div><div class="check-name">7-Day Indian Meal Plans</div><div class="check-sub">50+ veg & non-veg Indian foods with macros</div></div></div>
+    </div>
+  </div>
+
+  <!-- HOW TO CLAIM -->
+  <div class="howto">
+    <div class="ht-title">HOW TO CLAIM YOUR FREE PRO</div>
+    <div class="ht-steps">
+      <div class="ht-step"><div class="ht-num">1</div><div class="ht-text">Visit the app<span>royal-fitness-club-7adc1.web.app</span></div></div>
+      <div class="ht-step"><div class="ht-num">2</div><div class="ht-text">Sign in with Google<span>Use your registered email</span></div></div>
+      <div class="ht-step"><div class="ht-num">3</div><div class="ht-text">Enter your gym membership code<span>3+ months = Full PRO unlocked FREE</span></div></div>
+    </div>
+    <div class="ht-url">🔥 Claim Your Free PRO Now</div>
+  </div>
+
+  <div class="progress"></div>
+  <div class="wm">ROYAL FITNESS CLUB</div>
+</div>
+</body>
+</html>

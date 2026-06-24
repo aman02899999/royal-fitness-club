@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=430,initial-scale=1">
+<title>RFC Reel 4 — RFC Academy</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;700;900&display=swap');
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{width:430px;height:932px;overflow:hidden;background:#020310;}
+.reel{width:430px;height:932px;position:relative;overflow:hidden;font-family:'Inter',sans-serif;}
+
+.bg{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 30%,#05083a 0%,#020310 70%);z-index:0;}
+.stars{position:absolute;inset:0;z-index:1;}
+.stars::before{content:'';position:absolute;inset:0;background-image:radial-gradient(1px 1px at 20% 15%,rgba(255,255,255,.5) 0%,transparent 100%),radial-gradient(1px 1px at 60% 25%,rgba(255,255,255,.4) 0%,transparent 100%),radial-gradient(1px 1px at 80% 10%,rgba(255,255,255,.6) 0%,transparent 100%),radial-gradient(1px 1px at 40% 60%,rgba(255,255,255,.3) 0%,transparent 100%),radial-gradient(1px 1px at 90% 50%,rgba(255,255,255,.4) 0%,transparent 100%),radial-gradient(2px 2px at 10% 80%,rgba(245,158,11,.4) 0%,transparent 100%),radial-gradient(2px 2px at 70% 70%,rgba(245,158,11,.3) 0%,transparent 100%);}
+.gold-glow{position:absolute;width:500px;height:300px;background:radial-gradient(ellipse,rgba(245,158,11,.15) 0%,transparent 70%);top:50px;left:-50px;z-index:1;animation:shimmer 5s ease-in-out infinite;}
+@keyframes shimmer{0%,100%{opacity:.6;}50%{opacity:1;}}
+
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+@keyframes slideUp{from{opacity:0;transform:translateY(25px);}to{opacity:1;transform:translateY(0);}}
+@keyframes pop{from{opacity:0;transform:scale(0.5);}to{opacity:1;transform:scale(1);}}
+@keyframes glow{0%,100%{text-shadow:0 0 20px rgba(245,158,11,.4);}50%{text-shadow:0 0 40px rgba(245,158,11,.8);}}
+
+/* HOOK */
+.hook{position:absolute;inset:0;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:50px 36px;animation:sfade 4s .2s forwards;}
+@keyframes sfade{0%{opacity:0;}10%{opacity:1;}80%{opacity:1;}100%{opacity:0;}}
+.hook-q{font-size:22px;font-weight:700;color:rgba(255,255,255,.7);text-align:center;line-height:1.5;opacity:0;animation:slideUp .5s .5s forwards;}
+.hook-q .gold{color:#f59e0b;}
+
+/* ACADEMY REVEAL */
+.academy{position:absolute;inset:0;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:52px 28px 40px;animation:sfade2 15s 4s forwards;}
+@keyframes sfade2{0%{opacity:0;}5%{opacity:1;}92%{opacity:1;}100%{opacity:0;}}
+.grad-icon{font-size:58px;opacity:0;animation:pop .5s 4.3s forwards;}
+.ac-name{font-family:'Bebas Neue',sans-serif;font-size:44px;color:#f59e0b;letter-spacing:5px;margin-top:8px;opacity:0;animation:slideUp .4s 4.8s forwards;animation-fill-mode:both;}
+.ac-sub{font-size:12px;color:rgba(255,255,255,.4);letter-spacing:4px;text-transform:uppercase;opacity:0;animation:slideUp .4s 5.2s forwards;}
+
+.courses-head{font-size:14px;font-weight:700;color:rgba(255,255,255,.5);letter-spacing:2px;text-transform:uppercase;margin-top:22px;opacity:0;animation:slideUp .4s 5.6s forwards;}
+
+.courses-grid{width:100%;margin-top:12px;display:flex;flex-direction:column;gap:8px;}
+.course-row{display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:12px;opacity:0;}
+.course-row:nth-child(1){background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.2);animation:featin .3s 6.1s forwards;}
+.course-row:nth-child(2){background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.2);animation:featin .3s 6.4s forwards;}
+.course-row:nth-child(3){background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.2);animation:featin .3s 6.7s forwards;}
+.course-row:nth-child(4){background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.2);animation:featin .3s 7.0s forwards;}
+.course-row:nth-child(5){background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.2);animation:featin .3s 7.3s forwards;}
+.course-row:nth-child(6){background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.2);animation:featin .3s 7.6s forwards;}
+.course-row:nth-child(7){background:rgba(232,0,29,.08);border:1px solid rgba(232,0,29,.2);animation:featin .3s 7.9s forwards;}
+.course-row:nth-child(8){background:rgba(232,0,29,.08);border:1px solid rgba(232,0,29,.2);animation:featin .3s 8.2s forwards;}
+.course-row:nth-child(9){background:rgba(168,85,247,.08);border:1px solid rgba(168,85,247,.2);animation:featin .3s 8.5s forwards;}
+.course-row:nth-child(10){background:rgba(168,85,247,.08);border:1px solid rgba(168,85,247,.2);animation:featin .3s 8.8s forwards;}
+@keyframes featin{from{opacity:0;transform:translateX(-15px);}to{opacity:1;transform:translateX(0);}}
+.c-emoji{font-size:20px;}
+.c-info{flex:1;}
+.c-name{font-size:12px;font-weight:700;color:#fff;}
+.c-level{font-size:10px;color:rgba(255,255,255,.35);}
+.c-price{font-size:12px;font-weight:700;color:#f59e0b;}
+
+/* PRICE REVEAL */
+.pricing{position:absolute;inset:0;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 28px;animation:sfade3 6s 19.5s forwards;}
+@keyframes sfade3{0%{opacity:0;}8%{opacity:1;}80%{opacity:1;}100%{opacity:0;}}
+.pr-label{font-size:13px;color:rgba(255,255,255,.5);letter-spacing:3px;text-transform:uppercase;opacity:0;animation:slideUp .4s 19.8s forwards;}
+.pr-was{font-size:28px;font-weight:900;color:rgba(255,255,255,.25);text-decoration:line-through;margin-top:6px;opacity:0;animation:slideUp .4s 20.2s forwards;}
+.pr-arrow{font-size:24px;color:#f59e0b;margin:6px 0;opacity:0;animation:fadeIn .4s 20.5s forwards;}
+.pr-now{font-family:'Bebas Neue',sans-serif;font-size:72px;color:#f59e0b;letter-spacing:4px;line-height:1;animation:glow 2s 21s infinite,pop .5s 20.8s forwards;opacity:0;text-shadow:0 0 30px rgba(245,158,11,.6);}
+.pr-unit{font-size:14px;color:rgba(255,255,255,.5);margin-top:4px;opacity:0;animation:slideUp .4s 21.2s forwards;}
+.pr-badges{display:flex;gap:10px;margin-top:22px;flex-wrap:wrap;justify-content:center;opacity:0;animation:slideUp .4s 21.6s forwards;}
+.pbadge{padding:9px 16px;border-radius:30px;font-size:12px;font-weight:700;}
+.pbadge.gold{background:rgba(245,158,11,.15);border:1px solid rgba(245,158,11,.4);color:#f59e0b;}
+.pbadge.green{background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.35);color:#22c55e;}
+.pbadge.blue{background:rgba(59,130,246,.12);border:1px solid rgba(59,130,246,.35);color:#60a5fa;}
+.pr-tagline{font-family:'Bebas Neue',sans-serif;font-size:26px;color:rgba(255,255,255,.7);letter-spacing:3px;margin-top:22px;opacity:0;animation:slideUp .4s 22.1s forwards;}
+.pr-url{background:linear-gradient(135deg,#d4a840,#f59e0b);color:#000;padding:16px 40px;border-radius:50px;font-size:14px;font-weight:900;letter-spacing:1px;margin-top:20px;box-shadow:0 8px 28px rgba(245,158,11,.45);opacity:0;animation:pop .5s 22.6s forwards;}
+
+.progress{position:absolute;bottom:0;left:0;height:3px;background:linear-gradient(90deg,#1e3a8a,#7c3aed,#f59e0b);z-index:20;animation:prog 25.5s linear forwards;}
+@keyframes prog{from{width:0;}to{width:100%;}}
+.wm{position:absolute;bottom:28px;left:0;right:0;text-align:center;font-size:11px;color:rgba(255,255,255,.2);letter-spacing:2px;z-index:20;}
+</style>
+</head>
+<body>
+<div class="reel">
+  <div class="bg"></div>
+  <div class="stars"></div>
+  <div class="gold-glow"></div>
+
+  <!-- HOOK -->
+  <div class="hook">
+    <div class="hook-q">What if you could learn fitness science<br>from beginner to expert level<br>for less than <span class="gold">₹500?</span></div>
+  </div>
+
+  <!-- ACADEMY REVEAL -->
+  <div class="academy">
+    <div class="grad-icon">🎓</div>
+    <div class="ac-name">RFC ACADEMY</div>
+    <div class="ac-sub">Learn · Master · Dominate</div>
+    <div class="courses-head">10 Complete Science Courses</div>
+    <div class="courses-grid">
+      <div class="course-row"><span class="c-emoji">🌱</span><div class="c-info"><div class="c-name">Fitness Foundations</div><div class="c-level">BEGINNER</div></div><div class="c-price">₹499</div></div>
+      <div class="course-row"><span class="c-emoji">🥗</span><div class="c-info"><div class="c-name">Nutrition & Healthy Eating</div><div class="c-level">BEGINNER</div></div><div class="c-price">₹499</div></div>
+      <div class="course-row"><span class="c-emoji">💪</span><div class="c-info"><div class="c-name">Professional Personal Trainer</div><div class="c-level">ADVANCED</div></div><div class="c-price">₹999</div></div>
+      <div class="course-row"><span class="c-emoji">🧬</span><div class="c-info"><div class="c-name">Sports Nutrition & Dietetics</div><div class="c-level">ADVANCED</div></div><div class="c-price">₹999</div></div>
+      <div class="course-row"><span class="c-emoji">🦴</span><div class="c-info"><div class="c-name">Sports Physiotherapy & Rehab</div><div class="c-level">ADVANCED</div></div><div class="c-price">₹999</div></div>
+      <div class="course-row"><span class="c-emoji">🎯</span><div class="c-info"><div class="c-name">Fat Loss Science</div><div class="c-level">ADVANCED</div></div><div class="c-price">₹999</div></div>
+      <div class="course-row"><span class="c-emoji">🏅</span><div class="c-info"><div class="c-name">Elite Performance Master</div><div class="c-level">MASTER</div></div><div class="c-price">₹1,499</div></div>
+      <div class="course-row"><span class="c-emoji">⚗️</span><div class="c-info"><div class="c-name">Pharmaceutical Performance</div><div class="c-level">MASTER</div></div><div class="c-price">₹1,499</div></div>
+      <div class="course-row"><span class="c-emoji">🔬</span><div class="c-info"><div class="c-name">Body Transformation Science</div><div class="c-level">BEGINNER</div></div><div class="c-price">₹499</div></div>
+      <div class="course-row"><span class="c-emoji">🏥</span><div class="c-info"><div class="c-name">Sports Medicine & Physio Expert</div><div class="c-level">MASTER</div></div><div class="c-price">₹1,499</div></div>
+    </div>
+  </div>
+
+  <!-- PRICING -->
+  <div class="pricing">
+    <div class="pr-label">Each course was</div>
+    <div class="pr-was">₹49,999</div>
+    <div class="pr-arrow">↓ 99% OFF</div>
+    <div class="pr-now">₹499</div>
+    <div class="pr-unit">per course · Lifetime Access</div>
+    <div class="pr-badges">
+      <div class="pbadge gold">🏅 Passing Badge</div>
+      <div class="pbadge green">♾️ Lifetime Access</div>
+      <div class="pbadge blue">📱 Study on Phone</div>
+    </div>
+    <div class="pr-tagline">Education is a right,<br>not a privilege.</div>
+    <div class="pr-url">🎓 Enroll at royal-fitness-club-7adc1.web.app</div>
+  </div>
+
+  <div class="progress"></div>
+  <div class="wm">ROYAL FITNESS CLUB</div>
+</div>
+</body>
+</html>
