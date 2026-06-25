@@ -6,8 +6,9 @@
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait-primary",
-  "background_color": "#F5F3FF",
-  "theme_color": "#7C3AED",
+  "background_color": "#0a0a0a",
+  "theme_color": "#e8001d",
+  "prefer_related_applications": false,
   "lang": "en-IN",
   "dir": "ltr",
   "categories": ["fitness", "health", "sports", "education"],
@@ -57,6 +58,20 @@
       "short_name": "Courses",
       "description": "Enrol in expert fitness courses",
       "url": "/index.html#courses",
+      "icons": [{ "src": "/icons/icon-96x96.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Tiger Leaderboard",
+      "short_name": "Leaderboard",
+      "description": "Check your Tiger Score ranking and win ₹15,000",
+      "url": "/index.html#leaderboard",
+      "icons": [{ "src": "/icons/icon-96x96.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Wallet & Referrals",
+      "short_name": "Wallet",
+      "description": "Check your referral earnings and redeem rewards",
+      "url": "/index.html#referrals",
       "icons": [{ "src": "/icons/icon-96x96.png", "sizes": "96x96" }]
     }
   ]
