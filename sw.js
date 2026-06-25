@@ -1,8 +1,10 @@
-const CACHE = 'rfc-v61';
+const CACHE = 'rfc-v62';
 const STATIC = [
   '/',
   '/index.html',
   '/admin.html',
+  '/landing.html',
+  '/offline.html',
   '/404.html',
   '/manifest.json',
   '/icons/icon-192x192.png',
@@ -62,23 +64,30 @@ self.addEventListener('push', e => {
 });
 
 self.addEventListener('fetch', e => {
-  // Only intercept same-origin GET requests; skip Firebase/Razorpay API calls
   const url = new URL(e.request.url);
   if (e.request.method !== 'GET') return;
   if (url.hostname.includes('firebase') || url.hostname.includes('razorpay') ||
-      url.hostname.includes('googleapis') || url.hostname.includes('gstatic')) return;
+      url.hostname.includes('googleapis') || url.hostname.includes('gstatic') ||
+      url.hostname.includes('fontawesome') || url.hostname.includes('fonts.g')) return;
+
+  const isNavigation = e.request.mode === 'navigate';
 
   e.respondWith(
     caches.match(e.request).then(cached => {
       if (cached) return cached;
       return fetch(e.request).then(res => {
-        // Cache same-origin HTML/JS/CSS/images
         if (res.ok && url.origin === self.location.origin) {
           const clone = res.clone();
           caches.open(CACHE).then(c => c.put(e.request, clone));
         }
         return res;
-      }).catch(() => cached);
+      }).catch(() => {
+        // Navigation requests (page loads) → show offline page
+        if (isNavigation) {
+          return caches.match('/offline.html');
+        }
+        return cached || new Response('', { status: 503, statusText: 'Offline' });
+      });
     })
   );
 });

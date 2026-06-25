@@ -3047,10 +3047,28 @@ img{loading:lazy;}
 .adm-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;flex-wrap:wrap;gap:12px;}
 .adm-title{font-family:'Bebas Neue',sans-serif;font-size:32px;letter-spacing:2px;}
 .adm-badge{background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.4);color:#fca5a5;font-size:10px;font-weight:700;letter-spacing:2px;padding:4px 12px;border-radius:20px;}
-.adm-stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin-bottom:28px;}
+.adm-stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin-bottom:20px;}
 .adm-stat-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;text-align:center;}
 .adm-stat-val{font-family:'Bebas Neue',sans-serif;font-size:30px;color:var(--gold);}
 .adm-stat-lbl{font-size:10px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-top:2px;}
+.adm-analytics-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;}
+@media(max-width:640px){.adm-analytics-grid{grid-template-columns:1fr;}}
+.adm-chart-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;}
+.adm-chart-hdr{font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:12px;}
+.adm-bars-wrap{display:flex;align-items:flex-end;gap:2px;height:64px;}
+.adm-bar{flex:1;border-radius:2px 2px 0 0;min-height:2px;transition:height .3s;}
+.adm-bar-day{font-size:8px;color:rgba(255,255,255,.25);text-align:center;margin-top:4px;}
+.adm-lb-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.05);}
+.adm-lb-row:last-child{border-bottom:none;}
+.adm-lb-rank{font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--gold);width:26px;text-align:center;}
+.adm-lb-name{flex:1;font-size:13px;font-weight:600;}
+.adm-lb-score{font-size:12px;color:var(--muted);}
+.adm-feat-row{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.05);}
+.adm-feat-row:last-child{border-bottom:none;}
+.adm-feat-bar-bg{flex:1;height:5px;background:rgba(255,255,255,.07);border-radius:3px;overflow:hidden;}
+.adm-feat-bar-fill{height:100%;border-radius:3px;background:var(--red);}
+.adm-feat-name{font-size:12px;width:120px;color:var(--text);}
+.adm-feat-pct{font-size:11px;color:var(--muted);width:32px;text-align:right;}
 .adm-course-table{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:20px;}
 .adm-table-hdr{display:grid;grid-template-columns:2fr 1fr 1fr 1fr 120px;gap:12px;padding:12px 16px;border-bottom:1px solid var(--border);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);}
 .adm-row{display:grid;grid-template-columns:2fr 1fr 1fr 1fr 120px;gap:12px;padding:14px 16px;border-bottom:1px solid rgba(124,58,237,.06);align-items:center;transition:background .15s;}
@@ -6262,7 +6280,29 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
     <!-- Pane 0: Overview -->
     <div class="adm-pane active" id="adm-pane-0">
       <div class="adm-stats-row" id="adm-stats-row"></div>
-      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px;">
+      <div class="adm-analytics-grid">
+        <div class="adm-chart-card">
+          <div class="adm-chart-hdr">📅 30-Day Workout Activity</div>
+          <div class="adm-bars-wrap" id="adm-activity-bars"></div>
+          <div style="display:flex;justify-content:space-between;margin-top:4px;">
+            <span style="font-size:9px;color:rgba(255,255,255,.2);">30d ago</span>
+            <span style="font-size:9px;color:rgba(255,255,255,.2);">Today</span>
+          </div>
+        </div>
+        <div class="adm-chart-card">
+          <div class="adm-chart-hdr">🏆 Top Leaderboard Members</div>
+          <div id="adm-lb-preview"></div>
+        </div>
+        <div class="adm-chart-card">
+          <div class="adm-chart-hdr">⚡ Feature Engagement</div>
+          <div id="adm-feat-usage"></div>
+        </div>
+        <div class="adm-chart-card">
+          <div class="adm-chart-hdr">📈 Content Summary</div>
+          <div id="adm-content-summary" style="display:flex;flex-direction:column;gap:8px;margin-top:4px;"></div>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">
         <button class="bsm" onclick="admTab(1);adminAddCourse()">+ Add Course</button>
         <button class="bsm" onclick="admTab(2);admOpenPdfModal(null)">+ Add PDF</button>
         <button class="bsm" onclick="admTab(4);admOpenPlanModal(null)">+ Add Plan</button>
@@ -13533,24 +13573,128 @@ function renderAdminPanel() {
 
 function renderAdmOverview() {
   const courses = getCourses();
+  const pdfs = getAdminPdfs();
+  const plans = getAdminPlans();
+  const siteCfg = getAdminSiteSettings();
+
+  // ── Stat cards ─────────────────────────────────────────────────────
   const statsEl = document.getElementById('adm-stats-row');
   if (statsEl) {
-    let enrolled = 0;
+    let streak = 0, totalWorkouts = 0;
+    try {
+      const sd = JSON.parse(localStorage.getItem('rfc_streak_data') || '{}');
+      streak = sd.current || 0;
+    } catch(e){}
     if (user) {
-      try { const p = JSON.parse(localStorage.getItem('rfc_purchased_' + user.uid) || '[]'); enrolled = p.length; } catch(e){}
+      try {
+        const wlog = JSON.parse(localStorage.getItem('rfc_workouts_' + user.uid) || '[]');
+        totalWorkouts = wlog.length;
+      } catch(e){}
     }
-    const pdfs = getAdminPdfs();
-    const plans = getAdminPlans();
-    const siteCfg = getAdminSiteSettings();
     statsEl.innerHTML = [
-      [courses.length,'Total Courses'],
-      [courses.filter(c=>c.level==='beginner').length,'Beginner'],
-      [courses.filter(c=>c.level==='advanced').length,'Advanced'],
-      [courses.filter(c=>c.level==='master').length,'Master'],
-      [pdfs.length,'PDFs Configured'],
-      [plans.filter(p=>p.active).length,'Active Plans'],
-      [siteCfg.announcementEnabled?'ON':'OFF','Announcement'],
+      [courses.length, 'Courses'],
+      [pdfs.length, 'PDFs'],
+      [plans.filter(p => p.active).length, 'Active Plans'],
+      [streak + 'd', 'My Streak'],
+      [totalWorkouts, 'Total Workouts'],
+      [siteCfg.announcementEnabled ? 'ON' : 'OFF', 'Announcement'],
     ].map(([v,l]) => `<div class="adm-stat-card"><div class="adm-stat-val">${v}</div><div class="adm-stat-lbl">${l}</div></div>`).join('');
+  }
+
+  // ── 30-day workout activity bar chart ─────────────────────────────
+  const barsEl = document.getElementById('adm-activity-bars');
+  if (barsEl) {
+    let wlog = [];
+    if (user) {
+      try { wlog = JSON.parse(localStorage.getItem('rfc_workouts_' + user.uid) || '[]'); } catch(e){}
+    }
+    const now = new Date(); now.setHours(0,0,0,0);
+    const days = [];
+    for (let i = 29; i >= 0; i--) {
+      const d = new Date(now); d.setDate(d.getDate() - i);
+      const dayMs = d.getTime();
+      const count = wlog.filter(w => {
+        const ts = w.ts || (w.date ? new Date(w.date).getTime() : 0);
+        const wd = new Date(ts); wd.setHours(0,0,0,0);
+        return wd.getTime() === dayMs;
+      }).length;
+      days.push(count);
+    }
+    const maxCount = Math.max(...days, 1);
+    const today = new Date().getDay();
+    const dayLabels = ['S','M','T','W','T','F','S'];
+    barsEl.innerHTML = days.map((c, i) => {
+      const pct = Math.round((c / maxCount) * 100);
+      const isToday = i === 29;
+      const color = c > 0 ? (isToday ? '#e8001d' : 'rgba(232,0,29,.55)') : 'rgba(255,255,255,.06)';
+      const labelDay = new Date(); labelDay.setDate(labelDay.getDate() - (29 - i));
+      const label = (i === 0 || i === 7 || i === 14 || i === 21 || i === 29) ? dayLabels[labelDay.getDay()] : '';
+      return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;">
+        <div title="${c} workout${c!==1?'s':''}" style="width:100%;border-radius:2px 2px 0 0;background:${color};height:${Math.max(pct * 0.6, c > 0 ? 6 : 2)}px;min-height:2px;"></div>
+        <div style="font-size:7px;color:rgba(255,255,255,.2);margin-top:2px;">${label}</div>
+      </div>`;
+    }).join('');
+  }
+
+  // ── Top 5 leaderboard preview ─────────────────────────────────────
+  const lbEl = document.getElementById('adm-lb-preview');
+  if (lbEl && window.CommunityService) {
+    lbEl.innerHTML = '<div style="font-size:11px;color:var(--muted);padding:8px 0;">Loading…</div>';
+    window.CommunityService.getLeaderboard('beastScore', 5).then(entries => {
+      if (!entries || !entries.length) {
+        lbEl.innerHTML = '<div style="font-size:11px;color:var(--muted);padding:8px 0;">No leaderboard data yet.</div>';
+        return;
+      }
+      lbEl.innerHTML = entries.map((e, i) => {
+        const medals = ['🥇','🥈','🥉','4','5'];
+        return `<div class="adm-lb-row">
+          <div class="adm-lb-rank">${medals[i]}</div>
+          <div class="adm-lb-name">${e.name || e.displayName || 'Beast #' + (i+1)}</div>
+          <div class="adm-lb-score">${(e.beastScore||0).toLocaleString()} pts</div>
+        </div>`;
+      }).join('');
+    }).catch(() => {
+      lbEl.innerHTML = '<div style="font-size:11px;color:var(--muted);padding:8px 0;">Leaderboard unavailable.</div>';
+    });
+  }
+
+  // ── Feature engagement (based on usage keys in localStorage) ──────
+  const featEl = document.getElementById('adm-feat-usage');
+  if (featEl) {
+    const feats = [
+      { name: '🏋️ Workout Log', key: () => { try { return JSON.parse(localStorage.getItem(user ? 'rfc_workouts_' + user.uid : 'x') || '[]').length; } catch(e){ return 0; } } },
+      { name: '📊 Beast Score', key: () => localStorage.getItem('rfc_beast_score') ? 1 : 0 },
+      { name: '🍱 Meal Plan', key: () => localStorage.getItem('rfc_meal_plan') ? 1 : 0 },
+      { name: '🩸 Blood Report', key: () => localStorage.getItem('rfc_blood_result') ? 1 : 0 },
+      { name: '📸 Progress Photos', key: () => { try { return JSON.parse(localStorage.getItem('rfc_progress_photos') || '[]').length; } catch(e){ return 0; } } },
+      { name: '🔔 Notifications', key: () => localStorage.getItem('rfc_notif_perm') === 'granted' ? 1 : 0 },
+    ];
+    const vals = feats.map(f => ({ name: f.name, v: f.key() }));
+    const maxV = Math.max(...vals.map(x => x.v), 1);
+    featEl.innerHTML = vals.map(f => {
+      const pct = Math.round((f.v / maxV) * 100);
+      return `<div class="adm-feat-row">
+        <div class="adm-feat-name">${f.name}</div>
+        <div class="adm-feat-bar-bg"><div class="adm-feat-bar-fill" style="width:${pct}%;"></div></div>
+        <div class="adm-feat-pct">${f.v}</div>
+      </div>`;
+    }).join('');
+  }
+
+  // ── Content summary breakdown ─────────────────────────────────────
+  const contentEl = document.getElementById('adm-content-summary');
+  if (contentEl) {
+    const levels = ['beginner','intermediate','advanced','master'];
+    const levelEmoji = { beginner:'🟢', intermediate:'🔵', advanced:'🟠', master:'🔴' };
+    const rows = [
+      ...levels.map(l => {
+        const n = courses.filter(c => c.level === l).length;
+        return n > 0 ? `<div style="display:flex;justify-content:space-between;font-size:12px;"><span>${levelEmoji[l]||'•'} ${l.charAt(0).toUpperCase()+l.slice(1)} courses</span><span style="color:var(--gold);font-weight:700;">${n}</span></div>` : '';
+      }).filter(Boolean),
+      `<div style="display:flex;justify-content:space-between;font-size:12px;"><span>📄 PDF guides</span><span style="color:var(--gold);font-weight:700;">${pdfs.length}</span></div>`,
+      `<div style="display:flex;justify-content:space-between;font-size:12px;"><span>💳 Subscription plans</span><span style="color:var(--gold);font-weight:700;">${plans.length}</span></div>`,
+    ];
+    contentEl.innerHTML = rows.join('');
   }
 }
 
