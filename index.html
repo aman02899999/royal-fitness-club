@@ -3645,6 +3645,8 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
 <script src="src/analyticsService.js"></script>
 <script src="src/transformationService.js"></script>
 <script src="src/communityService.js"></script>
+<!-- Motion (Framer Motion vanilla JS) — spring physics, staggered animations -->
+<script src="https://cdn.jsdelivr.net/npm/motion@11/dist/motion.js"></script>
 </head>
 <body>
 <!-- Google Tag Manager (noscript) -->
@@ -20940,6 +20942,118 @@ function renderMeditation(){
   window.medTimerSet=function(m){clearInterval(_medTimer.interval);_medTimer.running=false;_medTimer.total=m*60;_medTimer.mins=m;_medTimer.secs=0;renderTab();};
   renderTab();
 }
+</script>
+
+<!-- ── Motion (Framer Motion vanilla) integration ── -->
+<script>
+(function() {
+  var M = window.Motion;
+  if (!M || typeof M.animate !== 'function') return;
+
+  var animate = M.animate;
+  var stagger  = M.stagger  || function(d) { return function(i) { return i * d; }; };
+  var inView   = M.inView;
+
+  /* ── 1. Button spring press (.bfire + .bsm + .bcalc) ── */
+  document.addEventListener('pointerdown', function(e) {
+    var btn = e.target.closest('.bfire, .bsm, .bcalc, .ob-btn');
+    if (!btn) return;
+    animate(btn, { scale: 0.93 }, { duration: 0.1, easing: 'ease-out' });
+  }, true);
+  document.addEventListener('pointerup', function(e) {
+    var btn = e.target.closest('.bfire, .bsm, .bcalc, .ob-btn');
+    if (!btn) return;
+    animate(btn, { scale: 1 }, { duration: 0.35, easing: [0.34, 1.56, 0.64, 1] });
+  }, true);
+  document.addEventListener('pointercancel', function(e) {
+    var btn = e.target.closest('.bfire, .bsm, .bcalc, .ob-btn');
+    if (!btn) return;
+    animate(btn, { scale: 1 }, { duration: 0.2, easing: 'ease-out' });
+  }, true);
+
+  /* ── 2. Toast spring pop ── */
+  var _origToast = window.toast;
+  if (typeof _origToast === 'function') {
+    window.toast = function(msg, type) {
+      _origToast(msg, type);
+      var t = document.getElementById('toast');
+      if (t) {
+        animate(t, { scale: [0.75, 1.06, 1], opacity: [0, 1, 1] }, { duration: 0.38, easing: 'ease-out' });
+      }
+    };
+  }
+
+  /* ── 3. Course modal spring open ── */
+  var _origOpenModal = window.openCourseModal;
+  if (typeof _origOpenModal === 'function') {
+    window.openCourseModal = function(courseId) {
+      _origOpenModal(courseId);
+      var inner = document.querySelector('#course-modal .cm-inner, #course-modal > div');
+      if (inner) {
+        animate(inner, { scale: [0.91, 1], opacity: [0, 1], y: [18, 0] },
+          { duration: 0.4, easing: [0.34, 1.45, 0.64, 1] });
+      }
+    };
+  }
+
+  /* ── 4. Course card stagger entrance ── */
+  var _origRenderCourses = window.renderCourses;
+  if (typeof _origRenderCourses === 'function') {
+    window.renderCourses = function() {
+      _origRenderCourses.apply(this, arguments);
+      requestAnimationFrame(function() {
+        var cards = document.querySelectorAll('.cr-card');
+        if (!cards.length) return;
+        animate(cards, { opacity: [0, 1], y: [22, 0] },
+          { delay: stagger(0.055), duration: 0.4, easing: 'ease-out' });
+      });
+    };
+  }
+
+  /* ── 5. Screen fade+slide on navigation ── */
+  var _origSwitch = window.switchScreen;
+  if (typeof _origSwitch === 'function') {
+    window.switchScreen = function(name, navEl) {
+      _origSwitch(name, navEl);
+      requestAnimationFrame(function() {
+        var SCREEN_IDS = {
+          dashboard: 'screen-dashboard',
+          workouts:  'workout-section', nutrition: 'nut-section',
+          toolbox:   'tools-section',   roadmap:   'roadmap-section',
+          physio:    'physio-section',  store:     'store-section',
+          courses:   'courses-section', plans:     'plans-section',
+          profile:   'profile-section', admin:     'admin-section',
+          leaderboard: 'lb-section',    challenges: 'challenges-section',
+          referrals: 'referrals-section', pdfshop: 'pdfshop-section',
+          transform: 'transform-section', bloodai: 'bloodai-section',
+          ayurveda:  'ayurveda-section',  yoga:    'yoga-section',
+          meditation:'meditation-section'
+        };
+        var id = SCREEN_IDS[name];
+        var el = id ? document.getElementById(id) : null;
+        if (!el) return;
+        animate(el, { opacity: [0, 1], y: [14, 0] }, { duration: 0.32, easing: 'ease-out' });
+      });
+    };
+  }
+
+  /* ── 6. Enhanced inView scroll reveal (replaces IntersectionObserver css-class only approach) ── */
+  if (typeof inView === 'function') {
+    document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale').forEach(function(el) {
+      inView(el, function() {
+        var from = {};
+        if (el.classList.contains('reveal-left'))  from = { x: -32, opacity: 0 };
+        else if (el.classList.contains('reveal-right')) from = { x: 32, opacity: 0 };
+        else if (el.classList.contains('reveal-scale')) from = { scale: 0.88, opacity: 0 };
+        else from = { y: 24, opacity: 0 };
+        animate(el, Object.assign({}, from, { opacity: 1, x: 0, y: 0, scale: 1 }),
+          { duration: 0.55, easing: [0.25, 0.8, 0.25, 1] });
+        return function() {};
+      }, { amount: 0.15 });
+    });
+  }
+
+})();
 </script>
 
 </body>
