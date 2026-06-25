@@ -20186,6 +20186,93 @@ body.admin-logged-in #admin-theme-btn{display:flex;}
 .atp-reset-btn:hover{background:rgba(225,29,72,.15);border-color:#e11d48;color:#fb7185;}
 
 /* ── Section pencil edit buttons ── */
+
+/* ══════════════════════════════════════════════
+   3-D ENGINE — card tilt, shine, score pulse
+   ══════════════════════════════════════════════ */
+.rfc-3d-wrap{
+  perspective:900px;
+  transform-style:preserve-3d;
+}
+.rfc-tilt{
+  transform-style:preserve-3d;
+  transition:transform .12s ease,box-shadow .12s ease;
+  will-change:transform;
+  position:relative;
+  overflow:hidden;
+}
+.rfc-tilt:hover{
+  box-shadow:0 24px 56px rgba(0,0,0,.55),0 0 0 1px rgba(232,0,29,.18);
+}
+.rfc-shine{
+  position:absolute;
+  inset:0;
+  border-radius:inherit;
+  background:radial-gradient(circle at 50% 50%,rgba(255,255,255,.18) 0%,transparent 65%);
+  pointer-events:none;
+  opacity:0;
+  transition:opacity .18s;
+  z-index:10;
+  mix-blend-mode:screen;
+}
+.rfc-tilt:hover .rfc-shine,
+.rfc-tilt.touch-active .rfc-shine{opacity:1;}
+
+/* 3D canvas background */
+#rfc-bg3d{
+  position:fixed;
+  inset:0;
+  width:100%;
+  height:100%;
+  z-index:-1;
+  pointer-events:none;
+  opacity:.28;
+}
+
+/* Score pulse 3D */
+@keyframes scorePulse3d{
+  0%{transform:translateZ(0) scale(1);}
+  50%{transform:translateZ(18px) scale(1.06);}
+  100%{transform:translateZ(0) scale(1);}
+}
+.score-3d-pulse{
+  animation:scorePulse3d .6s ease-in-out;
+}
+
+/* Number flip 3D */
+@keyframes numFlipIn{
+  0%{transform:perspective(400px) rotateX(-90deg);opacity:0;}
+  60%{transform:perspective(400px) rotateX(12deg);opacity:1;}
+  100%{transform:perspective(400px) rotateX(0deg);opacity:1;}
+}
+.num-flip-3d{
+  display:inline-block;
+  animation:numFlipIn .45s cubic-bezier(.35,1.5,.65,1) both;
+}
+
+/* Floating depth layers on dashboard hero */
+.hero-float-3d{
+  transform-style:preserve-3d;
+  animation:heroFloat 8s ease-in-out infinite alternate;
+}
+@keyframes heroFloat{
+  0%{transform:perspective(1200px) rotateX(0deg) rotateY(0deg);}
+  50%{transform:perspective(1200px) rotateX(2deg) rotateY(-3deg);}
+  100%{transform:perspective(1200px) rotateX(-1deg) rotateY(2deg);}
+}
+
+/* 3D glow ring on stat cards */
+.rfc-tilt::before{
+  content:'';
+  position:absolute;
+  inset:-1px;
+  border-radius:inherit;
+  background:conic-gradient(from var(--rfc-rot,0deg),transparent 80%,rgba(232,0,29,.35) 90%,transparent 100%);
+  z-index:-1;
+  opacity:0;
+  transition:opacity .3s;
+}
+.rfc-tilt:hover::before{opacity:1;}
 </style>
 
 <!-- ═══ Marketing JS ═══ -->
@@ -21643,6 +21730,271 @@ function renderMeditation(){
       }, { amount: 0.15 });
     });
   }
+
+})();
+</script>
+
+<!-- ═══════════════════════════════════════════════════════
+     RFC 3-D ENGINE  — particle canvas + card tilt + shine
+     ═══════════════════════════════════════════════════════ -->
+<canvas id="rfc-bg3d"></canvas>
+<script>
+(function(){
+'use strict';
+
+/* ──────────────────────────────────────────────
+   1. PARTICLE / NETWORK BACKGROUND  (Canvas 3-D)
+   ────────────────────────────────────────────── */
+var canvas = document.getElementById('rfc-bg3d');
+if (!canvas) return;
+var ctx = canvas.getContext('2d');
+var W, H;
+
+var COLORS = ['#e8001d','#f59e0b','#ffffff','#ff4d4d','#ffd700'];
+var PARTICLE_COUNT = window.innerWidth < 600 ? 60 : 110;
+var MAX_DIST = 140;
+
+var pts = [];
+
+function resize(){
+  W = canvas.width  = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener('resize', resize);
+
+function Particle(){
+  this.x = (Math.random() - .5) * W * 2;
+  this.y = (Math.random() - .5) * H * 2;
+  this.z = Math.random() * 1400 + 100;
+  this.vx = (Math.random() - .5) * .4;
+  this.vy = (Math.random() - .5) * .4;
+  this.vz = (Math.random() - .5) * .6;
+  this.r  = Math.random() * 1.8 + .6;
+  this.color = COLORS[Math.floor(Math.random() * COLORS.length)];
+}
+
+for(var i = 0; i < PARTICLE_COUNT; i++) pts.push(new Particle());
+
+var fov = 600;
+function project(p){
+  var scale = fov / (fov + p.z);
+  return {
+    sx: p.x * scale + W / 2,
+    sy: p.y * scale + H / 2,
+    scale: scale
+  };
+}
+
+var raf;
+function frame(){
+  ctx.clearRect(0, 0, W, H);
+
+  /* update */
+  for(var i = 0; i < pts.length; i++){
+    var p = pts[i];
+    p.x += p.vx; p.y += p.vy; p.z += p.vz;
+    if(p.z < 100 || p.z > 1500) p.vz *= -1;
+    if(Math.abs(p.x) > W)  p.vx *= -1;
+    if(Math.abs(p.y) > H)  p.vy *= -1;
+  }
+
+  /* connections */
+  for(var i = 0; i < pts.length; i++){
+    for(var j = i + 1; j < pts.length; j++){
+      var a = pts[i], b = pts[j];
+      var dx = a.x - b.x, dy = a.y - b.y, dz = a.z - b.z;
+      var dist3 = Math.sqrt(dx*dx + dy*dy + dz*dz);
+      if(dist3 < MAX_DIST * 4){
+        var pa = project(a), pb = project(b);
+        var screenDist = Math.sqrt((pa.sx-pb.sx)*(pa.sx-pb.sx)+(pa.sy-pb.sy)*(pa.sy-pb.sy));
+        if(screenDist < MAX_DIST){
+          var alpha = (1 - screenDist / MAX_DIST) * .35 * Math.min(pa.scale, pb.scale) * 3;
+          ctx.beginPath();
+          ctx.moveTo(pa.sx, pa.sy);
+          ctx.lineTo(pb.sx, pb.sy);
+          ctx.strokeStyle = 'rgba(232,0,29,' + Math.min(alpha, .28) + ')';
+          ctx.lineWidth = .8;
+          ctx.stroke();
+        }
+      }
+    }
+  }
+
+  /* dots */
+  for(var i = 0; i < pts.length; i++){
+    var p = pts[i];
+    var pr = project(p);
+    var r = p.r * pr.scale * 3;
+    ctx.beginPath();
+    ctx.arc(pr.sx, pr.sy, Math.max(r, .4), 0, Math.PI * 2);
+    ctx.fillStyle = p.color;
+    ctx.globalAlpha = Math.min(pr.scale * .9, .7);
+    ctx.fill();
+    ctx.globalAlpha = 1;
+  }
+
+  raf = requestAnimationFrame(frame);
+}
+frame();
+
+/* Pause when tab hidden to save battery */
+document.addEventListener('visibilitychange', function(){
+  if(document.hidden){ cancelAnimationFrame(raf); }
+  else { frame(); }
+});
+
+
+/* ──────────────────────────────────────────────
+   2. CARD TILT + SHINE  (VanillaTilt-style)
+   ────────────────────────────────────────────── */
+var TILT_SELECTORS = [
+  '.dash-stat-card','.pcard','.adm-stat-card','.prof-card',
+  '.wallet-card','.course-card','.store-pdf-card','.adm-chart-card',
+  '.lb-card','.streak-card','.quick-action-card','.prog-card',
+  '.blood-card','.feature-card','.reel-card'
+];
+var TILT_MAX  = 12;  /* degrees */
+var TILT_SCALE = 1.035;
+
+function initTilt(el){
+  if(el._rfcTilt) return;
+  el._rfcTilt = true;
+  el.classList.add('rfc-tilt');
+
+  /* inject shine div */
+  if(!el.querySelector('.rfc-shine')){
+    var sh = document.createElement('div');
+    sh.className = 'rfc-shine';
+    el.appendChild(sh);
+  }
+
+  var shine = el.querySelector('.rfc-shine');
+  var rafId;
+
+  function applyTilt(nx, ny){
+    /* nx,ny = -1..1 relative cursor position */
+    var rx =  ny * TILT_MAX;   /* rotateX — vertical   */
+    var ry = -nx * TILT_MAX;   /* rotateY — horizontal */
+    el.style.transform =
+      'perspective(900px) rotateX('+rx+'deg) rotateY('+ry+'deg) scale3d('+
+      TILT_SCALE+','+TILT_SCALE+','+TILT_SCALE+')';
+    /* shine follows cursor */
+    var sx = (nx + 1) / 2 * 100;
+    var sy = (ny + 1) / 2 * 100;
+    if(shine) shine.style.background =
+      'radial-gradient(circle at '+sx+'% '+sy+'%, rgba(255,255,255,.22) 0%, transparent 62%)';
+    /* conic glow rotation */
+    var angle = (Math.atan2(ny, nx) * 180 / Math.PI + 180) | 0;
+    el.style.setProperty('--rfc-rot', angle + 'deg');
+  }
+
+  function onMouseMove(e){
+    cancelAnimationFrame(rafId);
+    rafId = requestAnimationFrame(function(){
+      var r = el.getBoundingClientRect();
+      var nx = ((e.clientX - r.left) / r.width  - .5) * 2;
+      var ny = ((e.clientY - r.top)  / r.height - .5) * 2;
+      applyTilt(nx, ny);
+    });
+  }
+
+  function onMouseLeave(){
+    cancelAnimationFrame(rafId);
+    el.style.transform = 'perspective(900px) rotateX(0deg) rotateY(0deg) scale3d(1,1,1)';
+    el.style.setProperty('--rfc-rot', '0deg');
+  }
+
+  /* touch */
+  function onTouchMove(e){
+    if(e.touches.length === 0) return;
+    var t = e.touches[0];
+    var r = el.getBoundingClientRect();
+    var nx = ((t.clientX - r.left) / r.width  - .5) * 2;
+    var ny = ((t.clientY - r.top)  / r.height - .5) * 2;
+    el.classList.add('touch-active');
+    applyTilt(nx, ny);
+  }
+
+  function onTouchEnd(){
+    el.classList.remove('touch-active');
+    el.style.transform = 'perspective(900px) rotateX(0deg) rotateY(0deg) scale3d(1,1,1)';
+  }
+
+  el.addEventListener('mousemove',  onMouseMove);
+  el.addEventListener('mouseleave', onMouseLeave);
+  el.addEventListener('touchmove',  onTouchMove,  {passive:true});
+  el.addEventListener('touchend',   onTouchEnd);
+  el.addEventListener('touchcancel',onTouchEnd);
+}
+
+function initAllCards(){
+  TILT_SELECTORS.forEach(function(sel){
+    document.querySelectorAll(sel).forEach(initTilt);
+  });
+}
+
+/* Run once on load, then watch for DOM changes */
+initAllCards();
+var _obs = new MutationObserver(function(muts){
+  muts.forEach(function(m){
+    m.addedNodes.forEach(function(n){
+      if(n.nodeType !== 1) return;
+      TILT_SELECTORS.forEach(function(sel){
+        if(n.matches && n.matches(sel)) initTilt(n);
+        n.querySelectorAll && n.querySelectorAll(sel).forEach(initTilt);
+      });
+    });
+  });
+});
+_obs.observe(document.body, {childList:true, subtree:true});
+
+
+/* ──────────────────────────────────────────────
+   3. 3-D NUMBER FLIP  (Beast Score + stats)
+   ────────────────────────────────────────────── */
+window._3dFlipNumber = function(el){
+  if(!el) return;
+  el.classList.remove('num-flip-3d');
+  void el.offsetWidth; /* reflow to restart */
+  el.classList.add('num-flip-3d');
+  el.addEventListener('animationend', function once(){
+    el.classList.remove('num-flip-3d');
+    el.removeEventListener('animationend', once);
+  });
+};
+
+/* Auto-flip score element when value changes */
+(function(){
+  var scoreEl = document.getElementById('score-val') ||
+                document.querySelector('.score-num') ||
+                document.querySelector('[data-score]');
+  if(!scoreEl) return;
+  var lastVal = scoreEl.textContent;
+  var scoreObs = new MutationObserver(function(){
+    if(scoreEl.textContent !== lastVal){
+      lastVal = scoreEl.textContent;
+      window._3dFlipNumber(scoreEl);
+      /* pulse the parent element too */
+      var parent = scoreEl.closest('.score-ring,.score-circle,.score-wrap,.beast-score-wrap') || scoreEl.parentElement;
+      if(parent){
+        parent.classList.remove('score-3d-pulse');
+        void parent.offsetWidth;
+        parent.classList.add('score-3d-pulse');
+      }
+    }
+  });
+  scoreObs.observe(scoreEl, {childList:true, characterData:true, subtree:true});
+})();
+
+
+/* ──────────────────────────────────────────────
+   4. HERO / DASHBOARD  floating 3-D layer
+   ────────────────────────────────────────────── */
+(function(){
+  var hero = document.querySelector('.dash-hero,.home-hero,.welcome-banner');
+  if(hero) hero.classList.add('hero-float-3d');
+})();
 
 })();
 </script>
