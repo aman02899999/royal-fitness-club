@@ -5190,6 +5190,7 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
         <div class="food-sel-btn-row">
           <button class="btn-sm" onclick="autoSelectFoods()">⚡ Auto Select All</button>
           <button class="btn-sm btn-outline" onclick="clearFoodPrefs()">✕ Clear Selections</button>
+          <button class="btn-sm" style="background:linear-gradient(135deg,var(--red),#b00010);color:#fff;border:none;" onclick="smartShufflePlan()">🔀 Smart Shuffle</button>
         </div>
         <div id="food-sel-grid" class="food-sel-grid"></div>
         <div class="food-sel-hint">Checked foods rotate in your 7-day plan. Leave all unchecked for full auto-selection from the 200+ database.</div>
@@ -5637,6 +5638,22 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
             <div class="phlbl">After Photo</div>
             <button class="ph-upload-btn" onclick="document.getElementById('phai').click()">📤 Upload Photo</button>
           </div>
+        </div>
+      </div>
+
+      <!-- Comparison slider — appears once both photos are uploaded -->
+      <div id="photo-compare-wrap" style="display:none;margin-top:22px;">
+        <div style="font-size:12px;font-weight:700;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;text-align:center;">DRAG TO COMPARE</div>
+        <div id="photo-compare" style="position:relative;width:100%;aspect-ratio:3/4;overflow:hidden;border-radius:12px;border:1px solid var(--border);cursor:ew-resize;user-select:none;-webkit-user-select:none;">
+          <img id="pc-after"  alt="After"  style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
+          <div id="pc-before-clip" style="position:absolute;inset:0;overflow:hidden;width:50%;">
+            <img id="pc-before" alt="Before" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
+          </div>
+          <div id="pc-handle" style="position:absolute;top:0;bottom:0;left:50%;width:3px;background:var(--red);transform:translateX(-50%);cursor:ew-resize;z-index:3;">
+            <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:34px;height:34px;background:var(--red);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;box-shadow:0 2px 12px rgba(232,0,29,.5);">↔</div>
+          </div>
+          <div style="position:absolute;top:10px;left:10px;background:rgba(0,0,0,.55);color:#fff;font-size:10px;font-weight:700;letter-spacing:1px;padding:3px 8px;border-radius:4px;pointer-events:none;z-index:2;">BEFORE</div>
+          <div style="position:absolute;top:10px;right:10px;background:rgba(232,0,29,.8);color:#fff;font-size:10px;font-weight:700;letter-spacing:1px;padding:3px 8px;border-radius:4px;pointer-events:none;z-index:2;">AFTER</div>
         </div>
       </div>
     </div>
@@ -8445,6 +8462,12 @@ function toggleFoodPref(key,name,cb){
 function autoSelectFoods(){userFoodPrefs={};renderFoodSelGrid(curFoodSlot);rebuildMeal();toast('Auto mode: engine picks from full 200+ database');}
 function clearFoodPrefs(){userFoodPrefs={};renderFoodSelGrid(curFoodSlot);rebuildMeal();toast('Food preferences cleared');}
 function rebuildMeal(){if(lastRes)buildMealPlan(lastRes.goal,lastRes.targetCals,lastRes.macros,lastRes.diet);else buildMealPlan('gain',2200,{prot:165,carb:220,fat:73},'nonveg');}
+var _mealShuffleOffset=0;
+function smartShufflePlan(){
+  _mealShuffleOffset=(_mealShuffleOffset+3)%17; // prime step for variety
+  rebuildMeal();
+  toast('🔀 New meal variation generated!','green');
+}
 
 function buildMealPlan(goal,totalCals,macros,diet){
   const db=MEALS[diet]||MEALS.nonveg;
@@ -8495,7 +8518,7 @@ function buildMealPlan(goal,totalCals,macros,diet){
       const prefNames=userFoodPrefs[prefKey];
       const prefPool=prefNames&&prefNames.length>0?arr.filter(m=>prefNames.includes(m.name)):null;
       const mealPool=prefPool&&prefPool.length>0?prefPool:arr;
-      const mealDef=mealPool[d%mealPool.length];
+      const mealDef=mealPool[(d+si*3+(typeof _mealShuffleOffset!=='undefined'?_mealShuffleOffset:0))%mealPool.length];
       const scaledIngs=scaleMeal(mealDef,mealCalTarget);
       const tot=calcIngredients(scaledIngs);
       html+=`<div class="meal-block${lk?' locked-meal':''}">`;
@@ -9270,6 +9293,42 @@ function _showPhoto(side,src,dateText){
   const dl=$(`date${side==='before'?'bef':'aft'}`);dl.textContent=dateText||'';dl.style.display='block';
   const empty=document.getElementById('phempty'+n);if(empty)empty.style.display='none';
   const chg=document.getElementById('phchg'+n);if(chg)chg.style.display='block';
+  // Update comparison slider
+  const pcBefore=document.getElementById('pc-before');
+  const pcAfter=document.getElementById('pc-after');
+  if(side==='before'&&pcBefore) pcBefore.src=src;
+  if(side==='after'&&pcAfter)   pcAfter.src=src;
+  const wrap=document.getElementById('photo-compare-wrap');
+  const befSrc=document.getElementById('prevbef');
+  const aftSrc=document.getElementById('prevaft');
+  if(wrap&&befSrc&&befSrc.src&&befSrc.style.display!=='none'&&aftSrc&&aftSrc.src&&aftSrc.style.display!=='none'){
+    wrap.style.display='block';
+    _initCompareSlider();
+  }
+}
+function _initCompareSlider(){
+  const container=document.getElementById('photo-compare');
+  const clip=document.getElementById('pc-before-clip');
+  const handle=document.getElementById('pc-handle');
+  if(!container||!clip||!handle||container._sliderInited) return;
+  container._sliderInited=true;
+  function setPos(pct){
+    pct=Math.max(0,Math.min(100,pct));
+    clip.style.width=pct+'%';
+    handle.style.left=pct+'%';
+  }
+  function fromEvent(e){
+    const rect=container.getBoundingClientRect();
+    const x=(e.touches?e.touches[0].clientX:e.clientX)-rect.left;
+    return (x/rect.width)*100;
+  }
+  let dragging=false;
+  container.addEventListener('mousedown',e=>{dragging=true;setPos(fromEvent(e));e.preventDefault();});
+  container.addEventListener('touchstart',e=>{dragging=true;setPos(fromEvent(e));},{passive:true});
+  document.addEventListener('mousemove',e=>{if(dragging)setPos(fromEvent(e));});
+  document.addEventListener('touchmove',e=>{if(dragging)setPos(fromEvent(e));},{passive:true});
+  document.addEventListener('mouseup',()=>{dragging=false;});
+  document.addEventListener('touchend',()=>{dragging=false;});
 }
 function handlePhoto(side,input){
   if(!user){toast('Please log in first!','gold');forceLogin();return;}
@@ -9320,19 +9379,13 @@ function switchBoard(field,btn){
   if(btn)btn.classList.add('active');
   loadLeaderboard();
 }
-async function loadLeaderboard(){
-  const list=$('lb-list');
-  if(!user||!user.uid||!window.CommunityService){
-    list.innerHTML='<div style="text-align:center;padding:30px;color:var(--muted);font-size:13px;">Log in to see the leaderboard.</div>';
-    return;
-  }
-  list.innerHTML='<div style="text-align:center;padding:30px;color:var(--muted);font-size:13px;">Loading the pack...</div>';
-  const entries=await window.CommunityService.getLeaderboard(currentBoard,50);
+var _lbUnsub = null; // real-time unsubscribe handle
+
+function _renderLbEntries(entries){
+  const list=$('lb-list');if(!list)return;
   if(!entries.length){
     list.innerHTML='<div style="text-align:center;padding:30px;color:var(--muted);font-size:13px;">No one on the board yet. Calculate your Beast Score to claim rank #1! 👑</div>';
-    $('lb-myrank').style.display='none';
-    const _lbBadge=$('lb-myrank-badge');if(_lbBadge)_lbBadge.style.display='none';
-    return;
+    $('lb-myrank').style.display='none';return;
   }
   const unit=currentBoard==='streak'?' <small>DAYS</small>':' <small>PTS</small>';
   list.innerHTML=entries.map((e,i)=>{
@@ -9344,14 +9397,33 @@ async function loadLeaderboard(){
     const val=currentBoard==='streak'?(e.streak||0):(e.beastScore||0);
     return `<div class="lb-row${me}"><div class="lb-rank ${rcls}">${medal}</div><div class="lb-av">${(e.name||'B')[0].toUpperCase()}</div><div class="lb-name">${e.name||'Beast'}${isPr?'<span class="lb-pro">PRO</span>':''}${me?' <span style="color:var(--gold);font-size:11px;">(you)</span>':''}</div><div class="lb-val">${val}${unit}</div></div>`;
   }).join('');
-  // My rank banner (only when I'm not visible in the top list)
+  // Show live pulse indicator
+  const refreshBtn=document.querySelector('.lb-refresh');
+  if(refreshBtn){refreshBtn.style.color='#22c55e';setTimeout(()=>{if(refreshBtn)refreshBtn.style.color='';},1200);}
+  // My rank banner
   const myIdx=entries.findIndex(e=>e.uid===user.uid);
   const banner=$('lb-myrank');
-  if(myIdx===-1){
-    const rank=await window.CommunityService.getUserRank(user.uid,currentBoard);
-    if(rank){banner.textContent=`Your rank: #${rank} — keep pushing to break into the top 50! 🔥`;banner.style.display='block';}
-    else{banner.textContent='You are not on the board yet — calculate your Beast Score to enter the arena!';banner.style.display='block';}
-  }else banner.style.display='none';
+  if(myIdx===-1&&banner){
+    window.CommunityService.getUserRank(user.uid,currentBoard).then(rank=>{
+      if(rank){banner.textContent=`Your rank: #${rank} — keep pushing to break into the top 50! 🔥`;banner.style.display='block';}
+      else{banner.textContent='You are not on the board yet — calculate your Beast Score to enter the arena!';banner.style.display='block';}
+    });
+  }else if(banner){banner.style.display='none';}
+}
+
+async function loadLeaderboard(){
+  const list=$('lb-list');
+  if(!user||!user.uid||!window.CommunityService){
+    if(list)list.innerHTML='<div style="text-align:center;padding:30px;color:var(--muted);font-size:13px;">Log in to see the leaderboard.</div>';
+    return;
+  }
+  // Tear down previous subscription
+  if(_lbUnsub){try{_lbUnsub();}catch(e){}}_lbUnsub=null;
+
+  if(list)list.innerHTML='<div style="text-align:center;padding:30px;color:var(--muted);font-size:13px;">Loading the pack...</div>';
+
+  // Subscribe for real-time updates
+  _lbUnsub=window.CommunityService.subscribeLeaderboard(currentBoard,50,_renderLbEntries);
 }
 function syncLeaderboard(fields){
   if(user?.uid&&window.CommunityService){
@@ -10792,6 +10864,13 @@ async function saveWorkout(){
   toast('💪 Session saved! Keep grinding.','fire');
   // Award XP for logging a workout
   if(window.awardXP) setTimeout(()=>window.awardXP('workout_logged'), 500);
+  // Auto check-in to streak when a workout is saved
+  setTimeout(function(){
+    if(window.streakCheckIn){
+      const sd = JSON.parse(localStorage.getItem('rfc_streak_data')||'{}');
+      if(sd.lastCI !== new Date().toDateString()) window.streakCheckIn();
+    }
+  }, 800);
 }
 
 function loadWorkoutHistory(){
@@ -15160,6 +15239,7 @@ function switchScreen(name, navEl) {
   if (name === 'courses') renderCourses();
   if (name === 'admin') { if (isAdminUser()) renderAdminPanel(); else { toast('🔐 Admin access only.','gold'); switchScreen('dashboard', document.querySelector('[data-screen=dashboard]')); } }
   if (name === 'leaderboard') { renderLeaderboard(currentLbBoard || 'tiger', null); _updateLbMotivator(); if(user&&window.CommunityService)loadLeaderboard(); }
+  else { if(_lbUnsub){try{_lbUnsub();}catch(e){}}_lbUnsub=null; } // tear down real-time listener when leaving leaderboard
   if (name === 'pdfshop') { renderPDFShop(); initBundles(); }
   if (name === 'dashboard') populateDashboard();
   if (name === 'referrals') {
@@ -19225,9 +19305,15 @@ document.addEventListener('change', function(e) {
 
   function workoutLoggedToday(){
     try {
-      const log = JSON.parse(localStorage.getItem('rfc_workout_log')||'[]');
-      const today = todayKey();
-      return log.some(e => (e.date||e.ts||'').startsWith(today));
+      const u = JSON.parse(localStorage.getItem('bm_user')||'null');
+      const key = u ? 'rfc_workouts_'+u.uid : null;
+      if(!key) return false;
+      const log = JSON.parse(localStorage.getItem(key)||'[]');
+      const todayMs = new Date().setHours(0,0,0,0);
+      return log.some(e => {
+        const ts = e.ts || (e.date ? new Date(e.date).getTime() : 0);
+        return ts >= todayMs;
+      });
     } catch(e){ return false; }
   }
 
@@ -19237,9 +19323,12 @@ document.addEventListener('change', function(e) {
 
   function lastWeekWorkouts(){
     try {
-      const log = JSON.parse(localStorage.getItem('rfc_workout_log')||'[]');
+      const u = JSON.parse(localStorage.getItem('bm_user')||'null');
+      const key = u ? 'rfc_workouts_'+u.uid : null;
+      if(!key) return 0;
+      const log = JSON.parse(localStorage.getItem(key)||'[]');
       const cutoff = Date.now() - 7*24*60*60*1000;
-      return log.filter(e => new Date(e.date||e.ts||0).getTime() > cutoff).length;
+      return log.filter(e => (e.ts||0) > cutoff).length;
     } catch(e){ return 0; }
   }
 

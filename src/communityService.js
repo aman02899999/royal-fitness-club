@@ -129,6 +129,37 @@
     },
 
     /**
+     * Real-time leaderboard subscription via onSnapshot.
+     * Returns an unsubscribe function — call it to stop listening.
+     *
+     * @param {string} [orderField='beastScore']
+     * @param {number} [limitN=50]
+     * @param {function(Object[]): void} callback - called with entries array on every change
+     * @returns {function} unsubscribe
+     */
+    subscribeLeaderboard(orderField, limitN, callback) {
+      if (orderField === undefined) orderField = 'beastScore';
+      if (limitN === undefined) limitN = 50;
+      try {
+        const unsub = db()
+          .collection('leaderboard')
+          .orderBy(orderField, 'desc')
+          .limit(limitN)
+          .onSnapshot(
+            (snap) => {
+              const entries = snap.docs.map((doc) => ({ uid: doc.id, ...doc.data() }));
+              try { callback(entries); } catch (e) { console.error('[CommunityService] subscribeLeaderboard callback error:', e); }
+            },
+            (err) => { console.error('[CommunityService] subscribeLeaderboard error:', err); }
+          );
+        return unsub;
+      } catch (err) {
+        console.error('[CommunityService] subscribeLeaderboard setup error:', err);
+        return function () {};
+      }
+    },
+
+    /**
      * Removes the member's entry from the leaderboard (privacy opt-out).
      *
      * @param {string} uid
