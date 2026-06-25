@@ -6495,6 +6495,15 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
         <div id="adm-members-list" style="display:none;"></div>
       </div>
 
+      <!-- ── PAYOUT REQUESTS ── -->
+      <div style="background:rgba(212,168,64,.06);border:1px solid rgba(212,168,64,.25);border-radius:12px;padding:18px;margin-top:18px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:14px;">
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1.5px;">💸 Payout Requests <span id="adm-redeem-badge" style="background:var(--gold);color:#000;border-radius:4px;font-size:12px;padding:2px 7px;vertical-align:middle;">0</span></div>
+          <button class="bsm" onclick="adminLoadRedeemRequests()" style="font-size:11px;">⟳ Refresh</button>
+        </div>
+        <div id="adm-redeem-list"><div style="font-size:12px;color:var(--muted);">Click ⟳ Refresh to load payout requests.</div></div>
+      </div>
+
     </div>
 
     <!-- Pane 6: Challenges CRUD -->
@@ -11434,50 +11443,56 @@ function copyRefCode(){
 
 function shareReferralWhatsApp(){
   const code=getRefCode();
-  const msg=`🦁 *ROYAL FITNESS CLUB* 🦁
-━━━━━━━━━━━━━━━━━━━━
+  const senderName=(user&&user.name)?user.name.split(' ')[0]:'Your friend';
+  const msg=`🐯 *ROYAL FITNESS CLUB* 🐯
+━━━━━━━━━━━━━━━━━━━━━━━━
 
-💪 Hey! I am inviting you to join our gym's *FREE* digital fitness platform!
+Hey! *${senderName}* is inviting you to join India's most complete gym fitness app — *FREE!*
 
-━━━━━━━━━━━━━━━━━━━━
-🎁 *USE MY REFERRAL CODE:*
-━━━━━━━━━━━━━━━━━━━━
+🎁 *USE THIS REFERRAL CODE & GET ₹50 BONUS:*
 
 \`\`\`${code}\`\`\`
 
-📲 *Register FREE here* 👇
+📲 *Sign up FREE here:*
 👉 https://royal-fitness-club-7adc1.web.app
 
-━━━━━━━━━━━━━━━━━━━━
-🆓 *WHAT YOU GET — ALL FREE:*
-━━━━━━━━━━━━━━━━━━━━
+━━━━━━━━━━━━━━━━━━━━━━━━
+✅ *WHAT YOU GET FREE:*
+━━━━━━━━━━━━━━━━━━━━━━━━
 
-📊 BMI, BMR & TDEE Calculator
-🐯 Beast Score (0-100 Fitness Rating)
-⚖️ Body Fat % Estimator
-💪 1-Rep Max Calculator
-🔥 Daily WOD + Water Tracker
+🐯 Beast Score (0–100 fitness rating)
+📊 BMI, BMR, Body Fat % Calculator
+🔥 Daily Workout + Water Tracker
+🏆 Tiger Leaderboard — Win ₹15,000/mo
 💊 Indian Supplement Guide
-🏆 Tiger Leaderboard & Challenges
-🫀 3D Body Anatomy Visualizer
-🎯 Calories & Macro Targets
-🏅 PR Tracker (Personal Records)
+🎓 Science-based Fitness Courses
+📅 Workout of the Day (WOD)
+🏅 Personal Records Tracker
 
-_All at_ *Rs.0/month!* 🙌
+*All at ₹0/month!* 🙌
 
-━━━━━━━━━━━━━━━━━━━━
-🚀 *Pro plan @ Rs.499/mo:*
-🥗 Smart Meal Plan
-📈 Progress Charts
-📸 Photo Tracking
-📄 PDF Export
+━━━━━━━━━━━━━━━━━━━━━━━━
+⚡ *PRO MEMBERS ALSO GET:*
+━━━━━━━━━━━━━━━━━━━━━━━━
 
-━━━━━━━━━━━━━━━━━━━━
-Join now & start your transformation! 🔥👑`;
+🥗 7-Day Indian Meal Plan
+🩸 Blood Report AI Analyser
+📸 Progress Photo Tracking
+📚 108+ Expert PDF Guides
+🗺️ 12-Week Transformation Roadmap
+
+*PRO = ₹499/mo (gym members get it FREE!)*
+
+━━━━━━━━━━━━━━━━━━━━━━━━
+⚡ Step 1: Open link above
+⚡ Step 2: Sign in with Google
+⚡ Step 3: Enter code *${code}* → Get ₹50 wallet bonus instantly!
+
+Start your transformation today 🔥👑`;
   window.open('https://wa.me/?text='+encodeURIComponent(msg),'_blank');
 }
 
-function requestRedeem(){
+async function requestRedeem(){
   if(!user){forceLogin();return;}
   const upi=($('redeem-upi')?.value||'').trim();
   const amount=parseInt($('redeem-amount')?.value||'0');
@@ -11487,10 +11502,18 @@ function requestRedeem(){
   const w=getWallet();
   if(w.balance<amount){if(msg)msg.style.color='#f87171',msg.textContent='Insufficient balance (need ₹'+amount+', have ₹'+w.balance+')';return;}
   if(!walletDebit(amount,'Payout request – '+upi)){return;}
-  // Save request to localStorage for admin
+  const req={id:Date.now(),uid:user.uid,name:user.name||'',email:user.email||'',upi,amount,status:'pending',date:new Date().toISOString()};
+  // Save to localStorage (admin same-device view)
   const reqs=JSON.parse(localStorage.getItem('rfc_redeem_reqs')||'[]');
-  reqs.unshift({id:Date.now(),uid:user.uid,name:user.name,email:user.email,upi,amount,status:'pending',date:new Date().toISOString()});
+  reqs.unshift(req);
   localStorage.setItem('rfc_redeem_reqs',JSON.stringify(reqs));
+  // Save to Firestore (cross-device admin view)
+  if(typeof firebase!=='undefined'){
+    firebase.firestore().collection('redeem_requests').add({
+      ...req,
+      serverTs:firebase.firestore.FieldValue.serverTimestamp()
+    }).catch(()=>{});
+  }
   if(msg)msg.style.color='var(--green)',msg.textContent='✅ Request submitted! Admin will process within 24-48 hours.';
   if($('redeem-upi'))$('redeem-upi').value='';
   if($('redeem-amount'))$('redeem-amount').value='';
@@ -14679,6 +14702,50 @@ function admRenderMembers() {
 
 // ── PENDING APPROVALS ──
 let _pendingApproveUID = null;
+
+async function adminLoadRedeemRequests(){
+  if(typeof firebase==='undefined'){toast('Firebase not available','gold');return;}
+  const listEl=document.getElementById('adm-redeem-list');
+  const badge=document.getElementById('adm-redeem-badge');
+  if(listEl)listEl.innerHTML='<div style="font-size:12px;color:var(--muted);">Loading…</div>';
+  try{
+    // Load from Firestore
+    const snap=await firebase.firestore().collection('redeem_requests').orderBy('serverTs','desc').limit(50).get();
+    // Merge with localStorage requests (in case Firestore write failed)
+    const fsReqs=snap.docs.map(d=>({...d.data(),fsId:d.id}));
+    const lsReqs=JSON.parse(localStorage.getItem('rfc_redeem_reqs')||'[]');
+    // Merge: prefer Firestore version, fall back to localStorage
+    const seen=new Set(fsReqs.map(r=>r.id));
+    const all=[...fsReqs,...lsReqs.filter(r=>!seen.has(r.id))];
+    const pending=all.filter(r=>r.status==='pending');
+    if(badge)badge.textContent=pending.length;
+    if(!all.length){listEl.innerHTML='<div style="font-size:12px;color:var(--muted);">No payout requests yet.</div>';return;}
+    listEl.innerHTML=all.map(r=>`
+      <div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.06);flex-wrap:wrap;">
+        <div style="flex:1;min-width:160px;">
+          <div style="font-size:13px;font-weight:600;">${r.name||'—'} <span style="font-size:10px;color:var(--muted);">${r.email||''}</span></div>
+          <div style="font-size:11px;color:var(--muted);margin-top:2px;">UPI: <strong style="color:#ffd000;">${r.upi}</strong></div>
+          <div style="font-size:10px;color:var(--muted);">${r.date?new Date(r.date).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}):''}</div>
+        </div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--gold);">₹${r.amount}</div>
+        <span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;${r.status==='pending'?'background:rgba(251,191,36,.15);color:#fbbf24;border:1px solid rgba(251,191,36,.3);':r.status==='paid'?'background:rgba(34,197,94,.12);color:#22c55e;border:1px solid rgba(34,197,94,.3);':'background:rgba(248,113,113,.12);color:#f87171;border:1px solid rgba(248,113,113,.3);'}">${(r.status||'pending').toUpperCase()}</span>
+        ${r.status==='pending'?`<button class="bsm" style="font-size:10px;padding:5px 10px;background:rgba(34,197,94,.12);border-color:rgba(34,197,94,.3);color:#22c55e;" onclick="adminMarkRedeemPaid('${r.id||r.fsId}','${r.fsId||''}')">✅ Mark Paid</button>`:''}
+      </div>`).join('');
+  }catch(e){if(listEl)listEl.innerHTML='<div style="font-size:12px;color:#f87171;">Error loading: '+e.message+'</div>';}
+}
+
+async function adminMarkRedeemPaid(localId, fsId){
+  // Update in Firestore
+  if(fsId&&typeof firebase!=='undefined'){
+    await firebase.firestore().collection('redeem_requests').doc(fsId).update({status:'paid',paidAt:firebase.firestore.FieldValue.serverTimestamp()}).catch(()=>{});
+  }
+  // Update in localStorage
+  const reqs=JSON.parse(localStorage.getItem('rfc_redeem_reqs')||'[]');
+  const idx=reqs.findIndex(r=>String(r.id)===String(localId));
+  if(idx>=0){reqs[idx].status='paid';localStorage.setItem('rfc_redeem_reqs',JSON.stringify(reqs));}
+  toast('✅ Marked as paid','gold');
+  adminLoadRedeemRequests();
+}
 
 async function adminLoadPending() {
   if (typeof firebase === 'undefined') { toast('Firebase not available', 'gold'); return; }
