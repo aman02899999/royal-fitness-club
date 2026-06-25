@@ -6939,6 +6939,7 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
     <p style="color:var(--muted);font-size:10px;margin-bottom:3px;">🔥 Offer expires in <span id="pmodtime">--:--:--</span></p>
     <p style="color:#888;font-size:10px;margin-bottom:4px;">Instant access · Cancel anytime</p>
     <button class="bpro" onclick="activatePro()">SUBSCRIBE NOW — ₹499/MO 👑</button>
+    <div style="text-align:center;font-size:10px;color:rgba(255,255,255,.3);margin-top:6px;">UPI · PhonePe · GPay · Card · Net Banking via Razorpay</div>
   </div>
 </div>
 <div class="mbg" id="sharemodal">
@@ -6965,19 +6966,21 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
 <div class="mbg" id="elitemodal">
   <div class="mbox probox" style="max-width:440px;">
     <button class="mclose" onclick="closeModal('elitemodal')">✕</button>
-    <h2 style="font-size:38px;">ROYAL ELITE 👑</h2>
-    <p style="color:var(--muted);font-size:13px;">Apply for 1-on-1 coaching — <span class="px-elite">₹1999</span>/mo</p>
-    <div class="elite-guarantee" style="margin:14px 0;">✅ Results-Driven Guarantee included</div>
+    <h2 style="font-size:38px;">ROYAL ELITE 💎</h2>
+    <p style="color:var(--muted);font-size:13px;">1-on-1 personal coaching — <span class="px-elite">₹1,999</span>/mo</p>
+    <div class="elite-guarantee" style="margin:10px 0;">✅ Results-Driven Guarantee included · Only 5 spots/month</div>
     <div class="eform">
-      <input type="text" class="minp" id="el-name" placeholder="Your Name">
-      <input type="tel" class="minp" id="el-phone" placeholder="WhatsApp Number">
-      <select class="fsel" id="el-goal" style="margin-bottom:0;">
+      <input type="text" class="minp" id="el-name" placeholder="Your Full Name">
+      <input type="tel" class="minp" id="el-phone" placeholder="WhatsApp Number (e.g. 9876543210)">
+      <select class="fsel" id="el-goal">
         <option value="">Your Main Goal...</option>
         <option>Fat Loss</option><option>Muscle Gain</option><option>Body Recomposition</option><option>Strength</option><option>General Fitness</option>
       </select>
-      <button class="belite" style="font-size:20px;" onclick="applyElite()">SUBMIT APPLICATION 👑</button>
+      <button class="belite" style="font-size:18px;background:linear-gradient(90deg,#d4a840,#a07820);" onclick="activateElite()">💳 PAY ₹1,999 &amp; START TODAY</button>
+      <div style="text-align:center;font-size:10px;color:rgba(255,255,255,.3);margin:-8px 0 6px;">Secured by Razorpay · UPI / Card / Net Banking</div>
+      <button class="belite" style="font-size:14px;background:rgba(212,168,64,.12);border:1px solid rgba(212,168,64,.3);color:#d4a840;" onclick="applyElite()">📋 Apply First — Team Will Contact You</button>
     </div>
-    <p style="color:#888;font-size:11px;margin-top:10px;text-align:center;">Our team will contact you within 24 hours to begin your onboarding.</p>
+    <p style="color:#888;font-size:11px;margin-top:8px;text-align:center;">Coach WhatsApps you within 24h after payment to begin onboarding.</p>
   </div>
 </div>
 <div class="toast" id="toast"></div>
@@ -10269,6 +10272,7 @@ async function activatePro() {
         if(resp.razorpay_order_id&&resp.razorpay_payment_id&&resp.razorpay_signature){
           firebase.functions().httpsCallable('verifyRazorpayPayment')({orderId:resp.razorpay_order_id,paymentId:resp.razorpay_payment_id,signature:resp.razorpay_signature,plan:'royal_pro'}).catch(()=>{});
         }
+        creditReferrerPurchaseBonus(user.uid).catch(()=>{});
         _activateProUI();
         toast('👑 Royal Pro is now active — welcome to the top tier!','gold');
       }
@@ -10277,6 +10281,56 @@ async function activatePro() {
     rzp.open();
   }catch(e){
     console.error('[activatePro]',e);
+    toast('Could not open payment — please try again.','gold');
+  }
+}
+
+async function activateElite() {
+  if(!user){closeModal('elitemodal');forceLogin();return;}
+  const n=document.getElementById('el-name').value.trim();
+  const p=document.getElementById('el-phone').value.trim();
+  const g=document.getElementById('el-goal').value;
+  if(!n||!p||!g){toast('Please fill in name, phone and goal first','gold');return;}
+  closeModal('elitemodal');
+  toast('Opening secure payment...','gold');
+  const now=new Date();
+  try{
+    await _loadRzp();
+    let orderId=undefined;
+    try{
+      const r=await firebase.functions().httpsCallable('createRazorpayOrder')({plan:'royal_elite'});
+      if(r.data&&r.data.orderId)orderId=r.data.orderId;
+    }catch(cfErr){console.warn('[activateElite] createRazorpayOrder unavailable:',cfErr.message);}
+    const rzp=new Razorpay({
+      key:'rzp_live_SzivmCT3vTvTAK',
+      amount:199900,
+      currency:'INR',
+      order_id:orderId||undefined,
+      name:'Royal Fitness Club',
+      description:'Royal Elite — 1-on-1 Coaching Monthly',
+      prefill:{name:n,email:user.email||'',contact:p},
+      theme:{color:'#d4a840'},
+      handler:async function(resp){
+        window._trackEvent&&window._trackEvent('purchase','subscription','royal_elite',1999);
+        isPro=true;localStorage.setItem('bm_pro','true');
+        const nextBilling=new Date(now.getTime()+30*86400000);
+        localStorage.setItem('bm_sub',JSON.stringify({plan:'Royal Elite',price:1999,currency:'INR',status:'active',started:now.toISOString(),nextBilling:nextBilling.toISOString(),method:'Razorpay',paymentId:resp.razorpay_payment_id||'',history:[{date:now.toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}),desc:'Royal Elite — payment successful',amt:'₹1,999'}]}));
+        if(user.uid&&typeof firebase!=='undefined'){
+          firebase.firestore().collection('users').doc(user.uid).update({plan:'royal_elite',lastPaymentId:resp.razorpay_payment_id||'',updatedAt:firebase.firestore.FieldValue.serverTimestamp()}).catch(()=>{});
+          firebase.firestore().collection('elite_applications').add({name:n,phone:p,goal:g,email:user.email||'',uid:user.uid,paymentId:resp.razorpay_payment_id||'',date:now.toISOString(),serverTs:firebase.firestore.FieldValue.serverTimestamp()}).catch(()=>{});
+        }
+        if(resp.razorpay_order_id&&resp.razorpay_payment_id&&resp.razorpay_signature){
+          firebase.functions().httpsCallable('verifyRazorpayPayment')({orderId:resp.razorpay_order_id,paymentId:resp.razorpay_payment_id,signature:resp.razorpay_signature,plan:'royal_elite'}).catch(()=>{});
+        }
+        creditReferrerPurchaseBonus(user.uid).catch(()=>{});
+        _activateProUI();
+        toast('💎 Royal Elite activated — your coach will WhatsApp you within 24h!','gold');
+      }
+    });
+    rzp.on('payment.failed',()=>toast('Payment failed — please try again.','gold'));
+    rzp.open();
+  }catch(e){
+    console.error('[activateElite]',e);
     toast('Could not open payment — please try again.','gold');
   }
 }
@@ -11305,6 +11359,7 @@ function getRefCode(){
     const chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
     code='RFC-'+(user.uid||Math.random().toString(36)).slice(0,6).toUpperCase().split('').map(c=>chars.includes(c)?c:chars[Math.floor(Math.random()*chars.length)]).join('');
     localStorage.setItem(k,code);
+    syncRefCodeToFirestore(code);
   }
   return code;
 }
@@ -11443,27 +11498,121 @@ function requestRedeem(){
 }
 
 // Called after registration when referral code was used
-function creditReferrer(refCode){
+async function creditReferrer(refCode){
   if(!refCode)return;
-  // Save referral event for admin tracking
+  // Track event locally
   const refs=JSON.parse(localStorage.getItem('rfc_referrals')||'[]');
   refs.unshift({id:Date.now(),refCode,newUser:user?.name||'',newUserEmail:user?.email||'',date:new Date().toISOString(),credited:false,amount:100});
   localStorage.setItem('rfc_referrals',JSON.stringify(refs));
-  // Credit referrer if they are the current device (demo mode — in prod, this would be server-side)
+
+  const newUserName=user?.name||'New member';
+  const today=new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'});
+
+  // ── Firestore cross-device credit (primary path) ───────────────────
+  if(typeof firebase!=='undefined'&&user){
+    try{
+      const db=firebase.firestore();
+      // 1. Look up referrer UID from ref_codes collection
+      const snap=await db.collection('ref_codes').doc(refCode).get();
+      if(snap.exists){
+        const referrerUid=snap.data().uid;
+        if(referrerUid&&referrerUid!==user.uid){
+          // 2. Write referral event
+          await db.collection('referrals').doc(user.uid).set({
+            refCode,referrerUid,newUserName,newUserEmail:user.email||'',
+            joined:firebase.firestore.FieldValue.serverTimestamp(),
+            signupBonusPaid:false,purchaseBonusPaid:false
+          },{merge:true});
+          // 3. Credit referrer's Firestore wallet (+₹100 for signup)
+          const refWalletRef=db.collection('wallets').doc(referrerUid);
+          await db.runTransaction(async tx=>{
+            const doc=await tx.get(refWalletRef);
+            const current=doc.exists?doc.data():{balance:0,transactions:[]};
+            const txns=(current.transactions||[]);
+            txns.unshift({id:Date.now(),type:'referral',amount:100,desc:`Referral — ${newUserName} joined`,date:today});
+            tx.set(refWalletRef,{balance:(current.balance||0)+100,transactions:txns.slice(0,50),updatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});
+          });
+          // 4. Mark referral event credited
+          await db.collection('referrals').doc(user.uid).update({signupBonusPaid:true,signupBonusPaidAt:firebase.firestore.FieldValue.serverTimestamp()});
+          // 5. Increment ref count on referrer's user doc
+          db.collection('users').doc(referrerUid).update({refCount:firebase.firestore.FieldValue.increment(1)}).catch(()=>{});
+        }
+      }
+    }catch(fsErr){console.warn('[creditReferrer] Firestore credit error:',fsErr.message);}
+  }
+
+  // ── LocalStorage same-device fallback ─────────────────────────────
   const ownerKey=Object.keys(localStorage).find(k=>k.startsWith('rfc_refcode_')&&localStorage.getItem(k)===refCode);
   if(ownerKey){
     const ownerUid=ownerKey.replace('rfc_refcode_','');
     const ownerWalletKey=`rfc_wallet_${ownerUid}_data`;
     const ow=JSON.parse(localStorage.getItem(ownerWalletKey)||'{"balance":0,"transactions":[]}');
-    ow.balance=(ow.balance||0)+20;
-    ow.transactions.unshift({id:Date.now(),type:'referral',amount:20,desc:`Referral bonus — ${user?.name||'New member'} joined`,date:new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})});
+    ow.balance=(ow.balance||0)+100;
+    ow.transactions.unshift({id:Date.now(),type:'referral',amount:100,desc:`Referral bonus — ${newUserName} joined`,date:today});
     localStorage.setItem(ownerWalletKey,JSON.stringify(ow));
-    // Increment ref count
     const cntKey=`rfc_ref_count_${ownerUid}`;
     localStorage.setItem(cntKey,String((parseInt(localStorage.getItem(cntKey)||'0')+1)));
   }
-  // Bonus for new registrant
+
+  // ── Welcome bonus for new registrant (+₹50) ───────────────────────
   setTimeout(()=>walletCredit(50,'Welcome bonus — new member!','signup_bonus'),500);
+}
+
+// Called after a referred user completes their first plan purchase — gives referrer ₹200 bonus
+async function creditReferrerPurchaseBonus(newUserUid){
+  if(typeof firebase==='undefined')return;
+  try{
+    const db=firebase.firestore();
+    const refDoc=await db.collection('referrals').doc(newUserUid).get();
+    if(!refDoc.exists||refDoc.data().purchaseBonusPaid)return;
+    const{referrerUid}=refDoc.data();
+    if(!referrerUid)return;
+    const today=new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'});
+    const refWalletRef=db.collection('wallets').doc(referrerUid);
+    await db.runTransaction(async tx=>{
+      const doc=await tx.get(refWalletRef);
+      const current=doc.exists?doc.data():{balance:0,transactions:[]};
+      const txns=(current.transactions||[]);
+      txns.unshift({id:Date.now(),type:'referral_purchase',amount:200,desc:`Purchase bonus — referred member went PRO!`,date:today});
+      tx.set(refWalletRef,{balance:(current.balance||0)+200,transactions:txns.slice(0,50),updatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});
+    });
+    await db.collection('referrals').doc(newUserUid).update({purchaseBonusPaid:true,purchaseBonusPaidAt:firebase.firestore.FieldValue.serverTimestamp()});
+    // Update same-device wallet too
+    const ownerWalletKey=`rfc_wallet_${referrerUid}_data`;
+    const ow=JSON.parse(localStorage.getItem(ownerWalletKey)||'{"balance":0,"transactions":[]}');
+    ow.balance=(ow.balance||0)+200;
+    ow.transactions.unshift({id:Date.now(),type:'referral_purchase',amount:200,desc:'Purchase bonus — referred member went PRO!',date:today});
+    localStorage.setItem(ownerWalletKey,JSON.stringify(ow));
+  }catch(e){console.warn('[creditReferrerPurchaseBonus]',e.message);}
+}
+
+// Sync referral code to Firestore so it can be looked up cross-device
+async function syncRefCodeToFirestore(code){
+  if(!user||!code||typeof firebase==='undefined')return;
+  try{
+    await firebase.firestore().collection('ref_codes').doc(code).set({
+      uid:user.uid,name:user.name||'',email:user.email||'',
+      createdAt:firebase.firestore.FieldValue.serverTimestamp()
+    },{merge:true});
+  }catch(e){/* silent */}
+}
+
+// Sync Firestore wallet balance into localStorage on login
+async function syncWalletFromFirestore(){
+  if(!user||typeof firebase==='undefined')return;
+  try{
+    const doc=await firebase.firestore().collection('wallets').doc(user.uid).get();
+    if(doc.exists){
+      const fw=doc.data();
+      const lw=getWallet();
+      // Use Firestore balance if it's higher (in case another device credited us)
+      if((fw.balance||0)>(lw.balance||0)){
+        const merged={balance:fw.balance,transactions:(fw.transactions||lw.transactions).slice(0,50)};
+        saveWallet(merged);
+        renderWallet();
+      }
+    }
+  }catch(e){/* silent */}
 }
 
 // ════════ TIGER LEADERBOARD ════════════════════════════════════════════════
@@ -11565,6 +11714,9 @@ applyUser=function(){
   _origApply();
   checkLoginBonus();
   renderWallet();
+  // Sync referral code and wallet balance from Firestore
+  syncRefCodeToFirestore(getRefCode());
+  setTimeout(syncWalletFromFirestore, 800);
   setTimeout(()=>renderLeaderboard(currentLbBoard,null),300);
 };
 
