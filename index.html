@@ -3645,8 +3645,82 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
 <script src="src/analyticsService.js"></script>
 <script src="src/transformationService.js"></script>
 <script src="src/communityService.js"></script>
-<!-- Motion (Framer Motion vanilla JS) — spring physics, staggered animations -->
-<script src="https://cdn.jsdelivr.net/npm/motion@11/dist/motion.js"></script>
+<!-- Motion shim: WAAPI-backed animate/stagger/inView — no CDN needed -->
+<script>
+(function(){
+  if(window.Motion) return;
+
+  function toKeyframes(target){
+    var keys=Object.keys(target);
+    var hasArr=keys.some(function(k){return Array.isArray(target[k]);});
+    if(!hasArr){
+      var f={},tr=[];
+      keys.forEach(function(k){
+        var v=target[k];
+        if(k==='x')tr.push('translateX('+v+'px)');
+        else if(k==='y')tr.push('translateY('+v+'px)');
+        else if(k==='scale')tr.push('scale('+v+')');
+        else f[k]=(typeof v==='number'&&k!=='opacity')?v+'px':String(v);
+      });
+      if(tr.length)f.transform=tr.join(' ');
+      return [f];
+    }
+    var len=0;
+    keys.forEach(function(k){if(Array.isArray(target[k]))len=Math.max(len,target[k].length);});
+    var frames=[];
+    for(var i=0;i<len;i++){
+      var fr={},transforms=[];
+      keys.forEach(function(k){
+        var arr=Array.isArray(target[k])?target[k]:null;
+        var v=arr?arr[Math.min(i,arr.length-1)]:target[k];
+        if(k==='x')transforms.push('translateX('+v+'px)');
+        else if(k==='y')transforms.push('translateY('+v+'px)');
+        else if(k==='scale')transforms.push('scale('+v+')');
+        else fr[k]=(typeof v==='number'&&k!=='opacity')?v+'px':String(v);
+      });
+      if(transforms.length)fr.transform=transforms.join(' ');
+      frames.push(fr);
+    }
+    return frames;
+  }
+
+  function toEasing(e){
+    if(!e)return 'ease-out';
+    if(typeof e==='string')return e;
+    if(Array.isArray(e)&&e.length===4)return 'cubic-bezier('+e.join(',')+')';
+    return 'ease-out';
+  }
+
+  function animate(elements,keyframes,opts){
+    opts=opts||{};
+    var els=elements instanceof NodeList?Array.from(elements):
+            Array.isArray(elements)?elements:elements?[elements]:[];
+    var frames=toKeyframes(keyframes);
+    var easing=toEasing(opts.easing);
+    var dur=Math.round((opts.duration||0.3)*1000);
+    els.forEach(function(el,i){
+      if(!el||!el.animate)return;
+      var delay=typeof opts.delay==='function'?Math.round(opts.delay(i)*1000):
+                Math.round((opts.delay||0)*1000);
+      el.animate(frames,{duration:dur,delay:delay,easing:easing,fill:'forwards'});
+    });
+  }
+
+  function stagger(step){return function(i){return i*step;};}
+
+  function inView(el,cb,opts){
+    var threshold=(opts&&opts.amount)||0.15;
+    var obs=new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){cb();obs.unobserve(entry.target);}
+      });
+    },{threshold:threshold});
+    obs.observe(el);
+  }
+
+  window.Motion={animate:animate,stagger:stagger,inView:inView};
+})();
+</script>
 </head>
 <body>
 <!-- Google Tag Manager (noscript) -->
