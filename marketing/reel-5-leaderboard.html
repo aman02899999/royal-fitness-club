@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=430,initial-scale=1">
+<title>RFC Reel 5 — Tiger Leaderboard ₹15,000</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;700;900&display=swap');
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{width:430px;height:932px;overflow:hidden;background:#0a0a0a;}
+.reel{width:430px;height:932px;position:relative;overflow:hidden;font-family:'Inter',sans-serif;}
+
+/* BG */
+.bg{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 110%,#1a0f00 0%,#0a0a0a 60%);z-index:0;}
+.bg-lines{position:absolute;inset:0;background-image:repeating-linear-gradient(
+  90deg,transparent,transparent 59px,rgba(245,158,11,.06) 60px);z-index:1;}
+.gold-pulse{position:absolute;width:600px;height:300px;
+  background:radial-gradient(ellipse,rgba(245,158,11,.22) 0%,transparent 70%);
+  bottom:-80px;left:-85px;z-index:1;animation:gpulse 3s ease-in-out infinite;}
+@keyframes gpulse{0%,100%{opacity:.6;transform:scale(1);}50%{opacity:1;transform:scale(1.12);}}
+
+/* KEYFRAMES */
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+@keyframes slideUp{from{opacity:0;transform:translateY(28px);}to{opacity:1;transform:translateY(0);}}
+@keyframes slideLeft{from{opacity:0;transform:translateX(36px);}to{opacity:1;transform:translateX(0);}}
+@keyframes pop{from{opacity:0;transform:scale(0.55);}to{opacity:1;transform:scale(1);}}
+@keyframes popBig{from{opacity:0;transform:scale(0.3);}to{opacity:1;transform:scale(1);}}
+@keyframes shake{0%,100%{transform:rotate(0deg);}20%{transform:rotate(-8deg);}40%{transform:rotate(8deg);}60%{transform:rotate(-6deg);}80%{transform:rotate(6deg);}}
+@keyframes countUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+@keyframes ticker{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+@keyframes glow{0%,100%{text-shadow:0 0 20px rgba(245,158,11,.6);}50%{text-shadow:0 0 40px rgba(245,158,11,1),0 0 60px rgba(245,158,11,.4);}}
+
+/* SLIDE FADE UTIL */
+@keyframes s-fade{0%{opacity:0;}8%{opacity:1;}88%{opacity:1;}100%{opacity:0;}}
+@keyframes s-fade2{0%{opacity:0;}5%{opacity:1;}92%{opacity:1;}100%{opacity:0;}}
+@keyframes s-fade3{0%{opacity:0;}8%{opacity:1;}85%{opacity:1;}100%{opacity:0;}}
+@keyframes s-fade4{0%{opacity:0;}10%{opacity:1;}85%{opacity:1;}100%{opacity:0;}}
+
+/* ─ SLIDE 1: HOOK ─ */
+.s1{position:absolute;inset:0;z-index:10;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;padding:48px 32px;animation:s-fade 4.5s .2s forwards;}
+.s1-money{font-size:80px;opacity:0;animation:popBig .6s .5s forwards;}
+.s1-q{font-family:'Bebas Neue',sans-serif;font-size:40px;color:#fff;text-align:center;
+  letter-spacing:2px;line-height:1.2;margin-top:20px;opacity:0;animation:slideUp .5s 1s forwards;}
+.s1-q .gold{color:#f59e0b;}
+.s1-q .red{color:#e8001d;}
+.s1-sub{font-size:16px;color:rgba(255,255,255,.55);text-align:center;margin-top:12px;
+  line-height:1.5;opacity:0;animation:fadeIn .5s 1.6s forwards;}
+
+/* ─ SLIDE 2: PRIZE REVEAL ─ */
+.s2{position:absolute;inset:0;z-index:10;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;padding:48px 28px;animation:s-fade2 7s 4.5s forwards;}
+.s2-tag{background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.5);border-radius:30px;
+  padding:7px 20px;font-size:11px;font-weight:700;color:#f59e0b;letter-spacing:2px;text-transform:uppercase;
+  opacity:0;animation:slideUp .4s 4.8s forwards;}
+.s2-prize-box{background:linear-gradient(135deg,rgba(245,158,11,.2),rgba(245,158,11,.05));
+  border:2px solid rgba(245,158,11,.5);border-radius:20px;padding:24px 36px;margin-top:20px;
+  text-align:center;opacity:0;animation:pop .5s 5.2s forwards;box-shadow:0 0 40px rgba(245,158,11,.2);}
+.s2-monthly{font-size:12px;font-weight:700;color:rgba(255,255,255,.5);letter-spacing:3px;text-transform:uppercase;}
+.s2-amount{font-family:'Bebas Neue',sans-serif;font-size:82px;color:#f59e0b;letter-spacing:4px;
+  line-height:1;animation:glow 2s 5.7s ease-in-out infinite;}
+.s2-unit{font-size:18px;font-weight:700;color:rgba(255,255,255,.7);margin-top:4px;}
+.s2-stripe{width:80px;height:3px;background:linear-gradient(90deg,#f59e0b,#e8001d);
+  border-radius:2px;margin:12px auto 0;}
+.s2-desc{font-size:14px;color:rgba(255,255,255,.6);text-align:center;margin-top:16px;line-height:1.6;
+  opacity:0;animation:fadeIn .5s 5.8s forwards;}
+.s2-desc b{color:#fff;}
+
+/* ─ SLIDE 3: HOW IT WORKS ─ */
+.s3{position:absolute;inset:0;z-index:10;display:flex;flex-direction:column;align-items:center;
+  justify-content:flex-start;padding:52px 28px 32px;animation:s-fade3 9.5s 11.5s forwards;}
+.s3-head{font-family:'Bebas Neue',sans-serif;font-size:30px;color:rgba(255,255,255,.55);
+  letter-spacing:4px;opacity:0;animation:slideUp .4s 11.8s forwards;}
+.s3-sub{font-size:13px;color:rgba(255,255,255,.4);margin-top:4px;
+  opacity:0;animation:fadeIn .4s 12s forwards;}
+.lb-table{width:100%;margin-top:20px;border-collapse:collapse;}
+.lb-row{display:flex;align-items:center;gap:10px;padding:11px 14px;border-radius:12px;margin-bottom:8px;
+  opacity:0;transform:translateX(36px);}
+.lb-row:nth-child(1){background:linear-gradient(135deg,rgba(245,158,11,.18),rgba(245,158,11,.06));
+  border:1px solid rgba(245,158,11,.4);animation:slideLeft .4s 12.3s forwards;}
+.lb-row:nth-child(2){background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);
+  animation:slideLeft .4s 12.7s forwards;}
+.lb-row:nth-child(3){background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);
+  animation:slideLeft .4s 13.1s forwards;}
+.lb-row:nth-child(4){background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);
+  animation:slideLeft .4s 13.5s forwards;}
+.lb-row:nth-child(5){background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.05);
+  animation:slideLeft .4s 13.9s forwards;}
+.lb-rank{font-family:'Bebas Neue',sans-serif;font-size:24px;width:36px;text-align:center;flex-shrink:0;}
+.lb-row:nth-child(1) .lb-rank{color:#f59e0b;}
+.lb-row:nth-child(2) .lb-rank{color:#cbd5e1;}
+.lb-row:nth-child(3) .lb-rank{color:#b45309;}
+.lb-row:nth-child(n+4) .lb-rank{color:rgba(255,255,255,.3);}
+.lb-av{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:16px;flex-shrink:0;}
+.lb-row:nth-child(1) .lb-av{background:linear-gradient(135deg,#f59e0b,#d97706);}
+.lb-row:nth-child(2) .lb-av{background:linear-gradient(135deg,#475569,#334155);}
+.lb-row:nth-child(3) .lb-av{background:linear-gradient(135deg,#92400e,#78350f);}
+.lb-row:nth-child(n+4) .lb-av{background:rgba(255,255,255,.08);}
+.lb-info{flex:1;}
+.lb-name{font-size:14px;font-weight:700;color:#fff;}
+.lb-city{font-size:11px;color:rgba(255,255,255,.4);margin-top:1px;}
+.lb-score{text-align:right;}
+.lb-pts{font-family:'Bebas Neue',sans-serif;font-size:20px;}
+.lb-row:nth-child(1) .lb-pts{color:#f59e0b;}
+.lb-row:nth-child(2) .lb-pts{color:#cbd5e1;}
+.lb-row:nth-child(3) .lb-pts{color:#b45309;}
+.lb-row:nth-child(n+4) .lb-pts{color:rgba(255,255,255,.4);}
+.lb-priz{font-size:10px;color:rgba(255,255,255,.4);margin-top:1px;}
+.lb-row:nth-child(1) .lb-priz{color:#f59e0b;font-weight:700;}
+.you-row{background:linear-gradient(135deg,rgba(232,0,29,.15),rgba(232,0,29,.05))!important;
+  border:1px dashed rgba(232,0,29,.5)!important;}
+.you-badge{background:#e8001d;color:#fff;font-size:9px;font-weight:700;padding:2px 7px;
+  border-radius:10px;letter-spacing:1px;margin-top:2px;display:inline-block;}
+
+/* ─ SLIDE 4: HOW TO EARN SCORE ─ */
+.s4{position:absolute;inset:0;z-index:10;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;padding:48px 28px;animation:s-fade3 7.5s 21s forwards;}
+.s4-head{font-family:'Bebas Neue',sans-serif;font-size:28px;color:rgba(255,255,255,.55);
+  letter-spacing:3px;opacity:0;animation:slideUp .4s 21.3s forwards;}
+.score-grid{width:100%;margin-top:18px;display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.score-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);
+  border-radius:14px;padding:14px;opacity:0;transform:translateY(20px);}
+.score-card:nth-child(1){animation:slideUp .4s 21.7s forwards;border-color:rgba(245,158,11,.3);}
+.score-card:nth-child(2){animation:slideUp .4s 22.1s forwards;border-color:rgba(34,197,94,.3);}
+.score-card:nth-child(3){animation:slideUp .4s 22.5s forwards;border-color:rgba(99,102,241,.3);}
+.score-card:nth-child(4){animation:slideUp .4s 22.9s forwards;border-color:rgba(236,72,153,.3);}
+.score-card:nth-child(5){animation:slideUp .4s 23.3s forwards;border-color:rgba(6,182,212,.3);}
+.score-card:nth-child(6){animation:slideUp .4s 23.7s forwards;border-color:rgba(245,158,11,.3);}
+.sc-icon{font-size:26px;}
+.sc-act{font-size:12px;font-weight:700;color:#fff;margin-top:6px;line-height:1.3;}
+.sc-pts{font-family:'Bebas Neue',sans-serif;font-size:20px;margin-top:4px;}
+.score-card:nth-child(1) .sc-pts{color:#f59e0b;}
+.score-card:nth-child(2) .sc-pts{color:#22c55e;}
+.score-card:nth-child(3) .sc-pts{color:#818cf8;}
+.score-card:nth-child(4) .sc-pts{color:#f472b6;}
+.score-card:nth-child(5) .sc-pts{color:#22d3ee;}
+.score-card:nth-child(6) .sc-pts{color:#f59e0b;}
+
+/* ─ SLIDE 5: CTA ─ */
+.s5{position:absolute;inset:0;z-index:10;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;padding:48px 32px;animation:s-fade4 7s 28.5s forwards;}
+.s5-tiger{font-size:72px;opacity:0;animation:popBig .6s 28.8s forwards;}
+.s5-head{font-family:'Bebas Neue',sans-serif;font-size:44px;color:#fff;text-align:center;
+  letter-spacing:2px;line-height:1.1;margin-top:16px;opacity:0;animation:slideUp .5s 29.3s forwards;}
+.s5-head .gold{color:#f59e0b;}
+.s5-head .red{color:#e8001d;}
+.s5-pill{background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.4);border-radius:30px;
+  padding:8px 22px;font-size:12px;font-weight:700;color:#f59e0b;letter-spacing:1px;
+  margin-top:16px;opacity:0;animation:fadeIn .5s 29.9s forwards;}
+.s5-cta{background:linear-gradient(135deg,#f59e0b,#d97706);color:#0a0a0a;
+  padding:18px 44px;border-radius:50px;font-size:15px;font-weight:900;letter-spacing:1px;
+  margin-top:28px;box-shadow:0 10px 30px rgba(245,158,11,.5);opacity:0;animation:pop .5s 30.5s forwards;}
+
+/* PROGRESS + TICKER */
+.ticker-wrap{position:absolute;bottom:36px;left:0;right:0;overflow:hidden;height:24px;
+  background:rgba(245,158,11,.08);z-index:20;}
+.ticker-inner{display:flex;white-space:nowrap;animation:ticker 18s linear infinite;}
+.ticker-item{font-size:11px;font-weight:700;color:rgba(245,158,11,.7);letter-spacing:2px;
+  padding:4px 24px;}
+.progress{position:absolute;bottom:0;left:0;height:3px;
+  background:linear-gradient(90deg,#f59e0b,#e8001d,#f59e0b);z-index:20;
+  animation:prog 35.5s linear forwards;}
+@keyframes prog{from{width:0;}to{width:100%;}}
+.wm{position:absolute;top:18px;right:18px;font-size:10px;color:rgba(255,255,255,.2);
+  letter-spacing:2px;z-index:20;}
+</style>
+</head>
+<body>
+<div class="reel">
+  <div class="bg"></div>
+  <div class="bg-lines"></div>
+  <div class="gold-pulse"></div>
+
+  <!-- SLIDE 1: HOOK -->
+  <div class="s1">
+    <div class="s1-money">💰</div>
+    <div class="s1-q">What if your<br><span class="gold">workout</span> could<br>win you <span class="red">₹15,000?</span></div>
+    <div class="s1-sub">At RFC, the hardest workers<br>get paid — every single month</div>
+  </div>
+
+  <!-- SLIDE 2: PRIZE REVEAL -->
+  <div class="s2">
+    <div class="s2-tag">🐯 TIGER LEADERBOARD · MONTHLY PRIZE</div>
+    <div class="s2-prize-box">
+      <div class="s2-monthly">MONTHLY CASH PRIZE</div>
+      <div class="s2-amount">₹15,000</div>
+      <div class="s2-unit">for India's #1 Tiger</div>
+      <div class="s2-stripe"></div>
+    </div>
+    <div class="s2-desc">
+      India's top fitness members battle for points.<br>
+      <b>Log workouts · Track nutrition · Complete courses.</b><br>
+      The leaderboard resets every 30 days.
+    </div>
+  </div>
+
+  <!-- SLIDE 3: LEADERBOARD MOCK -->
+  <div class="s3">
+    <div class="s3-head">THIS MONTH'S STANDINGS</div>
+    <div class="s3-sub">Live rankings update in real-time</div>
+    <div style="width:100%">
+      <div class="lb-row">
+        <div class="lb-rank">1</div>
+        <div class="lb-av">🐯</div>
+        <div class="lb-info"><div class="lb-name">Arjun M.</div><div class="lb-city">Mumbai, MH</div></div>
+        <div class="lb-score"><div class="lb-pts">4,820 pts</div><div class="lb-priz">🏆 ₹15,000</div></div>
+      </div>
+      <div class="lb-row">
+        <div class="lb-rank">2</div>
+        <div class="lb-av">🦁</div>
+        <div class="lb-info"><div class="lb-name">Priya S.</div><div class="lb-city">Bengaluru, KA</div></div>
+        <div class="lb-score"><div class="lb-pts">4,415 pts</div><div class="lb-priz">₹5,000</div></div>
+      </div>
+      <div class="lb-row">
+        <div class="lb-rank">3</div>
+        <div class="lb-av">💪</div>
+        <div class="lb-info"><div class="lb-name">Rahul K.</div><div class="lb-city">Delhi, DL</div></div>
+        <div class="lb-score"><div class="lb-pts">4,190 pts</div><div class="lb-priz">₹2,500</div></div>
+      </div>
+      <div class="lb-row">
+        <div class="lb-rank">4</div>
+        <div class="lb-av">🔥</div>
+        <div class="lb-info"><div class="lb-name">Ananya R.</div><div class="lb-city">Pune, MH</div></div>
+        <div class="lb-score"><div class="lb-pts">3,870 pts</div><div class="lb-priz">Top 10</div></div>
+      </div>
+      <div class="lb-row you-row">
+        <div class="lb-rank" style="color:#e8001d">?</div>
+        <div class="lb-av" style="background:linear-gradient(135deg,#e8001d,#7c0010)">👤</div>
+        <div class="lb-info">
+          <div class="lb-name">You</div>
+          <div class="lb-city"><span class="you-badge">YOUR SPOT</span></div>
+        </div>
+        <div class="lb-score"><div class="lb-pts" style="color:#e8001d">— pts</div><div class="lb-priz">Start Now</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 4: HOW TO EARN -->
+  <div class="s4">
+    <div class="s4-head">HOW YOU EARN TIGER POINTS</div>
+    <div class="score-grid">
+      <div class="score-card"><div class="sc-icon">🏋️</div><div class="sc-act">Log a workout session</div><div class="sc-pts">+50 pts</div></div>
+      <div class="score-card"><div class="sc-icon">🥗</div><div class="sc-act">Track daily nutrition</div><div class="sc-pts">+30 pts</div></div>
+      <div class="score-card"><div class="sc-icon">🎓</div><div class="sc-act">Complete a course</div><div class="sc-pts">+200 pts</div></div>
+      <div class="score-card"><div class="sc-icon">⚡</div><div class="sc-act">Update Beast Score</div><div class="sc-pts">+40 pts</div></div>
+      <div class="score-card"><div class="sc-icon">🩸</div><div class="sc-act">Analyse blood report</div><div class="sc-pts">+60 pts</div></div>
+      <div class="score-card"><div class="sc-icon">🔥</div><div class="sc-act">7-day login streak</div><div class="sc-pts">+100 pts</div></div>
+    </div>
+  </div>
+
+  <!-- SLIDE 5: CTA -->
+  <div class="s5">
+    <div class="s5-tiger">🐯</div>
+    <div class="s5-head">BECOME<br>INDIA'S<br><span class="gold">TOP</span> <span class="red">TIGER</span></div>
+    <div class="s5-pill">Free with RFC Gym Membership · PRO users only</div>
+    <div class="s5-cta">🏆 Join the Leaderboard</div>
+  </div>
+
+  <!-- TICKER -->
+  <div class="ticker-wrap">
+    <div class="ticker-inner">
+      <span class="ticker-item">🐯 ARJUN M. — 4,820 PTS</span>
+      <span class="ticker-item">🦁 PRIYA S. — 4,415 PTS</span>
+      <span class="ticker-item">💪 RAHUL K. — 4,190 PTS</span>
+      <span class="ticker-item">🔥 ANANYA R. — 3,870 PTS</span>
+      <span class="ticker-item">⚡ VIKRAM P. — 3,540 PTS</span>
+      <span class="ticker-item">🏋️ DEEPA N. — 3,210 PTS</span>
+      <span class="ticker-item">🐯 ARJUN M. — 4,820 PTS</span>
+      <span class="ticker-item">🦁 PRIYA S. — 4,415 PTS</span>
+      <span class="ticker-item">💪 RAHUL K. — 4,190 PTS</span>
+      <span class="ticker-item">🔥 ANANYA R. — 3,870 PTS</span>
+      <span class="ticker-item">⚡ VIKRAM P. — 3,540 PTS</span>
+      <span class="ticker-item">🏋️ DEEPA N. — 3,210 PTS</span>
+    </div>
+  </div>
+
+  <div class="progress"></div>
+  <div class="wm">ROYAL FITNESS CLUB</div>
+</div>
+</body>
+</html>

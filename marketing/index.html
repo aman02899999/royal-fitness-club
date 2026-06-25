@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RFC Marketing Reels — Preview Hub</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;600;700;900&display=swap');
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:#0a0a0a;color:#fff;font-family:'Inter',sans-serif;min-height:100vh;padding:40px 20px;}
+.hub-head{text-align:center;margin-bottom:48px;}
+.hub-logo{font-size:48px;margin-bottom:12px;}
+.hub-title{font-family:'Bebas Neue',sans-serif;font-size:42px;letter-spacing:4px;color:#fff;}
+.hub-title span{color:#e8001d;}
+.hub-sub{font-size:13px;color:rgba(255,255,255,.4);letter-spacing:2px;text-transform:uppercase;margin-top:8px;}
+.hub-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:24px;max-width:1100px;margin:0 auto;}
+.reel-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:16px;overflow:hidden;
+  transition:transform .25s,box-shadow .25s;cursor:pointer;text-decoration:none;color:inherit;display:block;}
+.reel-card:hover{transform:translateY(-6px);box-shadow:0 20px 40px rgba(0,0,0,.5);}
+.reel-preview{width:100%;aspect-ratio:9/16;background:#111;position:relative;overflow:hidden;}
+.reel-preview iframe{width:430px;height:932px;border:none;transform-origin:top left;pointer-events:none;}
+.reel-info{padding:14px 16px;}
+.reel-num{font-size:10px;font-weight:700;color:rgba(255,255,255,.35);letter-spacing:2px;text-transform:uppercase;}
+.reel-name{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px;margin-top:4px;line-height:1.2;}
+.reel-hook{font-size:12px;color:rgba(255,255,255,.5);margin-top:6px;line-height:1.5;}
+.reel-tag{display:inline-block;background:rgba(232,0,29,.12);border:1px solid rgba(232,0,29,.3);
+  border-radius:20px;padding:3px 10px;font-size:10px;font-weight:700;color:#e8001d;letter-spacing:1px;
+  margin-top:10px;text-transform:uppercase;}
+.open-btn{display:block;width:100%;padding:12px;background:rgba(232,0,29,.15);
+  border:1px solid rgba(232,0,29,.3);border-radius:10px;font-size:12px;font-weight:700;
+  color:#e8001d;letter-spacing:1px;text-align:center;margin-top:10px;cursor:pointer;
+  transition:background .2s;}
+.open-btn:hover{background:rgba(232,0,29,.28);}
+</style>
+</head>
+<body>
+
+<div class="hub-head">
+  <div class="hub-logo">🐯</div>
+  <div class="hub-title">RFC <span>MARKETING</span> REELS</div>
+  <div class="hub-sub">5 animated reels · Screen-record for Instagram / Shorts / WhatsApp</div>
+</div>
+
+<div class="hub-grid">
+
+  <a class="reel-card" href="reel-1-beast-ecosystem.html" target="_blank">
+    <div class="reel-preview" id="p1"></div>
+    <div class="reel-info">
+      <div class="reel-num">Reel 01</div>
+      <div class="reel-name">Beast Ecosystem</div>
+      <div class="reel-hook">"Your gym gave you more than weights…" — Full app overview with all 7 features</div>
+      <div class="reel-tag">🔥 Brand Intro</div>
+      <a class="open-btn" href="reel-1-beast-ecosystem.html" target="_blank">▶ Preview Full Reel</a>
+    </div>
+  </a>
+
+  <a class="reel-card" href="reel-2-members-free.html" target="_blank">
+    <div class="reel-preview" id="p2"></div>
+    <div class="reel-info">
+      <div class="reel-num">Reel 02</div>
+      <div class="reel-name">Members Get PRO Free</div>
+      <div class="reel-hook">"Did you know your RFC membership includes a FREE fitness app?" — 6 PRO perks, ₹499 → ₹0</div>
+      <div class="reel-tag">💚 Membership Value</div>
+      <a class="open-btn" href="reel-2-members-free.html" target="_blank">▶ Preview Full Reel</a>
+    </div>
+  </a>
+
+  <a class="reel-card" href="reel-3-10-features.html" target="_blank">
+    <div class="reel-preview" id="p3"></div>
+    <div class="reel-info">
+      <div class="reel-num">Reel 03</div>
+      <div class="reel-name">10 Features · One App</div>
+      <div class="reel-hook">Rapid-fire showcase — 10 feature cards in 22 seconds, each with its own colour pop</div>
+      <div class="reel-tag">⚡ Feature Drop</div>
+      <a class="open-btn" href="reel-3-10-features.html" target="_blank">▶ Preview Full Reel</a>
+    </div>
+  </a>
+
+  <a class="reel-card" href="reel-4-academy.html" target="_blank">
+    <div class="reel-preview" id="p4"></div>
+    <div class="reel-info">
+      <div class="reel-num">Reel 04</div>
+      <div class="reel-name">RFC Academy</div>
+      <div class="reel-hook">"Why pay ₹50,000 for a fitness education?" — 10 courses, ₹49,999 value → ₹499 with PRO</div>
+      <div class="reel-tag">🎓 Education Value</div>
+      <a class="open-btn" href="reel-4-academy.html" target="_blank">▶ Preview Full Reel</a>
+    </div>
+  </a>
+
+  <a class="reel-card" href="reel-5-leaderboard.html" target="_blank">
+    <div class="reel-preview" id="p5"></div>
+    <div class="reel-info">
+      <div class="reel-num">Reel 05</div>
+      <div class="reel-name">Tiger Leaderboard</div>
+      <div class="reel-hook">"What if your workout could win you ₹15,000?" — Live rankings, prize pool, how to earn points</div>
+      <div class="reel-tag">🏆 Win Money</div>
+      <a class="open-btn" href="reel-5-leaderboard.html" target="_blank">▶ Preview Full Reel</a>
+    </div>
+  </a>
+
+</div>
+
+<script>
+// Scale iframe previews to fit their container
+var previews = [
+  {id:'p1',src:'reel-1-beast-ecosystem.html'},
+  {id:'p2',src:'reel-2-members-free.html'},
+  {id:'p3',src:'reel-3-10-features.html'},
+  {id:'p4',src:'reel-4-academy.html'},
+  {id:'p5',src:'reel-5-leaderboard.html'},
+];
+previews.forEach(function(p) {
+  var wrap = document.getElementById(p.id);
+  if (!wrap) return;
+  var scale = wrap.offsetWidth / 430;
+  wrap.style.height = (932 * scale) + 'px';
+  var iframe = document.createElement('iframe');
+  iframe.src = p.src;
+  iframe.style.transform = 'scale(' + scale + ')';
+  wrap.appendChild(iframe);
+});
+</script>
+</body>
+</html>
