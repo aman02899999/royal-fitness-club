@@ -34099,4 +34099,398 @@ setTimeout(function(){
 </script>
 
 </body>
+
+<script>
+/* ============================================================
+   BATCH 31 — Injury Tracker | Fiber Intake | AMRAP/EMOM Timer
+   ============================================================ */
+(function(){ 'use strict';
+
+var _origSS29 = window.switchScreen;
+
+/* ── helpers ── */
+function _b31uid(){ try{ return JSON.parse(localStorage.getItem('bm_user')||'{}').uid||'guest'; }catch(e){ return 'guest'; } }
+function _b31today(){ var d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function _b31load(k){ try{ return JSON.parse(localStorage.getItem(k))||null; }catch(e){ return null; } }
+function _b31save(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} }
+function _b31card(id,title){
+  var d=document.createElement('div');
+  d.id=id;
+  d.style.cssText='background:#1a1a2e;border-radius:14px;padding:18px;margin:14px 0;color:#e0e0e0;font-family:inherit;';
+  d.innerHTML='<div style="font-size:15px;font-weight:700;color:#00d4ff;margin-bottom:14px;">'+title+'</div>';
+  return d;
+}
+
+/* ════════════════════════════════════════════════════════════
+   1. INJURY & PAIN TRACKER (dashboard)
+   ════════════════════════════════════════════════════════════ */
+var INJ_REGIONS=[
+  {id:'neck',    label:'Neck',        icon:'🔴', pos:'top:0;left:50%;transform:translateX(-50%)'},
+  {id:'lsho',    label:'L Shoulder',  icon:'🟠', pos:'top:14%;left:18%'},
+  {id:'rsho',    label:'R Shoulder',  icon:'🟠', pos:'top:14%;right:18%'},
+  {id:'chest',   label:'Chest',       icon:'🟡', pos:'top:20%;left:50%;transform:translateX(-50%)'},
+  {id:'uback',   label:'Upper Back',  icon:'🔵', pos:'top:26%;left:50%;transform:translateX(-50%)'},
+  {id:'lback',   label:'Lower Back',  icon:'🔵', pos:'top:40%;left:50%;transform:translateX(-50%)'},
+  {id:'lhip',    label:'L Hip',       icon:'🟣', pos:'top:48%;left:28%'},
+  {id:'rhip',    label:'R Hip',       icon:'🟣', pos:'top:48%;right:28%'},
+  {id:'lquad',   label:'L Quad',      icon:'🟢', pos:'top:62%;left:22%'},
+  {id:'rquad',   label:'R Quad',      icon:'🟢', pos:'top:62%;right:22%'},
+  {id:'lham',    label:'L Hamstring', icon:'🟤', pos:'top:74%;left:22%'},
+  {id:'rham',    label:'R Hamstring', icon:'🟤', pos:'top:74%;right:22%'}
+];
+var INJ_SEV=['none','mild','moderate','severe'];
+var INJ_COL=['#333','#fbbf24','#f97316','#ef4444'];
+
+function _injectInjury(){
+  if(document.getElementById('rfc-injury-wrap')) return;
+  var anchors=['rfc-wkreport-wrap','rfc-recovery-wrap','rfc-stretch-wrap','rfc-steps-wrap','rfc-mood-wrap','rfc-water-wrap'];
+  var host=null;
+  for(var i=0;i<anchors.length;i++){ var el=document.getElementById(anchors[i]); if(el){ host=el; break; } }
+  if(!host){ var tb=document.querySelector('.dash-topbar'); if(tb) host=tb; }
+  if(!host) return;
+
+  var c=_b31card('rfc-injury-wrap','🩹 Injury & Pain Tracker');
+  c.innerHTML+=
+    '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:12px;" id="rfc-inj-grid"></div>'+
+    '<div style="display:flex;gap:10px;margin-bottom:10px;flex-wrap:wrap;" id="rfc-inj-legend">'+
+      INJ_SEV.map(function(s,i){ return '<div style="display:flex;align-items:center;gap:4px;font-size:11px;color:#888;"><div style="width:10px;height:10px;border-radius:50%;background:'+INJ_COL[i]+';"></div>'+s+'</div>'; }).join('')+
+    '</div>'+
+    '<textarea id="rfc-inj-note" rows="2" placeholder="Optional note (e.g. DOMS from yesterday\'s squats)" style="width:100%;box-sizing:border-box;background:#0d0d1a;border:1px solid #333;color:#ddd;padding:8px;border-radius:8px;font-size:12px;resize:none;margin-bottom:8px;"></textarea>'+
+    '<button onclick="window._rfcInjSaveNote()" style="background:#ef444422;border:1px solid #ef444444;color:#ff8888;padding:7px 16px;border-radius:8px;cursor:pointer;font-size:12px;">Save Note</button>'+
+    '<div id="rfc-inj-history" style="margin-top:12px;font-size:11px;color:#555;"></div>';
+
+  if(host.nextSibling) host.parentNode.insertBefore(c,host.nextSibling);
+  else host.parentNode.appendChild(c);
+  _renderInjury();
+}
+
+function _renderInjury(){
+  var uid=_b31uid(), today=_b31today();
+  var key='rfc_injury_'+uid+'_'+today;
+  var data=_b31load(key)||{regions:{},note:''};
+  var grid=document.getElementById('rfc-inj-grid');
+  var noteEl=document.getElementById('rfc-inj-note');
+  var hist=document.getElementById('rfc-inj-history');
+  if(!grid) return;
+
+  grid.innerHTML=INJ_REGIONS.map(function(r){
+    var sev=data.regions[r.id]||0;
+    return '<div onclick="window._rfcInjTap(\''+r.id+'\')" style="display:flex;flex-direction:column;align-items:center;gap:4px;background:#0d0d1a;border:2px solid '+INJ_COL[sev]+';border-radius:9px;padding:8px 4px;cursor:pointer;transition:all .2s;" title="Tap to cycle severity">'+
+      '<div style="width:14px;height:14px;border-radius:50%;background:'+INJ_COL[sev]+';"></div>'+
+      '<div style="font-size:10px;color:#aaa;text-align:center;line-height:1.2;">'+r.label+'</div>'+
+      '<div style="font-size:9px;color:'+INJ_COL[sev]+';">'+INJ_SEV[sev]+'</div>'+
+    '</div>';
+  }).join('');
+
+  if(noteEl&&noteEl!==document.activeElement) noteEl.value=data.note||'';
+
+  /* last 7 days with any pain logged */
+  if(hist){
+    var lines=[];
+    for(var d=1;d<=7;d++){
+      var dd=new Date(); dd.setDate(dd.getDate()-d);
+      var dk=dd.getFullYear()+'-'+String(dd.getMonth()+1).padStart(2,'0')+'-'+String(dd.getDate()).padStart(2,'0');
+      var rec=_b31load('rfc_injury_'+uid+'_'+dk)||{regions:{}};
+      var hurt=Object.keys(rec.regions).filter(function(k){ return rec.regions[k]>0; });
+      if(hurt.length) lines.push(d+' day'+(d>1?'s':'')+' ago: '+hurt.map(function(k){ var r=INJ_REGIONS.find(function(x){ return x.id===k; }); return (r?r.label:k)+' ('+INJ_SEV[rec.regions[k]]+')'; }).join(', '));
+    }
+    hist.textContent=lines.length?'Recent: '+lines.slice(0,2).join(' · '):'No pain logged in last 7 days.';
+  }
+}
+window._rfcInjTap=function(regionId){
+  var uid=_b31uid(), today=_b31today();
+  var key='rfc_injury_'+uid+'_'+today;
+  var data=_b31load(key)||{regions:{},note:''};
+  data.regions[regionId]=((data.regions[regionId]||0)+1)%4;
+  _b31save(key,data);
+  _renderInjury();
+};
+window._rfcInjSaveNote=function(){
+  var uid=_b31uid(), today=_b31today();
+  var key='rfc_injury_'+uid+'_'+today;
+  var data=_b31load(key)||{regions:{},note:''};
+  var n=document.getElementById('rfc-inj-note');
+  if(n) data.note=n.value;
+  _b31save(key,data);
+};
+
+/* ════════════════════════════════════════════════════════════
+   2. FIBER INTAKE TRACKER (nutrition)
+   ════════════════════════════════════════════════════════════ */
+var FIBER_FOODS=[
+  {id:'oats',    label:'Oats (40g serving)',   g:4},
+  {id:'beans',   label:'Black beans (100g)',   g:8.7},
+  {id:'lentils', label:'Lentils (100g)',        g:7.9},
+  {id:'broc',    label:'Broccoli (100g)',       g:2.6},
+  {id:'apple',   label:'Apple (medium)',        g:4.4},
+  {id:'banana',  label:'Banana (medium)',       g:3.1},
+  {id:'bread',   label:'Wholegrain bread (sl)',g:2},
+  {id:'almond',  label:'Almonds (30g)',         g:3.5},
+  {id:'avocado', label:'Avocado (½)',           g:5},
+  {id:'sweet',   label:'Sweet potato (100g)',  g:3}
+];
+var FIBER_GOAL=30;
+
+function _injectFiber(){
+  if(document.getElementById('rfc-fiber-wrap')) return;
+  var anchors=['rfc-calbal-wrap','rfc-grocery-wrap','rfc-mealprep-wrap','rfc-protiming-wrap','rfc-caff-wrap','rfc-supps-wrap'];
+  var host=null;
+  for(var i=0;i<anchors.length;i++){ var el=document.getElementById(anchors[i]); if(el){ host=el; break; } }
+  if(!host) host=document.getElementById('rfc-food-wrap');
+  if(!host) return;
+
+  var c=_b31card('rfc-fiber-wrap','🌾 Fiber Intake Tracker');
+  c.innerHTML+=
+    '<div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">'+
+      '<div style="text-align:center;min-width:60px;">'+
+        '<div id="rfc-fib-total" style="font-size:28px;font-weight:800;color:#84cc16;">0</div>'+
+        '<div style="font-size:10px;color:#555;">g fiber</div>'+
+      '</div>'+
+      '<div style="flex:1;">'+
+        '<div style="background:#0d0d1a;border-radius:8px;height:10px;overflow:hidden;margin-bottom:4px;">'+
+          '<div id="rfc-fib-bar" style="height:100%;background:linear-gradient(90deg,#84cc16,#22c55e);width:0%;border-radius:8px;transition:width .4s;"></div>'+
+        '</div>'+
+        '<div style="display:flex;justify-content:space-between;font-size:10px;color:#555;"><span>0g</span><span id="rfc-fib-pct">0%</span><span>'+FIBER_GOAL+'g goal</span></div>'+
+      '</div>'+
+    '</div>'+
+    '<div style="display:flex;flex-direction:column;gap:5px;" id="rfc-fib-list"></div>'+
+    '<div style="margin-top:10px;font-size:11px;color:#555;">Adults need 25–38g fiber daily. Tap +/− to log servings.</div>';
+
+  if(host.nextSibling) host.parentNode.insertBefore(c,host.nextSibling);
+  else host.parentNode.appendChild(c);
+  _renderFiber();
+}
+
+function _renderFiber(){
+  var uid=_b31uid(), date=_b31today();
+  var key='rfc_fiber_'+uid+'_'+date;
+  var data=_b31load(key)||{};
+  var total=0;
+  FIBER_FOODS.forEach(function(f){ total+=((data[f.id]||0)*f.g); });
+  total=Math.round(total*10)/10;
+
+  var totEl=document.getElementById('rfc-fib-total');
+  var barEl=document.getElementById('rfc-fib-bar');
+  var pctEl=document.getElementById('rfc-fib-pct');
+  var list=document.getElementById('rfc-fib-list');
+  if(!totEl) return;
+
+  var pct=Math.min(100,Math.round(total/FIBER_GOAL*100));
+  totEl.textContent=total; totEl.style.color=pct>=100?'#22c55e':'#84cc16';
+  if(barEl) barEl.style.width=pct+'%';
+  if(pctEl) pctEl.textContent=pct+'%';
+
+  if(list){
+    list.innerHTML=FIBER_FOODS.map(function(f){
+      var cnt=data[f.id]||0;
+      return '<div style="display:flex;align-items:center;gap:8px;background:#0d0d1a;border-radius:8px;padding:7px 10px;">'+
+        '<div style="flex:1;min-width:0;">'+
+          '<div style="font-size:12px;color:'+(cnt>0?'#84cc16':'#aaa')+';white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+f.label+'</div>'+
+          '<div style="font-size:10px;color:#555;">'+f.g+'g fiber / serving</div>'+
+        '</div>'+
+        '<button onclick="window._rfcFibAdj(\''+f.id+'\',−1)" style="background:#1a1a2e;border:1px solid #333;color:#888;width:26px;height:26px;border-radius:6px;cursor:pointer;font-size:14px;">−</button>'+
+        '<div style="min-width:20px;text-align:center;font-size:13px;font-weight:700;color:'+(cnt>0?'#84cc16':'#555')+';">'+cnt+'</div>'+
+        '<button onclick="window._rfcFibAdj(\''+f.id+'\',1)" style="background:#1a1a2e;border:1px solid #333;color:#84cc16;width:26px;height:26px;border-radius:6px;cursor:pointer;font-size:14px;">+</button>'+
+      '</div>';
+    }).join('');
+  }
+}
+window._rfcFibAdj=function(id,delta){
+  /* handle minus sign passed as unicode minus − vs hyphen */
+  var d=(typeof delta==='string')?-1:delta;
+  var uid=_b31uid(), date=_b31today();
+  var key='rfc_fiber_'+uid+'_'+date;
+  var data=_b31load(key)||{};
+  data[id]=Math.max(0,(data[id]||0)+d);
+  _b31save(key,data);
+  _renderFiber();
+};
+
+/* ════════════════════════════════════════════════════════════
+   3. AMRAP / EMOM / TABATA TIMER (workouts)
+   ════════════════════════════════════════════════════════════ */
+var _amrapState={iv:null,left:0,total:0,phase:'work',round:0,totalRounds:0,mode:'amrap',paused:false};
+
+function _injectAMRAP(){
+  if(document.getElementById('rfc-amrap-wrap')) return;
+  var anchors=['rfc-superset-wrap','rfc-hrzone-wrap','rfc-warmup-wrap','rfc-wkstreak-wrap','rfc-volload-wrap','rfc-prboard-wrap'];
+  var host=null;
+  for(var i=0;i<anchors.length;i++){ var el=document.getElementById(anchors[i]); if(el){ host=el; break; } }
+  if(!host) host=document.getElementById('wl-history');
+  if(!host) return;
+
+  var c=_b31card('rfc-amrap-wrap','⏱️ AMRAP / EMOM / Tabata Timer');
+  c.innerHTML+=
+    /* mode selector */
+    '<div style="display:flex;gap:6px;margin-bottom:14px;" id="rfc-at-modes">'+
+      ['amrap','emom','tabata'].map(function(m){
+        return '<button onclick="window._rfcATMode(\''+m+'\')" id="rfc-at-mode-'+m+'" style="flex:1;background:'+(m==='amrap'?'#00d4ff22':'#0d0d1a')+';border:1px solid '+(m==='amrap'?'#00d4ff44':'#333')+';color:'+(m==='amrap'?'#00d4ff':'#888')+';padding:8px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:700;text-transform:uppercase;transition:all .2s;">'+m+'</button>';
+      }).join('')+
+    '</div>'+
+    /* config panel */
+    '<div id="rfc-at-cfg" style="display:flex;gap:8px;align-items:flex-end;margin-bottom:14px;flex-wrap:wrap;">'+
+      '<div style="flex:1;min-width:80px;"><div style="font-size:10px;color:#555;margin-bottom:4px;" id="rfc-at-dur-lbl">Duration (min)</div>'+
+        '<input id="rfc-at-dur" type="number" min="1" max="60" value="10" style="width:100%;box-sizing:border-box;background:#0d0d1a;border:1px solid #333;color:#ddd;padding:7px;border-radius:8px;font-size:15px;text-align:center;font-weight:700;"></div>'+
+      '<div id="rfc-at-rounds-wrap" style="flex:1;min-width:80px;display:none;"><div style="font-size:10px;color:#555;margin-bottom:4px;">Rounds</div>'+
+        '<input id="rfc-at-rounds" type="number" min="1" max="20" value="8" style="width:100%;box-sizing:border-box;background:#0d0d1a;border:1px solid #333;color:#ddd;padding:7px;border-radius:8px;font-size:15px;text-align:center;font-weight:700;"></div>'+
+      '<button onclick="window._rfcATStart()" id="rfc-at-start" style="flex:1;min-width:80px;background:#22c55e22;border:1px solid #22c55e44;color:#22c55e;padding:9px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:700;">▶ Start</button>'+
+    '</div>'+
+    /* display */
+    '<div style="text-align:center;background:#0d0d1a;border-radius:12px;padding:20px 10px;">'+
+      '<div id="rfc-at-phase" style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#888;margin-bottom:4px;">Ready</div>'+
+      '<div id="rfc-at-time" style="font-size:52px;font-weight:800;color:#00d4ff;font-variant-numeric:tabular-nums;line-height:1;">00:00</div>'+
+      '<div id="rfc-at-round" style="font-size:13px;color:#666;margin-top:4px;"></div>'+
+    '</div>'+
+    '<div style="display:flex;gap:8px;margin-top:10px;">'+
+      '<button onclick="window._rfcATPause()" id="rfc-at-pause" style="flex:1;background:#fbbf2422;border:1px solid #fbbf2444;color:#fbbf24;padding:8px;border-radius:8px;cursor:pointer;font-size:13px;display:none;">⏸ Pause</button>'+
+      '<button onclick="window._rfcATStop()" id="rfc-at-stop" style="flex:1;background:#ef444422;border:1px solid #ef444444;color:#ef4444;padding:8px;border-radius:8px;cursor:pointer;font-size:13px;display:none;">■ Stop</button>'+
+      '<button onclick="window._rfcATRound()" id="rfc-at-manual-round" style="flex:1;background:#a78bfa22;border:1px solid #a78bfa44;color:#a78bfa;padding:8px;border-radius:8px;cursor:pointer;font-size:13px;display:none;">+ Round</button>'+
+    '</div>';
+
+  if(host.nextSibling) host.parentNode.insertBefore(c,host.nextSibling);
+  else host.parentNode.appendChild(c);
+}
+
+function _atFmt(s){ return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0'); }
+function _atSetDisplay(phase,time,round,color){
+  var p=document.getElementById('rfc-at-phase'); if(p) p.textContent=phase;
+  var t=document.getElementById('rfc-at-time'); if(t){ t.textContent=_atFmt(time); t.style.color=color||'#00d4ff'; }
+  var r=document.getElementById('rfc-at-round'); if(r) r.textContent=round||'';
+}
+function _atBeep(freq,dur){
+  try{ var ctx=new(window.AudioContext||window.webkitAudioContext)(); var o=ctx.createOscillator(); var g=ctx.createGain(); o.connect(g); g.connect(ctx.destination); o.frequency.value=freq; g.gain.setValueAtTime(.3,ctx.currentTime); g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+dur); o.start(); o.stop(ctx.currentTime+dur); }catch(e){}
+}
+
+window._rfcATMode=function(mode){
+  _amrapState.mode=mode;
+  ['amrap','emom','tabata'].forEach(function(m){
+    var b=document.getElementById('rfc-at-mode-'+m);
+    if(!b) return;
+    var on=m===mode;
+    b.style.background=on?'#00d4ff22':'#0d0d1a'; b.style.borderColor=on?'#00d4ff44':'#333'; b.style.color=on?'#00d4ff':'#888';
+  });
+  var rw=document.getElementById('rfc-at-rounds-wrap');
+  var dl=document.getElementById('rfc-at-dur-lbl');
+  if(mode==='tabata'){ if(rw) rw.style.display='block'; if(dl) dl.textContent='Work (sec)'; var di=document.getElementById('rfc-at-dur'); if(di) di.value=20; }
+  else if(mode==='emom'){ if(rw) rw.style.display='none'; if(dl) dl.textContent='Duration (min)'; var di2=document.getElementById('rfc-at-dur'); if(di2) di2.value=10; }
+  else { if(rw) rw.style.display='none'; if(dl) dl.textContent='Duration (min)'; var di3=document.getElementById('rfc-at-dur'); if(di3) di3.value=10; }
+};
+window._rfcATStart=function(){
+  if(_amrapState.iv) clearInterval(_amrapState.iv);
+  var mode=_amrapState.mode;
+  var durEl=document.getElementById('rfc-at-dur');
+  var roundsEl=document.getElementById('rfc-at-rounds');
+  var dur=parseInt((durEl&&durEl.value)||10,10);
+  var rounds=parseInt((roundsEl&&roundsEl.value)||8,10);
+
+  _amrapState.round=0; _amrapState.paused=false;
+  var pauseBtn=document.getElementById('rfc-at-pause');
+  var stopBtn=document.getElementById('rfc-at-stop');
+  var startBtn=document.getElementById('rfc-at-start');
+  var mrBtn=document.getElementById('rfc-at-manual-round');
+  if(pauseBtn) pauseBtn.style.display='block';
+  if(stopBtn) stopBtn.style.display='block';
+  if(startBtn) startBtn.style.display='none';
+
+  if(mode==='amrap'){
+    _amrapState.left=dur*60; _amrapState.total=dur*60;
+    if(mrBtn) mrBtn.style.display='block';
+    _atSetDisplay('AMRAP — '+dur+' min',_amrapState.left,'Round 0','#00d4ff');
+    _amrapState.iv=setInterval(function(){
+      if(_amrapState.paused) return;
+      _amrapState.left--;
+      _atSetDisplay('AMRAP — '+dur+' min',_amrapState.left,'Round '+_amrapState.round,_amrapState.left<=10?'#ef4444':'#00d4ff');
+      if(_amrapState.left<=0){ clearInterval(_amrapState.iv); _atBeep(880,.5); _atSetDisplay('DONE!',0,'Total rounds: '+_amrapState.round,'#ffd700'); if(mrBtn) mrBtn.style.display='none'; }
+      else if(_amrapState.left<=3) _atBeep(660,.15);
+    },1000);
+  } else if(mode==='emom'){
+    _amrapState.round=1; _amrapState.left=60; _amrapState.totalRounds=dur;
+    _atSetDisplay('Round 1 / '+dur,60,'1:00 to complete your reps','#22c55e');
+    _amrapState.iv=setInterval(function(){
+      if(_amrapState.paused) return;
+      _amrapState.left--;
+      var r=_amrapState.round, tot=_amrapState.totalRounds;
+      _atSetDisplay('Round '+r+' / '+tot,_amrapState.left,'Complete reps before time\'s up',_amrapState.left<=5?'#ef4444':'#22c55e');
+      if(_amrapState.left<=0){
+        _atBeep(880,.2);
+        if(_amrapState.round>=_amrapState.totalRounds){ clearInterval(_amrapState.iv); _atSetDisplay('DONE!',0,dur+' rounds complete!','#ffd700'); return; }
+        _amrapState.round++; _amrapState.left=60;
+        _atBeep(440,.1);
+      }
+    },1000);
+  } else { /* tabata */
+    _amrapState.round=1; _amrapState.totalRounds=rounds; _amrapState.phase='work'; _amrapState.left=dur;
+    var rest=10;
+    _atSetDisplay('WORK',dur,'Round 1/'+rounds,'#ef4444');
+    _atBeep(880,.2);
+    _amrapState.iv=setInterval(function(){
+      if(_amrapState.paused) return;
+      _amrapState.left--;
+      var isWork=_amrapState.phase==='work';
+      _atSetDisplay(isWork?'WORK':'REST',_amrapState.left,'Round '+_amrapState.round+'/'+rounds,isWork?'#ef4444':'#22c55e');
+      if(_amrapState.left<=0){
+        _atBeep(isWork?660:880,.2);
+        if(!isWork){ /* end of rest */
+          if(_amrapState.round>=rounds){ clearInterval(_amrapState.iv); _atSetDisplay('DONE!',0,rounds+' rounds complete!','#ffd700'); return; }
+          _amrapState.round++; _amrapState.phase='work'; _amrapState.left=dur;
+        } else { _amrapState.phase='rest'; _amrapState.left=rest; }
+      }
+    },1000);
+  }
+};
+window._rfcATPause=function(){
+  _amrapState.paused=!_amrapState.paused;
+  var b=document.getElementById('rfc-at-pause');
+  if(b) b.textContent=_amrapState.paused?'▶ Resume':'⏸ Pause';
+};
+window._rfcATStop=function(){
+  if(_amrapState.iv){ clearInterval(_amrapState.iv); _amrapState.iv=null; }
+  _amrapState.paused=false;
+  var pauseBtn=document.getElementById('rfc-at-pause');
+  var stopBtn=document.getElementById('rfc-at-stop');
+  var startBtn=document.getElementById('rfc-at-start');
+  var mrBtn=document.getElementById('rfc-at-manual-round');
+  if(pauseBtn){ pauseBtn.style.display='none'; pauseBtn.textContent='⏸ Pause'; }
+  if(stopBtn) stopBtn.style.display='none';
+  if(startBtn) startBtn.style.display='block';
+  if(mrBtn) mrBtn.style.display='none';
+  _atSetDisplay('Ready',0,'','#00d4ff');
+};
+window._rfcATRound=function(){
+  _amrapState.round++;
+  var t=document.getElementById('rfc-at-round');
+  if(t) t.textContent='Round '+_amrapState.round;
+  _atBeep(440,.1);
+};
+
+/* ── switchScreen wrap ── */
+window.switchScreen=function(name,navEl){
+  _origSS29&&_origSS29(name,navEl);
+  if(name==='dashboard'){
+    setTimeout(function(){ _injectInjury(); _renderInjury(); }, 1200);
+  }
+  if(name==='nutrition'){
+    setTimeout(function(){ _injectFiber(); _renderFiber(); }, 1100);
+  }
+  if(name==='workouts'){
+    setTimeout(function(){ _injectAMRAP(); }, 1050);
+  }
+};
+
+setTimeout(function(){
+  _injectInjury();
+  _injectFiber();
+  _injectAMRAP();
+}, 23000);
+
+setTimeout(function(){
+  if(!document.getElementById('rfc-injury-wrap')) _injectInjury();
+  if(!document.getElementById('rfc-fiber-wrap'))  _injectFiber();
+  if(!document.getElementById('rfc-amrap-wrap'))  _injectAMRAP();
+}, 27000);
+
+})();
+</script>
+
+</body>
 </html>
