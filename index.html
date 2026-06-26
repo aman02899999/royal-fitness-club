@@ -36317,5 +36317,268 @@ setTimeout(function(){ if(!document.getElementById('rfc-meditate-wrap')) _inject
 })();
 </script>
 
+<script>
+/* ===== BATCH 38: Hydration Quality | Anti-Inflammatory Foods | Tempo Lifting Trainer ===== */
+(function(){ 'use strict';
+var _origSS36=window.switchScreen;
+function _b38uid(){ try{ return JSON.parse(localStorage.getItem('bm_user')||'{}').uid||'guest'; }catch(e){ return 'guest'; } }
+function _b38today(){ var d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function _b38load(k){ try{ return JSON.parse(localStorage.getItem(k))||null; }catch(e){ return null; } }
+function _b38save(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} }
+function _b38card(id,title){ var d=document.createElement('div'); d.id=id; d.style.cssText='background:#1a1a2e;border-radius:14px;padding:18px;margin:14px 0;color:#e0e0e0;font-family:inherit;'; d.innerHTML='<div style="font-size:15px;font-weight:700;color:#00d4ff;margin-bottom:14px;">'+title+'</div>'; return d; }
+
+/* ---------- HYDRATION QUALITY TRACKER (dashboard) ---------- */
+var HQ_SOURCES=[
+  {id:'water',label:'Plain Water',pts:3,icon:'💧'},
+  {id:'electrolyte',label:'Electrolyte Drink',pts:3,icon:'⚡'},
+  {id:'coconut',label:'Coconut Water',pts:2,icon:'🥥'},
+  {id:'herbal',label:'Herbal Tea',pts:2,icon:'🍵'},
+  {id:'greentea',label:'Green Tea',pts:2,icon:'🌿'},
+  {id:'milk',label:'Milk/Plant Milk',pts:1,icon:'🥛'},
+  {id:'juice',label:'Fresh Juice',pts:1,icon:'🍊'},
+  {id:'coffee',label:'Coffee (limit 2)',pts:0,icon:'☕'},
+  {id:'soda',label:'Soda/Energy (avoid)',pts:-1,icon:'🥤'},
+  {id:'alcohol',label:'Alcohol (avoid)',pts:-2,icon:'🍺'}
+];
+function _injectHydQual(){
+  if(document.getElementById('rfc-hydqual-wrap')) return;
+  var anchor=document.getElementById('rfc-meditate-wrap')||document.getElementById('rfc-envwell-wrap')||document.getElementById('rfc-gratitude-wrap')||document.getElementById('rfc-stress-wrap')||document.querySelector('.dash-topbar');
+  if(!anchor) return;
+  var card=_b38card('rfc-hydqual-wrap','💧 Hydration Quality Tracker');
+  card.style.cssText+='border:1px solid #1a3a5c;';
+  anchor.parentNode.insertBefore(card,anchor.nextSibling);
+  _renderHydQual();
+}
+function _renderHydQual(){
+  var card=document.getElementById('rfc-hydqual-wrap'); if(!card) return;
+  var uid=_b38uid(), today=_b38today();
+  var key='rfc_hydqual_'+uid+'_'+today;
+  var data=_b38load(key)||{};
+  var totalPts=0;
+  HQ_SOURCES.forEach(function(s){ if(data[s.id]) totalPts+=s.pts; });
+  var score=Math.max(0,Math.min(100,Math.round((totalPts/14)*100)));
+  var scoreColor=score>=70?'#00ff88':score>=40?'#ffd700':'#ff6b6b';
+  var html='<div style="font-size:15px;font-weight:700;color:#00d4ff;margin-bottom:14px;">💧 Hydration Quality Tracker</div>';
+  html+='<div style="display:flex;align-items:center;gap:18px;margin-bottom:14px;">';
+  html+='<svg width="72" height="72" viewBox="0 0 72 72"><circle cx="36" cy="36" r="30" fill="none" stroke="#1e3a5c" stroke-width="8"/><circle cx="36" cy="36" r="30" fill="none" stroke="'+scoreColor+'" stroke-width="8" stroke-dasharray="'+Math.round(score*1.885)+' 188.5" stroke-dashoffset="47" style="transition:stroke-dasharray 0.5s;"/><text x="36" y="41" text-anchor="middle" fill="'+scoreColor+'" font-size="18" font-weight="700">'+score+'</text></svg>';
+  html+='<div><div style="font-size:13px;color:#aaa;">Hydration Quality Score</div><div style="font-size:22px;font-weight:800;color:'+scoreColor+';">'+(score>=70?'Excellent':score>=40?'Good':'Needs Work')+'</div><div style="font-size:12px;color:#888;">Points: '+totalPts+'/14</div></div></div>';
+  html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">';
+  HQ_SOURCES.forEach(function(s){
+    var checked=!!data[s.id];
+    var ptColor=s.pts>0?'#00ff88':s.pts===0?'#ffd700':'#ff6b6b';
+    html+='<div onclick="window._rfcHQTap(\''+s.id+'\')" style="cursor:pointer;background:'+(checked?'#0d2a1a':'#12122a')+';border:1px solid '+(checked?'#00ff88':'#2a2a4a')+';border-radius:10px;padding:10px;display:flex;align-items:center;gap:8px;transition:all 0.2s;">';
+    html+='<span style="font-size:18px;">'+s.icon+'</span>';
+    html+='<div style="flex:1;"><div style="font-size:12px;font-weight:600;color:'+(checked?'#00ff88':'#ccc')+';">'+s.label+'</div><div style="font-size:11px;color:'+ptColor+';">'+(s.pts>0?'+'+s.pts:s.pts)+' pts</div></div>';
+    html+='<span style="font-size:16px;">'+(checked?'✅':'⭕')+'</span></div>';
+  });
+  html+='</div>';
+  card.innerHTML=html;
+}
+window._rfcHQTap=function(id){
+  var uid=_b38uid(), today=_b38today();
+  var key='rfc_hydqual_'+uid+'_'+today;
+  var data=_b38load(key)||{};
+  data[id]=!data[id];
+  _b38save(key,data);
+  _renderHydQual();
+};
+
+/* ---------- ANTI-INFLAMMATORY FOODS (nutrition) ---------- */
+var AI_FOODS=[
+  {id:'turmeric',label:'Turmeric/Curcumin',pts:3,icon:'🟡'},
+  {id:'ginger',label:'Ginger',pts:2,icon:'🫚'},
+  {id:'berries',label:'Berries',pts:3,icon:'🫐'},
+  {id:'fatty_fish',label:'Fatty Fish (salmon, sardines)',pts:3,icon:'🐟'},
+  {id:'leafy',label:'Dark Leafy Greens',pts:2,icon:'🥬'},
+  {id:'olive',label:'Extra Virgin Olive Oil',pts:2,icon:'🫒'},
+  {id:'nuts',label:'Walnuts/Almonds',pts:2,icon:'🥜'},
+  {id:'green_tea',label:'Green Tea',pts:2,icon:'🍵'},
+  {id:'broccoli',label:'Broccoli/Cruciferous',pts:2,icon:'🥦'},
+  {id:'avocado',label:'Avocado',pts:2,icon:'🥑'},
+  {id:'garlic',label:'Garlic/Onion',pts:1,icon:'🧄'},
+  {id:'cherries',label:'Tart Cherries',pts:2,icon:'🍒'}
+];
+function _injectAntiInfl(){
+  if(document.getElementById('rfc-antiinfl-wrap')) return;
+  var anchor=document.getElementById('rfc-gut-wrap')||document.getElementById('rfc-vitamin-wrap')||document.getElementById('rfc-mealbuilder-wrap')||document.getElementById('rfc-fatqual-wrap')||document.querySelector('.dash-topbar');
+  if(!anchor) return;
+  var card=_b38card('rfc-antiinfl-wrap','🌿 Anti-Inflammatory Foods');
+  card.style.cssText+='border:1px solid #1a3a2e;';
+  anchor.parentNode.insertBefore(card,anchor.nextSibling);
+  _renderAntiInfl();
+}
+function _renderAntiInfl(){
+  var card=document.getElementById('rfc-antiinfl-wrap'); if(!card) return;
+  var uid=_b38uid(), today=_b38today();
+  var key='rfc_aifoods_'+uid+'_'+today;
+  var data=_b38load(key)||{};
+  var maxPts=26;
+  var got=0; AI_FOODS.forEach(function(f){ if(data[f.id]) got+=f.pts; });
+  var pct=Math.min(100,Math.round((got/maxPts)*100));
+  var pc=pct>=70?'#00ff88':pct>=40?'#ffd700':'#ff6b6b';
+  var html='<div style="font-size:15px;font-weight:700;color:#00d4ff;margin-bottom:14px;">🌿 Anti-Inflammatory Foods</div>';
+  html+='<div style="display:flex;align-items:center;gap:12px;margin-bottom:6px;"><div style="flex:1;background:#1e2a1e;border-radius:8px;height:12px;overflow:hidden;"><div style="height:12px;background:'+pc+';width:'+pct+'%;border-radius:8px;transition:width 0.4s;"></div></div><span style="font-size:14px;font-weight:700;color:'+pc+';">'+pct+'%</span></div>';
+  html+='<div style="font-size:12px;color:#888;margin-bottom:12px;">Score: '+got+'/'+maxPts+' pts — '+(pct>=70?'Strong anti-inflammatory diet!':pct>=40?'Good — keep adding more':'Add more anti-inflammatory foods')+'</div>';
+  html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;">';
+  AI_FOODS.forEach(function(f){
+    var checked=!!data[f.id];
+    html+='<div onclick="window._rfcAITap(\''+f.id+'\')" style="cursor:pointer;background:'+(checked?'#0d2a1a':'#12122a')+';border:1px solid '+(checked?'#00ff88':'#2a2a4a')+';border-radius:9px;padding:9px 10px;display:flex;align-items:center;gap:7px;">';
+    html+='<span style="font-size:16px;">'+f.icon+'</span>';
+    html+='<div style="flex:1;font-size:12px;color:'+(checked?'#00ff88':'#ccc')+';">'+f.label+'</div>';
+    html+='<span style="font-size:11px;color:#ffd700;">+'+f.pts+'</span>';
+    html+='<span>'+(checked?'✅':'⭕')+'</span></div>';
+  });
+  html+='</div>';
+  card.innerHTML=html;
+}
+window._rfcAITap=function(id){
+  var uid=_b38uid(), today=_b38today();
+  var key='rfc_aifoods_'+uid+'_'+today;
+  var data=_b38load(key)||{};
+  data[id]=!data[id];
+  _b38save(key,data);
+  _renderAntiInfl();
+};
+
+/* ---------- TEMPO LIFTING TRAINER (workouts) ---------- */
+var _tempoState={running:false,phase:0,beat:0,iv:null,ctx:null};
+var TEMPO_PRESETS=[
+  {name:'3-0-1-0 (Power)',phases:[3,0,1,0],desc:'Fast concentric'},
+  {name:'4-1-2-0 (Hypertrophy)',phases:[4,1,2,0],desc:'Classic TUT'},
+  {name:'5-0-1-0 (Strength)',phases:[5,0,1,0],desc:'Slow eccentric'},
+  {name:'2-2-2-2 (Constant)',phases:[2,2,2,2],desc:'Equal tension'},
+  {name:'6-0-1-0 (Extreme)',phases:[6,0,1,0],desc:'Max eccentric'},
+  {name:'3-1-3-1 (Balanced)',phases:[3,1,3,1],desc:'Full control'}
+];
+var TEMPO_PHASE_NAMES=['Eccentric','Pause','Concentric','Reset'];
+var _tempoPresetIdx=1;
+var _tempoCustom=[4,1,2,0];
+function _tempoClick(){
+  if(!_tempoState.ctx){ try{ _tempoState.ctx=new(window.AudioContext||window.webkitAudioContext)(); }catch(e){} }
+  var ctx=_tempoState.ctx; if(!ctx) return;
+  var osc=ctx.createOscillator(); var g=ctx.createGain();
+  osc.connect(g); g.connect(ctx.destination);
+  osc.type='square'; osc.frequency.value=880;
+  g.gain.setValueAtTime(0.15,ctx.currentTime);
+  g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.08);
+  osc.start(ctx.currentTime); osc.stop(ctx.currentTime+0.08);
+}
+function _tempoGetPhases(){
+  return _tempoPresetIdx===6?_tempoCustom:TEMPO_PRESETS[_tempoPresetIdx].phases;
+}
+function _tempoTick(){
+  var phases=_tempoGetPhases();
+  var cur=_tempoState.phase;
+  var dur=phases[cur];
+  if(dur===0){ _tempoState.phase=(_tempoState.phase+1)%4; _tempoRenderState(); return; }
+  _tempoState.beat++;
+  _tempoClick();
+  if(_tempoState.beat>=dur){
+    _tempoState.beat=0;
+    _tempoState.phase=(_tempoState.phase+1)%4;
+  }
+  _tempoRenderState();
+}
+function _tempoStart(){
+  if(_tempoState.running) return;
+  _tempoState.running=true;
+  _tempoState.phase=0; _tempoState.beat=0;
+  _tempoState.iv=setInterval(_tempoTick,1000);
+  _tempoRenderState();
+}
+function _tempoStop(){
+  _tempoState.running=false;
+  if(_tempoState.iv){ clearInterval(_tempoState.iv); _tempoState.iv=null; }
+  _tempoState.phase=0; _tempoState.beat=0;
+  _tempoRenderState();
+}
+window._rfcTempoPreset=function(idx){
+  _tempoPresetIdx=idx;
+  _tempoStop();
+  _renderTempo();
+};
+window._rfcTempoStart=function(){ _tempoStart(); };
+window._rfcTempoStop=function(){ _tempoStop(); };
+window._rfcTempoCustom=function(){
+  var phases=_tempoGetPhases();
+  var inp=['rfc-t-ecc','rfc-t-p1','rfc-t-con','rfc-t-p2'].map(function(id){ return parseInt(document.getElementById(id)&&document.getElementById(id).value)||0; });
+  _tempoCustom=inp; _tempoPresetIdx=6;
+  _tempoStop(); _renderTempo();
+};
+function _tempoRenderState(){
+  var bar=document.getElementById('rfc-tempo-phasebar'); if(!bar) return;
+  if(!_tempoState.running){ bar.innerHTML='<span style="color:#888;font-size:13px;">Press Start to begin metronome</span>'; return; }
+  var phases=_tempoGetPhases();
+  var phaseColors=['#00d4ff','#ffd700','#00ff88','#ff9f43'];
+  var html='';
+  TEMPO_PHASE_NAMES.forEach(function(name,i){
+    var active=_tempoState.phase===i;
+    var dur=phases[i];
+    html+='<div style="flex:1;text-align:center;padding:10px 4px;border-radius:8px;background:'+(active?phaseColors[i]+'33':'#12122a')+';border:2px solid '+(active?phaseColors[i]:'#2a2a4a')+';">';
+    html+='<div style="font-size:11px;color:'+(active?phaseColors[i]:'#888')+';">'+name+'</div>';
+    html+='<div style="font-size:20px;font-weight:800;color:'+(active?phaseColors[i]:'#555')+';">'+(active?(_tempoState.beat+1)+'/'+dur:(dur===0?'—':dur+'s'))+'</div></div>';
+  });
+  bar.innerHTML=html;
+}
+function _injectTempo(){
+  if(document.getElementById('rfc-tempo-wrap')) return;
+  var anchor=document.getElementById('rfc-strbal-wrap')||document.getElementById('rfc-calis-wrap')||document.getElementById('rfc-plyo-wrap')||document.getElementById('rfc-amrap-wrap')||document.querySelector('.dash-topbar');
+  if(!anchor) return;
+  var card=_b38card('rfc-tempo-wrap','🎯 Tempo Lifting Trainer');
+  card.style.cssText+='border:1px solid #2a1a3a;';
+  anchor.parentNode.insertBefore(card,anchor.nextSibling);
+  _renderTempo();
+}
+function _renderTempo(){
+  var card=document.getElementById('rfc-tempo-wrap'); if(!card) return;
+  var phases=_tempoGetPhases();
+  var html='<div style="font-size:15px;font-weight:700;color:#00d4ff;margin-bottom:14px;">🎯 Tempo Lifting Trainer</div>';
+  html+='<div style="font-size:12px;color:#888;margin-bottom:12px;">Select a tempo and use the audio metronome to control each lifting phase. Each number = seconds.</div>';
+  html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;">';
+  TEMPO_PRESETS.forEach(function(p,i){
+    var sel=_tempoPresetIdx===i;
+    html+='<div onclick="window._rfcTempoPreset('+i+')" style="cursor:pointer;background:'+(sel?'#1a0a2e':'#12122a')+';border:2px solid '+(sel?'#a855f7':'#2a2a4a')+';border-radius:10px;padding:10px;">';
+    html+='<div style="font-size:12px;font-weight:700;color:'+(sel?'#a855f7':'#ccc')+';">'+p.name+'</div>';
+    html+='<div style="font-size:11px;color:#888;">'+p.desc+'</div>';
+    html+='<div style="font-size:13px;color:'+(sel?'#ffd700':'#555');'+' margin-top:4px;">'+p.phases.join('-')+'</div></div>';
+  });
+  html+='<div onclick="window._rfcTempoPreset(6)" style="cursor:pointer;background:'+(_tempoPresetIdx===6?'#1a0a2e':'#12122a')+';border:2px solid '+(_tempoPresetIdx===6?'#a855f7':'#2a2a4a')+';border-radius:10px;padding:10px;">';
+  html+='<div style="font-size:12px;font-weight:700;color:'+(_tempoPresetIdx===6?'#a855f7':'#ccc')+';">Custom</div>';
+  html+='<div style="font-size:11px;color:#888;">Set your own</div>';
+  html+='<div style="font-size:13px;color:'+(_tempoPresetIdx===6?'#ffd700':'#555')+';margin-top:4px;">'+_tempoCustom.join('-')+'</div></div>';
+  html+='</div>';
+  if(_tempoPresetIdx===6){
+    html+='<div style="background:#12122a;border-radius:10px;padding:12px;margin-bottom:12px;">';
+    html+='<div style="font-size:12px;color:#aaa;margin-bottom:8px;">Custom Tempo (seconds per phase):</div>';
+    html+='<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;">';
+    ['Eccentric','Pause','Concentric','Reset'].forEach(function(n,i){
+      var ids=['rfc-t-ecc','rfc-t-p1','rfc-t-con','rfc-t-p2'][i];
+      html+='<div style="text-align:center;"><div style="font-size:11px;color:#888;margin-bottom:4px;">'+n+'</div>';
+      html+='<input type="number" id="'+ids+'" value="'+_tempoCustom[i]+'" min="0" max="10" style="width:100%;background:#1a1a3e;border:1px solid #3a3a6a;color:#fff;text-align:center;border-radius:6px;padding:6px;font-size:16px;"></div>';
+    });
+    html+='</div>';
+    html+='<button onclick="window._rfcTempoCustom()" style="width:100%;margin-top:10px;background:#a855f7;border:none;color:#fff;padding:8px;border-radius:8px;font-size:13px;cursor:pointer;font-weight:700;">Apply Custom</button></div>';
+  }
+  html+='<div style="background:#0d0d20;border-radius:12px;padding:14px;margin-bottom:12px;">';
+  html+='<div style="font-size:12px;color:#888;margin-bottom:10px;">Current Pattern: <strong style="color:#ffd700;">'+phases.join('-')+'</strong> = '+phases.reduce(function(a,b){return a+b;},0)+'s per rep</div>';
+  html+='<div id="rfc-tempo-phasebar" style="display:flex;gap:8px;"><span style="color:#888;font-size:13px;">Press Start to begin metronome</span></div></div>';
+  html+='<div style="display:flex;gap:10px;">';
+  html+='<button onclick="window._rfcTempoStart()" style="flex:1;background:#00ff88;border:none;color:#000;padding:12px;border-radius:10px;font-size:14px;font-weight:800;cursor:pointer;">▶ Start</button>';
+  html+='<button onclick="window._rfcTempoStop()" style="flex:1;background:#ff6b6b;border:none;color:#fff;padding:12px;border-radius:10px;font-size:14px;font-weight:800;cursor:pointer;">■ Stop</button>';
+  html+='</div>';
+  card.innerHTML=html;
+}
+
+window.switchScreen=function(name,navEl){
+  _origSS36&&_origSS36(name,navEl);
+  if(name==='dashboard') setTimeout(function(){ _injectHydQual(); _renderHydQual(); },1200);
+  if(name==='nutrition') setTimeout(function(){ _injectAntiInfl(); _renderAntiInfl(); },1100);
+  if(name==='workouts')  setTimeout(function(){ _injectTempo(); _renderTempo(); },1050);
+};
+setTimeout(function(){ _injectHydQual(); _injectAntiInfl(); _injectTempo(); },30000);
+setTimeout(function(){ if(!document.getElementById('rfc-hydqual-wrap')) _injectHydQual(); if(!document.getElementById('rfc-antiinfl-wrap')) _injectAntiInfl(); if(!document.getElementById('rfc-tempo-wrap')) _injectTempo(); },34000);
+})();
+</script>
+
 </body>
 </html>
