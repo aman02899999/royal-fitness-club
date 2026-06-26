@@ -31204,5 +31204,381 @@ window.addEventListener('rfc-food-updated', _renderFoodDiary);
 })();
 </script>
 
+<script>
+/* ════════════════════════════════════════════════════════════
+   BATCH 23 — Strength Standards | Body Composition | Breathing Wheel
+   ════════════════════════════════════════════════════════════ */
+(function(){ 'use strict';
+
+function _uid23(){ try{return JSON.parse(localStorage.getItem('bm_user')||'{}').uid||null;}catch(e){return null;} }
+function _b23card(id,title){
+  var d=document.createElement('div');
+  d.id=id; d.className='rfc-b12-card';
+  d.style.cssText='background:#111;border:1px solid #222;border-radius:14px;padding:14px;margin:10px 0;';
+  var h=document.createElement('div');
+  h.style.cssText='font-size:13px;font-weight:700;color:#aaa;letter-spacing:1px;text-transform:uppercase;margin-bottom:12px;';
+  h.textContent=title; d.appendChild(h);
+  return d;
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   1. STRENGTH STANDARDS (workouts)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+// Bodyweight multipliers per lift × gender factor
+var STR_STANDARDS={
+  bench:     {m:[0.5,0.75,1.0,1.25,1.5],  f:[0.4,0.6,0.8,1.0,1.2]},
+  squat:     {m:[0.75,1.0,1.25,1.75,2.0], f:[0.6,0.8,1.0,1.4,1.6]},
+  deadlift:  {m:[1.0,1.25,1.5,2.0,2.5],   f:[0.8,1.0,1.25,1.6,2.0]},
+  ohp:       {m:[0.35,0.5,0.65,0.85,1.0],  f:[0.25,0.35,0.5,0.65,0.8]},
+  row:       {m:[0.5,0.75,1.0,1.25,1.5],   f:[0.4,0.6,0.8,1.0,1.2]}
+};
+var STR_LEVELS=['Beginner','Novice','Intermediate','Advanced','Elite'];
+var STR_COLORS=['#555','#3b82f6','#22c55e','#f59e0b','#ef4444'];
+// Keyword → lift category mapping
+var STR_MAP={
+  'bench':['bench','chest press','flat press','incline bench'],
+  'squat':['squat','back squat','front squat','goblet squat'],
+  'deadlift':['deadlift','rdl','romanian','trap bar'],
+  'ohp':['overhead press','ohp','shoulder press','military press','seated press'],
+  'row':['barbell row','bent over row','pendlay','yates row']
+};
+
+function _injectStrStd(){
+  if(document.getElementById('rfc-strstd-wrap')) return;
+  var anchor = document.getElementById('rfc-rest-wrap') ||
+               document.getElementById('rfc-rpe-wrap') ||
+               document.getElementById('rfc-cardio-wrap') ||
+               document.getElementById('rfc-orm-wrap') ||
+               document.getElementById('rfc-heatmap-wrap') ||
+               document.getElementById('wl-history');
+  if(!anchor) return;
+  var card=_b23card('rfc-strstd-wrap','🏅 Strength Standards');
+  var inner=document.createElement('div'); inner.id='rfc-strstd-body';
+  card.appendChild(inner);
+  anchor.insertAdjacentElement('afterend', card);
+  _renderStrStd();
+}
+
+function _renderStrStd(){
+  var el=document.getElementById('rfc-strstd-body'); if(!el) return;
+  var uid=_uid23();
+  if(!uid){ el.innerHTML='<p style="color:#555;font-size:12px;">Log in to compare strength standards.</p>'; return; }
+  var lastRes={}; try{lastRes=JSON.parse(localStorage.getItem('bm_last_result')||'{}');}catch(e){}
+  var bw=+(lastRes.weight||75);
+  var gender=(lastRes.gender||'male')==='female'?'f':'m';
+  var orms=[]; try{orms=JSON.parse(localStorage.getItem('rfc_1rm_'+uid)||'[]');}catch(e){}
+
+  // Find best 1RM per lift category
+  var best={bench:0,squat:0,deadlift:0,ohp:0,row:0};
+  orms.forEach(function(r){
+    var exL=(r.ex||'').toLowerCase();
+    Object.keys(STR_MAP).forEach(function(lift){
+      if(STR_MAP[lift].some(function(k){return exL.indexOf(k)!==-1;})){
+        if(r.orm>best[lift]) best[lift]=r.orm;
+      }
+    });
+  });
+
+  // Also scan workout history exercise weights for the big 5
+  var wks=[]; try{wks=JSON.parse(localStorage.getItem('rfc_workouts_'+uid)||'[]');}catch(e){}
+  wks.forEach(function(w){
+    (w.exercises||[]).forEach(function(e){
+      var exL=(e.name||'').toLowerCase(); var kg=+(e.kg||0);
+      Object.keys(STR_MAP).forEach(function(lift){
+        if(kg>0&&STR_MAP[lift].some(function(k){return exL.indexOf(k)!==-1;})){
+          if(kg>best[lift]) best[lift]=kg; // approximate (working weight, not 1RM)
+        }
+      });
+    });
+  });
+
+  function getLevel(lift, orm){
+    if(!orm||!bw) return -1;
+    var mults=STR_STANDARDS[lift][gender];
+    var level=-1;
+    for(var i=0;i<mults.length;i++){ if(orm/bw>=mults[i]) level=i; }
+    return level;
+  }
+
+  var rows=Object.keys(best).map(function(lift){
+    var orm=best[lift];
+    var level=getLevel(lift,orm);
+    var mults=STR_STANDARDS[lift][gender];
+    var nextMult=level<4?mults[level+1]:null;
+    var nextTarget=nextMult?Math.round(nextMult*bw):null;
+    var levelLabel=level>=0?STR_LEVELS[level]:'Not tracked';
+    var levelColor=level>=0?STR_COLORS[level]:'#333';
+    var pct=level>=0?Math.min(100,Math.round(orm/bw/mults[4]*100)):0;
+
+    return '<div style="margin-bottom:12px;">'+
+      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">'+
+        '<span style="font-size:13px;font-weight:700;color:#ccc;text-transform:capitalize;">'+lift.replace('ohp','OHP')+'</span>'+
+        '<div style="display:flex;align-items:center;gap:8px;">'+
+          (orm?'<span style="font-size:12px;color:#aaa;">'+orm+'kg</span>':'<span style="font-size:11px;color:#333;">no data</span>')+
+          '<span style="font-size:11px;font-weight:700;color:'+levelColor+';background:'+levelColor+'22;padding:2px 8px;border-radius:12px;">'+levelLabel+'</span>'+
+        '</div>'+
+      '</div>'+
+      '<div style="position:relative;height:8px;background:#1a1a1a;border-radius:4px;overflow:visible;margin-bottom:3px;">'+
+        '<div style="height:100%;width:'+pct+'%;background:'+levelColor+';border-radius:4px;transition:width .7s ease;"></div>'+
+        // Level markers
+        mults.map(function(m,i){
+          var mp=Math.min(100,Math.round(m/mults[4]*100));
+          return '<div style="position:absolute;top:-2px;left:'+mp+'%;width:2px;height:12px;background:'+STR_COLORS[i]+'55;border-radius:1px;" title="'+STR_LEVELS[i]+': '+Math.round(m*bw)+'kg"></div>';
+        }).join('')+
+      '</div>'+
+      (nextTarget?'<div style="font-size:10px;color:#444;">Next: '+STR_LEVELS[Math.min(4,level+1)]+' → '+nextTarget+'kg ('+Math.round(nextTarget-orm)+'kg away)</div>':'<div style="font-size:10px;color:#f59e0b;">🏆 Elite standard!</div>')+
+    '</div>';
+  }).join('');
+
+  el.innerHTML=
+    '<div style="font-size:11px;color:#555;margin-bottom:10px;">Based on '+bw+'kg bodyweight · '+
+      (gender==='m'?'Male':'Female')+' standards (Symmetric Strength)</div>'+
+    rows+
+    '<div style="font-size:10px;color:#333;margin-top:4px;">Standards use 1RM history + workout log weights as approximations.</div>';
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   2. BODY COMPOSITION DONUT (dashboard)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+function _injectBodyComp(){
+  if(document.getElementById('rfc-bodycomp-wrap')) return;
+  var anchor = document.getElementById('rfc-fitage-wrap') ||
+               document.getElementById('rfc-xform-wrap') ||
+               document.getElementById('rfc-sleepj-wrap') ||
+               document.getElementById('rfc-circ-wrap') ||
+               document.getElementById('rfc-habits-wrap') ||
+               document.querySelector('.dash-topbar');
+  if(!anchor) return;
+  var card=_b23card('rfc-bodycomp-wrap','🫀 Body Composition');
+  var inner=document.createElement('div'); inner.id='rfc-bodycomp-body';
+  card.appendChild(inner);
+  anchor.insertAdjacentElement('afterend', card);
+  _renderBodyComp();
+}
+
+function _renderBodyComp(){
+  var el=document.getElementById('rfc-bodycomp-body'); if(!el) return;
+  var lastRes={}; try{lastRes=JSON.parse(localStorage.getItem('bm_last_result')||'{}');}catch(e){}
+  var weight=+(lastRes.weight||0), bf=+(lastRes.bf||0);
+  if(!weight||!bf){
+    el.innerHTML='<p style="color:#555;font-size:12px;text-align:center;padding:12px 0;">Calculate your plan first to see body composition breakdown.</p>';
+    return;
+  }
+
+  var fatMass=+(weight*bf/100).toFixed(1);
+  var leanMass=+(weight-fatMass).toFixed(1);
+  var muscleMass=+(leanMass*0.84).toFixed(1);
+  var boneMass=+(leanMass*0.16).toFixed(1);
+  var waterPct=Math.round(50+Math.max(0,(25-bf))*0.5);
+  var waterKg=+(weight*waterPct/100).toFixed(1);
+
+  // 4-segment donut: fat, muscle, bone, water (overlap conceptually — show 3 key segments)
+  var segs=[
+    {label:'Fat',    kg:fatMass,  pct:+(bf).toFixed(1),   color:'#f97316'},
+    {label:'Muscle', kg:muscleMass,pct:+(muscleMass/weight*100).toFixed(1), color:'#3b82f6'},
+    {label:'Bone',   kg:boneMass, pct:+(boneMass/weight*100).toFixed(1),  color:'#a78bfa'},
+    {label:'Other',  kg:+(weight-fatMass-muscleMass-boneMass).toFixed(1),
+                     pct:+((weight-fatMass-muscleMass-boneMass)/weight*100).toFixed(1), color:'#22c55e'}
+  ];
+
+  var R=46,CX=60,CY=60,STROKE=14,circ=2*Math.PI*R;
+  var svgParts=''; var offFrac=0;
+  segs.forEach(function(s){
+    var arc=(s.pct/100)*circ;
+    var rot=(offFrac*360-90).toFixed(1);
+    svgParts+='<circle cx="'+CX+'" cy="'+CY+'" r="'+R+'" fill="none" stroke="'+s.color+'" stroke-width="'+STROKE+'"'+
+      ' stroke-dasharray="'+arc.toFixed(2)+' '+(circ-arc).toFixed(2)+'"'+
+      ' transform="rotate('+rot+' '+CX+' '+CY+')" style="transition:stroke-dasharray .6s ease;"/>';
+    offFrac+=s.pct/100;
+  });
+
+  var legend=segs.map(function(s){
+    return '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;">'+
+      '<span style="display:flex;align-items:center;gap:6px;font-size:12px;color:#ccc;">'+
+        '<span style="width:10px;height:10px;border-radius:50%;background:'+s.color+';display:inline-block;"></span>'+
+        s.label+'</span>'+
+      '<span style="font-size:12px;color:#aaa;">'+s.kg+'kg <span style="color:#555;">('+s.pct+'%)</span></span>'+
+    '</div>';
+  }).join('');
+
+  el.innerHTML=
+    '<div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap;">'+
+      '<div style="position:relative;flex-shrink:0;">'+
+        '<svg width="120" height="120" viewBox="0 0 120 120">'+svgParts+
+          '<circle cx="'+CX+'" cy="'+CY+'" r="'+(R-STROKE/2-2)+'" fill="#111"/>'+
+        '</svg>'+
+        '<div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;pointer-events:none;">'+
+          '<div style="font-size:16px;font-weight:900;color:#fff;">'+weight+'</div>'+
+          '<div style="font-size:9px;color:#555;">kg total</div>'+
+        '</div>'+
+      '</div>'+
+      '<div style="flex:1;min-width:160px;">'+legend+'</div>'+
+    '</div>'+
+    '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:10px;">'+
+      [['💧 '+waterPct+'%','Est. body water'],['⚡ '+leanMass+'kg','Lean mass'],['🔥 '+bf.toFixed(1)+'%','Body fat']].map(function(s){
+        return '<div style="background:#1a1a1a;border-radius:8px;padding:7px;text-align:center;">'+
+          '<div style="font-size:13px;font-weight:700;color:#fff;">'+s[0]+'</div>'+
+          '<div style="font-size:9px;color:#555;">'+s[1]+'</div>'+
+        '</div>';
+      }).join('')+
+    '</div>';
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   3. GUIDED BREATHING WHEEL (dashboard)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+var BREATH_PATTERNS={
+  box:    {name:'Box Breathing',    phases:['Inhale','Hold','Exhale','Hold'],times:[4,4,4,4],color:'#3b82f6'},
+  '478':  {name:'4-7-8 Relax',     phases:['Inhale','Hold','Exhale'],      times:[4,7,8],   color:'#8b5cf6'},
+  calm:   {name:'Calm Breathing',  phases:['Inhale','Exhale'],             times:[5,5],      color:'#22c55e'},
+  power:  {name:'Power Breath',    phases:['Inhale','Hold','Exhale'],      times:[6,2,4],    color:'#f59e0b'}
+};
+var _bw22={running:false,phase:0,cycle:0,iv:null,pattern:'box'};
+
+function _injectBreathing(){
+  if(document.getElementById('rfc-breath-wrap')) return;
+  var anchor = document.getElementById('rfc-bodycomp-wrap') ||
+               document.getElementById('rfc-fitage-wrap') ||
+               document.getElementById('rfc-xform-wrap') ||
+               document.getElementById('rfc-mgoal-wrap') ||
+               document.getElementById('rfc-habits-wrap') ||
+               document.querySelector('.dash-topbar');
+  if(!anchor) return;
+  var card=_b23card('rfc-breath-wrap','🌬 Guided Breathing');
+  card.innerHTML+=(
+    '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;" id="rfc-breath-tabs">'+
+      Object.keys(BREATH_PATTERNS).map(function(k){
+        var p=BREATH_PATTERNS[k];
+        return '<button onclick="window._rfcBreathPick(\''+k+'\')" id="rfc-bpt-'+k+'" '+
+          'style="flex:1;min-width:80px;background:#1a1a1a;border:1px solid #333;color:#aaa;border-radius:20px;padding:5px 8px;font-size:11px;cursor:pointer;transition:all .2s;">'+p.name+'</button>';
+      }).join('')+
+    '</div>'+
+    '<div style="text-align:center;">'+
+      '<div style="position:relative;display:inline-block;margin-bottom:12px;">'+
+        '<div id="rfc-breath-glow" style="position:absolute;inset:-20px;border-radius:50%;background:radial-gradient(circle,#3b82f620 0%,transparent 70%);transition:all 1s ease;pointer-events:none;"></div>'+
+        '<div id="rfc-breath-circle" style="width:130px;height:130px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#3b82f6,#1e40af);box-shadow:0 0 30px #3b82f640;display:flex;align-items:center;justify-content:center;transition:transform 1s ease,box-shadow 1s ease;cursor:pointer;" onclick="window._rfcBreathToggle()">'+
+          '<div style="text-align:center;">'+
+            '<div id="rfc-breath-phase" style="font-size:14px;font-weight:700;color:#fff;">Tap to start</div>'+
+            '<div id="rfc-breath-count" style="font-size:28px;font-weight:900;color:#fff;line-height:1.1;"></div>'+
+          '</div>'+
+        '</div>'+
+      '</div>'+
+      '<div id="rfc-breath-cycles" style="font-size:12px;color:#555;margin-bottom:8px;"></div>'+
+      '<div id="rfc-breath-phases" style="display:flex;justify-content:center;gap:6px;flex-wrap:wrap;"></div>'+
+    '</div>'
+  );
+  anchor.insertAdjacentElement('afterend', card);
+  _rfcBreathPick('box');
+  window._rfcBreathPick=function(key){ _rfcBreathPickFn(key); };
+}
+
+function _rfcBreathPickFn(key){
+  _bw22.pattern=key;
+  if(_bw22.iv){clearInterval(_bw22.iv);_bw22.iv=null;}
+  _bw22.running=false; _bw22.phase=0; _bw22.cycle=0;
+  var p=BREATH_PATTERNS[key];
+  // Update tab highlight
+  Object.keys(BREATH_PATTERNS).forEach(function(k){
+    var b=document.getElementById('rfc-bpt-'+k); if(!b) return;
+    var active=(k===key);
+    b.style.background=active?p.color:'#1a1a1a';
+    b.style.color=active?'#000':'#aaa';
+    b.style.borderColor=active?p.color:'#333';
+  });
+  // Update circle
+  var circ=document.getElementById('rfc-breath-circle');
+  if(circ) circ.style.background='radial-gradient(circle at 35% 35%,'+p.color+','+p.color+'88)';
+  var glow=document.getElementById('rfc-breath-glow');
+  if(glow) glow.style.background='radial-gradient(circle,'+p.color+'20 0%,transparent 70%)';
+  var ph=document.getElementById('rfc-breath-phase'); if(ph) ph.textContent='Tap to start';
+  var cn=document.getElementById('rfc-breath-count'); if(cn) cn.textContent='';
+  var cy=document.getElementById('rfc-breath-cycles'); if(cy) cy.textContent='';
+  var ps=document.getElementById('rfc-breath-phases');
+  if(ps) ps.innerHTML=p.phases.map(function(ph2,i){
+    return '<span style="font-size:11px;color:#444;">'+ph2+' '+p.times[i]+'s</span>';
+  }).join('<span style="color:#222;"> → </span>');
+}
+
+window._rfcBreathPick=function(key){ _rfcBreathPickFn(key); };
+
+window._rfcBreathToggle=function(){
+  if(_bw22.running){ // stop
+    _bw22.running=false;
+    if(_bw22.iv){clearInterval(_bw22.iv);_bw22.iv=null;}
+    var circ2=document.getElementById('rfc-breath-circle');
+    if(circ2){circ2.style.transform='scale(1)';circ2.style.boxShadow='0 0 30px '+BREATH_PATTERNS[_bw22.pattern].color+'40';}
+    var ph2=document.getElementById('rfc-breath-phase'); if(ph2) ph2.textContent='Tap to start';
+    var cn2=document.getElementById('rfc-breath-count'); if(cn2) cn2.textContent='';
+  } else { // start
+    _bw22.running=true; _bw22.phase=0; _bw22.cycle=0;
+    _rfcBreathStep();
+  }
+};
+
+function _rfcBreathStep(){
+  if(!_bw22.running) return;
+  var pat=BREATH_PATTERNS[_bw22.pattern];
+  var phaseIdx=_bw22.phase%pat.phases.length;
+  var phaseName=pat.phases[phaseIdx];
+  var phaseSec=pat.times[phaseIdx];
+  var isInhale=phaseName==='Inhale', isHold=phaseName==='Hold';
+
+  var phEl=document.getElementById('rfc-breath-phase'); if(phEl) phEl.textContent=phaseName;
+  var cyEl=document.getElementById('rfc-breath-cycles');
+  if(cyEl) cyEl.textContent='Cycles: '+_bw22.cycle;
+
+  var circ3=document.getElementById('rfc-breath-circle');
+  if(circ3){
+    var sc=isInhale?'scale(1.22)':isHold?'scale(1.22)':'scale(0.85)';
+    circ3.style.transform=sc;
+    circ3.style.transition='transform '+phaseSec+'s ease'+(isInhale?'-in-out':'-in-out');
+    circ3.style.boxShadow='0 0 '+(isInhale?'60px':'20px')+' '+pat.color+(isInhale?'70':'30');
+  }
+
+  var remaining=phaseSec;
+  var cnEl=document.getElementById('rfc-breath-count'); if(cnEl) cnEl.textContent=remaining;
+  if(_bw22.iv){clearInterval(_bw22.iv);}
+  _bw22.iv=setInterval(function(){
+    if(!_bw22.running){clearInterval(_bw22.iv);_bw22.iv=null;return;}
+    remaining--;
+    var cn3=document.getElementById('rfc-breath-count'); if(cn3) cn3.textContent=remaining||'';
+    if(remaining<=0){
+      clearInterval(_bw22.iv); _bw22.iv=null;
+      _bw22.phase++;
+      if(_bw22.phase%pat.phases.length===0) _bw22.cycle++;
+      setTimeout(_rfcBreathStep,100);
+    }
+  },1000);
+}
+
+/* ════════════════════════════════════════════════════
+   switchScreen + initial inject
+   ════════════════════════════════════════════════════ */
+var _origSS21=window.switchScreen;
+window.switchScreen=function(name,navEl){
+  _origSS21&&_origSS21(name,navEl);
+  if(name==='workouts'){
+    setTimeout(function(){ _injectStrStd(); _renderStrStd(); }, 950);
+  }
+  if(name==='dashboard'){
+    setTimeout(function(){ _injectBodyComp(); _renderBodyComp(); _injectBreathing(); }, 1100);
+  }
+};
+
+setTimeout(function(){
+  _injectStrStd();
+  _injectBodyComp();
+  _injectBreathing();
+}, 15000);
+
+setTimeout(function(){
+  if(!document.getElementById('rfc-strstd-wrap'))   _injectStrStd();
+  if(!document.getElementById('rfc-bodycomp-wrap')) _injectBodyComp();
+  if(!document.getElementById('rfc-breath-wrap'))   _injectBreathing();
+}, 18000);
+
+})();
+</script>
+
 </body>
 </html>
