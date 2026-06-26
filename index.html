@@ -38868,5 +38868,180 @@ setTimeout(function(){ if(!document.getElementById('rfc-wellwheel-wrap')) _injec
 })();
 </script>
 
+<script>
+/* ===== BATCH 51: Hormone-Boosting Habits | Food Sensitivity Log | Olympic Lifting ===== */
+(function(){ 'use strict';
+var _origSS49=window.switchScreen;
+function _b51uid(){ try{ return JSON.parse(localStorage.getItem('bm_user')||'{}').uid||'guest'; }catch(e){ return 'guest'; } }
+function _b51today(){ var d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function _b51load(k){ try{ return JSON.parse(localStorage.getItem(k))||null; }catch(e){ return null; } }
+function _b51save(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} }
+function _b51card(id,title){ var d=document.createElement('div'); d.id=id; d.style.cssText='background:#1a1a2e;border-radius:14px;padding:18px;margin:14px 0;color:#e0e0e0;font-family:inherit;'; d.innerHTML='<div style="font-size:15px;font-weight:700;color:#00d4ff;margin-bottom:14px;">'+title+'</div>'; return d; }
+
+/* ---------- HORMONE-BOOSTING HABITS (dashboard) ---------- */
+var HORMONE_HABITS=[
+  {id:'heavy_lift',label:'Heavy resistance training',icon:'🏋️',pts:8},
+  {id:'hiit_h',label:'HIIT session today',icon:'⚡',pts:6},
+  {id:'sleep_h',label:'7-9h quality sleep last night',icon:'😴',pts:8},
+  {id:'zinc_h',label:'Zinc-rich foods (beef, oysters, pumpkin)',icon:'🥩',pts:4},
+  {id:'vitd_h',label:'Vitamin D sun exposure 15+ min',icon:'☀️',pts:4},
+  {id:'cold_h',label:'Cold exposure (shower/bath)',icon:'🧊',pts:3},
+  {id:'no_alc',label:'No alcohol today',icon:'🚫',pts:4},
+  {id:'healthy_fats',label:'Healthy fats (avocado, nuts, olive oil)',icon:'🥑',pts:4},
+  {id:'low_stress',label:'Stress level ≤5/10',icon:'🧘',pts:3},
+  {id:'no_sugar',label:'Limited processed sugar',icon:'🍬',pts:4}
+];
+function _injectHormone(){
+  if(document.getElementById('rfc-hormone-wrap')) return;
+  var anchor=document.getElementById('rfc-wellwheel-wrap')||document.getElementById('rfc-longevity-wrap')||document.getElementById('rfc-cortisol-wrap')||document.getElementById('rfc-breathwork-wrap')||document.querySelector('.dash-topbar');
+  if(!anchor) return;
+  var card=_b51card('rfc-hormone-wrap','⚡ Hormone-Boosting Habits');
+  card.style.cssText+='border:1px solid #2a1a1a;';
+  anchor.parentNode.insertBefore(card,anchor.nextSibling);
+  _renderHormone();
+}
+function _renderHormone(){
+  var card=document.getElementById('rfc-hormone-wrap'); if(!card) return;
+  var uid=_b51uid(), today=_b51today();
+  var key='rfc_hormone_'+uid+'_'+today;
+  var data=_b51load(key)||{};
+  var maxPts=48;
+  var got=HORMONE_HABITS.reduce(function(a,h){ return a+(data[h.id]?h.pts:0); },0);
+  var pct=Math.min(100,Math.round((got/maxPts)*100));
+  var pc=pct>=70?'#ffd700':pct>=45?'#00d4ff':'#888';
+  var html='<div style="font-size:15px;font-weight:700;color:#00d4ff;margin-bottom:14px;">⚡ Hormone-Boosting Habits</div>';
+  html+='<div style="font-size:11px;color:#888;margin-bottom:10px;">Natural habits that support testosterone & growth hormone production.</div>';
+  html+='<div style="display:flex;align-items:center;gap:14px;margin-bottom:14px;">';
+  html+='<div style="font-size:38px;font-weight:800;color:'+pc+';">'+pct+'%</div>';
+  html+='<div><div style="font-size:14px;font-weight:700;color:'+pc+';">'+(pct>=70?'Optimal Hormonal State':pct>=45?'Moderate Support':'Needs Improvement')+'</div><div style="font-size:12px;color:#888;">'+got+'/'+maxPts+' pts</div></div></div>';
+  html+='<div style="background:#1a1a0d;border-radius:8px;height:8px;margin-bottom:14px;overflow:hidden;"><div style="height:8px;background:'+pc+';width:'+pct+'%;border-radius:8px;transition:width 0.4s;"></div></div>';
+  html+='<div style="display:grid;gap:6px;">';
+  HORMONE_HABITS.forEach(function(h){ var ok=!!data[h.id]; html+='<div onclick="window._rfcHrmTap(\''+h.id+'\')" style="cursor:pointer;background:'+(ok?'#1a1a0d':'#12122a')+';border:1px solid '+(ok?'#ffd700':'#2a2a4a')+';border-radius:9px;padding:9px 12px;display:flex;align-items:center;gap:8px;"><span style="font-size:16px;">'+h.icon+'</span><div style="flex:1;font-size:12px;color:'+(ok?'#ffd700':'#ccc')+';">'+h.label+'</div><span style="font-size:11px;color:'+pc+';">+'+h.pts+'</span><span>'+(ok?'✅':'⭕')+'</span></div>'; });
+  html+='</div>';
+  card.innerHTML=html;
+}
+window._rfcHrmTap=function(id){ var uid=_b51uid(), today=_b51today(); var key='rfc_hormone_'+uid+'_'+today; var data=_b51load(key)||{}; data[id]=!data[id]; _b51save(key,data); _renderHormone(); };
+
+/* ---------- FOOD SENSITIVITY LOG (nutrition) ---------- */
+var FOOD_SENS=[
+  {id:'gluten',label:'Gluten',icon:'🌾'},
+  {id:'dairy_s',label:'Dairy',icon:'🥛'},
+  {id:'eggs_s',label:'Eggs',icon:'🥚'},
+  {id:'nuts_s',label:'Tree Nuts',icon:'🥜'},
+  {id:'soy_s',label:'Soy',icon:'🫘'},
+  {id:'fructose',label:'Fructose/Sugar',icon:'🍎'},
+  {id:'nightshades',label:'Nightshades',icon:'🍅'},
+  {id:'fodmaps',label:'FODMAPs',icon:'🧅'},
+  {id:'caffeine_s',label:'Caffeine',icon:'☕'},
+  {id:'alcohol_s',label:'Alcohol',icon:'🍺'}
+];
+var SYMP_LABELS=['None','Mild','Moderate','Severe'];
+var SYMP_COLORS=['#00ff88','#ffd700','#ff9f43','#ff6b6b'];
+function _injectFoodSens(){
+  if(document.getElementById('rfc-foodsens-wrap')) return;
+  var anchor=document.getElementById('rfc-maccycle50-wrap')||document.getElementById('rfc-callog-wrap')||document.getElementById('rfc-prosyn-wrap')||document.getElementById('rfc-rainbow-wrap')||document.querySelector('.dash-topbar');
+  if(!anchor) return;
+  var card=_b51card('rfc-foodsens-wrap','🔍 Food Sensitivity Log');
+  card.style.cssText+='border:1px solid #2a1a2a;';
+  anchor.parentNode.insertBefore(card,anchor.nextSibling);
+  _renderFoodSens();
+}
+function _renderFoodSens(){
+  var card=document.getElementById('rfc-foodsens-wrap'); if(!card) return;
+  var uid=_b51uid(), today=_b51today();
+  var key='rfc_foodsens_'+uid+'_'+today;
+  var data=_b51load(key)||{};
+  var html='<div style="font-size:15px;font-weight:700;color:#00d4ff;margin-bottom:14px;">🔍 Food Sensitivity Log</div>';
+  html+='<div style="font-size:12px;color:#888;margin-bottom:12px;">Track what you eat and how your body reacts. Build patterns over time to identify sensitivities.</div>';
+  FOOD_SENS.forEach(function(f){
+    var d=data[f.id]||{consumed:false,symptoms:0};
+    var sc=SYMP_COLORS[d.symptoms||0];
+    html+='<div style="background:#12122a;border-radius:9px;padding:10px;margin-bottom:7px;">';
+    html+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">';
+    html+='<span style="font-size:16px;">'+f.icon+'</span>';
+    html+='<span style="flex:1;font-size:13px;font-weight:600;color:#e0e0e0;">'+f.label+'</span>';
+    html+='<button onclick="window._rfcFSToggle(\''+f.id+'\')" style="padding:4px 10px;border-radius:6px;border:1px solid '+(d.consumed?'#ff9f43':'#2a2a4a')+';background:'+(d.consumed?'#1a1a00':'#0d0d1a')+';color:'+(d.consumed?'#ff9f43':'#888')+';font-size:11px;cursor:pointer;">'+(d.consumed?'Eaten ✓':'Not Eaten')+'</button></div>';
+    if(d.consumed){
+      html+='<div style="font-size:11px;color:#888;margin-bottom:4px;">Symptoms:</div>';
+      html+='<div style="display:flex;gap:6px;">';
+      SYMP_LABELS.forEach(function(sl,i){ html+='<button onclick="window._rfcFSSymp(\''+f.id+'\','+i+')" style="flex:1;padding:5px;border-radius:5px;border:1px solid '+(d.symptoms===i?SYMP_COLORS[i]:'#2a2a4a')+';background:'+(d.symptoms===i?SYMP_COLORS[i]+'22':'#0d0d1a')+';color:'+(d.symptoms===i?SYMP_COLORS[i]:'#555')+';font-size:10px;cursor:pointer;">'+sl+'</button>'; });
+      html+='</div>';
+    }
+    html+='</div>';
+  });
+  card.innerHTML=html;
+}
+window._rfcFSToggle=function(id){ var uid=_b51uid(), today=_b51today(); var key='rfc_foodsens_'+uid+'_'+today; var data=_b51load(key)||{}; var d=data[id]||{consumed:false,symptoms:0}; d.consumed=!d.consumed; if(!d.consumed) d.symptoms=0; data[id]=d; _b51save(key,data); _renderFoodSens(); };
+window._rfcFSSymp=function(id,s){ var uid=_b51uid(), today=_b51today(); var key='rfc_foodsens_'+uid+'_'+today; var data=_b51load(key)||{}; var d=data[id]||{consumed:true,symptoms:0}; d.symptoms=s; data[id]=d; _b51save(key,data); _renderFoodSens(); };
+
+/* ---------- OLYMPIC LIFTING LOGGER (workouts) ---------- */
+var OL_LIFTS=['Clean & Jerk','Snatch','Clean','Jerk','Power Clean','Power Snatch'];
+function _injectOlympic(){
+  if(document.getElementById('rfc-olympic-wrap')) return;
+  var anchor=document.getElementById('rfc-blockplan-wrap')||document.getElementById('rfc-restimer-wrap')||document.getElementById('rfc-progover-wrap')||document.getElementById('rfc-unilat-wrap')||document.querySelector('.dash-topbar');
+  if(!anchor) return;
+  var card=_b51card('rfc-olympic-wrap','🏆 Olympic Lifting Logger');
+  card.style.cssText+='border:1px solid #2a2a1a;';
+  anchor.parentNode.insertBefore(card,anchor.nextSibling);
+  _renderOlympic();
+}
+function _renderOlympic(){
+  var card=document.getElementById('rfc-olympic-wrap'); if(!card) return;
+  var uid=_b51uid(), today=_b51today();
+  var dkey='rfc_olympic_'+uid+'_'+today;
+  var pkey='rfc_olympic_pbs_'+uid;
+  var data=_b51load(dkey)||{attempts:[]};
+  var pbs=_b51load(pkey)||{};
+  var attempts=data.attempts||[];
+  var madeCount=attempts.filter(function(a){ return a.made; }).length;
+  var html='<div style="font-size:15px;font-weight:700;color:#00d4ff;margin-bottom:14px;">🏆 Olympic Lifting Logger</div>';
+  html+='<div style="display:flex;gap:10px;margin-bottom:14px;">';
+  html+='<div style="flex:1;background:#12122a;border-radius:8px;padding:9px;text-align:center;"><div style="font-size:20px;font-weight:800;color:#ffd700;">'+attempts.length+'</div><div style="font-size:10px;color:#888;">Attempts</div></div>';
+  html+='<div style="flex:1;background:#12122a;border-radius:8px;padding:9px;text-align:center;"><div style="font-size:20px;font-weight:800;color:#00ff88;">'+madeCount+'</div><div style="font-size:10px;color:#888;">Made</div></div>';
+  html+='<div style="flex:1;background:#12122a;border-radius:8px;padding:9px;text-align:center;"><div style="font-size:20px;font-weight:800;color:'+(attempts.length?Math.round(madeCount/attempts.length*100)>=80?'#00ff88':'#ffd700':'#888')+'">'+(attempts.length?Math.round(madeCount/attempts.length*100)+'%':'—')+'</div><div style="font-size:10px;color:#888;">Success</div></div></div>';
+  html+='<div style="background:#12122a;border-radius:10px;padding:12px;margin-bottom:12px;">';
+  html+='<select id="rfc-ol-lift" style="width:100%;background:#0d0d20;border:1px solid #2a2a4a;color:#fff;border-radius:7px;padding:7px;font-size:12px;margin-bottom:8px;">';
+  OL_LIFTS.forEach(function(l){ html+='<option>'+l+'</option>'; }); html+='</select>';
+  html+='<div style="display:flex;gap:8px;margin-bottom:8px;">';
+  html+='<input type="number" id="rfc-ol-wt" placeholder="Weight (kg)" min="0" max="500" step="0.5" style="flex:1;background:#0d0d20;border:1px solid #2a2a4a;color:#fff;border-radius:6px;padding:7px;font-size:14px;font-weight:700;">';
+  html+='<div style="display:flex;gap:6px;align-items:center;">';
+  html+='<button onclick="window._rfcOLLog(true)" style="padding:7px 12px;border-radius:7px;background:#00ff88;border:none;color:#000;font-size:12px;font-weight:700;cursor:pointer;">✅ Made</button>';
+  html+='<button onclick="window._rfcOLLog(false)" style="padding:7px 12px;border-radius:7px;background:#ff6b6b;border:none;color:#fff;font-size:12px;font-weight:700;cursor:pointer;">❌ Miss</button>';
+  html+='</div></div>';
+  html+='<div style="display:flex;align-items:center;gap:8px;"><label style="font-size:11px;color:#888;">Technique:</label><div style="display:flex;gap:4px;">';
+  for(var i=1;i<=5;i++) html+='<button onclick="window._rfcOLRate('+i+')" id="rfc-ol-star-'+i+'" style="background:none;border:none;color:#ffd700;font-size:16px;cursor:pointer;">★</button>';
+  html+='</div></div></div>';
+  if(attempts.length){
+    html+='<div style="font-size:12px;color:#888;margin-bottom:6px;">Today\'s Attempts</div>';
+    attempts.slice(-6).reverse().forEach(function(a){ html+='<div style="display:flex;align-items:center;gap:8px;padding:7px;background:#12122a;border-radius:7px;margin-bottom:4px;"><span style="font-size:14px;">'+(a.made?'✅':'❌')+'</span><div style="flex:1;font-size:12px;color:#ccc;">'+a.lift+'</div><span style="font-size:13px;font-weight:700;color:#ffd700;">'+a.weight+'kg</span><span style="font-size:11px;color:#555;">'+'★'.repeat(a.tech||3)+'</span></div>'; });
+  }
+  var pbList=Object.keys(pbs); if(pbList.length){ html+='<div style="font-size:12px;color:#888;margin:8px 0 6px;">Personal Bests</div><div style="display:flex;flex-wrap:wrap;gap:6px;">'; pbList.forEach(function(l){ html+='<div style="background:#0d2a00;border:1px solid #ffd700;border-radius:7px;padding:5px 9px;"><div style="font-size:10px;color:#888;">'+l+'</div><div style="font-size:13px;font-weight:700;color:#ffd700;">'+pbs[l]+'kg</div></div>'; }); html+='</div>'; }
+  card.innerHTML=html;
+}
+var _olTech=3;
+window._rfcOLRate=function(n){ _olTech=n; var stars=document.querySelectorAll('[id^="rfc-ol-star-"]'); stars.forEach(function(s,i){ s.style.opacity=i<n?'1':'0.3'; }); };
+window._rfcOLLog=function(made){
+  var liftEl=document.getElementById('rfc-ol-lift'); var wtEl=document.getElementById('rfc-ol-wt');
+  var wt=parseFloat(wtEl.value)||0; if(!wt) return;
+  var uid=_b51uid(), today=_b51today();
+  var dkey='rfc_olympic_'+uid+'_'+today; var pkey='rfc_olympic_pbs_'+uid;
+  var data=_b51load(dkey)||{attempts:[]}; var pbs=_b51load(pkey)||{};
+  var lift=liftEl.value;
+  data.attempts.push({lift:lift,weight:wt,made:made,tech:_olTech});
+  if(made&&(!pbs[lift]||wt>pbs[lift])) pbs[lift]=wt;
+  _b51save(dkey,data); _b51save(pkey,pbs); wtEl.value=''; _renderOlympic();
+};
+
+window.switchScreen=function(name,navEl){
+  _origSS49&&_origSS49(name,navEl);
+  if(name==='dashboard') setTimeout(function(){ _injectHormone(); _renderHormone(); },1200);
+  if(name==='nutrition') setTimeout(function(){ _injectFoodSens(); _renderFoodSens(); },1100);
+  if(name==='workouts')  setTimeout(function(){ _injectOlympic(); _renderOlympic(); },1050);
+};
+setTimeout(function(){ _injectHormone(); _injectFoodSens(); _injectOlympic(); },43000);
+setTimeout(function(){ if(!document.getElementById('rfc-hormone-wrap')) _injectHormone(); if(!document.getElementById('rfc-foodsens-wrap')) _injectFoodSens(); if(!document.getElementById('rfc-olympic-wrap')) _injectOlympic(); },47000);
+})();
+</script>
+
 </body>
 </html>
