@@ -27414,5 +27414,413 @@ window.addEventListener('rfc-food-updated', _renderNutritionScore);
 })();
 </script>
 
+<script>
+/* ═══════════════════════════════════════════════════════
+   BATCH 13: Body Measurements · HR Zones · Activity Rings
+   ═══════════════════════════════════════════════════════ */
+(function(){
+'use strict';
+
+/* ── helpers ────────────────────────────────────── */
+function _b13uid(){
+  try{ var u=JSON.parse(localStorage.getItem('bm_user')||'{}'); return u.uid||'anon'; }catch(e){return'anon';}
+}
+function _b13today(){
+  var d=new Date();
+  return d.getFullYear()+'-'+(d.getMonth()+1<10?'0':'')+(d.getMonth()+1)+'-'+(d.getDate()<10?'0':'')+d.getDate();
+}
+function _b13after(el, anchor){
+  anchor.parentNode.insertBefore(el, anchor.nextSibling);
+}
+
+/* ════════════════════════════════════════════════════
+   1. BODY MEASUREMENTS TRACKER
+   ════════════════════════════════════════════════════ */
+var MEAS_FIELDS = [
+  {key:'chest',  label:'Chest',   emoji:'💪', color:'#e8001d'},
+  {key:'waist',  label:'Waist',   emoji:'🎯', color:'#f59e0b'},
+  {key:'hips',   label:'Hips',    emoji:'🔄', color:'#a78bfa'},
+  {key:'arms',   label:'Arms',    emoji:'💪', color:'#22c55e'},
+  {key:'thighs', label:'Thighs',  emoji:'🦵', color:'#3b82f6'}
+];
+
+function _measKey(){ return 'rfc_measurements_'+_b13uid(); }
+function _getMeasLog(){
+  try{ return JSON.parse(localStorage.getItem(_measKey())||'[]'); }catch(e){return [];}
+}
+function _saveMeasLog(log){ localStorage.setItem(_measKey(), JSON.stringify(log)); }
+
+window._rfcLogMeasurements = function(){
+  var entry = {date:_b13today()};
+  var hasAny = false;
+  MEAS_FIELDS.forEach(function(f){
+    var el = document.getElementById('rfc-meas-'+f.key);
+    var v = el ? parseFloat(el.value) : 0;
+    if(v > 0){ entry[f.key] = v; hasAny = true; }
+  });
+  if(!hasAny){
+    if(window.toast) toast('Enter at least one measurement','gold');
+    return;
+  }
+  var log = _getMeasLog();
+  // Replace today's entry if exists
+  var idx = log.findIndex(function(e){ return e.date === _b13today(); });
+  if(idx >= 0) log[idx] = entry; else log.push(entry);
+  _saveMeasLog(log);
+  // Clear inputs
+  MEAS_FIELDS.forEach(function(f){
+    var el = document.getElementById('rfc-meas-'+f.key);
+    if(el) el.value = '';
+  });
+  _renderMeasurements();
+  if(window.toast) toast('📏 Measurements saved!','gold');
+  if(window.rfcCelebrate) rfcCelebrate('Measurements logged! 📏', 20);
+  if(window.awardXP) window.awardXP('measurements_logged');
+};
+
+function _measTrend(cur, prev){
+  if(!prev || !cur) return '';
+  var diff = (cur - prev).toFixed(1);
+  var pct  = ((cur - prev) / prev * 100).toFixed(1);
+  var up   = cur > prev;
+  return '<span style="font-size:10px;color:'+(up?'#f97316':'#22c55e')+';">'+
+    (up?'↑':'↓')+' '+Math.abs(diff)+'cm ('+Math.abs(pct)+'%)</span>';
+}
+
+function _renderMeasurements(){
+  var wrap = document.getElementById('rfc-meas-results');
+  if(!wrap) return;
+  var log  = _getMeasLog();
+  if(!log.length){
+    wrap.innerHTML = '<div style="font-size:12px;color:#888;text-align:center;padding:8px 0;">No measurements logged yet.</div>';
+    return;
+  }
+  var latest = log[log.length-1];
+  var prev   = log.length>1 ? log[log.length-2] : null;
+  var first  = log[0];
+
+  var rows = MEAS_FIELDS.map(function(f){
+    if(!latest[f.key]) return '';
+    var val   = latest[f.key];
+    var trend = prev ? _measTrend(val, prev[f.key]) : '';
+    var delta = first[f.key] ? ((val-first[f.key]).toFixed(1)) : null;
+    return '<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1e1e1e;">'
+      +'<div style="display:flex;align-items:center;gap:8px;">'
+      +'<div style="width:8px;height:8px;border-radius:50%;background:'+f.color+';flex-shrink:0;"></div>'
+      +'<span style="font-size:13px;color:#fff;font-weight:600;">'+f.label+'</span>'
+      +'</div>'
+      +'<div style="text-align:right;">'
+      +'<div style="font-size:14px;font-weight:700;color:'+f.color+';">'+val+' cm</div>'
+      +(trend?'<div>'+trend+'</div>':'')
+      +(delta!==null?'<div style="font-size:9px;color:#888;">from start: '+(delta>0?'+':'')+delta+'cm</div>':'')
+      +'</div>'
+      +'</div>';
+  }).join('');
+
+  wrap.innerHTML = '<div style="font-size:11px;color:#888;margin-bottom:6px;">Latest: '+latest.date+(log.length>1?' · '+log.length+' entries':'')+'</div>'
+    + rows;
+}
+
+function _injectMeasTracker(){
+  if(document.getElementById('rfc-meas-wrap')) return;
+  // Inject onto tracker screen after the tr3 grid or progress photos
+  var anchor = document.querySelector('#tracker .tr3')
+    || document.querySelector('#tracker .container')
+    || document.getElementById('tracker');
+  if(!anchor) return;
+
+  var wrap = document.createElement('div');
+  wrap.id = 'rfc-meas-wrap';
+  wrap.style.cssText = 'margin:24px 0;';
+
+  var inputs = MEAS_FIELDS.map(function(f){
+    return '<div style="display:flex;flex-direction:column;gap:3px;flex:1;min-width:80px;">'
+      +'<label style="font-size:10px;color:#aaa;letter-spacing:1px;text-transform:uppercase;">'+f.label+'</label>'
+      +'<div style="display:flex;align-items:center;background:#1a1a1a;border:1px solid #333;border-radius:8px;overflow:hidden;">'
+      +'<input id="rfc-meas-'+f.key+'" type="number" min="10" max="300" step="0.1" placeholder="0" '
+      +'style="flex:1;background:transparent;border:none;color:#fff;padding:8px 8px;font-size:13px;width:0;outline:none;">'
+      +'<span style="font-size:10px;color:#666;padding-right:8px;">cm</span>'
+      +'</div>'
+      +'</div>';
+  }).join('');
+
+  wrap.innerHTML =
+    '<div class="stag" style="margin-bottom:8px;">📏 Body Measurements</div>'
+    +'<div style="background:#111;border:1px solid #222;border-top:1px solid #2a2a2a;border-radius:16px;padding:16px;">'
+    +'<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;">'+inputs+'</div>'
+    +'<button onclick="window._rfcLogMeasurements()" style="width:100%;background:#e8001d;background-image:linear-gradient(180deg,rgba(255,255,255,.15),transparent 55%);border:none;border-radius:10px;color:#fff;padding:10px;font-size:13px;font-weight:700;cursor:pointer;letter-spacing:1px;">💾 SAVE MEASUREMENTS</button>'
+    +'<div id="rfc-meas-results" style="margin-top:12px;"></div>'
+    +'</div>';
+
+  // Insert after the tr3 grid
+  _b13after(wrap, anchor);
+  _renderMeasurements();
+}
+
+/* ════════════════════════════════════════════════════
+   2. HEART RATE ZONE CALCULATOR
+   ════════════════════════════════════════════════════ */
+var HR_ZONES = [
+  {n:1, pct:[50,60], color:'#6b7280', label:'Recovery',   desc:'Easy walks, cool-down, active rest'},
+  {n:2, pct:[60,70], color:'#3b82f6', label:'Fat Burn',   desc:'Brisk walking, light cardio, build aerobic base'},
+  {n:3, pct:[70,80], color:'#22c55e', label:'Aerobic',    desc:'Steady-state cardio, improves endurance'},
+  {n:4, pct:[80,90], color:'#f59e0b', label:'Threshold',  desc:'Tempo runs, HIIT circuits, lactate threshold'},
+  {n:5, pct:[90,100],color:'#e8001d', label:'VO₂ Max',    desc:'Sprint intervals, all-out effort, peak power'}
+];
+
+function _getAge(){
+  try{
+    var lr = JSON.parse(localStorage.getItem('bm_last_result')||'null');
+    if(lr && lr.age) return parseInt(lr.age);
+    var pd = JSON.parse(localStorage.getItem('bm_pd')||'{}');
+    if(pd.age) return parseInt(pd.age);
+  }catch(e){}
+  return 25; // default
+}
+
+function _renderHRZones(){
+  var wrap = document.getElementById('rfc-hr-wrap');
+  if(!wrap) return;
+  var ageInp = document.getElementById('rfc-hr-age');
+  var age = ageInp ? (parseInt(ageInp.value)||_getAge()) : _getAge();
+  var maxHR = 220 - age;
+
+  var zonesHtml = HR_ZONES.map(function(z){
+    var lo = Math.round(maxHR * z.pct[0] / 100);
+    var hi = Math.round(maxHR * z.pct[1] / 100);
+    var barW = z.pct[1] - z.pct[0]; // all same (10) but keep for future
+    return '<div style="display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid #1a1a1a;">'
+      +'<div style="width:28px;height:28px;border-radius:50%;background:'+z.color+';display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0;">'+z.n+'</div>'
+      +'<div style="flex:1;min-width:0;">'
+      +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">'
+      +'<span style="font-size:12px;font-weight:700;color:#fff;">'+z.label+'</span>'
+      +'<span style="font-size:12px;color:'+z.color+';font-weight:700;">'+lo+'–'+hi+' bpm</span>'
+      +'</div>'
+      +'<div style="background:#1a1a1a;border-radius:3px;height:4px;overflow:hidden;">'
+      +'<div style="width:'+barW*2+'%;height:100%;background:'+z.color+';border-radius:3px;"></div>'
+      +'</div>'
+      +'<div style="font-size:10px;color:#888;margin-top:2px;">'+z.desc+'</div>'
+      +'</div>'
+      +'</div>';
+  }).join('');
+
+  var content = document.getElementById('rfc-hr-zones');
+  if(content) content.innerHTML = zonesHtml;
+  var maxEl = document.getElementById('rfc-hr-max');
+  if(maxEl) maxEl.textContent = maxHR+' bpm';
+  var ageEl = document.getElementById('rfc-hr-age-disp');
+  if(ageEl) ageEl.textContent = 'Age: '+age;
+}
+
+window._rfcUpdateHRAge = function(){ _renderHRZones(); };
+
+function _injectHRZones(){
+  if(document.getElementById('rfc-hr-wrap')) return;
+  var anchor = document.getElementById('rfc-trophy-shelf')
+    || document.getElementById('rfc-steps-wrap')
+    || document.getElementById('rfc-goal-wrap')
+    || document.querySelector('.dash-topbar');
+  if(!anchor) return;
+
+  var defaultAge = _getAge();
+  var wrap = document.createElement('div');
+  wrap.id = 'rfc-hr-wrap';
+  wrap.className = 'rfc-b12-card';
+
+  wrap.innerHTML =
+    '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">'
+    +'<span style="font-weight:700;font-size:13px;color:#fff;">❤️ Heart Rate Zones</span>'
+    +'<div style="display:flex;align-items:center;gap:8px;">'
+    +'<span id="rfc-hr-age-disp" style="font-size:11px;color:#888;">Age: '+defaultAge+'</span>'
+    +'<input id="rfc-hr-age" type="number" min="10" max="90" value="'+defaultAge+'" '
+    +'onchange="window._rfcUpdateHRAge()" '
+    +'style="width:50px;background:#1a1a1a;border:1px solid #333;border-radius:6px;color:#fff;padding:4px 6px;font-size:12px;text-align:center;">'
+    +'</div>'
+    +'</div>'
+    +'<div style="text-align:center;margin-bottom:8px;">'
+    +'<span style="font-size:11px;color:#888;">Max HR: </span>'
+    +'<span id="rfc-hr-max" style="font-size:14px;font-weight:700;color:#e8001d;"></span>'
+    +'</div>'
+    +'<div id="rfc-hr-zones"></div>';
+
+  _b13after(wrap, anchor);
+  _renderHRZones();
+}
+
+/* ════════════════════════════════════════════════════
+   3. WEEKLY ACTIVITY RINGS
+   ════════════════════════════════════════════════════ */
+function _getWeeklyActivity(){
+  var uid = _b13uid();
+  var d = new Date();
+  // Find start of this week (Monday)
+  var day = d.getDay() || 7;
+  var monday = new Date(d); monday.setDate(d.getDate() - day + 1); monday.setHours(0,0,0,0);
+
+  // Workouts this week from rfc_workouts_{uid}
+  var workouts = 0;
+  try{
+    var wlog = JSON.parse(localStorage.getItem('rfc_workouts_'+uid)||'[]');
+    workouts = wlog.filter(function(w){
+      return w.date && new Date(w.date) >= monday;
+    }).length;
+  }catch(e){}
+  // Also check pd.wk as fallback
+  if(!workouts){
+    try{
+      var pd = JSON.parse(localStorage.getItem('bm_pd')||'{}');
+      workouts = pd.wk || 0;
+    }catch(e){}
+  }
+
+  // Active days this week (days with check-in or workout)
+  var activeDays = 0;
+  try{
+    var sd = JSON.parse(localStorage.getItem('rfc_streak_data')||'{}');
+    var hist = sd.history || [];
+    activeDays = hist.filter(function(d2){
+      return new Date(d2) >= monday;
+    }).length;
+  }catch(e){}
+
+  // Steps this week
+  var stepsTotal = 0;
+  try{
+    for(var i=0; i<7; i++){
+      var dd = new Date(); dd.setDate(dd.getDate()-i);
+      var ds = dd.getFullYear()+'-'+(dd.getMonth()+1<10?'0':'')+(dd.getMonth()+1)+'-'+(dd.getDate()<10?'0':'')+dd.getDate();
+      stepsTotal += parseInt(localStorage.getItem('rfc_steps_'+uid+'_'+ds)||'0', 10);
+    }
+  }catch(e){}
+
+  return {
+    workouts: Math.min(workouts, 7),    workoutGoal: 5,
+    activeDays: Math.min(activeDays, 7), activeDayGoal: 6,
+    steps: stepsTotal,                   stepsGoal: 70000  // 10k/day × 7
+  };
+}
+
+function _buildRing(cx, cy, r, pct, color, strokeW){
+  var circumference = 2 * Math.PI * r;
+  var dash = (Math.min(pct, 100) / 100) * circumference;
+  return '<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="none" stroke="#1a1a1a" stroke-width="'+strokeW+'"/>'
+    +'<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="none" stroke="'+color+'" stroke-width="'+strokeW+'"'
+    +' stroke-dasharray="'+circumference.toFixed(1)+'" stroke-dashoffset="'+(circumference-dash).toFixed(1)+'"'
+    +' stroke-linecap="round" transform="rotate(-90 '+cx+' '+cy+')"'
+    +' style="transition:stroke-dashoffset .8s cubic-bezier(.34,1.56,.64,1);"/>';
+}
+
+function _renderActivityRings(){
+  var wrap = document.getElementById('rfc-rings-wrap');
+  if(!wrap) return;
+  var data = _getWeeklyActivity();
+
+  var wPct  = Math.round((data.workouts / data.workoutGoal) * 100);
+  var aPct  = Math.round((data.activeDays / data.activeDayGoal) * 100);
+  var sPct  = Math.round((data.steps / data.stepsGoal) * 100);
+
+  var SIZE = 130;
+  var cx = SIZE/2, cy = SIZE/2;
+  var svg =
+    '<svg width="'+SIZE+'" height="'+SIZE+'" viewBox="0 0 '+SIZE+' '+SIZE+'">'
+    + _buildRing(cx,cy,52, wPct,'#e8001d',12)   // outer: workouts (red)
+    + _buildRing(cx,cy,36, aPct,'#22c55e',12)   // mid:   active days (green)
+    + _buildRing(cx,cy,20, sPct,'#3b82f6',12)   // inner: steps (blue)
+    // Center text
+    +'<text x="'+cx+'" y="'+(cy-5)+'" text-anchor="middle" fill="#fff" font-size="9" font-family="system-ui" font-weight="700">WEEK</text>'
+    +'<text x="'+cx+'" y="'+(cy+8)+'" text-anchor="middle" fill="#e8001d" font-size="11" font-family="system-ui" font-weight="700">'+data.workouts+'/'+data.workoutGoal+'</text>'
+    +'</svg>';
+
+  var legendHtml =
+    '<div style="display:flex;flex-direction:column;gap:8px;justify-content:center;">'
+    +'<div><div style="display:flex;align-items:center;gap:6px;margin-bottom:2px;"><div style="width:10px;height:10px;border-radius:50%;background:#e8001d;"></div><span style="font-size:11px;color:#aaa;">Workouts</span></div>'
+    +'<div style="font-size:16px;font-weight:700;color:#e8001d;">'+data.workouts+' <span style="font-size:10px;color:#666;">/ '+data.workoutGoal+'</span></div>'
+    +'<div style="font-size:10px;color:#888;">'+wPct+'% of goal</div></div>'
+    +'<div><div style="display:flex;align-items:center;gap:6px;margin-bottom:2px;"><div style="width:10px;height:10px;border-radius:50%;background:#22c55e;"></div><span style="font-size:11px;color:#aaa;">Active Days</span></div>'
+    +'<div style="font-size:16px;font-weight:700;color:#22c55e;">'+data.activeDays+' <span style="font-size:10px;color:#666;">/ '+data.activeDayGoal+'</span></div>'
+    +'<div style="font-size:10px;color:#888;">'+aPct+'% of goal</div></div>'
+    +'<div><div style="display:flex;align-items:center;gap:6px;margin-bottom:2px;"><div style="width:10px;height:10px;border-radius:50%;background:#3b82f6;"></div><span style="font-size:11px;color:#aaa;">Steps</span></div>'
+    +'<div style="font-size:16px;font-weight:700;color:#3b82f6;">'+(data.steps>=1000?Math.round(data.steps/100)/10+'k':data.steps)+' <span style="font-size:10px;color:#666;">/ 70k</span></div>'
+    +'<div style="font-size:10px;color:#888;">'+sPct+'% of goal</div></div>'
+    +'</div>';
+
+  wrap.innerHTML =
+    '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">'
+    +'<span style="font-weight:700;font-size:13px;color:#fff;">🏃 Weekly Activity</span>'
+    +'<span style="font-size:10px;color:#888;">Mon → Sun</span>'
+    +'</div>'
+    +'<div style="display:flex;align-items:center;gap:16px;">'
+    + svg + legendHtml
+    +'</div>';
+}
+
+function _injectActivityRings(){
+  if(document.getElementById('rfc-rings-wrap')) return;
+  var anchor = document.getElementById('rfc-hr-wrap')
+    || document.getElementById('rfc-trophy-shelf')
+    || document.getElementById('rfc-steps-wrap')
+    || document.querySelector('.dash-topbar');
+  if(!anchor) return;
+  var wrap = document.createElement('div');
+  wrap.id = 'rfc-rings-wrap';
+  wrap.className = 'rfc-b12-card';
+  _b13after(wrap, anchor);
+  _renderActivityRings();
+}
+
+/* ════════════════════════════════════════════════════
+   CSS (measurements inputs)
+   ════════════════════════════════════════════════════ */
+(function(){
+  var s = document.createElement('style');
+  s.textContent = [
+    '#rfc-meas-wrap input[type=number]{-moz-appearance:textfield;}',
+    '#rfc-meas-wrap input[type=number]::-webkit-outer-spin-button,',
+    '#rfc-meas-wrap input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}',
+    '#rfc-hr-age{outline:none;}',
+    '#rfc-hr-age:focus{border-color:#e8001d !important;}',
+    'body.rfc-light #rfc-meas-wrap > div,body.rfc-light #rfc-hr-wrap,body.rfc-light #rfc-rings-wrap{background:#fff;border-color:#eee;}',
+    'body.rfc-light #rfc-meas-wrap *,body.rfc-light #rfc-hr-wrap *,body.rfc-light #rfc-rings-wrap *{color:#1a1a1a !important;}',
+  ].join('');
+  document.head.appendChild(s);
+})();
+
+/* ════════════════════════════════════════════════════
+   switchScreen hook + initial inject
+   ════════════════════════════════════════════════════ */
+var _origSS11 = window.switchScreen;
+window.switchScreen = function(name, navEl){
+  _origSS11 && _origSS11(name, navEl);
+  if(name === 'dashboard'){
+    setTimeout(function(){
+      _injectHRZones();
+      _injectActivityRings();
+      _renderActivityRings(); // refresh on return
+    }, 700);
+  }
+  if(name === 'tracker'){
+    setTimeout(function(){
+      _injectMeasTracker();
+    }, 600);
+  }
+};
+
+// Initial inject
+setTimeout(function(){
+  _injectHRZones();
+  _injectActivityRings();
+  _injectMeasTracker();
+}, 6000);
+
+// Retry pass
+setTimeout(function(){
+  if(!document.getElementById('rfc-hr-wrap'))    _injectHRZones();
+  if(!document.getElementById('rfc-rings-wrap')) _injectActivityRings();
+  if(!document.getElementById('rfc-meas-wrap'))  _injectMeasTracker();
+}, 9000);
+
+})();
+</script>
+
 </body>
 </html>
