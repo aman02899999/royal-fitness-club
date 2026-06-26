@@ -36104,4 +36104,218 @@ setTimeout(function(){ if(!document.getElementById('rfc-envwell-wrap')) _injectE
 </script>
 
 </body>
+
+<script>
+/* ============================================================
+   BATCH 37 — Mindfulness Timer | Gut Health | Strength Balance Analyzer
+   ============================================================ */
+(function(){ 'use strict';
+var _origSS35=window.switchScreen;
+function _b37uid(){ try{ return JSON.parse(localStorage.getItem('bm_user')||'{}').uid||'guest'; }catch(e){ return 'guest'; } }
+function _b37today(){ var d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function _b37load(k){ try{ return JSON.parse(localStorage.getItem(k))||null; }catch(e){ return null; } }
+function _b37save(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} }
+function _b37card(id,title){ var d=document.createElement('div'); d.id=id; d.style.cssText='background:#1a1a2e;border-radius:14px;padding:18px;margin:14px 0;color:#e0e0e0;font-family:inherit;'; d.innerHTML='<div style="font-size:15px;font-weight:700;color:#00d4ff;margin-bottom:14px;">'+title+'</div>'; return d; }
+
+/* 1. MINDFULNESS MEDITATION TIMER (dashboard) */
+var _medState={iv:null,running:false,left:0,total:0};
+function _injectMeditate(){
+  if(document.getElementById('rfc-meditate-wrap')) return;
+  var anchors=['rfc-envwell-wrap','rfc-gratitude-wrap','rfc-stress-wrap','rfc-goalwt-wrap','rfc-vitals-wrap','rfc-injury-wrap'];
+  var host=null; for(var i=0;i<anchors.length;i++){ var el=document.getElementById(anchors[i]); if(el){ host=el; break; } }
+  if(!host){ var tb=document.querySelector('.dash-topbar'); if(tb) host=tb; } if(!host) return;
+  var c=_b37card('rfc-meditate-wrap','🧘 Mindfulness Meditation Timer');
+  c.innerHTML+=
+    '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;" id="rfc-med-presets">'+
+      [3,5,10,15,20,30].map(function(m){
+        return '<button onclick="window._rfcMedSelect('+m+')" id="rfc-med-p'+m+'" style="flex:1;min-width:44px;background:#0d0d1a;border:1px solid #333;color:#888;padding:7px 4px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:700;transition:all .2s;">'+m+'m</button>';
+      }).join('')+
+    '</div>'+
+    '<div style="text-align:center;background:#0d0d1a;border-radius:12px;padding:20px;margin-bottom:12px;">'+
+      '<div id="rfc-med-phase" style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#555;margin-bottom:6px;">Select a duration</div>'+
+      '<div id="rfc-med-time" style="font-size:56px;font-weight:800;color:#a78bfa;font-variant-numeric:tabular-nums;line-height:1;">0:00</div>'+
+      '<div style="position:relative;height:6px;background:#111;border-radius:3px;margin-top:12px;overflow:hidden;">'+
+        '<div id="rfc-med-prog" style="position:absolute;top:0;left:0;height:100%;background:linear-gradient(90deg,#a78bfa,#7c3aed);width:100%;border-radius:3px;transition:width 1s linear;"></div>'+
+      '</div>'+
+    '</div>'+
+    '<div style="display:flex;gap:8px;margin-bottom:14px;">'+
+      '<button onclick="window._rfcMedStart()" id="rfc-med-start" style="flex:1;background:#a78bfa22;border:1px solid #a78bfa44;color:#a78bfa;padding:9px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:700;" disabled>▶ Begin</button>'+
+      '<button onclick="window._rfcMedStop()" id="rfc-med-stop" style="flex:1;background:#ef444422;border:1px solid #ef444444;color:#ef4444;padding:9px;border-radius:8px;cursor:pointer;font-size:13px;display:none;">■ End</button>'+
+    '</div>'+
+    '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;" id="rfc-med-stats"></div>';
+  if(host.nextSibling) host.parentNode.insertBefore(c,host.nextSibling); else host.parentNode.appendChild(c);
+  _renderMedStats();
+}
+function _medBeep(freq,dur){ try{ var ctx=new(window.AudioContext||window.webkitAudioContext)(); var o=ctx.createOscillator(); var g=ctx.createGain(); o.connect(g); g.connect(ctx.destination); o.type='sine'; o.frequency.value=freq; g.gain.setValueAtTime(0.2,ctx.currentTime); g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+dur); o.start(); o.stop(ctx.currentTime+dur); }catch(e){} }
+function _renderMedStats(){
+  var uid=_b37uid(); var logs=_b37load('rfc_med_log_'+uid)||[];
+  var today=_b37today(); var streak=0; var weekMin=0;
+  for(var d=0;d<60;d++){
+    var dd=new Date(); dd.setDate(dd.getDate()-d);
+    var dk=dd.getFullYear()+'-'+String(dd.getMonth()+1).padStart(2,'0')+'-'+String(dd.getDate()).padStart(2,'0');
+    var dayLogs=logs.filter(function(l){ return l.date===dk; });
+    var dayMin=dayLogs.reduce(function(t,l){ return t+l.min; },0);
+    if(d<7) weekMin+=dayMin;
+    if(d===0) continue;
+    if(dayMin>0) streak++; else break;
+  }
+  var totalSess=logs.length, totalMin=logs.reduce(function(t,l){ return t+l.min; },0);
+  var el=document.getElementById('rfc-med-stats');
+  if(!el) return;
+  el.innerHTML=[{label:'Sessions',val:totalSess,col:'#a78bfa'},{label:'Week (min)',val:weekMin,col:'#fbbf24'},{label:'Streak (days)',val:streak,col:'#22c55e'}].map(function(s){
+    return '<div style="background:#0d0d1a;border-radius:9px;padding:10px;text-align:center;"><div style="font-size:20px;font-weight:800;color:'+s.col+';">'+s.val+'</div><div style="font-size:10px;color:#555;">'+s.label+'</div></div>';
+  }).join('');
+}
+window._rfcMedSelect=function(m){
+  _medState.total=m*60; _medState.left=m*60;
+  [3,5,10,15,20,30].forEach(function(n){ var b=document.getElementById('rfc-med-p'+n); if(!b) return; var on=n===m; b.style.background=on?'#a78bfa22':'#0d0d1a'; b.style.borderColor=on?'#a78bfa44':'#333'; b.style.color=on?'#a78bfa':'#888'; });
+  var t=document.getElementById('rfc-med-time'); if(t) t.textContent=m+':00';
+  var p=document.getElementById('rfc-med-prog'); if(p) p.style.width='100%';
+  var ph=document.getElementById('rfc-med-phase'); if(ph) ph.textContent='Ready — find a comfortable position';
+  var sb=document.getElementById('rfc-med-start'); if(sb) sb.disabled=false;
+};
+window._rfcMedStart=function(){
+  if(_medState.running||!_medState.total) return;
+  _medState.running=true; _medBeep(528,.8);
+  var ph=document.getElementById('rfc-med-phase'); if(ph) ph.textContent='🧘 Meditating…';
+  var sb=document.getElementById('rfc-med-start'); var stb=document.getElementById('rfc-med-stop');
+  if(sb) sb.style.display='none'; if(stb) stb.style.display='block';
+  _medState.iv=setInterval(function(){
+    if(!_medState.running) return;
+    _medState.left--;
+    var t=document.getElementById('rfc-med-time'); var p=document.getElementById('rfc-med-prog');
+    if(t){ var s=_medState.left; t.textContent=Math.floor(s/60)+':'+(String(s%60).padStart(2,'0')); }
+    if(p) p.style.width=Math.round(_medState.left/_medState.total*100)+'%';
+    if(_medState.left<=0){
+      clearInterval(_medState.iv); _medState.running=false; _medBeep(528,1.5);
+      var uid=_b37uid(); var logs=_b37load('rfc_med_log_'+uid)||[];
+      logs.push({date:_b37today(),min:Math.round(_medState.total/60)});
+      _b37save('rfc_med_log_'+uid,logs.slice(-200));
+      var ph2=document.getElementById('rfc-med-phase'); if(ph2) ph2.textContent='✅ Session complete!';
+      if(sb) sb.style.display='block'; if(stb) stb.style.display='none';
+      _renderMedStats();
+    }
+  },1000);
+};
+window._rfcMedStop=function(){
+  clearInterval(_medState.iv); _medState.running=false;
+  var sb=document.getElementById('rfc-med-start'); var stb=document.getElementById('rfc-med-stop');
+  if(sb) sb.style.display='block'; if(stb) stb.style.display='none';
+  var ph=document.getElementById('rfc-med-phase'); if(ph) ph.textContent='Session ended early.';
+};
+
+/* 2. GUT HEALTH TRACKER (nutrition) */
+var GUT_ITEMS=[
+  {id:'kefir',  label:'Kefir / yoghurt (probiotic)',icon:'🥛',score:3},
+  {id:'kimchi', label:'Kimchi / sauerkraut',        icon:'🥬',score:3},
+  {id:'miso',   label:'Miso / tempeh',               icon:'🍲',score:2},
+  {id:'fiber25',label:'25g+ fiber today',            icon:'🌾',score:3},
+  {id:'water2', label:'2L+ water today',             icon:'💧',score:2},
+  {id:'prebiotic',label:'Onion / garlic / banana',  icon:'🧄',score:2},
+  {id:'noalc',  label:'Alcohol-free day',            icon:'🚫',score:2},
+  {id:'slow',   label:'Ate slowly / mindfully',      icon:'🍽️',score:1},
+  {id:'nostress',label:'Low-stress day',             icon:'😌',score:1},
+  {id:'diverse',label:'5+ different veg/fruits',    icon:'🥗',score:3}
+];
+function _injectGut(){
+  if(document.getElementById('rfc-gut-wrap')) return;
+  var anchors=['rfc-vitamin-wrap','rfc-mealbuilder-wrap','rfc-fatqual-wrap','rfc-electro-wrap','rfc-sugar-wrap','rfc-fiber-wrap'];
+  var host=null; for(var i=0;i<anchors.length;i++){ var el=document.getElementById(anchors[i]); if(el){ host=el; break; } }
+  if(!host) host=document.getElementById('rfc-food-wrap'); if(!host) return;
+  var c=_b37card('rfc-gut-wrap','🦠 Gut Health Tracker');
+  c.innerHTML+=
+    '<div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">'+
+      '<div style="text-align:center;min-width:56px;"><div id="rfc-gut-score" style="font-size:28px;font-weight:800;color:#22c55e;">0</div><div style="font-size:10px;color:#555;">/22 pts</div></div>'+
+      '<div style="flex:1;"><div style="background:#0d0d1a;border-radius:8px;height:10px;overflow:hidden;margin-bottom:4px;"><div id="rfc-gut-bar" style="height:100%;background:linear-gradient(90deg,#22c55e,#16a34a);width:0%;border-radius:8px;transition:width .4s;"></div></div><div id="rfc-gut-label" style="font-size:11px;color:#888;"></div></div>'+
+    '</div>'+
+    '<div style="display:flex;flex-direction:column;gap:5px;" id="rfc-gut-list"></div>';
+  if(host.nextSibling) host.parentNode.insertBefore(c,host.nextSibling); else host.parentNode.appendChild(c);
+  _renderGut();
+}
+function _renderGut(){
+  var uid=_b37uid(),date=_b37today(),key='rfc_gut_'+uid+'_'+date;
+  var data=_b37load(key)||{}; var total=0;
+  var list=document.getElementById('rfc-gut-list'); if(!list) return;
+  list.innerHTML=GUT_ITEMS.map(function(item){
+    var on=!!data[item.id]; if(on) total+=item.score;
+    return '<div onclick="window._rfcGutTap(\''+item.id+'\')" style="display:flex;align-items:center;gap:8px;background:'+(on?'#22c55e18':'#0d0d1a')+';border:1px solid '+(on?'#22c55e44':'#222')+';border-radius:8px;padding:7px 10px;cursor:pointer;transition:all .2s;">'+
+      '<span style="font-size:16px;">'+item.icon+'</span>'+
+      '<span style="font-size:12px;color:'+(on?'#22c55e':'#aaa')+';flex:1;">'+item.label+'</span>'+
+      '<span style="font-size:10px;color:#555;">+'+item.score+'pts</span>'+
+      '<span style="font-size:13px;">'+(on?'✅':'⬜')+'</span></div>';
+  }).join('');
+  var sc=document.getElementById('rfc-gut-score'); if(sc){ sc.textContent=total; sc.style.color=total>=16?'#22c55e':total>=10?'#fbbf24':'#f97316'; }
+  var bar=document.getElementById('rfc-gut-bar'); if(bar) bar.style.width=Math.round(total/22*100)+'%';
+  var lbl=document.getElementById('rfc-gut-label'); if(lbl) lbl.textContent=total>=18?'Excellent gut day! 🌟':total>=12?'Good — keep building diversity.':total>=6?'Moderate — add more probiotics & fiber.':'Start with water & one probiotic food.';
+}
+window._rfcGutTap=function(id){ var uid=_b37uid(),date=_b37today(),key='rfc_gut_'+uid+'_'+date; var data=_b37load(key)||{}; data[id]=!data[id]; _b37save(key,data); _renderGut(); };
+
+/* 3. STRENGTH BALANCE ANALYZER (workouts) */
+var SB_RATIOS=[
+  {id:'bp_row',   label:'Bench : Row',        aId:'bench press',bId:'barbell row',     ideal:1.0,  note:'Should be 1:1 for shoulder health'},
+  {id:'sq_dl',    label:'Squat : Deadlift',   aId:'squat',      bId:'deadlift',        ideal:0.83, note:'Squat ~83% of deadlift is balanced'},
+  {id:'ohp_bp',   label:'OHP : Bench',        aId:'overhead press',bId:'bench press',  ideal:0.67, note:'OHP ~67% of bench press'},
+  {id:'cu_dip',   label:'Curl : Dip',         aId:'barbell curl',bId:'dip',            ideal:0.5,  note:'Bicep/tricep balance'},
+  {id:'rdl_sq',   label:'RDL : Squat',        aId:'romanian deadlift',bId:'squat',     ideal:0.85, note:'Posterior chain balance'}
+];
+function _injectStrBal(){
+  if(document.getElementById('rfc-strbal-wrap')) return;
+  var anchors=['rfc-calis-wrap','rfc-plyo-wrap','rfc-isometric-wrap','rfc-dropset-wrap','rfc-pyramid-wrap','rfc-amrap-wrap'];
+  var host=null; for(var i=0;i<anchors.length;i++){ var el=document.getElementById(anchors[i]); if(el){ host=el; break; } }
+  if(!host) host=document.getElementById('wl-history'); if(!host) return;
+  var c=_b37card('rfc-strbal-wrap','⚖️ Strength Balance Analyzer');
+  c.innerHTML+=
+    '<div style="font-size:11px;color:#555;margin-bottom:10px;">Auto-reads from your PR Board. Or enter lifts manually below.</div>'+
+    '<div style="display:flex;flex-direction:column;gap:6px;margin-bottom:12px;" id="rfc-sb-ratios"></div>'+
+    '<details style="margin-top:8px;"><summary style="font-size:12px;color:#888;cursor:pointer;margin-bottom:8px;">Manual entry (kg)</summary>'+
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px;">'+
+      ['Bench Press','Barbell Row','Squat','Deadlift','Overhead Press','Romanian Deadlift','Curl','Dip'].map(function(nm){
+        var id='rfc-sb-inp-'+nm.toLowerCase().replace(/ /g,'-');
+        return '<div><div style="font-size:10px;color:#555;margin-bottom:3px;">'+nm+'</div>'+
+          '<input type="number" id="'+id+'" placeholder="kg" oninput="window._rfcSBCalc()" style="width:100%;box-sizing:border-box;background:#0d0d1a;border:1px solid #333;color:#ddd;padding:6px;border-radius:7px;font-size:13px;text-align:center;"></div>';
+      }).join('')+
+    '</div></details>';
+  if(host.nextSibling) host.parentNode.insertBefore(c,host.nextSibling); else host.parentNode.appendChild(c);
+  _rfcSBCalc();
+}
+window._rfcSBCalc=function(){
+  var uid=_b37uid();
+  /* pull PR board data */
+  var workouts=[]; try{ workouts=JSON.parse(localStorage.getItem('rfc_workouts_'+uid)||'[]'); }catch(e){}
+  var prs={};
+  workouts.forEach(function(w){ (w.exercises||[]).forEach(function(ex){ var n=(ex.name||'').trim().toLowerCase(); var kg=parseFloat(ex.kg)||0; if(kg>0&&(!prs[n]||kg>prs[n])) prs[n]=kg; }); });
+  /* manual override */
+  var manualMap={'bench press':'bench-press','barbell row':'barbell-row','squat':'squat','deadlift':'deadlift','overhead press':'overhead-press','romanian deadlift':'romanian-deadlift','barbell curl':'curl','dip':'dip'};
+  Object.keys(manualMap).forEach(function(nm){ var el=document.getElementById('rfc-sb-inp-'+manualMap[nm]); if(el&&el.value) prs[nm]=parseFloat(el.value)||prs[nm]; });
+  var container=document.getElementById('rfc-sb-ratios'); if(!container) return;
+  container.innerHTML=SB_RATIOS.map(function(r){
+    var a=prs[r.aId]||0, b=prs[r.bId]||0;
+    if(!a||!b) return '<div style="background:#0d0d1a;border-radius:9px;padding:10px 12px;"><div style="display:flex;justify-content:space-between;"><span style="font-size:12px;color:#666;">'+r.label+'</span><span style="font-size:11px;color:#444;">No data</span></div></div>';
+    var ratio=Math.round(a/b*100)/100;
+    var dev=Math.abs(ratio-r.ideal)/r.ideal;
+    var col=dev<0.1?'#22c55e':dev<0.2?'#fbbf24':'#ef4444';
+    var pct=Math.min(100,Math.round((1-Math.min(dev,0.5)/0.5)*100));
+    return '<div style="background:#0d0d1a;border-radius:9px;padding:10px 12px;border-left:3px solid '+col+';">'+
+      '<div style="display:flex;align-items:center;gap:8px;margin-bottom:5px;">'+
+        '<span style="font-size:12px;font-weight:600;color:#ddd;flex:1;">'+r.label+'</span>'+
+        '<span style="font-size:12px;font-weight:700;color:'+col+';">'+ratio+' (ideal: '+r.ideal+')</span>'+
+      '</div>'+
+      '<div style="background:#111;border-radius:4px;height:5px;overflow:hidden;margin-bottom:4px;"><div style="height:100%;width:'+pct+'%;background:'+col+';border-radius:4px;"></div></div>'+
+      '<div style="font-size:10px;color:#555;">'+r.note+' · '+a+'kg / '+b+'kg</div>'+
+    '</div>';
+  }).join('');
+};
+
+window.switchScreen=function(name,navEl){
+  _origSS35&&_origSS35(name,navEl);
+  if(name==='dashboard') setTimeout(function(){ _injectMeditate(); _renderMedStats(); },1200);
+  if(name==='nutrition') setTimeout(function(){ _injectGut(); _renderGut(); },1100);
+  if(name==='workouts')  setTimeout(function(){ _injectStrBal(); _rfcSBCalc(); },1050);
+};
+setTimeout(function(){ _injectMeditate(); _injectGut(); _injectStrBal(); },29000);
+setTimeout(function(){ if(!document.getElementById('rfc-meditate-wrap')) _injectMeditate(); if(!document.getElementById('rfc-gut-wrap')) _injectGut(); if(!document.getElementById('rfc-strbal-wrap')) _injectStrBal(); },33000);
+})();
+</script>
+
+</body>
 </html>
