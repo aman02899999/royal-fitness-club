@@ -34493,4 +34493,326 @@ setTimeout(function(){
 </script>
 
 </body>
+
+<script>
+/* ============================================================
+   BATCH 32 — Vitals Log | Sugar Tracker | Pyramid Set Calculator
+   ============================================================ */
+(function(){ 'use strict';
+
+var _origSS30 = window.switchScreen;
+
+/* ── helpers ── */
+function _b32uid(){ try{ return JSON.parse(localStorage.getItem('bm_user')||'{}').uid||'guest'; }catch(e){ return 'guest'; } }
+function _b32today(){ var d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function _b32load(k){ try{ return JSON.parse(localStorage.getItem(k))||null; }catch(e){ return null; } }
+function _b32save(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} }
+function _b32card(id,title){
+  var d=document.createElement('div');
+  d.id=id;
+  d.style.cssText='background:#1a1a2e;border-radius:14px;padding:18px;margin:14px 0;color:#e0e0e0;font-family:inherit;';
+  d.innerHTML='<div style="font-size:15px;font-weight:700;color:#00d4ff;margin-bottom:14px;">'+title+'</div>';
+  return d;
+}
+
+/* ════════════════════════════════════════════════════════════
+   1. VITALS LOG (dashboard)
+   ════════════════════════════════════════════════════════════ */
+function _bpClass(s,d){
+  if(s<120&&d<80) return {label:'Normal',color:'#22c55e'};
+  if(s<130&&d<80) return {label:'Elevated',color:'#fbbf24'};
+  if(s<140||d<90) return {label:'High Stage 1',color:'#f97316'};
+  return {label:'High Stage 2',color:'#ef4444'};
+}
+
+function _injectVitals(){
+  if(document.getElementById('rfc-vitals-wrap')) return;
+  var anchors=['rfc-injury-wrap','rfc-wkreport-wrap','rfc-recovery-wrap','rfc-stretch-wrap','rfc-steps-wrap','rfc-mood-wrap'];
+  var host=null;
+  for(var i=0;i<anchors.length;i++){ var el=document.getElementById(anchors[i]); if(el){ host=el; break; } }
+  if(!host){ var tb=document.querySelector('.dash-topbar'); if(tb) host=tb; }
+  if(!host) return;
+
+  var c=_b32card('rfc-vitals-wrap','💉 Vitals Log');
+  c.innerHTML+=
+    '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px;">'+
+      '<div>'+
+        '<div style="font-size:10px;color:#555;margin-bottom:4px;">Systolic (mmHg)</div>'+
+        '<input id="rfc-vit-sys" type="number" min="60" max="250" placeholder="120" style="width:100%;box-sizing:border-box;background:#0d0d1a;border:1px solid #333;color:#ddd;padding:8px;border-radius:8px;font-size:16px;font-weight:700;text-align:center;">'+
+      '</div>'+
+      '<div>'+
+        '<div style="font-size:10px;color:#555;margin-bottom:4px;">Diastolic (mmHg)</div>'+
+        '<input id="rfc-vit-dia" type="number" min="40" max="160" placeholder="80" style="width:100%;box-sizing:border-box;background:#0d0d1a;border:1px solid #333;color:#ddd;padding:8px;border-radius:8px;font-size:16px;font-weight:700;text-align:center;">'+
+      '</div>'+
+      '<div>'+
+        '<div style="font-size:10px;color:#555;margin-bottom:4px;">Resting HR (bpm)</div>'+
+        '<input id="rfc-vit-hr" type="number" min="30" max="200" placeholder="65" style="width:100%;box-sizing:border-box;background:#0d0d1a;border:1px solid #333;color:#ddd;padding:8px;border-radius:8px;font-size:16px;font-weight:700;text-align:center;">'+
+      '</div>'+
+    '</div>'+
+    '<button onclick="window._rfcVitSave()" style="width:100%;background:#60a5fa22;border:1px solid #60a5fa44;color:#60a5fa;padding:8px;border-radius:8px;cursor:pointer;font-size:13px;margin-bottom:14px;">Save Today\'s Reading</button>'+
+    '<div id="rfc-vit-status" style="text-align:center;padding:10px;border-radius:10px;background:#0d0d1a;margin-bottom:12px;">'+
+      '<div style="font-size:11px;color:#555;">Log a reading to see your BP status</div>'+
+    '</div>'+
+    '<div style="font-size:11px;color:#555;margin-bottom:6px;">Last 7 readings</div>'+
+    '<div id="rfc-vit-history" style="display:flex;flex-direction:column;gap:5px;"></div>';
+
+  if(host.nextSibling) host.parentNode.insertBefore(c,host.nextSibling);
+  else host.parentNode.appendChild(c);
+  _renderVitals();
+}
+
+function _renderVitals(){
+  var uid=_b32uid(), today=_b32today();
+  var rec=_b32load('rfc_vitals_'+uid+'_'+today)||{};
+  var sEl=document.getElementById('rfc-vit-sys');
+  var dEl=document.getElementById('rfc-vit-dia');
+  var hEl=document.getElementById('rfc-vit-hr');
+  if(sEl&&sEl!==document.activeElement&&rec.sys) sEl.value=rec.sys;
+  if(dEl&&dEl!==document.activeElement&&rec.dia) dEl.value=rec.dia;
+  if(hEl&&hEl!==document.activeElement&&rec.hr) hEl.value=rec.hr;
+
+  var stat=document.getElementById('rfc-vit-status');
+  if(stat&&rec.sys&&rec.dia){
+    var cls=_bpClass(rec.sys,rec.dia);
+    stat.innerHTML='<div style="font-size:22px;font-weight:800;color:'+cls.color+';">'+rec.sys+'/'+rec.dia+' mmHg</div>'+
+      '<div style="font-size:13px;color:'+cls.color+';font-weight:600;">'+cls.label+'</div>'+
+      (rec.hr?'<div style="font-size:12px;color:#666;margin-top:2px;">Resting HR: '+rec.hr+' bpm</div>':'');
+  }
+
+  var hist=document.getElementById('rfc-vit-history');
+  if(hist){
+    var rows=[];
+    for(var d=0;d<14;d++){
+      var dd=new Date(); dd.setDate(dd.getDate()-d);
+      var dk=dd.getFullYear()+'-'+String(dd.getMonth()+1).padStart(2,'0')+'-'+String(dd.getDate()).padStart(2,'0');
+      var r=_b32load('rfc_vitals_'+uid+'_'+dk);
+      if(r&&r.sys&&r.dia){
+        var c2=_bpClass(r.sys,r.dia);
+        var disp=dd.toLocaleDateString('en-GB',{day:'numeric',month:'short'});
+        rows.push('<div style="display:flex;align-items:center;gap:10px;background:#0d0d1a;border-radius:8px;padding:7px 10px;border-left:3px solid '+c2.color+';">'+
+          '<div style="font-size:11px;color:#555;min-width:50px;">'+disp+'</div>'+
+          '<div style="flex:1;font-size:13px;font-weight:700;color:'+c2.color+';">'+r.sys+'/'+r.dia+'</div>'+
+          '<div style="font-size:11px;color:#888;">'+c2.label+'</div>'+
+          (r.hr?'<div style="font-size:11px;color:#555;">'+r.hr+' bpm</div>':'')+
+        '</div>');
+        if(rows.length>=7) break;
+      }
+    }
+    hist.innerHTML=rows.length?rows.join(''):'<div style="color:#555;font-size:12px;text-align:center;padding:8px;">No readings logged yet.</div>';
+  }
+}
+window._rfcVitSave=function(){
+  var uid=_b32uid(), today=_b32today();
+  var sys=parseInt((document.getElementById('rfc-vit-sys')||{}).value||0,10);
+  var dia=parseInt((document.getElementById('rfc-vit-dia')||{}).value||0,10);
+  var hr=parseInt((document.getElementById('rfc-vit-hr')||{}).value||0,10);
+  if(!sys||!dia) return;
+  _b32save('rfc_vitals_'+uid+'_'+today,{sys:sys,dia:dia,hr:hr||0});
+  _renderVitals();
+};
+
+/* ════════════════════════════════════════════════════════════
+   2. ADDED SUGAR TRACKER (nutrition)
+   ════════════════════════════════════════════════════════════ */
+var SUGAR_FOODS=[
+  {id:'soda',    label:'Soda / Cola (1 can)',       g:39},
+  {id:'juice',   label:'Fruit juice (1 glass)',      g:24},
+  {id:'candy',   label:'Candy bar',                  g:28},
+  {id:'icecream',label:'Ice cream (1 scoop)',         g:21},
+  {id:'sportsdr',label:'Sports drink (1 bottle)',    g:34},
+  {id:'ketchup', label:'Ketchup (1 tbsp)',            g:4},
+  {id:'coffsyr', label:'Coffee syrup (1 pump)',       g:5},
+  {id:'cereal',  label:'Sweetened cereal (1 bowl)',  g:12},
+  {id:'yogurt',  label:'Flavoured yoghurt (1 pot)',  g:18},
+  {id:'sauce',   label:'BBQ/sweet sauce (2 tbsp)',   g:10}
+];
+var SUGAR_LIMIT=25;
+
+function _injectSugar(){
+  if(document.getElementById('rfc-sugar-wrap')) return;
+  var anchors=['rfc-fiber-wrap','rfc-calbal-wrap','rfc-grocery-wrap','rfc-mealprep-wrap','rfc-protiming-wrap','rfc-caff-wrap'];
+  var host=null;
+  for(var i=0;i<anchors.length;i++){ var el=document.getElementById(anchors[i]); if(el){ host=el; break; } }
+  if(!host) host=document.getElementById('rfc-food-wrap');
+  if(!host) return;
+
+  var c=_b32card('rfc-sugar-wrap','🍬 Added Sugar Tracker');
+  c.innerHTML+=
+    '<div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">'+
+      '<div style="text-align:center;min-width:60px;">'+
+        '<div id="rfc-sug-total" style="font-size:28px;font-weight:800;color:#f472b6;">0</div>'+
+        '<div style="font-size:10px;color:#555;">g sugar</div>'+
+      '</div>'+
+      '<div style="flex:1;">'+
+        '<div style="background:#0d0d1a;border-radius:8px;height:10px;overflow:hidden;margin-bottom:4px;">'+
+          '<div id="rfc-sug-bar" style="height:100%;background:linear-gradient(90deg,#f472b6,#ec4899);width:0%;border-radius:8px;transition:width .4s;"></div>'+
+        '</div>'+
+        '<div style="display:flex;justify-content:space-between;font-size:10px;color:#555;"><span>0g</span><span id="rfc-sug-pct">0%</span><span>'+SUGAR_LIMIT+'g WHO limit</span></div>'+
+      '</div>'+
+    '</div>'+
+    '<div style="display:flex;flex-direction:column;gap:5px;" id="rfc-sug-list"></div>'+
+    '<div style="margin-top:10px;font-size:11px;color:#555;">WHO recommends &lt;25g added sugar daily (≈6 tsp). Tap + to log servings.</div>';
+
+  if(host.nextSibling) host.parentNode.insertBefore(c,host.nextSibling);
+  else host.parentNode.appendChild(c);
+  _renderSugar();
+}
+
+function _renderSugar(){
+  var uid=_b32uid(), date=_b32today();
+  var key='rfc_sugar_'+uid+'_'+date;
+  var data=_b32load(key)||{};
+  var total=0;
+  SUGAR_FOODS.forEach(function(f){ total+=((data[f.id]||0)*f.g); });
+
+  var totEl=document.getElementById('rfc-sug-total');
+  var barEl=document.getElementById('rfc-sug-bar');
+  var pctEl=document.getElementById('rfc-sug-pct');
+  var list=document.getElementById('rfc-sug-list');
+  if(!totEl) return;
+
+  var pct=Math.min(150,Math.round(total/SUGAR_LIMIT*100));
+  var col=pct>=100?'#ef4444':pct>=70?'#f97316':'#f472b6';
+  totEl.textContent=total; totEl.style.color=col;
+  if(barEl){ barEl.style.width=Math.min(100,pct)+'%'; barEl.style.background=pct>=100?'linear-gradient(90deg,#ef4444,#dc2626)':pct>=70?'linear-gradient(90deg,#f97316,#ea580c)':'linear-gradient(90deg,#f472b6,#ec4899)'; }
+  if(pctEl) pctEl.textContent=pct+'%';
+
+  if(list){
+    list.innerHTML=SUGAR_FOODS.map(function(f){
+      var cnt=data[f.id]||0;
+      return '<div style="display:flex;align-items:center;gap:8px;background:#0d0d1a;border-radius:8px;padding:7px 10px;">'+
+        '<div style="flex:1;min-width:0;">'+
+          '<div style="font-size:12px;color:'+(cnt>0?'#f472b6':'#aaa')+';white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+f.label+'</div>'+
+          '<div style="font-size:10px;color:#555;">'+f.g+'g sugar / serving</div>'+
+        '</div>'+
+        '<button onclick="window._rfcSugAdj(\''+f.id+'\',-1)" style="background:#1a1a2e;border:1px solid #333;color:#888;width:26px;height:26px;border-radius:6px;cursor:pointer;font-size:14px;">−</button>'+
+        '<div style="min-width:20px;text-align:center;font-size:13px;font-weight:700;color:'+(cnt>0?'#f472b6':'#555')+';">'+cnt+'</div>'+
+        '<button onclick="window._rfcSugAdj(\''+f.id+'\',1)" style="background:#1a1a2e;border:1px solid #333;color:#f472b6;width:26px;height:26px;border-radius:6px;cursor:pointer;font-size:14px;">+</button>'+
+      '</div>';
+    }).join('');
+  }
+}
+window._rfcSugAdj=function(id,delta){
+  var uid=_b32uid(), date=_b32today();
+  var key='rfc_sugar_'+uid+'_'+date;
+  var data=_b32load(key)||{};
+  data[id]=Math.max(0,(data[id]||0)+delta);
+  _b32save(key,data);
+  _renderSugar();
+};
+
+/* ════════════════════════════════════════════════════════════
+   3. PYRAMID SET CALCULATOR (workouts)
+   ════════════════════════════════════════════════════════════ */
+function _round25(kg){ return Math.round(kg/2.5)*2.5; }
+
+var PYRAMID_SCHEMES={
+  full:{label:'Full Pyramid (7 sets)',pcts:[60,70,80,90,80,70,60],reps:[12,10,8,6,8,10,12]},
+  asc: {label:'Ascending (5 sets)',   pcts:[50,60,70,80,90],     reps:[15,12,10,8,6]},
+  desc:{label:'Descending (5 sets)',  pcts:[90,80,70,60,50],     reps:[6,8,10,12,15]},
+  wide:{label:'Wide Peak (6 sets)',   pcts:[60,70,80,80,70,60],  reps:[10,8,6,6,8,10]}
+};
+
+function _injectPyramid(){
+  if(document.getElementById('rfc-pyramid-wrap')) return;
+  var anchors=['rfc-amrap-wrap','rfc-superset-wrap','rfc-hrzone-wrap','rfc-warmup-wrap','rfc-wkstreak-wrap','rfc-volload-wrap'];
+  var host=null;
+  for(var i=0;i<anchors.length;i++){ var el=document.getElementById(anchors[i]); if(el){ host=el; break; } }
+  if(!host) host=document.getElementById('wl-history');
+  if(!host) return;
+
+  var c=_b32card('rfc-pyramid-wrap','🔺 Pyramid Set Calculator');
+  c.innerHTML+=
+    '<div style="display:flex;gap:8px;align-items:flex-end;margin-bottom:12px;flex-wrap:wrap;">'+
+      '<div style="flex:2;min-width:120px;">'+
+        '<div style="font-size:10px;color:#555;margin-bottom:4px;">Exercise name</div>'+
+        '<input id="rfc-pyr-name" type="text" placeholder="e.g. Bench Press" style="width:100%;box-sizing:border-box;background:#0d0d1a;border:1px solid #333;color:#ddd;padding:8px;border-radius:8px;font-size:13px;">'+
+      '</div>'+
+      '<div style="flex:1;min-width:80px;">'+
+        '<div style="font-size:10px;color:#555;margin-bottom:4px;">1RM or working max (kg)</div>'+
+        '<input id="rfc-pyr-max" type="number" min="1" max="500" placeholder="100" style="width:100%;box-sizing:border-box;background:#0d0d1a;border:1px solid #333;color:#ddd;padding:8px;border-radius:8px;font-size:15px;font-weight:700;text-align:center;">'+
+      '</div>'+
+    '</div>'+
+    '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;" id="rfc-pyr-scheme-btns">'+
+      Object.keys(PYRAMID_SCHEMES).map(function(k,i){
+        return '<button onclick="window._rfcPyrScheme(\''+k+'\')" id="rfc-pyr-s-'+k+'" style="background:'+(i===0?'#f9731622':'#0d0d1a')+';border:1px solid '+(i===0?'#f9731644':'#333')+';color:'+(i===0?'#f97316':'#888')+';padding:6px 10px;border-radius:7px;cursor:pointer;font-size:11px;transition:all .2s;">'+PYRAMID_SCHEMES[k].label+'</button>';
+      }).join('')+
+    '</div>'+
+    '<button onclick="window._rfcPyrCalc()" style="width:100%;background:#f9731622;border:1px solid #f9731644;color:#f97316;padding:9px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:700;margin-bottom:12px;">Calculate Pyramid</button>'+
+    '<div id="rfc-pyr-table" style="display:flex;flex-direction:column;gap:5px;"></div>';
+
+  if(host.nextSibling) host.parentNode.insertBefore(c,host.nextSibling);
+  else host.parentNode.appendChild(c);
+}
+
+var _pyrScheme='full';
+window._rfcPyrScheme=function(k){
+  _pyrScheme=k;
+  Object.keys(PYRAMID_SCHEMES).forEach(function(s){
+    var b=document.getElementById('rfc-pyr-s-'+s);
+    if(!b) return;
+    var on=s===k;
+    b.style.background=on?'#f9731622':'#0d0d1a'; b.style.borderColor=on?'#f9731644':'#333'; b.style.color=on?'#f97316':'#888';
+  });
+};
+window._rfcPyrCalc=function(){
+  var name=(document.getElementById('rfc-pyr-name')||{}).value||'Exercise';
+  var maxKg=parseFloat((document.getElementById('rfc-pyr-max')||{}).value)||0;
+  var table=document.getElementById('rfc-pyr-table');
+  if(!table||maxKg<=0) return;
+
+  var scheme=PYRAMID_SCHEMES[_pyrScheme];
+  var isPeak=_pyrScheme==='full'||_pyrScheme==='wide';
+  var peakIdx=scheme.pcts.indexOf(Math.max.apply(null,scheme.pcts));
+
+  var html='<div style="font-size:13px;font-weight:700;color:#f97316;margin-bottom:6px;">'+name+' — '+scheme.label+' @ '+maxKg+'kg max</div>'+
+    '<div style="display:grid;grid-template-columns:auto 1fr 1fr 1fr;gap:5px;margin-bottom:4px;">'+
+      '<div style="font-size:10px;color:#555;padding:4px;">Set</div>'+
+      '<div style="font-size:10px;color:#555;padding:4px;text-align:center;">%</div>'+
+      '<div style="font-size:10px;color:#555;padding:4px;text-align:center;">Weight</div>'+
+      '<div style="font-size:10px;color:#555;padding:4px;text-align:center;">Reps</div>'+
+    '</div>';
+  scheme.pcts.forEach(function(pct,i){
+    var kg=_round25(maxKg*pct/100);
+    var isPk=i===peakIdx&&isPeak;
+    html+='<div style="display:grid;grid-template-columns:auto 1fr 1fr 1fr;gap:5px;background:'+(isPk?'#f9731622':'#0d0d1a')+';border-radius:8px;border-left:3px solid '+(isPk?'#f97316':'#333')+';">'+
+      '<div style="font-size:12px;color:#666;padding:8px;">S'+(i+1)+'</div>'+
+      '<div style="font-size:12px;color:#888;padding:8px;text-align:center;">'+pct+'%</div>'+
+      '<div style="font-size:14px;font-weight:700;color:'+(isPk?'#f97316':'#ddd')+';padding:8px;text-align:center;">'+kg+'kg</div>'+
+      '<div style="font-size:13px;color:'+(isPk?'#f97316':'#aaa')+';padding:8px;text-align:center;">×'+scheme.reps[i]+'</div>'+
+    '</div>';
+  });
+  table.innerHTML=html;
+};
+
+/* ── switchScreen wrap ── */
+window.switchScreen=function(name,navEl){
+  _origSS30&&_origSS30(name,navEl);
+  if(name==='dashboard'){
+    setTimeout(function(){ _injectVitals(); _renderVitals(); }, 1200);
+  }
+  if(name==='nutrition'){
+    setTimeout(function(){ _injectSugar(); _renderSugar(); }, 1100);
+  }
+  if(name==='workouts'){
+    setTimeout(function(){ _injectPyramid(); }, 1050);
+  }
+};
+
+setTimeout(function(){
+  _injectVitals();
+  _injectSugar();
+  _injectPyramid();
+}, 24000);
+
+setTimeout(function(){
+  if(!document.getElementById('rfc-vitals-wrap'))  _injectVitals();
+  if(!document.getElementById('rfc-sugar-wrap'))   _injectSugar();
+  if(!document.getElementById('rfc-pyramid-wrap')) _injectPyramid();
+}, 28000);
+
+})();
+</script>
+
+</body>
 </html>
