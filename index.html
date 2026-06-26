@@ -42700,5 +42700,217 @@ setTimeout(function(){
 })();
 </script>
 
+<!-- Batch 68: Sleep Debt Calculator, Creatine & Supplement Stack, Row Variation Logger -->
+<script>
+(function(){ 'use strict';
+var _origSS66=window.switchScreen;
+function _b68uid(){ try{ return JSON.parse(localStorage.getItem('bm_user')||'{}').uid||'guest'; }catch(e){ return 'guest'; } }
+function _b68today(){ var d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function _b68load(k){ try{ return JSON.parse(localStorage.getItem(k))||null; }catch(e){ return null; } }
+function _b68save(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} }
+function _b68card(id,title){ var d=document.createElement('div'); d.id=id; d.style.cssText='background:#1a1a2e;border-radius:14px;padding:18px;margin:14px 0;color:#e0e0e0;font-family:inherit;'; d.innerHTML='<div style="font-size:15px;font-weight:700;color:#00d4ff;margin-bottom:14px;">'+title+'</div>'; return d; }
+
+/* ── Sleep Debt Calculator ── */
+function _injectSleepDebt(){
+  if(document.getElementById('rfc-slpdebt-wrap')) return;
+  var anchor=document.getElementById('rfc-screentime-wrap')||document.getElementById('rfc-grat-wrap')||document.getElementById('rfc-enbudget-wrap')||document.getElementById('rfc-testhab-wrap');
+  if(!anchor) return;
+  var c=_b68card('rfc-slpdebt-wrap','😴 Sleep Debt Calculator');
+  c.innerHTML+=`
+<div style="font-size:12px;color:#aaa;margin-bottom:12px;">Track your 7-day sleep to calculate accumulated debt</div>
+<div style="margin-bottom:12px;">
+  <div style="font-size:12px;color:#aaa;margin-bottom:4px;">Your sleep need (hrs/night)</div>
+  <input id="rfc-sd-need" type="range" min="6" max="10" step="0.5" value="8" oninput="document.getElementById('rfc-sd-needv').textContent=this.value+'h'" style="width:100%;">
+  <div id="rfc-sd-needv" style="text-align:center;font-size:13px;color:#00d4ff;">8h</div>
+</div>
+<div style="font-size:12px;color:#aaa;margin-bottom:6px;">Hours slept each night (past 7 nights)</div>
+<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:12px;" id="rfc-sd-grid"></div>
+<button onclick="window._rfcSDCalc()" style="width:100%;padding:9px;border:none;border-radius:8px;background:#00d4ff;color:#000;font-weight:700;cursor:pointer;">Calculate Debt</button>
+<div id="rfc-sd-result" style="margin-top:12px;"></div>`;
+  anchor.after(c);
+  _buildSDGrid();
+}
+function _buildSDGrid(){
+  var el=document.getElementById('rfc-sd-grid'); if(!el) return;
+  var DAYS=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  el.innerHTML=DAYS.map(function(d,i){
+    return '<div style="text-align:center;">'
+      +'<div style="font-size:10px;color:#aaa;margin-bottom:3px;">'+d+'</div>'
+      +'<input id="rfc-sd-d-'+i+'" type="number" min="0" max="12" step="0.5" placeholder="h" style="width:100%;padding:5px;border-radius:6px;border:1px solid #333;background:#0d0d1a;color:#e0e0e0;font-size:11px;text-align:center;">'
+      +'</div>';
+  }).join('');
+  var uid=_b68uid(), key='rfc_slpdebt_'+uid;
+  var saved=_b68load(key)||{};
+  if(saved.nights){ saved.nights.forEach(function(h,i){ var el2=document.getElementById('rfc-sd-d-'+i); if(el2) el2.value=h||''; }); }
+  if(saved.need) document.getElementById('rfc-sd-need').value=saved.need;
+}
+window._rfcSDCalc=function(){
+  var need=parseFloat(document.getElementById('rfc-sd-need').value)||8;
+  var nights=[];
+  for(var i=0;i<7;i++){ nights.push(parseFloat(document.getElementById('rfc-sd-d-'+i).value)||0); }
+  var totalNeed=need*7, totalSlept=nights.reduce(function(a,b){return a+b;},0);
+  var debt=Math.max(0,totalNeed-totalSlept);
+  var surplus=Math.max(0,totalSlept-totalNeed);
+  var avgSlept=Math.round(totalSlept/7*10)/10;
+  var col=debt===0?'#4caf50':debt<=4?'#ff9800':'#f44336';
+  var msg=debt===0?'No sleep debt! '+(surplus>0?surplus.toFixed(1)+'h surplus':'') :debt<=4?'Mild debt ('+debt.toFixed(1)+'h) — recover over weekend':'Significant debt ('+debt.toFixed(1)+'h) — cognitive impairment likely';
+  var r=document.getElementById('rfc-sd-result');
+  if(r){
+    r.innerHTML='<div style="background:#0d0d1a;border-radius:8px;padding:12px;">'
+      +'<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center;margin-bottom:10px;">'
+      +'<div><div style="font-size:18px;font-weight:700;color:#00d4ff;">'+avgSlept+'h</div><div style="font-size:10px;color:#aaa;">Avg/Night</div></div>'
+      +'<div><div style="font-size:18px;font-weight:700;color:'+col+';">'+(debt>0?'-':'+')+(debt||surplus).toFixed(1)+'h</div><div style="font-size:10px;color:#aaa;">'+(debt>0?'Sleep Debt':'Surplus')+'</div></div>'
+      +'<div><div style="font-size:18px;font-weight:700;color:#9c27b0;">'+need+'h</div><div style="font-size:10px;color:#aaa;">Your Need</div></div>'
+      +'</div><div style="font-size:12px;color:'+col+';text-align:center;">'+msg+'</div>'
+      +(debt>0?'<div style="font-size:11px;color:#aaa;text-align:center;margin-top:4px;">To repay: +'+Math.ceil(debt/7*10)/10+'h/night for 7 nights</div>':'')
+      +'</div>';
+  }
+  var uid=_b68uid(), key='rfc_slpdebt_'+uid;
+  _b68save(key,{need:need,nights:nights});
+};
+function _renderSleepDebt(){
+  if(!document.getElementById('rfc-slpdebt-wrap')) return;
+  _buildSDGrid();
+  window._rfcSDCalc();
+}
+
+/* ── Creatine & Supplement Stack ── */
+function _injectCreatine(){
+  if(document.getElementById('rfc-creat-wrap')) return;
+  var anchor=document.getElementById('rfc-collskin-wrap')||document.getElementById('rfc-wfoods-wrap')||document.getElementById('rfc-digest-wrap')||document.getElementById('rfc-zinc-wrap');
+  if(!anchor) return;
+  var SUPPS=[
+    {id:'creat',label:'Creatine Monohydrate (5g)',pts:5,tip:'Take daily — timing not critical'},
+    {id:'beta',label:'Beta-Alanine (3.2–6.4g)',pts:4,tip:'Best 30–60 min pre-workout'},
+    {id:'caff',label:'Caffeine / Pre-workout',pts:3,tip:'Avoid after 2pm; don\'t cycle off'},
+    {id:'whey',label:'Whey / Protein shake',pts:4,tip:'Post-workout or between meals'},
+    {id:'fish',label:'Fish Oil (EPA+DHA 2–3g)',pts:4,tip:'With fatty meal for absorption'},
+    {id:'mg2',label:'Magnesium Glycinate (300–500mg)',pts:3,tip:'Before bed — improves sleep'},
+    {id:'vd2',label:'Vitamin D3 + K2 (2000–5000IU)',pts:3,tip:'With fatty meal morning'},
+    {id:'ash',label:'Ashwagandha (600mg)',pts:3,tip:'Cortisol & testosterone support'},
+    {id:'zma',label:'ZMA (Zinc+Mg+B6)',pts:3,tip:'Before bed on empty stomach'},
+    {id:'eaa',label:'EAAs / BCAAs (intra-workout)',pts:2,tip:'During fasted training only'}
+  ];
+  var rows=SUPPS.map(function(s){
+    return '<label style="display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px solid #1a1a2e;cursor:pointer;">'
+      +'<input type="checkbox" id="rfc-cr-'+s.id+'" onchange="window._rfcCRCalc()" style="accent-color:#9c27b0;margin-top:2px;">'
+      +'<div style="flex:1;"><div style="font-size:12px;">'+s.label+'</div>'
+      +'<div style="font-size:10px;color:#888;">'+s.tip+'</div></div>'
+      +'<span style="font-size:11px;color:#9c27b0;">+'+s.pts+'</span></label>';
+  }).join('');
+  var c=_b68card('rfc-creat-wrap','💊 Supplement Stack Tracker');
+  c.innerHTML+=`
+<div style="font-size:12px;color:#aaa;margin-bottom:10px;">Log evidence-based supplements taken today</div>
+<div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+  <div id="rfc-cr-ring" style="width:60px;height:60px;flex-shrink:0;"></div>
+  <div><div id="rfc-cr-pts" style="font-size:22px;font-weight:700;color:#9c27b0;">0<span style="font-size:12px;color:#aaa;">/34</span></div>
+  <div id="rfc-cr-msg" style="font-size:11px;color:#aaa;">Mark supplements taken</div></div>
+</div>
+<div style="max-height:280px;overflow-y:auto;">${rows}</div>`;
+  anchor.after(c);
+}
+window._rfcCRCalc=function(){
+  var SUPPS=[{id:'creat',pts:5},{id:'beta',pts:4},{id:'caff',pts:3},{id:'whey',pts:4},{id:'fish',pts:4},{id:'mg2',pts:3},{id:'vd2',pts:3},{id:'ash',pts:3},{id:'zma',pts:3},{id:'eaa',pts:2}];
+  var total=34, pts=0, state={};
+  SUPPS.forEach(function(s){ var cb=document.getElementById('rfc-cr-'+s.id); if(cb&&cb.checked){ pts+=s.pts; state[s.id]=1; } });
+  var uid=_b68uid(), key='rfc_creat_'+uid+'_'+_b68today();
+  _b68save(key,state);
+  var pct=Math.round(pts/total*100);
+  var col=pct>=60?'#9c27b0':pct>=30?'#ff9800':'#aaa';
+  var msg=pct>=60?'Well-supplemented today!':pct>=30?'Core supplements covered':'Missing key supplements';
+  document.getElementById('rfc-cr-pts').innerHTML=pts+'<span style="font-size:12px;color:#aaa;">/'+total+'</span>';
+  document.getElementById('rfc-cr-msg').textContent=msg; document.getElementById('rfc-cr-msg').style.color=col;
+  var r=document.getElementById('rfc-cr-ring');
+  var circ=Math.round(2*Math.PI*24), dash=Math.round(circ*pct/100);
+  r.innerHTML='<svg width="60" height="60" viewBox="0 0 60 60"><circle cx="30" cy="30" r="24" fill="none" stroke="#222" stroke-width="6"/><circle cx="30" cy="30" r="24" fill="none" stroke="'+col+'" stroke-width="6" stroke-dasharray="'+dash+' '+circ+'" stroke-dashoffset="'+Math.round(circ*0.25)+'" stroke-linecap="round"/><text x="30" y="35" text-anchor="middle" fill="'+col+'" font-size="12" font-weight="700">'+pct+'%</text></svg>';
+};
+function _renderCreatine(){
+  if(!document.getElementById('rfc-creat-wrap')) return;
+  var uid=_b68uid(), key='rfc_creat_'+uid+'_'+_b68today();
+  var saved=_b68load(key)||{};
+  Object.keys(saved).forEach(function(id){ var cb=document.getElementById('rfc-cr-'+id); if(cb) cb.checked=true; });
+  window._rfcCRCalc();
+}
+
+/* ── Row Variation Logger ── */
+function _injectRowVar(){
+  if(document.getElementById('rfc-rowvar-wrap')) return;
+  var anchor=document.getElementById('rfc-benchvar-wrap')||document.getElementById('rfc-ohp-wrap')||document.getElementById('rfc-sqvar-wrap')||document.getElementById('rfc-pushpull-wrap');
+  if(!anchor) return;
+  var VARS=[
+    {id:'bbrow',label:'Barbell Bent-Over Row'},{id:'pbrow',label:'Pendlay Row'},
+    {id:'trow',label:'T-Bar Row'},{id:'cablerow',label:'Cable Seated Row'},
+    {id:'dbrow',label:'DB Single-Arm Row'},{id:'chest',label:'Chest-Supported Row'},
+    {id:'meadow',label:'Meadows Row'},{id:'inv',label:'Inverted Row / Australian Pull-up'},
+    {id:'rack',label:'Rack Row (partial)'}
+  ];
+  var rows=VARS.map(function(v){
+    return '<div style="padding:7px 0;border-bottom:1px solid #222;">'
+      +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;">'
+      +'<span style="font-size:13px;">'+v.label+'</span>'
+      +'<span id="rfc-rv-pb-'+v.id+'" style="font-size:10px;color:#ff9800;"></span></div>'
+      +'<div style="display:flex;gap:6px;">'
+      +'<input id="rfc-rv-kg-'+v.id+'" type="number" min="0" step="2.5" placeholder="kg" style="flex:1;padding:6px;border-radius:6px;border:1px solid #333;background:#0d0d1a;color:#e0e0e0;font-size:12px;">'
+      +'<input id="rfc-rv-reps-'+v.id+'" type="number" min="1" max="30" placeholder="reps" style="width:55px;padding:6px;border-radius:6px;border:1px solid #333;background:#0d0d1a;color:#e0e0e0;font-size:12px;">'
+      +'<button onclick="window._rfcRVLog(\''+v.id+'\')" style="padding:6px 10px;border:none;border-radius:6px;background:#00bcd4;color:#fff;font-size:11px;cursor:pointer;">Log</button>'
+      +'</div></div>';
+  }).join('');
+  var c=_b68card('rfc-rowvar-wrap','🚣 Row Variation Logger');
+  c.innerHTML+=`
+<div style="font-size:12px;color:#aaa;margin-bottom:12px;">Track all rowing movements — back thickness & width</div>
+${rows}
+<div id="rfc-rv-today" style="margin-top:12px;"></div>`;
+  anchor.after(c);
+  _renderRowVar();
+}
+window._rfcRVLog=function(id){
+  var kg=parseFloat(document.getElementById('rfc-rv-kg-'+id).value)||0;
+  var reps=parseInt(document.getElementById('rfc-rv-reps-'+id).value)||1;
+  if(!kg){ alert('Enter weight'); return; }
+  var uid=_b68uid(), pbKey='rfc_rowvar_pbs_'+uid, dayKey='rfc_rowvar_'+uid+'_'+_b68today();
+  var pbs=_b68load(pbKey)||{}, today=_b68load(dayKey)||{};
+  if(!today[id]) today[id]=[];
+  today[id].push({kg:kg,reps:reps});
+  _b68save(dayKey,today);
+  if(!pbs[id]||kg>pbs[id].kg){ pbs[id]={kg:kg,reps:reps,date:_b68today()}; _b68save(pbKey,pbs); }
+  document.getElementById('rfc-rv-kg-'+id).value=''; document.getElementById('rfc-rv-reps-'+id).value='';
+  _showRVPBs(pbs); _showRVToday(today);
+};
+function _showRVPBs(pbs){
+  var VARS=[{id:'bbrow'},{id:'pbrow'},{id:'trow'},{id:'cablerow'},{id:'dbrow'},{id:'chest'},{id:'meadow'},{id:'inv'},{id:'rack'}];
+  VARS.forEach(function(v){ var el=document.getElementById('rfc-rv-pb-'+v.id); if(el&&pbs[v.id]) el.textContent='PB: '+pbs[v.id].kg+'kg×'+pbs[v.id].reps; });
+}
+function _showRVToday(today){
+  var el=document.getElementById('rfc-rv-today'); if(!el) return;
+  var keys=Object.keys(today); if(!keys.length){ el.innerHTML=''; return; }
+  var LABELS={bbrow:'BB Row',pbrow:'Pendlay',trow:'T-Bar',cablerow:'Cable Row',dbrow:'DB Row',chest:'Chest Sup',meadow:'Meadows',inv:'Inverted',rack:'Rack Row'};
+  var html='<div style="font-size:12px;color:#aaa;margin-bottom:6px;">Today\'s Row Session</div><div style="display:flex;flex-wrap:wrap;gap:5px;">';
+  keys.forEach(function(k){ var best=today[k].reduce(function(a,b){return b.kg>a.kg?b:a;}); html+='<div style="background:#0d0d1a;border-radius:8px;padding:7px 10px;text-align:center;"><div style="font-size:15px;font-weight:700;color:#00bcd4;">'+best.kg+'kg</div><div style="font-size:10px;color:#aaa;">'+(LABELS[k]||k)+'×'+best.reps+'</div></div>'; });
+  el.innerHTML=html+'</div>';
+}
+function _renderRowVar(){
+  if(!document.getElementById('rfc-rowvar-wrap')) return;
+  var uid=_b68uid();
+  _showRVPBs(_b68load('rfc_rowvar_pbs_'+uid)||{});
+  _showRVToday(_b68load('rfc_rowvar_'+uid+'_'+_b68today())||{});
+}
+
+/* ── switchScreen wrapper ── */
+window.switchScreen=function(name,navEl){
+  _origSS66&&_origSS66(name,navEl);
+  if(name==='dashboard') setTimeout(function(){ _injectSleepDebt(); _renderSleepDebt(); },1200);
+  if(name==='nutrition') setTimeout(function(){ _injectCreatine(); _renderCreatine(); },1100);
+  if(name==='workouts')  setTimeout(function(){ _injectRowVar(); _renderRowVar(); },1050);
+};
+
+setTimeout(function(){ _injectSleepDebt(); _injectCreatine(); _injectRowVar(); _renderSleepDebt(); _renderCreatine(); _renderRowVar(); },60000);
+setTimeout(function(){
+  if(!document.getElementById('rfc-slpdebt-wrap')) { _injectSleepDebt(); _renderSleepDebt(); }
+  if(!document.getElementById('rfc-creat-wrap'))   { _injectCreatine(); _renderCreatine(); }
+  if(!document.getElementById('rfc-rowvar-wrap'))  { _injectRowVar(); _renderRowVar(); }
+},64000);
+})();
+</script>
+
 </body>
 </html>
