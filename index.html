@@ -41587,5 +41587,235 @@ setTimeout(function(){
 })();
 </script>
 
+<!-- Batch 63: Breathing Pattern Analyzer, Protein Timing Optimizer, Deadlift Variation Logger -->
+<script>
+(function(){ 'use strict';
+var _origSS61=window.switchScreen;
+function _b63uid(){ try{ return JSON.parse(localStorage.getItem('bm_user')||'{}').uid||'guest'; }catch(e){ return 'guest'; } }
+function _b63today(){ var d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function _b63load(k){ try{ return JSON.parse(localStorage.getItem(k))||null; }catch(e){ return null; } }
+function _b63save(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} }
+function _b63card(id,title){ var d=document.createElement('div'); d.id=id; d.style.cssText='background:#1a1a2e;border-radius:14px;padding:18px;margin:14px 0;color:#e0e0e0;font-family:inherit;'; d.innerHTML='<div style="font-size:15px;font-weight:700;color:#00d4ff;margin-bottom:14px;">'+title+'</div>'; return d; }
+
+/* ── Breathing Pattern Analyzer ── */
+var _breathPatterns=[
+  {id:'shallow',label:'Mostly chest/shallow breathing',score:-3},
+  {id:'hold',label:'Hold breath during lifts',score:-2},
+  {id:'irregular',label:'Irregular breathing at rest',score:-2},
+  {id:'mouth',label:'Mouth breathing during sleep/rest',score:-2},
+  {id:'diaphragm',label:'Diaphragmatic belly breathing',score:3},
+  {id:'nasal',label:'Nasal breathing at rest',score:3},
+  {id:'valsalva',label:'Proper Valsalva on heavy lifts',score:2},
+  {id:'co2',label:'CO2 tolerance training done',score:2},
+  {id:'box',label:'Box breathing practiced today',score:3},
+  {id:'cadence',label:'5-5 or 4-6 inhale:exhale rhythm',score:2}
+];
+function _injectBreathPat(){
+  if(document.getElementById('rfc-breathpat-wrap')) return;
+  var anchor=document.getElementById('rfc-injprev-wrap')||document.getElementById('rfc-vitd-wrap')||document.getElementById('rfc-habits-wrap')||document.getElementById('rfc-recscore-wrap');
+  if(!anchor) return;
+  var posRows=_breathPatterns.filter(function(p){return p.score>0;}).map(function(p){
+    return '<label style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid #1a1a2e;cursor:pointer;">'
+      +'<input type="checkbox" id="rfc-bp-'+p.id+'" onchange="window._rfcBPCalc()" style="accent-color:#4caf50;">'
+      +'<span style="flex:1;font-size:12px;">'+p.label+'</span>'
+      +'<span style="font-size:11px;color:#4caf50;">+'+p.score+'</span></label>';
+  }).join('');
+  var negRows=_breathPatterns.filter(function(p){return p.score<0;}).map(function(p){
+    return '<label style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid #1a1a2e;cursor:pointer;">'
+      +'<input type="checkbox" id="rfc-bp-'+p.id+'" onchange="window._rfcBPCalc()" style="accent-color:#f44336;">'
+      +'<span style="flex:1;font-size:12px;">'+p.label+'</span>'
+      +'<span style="font-size:11px;color:#f44336;">'+p.score+'</span></label>';
+  }).join('');
+  var c=_b63card('rfc-breathpat-wrap','🌬️ Breathing Pattern Analyzer');
+  c.innerHTML+=`
+<div style="font-size:12px;color:#aaa;margin-bottom:10px;">Good breathing patterns improve O2 delivery, recovery & performance</div>
+<div id="rfc-bp-gauge" style="text-align:center;margin-bottom:12px;"></div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+  <div><div style="font-size:11px;color:#4caf50;font-weight:600;margin-bottom:6px;">Positive habits</div>${posRows}</div>
+  <div><div style="font-size:11px;color:#f44336;font-weight:600;margin-bottom:6px;">Negative habits</div>${negRows}</div>
+</div>
+<div id="rfc-bp-msg" style="margin-top:10px;font-size:12px;text-align:center;"></div>`;
+  anchor.after(c);
+}
+window._rfcBPCalc=function(){
+  var score=0, maxPos=0;
+  _breathPatterns.forEach(function(p){
+    var cb=document.getElementById('rfc-bp-'+p.id);
+    if(p.score>0) maxPos+=p.score;
+    if(cb&&cb.checked) score+=p.score;
+  });
+  score=Math.max(-9,Math.min(maxPos,score));
+  var pct=Math.round((score+9)/(maxPos+9)*100);
+  var col=pct>=70?'#4caf50':pct>=45?'#ff9800':'#f44336';
+  var msg=pct>=70?'Excellent breathing mechanics!':pct>=45?'Moderate — focus on diaphragmatic breathing':'Poor breathing patterns — prioritize correction';
+  var g=document.getElementById('rfc-bp-gauge');
+  if(g){
+    var circ=Math.round(2*Math.PI*36), dash=Math.round(circ*pct/100);
+    g.innerHTML='<svg width="90" height="90" viewBox="0 0 90 90"><circle cx="45" cy="45" r="36" fill="none" stroke="#222" stroke-width="8"/><circle cx="45" cy="45" r="36" fill="none" stroke="'+col+'" stroke-width="8" stroke-dasharray="'+dash+' '+circ+'" stroke-dashoffset="'+Math.round(circ*0.25)+'" stroke-linecap="round"/><text x="45" y="50" text-anchor="middle" fill="'+col+'" font-size="16" font-weight="700">'+pct+'%</text></svg>';
+  }
+  var msgEl=document.getElementById('rfc-bp-msg');
+  if(msgEl){ msgEl.textContent=msg; msgEl.style.color=col; }
+  var uid=_b63uid(), key='rfc_breathpat_'+uid+'_'+_b63today(), state={};
+  _breathPatterns.forEach(function(p){ var cb=document.getElementById('rfc-bp-'+p.id); if(cb&&cb.checked) state[p.id]=1; });
+  _b63save(key,state);
+};
+function _renderBreathPat(){
+  if(!document.getElementById('rfc-breathpat-wrap')) return;
+  var uid=_b63uid(), key='rfc_breathpat_'+uid+'_'+_b63today();
+  var saved=_b63load(key)||{};
+  Object.keys(saved).forEach(function(id){ var cb=document.getElementById('rfc-bp-'+id); if(cb) cb.checked=true; });
+  window._rfcBPCalc();
+}
+
+/* ── Protein Timing Optimizer ── */
+function _injectProtTiming(){
+  if(document.getElementById('rfc-protto-wrap')) return;
+  var anchor=document.getElementById('rfc-hydlog-wrap')||document.getElementById('rfc-mealprep-wrap')||document.getElementById('rfc-hfat-wrap')||document.getElementById('rfc-antioxid-wrap');
+  if(!anchor) return;
+  var c=_b63card('rfc-protto-wrap','⏰ Protein Timing Optimizer');
+  c.innerHTML+=`
+<div style="font-size:12px;color:#aaa;margin-bottom:12px;">Log protein intake at each meal — optimize MPS (muscle protein synthesis)</div>
+<div style="margin-bottom:12px;">
+  <div style="font-size:12px;color:#aaa;margin-bottom:4px;">Bodyweight (kg) for targets</div>
+  <input id="rfc-pt-bw" type="number" min="30" max="200" step="0.5" placeholder="e.g. 80" style="width:100%;padding:8px;border-radius:8px;border:1px solid #333;background:#0d0d1a;color:#e0e0e0;font-size:13px;box-sizing:border-box;">
+</div>
+<div id="rfc-pt-meals" style="display:grid;gap:8px;"></div>
+<button onclick="window._rfcPTSave()" style="margin-top:12px;width:100%;padding:9px;border:none;border-radius:8px;background:#00d4ff;color:#000;font-weight:700;cursor:pointer;">Analyze Timing</button>
+<div id="rfc-pt-result" style="margin-top:12px;"></div>`;
+  anchor.after(c);
+  _buildPTMeals();
+}
+var _ptMeals=['Pre-Workout (−2h)','Post-Workout (0–2h)','Breakfast','Lunch','Dinner','Evening snack'];
+function _buildPTMeals(){
+  var el=document.getElementById('rfc-pt-meals'); if(!el) return;
+  el.innerHTML=_ptMeals.map(function(m,i){
+    return '<div style="display:flex;align-items:center;gap:8px;">'
+      +'<span style="flex:1;font-size:12px;color:#aaa;">'+m+'</span>'
+      +'<input id="rfc-pt-g-'+i+'" type="number" min="0" max="100" placeholder="g protein" style="width:90px;padding:6px;border-radius:7px;border:1px solid #333;background:#0d0d1a;color:#e0e0e0;font-size:12px;">'
+      +'</div>';
+  }).join('');
+}
+window._rfcPTSave=function(){
+  var bw=parseFloat(document.getElementById('rfc-pt-bw').value)||80;
+  var tgtPerMeal=Math.round(bw*0.4), tgtTotal=Math.round(bw*2);
+  var meals=_ptMeals.map(function(m,i){ return {label:m,g:parseFloat(document.getElementById('rfc-pt-g-'+i).value)||0}; });
+  var total=meals.reduce(function(a,b){return a+b.g;},0);
+  var html='<div style="background:#0d0d1a;border-radius:8px;padding:12px;">'
+    +'<div style="font-size:12px;color:#aaa;margin-bottom:8px;">Total: <strong style="color:#4caf50;">'+total+'g</strong> / target '+tgtTotal+'g ('+bw+'kg × 2)</div>';
+  meals.forEach(function(m){
+    var col=m.g>=tgtPerMeal?'#4caf50':m.g>=20?'#ff9800':m.g>0?'#f44336':'#555';
+    var bar=Math.min(100,Math.round(m.g/tgtPerMeal*100));
+    html+='<div style="margin-bottom:6px;">'
+      +'<div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:2px;">'
+      +'<span style="color:#aaa;">'+m.label+'</span>'
+      +'<span style="color:'+col+';">'+m.g+'g '+(m.g>=tgtPerMeal?'✓':'/ '+tgtPerMeal+'g target')+'</span></div>'
+      +'<div style="height:6px;background:#222;border-radius:3px;overflow:hidden;">'
+      +'<div style="height:100%;width:'+bar+'%;background:'+col+';border-radius:3px;"></div></div></div>';
+  });
+  html+='<div style="margin-top:8px;font-size:11px;color:#aaa;">MPS threshold: ~'+tgtPerMeal+'g per meal for '+bw+'kg bodyweight</div></div>';
+  var el=document.getElementById('rfc-pt-result');
+  if(el) el.innerHTML=html;
+  var uid=_b63uid(), key='rfc_protto_'+uid+'_'+_b63today();
+  _b63save(key,{bw:bw,meals:meals});
+};
+function _renderProtTiming(){
+  if(!document.getElementById('rfc-protto-wrap')) return;
+  var uid=_b63uid(), key='rfc_protto_'+uid+'_'+_b63today();
+  var saved=_b63load(key);
+  if(saved){
+    if(saved.bw) document.getElementById('rfc-pt-bw').value=saved.bw;
+    (saved.meals||[]).forEach(function(m,i){ var el=document.getElementById('rfc-pt-g-'+i); if(el) el.value=m.g||0; });
+    window._rfcPTSave();
+  }
+}
+
+/* ── Deadlift Variation Logger ── */
+function _injectDLVar(){
+  if(document.getElementById('rfc-dlvar-wrap')) return;
+  var anchor=document.getElementById('rfc-agility-wrap')||document.getElementById('rfc-iso-wrap')||document.getElementById('rfc-resband-wrap')||document.getElementById('rfc-kb-wrap');
+  if(!anchor) return;
+  var VARIANTS=[
+    {id:'conv',label:'Conventional'},
+    {id:'sumo',label:'Sumo'},
+    {id:'rdl',label:'Romanian (RDL)'},
+    {id:'trap',label:'Trap Bar / Hex Bar'},
+    {id:'stiff',label:'Stiff-Legged'},
+    {id:'snatch',label:'Snatch Grip'},
+    {id:'deficit',label:'Deficit DL'},
+    {id:'rack',label:'Rack Pull'},
+    {id:'single',label:'Single-Leg RDL'},
+    {id:'bb',label:'Block Pull'}
+  ];
+  var rows=VARIANTS.map(function(v){
+    return '<div style="padding:7px 0;border-bottom:1px solid #222;">'
+      +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;">'
+      +'<span style="font-size:13px;">'+v.label+'</span>'
+      +'<span id="rfc-dl-pb-'+v.id+'" style="font-size:10px;color:#ff9800;"></span></div>'
+      +'<div style="display:flex;gap:6px;">'
+      +'<input id="rfc-dl-kg-'+v.id+'" type="number" min="0" step="2.5" placeholder="kg" style="flex:1;padding:6px;border-radius:6px;border:1px solid #333;background:#0d0d1a;color:#e0e0e0;font-size:12px;">'
+      +'<input id="rfc-dl-reps-'+v.id+'" type="number" min="1" max="30" placeholder="reps" style="width:55px;padding:6px;border-radius:6px;border:1px solid #333;background:#0d0d1a;color:#e0e0e0;font-size:12px;">'
+      +'<button onclick="window._rfcDLLog(\''+v.id+'\')" style="padding:6px 10px;border:none;border-radius:6px;background:#f44336;color:#fff;font-size:11px;cursor:pointer;">Log</button>'
+      +'</div></div>';
+  }).join('');
+  var c=_b63card('rfc-dlvar-wrap','🏋️ Deadlift Variation Logger');
+  c.innerHTML+=`
+<div style="font-size:12px;color:#aaa;margin-bottom:12px;">Log each deadlift variant — track PRs across all variations</div>
+${rows}
+<div id="rfc-dl-today" style="margin-top:12px;"></div>`;
+  anchor.after(c);
+  _renderDLVar();
+}
+window._rfcDLLog=function(id){
+  var kg=parseFloat(document.getElementById('rfc-dl-kg-'+id).value)||0;
+  var reps=parseInt(document.getElementById('rfc-dl-reps-'+id).value)||1;
+  if(!kg){ alert('Enter weight'); return; }
+  var uid=_b63uid(), pbKey='rfc_dlvar_pbs_'+uid, dayKey='rfc_dlvar_'+uid+'_'+_b63today();
+  var pbs=_b63load(pbKey)||{}, today=_b63load(dayKey)||{};
+  if(!today[id]) today[id]=[];
+  today[id].push({kg:kg,reps:reps});
+  _b63save(dayKey,today);
+  if(!pbs[id]||kg>pbs[id].kg){ pbs[id]={kg:kg,reps:reps,date:_b63today()}; _b63save(pbKey,pbs); }
+  document.getElementById('rfc-dl-kg-'+id).value=''; document.getElementById('rfc-dl-reps-'+id).value='';
+  _showDLPBs(pbs); _showDLToday(today);
+};
+function _showDLPBs(pbs){
+  var VARIANTS=[{id:'conv'},{id:'sumo'},{id:'rdl'},{id:'trap'},{id:'stiff'},{id:'snatch'},{id:'deficit'},{id:'rack'},{id:'single'},{id:'bb'}];
+  VARIANTS.forEach(function(v){ var el=document.getElementById('rfc-dl-pb-'+v.id); if(el&&pbs[v.id]) el.textContent='PB: '+pbs[v.id].kg+'kg×'+pbs[v.id].reps; });
+}
+function _showDLToday(today){
+  var el=document.getElementById('rfc-dl-today'); if(!el) return;
+  var keys=Object.keys(today); if(!keys.length){ el.innerHTML=''; return; }
+  var LABELS={conv:'Conventional',sumo:'Sumo',rdl:'RDL',trap:'Trap Bar',stiff:'Stiff-Leg',snatch:'Snatch Grip',deficit:'Deficit',rack:'Rack Pull',single:'Single-Leg',bb:'Block Pull'};
+  var html='<div style="font-size:12px;color:#aaa;margin-bottom:6px;">Today\'s DL Session</div><div style="display:flex;flex-wrap:wrap;gap:5px;">';
+  keys.forEach(function(k){
+    var best=today[k].reduce(function(a,b){return b.kg>a.kg?b:a;});
+    html+='<div style="background:#0d0d1a;border-radius:8px;padding:7px 10px;text-align:center;"><div style="font-size:15px;font-weight:700;color:#f44336;">'+best.kg+'kg</div><div style="font-size:10px;color:#aaa;">'+(LABELS[k]||k)+'×'+best.reps+'</div></div>';
+  });
+  el.innerHTML=html+'</div>';
+}
+function _renderDLVar(){
+  if(!document.getElementById('rfc-dlvar-wrap')) return;
+  var uid=_b63uid();
+  _showDLPBs(_b63load('rfc_dlvar_pbs_'+uid)||{});
+  _showDLToday(_b63load('rfc_dlvar_'+uid+'_'+_b63today())||{});
+}
+
+/* ── switchScreen wrapper ── */
+window.switchScreen=function(name,navEl){
+  _origSS61&&_origSS61(name,navEl);
+  if(name==='dashboard') setTimeout(function(){ _injectBreathPat(); _renderBreathPat(); },1200);
+  if(name==='nutrition') setTimeout(function(){ _injectProtTiming(); _renderProtTiming(); },1100);
+  if(name==='workouts')  setTimeout(function(){ _injectDLVar(); _renderDLVar(); },1050);
+};
+
+setTimeout(function(){ _injectBreathPat(); _injectProtTiming(); _injectDLVar(); _renderBreathPat(); _renderProtTiming(); _renderDLVar(); },55000);
+setTimeout(function(){
+  if(!document.getElementById('rfc-breathpat-wrap')) { _injectBreathPat(); _renderBreathPat(); }
+  if(!document.getElementById('rfc-protto-wrap'))   { _injectProtTiming(); _renderProtTiming(); }
+  if(!document.getElementById('rfc-dlvar-wrap'))    { _injectDLVar(); _renderDLVar(); }
+},59000);
+})();
+</script>
+
 </body>
 </html>
