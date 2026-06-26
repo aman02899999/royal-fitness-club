@@ -40372,5 +40372,296 @@ setTimeout(function(){
 })();
 </script>
 
+<!-- Batch 58: Stress Load Meter, Fiber & Digestive Health, Weighted Vest Tracker -->
+<script>
+(function(){ 'use strict';
+var _origSS56=window.switchScreen;
+function _b58uid(){ try{ return JSON.parse(localStorage.getItem('bm_user')||'{}').uid||'guest'; }catch(e){ return 'guest'; } }
+function _b58today(){ var d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function _b58load(k){ try{ return JSON.parse(localStorage.getItem(k))||null; }catch(e){ return null; } }
+function _b58save(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} }
+function _b58card(id,title){ var d=document.createElement('div'); d.id=id; d.style.cssText='background:#1a1a2e;border-radius:14px;padding:18px;margin:14px 0;color:#e0e0e0;font-family:inherit;'; d.innerHTML='<div style="font-size:15px;font-weight:700;color:#00d4ff;margin-bottom:14px;">'+title+'</div>'; return d; }
+
+/* ── Stress Load Meter ── */
+var _stressFactors=[
+  {id:'work',label:'Work / Study pressure',pts:3},
+  {id:'sleep',label:'Poor sleep last night',pts:3},
+  {id:'train',label:'Heavy training session',pts:2},
+  {id:'conflict',label:'Interpersonal conflict',pts:3},
+  {id:'news',label:'Negative news exposure',pts:1},
+  {id:'time',label:'Time pressure / deadlines',pts:2},
+  {id:'finance',label:'Financial stress',pts:3},
+  {id:'nutri',label:'Skipped meals',pts:2},
+  {id:'caffeine',label:'Excess caffeine',pts:1},
+  {id:'travel',label:'Travel / commute strain',pts:1}
+];
+var _stressRelievers=[
+  {id:'meditate',label:'Meditation / breathing',pts:3},
+  {id:'walk',label:'Outdoor walk / nature',pts:2},
+  {id:'social',label:'Quality social time',pts:2},
+  {id:'laugh',label:'Laughter / fun activity',pts:2},
+  {id:'journal',label:'Journaling',pts:2},
+  {id:'bath',label:'Hot bath / shower',pts:1},
+  {id:'music',label:'Music / creative hobby',pts:1},
+  {id:'prayer',label:'Prayer / spiritual practice',pts:2}
+];
+function _injectStress(){
+  if(document.getElementById('rfc-stress-wrap')) return;
+  var anchor=document.getElementById('rfc-mood-wrap')||document.getElementById('rfc-joint-wrap')||document.getElementById('rfc-nsr-wrap')||document.getElementById('rfc-energydrain-wrap');
+  if(!anchor) return;
+  var factorRows=_stressFactors.map(function(f){
+    return '<label style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid #1a1a2e;cursor:pointer;">'
+      +'<input type="checkbox" id="rfc-stress-f-'+f.id+'" onchange="window._rfcStressCalc()" style="accent-color:#f44336;">'
+      +'<span style="flex:1;font-size:12px;">'+f.label+'</span>'
+      +'<span style="font-size:11px;color:#f44336;">+'+f.pts+'</span></label>';
+  }).join('');
+  var relRows=_stressRelievers.map(function(r){
+    return '<label style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid #1a1a2e;cursor:pointer;">'
+      +'<input type="checkbox" id="rfc-stress-r-'+r.id+'" onchange="window._rfcStressCalc()" style="accent-color:#4caf50;">'
+      +'<span style="flex:1;font-size:12px;">'+r.label+'</span>'
+      +'<span style="font-size:11px;color:#4caf50;">-'+r.pts+'</span></label>';
+  }).join('');
+  var c=_b58card('rfc-stress-wrap','🌡️ Stress Load Meter');
+  c.innerHTML+=`
+<div id="rfc-stress-gauge" style="text-align:center;margin-bottom:12px;"></div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+  <div>
+    <div style="font-size:12px;color:#f44336;font-weight:600;margin-bottom:6px;">Stressors</div>
+    <div style="max-height:200px;overflow-y:auto;">${factorRows}</div>
+  </div>
+  <div>
+    <div style="font-size:12px;color:#4caf50;font-weight:600;margin-bottom:6px;">Relievers</div>
+    <div style="max-height:200px;overflow-y:auto;">${relRows}</div>
+  </div>
+</div>
+<div id="rfc-stress-msg" style="margin-top:10px;font-size:12px;text-align:center;"></div>
+<div id="rfc-stress-hist" style="margin-top:12px;"></div>`;
+  anchor.after(c);
+}
+window._rfcStressCalc=function(){
+  var stressLoad=0, reliefLoad=0;
+  _stressFactors.forEach(function(f){ var cb=document.getElementById('rfc-stress-f-'+f.id); if(cb&&cb.checked) stressLoad+=f.pts; });
+  _stressRelievers.forEach(function(r){ var cb=document.getElementById('rfc-stress-r-'+r.id); if(cb&&cb.checked) reliefLoad+=r.pts; });
+  var net=Math.max(0,stressLoad-reliefLoad);
+  var max=30, pct=Math.round(net/max*100);
+  var col=pct<=25?'#4caf50':pct<=50?'#ff9800':pct<=75?'#ff5722':'#f44336';
+  var msg=pct<=25?'Low stress — recovery is happening':pct<=50?'Moderate — keep managing stress':pct<=75?'High stress — prioritize recovery':'Critical stress load — rest is essential';
+  var gauge=document.getElementById('rfc-stress-gauge');
+  if(gauge){
+    var circ=Math.round(2*Math.PI*36), dash=Math.round(circ*pct/100);
+    gauge.innerHTML='<svg width="90" height="90" viewBox="0 0 90 90"><circle cx="45" cy="45" r="36" fill="none" stroke="#222" stroke-width="8"/><circle cx="45" cy="45" r="36" fill="none" stroke="'+col+'" stroke-width="8" stroke-dasharray="'+dash+' '+circ+'" stroke-dashoffset="'+Math.round(circ*0.25)+'" stroke-linecap="round"/><text x="45" y="50" text-anchor="middle" fill="'+col+'" font-size="16" font-weight="700">'+pct+'%</text></svg>'
+      +'<div style="font-size:11px;color:#aaa;margin-top:-6px;">Stress Load</div>';
+  }
+  var msgEl=document.getElementById('rfc-stress-msg');
+  if(msgEl){ msgEl.textContent=msg; msgEl.style.color=col; }
+  var uid=_b58uid(), key='rfc_stress_'+uid;
+  var hist=_b58load(key)||[];
+  var today=_b58today();
+  var fState={}, rState={};
+  _stressFactors.forEach(function(f){ var cb=document.getElementById('rfc-stress-f-'+f.id); if(cb&&cb.checked) fState[f.id]=1; });
+  _stressRelievers.forEach(function(r){ var cb=document.getElementById('rfc-stress-r-'+r.id); if(cb&&cb.checked) rState[r.id]=1; });
+  var idx=hist.findIndex(function(e){return e.date===today;});
+  var entry={date:today,pct:pct,f:fState,r:rState};
+  if(idx>=0) hist[idx]=entry; else hist.push(entry);
+  if(hist.length>30) hist=hist.slice(-30);
+  _b58save(key,hist);
+  _showStressHist(hist);
+};
+function _showStressHist(hist){
+  var el=document.getElementById('rfc-stress-hist'); if(!el||!hist.length) return;
+  var last7=hist.slice(-7);
+  var bars=last7.map(function(e){
+    var col=e.pct<=25?'#4caf50':e.pct<=50?'#ff9800':e.pct<=75?'#ff5722':'#f44336';
+    return '<div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;">'
+      +'<div style="height:'+Math.max(4,e.pct*0.5)+'px;width:18px;background:'+col+';border-radius:4px;"></div>'
+      +'<div style="font-size:10px;color:#aaa;">'+e.date.slice(5)+'</div></div>';
+  }).join('');
+  el.innerHTML='<div style="font-size:12px;color:#aaa;margin-bottom:6px;">7-Day Stress</div>'
+    +'<div style="display:flex;align-items:flex-end;gap:4px;height:60px;">'+bars+'</div>';
+}
+function _renderStress(){
+  if(!document.getElementById('rfc-stress-wrap')) return;
+  var uid=_b58uid(), key='rfc_stress_'+uid;
+  var hist=_b58load(key)||[];
+  var today=hist.find(function(e){return e.date===_b58today();});
+  if(today){
+    Object.keys(today.f||{}).forEach(function(id){ var cb=document.getElementById('rfc-stress-f-'+id); if(cb) cb.checked=true; });
+    Object.keys(today.r||{}).forEach(function(id){ var cb=document.getElementById('rfc-stress-r-'+id); if(cb) cb.checked=true; });
+  }
+  window._rfcStressCalc();
+  _showStressHist(hist);
+}
+
+/* ── Fiber & Digestive Health ── */
+function _injectFiber(){
+  if(document.getElementById('rfc-fiber-wrap')) return;
+  var anchor=document.getElementById('rfc-micro-wrap')||document.getElementById('rfc-elec-wrap')||document.getElementById('rfc-vitb-wrap')||document.getElementById('rfc-alcohol-wrap');
+  if(!anchor) return;
+  var SOURCES=[
+    {id:'oats',label:'Oats / Porridge',g:4},{id:'beans',label:'Beans / Lentils',g:8},
+    {id:'broc',label:'Broccoli / Cabbage',g:3},{id:'apple',label:'Apple / Pear (with skin)',g:4},
+    {id:'berry',label:'Berries (1 cup)',g:4},{id:'alm',label:'Almonds (30g)',g:3},
+    {id:'chia',label:'Chia Seeds (1 tbsp)',g:5},{id:'flax',label:'Flaxseeds (1 tbsp)',g:3},
+    {id:'swpot',label:'Sweet Potato',g:4},{id:'brd',label:'Whole grain bread (2 slices)',g:4},
+    {id:'pea',label:'Green Peas',g:5},{id:'avoc',label:'Avocado (half)',g:5}
+  ];
+  var rows=SOURCES.map(function(s){
+    return '<label style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid #1a1a2e;cursor:pointer;">'
+      +'<input type="checkbox" id="rfc-fiber-'+s.id+'" onchange="window._rfcFiberChg()" style="accent-color:#4caf50;">'
+      +'<span style="flex:1;font-size:12px;">'+s.label+'</span>'
+      +'<span style="font-size:11px;color:#4caf50;">+'+s.g+'g</span></label>';
+  }).join('');
+  var c=_b58card('rfc-fiber-wrap','🌿 Fiber & Digestive Health');
+  c.innerHTML+=`
+<div style="font-size:12px;color:#aaa;margin-bottom:10px;">Target: <strong style="color:#4caf50;">25–38g fiber/day</strong></div>
+<div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+  <div id="rfc-fiber-ring" style="width:60px;height:60px;flex-shrink:0;"></div>
+  <div>
+    <div id="rfc-fiber-g" style="font-size:22px;font-weight:700;color:#4caf50;">0<span style="font-size:12px;color:#aaa;">g / 30g target</span></div>
+    <div id="rfc-fiber-msg" style="font-size:11px;color:#aaa;">Check off fiber sources below</div>
+  </div>
+</div>
+<div style="max-height:250px;overflow-y:auto;">${rows}</div>
+<div style="margin-top:10px;padding:8px;background:#0d0d1a;border-radius:8px;font-size:11px;color:#aaa;">
+  💧 Drink at least 2L water to support fiber digestion and avoid bloating
+</div>`;
+  anchor.after(c);
+}
+window._rfcFiberChg=function(){
+  var SOURCES=[{id:'oats',g:4},{id:'beans',g:8},{id:'broc',g:3},{id:'apple',g:4},{id:'berry',g:4},{id:'alm',g:3},{id:'chia',g:5},{id:'flax',g:3},{id:'swpot',g:4},{id:'brd',g:4},{id:'pea',g:5},{id:'avoc',g:5}];
+  var total=0, state={};
+  SOURCES.forEach(function(s){ var cb=document.getElementById('rfc-fiber-'+s.id); if(cb&&cb.checked){ total+=s.g; state[s.id]=1; } });
+  var uid=_b58uid(), key='rfc_fiber_'+uid+'_'+_b58today();
+  _b58save(key,state);
+  var target=30, pct=Math.min(100,Math.round(total/target*100));
+  var col=pct>=100?'#4caf50':pct>=60?'#ff9800':'#f44336';
+  var msg=pct>=100?'Excellent fiber intake!':pct>=60?'Good — almost at target':'Need more fiber-rich foods';
+  document.getElementById('rfc-fiber-g').innerHTML=total+'g<span style="font-size:12px;color:#aaa;"> / '+target+'g target</span>';
+  document.getElementById('rfc-fiber-msg').textContent=msg; document.getElementById('rfc-fiber-msg').style.color=col;
+  var r=document.getElementById('rfc-fiber-ring');
+  var circ=Math.round(2*Math.PI*24), dash=Math.round(circ*pct/100);
+  r.innerHTML='<svg width="60" height="60" viewBox="0 0 60 60"><circle cx="30" cy="30" r="24" fill="none" stroke="#222" stroke-width="6"/><circle cx="30" cy="30" r="24" fill="none" stroke="'+col+'" stroke-width="6" stroke-dasharray="'+dash+' '+circ+'" stroke-dashoffset="'+Math.round(circ*0.25)+'" stroke-linecap="round"/><text x="30" y="35" text-anchor="middle" fill="'+col+'" font-size="12" font-weight="700">'+pct+'%</text></svg>';
+};
+function _renderFiber(){
+  if(!document.getElementById('rfc-fiber-wrap')) return;
+  var uid=_b58uid(), key='rfc_fiber_'+uid+'_'+_b58today();
+  var saved=_b58load(key)||{};
+  Object.keys(saved).forEach(function(id){ var cb=document.getElementById('rfc-fiber-'+id); if(cb) cb.checked=true; });
+  window._rfcFiberChg();
+}
+
+/* ── Weighted Vest Tracker ── */
+function _injectWVest(){
+  if(document.getElementById('rfc-wvest-wrap')) return;
+  var anchor=document.getElementById('rfc-cali-wrap')||document.getElementById('rfc-plyo-wrap')||document.getElementById('rfc-acc-wrap')||document.getElementById('rfc-peaktime-wrap');
+  if(!anchor) return;
+  var EXERCISES=['Pull-ups','Push-ups','Dips','Box Steps','Walking','Running','Burpees','Lunges'];
+  var opts=EXERCISES.map(function(e){ return '<option value="'+e+'">'+e+'</option>'; }).join('');
+  var c=_b58card('rfc-wvest-wrap','🦺 Weighted Vest Tracker');
+  c.innerHTML+=`
+<div style="font-size:12px;color:#aaa;margin-bottom:12px;">Log weighted vest workouts — track vest load progression</div>
+<div style="display:grid;gap:8px;margin-bottom:12px;">
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+    <div>
+      <div style="font-size:11px;color:#aaa;margin-bottom:3px;">Vest Weight (kg)</div>
+      <input id="rfc-wvest-kg" type="number" min="0" max="50" step="0.5" placeholder="e.g. 10" style="width:100%;padding:8px;border-radius:8px;border:1px solid #333;background:#0d0d1a;color:#e0e0e0;font-size:13px;box-sizing:border-box;">
+    </div>
+    <div>
+      <div style="font-size:11px;color:#aaa;margin-bottom:3px;">Bodyweight (kg)</div>
+      <input id="rfc-wvest-bw" type="number" min="30" max="200" step="0.5" placeholder="e.g. 80" style="width:100%;padding:8px;border-radius:8px;border:1px solid #333;background:#0d0d1a;color:#e0e0e0;font-size:13px;box-sizing:border-box;">
+    </div>
+  </div>
+  <select id="rfc-wvest-ex" style="padding:8px;border-radius:8px;border:1px solid #333;background:#0d0d1a;color:#e0e0e0;font-size:13px;">
+    <option value="">Select exercise…</option>${opts}
+  </select>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+    <input id="rfc-wvest-sets" type="number" min="1" max="20" placeholder="Sets" style="padding:8px;border-radius:8px;border:1px solid #333;background:#0d0d1a;color:#e0e0e0;font-size:13px;text-align:center;">
+    <input id="rfc-wvest-reps" type="number" min="1" max="100" placeholder="Reps" style="padding:8px;border-radius:8px;border:1px solid #333;background:#0d0d1a;color:#e0e0e0;font-size:13px;text-align:center;">
+  </div>
+</div>
+<button onclick="window._rfcWVestAdd()" style="width:100%;padding:9px;border:none;border-radius:8px;background:#00d4ff;color:#000;font-weight:700;cursor:pointer;">Log Set</button>
+<div id="rfc-wvest-list" style="margin-top:12px;"></div>
+<div id="rfc-wvest-prog" style="margin-top:10px;"></div>`;
+  anchor.after(c);
+}
+window._rfcWVestAdd=function(){
+  var ex=document.getElementById('rfc-wvest-ex').value;
+  if(!ex){ alert('Select exercise'); return; }
+  var kg=parseFloat(document.getElementById('rfc-wvest-kg').value)||0;
+  var bw=parseFloat(document.getElementById('rfc-wvest-bw').value)||80;
+  var sets=parseInt(document.getElementById('rfc-wvest-sets').value)||1;
+  var reps=parseInt(document.getElementById('rfc-wvest-reps').value)||0;
+  var uid=_b58uid(), key='rfc_wvest_'+uid+'_'+_b58today();
+  var log=_b58load(key)||[];
+  log.push({ex:ex,kg:kg,bw:bw,sets:sets,reps:reps,ts:Date.now()});
+  _b58save(key,log);
+  document.getElementById('rfc-wvest-sets').value='';
+  document.getElementById('rfc-wvest-reps').value='';
+  _renderWVestList(log);
+  _renderWVestProg(uid);
+};
+function _renderWVestList(log){
+  var el=document.getElementById('rfc-wvest-list'); if(!el) return;
+  if(!log||!log.length){ el.innerHTML='<div style="font-size:12px;color:#555;text-align:center;padding:8px;">No sets logged today</div>'; return; }
+  var html='';
+  log.forEach(function(e,i){
+    var pct=e.bw?Math.round(e.kg/e.bw*100):0;
+    html+='<div style="display:flex;align-items:center;gap:8px;padding:6px;background:#0d0d1a;border-radius:8px;margin-bottom:4px;font-size:12px;">'
+      +'<span style="color:#00d4ff;font-weight:700;">#'+(i+1)+'</span>'
+      +'<span style="flex:1;">'+e.ex+'</span>'
+      +'<span style="color:#e0e0e0;">'+e.sets+'×'+e.reps+'</span>'
+      +'<span style="color:#ff9800;">'+e.kg+'kg vest</span>'
+      +(pct?'<span style="font-size:10px;color:#aaa;">('+pct+'% BW)</span>':'')
+      +'</div>';
+  });
+  el.innerHTML=html;
+}
+function _renderWVestProg(uid){
+  var el=document.getElementById('rfc-wvest-prog'); if(!el) return;
+  var keys=[];
+  for(var i=0;i<30;i++){
+    var d=new Date(); d.setDate(d.getDate()-i);
+    var ds=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+    var log=_b58load('rfc_wvest_'+uid+'_'+ds)||[];
+    if(log.length){ var maxKg=Math.max.apply(null,log.map(function(e){return e.kg;})); keys.push({ds:ds,kg:maxKg}); }
+  }
+  if(keys.length<2){ el.innerHTML=''; return; }
+  var last7=keys.slice(0,7).reverse();
+  var maxKg=Math.max.apply(null,last7.map(function(e){return e.kg;}));
+  var bars=last7.map(function(e){
+    var h=maxKg?Math.round(e.kg/maxKg*50):0;
+    return '<div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;">'
+      +'<div style="font-size:9px;color:#ff9800;">'+e.kg+'kg</div>'
+      +'<div style="height:'+Math.max(4,h)+'px;width:18px;background:#9c27b0;border-radius:4px;"></div>'
+      +'<div style="font-size:9px;color:#aaa;">'+e.ds.slice(5)+'</div></div>';
+  }).join('');
+  el.innerHTML='<div style="font-size:12px;color:#aaa;margin-bottom:6px;">Vest Load History</div>'
+    +'<div style="display:flex;align-items:flex-end;gap:4px;height:80px;">'+bars+'</div>';
+}
+function _renderWVest(){
+  if(!document.getElementById('rfc-wvest-wrap')) return;
+  var uid=_b58uid(), key='rfc_wvest_'+uid+'_'+_b58today();
+  var log=_b58load(key)||[];
+  _renderWVestList(log);
+  _renderWVestProg(uid);
+}
+
+/* ── switchScreen wrapper ── */
+window.switchScreen=function(name,navEl){
+  _origSS56&&_origSS56(name,navEl);
+  if(name==='dashboard') setTimeout(function(){ _injectStress(); _renderStress(); },1200);
+  if(name==='nutrition') setTimeout(function(){ _injectFiber(); _renderFiber(); },1100);
+  if(name==='workouts')  setTimeout(function(){ _injectWVest(); _renderWVest(); },1050);
+};
+
+setTimeout(function(){ _injectStress(); _injectFiber(); _injectWVest(); _renderStress(); _renderFiber(); _renderWVest(); },50000);
+setTimeout(function(){
+  if(!document.getElementById('rfc-stress-wrap')) { _injectStress(); _renderStress(); }
+  if(!document.getElementById('rfc-fiber-wrap'))  { _injectFiber(); _renderFiber(); }
+  if(!document.getElementById('rfc-wvest-wrap'))  { _injectWVest(); _renderWVest(); }
+},54000);
+})();
+</script>
+
 </body>
 </html>
