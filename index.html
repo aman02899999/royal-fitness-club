@@ -20600,6 +20600,83 @@ body.admin-logged-in #admin-theme-btn{display:flex;}
 .sc-day.sc-today{box-shadow:0 0 0 1.5px #e8001d;}
 .sc-legend{display:flex;align-items:center;gap:6px;margin-top:8px;font-size:10px;color:rgba(255,255,255,.3);}
 .sc-legend-cell{width:10px;height:10px;border-radius:2px;}
+
+/* ══════════════════════════════════════
+   NOTIFICATION BELL & CENTER
+   ══════════════════════════════════════ */
+#rfc-notif-bell{
+  position:relative;background:none;border:none;cursor:pointer;
+  padding:6px 8px;font-size:18px;color:rgba(255,255,255,.7);
+  transition:color .2s;vertical-align:middle;
+}
+#rfc-notif-bell:hover{color:#fff;}
+.notif-badge{
+  position:absolute;top:0px;right:0px;
+  background:#e8001d;color:#fff;font-size:9px;font-weight:900;
+  border-radius:10px;padding:1px 5px;min-width:16px;text-align:center;
+  line-height:15px;display:none;
+  animation:badgePop .3s cubic-bezier(.34,1.56,.64,1) both;
+}
+@keyframes badgePop{
+  0%{transform:scale(0);}100%{transform:scale(1);}
+}
+.notif-badge.has-notifs{display:block;}
+#rfc-notif-panel{
+  position:fixed;top:56px;right:12px;width:320px;max-width:calc(100vw - 24px);
+  background:rgba(14,14,16,.98);border:1px solid rgba(255,255,255,.1);
+  border-radius:16px;z-index:9200;
+  display:none;flex-direction:column;
+  box-shadow:0 12px 48px rgba(0,0,0,.8);
+  overflow:hidden;max-height:420px;
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  animation:notifDrop .2s cubic-bezier(.34,1.2,.64,1) both;
+}
+@keyframes notifDrop{
+  0%{opacity:0;transform:translateY(-10px) scale(.96);}
+  100%{opacity:1;transform:translateY(0) scale(1);}
+}
+.notif-ph{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 16px 10px;border-bottom:1px solid rgba(255,255,255,.07);
+}
+.notif-ph-title{font-family:'Bebas Neue',sans-serif;font-size:17px;letter-spacing:1px;color:#fff;}
+.notif-mark-btn{
+  background:none;border:none;font-size:11px;color:rgba(255,255,255,.35);
+  cursor:pointer;padding:3px 6px;transition:color .2s;
+}
+.notif-mark-btn:hover{color:#e8001d;}
+#rfc-notif-list{overflow-y:auto;max-height:340px;}
+#rfc-notif-list::-webkit-scrollbar{width:3px;}
+#rfc-notif-list::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:3px;}
+.notif-item{
+  display:flex;gap:12px;align-items:flex-start;
+  padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.05);
+  cursor:default;transition:background .15s;
+}
+.notif-item:last-child{border-bottom:none;}
+.notif-item.unread{background:rgba(232,0,29,.05);}
+.notif-item.unread:hover{background:rgba(232,0,29,.1);}
+.notif-item-icon{font-size:18px;flex-shrink:0;margin-top:1px;}
+.notif-item-body{flex:1;min-width:0;}
+.notif-item-msg{font-size:12px;color:#e5e7eb;line-height:1.5;}
+.notif-item-time{font-size:10px;color:rgba(255,255,255,.3);margin-top:3px;}
+.notif-unread-dot{
+  width:7px;height:7px;background:#e8001d;border-radius:50%;flex-shrink:0;margin-top:5px;
+}
+
+/* ══════════════════════════════════════
+   LIVE WORKOUT SESSION TIMER
+   ══════════════════════════════════════ */
+#wl-session-bar{
+  display:flex;align-items:center;justify-content:space-between;
+  background:rgba(232,0,29,.07);border:1px solid rgba(232,0,29,.2);
+  border-radius:10px;padding:10px 14px;margin-bottom:14px;
+}
+.wl-sess-time{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;color:#e8001d;}
+.wl-sess-lbl{font-size:10px;color:rgba(255,255,255,.4);letter-spacing:2px;text-transform:uppercase;margin-top:1px;}
+.wl-sess-kcal{text-align:right;}
+.wl-sess-kcal-val{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1px;color:#f59e0b;}
+.wl-sess-kcal-lbl{font-size:10px;color:rgba(255,255,255,.4);letter-spacing:1px;text-transform:uppercase;margin-top:1px;}
 </style>
 
 <!-- ═══ Marketing JS ═══ -->
@@ -23349,6 +23426,336 @@ window.switchScreen = function(name, navEl){
   if(name === 'workouts' || name === 'dashboard'){
     setTimeout(renderStreakCalendar, 200);
   }
+};
+
+})();
+</script>
+
+<!-- ══════════════════════════════════════════════════
+     NOTIFICATION BELL  ·  COUNT-UP STATS  ·  SESSION TIMER
+     ══════════════════════════════════════════════════ -->
+<script>
+(function(){
+'use strict';
+
+/* ──────────────────────────────────────────────
+   A. NOTIFICATION BELL + CENTER
+   ────────────────────────────────────────────── */
+
+/* Storage helpers */
+var _notifKey = function(){ return 'rfc_notifs_' + ((window.user && window.user.uid) || 'guest'); };
+function _getNotifs(){ try{ return JSON.parse(localStorage.getItem(_notifKey())||'[]'); }catch(e){ return []; } }
+function _saveNotifs(arr){ try{ localStorage.setItem(_notifKey(), JSON.stringify(arr.slice(0, 50))); }catch(e){} }
+
+function _addNotif(type, icon, msg){
+  var arr = _getNotifs();
+  /* de-dup: skip if same message in last 24h */
+  var recent = arr.find(function(n){ return n.msg === msg && Date.now() - n.ts < 86400000; });
+  if(recent) return;
+  arr.unshift({id: Date.now()+'_'+Math.random().toFixed(4), type:type, icon:icon, msg:msg, ts:Date.now(), read:false});
+  _saveNotifs(arr);
+  _refreshBell();
+  _renderNotifList();
+}
+
+function _refreshBell(){
+  var badge = document.getElementById('rfc-notif-badge');
+  if(!badge) return;
+  var arr = _getNotifs();
+  var unread = arr.filter(function(n){ return !n.read; }).length;
+  badge.textContent = unread > 9 ? '9+' : unread;
+  badge.classList.toggle('has-notifs', unread > 0);
+}
+
+function _renderNotifList(){
+  var list = document.getElementById('rfc-notif-list');
+  if(!list) return;
+  var arr = _getNotifs();
+  if(!arr.length){
+    list.innerHTML = '<div style="padding:24px 16px;text-align:center;font-size:12px;color:rgba(255,255,255,.3);">No notifications yet.<br>Log workouts to earn achievements!</div>';
+    return;
+  }
+  list.innerHTML = arr.slice(0, 20).map(function(n){
+    var ago = _timeAgoN(n.ts);
+    return '<div class="notif-item'+(n.read?'':' unread')+'">' +
+      '<div class="notif-item-icon">'+n.icon+'</div>' +
+      '<div class="notif-item-body"><div class="notif-item-msg">'+n.msg+'</div><div class="notif-item-time">'+ago+'</div></div>' +
+      (n.read ? '' : '<div class="notif-unread-dot"></div>') +
+    '</div>';
+  }).join('');
+}
+
+function _timeAgoN(ts){
+  if(!ts) return '';
+  var diff = Date.now() - ts;
+  var m = Math.floor(diff/60000), h = Math.floor(diff/3600000), d = Math.floor(diff/86400000);
+  if(d>0) return d+'d ago'; if(h>0) return h+'h ago'; if(m>0) return m+'m ago'; return 'Just now';
+}
+
+/* Inject bell button into navbar */
+function _injectBell(){
+  var nright = document.querySelector('.nright');
+  var upill  = document.getElementById('upill');
+  if(!nright || document.getElementById('rfc-notif-bell')) return;
+
+  var bellBtn = document.createElement('button');
+  bellBtn.id = 'rfc-notif-bell';
+  bellBtn.setAttribute('aria-label', 'Notifications');
+  bellBtn.setAttribute('title', 'Notifications');
+  bellBtn.innerHTML = '🔔<span class="notif-badge" id="rfc-notif-badge"></span>';
+  bellBtn.onclick = function(){ rfcNotif.toggle(); };
+  if(upill){ nright.insertBefore(bellBtn, upill); }
+  else { nright.appendChild(bellBtn); }
+
+  /* Panel */
+  var panel = document.createElement('div');
+  panel.id = 'rfc-notif-panel';
+  panel.innerHTML =
+    '<div class="notif-ph">' +
+      '<div class="notif-ph-title">🔔 Notifications</div>' +
+      '<button class="notif-mark-btn" onclick="rfcNotif.markAllRead()">Mark all read</button>' +
+    '</div>' +
+    '<div id="rfc-notif-list"></div>';
+  document.body.appendChild(panel);
+
+  _refreshBell();
+  _renderNotifList();
+
+  /* Close on outside click */
+  document.addEventListener('click', function(e){
+    var p = document.getElementById('rfc-notif-panel');
+    var b = document.getElementById('rfc-notif-bell');
+    if(p && p.style.display==='flex' && !p.contains(e.target) && !b.contains(e.target)){
+      rfcNotif.close();
+    }
+  });
+}
+
+window.rfcNotif = {
+  open: function(){
+    var p = document.getElementById('rfc-notif-panel');
+    if(p){ p.style.display='flex'; _renderNotifList(); }
+  },
+  close: function(){
+    var p = document.getElementById('rfc-notif-panel');
+    if(p) p.style.display='none';
+  },
+  toggle: function(){
+    var p = document.getElementById('rfc-notif-panel');
+    if(!p) return;
+    if(p.style.display==='flex') this.close(); else this.open();
+  },
+  markAllRead: function(){
+    var arr = _getNotifs().map(function(n){ n.read=true; return n; });
+    _saveNotifs(arr);
+    _refreshBell();
+    _renderNotifList();
+  },
+  add: _addNotif
+};
+
+/* Auto-generate notifications from app events */
+function _auditNotifs(){
+  if(!window.user || !window.user.uid) return;
+
+  /* PRs */
+  var prKey = 'rfc_prs_'+(window.user.uid);
+  var prs = {}; try{ prs = JSON.parse(localStorage.getItem(prKey)||'{}'); }catch(e){}
+  Object.keys(prs).forEach(function(ex){
+    _addNotif('pr', '🏆', 'Personal Record — ' + ex + ': ' + prs[ex] + 'kg!');
+  });
+
+  /* Streak milestones */
+  var pd = {}; try{ pd = JSON.parse(localStorage.getItem('bm_pd')||'{}'); }catch(e){}
+  var streak = pd.streak || 0;
+  var milestones = [3,7,14,30,60,100,365];
+  milestones.forEach(function(m){
+    if(streak >= m){
+      _addNotif('streak', '🔥', streak + '-day streak! You hit ' + m + '+ days — incredible discipline!');
+    }
+  });
+
+  /* Wallet balance */
+  var wk = 'rfc_wallet_'+(window.user.uid)+'_data';
+  var wd = null; try{ wd = JSON.parse(localStorage.getItem(wk)||'null'); }catch(e){}
+  if(wd && wd.balance && wd.balance >= 500){
+    _addNotif('wallet', '💰', 'Wallet balance ₹'+wd.balance+' — you can redeem rewards now!');
+  }
+
+  /* First workout */
+  var wlKey = 'rfc_workouts_'+(window.user.uid);
+  var wl = []; try{ wl = JSON.parse(localStorage.getItem(wlKey)||'[]'); }catch(e){}
+  if(wl.length >= 1) _addNotif('workout', '💪', 'First workout logged! Your journey starts today. Keep going!');
+  if(wl.length >= 5) _addNotif('workout', '🔥', '5 workouts logged — you\'re building a real habit!');
+  if(wl.length >= 20) _addNotif('workout', '🐯', '20 workouts! You\'re a Tiger now. Check the leaderboard!');
+
+  /* Referral earnings */
+  var wRef = wd && wd.txns ? wd.txns.filter(function(t){ return t.type==='credit' && t.desc && t.desc.toLowerCase().indexOf('referral')>-1; }) : [];
+  if(wRef.length > 0) _addNotif('referral', '💎', 'Referral credit received! ₹' + wRef.reduce(function(s,t){return s+t.amount;},0) + ' total earned from referrals.');
+}
+
+/* Inject after login */
+setTimeout(function(){
+  _injectBell();
+  _auditNotifs();
+}, 800);
+
+/* Also hook into login flow */
+var _origApplyUserNotif = window.applyUser;
+window.applyUser = function(){
+  _origApplyUserNotif && _origApplyUserNotif.apply(this, arguments);
+  setTimeout(function(){ _injectBell(); _auditNotifs(); }, 500);
+};
+
+/* Hook into saveWorkout to generate PR notifications */
+var _origSWN = window.saveWorkout;
+if(typeof _origSWN === 'function' && !_origSWN._notifHooked){
+  window.saveWorkout = async function(){
+    await _origSWN.apply(this, arguments);
+    setTimeout(_auditNotifs, 1000);
+  };
+  window.saveWorkout._notifHooked = true;
+}
+
+
+/* ──────────────────────────────────────────────
+   B. ANIMATED COUNT-UP STATS
+   ────────────────────────────────────────────── */
+function easeOutCubic(t){ return 1 - Math.pow(1-t, 3); }
+
+window.countUp = function(el, to, duration, prefix, suffix){
+  if(!el || isNaN(to)) return;
+  duration = duration || 900;
+  prefix = prefix || '';
+  suffix = suffix || '';
+  var start = performance.now();
+  function tick(now){
+    var p = Math.min((now - start) / duration, 1);
+    var val = Math.round(easeOutCubic(p) * to);
+    el.textContent = prefix + val + suffix;
+    if(p < 1) requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+};
+
+/* Watch dashboard stat cards and animate when they update */
+var STAT_IDS = ['ds-tiger','ds-streak','ds-wallet','ds-workouts'];
+STAT_IDS.forEach(function(id){
+  var el = document.getElementById(id);
+  if(!el) return;
+  new MutationObserver(function(){
+    var raw = el.textContent.replace(/[^\d.]/g,'');
+    var val = parseFloat(raw);
+    if(!isNaN(val) && val > 0){
+      var prefix = el.textContent.indexOf('₹') > -1 ? '₹' : '';
+      var suffix = el.textContent.indexOf('days') > -1 ? ' days' : '';
+      countUp(el, val, 800, prefix, suffix);
+    }
+  }).observe(el, {childList:true, characterData:true, subtree:true});
+});
+
+/* Also animate the Beast Score number when it changes */
+(function(){
+  var bsEl = document.getElementById('rscore');
+  if(!bsEl) return;
+  new MutationObserver(function(){
+    var v = parseInt(bsEl.textContent);
+    if(!isNaN(v) && v > 0) countUp(bsEl, v, 1200);
+  }).observe(bsEl, {childList:true, characterData:true, subtree:true});
+})();
+
+
+/* ──────────────────────────────────────────────
+   C. LIVE WORKOUT SESSION TIMER
+   ────────────────────────────────────────────── */
+var _sessStart = null, _sessIv = null;
+
+function _startSessTimer(){
+  if(_sessStart) return; /* already running */
+  _sessStart = Date.now();
+  var bar = document.getElementById('wl-session-bar');
+  if(bar) bar.style.display = 'flex';
+  _sessIv = setInterval(_updateSessTimer, 1000);
+}
+function _updateSessTimer(){
+  var bar = document.getElementById('wl-session-bar');
+  if(!bar) return;
+  var elapsed = Math.floor((Date.now() - _sessStart) / 1000);
+  var h = Math.floor(elapsed/3600), m = Math.floor((elapsed%3600)/60), s = elapsed%60;
+  var timeStr = (h>0 ? h+':' : '') + (m<10&&h>0?'0':'')+m+':'+(s<10?'0':'')+s;
+  var timeEl = document.getElementById('wl-sess-time');
+  if(timeEl) timeEl.textContent = timeStr;
+
+  /* rough calorie estimate: MET 5 × weight (default 70kg) × hours */
+  var uid = window.user && window.user.uid;
+  var pd = {}; try{ pd = JSON.parse(localStorage.getItem('bm_pd')||'{}'); }catch(e){}
+  var w = window.lastRes ? window.lastRes.weight : (pd.weight || 70);
+  var kcal = Math.round(5 * w * elapsed / 3600);
+  var kcalEl = document.getElementById('wl-sess-kcal-val');
+  if(kcalEl) kcalEl.textContent = kcal;
+}
+function _stopSessTimer(){
+  clearInterval(_sessIv);
+  _sessIv = null;
+  _sessStart = null;
+  var bar = document.getElementById('wl-session-bar');
+  if(bar) bar.style.display = 'none';
+}
+
+/* Inject session bar into workout log section */
+function _injectSessBar(){
+  var wllog = document.getElementById('workoutlog');
+  if(!wllog || document.getElementById('wl-session-bar')) return;
+  var bar = document.createElement('div');
+  bar.id = 'wl-session-bar';
+  bar.style.display = 'none';
+  bar.innerHTML =
+    '<div>' +
+      '<div class="wl-sess-time" id="wl-sess-time">0:00</div>' +
+      '<div class="wl-sess-lbl">Session Time</div>' +
+    '</div>' +
+    '<div style="font-size:22px;color:rgba(255,255,255,.15);">|</div>' +
+    '<div class="wl-sess-kcal">' +
+      '<div class="wl-sess-kcal-val" id="wl-sess-kcal-val">0</div>' +
+      '<div class="wl-sess-kcal-lbl">kcal est.</div>' +
+    '</div>';
+
+  /* inject before the first button inside #workoutlog .container */
+  var container = wllog.querySelector('.container');
+  var focusRow = document.getElementById('wl-focus-row');
+  if(container && focusRow){
+    container.insertBefore(bar, focusRow);
+  } else if(container){
+    container.insertBefore(bar, container.firstChild);
+  }
+}
+
+/* Patch addExerciseRow to start timer on first row */
+var _origARST = window.addExerciseRow;
+if(typeof _origARST === 'function' && !_origARST._timerHooked){
+  window.addExerciseRow = function(){
+    _origARST.apply(this, arguments);
+    _injectSessBar();
+    if(!_sessStart) _startSessTimer();
+  };
+  window.addExerciseRow._timerHooked = true;
+}
+
+/* Stop timer when workout is saved */
+var _origSWST = window.saveWorkout;
+if(typeof _origSWST === 'function' && !_origSWST._timerHooked){
+  window.saveWorkout = async function(){
+    await _origSWST.apply(this, arguments);
+    _stopSessTimer();
+  };
+  window.saveWorkout._timerHooked = true;
+}
+
+/* Inject session bar on workouts screen switch */
+var _origSS3 = window.switchScreen;
+window.switchScreen = function(name, navEl){
+  _origSS3 && _origSS3(name, navEl);
+  if(name === 'workouts') setTimeout(_injectSessBar, 100);
 };
 
 })();
