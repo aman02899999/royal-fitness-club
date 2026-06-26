@@ -38515,5 +38515,187 @@ setTimeout(function(){ if(!document.getElementById('rfc-cortisol-wrap')) _inject
 })();
 </script>
 
+<script>
+/* ===== BATCH 49: Longevity Habits | Calorie Balance Log | Rest Period Timer ===== */
+(function(){ 'use strict';
+var _origSS47=window.switchScreen;
+function _b49uid(){ try{ return JSON.parse(localStorage.getItem('bm_user')||'{}').uid||'guest'; }catch(e){ return 'guest'; } }
+function _b49today(){ var d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function _b49load(k){ try{ return JSON.parse(localStorage.getItem(k))||null; }catch(e){ return null; } }
+function _b49save(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} }
+function _b49card(id,title){ var d=document.createElement('div'); d.id=id; d.style.cssText='background:#1a1a2e;border-radius:14px;padding:18px;margin:14px 0;color:#e0e0e0;font-family:inherit;'; d.innerHTML='<div style="font-size:15px;font-weight:700;color:#00d4ff;margin-bottom:14px;">'+title+'</div>'; return d; }
+
+/* ---------- LONGEVITY HABITS TRACKER (dashboard) ---------- */
+var LONGEVITY_HABITS=[
+  {id:'plant_food',label:'80%+ plant-based meals',icon:'🥦',pts:2},
+  {id:'walk_10k',label:'10,000+ steps or 30min walk',icon:'🚶',pts:2},
+  {id:'purpose',label:'Sense of purpose/ikigai',icon:'🎯',pts:1},
+  {id:'social_eat',label:'Ate with others (social meal)',icon:'👨‍👩‍👧',pts:1},
+  {id:'no_smoke',label:'No smoking/vaping',icon:'🚭',pts:2},
+  {id:'hara_hachi',label:'Stopped eating at 80% full',icon:'🥢',pts:2},
+  {id:'fasting_w',label:'Eating window ≤10 hours',icon:'⏰',pts:1},
+  {id:'community',label:'Strong community/friendship',icon:'❤️',pts:1},
+  {id:'stress_low',label:'Stress management practice',icon:'🧘',pts:1},
+  {id:'sleep_lon',label:'7-9 hours quality sleep',icon:'😴',pts:2}
+];
+function _injectLongevity(){
+  if(document.getElementById('rfc-longevity-wrap')) return;
+  var anchor=document.getElementById('rfc-cortisol-wrap')||document.getElementById('rfc-breathwork-wrap')||document.getElementById('rfc-cold-wrap')||document.getElementById('rfc-social-wrap')||document.querySelector('.dash-topbar');
+  if(!anchor) return;
+  var card=_b49card('rfc-longevity-wrap','♾️ Longevity Habits');
+  card.style.cssText+='border:1px solid #1a2a2a;';
+  anchor.parentNode.insertBefore(card,anchor.nextSibling);
+  _renderLongevity();
+}
+function _renderLongevity(){
+  var card=document.getElementById('rfc-longevity-wrap'); if(!card) return;
+  var uid=_b49uid(), today=_b49today();
+  var key='rfc_longevity_'+uid+'_'+today;
+  var data=_b49load(key)||{};
+  var maxPts=15;
+  var got=LONGEVITY_HABITS.reduce(function(a,h){ return a+(data[h.id]?h.pts:0); },0);
+  var pct=Math.min(100,Math.round((got/maxPts)*100));
+  var pc=pct>=75?'#00ff88':pct>=50?'#ffd700':'#ff9f43';
+  var html='<div style="font-size:15px;font-weight:700;color:#00d4ff;margin-bottom:14px;">♾️ Longevity Habits</div>';
+  html+='<div style="font-size:11px;color:#888;margin-bottom:10px;">Inspired by Blue Zones research — habits of the world\'s longest-lived people.</div>';
+  html+='<div style="display:flex;align-items:center;gap:14px;margin-bottom:14px;">';
+  html+='<svg width="72" height="72" viewBox="0 0 72 72"><circle cx="36" cy="36" r="30" fill="none" stroke="#1a2a2a" stroke-width="8"/><circle cx="36" cy="36" r="30" fill="none" stroke="'+pc+'" stroke-width="8" stroke-dasharray="'+Math.round(pct*1.885)+' 188.5" stroke-dashoffset="47" style="transition:all 0.5s;"/><text x="36" y="41" text-anchor="middle" fill="'+pc+'" font-size="18" font-weight="800">'+pct+'%</text></svg>';
+  html+='<div><div style="font-size:20px;font-weight:800;color:'+pc+';">'+(pct>=75?'Blue Zone Living':pct>=50?'On Track':'Room to Grow')+'</div><div style="font-size:12px;color:#888;">'+got+'/'+maxPts+' longevity points</div></div></div>';
+  html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">';
+  LONGEVITY_HABITS.forEach(function(h){ var ok=!!data[h.id]; html+='<div onclick="window._rfcLongTap(\''+h.id+'\')" style="cursor:pointer;background:'+(ok?'#0d2a1a':'#12122a')+';border:1px solid '+(ok?'#00ff88':'#2a2a4a')+';border-radius:8px;padding:8px;display:flex;align-items:center;gap:6px;"><span style="font-size:14px;">'+h.icon+'</span><div style="flex:1;font-size:11px;color:'+(ok?'#00ff88':'#ccc')+';">'+h.label+'</div><span>'+(ok?'✅':'⭕')+'</span></div>'; });
+  html+='</div>';
+  card.innerHTML=html;
+}
+window._rfcLongTap=function(id){ var uid=_b49uid(), today=_b49today(); var key='rfc_longevity_'+uid+'_'+today; var data=_b49load(key)||{}; data[id]=!data[id]; _b49save(key,data); _renderLongevity(); };
+
+/* ---------- CALORIE BALANCE LOG (nutrition) ---------- */
+function _injectCalLog(){
+  if(document.getElementById('rfc-callog-wrap')) return;
+  var anchor=document.getElementById('rfc-prosyn-wrap')||document.getElementById('rfc-rainbow-wrap')||document.getElementById('rfc-collagen-wrap')||document.getElementById('rfc-glycemic-wrap')||document.querySelector('.dash-topbar');
+  if(!anchor) return;
+  var card=_b49card('rfc-callog-wrap','🔥 Calorie Balance Log');
+  card.style.cssText+='border:1px solid #2a1a1a;';
+  anchor.parentNode.insertBefore(card,anchor.nextSibling);
+  _renderCalLog();
+}
+function _renderCalLog(){
+  var card=document.getElementById('rfc-callog-wrap'); if(!card) return;
+  var uid=_b49uid(), today=_b49today();
+  var key='rfc_callog_'+uid+'_'+today;
+  var skey='rfc_callog_settings_'+uid;
+  var data=_b49load(key)||{meals:[]};
+  var settings=_b49load(skey)||{tdee:2200};
+  var meals=data.meals||[];
+  var consumed=meals.reduce(function(a,m){ return a+(m.kcal||0); },0);
+  var balance=consumed-settings.tdee;
+  var bc=balance<0?'#00ff88':balance>200?'#ff6b6b':'#ffd700';
+  var weeklyFat=Math.round((balance*7/7700)*100)/100;
+  var html='<div style="font-size:15px;font-weight:700;color:#00d4ff;margin-bottom:14px;">🔥 Calorie Balance Log</div>';
+  html+='<div style="display:flex;gap:10px;margin-bottom:12px;">';
+  html+='<div style="flex:1;background:#12122a;border-radius:9px;padding:10px;text-align:center;"><div style="font-size:22px;font-weight:800;color:#ff9f43;">'+consumed+'</div><div style="font-size:11px;color:#888;">Consumed</div></div>';
+  html+='<div style="flex:1;background:#12122a;border-radius:9px;padding:10px;text-align:center;"><div style="font-size:22px;font-weight:800;color:#00d4ff;">'+settings.tdee+'</div><div style="font-size:11px;color:#888;">TDEE Target</div></div>';
+  html+='<div style="flex:1;background:#12122a;border-radius:9px;padding:10px;text-align:center;"><div style="font-size:22px;font-weight:800;color:'+bc+';">'+(balance>0?'+':'')+balance+'</div><div style="font-size:11px;color:#888;">Balance</div></div></div>';
+  html+='<div style="background:'+(balance<0?'#0d2a1a':balance>200?'#2a0d0d':'#1a1a0d')+';border-radius:9px;padding:10px;margin-bottom:12px;">';
+  html+='<div style="font-size:13px;font-weight:700;color:'+bc+';">'+(balance<-500?'Aggressive deficit':balance<-200?'Deficit — losing fat':balance<200?'Maintenance zone':balance<500?'Surplus — gaining muscle':'Aggressive surplus')+'</div>';
+  html+='<div style="font-size:12px;color:#aaa;margin-top:4px;">Weekly: '+(balance<0?'~'+Math.abs(weeklyFat)+'kg fat loss est.':'~'+Math.abs(weeklyFat)+'kg gain est.')+'</div></div>';
+  html+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">';
+  html+='<label style="font-size:12px;color:#aaa;white-space:nowrap;">TDEE:</label>';
+  html+='<input type="number" min="1000" max="5000" step="50" value="'+settings.tdee+'" onchange="window._rfcCLSetTDEE(parseInt(this.value))" style="flex:1;background:#0d0d20;border:1px solid #2a2a4a;color:#fff;border-radius:6px;padding:6px;font-size:13px;">';
+  html+='<label style="font-size:12px;color:#aaa;">kcal/day</label></div>';
+  html+='<div style="background:#12122a;border-radius:9px;padding:10px;margin-bottom:10px;">';
+  html+='<div style="display:flex;gap:8px;margin-bottom:8px;">';
+  html+='<input type="text" id="rfc-cl-name" placeholder="Meal name" style="flex:1;background:#0d0d20;border:1px solid #2a2a4a;color:#fff;border-radius:6px;padding:6px;font-size:12px;">';
+  html+='<input type="number" id="rfc-cl-kcal" placeholder="kcal" min="0" max="5000" style="width:80px;background:#0d0d20;border:1px solid #2a2a4a;color:#fff;border-radius:6px;padding:6px;font-size:13px;font-weight:700;">';
+  html+='<button onclick="window._rfcCLAdd()" style="background:#ff9f43;border:none;color:#000;padding:7px 12px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;">+</button></div>';
+  if(meals.length){ meals.slice(-5).reverse().forEach(function(m){ html+='<div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #1a1a3a;"><span style="font-size:12px;color:#ccc;">'+m.name+'</span><span style="font-size:12px;color:#ff9f43;font-weight:700;">'+m.kcal+' kcal</span></div>'; }); }
+  html+='</div>';
+  card.innerHTML=html;
+}
+window._rfcCLSetTDEE=function(v){ var uid=_b49uid(); var k='rfc_callog_settings_'+uid; var s=_b49load(k)||{}; s.tdee=v; _b49save(k,s); _renderCalLog(); };
+window._rfcCLAdd=function(){
+  var nameEl=document.getElementById('rfc-cl-name'); var kcalEl=document.getElementById('rfc-cl-kcal');
+  var name=nameEl.value.trim(); var kcal=parseInt(kcalEl.value)||0;
+  if(!name||!kcal) return;
+  var uid=_b49uid(), today=_b49today(); var key='rfc_callog_'+uid+'_'+today;
+  var data=_b49load(key)||{meals:[]};
+  data.meals=data.meals||[]; data.meals.push({name:name,kcal:kcal,ts:Date.now()});
+  _b49save(key,data); nameEl.value=''; kcalEl.value=''; _renderCalLog();
+};
+
+/* ---------- REST PERIOD TIMER (workouts) ---------- */
+var REST_PRESETS=[
+  {id:'strength',label:'Strength',sec:180,desc:'Heavy compounds (3-5 min)'},
+  {id:'hypertrophy',label:'Hypertrophy',sec:90,desc:'Muscle building (60-120 sec)'},
+  {id:'metabolic',label:'Metabolic',sec:60,desc:'Supersets/circuits (45-75 sec)'},
+  {id:'endurance',label:'Endurance',sec:30,desc:'Conditioning (20-45 sec)'}
+];
+var _restState={running:false,left:0,total:0,preset:'hypertrophy',custom:90,iv:null,ctx:null};
+function _restBeep(freq){ try{ if(!_restState.ctx) _restState.ctx=new(window.AudioContext||window.webkitAudioContext)(); var o=_restState.ctx.createOscillator(); var g=_restState.ctx.createGain(); o.connect(g); g.connect(_restState.ctx.destination); o.type='sine'; o.frequency.value=freq; g.gain.setValueAtTime(0.25,_restState.ctx.currentTime); g.gain.exponentialRampToValueAtTime(0.001,_restState.ctx.currentTime+0.5); o.start(); o.stop(_restState.ctx.currentTime+0.5); }catch(e){} }
+function _injectRestimer(){
+  if(document.getElementById('rfc-restimer-wrap')) return;
+  var anchor=document.getElementById('rfc-progover-wrap')||document.getElementById('rfc-unilat-wrap')||document.getElementById('rfc-sprint-wrap')||document.getElementById('rfc-1rm-wrap')||document.querySelector('.dash-topbar');
+  if(!anchor) return;
+  var card=_b49card('rfc-restimer-wrap','⏱️ Rest Period Timer');
+  card.style.cssText+='border:1px solid #1a1a3a;';
+  anchor.parentNode.insertBefore(card,anchor.nextSibling);
+  _renderRestimer();
+}
+function _renderRestimer(){
+  var card=document.getElementById('rfc-restimer-wrap'); if(!card) return;
+  var preset=REST_PRESETS.find(function(p){ return p.id===_restState.preset; })||REST_PRESETS[1];
+  var left=_restState.running?_restState.left:preset.sec;
+  var total=_restState.total||preset.sec;
+  var pct=_restState.running?Math.round((left/total)*100):100;
+  var pc=pct>66?'#00ff88':pct>33?'#ffd700':'#ff6b6b';
+  var html='<div style="font-size:15px;font-weight:700;color:#00d4ff;margin-bottom:14px;">⏱️ Rest Period Timer</div>';
+  html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;">';
+  REST_PRESETS.forEach(function(p){ html+='<button onclick="window._rfcRTPreset(\''+p.id+'\')" style="padding:8px;border-radius:8px;border:1px solid '+(_restState.preset===p.id?'#00d4ff':'#2a2a4a')+';background:'+(_restState.preset===p.id?'#0d2a3a':'#12122a')+';color:'+(_restState.preset===p.id?'#00d4ff':'#888')+';cursor:pointer;text-align:left;"><div style="font-size:12px;font-weight:700;">'+p.label+'</div><div style="font-size:10px;color:#666;">'+p.sec+'s — '+p.desc+'</div></button>'; });
+  html+='</div>';
+  html+='<div style="text-align:center;margin-bottom:12px;">';
+  html+='<svg width="130" height="130" viewBox="0 0 130 130"><circle cx="65" cy="65" r="56" fill="none" stroke="#1a1a3a" stroke-width="10"/><circle cx="65" cy="65" r="56" fill="none" stroke="'+pc+'" stroke-width="10" stroke-dasharray="'+Math.round(pct*3.518)+' 351.8" stroke-dashoffset="88" style="transition:stroke-dasharray 1s;"/>';
+  html+='<text x="65" y="58" text-anchor="middle" fill="'+pc+'" font-size="32" font-weight="800">'+Math.floor(left/60)+':'+String(left%60).padStart(2,'0')+'</text>';
+  html+='<text x="65" y="80" text-anchor="middle" fill="#888" font-size="12">'+(left===0?'REST DONE!':_restState.running?'Resting...':preset.label+' Rest')+'</text></svg></div>';
+  html+='<div style="display:flex;gap:10px;margin-bottom:12px;">';
+  if(!_restState.running&&left>0){ html+='<button onclick="window._rfcRTStart()" style="flex:1;background:#00ff88;border:none;color:#000;padding:12px;border-radius:10px;font-size:14px;font-weight:800;cursor:pointer;">▶ Start Rest</button>'; }
+  else if(_restState.running){ html+='<button onclick="window._rfcRTStop()" style="flex:1;background:#ff6b6b;border:none;color:#fff;padding:12px;border-radius:10px;font-size:14px;font-weight:800;cursor:pointer;">■ Skip</button>'; }
+  else { html+='<button onclick="window._rfcRTReset()" style="flex:1;background:#00d4ff;border:none;color:#000;padding:12px;border-radius:10px;font-size:14px;font-weight:800;cursor:pointer;">↺ Reset</button>'; }
+  html+='</div>';
+  html+='<div style="display:flex;align-items:center;gap:8px;">';
+  html+='<label style="font-size:12px;color:#888;white-space:nowrap;">Custom:</label>';
+  html+='<input type="number" min="10" max="600" step="5" value="'+(_restState.custom||90)+'" onchange="window._rfcRTCustom(parseInt(this.value))" style="flex:1;background:#0d0d20;border:1px solid #2a2a4a;color:#fff;border-radius:6px;padding:6px;font-size:13px;">';
+  html+='<label style="font-size:12px;color:#888;">sec</label>';
+  html+='<button onclick="window._rfcRTSetCustom()" style="background:#a855f7;border:none;color:#fff;padding:7px 12px;border-radius:6px;font-size:12px;cursor:pointer;">Set</button></div>';
+  card.innerHTML=html;
+}
+window._rfcRTPreset=function(id){ if(_restState.running) return; _restState.preset=id; var p=REST_PRESETS.find(function(x){ return x.id===id; }); if(p){ _restState.left=p.sec; _restState.total=p.sec; } _renderRestimer(); };
+window._rfcRTStart=function(){
+  if(_restState.running) return;
+  var preset=REST_PRESETS.find(function(p){ return p.id===_restState.preset; })||REST_PRESETS[1];
+  _restState.left=_restState.left||preset.sec; _restState.total=_restState.left;
+  _restState.running=true; _restBeep(880);
+  if(_restState.iv) clearInterval(_restState.iv);
+  _restState.iv=setInterval(function(){
+    _restState.left--;
+    if(_restState.left<=3&&_restState.left>0) _restBeep(660);
+    if(_restState.left<=0){ clearInterval(_restState.iv); _restState.iv=null; _restState.running=false; _restBeep(1047); }
+    _renderRestimer();
+  },1000); _renderRestimer();
+};
+window._rfcRTStop=function(){ _restState.running=false; if(_restState.iv){ clearInterval(_restState.iv); _restState.iv=null; } _renderRestimer(); };
+window._rfcRTReset=function(){ var p=REST_PRESETS.find(function(x){ return x.id===_restState.preset; })||REST_PRESETS[1]; _restState.left=p.sec; _restState.total=p.sec; _restState.running=false; _renderRestimer(); };
+window._rfcRTCustom=function(v){ _restState.custom=v; };
+window._rfcRTSetCustom=function(){ _restState.left=_restState.custom||90; _restState.total=_restState.left; _restState.preset=''; _renderRestimer(); };
+
+window.switchScreen=function(name,navEl){
+  _origSS47&&_origSS47(name,navEl);
+  if(name==='dashboard') setTimeout(function(){ _injectLongevity(); _renderLongevity(); },1200);
+  if(name==='nutrition') setTimeout(function(){ _injectCalLog(); _renderCalLog(); },1100);
+  if(name==='workouts')  setTimeout(function(){ _injectRestimer(); _renderRestimer(); },1050);
+};
+setTimeout(function(){ _injectLongevity(); _injectCalLog(); _injectRestimer(); },41000);
+setTimeout(function(){ if(!document.getElementById('rfc-longevity-wrap')) _injectLongevity(); if(!document.getElementById('rfc-callog-wrap')) _injectCalLog(); if(!document.getElementById('rfc-restimer-wrap')) _injectRestimer(); },45000);
+})();
+</script>
+
 </body>
 </html>
