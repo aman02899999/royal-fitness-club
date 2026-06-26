@@ -32606,4 +32606,381 @@ setTimeout(function(){
 </script>
 
 </body>
+
+<script>
+/* ============================================================
+   BATCH 27 — Step Counter | Protein Timing | Workout Streak
+   ============================================================ */
+(function(){ 'use strict';
+
+var _origSS25 = window.switchScreen;
+
+/* ── helpers ── */
+function _b27uid(){ try{ return JSON.parse(localStorage.getItem('bm_user')||'{}').uid||'guest'; }catch(e){ return 'guest'; } }
+function _b27today(){ var d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function _b27load(k){ try{ return JSON.parse(localStorage.getItem(k))||null; }catch(e){ return null; } }
+function _b27save(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} }
+function _b27card(id,title){
+  var d=document.createElement('div');
+  d.id=id;
+  d.style.cssText='background:#1a1a2e;border-radius:14px;padding:18px;margin:14px 0;color:#e0e0e0;font-family:inherit;';
+  d.innerHTML='<div style="font-size:15px;font-weight:700;color:#00d4ff;margin-bottom:14px;">'+title+'</div>';
+  return d;
+}
+
+/* ════════════════════════════════════════════════════════════
+   1. STEP COUNTER (dashboard)
+   ════════════════════════════════════════════════════════════ */
+function _injectSteps(){
+  if(document.getElementById('rfc-steps-wrap')) return;
+  var anchors=['rfc-mood-wrap','rfc-water-wrap','rfc-neat-wrap','rfc-breath-wrap','rfc-bodycomp-wrap','rfc-fitage-wrap','rfc-xform-wrap'];
+  var host=null;
+  for(var i=0;i<anchors.length;i++){ var el=document.getElementById(anchors[i]); if(el){ host=el; break; } }
+  if(!host){ var tb=document.querySelector('.dash-topbar'); if(tb) host=tb; }
+  if(!host) return;
+
+  var c=_b27card('rfc-steps-wrap','👟 Daily Step Counter');
+  c.innerHTML+=
+    '<div style="display:flex;align-items:center;gap:16px;margin-bottom:14px;">'+
+      '<div style="position:relative;flex-shrink:0;">'+
+        '<svg width="100" height="100" viewBox="0 0 100 100">'+
+          '<circle cx="50" cy="50" r="42" fill="none" stroke="#0d0d1a" stroke-width="10"/>'+
+          '<circle id="rfc-steps-ring" cx="50" cy="50" r="42" fill="none" stroke="#22c55e" stroke-width="10" stroke-linecap="round" stroke-dasharray="0 264" transform="rotate(-90 50 50)" style="transition:stroke-dasharray .5s;"/>'+
+        '</svg>'+
+        '<div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;">'+
+          '<div id="rfc-steps-pct" style="font-size:18px;font-weight:800;color:#22c55e;">0%</div>'+
+        '</div>'+
+      '</div>'+
+      '<div style="flex:1;">'+
+        '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">'+
+          '<button onclick="window._rfcStepAdj(-500)" style="background:#1a2a1a;border:1px solid #2a4a2a;color:#22c55e;width:32px;height:32px;border-radius:8px;cursor:pointer;font-size:16px;line-height:1;">−</button>'+
+          '<input id="rfc-steps-input" type="number" min="0" max="99999" value="0" onchange="window._rfcStepSet(this.value)" style="flex:1;background:#0d0d1a;border:1px solid #333;color:#22c55e;text-align:center;padding:6px;border-radius:8px;font-size:18px;font-weight:700;width:0;">'+
+          '<button onclick="window._rfcStepAdj(500)" style="background:#1a2a1a;border:1px solid #2a4a2a;color:#22c55e;width:32px;height:32px;border-radius:8px;cursor:pointer;font-size:16px;line-height:1;">+</button>'+
+        '</div>'+
+        '<div style="font-size:11px;color:#555;">Goal: <span id="rfc-steps-goal-txt">10,000</span> steps</div>'+
+        '<div style="font-size:11px;color:#666;margin-top:2px;">~<span id="rfc-steps-kcal">0</span> kcal burned</div>'+
+        '<select id="rfc-steps-goal-sel" onchange="window._rfcStepGoal(this.value)" style="margin-top:6px;background:#0d0d1a;border:1px solid #333;color:#aaa;padding:4px 8px;border-radius:6px;font-size:11px;">'+
+          '<option value="5000">Goal: 5k steps</option>'+
+          '<option value="7500">Goal: 7.5k steps</option>'+
+          '<option value="10000" selected>Goal: 10k steps</option>'+
+          '<option value="15000">Goal: 15k steps</option>'+
+        '</select>'+
+      '</div>'+
+    '</div>'+
+    '<div style="font-size:12px;color:#888;margin-bottom:6px;">Last 7 days</div>'+
+    '<div style="display:flex;align-items:flex-end;gap:4px;height:50px;" id="rfc-steps-week"></div>';
+
+  if(host.nextSibling) host.parentNode.insertBefore(c,host.nextSibling);
+  else host.parentNode.appendChild(c);
+  _renderSteps();
+}
+
+function _renderSteps(){
+  var uid=_b27uid(), date=_b27today();
+  var key='rfc_steps_'+uid+'_'+date;
+  var data=_b27load(key)||{steps:0,goal:10000};
+  var steps=data.steps||0, goal=data.goal||10000;
+  var pct=Math.min(100,Math.round(steps/goal*100));
+
+  var ring=document.getElementById('rfc-steps-ring');
+  var pctEl=document.getElementById('rfc-steps-pct');
+  var inp=document.getElementById('rfc-steps-input');
+  var gt=document.getElementById('rfc-steps-goal-txt');
+  var kcalEl=document.getElementById('rfc-steps-kcal');
+  var gsel=document.getElementById('rfc-steps-goal-sel');
+  var week=document.getElementById('rfc-steps-week');
+  if(!ring) return;
+
+  var circ=264;
+  ring.setAttribute('stroke-dasharray',(pct/100*circ)+' '+circ);
+  ring.setAttribute('stroke',pct>=100?'#ffd700':pct>=70?'#22c55e':'#84cc16');
+  if(pctEl){ pctEl.textContent=pct+'%'; pctEl.style.color=pct>=100?'#ffd700':'#22c55e'; }
+  if(inp) inp.value=steps;
+  if(gt) gt.textContent=goal.toLocaleString();
+  if(kcalEl) kcalEl.textContent=Math.round(steps*0.04);
+  if(gsel) gsel.value=String(goal);
+
+  if(week){
+    var days=[]; var maxS=1;
+    for(var d=6;d>=0;d--){
+      var dd=new Date(); dd.setDate(dd.getDate()-d);
+      var dk=dd.getFullYear()+'-'+String(dd.getMonth()+1).padStart(2,'0')+'-'+String(dd.getDate()).padStart(2,'0');
+      var rec=_b27load('rfc_steps_'+uid+'_'+dk)||{steps:0,goal:10000};
+      var s=rec.steps||0; if(s>maxS) maxS=s;
+      days.push({s:s,g:rec.goal||10000,isToday:d===0});
+    }
+    var html='';
+    days.forEach(function(r){
+      var h=Math.max(4,Math.round(r.s/maxS*46));
+      var hit=r.s>=r.g;
+      html+='<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;" title="'+r.s.toLocaleString()+' steps">'+
+        '<div style="width:100%;height:'+h+'px;background:'+(hit?'#ffd700':r.isToday?'#22c55e':'#22c55e55')+';border-radius:3px;transition:height .3s;"></div>'+
+      '</div>';
+    });
+    week.innerHTML=html;
+  }
+}
+window._rfcStepAdj=function(n){
+  var uid=_b27uid(), date=_b27today();
+  var key='rfc_steps_'+uid+'_'+date;
+  var data=_b27load(key)||{steps:0,goal:10000};
+  data.steps=Math.max(0,(data.steps||0)+n);
+  _b27save(key,data);
+  _renderSteps();
+};
+window._rfcStepSet=function(v){
+  var uid=_b27uid(), date=_b27today();
+  var key='rfc_steps_'+uid+'_'+date;
+  var data=_b27load(key)||{steps:0,goal:10000};
+  data.steps=Math.max(0,parseInt(v,10)||0);
+  _b27save(key,data);
+  _renderSteps();
+};
+window._rfcStepGoal=function(v){
+  var uid=_b27uid(), date=_b27today();
+  var key='rfc_steps_'+uid+'_'+date;
+  var data=_b27load(key)||{steps:0,goal:10000};
+  data.goal=parseInt(v,10)||10000;
+  _b27save(key,data);
+  _renderSteps();
+};
+
+/* ════════════════════════════════════════════════════════════
+   2. PROTEIN TIMING TRACKER (nutrition)
+   ════════════════════════════════════════════════════════════ */
+var PT_MEALS=[
+  {id:'m1',label:'Breakfast'},
+  {id:'m2',label:'Morning Snack'},
+  {id:'m3',label:'Lunch'},
+  {id:'m4',label:'Afternoon Snack'},
+  {id:'m5',label:'Dinner'},
+  {id:'m6',label:'Evening / Post-WO'}
+];
+
+function _injectProtTiming(){
+  if(document.getElementById('rfc-protiming-wrap')) return;
+  var anchors=['rfc-caff-wrap','rfc-supps-wrap','rfc-mccycle-wrap','rfc-fdiary-wrap','rfc-nccal-wrap','rfc-micros-wrap'];
+  var host=null;
+  for(var i=0;i<anchors.length;i++){ var el=document.getElementById(anchors[i]); if(el){ host=el; break; } }
+  if(!host) host=document.getElementById('rfc-food-wrap');
+  if(!host) return;
+
+  var c=_b27card('rfc-protiming-wrap','🥩 Protein Timing Tracker');
+  var rows='';
+  PT_MEALS.forEach(function(m){
+    rows+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:7px;">'+
+      '<span style="font-size:12px;color:#aaa;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+m.label+'</span>'+
+      '<input type="number" id="rfc-pt-'+m.id+'" min="0" max="200" placeholder="0" onchange="window._rfcPTChange()" style="width:60px;background:#0d0d1a;border:1px solid #333;color:#e0e0e0;padding:5px 8px;border-radius:7px;font-size:13px;text-align:center;">'+
+      '<span style="font-size:11px;color:#555;width:28px;text-align:right;">g</span>'+
+      '<div id="rfc-pt-dot-'+m.id+'" style="width:10px;height:10px;border-radius:50%;background:#333;flex-shrink:0;"></div>'+
+    '</div>';
+  });
+  c.innerHTML+=
+    '<div style="display:flex;gap:14px;margin-bottom:12px;">'+
+      '<div style="flex:1;text-align:center;background:#0d0d1a;border-radius:9px;padding:8px;">'+
+        '<div id="rfc-pt-total" style="font-size:20px;font-weight:800;color:#f97316;">0</div>'+
+        '<div style="font-size:10px;color:#555;">total g</div>'+
+      '</div>'+
+      '<div style="flex:1;text-align:center;background:#0d0d1a;border-radius:9px;padding:8px;">'+
+        '<div id="rfc-pt-target" style="font-size:20px;font-weight:800;color:#888;">—</div>'+
+        '<div style="font-size:10px;color:#555;">target g</div>'+
+      '</div>'+
+      '<div style="flex:1;text-align:center;background:#0d0d1a;border-radius:9px;padding:8px;">'+
+        '<div id="rfc-pt-meals-hit" style="font-size:20px;font-weight:800;color:#22c55e;">0/6</div>'+
+        '<div style="font-size:10px;color:#555;">meals ≥25g</div>'+
+      '</div>'+
+    '</div>'+
+    rows+
+    '<div style="font-size:11px;color:#555;margin-top:4px;">Optimal: 25-40g protein per meal for muscle synthesis.</div>';
+
+  if(host.nextSibling) host.parentNode.insertBefore(c,host.nextSibling);
+  else host.parentNode.appendChild(c);
+  _renderProtTiming();
+}
+
+function _renderProtTiming(){
+  var uid=_b27uid(), date=_b27today();
+  var key='rfc_pt_'+uid+'_'+date;
+  var data=_b27load(key)||{};
+
+  var total=0, hits=0;
+  PT_MEALS.forEach(function(m){
+    var inp=document.getElementById('rfc-pt-'+m.id);
+    var dot=document.getElementById('rfc-pt-dot-'+m.id);
+    var v=data[m.id]||0;
+    if(inp && inp !== document.activeElement) inp.value=v||'';
+    total+=v;
+    if(v>=25) hits++;
+    if(dot){
+      dot.style.background=v<=0?'#333':v<25?'#fbbf24':v<=40?'#22c55e':'#f97316';
+      dot.title=v<=0?'Not logged':v<25?'Too low (<25g)':v<=40?'Optimal (25-40g)':'High (>40g)';
+    }
+  });
+
+  var totEl=document.getElementById('rfc-pt-total');
+  var tgtEl=document.getElementById('rfc-pt-target');
+  var mhEl=document.getElementById('rfc-pt-meals-hit');
+  if(totEl){ totEl.textContent=total; totEl.style.color=total>=150?'#22c55e':'#f97316'; }
+  if(mhEl) mhEl.textContent=hits+'/6';
+
+  if(tgtEl){
+    try{
+      var res=JSON.parse(localStorage.getItem('bm_last_result')||'{}');
+      var tgt=Math.round(res.protein||0);
+      tgtEl.textContent=tgt>0?tgt:'—';
+    }catch(e){ tgtEl.textContent='—'; }
+  }
+}
+window._rfcPTChange=function(){
+  var uid=_b27uid(), date=_b27today();
+  var key='rfc_pt_'+uid+'_'+date;
+  var data=_b27load(key)||{};
+  PT_MEALS.forEach(function(m){
+    var inp=document.getElementById('rfc-pt-'+m.id);
+    if(inp) data[m.id]=Math.max(0,parseInt(inp.value,10)||0);
+  });
+  _b27save(key,data);
+  _renderProtTiming();
+};
+
+/* ════════════════════════════════════════════════════════════
+   3. WORKOUT STREAK COUNTER (workouts)
+   ════════════════════════════════════════════════════════════ */
+function _injectWkStreak(){
+  if(document.getElementById('rfc-wkstreak-wrap')) return;
+  var anchors=['rfc-volload-wrap','rfc-prboard-wrap','rfc-wgen-wrap','rfc-strstd-wrap','rfc-rest-wrap','rfc-rpe-wrap'];
+  var host=null;
+  for(var i=0;i<anchors.length;i++){ var el=document.getElementById(anchors[i]); if(el){ host=el; break; } }
+  if(!host) host=document.getElementById('wl-history');
+  if(!host) return;
+
+  var c=_b27card('rfc-wkstreak-wrap','🔥 Workout Streak Counter');
+  c.innerHTML+=
+    '<div style="display:flex;gap:14px;margin-bottom:14px;">'+
+      '<div style="flex:1;text-align:center;background:#0d0d1a;border-radius:10px;padding:12px 8px;">'+
+        '<div id="rfc-wks-current" style="font-size:28px;font-weight:800;color:#f97316;">0</div>'+
+        '<div style="font-size:10px;color:#555;">current streak</div>'+
+      '</div>'+
+      '<div style="flex:1;text-align:center;background:#0d0d1a;border-radius:10px;padding:12px 8px;">'+
+        '<div id="rfc-wks-best" style="font-size:28px;font-weight:800;color:#fbbf24;">0</div>'+
+        '<div style="font-size:10px;color:#555;">best streak</div>'+
+      '</div>'+
+      '<div style="flex:1;text-align:center;background:#0d0d1a;border-radius:10px;padding:12px 8px;">'+
+        '<div id="rfc-wks-total" style="font-size:28px;font-weight:800;color:#a78bfa;">0</div>'+
+        '<div style="font-size:10px;color:#555;">total sessions</div>'+
+      '</div>'+
+    '</div>'+
+    '<div style="font-size:12px;color:#888;margin-bottom:6px;">Last 21 days</div>'+
+    '<div id="rfc-wks-cal" style="display:flex;flex-wrap:wrap;gap:4px;"></div>'+
+    '<div id="rfc-wks-msg" style="font-size:12px;color:#666;margin-top:10px;text-align:center;"></div>';
+
+  if(host.nextSibling) host.parentNode.insertBefore(c,host.nextSibling);
+  else host.parentNode.appendChild(c);
+  _renderWkStreak();
+}
+
+function _renderWkStreak(){
+  var uid=_b27uid(), today=_b27today();
+  var workouts=[];
+  try{ workouts=JSON.parse(localStorage.getItem('rfc_workouts_'+uid)||'[]'); }catch(e){}
+
+  /* build set of ISO date strings from ts */
+  var woDates=new Set();
+  workouts.forEach(function(w){
+    if(w.ts){
+      var d=new Date(w.ts);
+      var dk=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+      woDates.add(dk);
+    }
+  });
+
+  /* current streak: consecutive days going back from today */
+  var cur=0;
+  for(var d=0;d<365;d++){
+    var dd=new Date(); dd.setDate(dd.getDate()-d);
+    var dk=dd.getFullYear()+'-'+String(dd.getMonth()+1).padStart(2,'0')+'-'+String(dd.getDate()).padStart(2,'0');
+    if(woDates.has(dk)) cur++;
+    else if(d>0) break; /* allow today to be missed without breaking */
+    else if(d===0) { /* today not worked out yet — check yesterday */
+      var ye=new Date(); ye.setDate(ye.getDate()-1);
+      var yk=ye.getFullYear()+'-'+String(ye.getMonth()+1).padStart(2,'0')+'-'+String(ye.getDate()).padStart(2,'0');
+      if(!woDates.has(yk)) break;
+    }
+  }
+
+  /* best streak via sliding window */
+  var best=0, run=0;
+  var allDates=Array.from(woDates).sort();
+  allDates.forEach(function(dk,i){
+    if(i===0){ run=1; }
+    else {
+      var prev=new Date(allDates[i-1]); var cur2=new Date(dk);
+      var diff=(cur2-prev)/(864e5);
+      if(diff===1) run++; else run=1;
+    }
+    if(run>best) best=run;
+  });
+  best=Math.max(best,cur);
+
+  var curEl=document.getElementById('rfc-wks-current');
+  var bestEl=document.getElementById('rfc-wks-best');
+  var totEl=document.getElementById('rfc-wks-total');
+  var calEl=document.getElementById('rfc-wks-cal');
+  var msgEl=document.getElementById('rfc-wks-msg');
+  if(!curEl) return;
+
+  curEl.textContent=cur;
+  bestEl.textContent=best;
+  totEl.textContent=workouts.length;
+
+  if(calEl){
+    var html='';
+    for(var j=20;j>=0;j--){
+      var dj=new Date(); dj.setDate(dj.getDate()-j);
+      var djk=dj.getFullYear()+'-'+String(dj.getMonth()+1).padStart(2,'0')+'-'+String(dj.getDate()).padStart(2,'0');
+      var has=woDates.has(djk);
+      var isToday=djk===today;
+      html+='<div title="'+djk+(has?' ✓':'')+'" style="width:calc((100% - 80px)/21);aspect-ratio:1;min-width:12px;border-radius:3px;background:'+(has?'#f97316':isToday?'#333':'#111')+';border:1px solid '+(isToday?'#f9741688':'transparent')+';"></div>';
+    }
+    calEl.innerHTML=html;
+  }
+
+  if(msgEl){
+    if(cur===0) msgEl.textContent="No active streak. Log a workout today to start one!";
+    else if(cur<3) msgEl.textContent="Keep it up! "+cur+" day"+(cur>1?'s':'')+' in a row — build that habit!';
+    else if(cur<7) msgEl.textContent='🔥 '+cur+'-day streak — great consistency!';
+    else msgEl.textContent='🏆 '+cur+'-day streak — elite discipline!';
+  }
+}
+
+/* ── switchScreen wrap ── */
+window.switchScreen=function(name,navEl){
+  _origSS25&&_origSS25(name,navEl);
+  if(name==='dashboard'){
+    setTimeout(function(){ _injectSteps(); _renderSteps(); }, 1200);
+  }
+  if(name==='nutrition'){
+    setTimeout(function(){ _injectProtTiming(); _renderProtTiming(); }, 1100);
+  }
+  if(name==='workouts'){
+    setTimeout(function(){ _injectWkStreak(); _renderWkStreak(); }, 1050);
+  }
+};
+
+setTimeout(function(){
+  _injectSteps();
+  _injectProtTiming();
+  _injectWkStreak();
+}, 19000);
+
+setTimeout(function(){
+  if(!document.getElementById('rfc-steps-wrap'))      _injectSteps();
+  if(!document.getElementById('rfc-protiming-wrap'))  _injectProtTiming();
+  if(!document.getElementById('rfc-wkstreak-wrap'))   _injectWkStreak();
+}, 23000);
+
+})();
+</script>
+
+</body>
 </html>
