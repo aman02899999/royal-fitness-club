@@ -28266,5 +28266,415 @@ setTimeout(function(){
 })();
 </script>
 
+<script>
+/* ═══════════════════════════════════════════════════════
+   BATCH 15: Calorie Balance · Sleep Schedule Optimizer
+             Weekly Volume vs MEV Chart
+   ═══════════════════════════════════════════════════════ */
+(function(){
+'use strict';
+
+/* ── helpers ────────────────────────────────────── */
+function _b15uid(){
+  try{ return JSON.parse(localStorage.getItem('bm_user')||'{}').uid||'anon'; }catch(e){return'anon';}
+}
+function _b15today(){
+  var d=new Date();
+  return d.getFullYear()+'-'+(d.getMonth()+1<10?'0':'')+(d.getMonth()+1)+'-'+(d.getDate()<10?'0':'')+d.getDate();
+}
+function _b15after(el, ref){ ref.parentNode.insertBefore(el, ref.nextSibling); }
+function _b15card(id){ var d=document.createElement('div'); d.id=id; d.className='rfc-b12-card'; return d; }
+
+/* ════════════════════════════════════════════════════
+   1. CALORIE BALANCE TRACKER
+   ════════════════════════════════════════════════════ */
+function _getTDEE(){
+  try{
+    var lr=JSON.parse(localStorage.getItem('bm_last_result')||'null');
+    if(lr&&lr.tdee) return {tdee:Math.round(lr.tdee), goal:lr.goal||'maintain', targetCals:lr.targetCals||Math.round(lr.tdee)};
+  }catch(e){}
+  return {tdee:2000, goal:'maintain', targetCals:2000};
+}
+
+function _getTodayKcal(){
+  var uid=_b15uid(), today=_b15today();
+  try{
+    var foods=JSON.parse(localStorage.getItem('rfc_food_'+uid+'_'+today)||'[]');
+    return foods.reduce(function(s,f){ return s+(parseFloat(f.cal)||0); },0);
+  }catch(e){ return 0; }
+}
+
+function _renderCalBalance(){
+  var wrap=document.getElementById('rfc-cal-balance-wrap');
+  if(!wrap) return;
+
+  var tdeeData=_getTDEE();
+  var target  =tdeeData.targetCals;
+  var actual  =Math.round(_getTodayKcal());
+  var net     =actual - target;
+  var isSurplus=net>0;
+  var absNet  =Math.abs(net);
+
+  // Weekly projection: 7700 kcal = 1 kg fat
+  var weeklyNet   = net * 7;
+  var kgChange    = (weeklyNet / 7700).toFixed(2);
+  var changeDir   = weeklyNet>0 ? '+' : '';
+  var projColor   = tdeeData.goal==='gain'
+    ? (isSurplus ? '#22c55e' : '#ef4444')
+    : (isSurplus ? '#f97316' : '#22c55e');
+
+  // Balance bar: center = 0, ±500 kcal fills to edge
+  var MAX_DISP = 600;
+  var clamp    = Math.max(-MAX_DISP, Math.min(MAX_DISP, net));
+  var leftPct  = isSurplus ? 50 : Math.round(50 + (clamp/MAX_DISP)*50);
+  var rightPct = isSurplus ? Math.round(50 + (clamp/MAX_DISP)*50) : 50;
+  var barColor = isSurplus ? '#f97316' : '#22c55e';
+  if(tdeeData.goal==='gain') barColor = isSurplus ? '#22c55e' : '#ef4444';
+
+  // 7-day calorie history bars
+  var uid=_b15uid();
+  var weekBars='', maxCal=target*1.3;
+  for(var i=6;i>=0;i--){
+    var d=new Date(); d.setDate(d.getDate()-i);
+    var ds=d.getFullYear()+'-'+(d.getMonth()+1<10?'0':'')+(d.getMonth()+1)+'-'+(d.getDate()<10?'0':'')+d.getDate();
+    var dc=0;
+    try{ dc=JSON.parse(localStorage.getItem('rfc_food_'+uid+'_'+ds)||'[]').reduce(function(s,f){return s+(parseFloat(f.cal)||0);},0); }catch(e){}
+    var h=dc?Math.max(4,Math.round((dc/maxCal)*44)):4;
+    var bc=dc>=target*0.9&&dc<=target*1.1?'#22c55e':dc>target*1.15?'#f97316':'#3b82f6';
+    var dn=['S','M','T','W','T','F','S'][d.getDay()];
+    weekBars+='<div style="display:flex;flex-direction:column;align-items:center;gap:2px;flex:1;">'
+      +'<div style="height:44px;display:flex;align-items:flex-end;">'
+      +'<div style="width:13px;height:'+h+'px;background:'+bc+';border-radius:2px 2px 0 0;"></div></div>'
+      +'<div style="font-size:9px;color:#777;">'+dn+'</div>'
+      +'</div>';
+  }
+
+  wrap.innerHTML=
+    '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">'
+    +'<span style="font-weight:700;font-size:13px;color:#fff;">⚖️ Calorie Balance</span>'
+    +'<span style="font-size:11px;color:#888;">Target: '+target+' kcal</span>'
+    +'</div>'
+    // Big balance display
+    +'<div style="display:flex;gap:10px;margin-bottom:12px;">'
+    +'<div style="flex:1;background:#0d0d0d;border-radius:10px;padding:10px;text-align:center;">'
+    +'<div style="font-size:10px;color:#888;margin-bottom:2px;">Consumed</div>'
+    +'<div style="font-size:22px;font-weight:700;color:#fff;">'+(actual||'—')+'</div>'
+    +'<div style="font-size:9px;color:#888;">kcal</div>'
+    +'</div>'
+    +'<div style="flex:1;background:#0d0d0d;border-radius:10px;padding:10px;text-align:center;">'
+    +'<div style="font-size:10px;color:#888;margin-bottom:2px;">'+(isSurplus?'Surplus':'Deficit')+'</div>'
+    +'<div style="font-size:22px;font-weight:700;color:'+(isSurplus?'#f97316':'#22c55e')+'">'+(actual?((isSurplus?'+':'')+net):'—')+'</div>'
+    +'<div style="font-size:9px;color:#888;">kcal</div>'
+    +'</div>'
+    +'<div style="flex:1;background:#0d0d0d;border-radius:10px;padding:10px;text-align:center;">'
+    +'<div style="font-size:10px;color:#888;margin-bottom:2px;">Weekly est.</div>'
+    +'<div style="font-size:22px;font-weight:700;color:'+projColor+'">'+(actual?(changeDir+kgChange):'—')+'</div>'
+    +'<div style="font-size:9px;color:#888;">kg/wk</div>'
+    +'</div>'
+    +'</div>'
+    // Balance bar
+    +(actual?
+    '<div style="margin-bottom:12px;">'
+    +'<div style="position:relative;height:10px;background:#1a1a1a;border-radius:5px;overflow:hidden;margin-bottom:4px;">'
+    +'<div style="position:absolute;top:50%;left:50%;width:2px;height:100%;background:#444;transform:translate(-50%,-50%);"></div>'
+    +'<div style="position:absolute;top:0;height:100%;transition:all .6s;border-radius:5px;'
+    +(isSurplus?'left:50%;width:'+Math.abs(clamp/MAX_DISP*50)+'%;':'right:50%;width:'+Math.abs(clamp/MAX_DISP*50)+'%;')
+    +'background:'+barColor+';"></div>'
+    +'</div>'
+    +'<div style="display:flex;justify-content:space-between;font-size:9px;color:#555;">'
+    +'<span>−'+MAX_DISP+'kcal</span><span style="color:#666;">TDEE</span><span>+'+MAX_DISP+'kcal</span></div>'
+    +'</div>' : '')
+    // 7-day history
+    +'<div style="display:flex;gap:2px;height:56px;border-top:1px solid #1a1a1a;padding-top:8px;">'+weekBars+'</div>';
+}
+
+function _injectCalBalance(){
+  if(document.getElementById('rfc-cal-balance-wrap')) return;
+  var anchor=document.getElementById('rfc-custom-supp-wrap')
+    ||document.getElementById('rfc-protein-timing-wrap')
+    ||document.getElementById('rfc-nutr-score-wrap')
+    ||document.getElementById('rfc-macro-rings')
+    ||document.getElementById('rfc-food-wrap');
+  if(!anchor) return;
+  var wrap=_b15card('rfc-cal-balance-wrap');
+  _b15after(wrap, anchor);
+  _renderCalBalance();
+}
+
+/* ════════════════════════════════════════════════════
+   2. SLEEP SCHEDULE OPTIMIZER
+   ════════════════════════════════════════════════════ */
+// 90-min sleep cycles
+var CYCLE_MIN = 90;
+
+window._rfcCalcSleep = function(){
+  var wakeInp=document.getElementById('rfc-wake-inp');
+  var resEl  =document.getElementById('rfc-sleep-sched');
+  if(!wakeInp||!resEl) return;
+
+  var val=wakeInp.value; // e.g. "06:30"
+  if(!val) return;
+
+  var parts=val.split(':');
+  var wakeH=parseInt(parts[0],10), wakeM=parseInt(parts[1],10)||0;
+  var wakeMins=wakeH*60+wakeM;
+
+  // Suggest 5 and 6 cycle windows (7.5h and 9h) → 15 min to fall asleep
+  var FALL_ASLEEP=15;
+  var suggestions=[];
+  for(var cycles=6; cycles>=4; cycles--){
+    var sleepMins = wakeMins - (cycles*CYCLE_MIN) - FALL_ASLEEP;
+    if(sleepMins<0) sleepMins+=1440; // wrap midnight
+    var sH=Math.floor(sleepMins/60)%24;
+    var sM=sleepMins%60;
+    var hrs=(cycles*CYCLE_MIN)/60;
+    suggestions.push({
+      cycles:cycles, hrs:hrs,
+      time:(sH<10?'0':'')+sH+':'+(sM<10?'0':'')+sM,
+      label: cycles===6?'⭐ Optimal (9h)': cycles===5?'✅ Recommended (7.5h)':'⚡ Minimum (6h)'
+    });
+  }
+
+  var colors={6:'#22c55e',5:'#84cc16',4:'#f59e0b'};
+  var html=suggestions.map(function(s){
+    return '<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;'
+      +'background:#0d0d0d;border:1px solid #1e1e1e;border-left:3px solid '+colors[s.cycles]+';'
+      +'border-radius:8px;margin-bottom:6px;transition:transform .2s;" '
+      +'onmouseenter="this.style.transform=\'translateX(4px)\'" onmouseleave="this.style.transform=\'\'">'
+      +'<div>'
+      +'<div style="font-size:12px;color:#aaa;margin-bottom:2px;">'+s.label+'</div>'
+      +'<div style="font-size:10px;color:#666;">'+s.cycles+' sleep cycles · '+s.hrs+'h total</div>'
+      +'</div>'
+      +'<div style="text-align:right;">'
+      +'<div style="font-family:\'Bebas Neue\',sans-serif;font-size:28px;color:'+colors[s.cycles]+';letter-spacing:1px;line-height:1;">'+s.time+'</div>'
+      +'<div style="font-size:9px;color:#555;">bedtime</div>'
+      +'</div>'
+      +'</div>';
+  }).join('');
+
+  resEl.innerHTML = html
+    +'<div style="font-size:10px;color:#555;margin-top:6px;text-align:center;">⏱ Includes 15 min to fall asleep · Times shown as 24h</div>';
+};
+
+function _renderSleepSchedule(){
+  var wrap=document.getElementById('rfc-sleep-sched-wrap');
+  if(!wrap) return;
+  // Try to pre-fill from stored preference or default to 06:30
+  var saved=localStorage.getItem('rfc_wake_time_'+_b15uid())||'06:30';
+  var inp=document.getElementById('rfc-wake-inp');
+  if(inp){ inp.value=saved; window._rfcCalcSleep(); }
+}
+
+window._rfcSaveWakeTime = function(){
+  var val=(document.getElementById('rfc-wake-inp')||{}).value;
+  if(val) localStorage.setItem('rfc_wake_time_'+_b15uid(), val);
+  window._rfcCalcSleep();
+};
+
+function _injectSleepSchedule(){
+  if(document.getElementById('rfc-sleep-sched-wrap')) return;
+  var anchor=document.getElementById('rfc-recovery-wrap')
+    ||document.getElementById('rfc-rings-wrap')
+    ||document.getElementById('rfc-hr-wrap')
+    ||document.querySelector('.dash-topbar');
+  if(!anchor) return;
+
+  var wrap=_b15card('rfc-sleep-sched-wrap');
+  var saved=localStorage.getItem('rfc_wake_time_'+_b15uid())||'06:30';
+
+  wrap.innerHTML=
+    '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">'
+    +'<span style="font-weight:700;font-size:13px;color:#fff;">🌙 Sleep Schedule</span>'
+    +'<div style="display:flex;align-items:center;gap:8px;">'
+    +'<label style="font-size:11px;color:#888;">Wake up:</label>'
+    +'<input type="time" id="rfc-wake-inp" value="'+saved+'" '
+    +'oninput="window._rfcSaveWakeTime()" '
+    +'style="background:#1a1a1a;border:1px solid #333;border-radius:6px;color:#fff;padding:4px 8px;font-size:12px;cursor:pointer;">'
+    +'</div>'
+    +'</div>'
+    +'<div style="font-size:11px;color:#888;margin-bottom:10px;">Based on <strong style="color:#a78bfa;">90-minute sleep cycles</strong> — when to go to bed to wake refreshed:</div>'
+    +'<div id="rfc-sleep-sched"></div>';
+
+  _b15after(wrap, anchor);
+  // Pre-fill after DOM insertion
+  setTimeout(function(){
+    var inp=document.getElementById('rfc-wake-inp');
+    if(inp){ inp.value=saved; window._rfcCalcSleep(); }
+  }, 50);
+}
+
+/* ════════════════════════════════════════════════════
+   3. WEEKLY VOLUME vs MEV CHART
+   ════════════════════════════════════════════════════ */
+// Israetel MEV / MRV (sets/week) — conservative end
+var MEV_DATA = {
+  chest:    {mev:10, mrv:22, label:'Chest',     color:'#e8001d'},
+  back:     {mev:10, mrv:25, label:'Back',       color:'#f59e0b'},
+  shoulders:{mev:6,  mrv:20, label:'Shoulders',  color:'#a78bfa'},
+  biceps:   {mev:8,  mrv:26, label:'Biceps',     color:'#22c55e'},
+  triceps:  {mev:6,  mrv:22, label:'Triceps',    color:'#3b82f6'},
+  quads:    {mev:8,  mrv:20, label:'Quads',      color:'#ec4899'},
+  hams:     {mev:6,  mrv:20, label:'Hamstrings', color:'#f97316'},
+  glutes:   {mev:8,  mrv:24, label:'Glutes',     color:'#10b981'},
+  calves:   {mev:8,  mrv:16, label:'Calves',     color:'#06b6d4'},
+  abs:      {mev:0,  mrv:25, label:'Abs',        color:'#84cc16'}
+};
+
+function _getWeekVolume(){
+  var uid=_b15uid();
+  var vol={};
+  Object.keys(MEV_DATA).forEach(function(k){ vol[k]=0; });
+
+  // Reuse EX_MUS2 from volume chart batch if available
+  var mus2 = (typeof EX_MUS2 !== 'undefined') ? EX_MUS2 : {};
+
+  try{
+    var wlog=JSON.parse(localStorage.getItem('rfc_workouts_'+uid)||'[]');
+    // Last 7 days
+    var cutoff=Date.now()-7*24*60*60*1000;
+    wlog.filter(function(w){ return new Date(w.date||w.ts||0)>=cutoff; })
+      .forEach(function(session){
+        (session.exercises||session.exs||[]).forEach(function(ex){
+          var name=(ex.name||'').toLowerCase().trim();
+          var muscle=mus2[name]||mus2[(ex.name||'').trim()]||null;
+          if(muscle && vol[muscle]!==undefined){
+            var sets=parseInt(ex.sets||ex.s||1,10)||1;
+            vol[muscle]+=sets;
+          }
+        });
+      });
+  }catch(e){}
+  return vol;
+}
+
+function _renderMEVChart(){
+  var chart=document.getElementById('rfc-mev-chart');
+  if(!chart) return;
+
+  var vol=_getWeekVolume();
+  var muscles=Object.keys(MEV_DATA);
+  var maxMRV=Math.max.apply(null, muscles.map(function(m){ return MEV_DATA[m].mrv; }));
+
+  var rows=muscles.map(function(m){
+    var d=MEV_DATA[m];
+    var v=vol[m]||0;
+    var pctVol =Math.min(100, Math.round((v/maxMRV)*100));
+    var pctMEV =Math.round((d.mev/maxMRV)*100);
+    var pctMRV =Math.round((d.mrv/maxMRV)*100);
+
+    var statusColor=v===0?'#444':v<d.mev?'#ef4444':v<=d.mrv?'#22c55e':'#f97316';
+    var status=v===0?'—':v<d.mev?'↑ Under MEV':v<=d.mrv?'✓ In range':'⚠ Over MRV';
+
+    return '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">'
+      // Label
+      +'<div style="width:78px;font-size:11px;color:#ccc;flex-shrink:0;white-space:nowrap;">'+d.label+'</div>'
+      // Bar track
+      +'<div style="flex:1;position:relative;height:18px;background:#1a1a1a;border-radius:4px;overflow:visible;">'
+      // Volume fill
+      +'<div style="position:absolute;top:0;left:0;height:100%;width:'+pctVol+'%;background:'+d.color+';border-radius:4px;transition:width .6s;opacity:.9;"></div>'
+      // MEV marker
+      +'<div style="position:absolute;top:-2px;bottom:-2px;left:'+pctMEV+'%;width:2px;background:#fff;opacity:.4;" title="MEV"></div>'
+      // MRV marker
+      +'<div style="position:absolute;top:-2px;bottom:-2px;left:'+pctMRV+'%;width:2px;background:#f97316;opacity:.5;" title="MRV"></div>'
+      +'</div>'
+      // Sets count
+      +'<div style="width:28px;text-align:right;font-size:12px;font-weight:700;color:'+(v?d.color:'#444')+';flex-shrink:0;">'+v+'</div>'
+      // Status
+      +'<div style="width:72px;font-size:9px;color:'+statusColor+';flex-shrink:0;text-align:right;">'+status+'</div>'
+      +'</div>';
+  }).join('');
+
+  chart.innerHTML = rows
+    +'<div style="display:flex;align-items:center;gap:14px;margin-top:10px;padding-top:8px;border-top:1px solid #1a1a1a;">'
+    +'<div style="display:flex;align-items:center;gap:5px;font-size:10px;color:#888;"><div style="width:14px;height:2px;background:#fff;opacity:.4;"></div>MEV</div>'
+    +'<div style="display:flex;align-items:center;gap:5px;font-size:10px;color:#888;"><div style="width:14px;height:2px;background:#f97316;opacity:.5;"></div>MRV</div>'
+    +'<div style="display:flex;align-items:center;gap:5px;font-size:10px;color:#888;"><div style="width:10px;height:10px;border-radius:2px;background:#22c55e;"></div>In range</div>'
+    +'<div style="display:flex;align-items:center;gap:5px;font-size:10px;color:#888;"><div style="width:10px;height:10px;border-radius:2px;background:#ef4444;"></div>Under</div>'
+    +'</div>';
+}
+
+function _injectMEVChart(){
+  if(document.getElementById('rfc-mev-wrap')) return;
+  var anchor=document.getElementById('rfc-burn-wrap')
+    ||document.getElementById('rfc-vol-chart-wrap')
+    ||document.getElementById('rfc-split-wrap')
+    ||document.getElementById('wl-history');
+  if(!anchor) return;
+
+  var wrap=_b15card('rfc-mev-wrap');
+  wrap.innerHTML=
+    '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">'
+    +'<span style="font-weight:700;font-size:13px;color:#fff;">📊 Volume vs MEV/MRV</span>'
+    +'<span style="font-size:10px;color:#888;">Sets/week · last 7 days</span>'
+    +'</div>'
+    +'<div style="font-size:11px;color:#888;margin-bottom:10px;">Based on Israetel\'s <strong style="color:#a78bfa;">MEV/MRV</strong> guidelines. Stay between the white and orange markers.</div>'
+    +'<div id="rfc-mev-chart"></div>';
+
+  _b15after(wrap, anchor);
+  _renderMEVChart();
+}
+
+/* ════════════════════════════════════════════════════
+   CSS
+   ════════════════════════════════════════════════════ */
+(function(){
+  var s=document.createElement('style');
+  s.textContent=
+    '#rfc-wake-inp{color-scheme:dark;}'
+    +'#rfc-wake-inp:focus{outline:none;border-color:#a78bfa !important;}'
+    +'body.rfc-light #rfc-cal-balance-wrap,'
+    +'body.rfc-light #rfc-sleep-sched-wrap,'
+    +'body.rfc-light #rfc-mev-wrap{background:#fff;border-color:#eee;}'
+    +'body.rfc-light #rfc-cal-balance-wrap *,'
+    +'body.rfc-light #rfc-sleep-sched-wrap *,'
+    +'body.rfc-light #rfc-mev-wrap *{color:#1a1a1a !important;}';
+  document.head.appendChild(s);
+})();
+
+/* ════════════════════════════════════════════════════
+   switchScreen + initial inject
+   ════════════════════════════════════════════════════ */
+var _origSS13=window.switchScreen;
+window.switchScreen=function(name, navEl){
+  _origSS13&&_origSS13(name, navEl);
+  if(name==='nutrition'){
+    setTimeout(function(){
+      _injectCalBalance();
+      _renderCalBalance();
+    }, 750);
+  }
+  if(name==='dashboard'){
+    setTimeout(function(){
+      _injectSleepSchedule();
+    }, 900);
+  }
+  if(name==='workouts'){
+    setTimeout(function(){
+      _injectMEVChart();
+      _renderMEVChart();
+    }, 600);
+  }
+};
+
+// Initial inject
+setTimeout(function(){
+  _injectCalBalance();
+  _injectSleepSchedule();
+  _injectMEVChart();
+}, 7000);
+
+// Retry
+setTimeout(function(){
+  if(!document.getElementById('rfc-cal-balance-wrap')) _injectCalBalance();
+  if(!document.getElementById('rfc-sleep-sched-wrap')) _injectSleepSchedule();
+  if(!document.getElementById('rfc-mev-wrap'))         _injectMEVChart();
+}, 10000);
+
+// Refresh calorie balance when food changes
+window.addEventListener('rfc-food-updated', _renderCalBalance);
+
+})();
+</script>
+
 </body>
 </html>
