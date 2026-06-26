@@ -20530,6 +20530,76 @@ body.admin-logged-in #admin-theme-btn{display:flex;}
 .ex-ac-item:last-child{border-bottom:none;}
 .ex-ac-item:hover,.ex-ac-item.highlighted{background:rgba(232,0,29,.14);}
 .ex-ac-muscle{font-size:10px;color:rgba(255,255,255,.35);margin-left:auto;}
+
+/* ══════════════════════════════════════
+   MACRO DONUT CHART
+   ══════════════════════════════════════ */
+#macro-donut-wrap{
+  display:flex;align-items:center;gap:18px;margin-top:16px;
+}
+#macro-donut-wrap svg{flex-shrink:0;}
+.macro-donut-arc{
+  fill:none;stroke-width:16;stroke-linecap:butt;
+  transition:stroke-dashoffset .85s cubic-bezier(.4,0,.2,1);
+}
+.macro-donut-legend{flex:1;display:flex;flex-direction:column;gap:7px;}
+.mdl-row{display:flex;align-items:center;gap:8px;font-size:12px;color:rgba(255,255,255,.7);}
+.mdl-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.mdl-pct{margin-left:auto;font-weight:700;color:#fff;font-size:11px;}
+.macro-donut-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none;}
+.macro-donut-cals{font-family:'Bebas Neue',sans-serif;font-size:20px;color:#fff;letter-spacing:1px;}
+.macro-donut-clbl{font-size:8px;color:rgba(255,255,255,.4);letter-spacing:2px;text-transform:uppercase;margin-top:-2px;}
+#macro-donut-wrap .donut-svg-wrap{position:relative;width:90px;height:90px;}
+
+/* ══════════════════════════════════════
+   ENHANCED WEIGHT CHART (SVG)
+   ══════════════════════════════════════ */
+#wcht-svg-wrap{
+  width:100%;margin-top:8px;
+}
+#wcht-svg-wrap svg{width:100%;display:block;overflow:visible;}
+
+/* ══════════════════════════════════════
+   PR BADGE
+   ══════════════════════════════════════ */
+@keyframes prPop{
+  0%{transform:scale(0) rotate(-15deg);opacity:0;}
+  70%{transform:scale(1.2) rotate(3deg);opacity:1;}
+  100%{transform:scale(1) rotate(0deg);opacity:1;}
+}
+.pr-badge{
+  display:inline-flex;align-items:center;gap:4px;
+  background:linear-gradient(135deg,#f59e0b,#d97706);
+  color:#000;font-size:9px;font-weight:900;letter-spacing:1px;
+  border-radius:6px;padding:2px 7px;vertical-align:middle;margin-left:6px;
+  animation:prPop .45s cubic-bezier(.34,1.56,.64,1) both;
+}
+
+/* ══════════════════════════════════════
+   STREAK CALENDAR
+   ══════════════════════════════════════ */
+#streak-cal{
+  margin-top:14px;
+}
+.sc-hdr{
+  font-size:10px;font-weight:700;letter-spacing:2px;
+  color:rgba(255,255,255,.35);text-transform:uppercase;margin-bottom:8px;
+}
+.sc-grid{
+  display:grid;grid-template-columns:repeat(10,1fr);gap:3px;
+}
+.sc-week{display:grid;grid-template-rows:repeat(7,1fr);gap:3px;}
+.sc-day{
+  width:100%;aspect-ratio:1;border-radius:2px;
+  background:rgba(255,255,255,.06);
+  transition:background .2s;cursor:default;
+}
+.sc-day.sc-l1{background:rgba(232,0,29,.2);}
+.sc-day.sc-l2{background:rgba(232,0,29,.45);}
+.sc-day.sc-l3{background:rgba(232,0,29,.7);}
+.sc-day.sc-today{box-shadow:0 0 0 1.5px #e8001d;}
+.sc-legend{display:flex;align-items:center;gap:6px;margin-top:8px;font-size:10px;color:rgba(255,255,255,.3);}
+.sc-legend-cell{width:10px;height:10px;border-radius:2px;}
 </style>
 
 <!-- ═══ Marketing JS ═══ -->
@@ -22966,6 +23036,320 @@ new MutationObserver(function(muts){
   });
 }).observe(document.body, {childList:true, subtree:true});
 setTimeout(initAC, 1000);
+
+})();
+</script>
+
+<!-- ══════════════════════════════════════════════════
+     MACRO DONUT · WEIGHT CHART · PR DETECTION · STREAK CAL
+     ══════════════════════════════════════════════════ -->
+<script>
+(function(){
+'use strict';
+
+/* ──────────────────────────────────────────────
+   A. MACRO DONUT CHART  (SVG animated)
+   ────────────────────────────────────────────── */
+var DONUT_R = 34, DONUT_CX = 45, DONUT_CY = 45;
+var DONUT_C = 2 * Math.PI * DONUT_R; /* circumference ≈ 213.6 */
+
+function buildDonut(){
+  var macroCard = document.getElementById('mbp');
+  if(!macroCard) return;
+  var rcard = macroCard.closest('.rcard');
+  if(!rcard || document.getElementById('macro-donut-wrap')) return;
+
+  var wrap = document.createElement('div');
+  wrap.id = 'macro-donut-wrap';
+  wrap.innerHTML =
+    '<div class="donut-svg-wrap">' +
+    '<svg width="90" height="90" viewBox="0 0 90 90">' +
+    '<circle cx="'+DONUT_CX+'" cy="'+DONUT_CY+'" r="'+DONUT_R+'" fill="none" stroke="rgba(255,255,255,.05)" stroke-width="16"/>' +
+    '<circle id="md-fat"  class="macro-donut-arc" cx="'+DONUT_CX+'" cy="'+DONUT_CY+'" r="'+DONUT_R+'" stroke="#60a5fa" transform="rotate(-90 '+DONUT_CX+' '+DONUT_CY+')" stroke-dasharray="'+DONUT_C+'" stroke-dashoffset="'+DONUT_C+'"/>' +
+    '<circle id="md-carb" class="macro-donut-arc" cx="'+DONUT_CX+'" cy="'+DONUT_CY+'" r="'+DONUT_R+'" stroke="#f59e0b" transform="rotate(-90 '+DONUT_CX+' '+DONUT_CY+')" stroke-dasharray="'+DONUT_C+'" stroke-dashoffset="'+DONUT_C+'"/>' +
+    '<circle id="md-prot" class="macro-donut-arc" cx="'+DONUT_CX+'" cy="'+DONUT_CY+'" r="'+DONUT_R+'" stroke="#e8001d" transform="rotate(-90 '+DONUT_CX+' '+DONUT_CY+')" stroke-dasharray="'+DONUT_C+'" stroke-dashoffset="'+DONUT_C+'"/>' +
+    '</svg>' +
+    '<div class="macro-donut-center"><div class="macro-donut-cals" id="md-cals">0</div><div class="macro-donut-clbl">kcal</div></div>' +
+    '</div>' +
+    '<div class="macro-donut-legend">' +
+    '<div class="mdl-row"><div class="mdl-dot" style="background:#e8001d"></div>Protein<span class="mdl-pct" id="md-prot-pct">0%</span></div>' +
+    '<div class="mdl-row"><div class="mdl-dot" style="background:#f59e0b"></div>Carbs<span class="mdl-pct" id="md-carb-pct">0%</span></div>' +
+    '<div class="mdl-row"><div class="mdl-dot" style="background:#60a5fa"></div>Fats<span class="mdl-pct" id="md-fat-pct">0%</span></div>' +
+    '</div>';
+  rcard.appendChild(wrap);
+}
+
+function updateDonut(macros, totalCals){
+  if(!document.getElementById('macro-donut-wrap')) buildDonut();
+  var pP = macros.pP || 0, cP = macros.cP || 0, fP = macros.fP || 0;
+  /* arc lengths for each segment */
+  var protLen = DONUT_C * pP;
+  var carbLen = DONUT_C * cP;
+  var fatLen  = DONUT_C * fP;
+  /* each arc starts where the previous ended — set via rotation in transform */
+  var protStart = 0;
+  var carbStart = protLen;
+  var fatStart  = protLen + carbLen;
+
+  function setArc(id, len, start){
+    var el = document.getElementById(id);
+    if(!el) return;
+    /* offset = C - len hides the "drawn" part; rotate to start position */
+    el.style.strokeDashoffset = (DONUT_C - len).toFixed(2);
+    /* We can't use JS rotation here easily with stroke-dashoffset offset-from-start,
+       so we use the transform attribute trick: rotate by startAngle degrees */
+    var deg = (start / DONUT_C) * 360 - 90;
+    el.setAttribute('transform', 'rotate('+deg.toFixed(2)+' '+DONUT_CX+' '+DONUT_CY+')');
+  }
+
+  setTimeout(function(){
+    setArc('md-prot', protLen, protStart * 360 / DONUT_C - 90);
+    setArc('md-carb', carbLen, (protStart + protLen) / DONUT_C * 360 - 90);
+    setArc('md-fat',  fatLen,  (protStart + protLen + carbLen) / DONUT_C * 360 - 90);
+    var calEl = document.getElementById('md-cals');
+    if(calEl) calEl.textContent = totalCals || '';
+    var pp = document.getElementById('md-prot-pct'); if(pp) pp.textContent = Math.round(pP*100)+'%';
+    var cp = document.getElementById('md-carb-pct'); if(cp) cp.textContent = Math.round(cP*100)+'%';
+    var fp = document.getElementById('md-fat-pct');  if(fp) fp.textContent = Math.round(fP*100)+'%';
+  }, 350);
+}
+
+/* hook into the calculation result */
+var _checkDonut = setInterval(function(){
+  if(typeof window.lastRes !== 'undefined'){
+    clearInterval(_checkDonut);
+    /* watch for lastRes being set by observing the score element */
+    var scoreEl = document.getElementById('rscore');
+    if(scoreEl){
+      new MutationObserver(function(){
+        if(window.lastRes && window.lastRes.macros){
+          buildDonut();
+          updateDonut(window.lastRes.macros, window.lastRes.targetCals);
+        }
+      }).observe(scoreEl, {characterData:true, childList:true, subtree:true});
+    }
+    /* also run once if lastRes already set (page reload with cached result) */
+    if(window.lastRes && window.lastRes.macros){
+      setTimeout(function(){ buildDonut(); updateDonut(window.lastRes.macros, window.lastRes.targetCals); }, 800);
+    }
+  }
+}, 300);
+
+
+/* ──────────────────────────────────────────────
+   B. ENHANCED WEIGHT CHART  (SVG line + area)
+   ────────────────────────────────────────────── */
+var _origRenderWC = window.renderWC;
+window.renderWC = function(){
+  /* run original for compatibility */
+  _origRenderWC && _origRenderWC();
+  _renderWeightSVG();
+};
+
+function _renderWeightSVG(){
+  var pd = {}; try{ pd = JSON.parse(localStorage.getItem('bm_pd') || '{}'); }catch(e){}
+  var weights = pd.weights || [];
+  var wchtEl = document.getElementById('wcht');
+  if(!wchtEl) return;
+
+  var old = document.getElementById('wcht-svg-wrap');
+  if(old) old.remove();
+
+  if(weights.length < 2){
+    return; /* original empty-state message is fine */
+  }
+
+  /* hide original bar chart bars */
+  wchtEl.querySelectorAll('.wcb').forEach(function(b){ b.style.display='none'; });
+
+  var W = 280, H = 80, PAD = 12;
+  var vals = weights.map(function(w){ return parseFloat(w.kg); });
+  var mn = Math.min.apply(null, vals), mx = Math.max.apply(null, vals);
+  if(mn === mx){ mn -= 1; mx += 1; }
+
+  var pts = vals.map(function(v, i){
+    var x = (PAD + (W - PAD*2) * i / (vals.length - 1)).toFixed(1);
+    var y = (PAD + (H - PAD*2) * (1 - (v - mn) / (mx - mn))).toFixed(1);
+    return {x:x, y:y, kg:v, date:weights[i].date};
+  });
+
+  var polyPts = pts.map(function(p){ return p.x+','+p.y; }).join(' ');
+  var areaD   = 'M '+pts[0].x+','+pts[0].y+' '+pts.slice(1).map(function(p){ return 'L '+p.x+','+p.y; }).join(' ')+
+    ' L '+pts[pts.length-1].x+','+(H-PAD)+' L '+PAD+','+(H-PAD)+' Z';
+
+  var svgHtml = '<svg viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="none">' +
+    '<defs>' +
+    '<linearGradient id="wg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#e8001d" stop-opacity="0.3"/><stop offset="100%" stop-color="#e8001d" stop-opacity="0.02"/></linearGradient>' +
+    '</defs>' +
+    '<path d="'+areaD+'" fill="url(#wg)"/>' +
+    '<polyline points="'+polyPts+'" fill="none" stroke="#e8001d" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>';
+
+  pts.forEach(function(p, i){
+    svgHtml += '<circle cx="'+p.x+'" cy="'+p.y+'" r="4" fill="#e8001d" stroke="#0a0a0a" stroke-width="2"/>';
+    if(i === vals.length - 1){
+      svgHtml += '<text x="'+(parseFloat(p.x)-2)+'" y="'+(parseFloat(p.y)-8)+'" font-size="9" fill="#e8001d" font-family="\'Barlow Condensed\',sans-serif" font-weight="700" text-anchor="middle">'+p.kg+'kg</text>';
+    }
+    if(i === 0 || i === vals.length-1){
+      svgHtml += '<text x="'+p.x+'" y="'+(H-2)+'" font-size="8" fill="rgba(255,255,255,.3)" text-anchor="middle" font-family="\'Barlow\',sans-serif">'+p.date+'</text>';
+    }
+  });
+  svgHtml += '</svg>';
+
+  var change = (vals[vals.length-1] - vals[0]).toFixed(1);
+  var trend = change > 0 ? '+'+change+'kg ↑' : change+'kg ↓';
+  var trendColor = change > 0 ? '#f59e0b' : '#22c55e';
+
+  var wrap = document.createElement('div');
+  wrap.id = 'wcht-svg-wrap';
+  wrap.innerHTML = svgHtml +
+    '<div style="display:flex;justify-content:space-between;font-size:10px;margin-top:4px;color:rgba(255,255,255,.35);">' +
+    '<span>'+vals.length+' entries</span><span style="color:'+trendColor+';font-weight:700;">'+trend+'</span></div>';
+  wchtEl.parentNode.insertBefore(wrap, wchtEl.nextSibling);
+}
+setTimeout(function(){ if(window.renderWC) window.renderWC(); }, 1200);
+
+
+/* ──────────────────────────────────────────────
+   C. PR AUTO-DETECTION
+   ────────────────────────────────────────────── */
+var _origSaveWorkout = window.saveWorkout;
+if(typeof _origSaveWorkout === 'function'){
+  window.saveWorkout = async function(){
+    await _origSaveWorkout.apply(this, arguments);
+    _checkForPRs();
+  };
+}
+
+function _checkForPRs(){
+  var uid = window.user && window.user.uid;
+  if(!uid) return;
+  var key = 'rfc_workouts_'+uid;
+  var prKey = 'rfc_prs_'+uid;
+  var logs = []; try{ logs = JSON.parse(localStorage.getItem(key)||'[]'); }catch(e){}
+  if(!logs.length) return;
+  var prs = {}; try{ prs = JSON.parse(localStorage.getItem(prKey)||'{}'); }catch(e){}
+  var session = logs[0]; /* most recent session */
+  if(!session || !session.exercises) return;
+
+  var newPRs = [];
+  session.exercises.forEach(function(ex){
+    var kg = parseFloat(ex.kg);
+    if(!ex.name || !kg || isNaN(kg)) return;
+    var prevBest = prs[ex.name] || 0;
+    if(kg > prevBest){
+      newPRs.push({name:ex.name, kg:kg, prev:prevBest});
+      prs[ex.name] = kg;
+    }
+  });
+  if(!newPRs.length) return;
+  localStorage.setItem(prKey, JSON.stringify(prs));
+
+  /* show PR notification */
+  setTimeout(function(){
+    newPRs.forEach(function(pr, i){
+      setTimeout(function(){
+        var msg = '🏆 NEW PR: <strong>'+pr.name+'</strong> — '+pr.kg+'kg'+(pr.prev ? ' (was '+pr.prev+'kg)' : ' (first time!)');
+        if(typeof toast === 'function') toast(msg, 'fire');
+      }, i * 800);
+    });
+  }, 600);
+}
+
+/* Show PR badges in workout history */
+function _injectPRBadges(){
+  var uid = window.user && window.user.uid;
+  if(!uid) return;
+  var prKey = 'rfc_prs_'+uid;
+  var prs = {}; try{ prs = JSON.parse(localStorage.getItem(prKey)||'{}'); }catch(e){}
+  document.querySelectorAll('#wl-history strong').forEach(function(el){
+    var name = el.textContent.trim();
+    if(prs[name] && !el.querySelector('.pr-badge')){
+      var badge = document.createElement('span');
+      badge.className = 'pr-badge';
+      badge.textContent = 'PR';
+      el.appendChild(badge);
+    }
+  });
+}
+new MutationObserver(function(){ _injectPRBadges(); }).observe(document.body, {childList:true, subtree:true});
+
+
+/* ──────────────────────────────────────────────
+   D. STREAK ACTIVITY CALENDAR  (GitHub heatmap)
+   ────────────────────────────────────────────── */
+function renderStreakCalendar(){
+  var calEl = document.getElementById('streak-cal');
+  if(!calEl){
+    /* inject after the streak card if it exists */
+    var stCard = document.querySelector('.streak-card, #stnum, .stnum');
+    if(!stCard) return;
+    var parent = stCard.closest('.rcard,.dash-card') || stCard.parentElement;
+    calEl = document.createElement('div');
+    calEl.id = 'streak-cal';
+    parent.appendChild(calEl);
+  }
+
+  var uid = window.user && window.user.uid;
+  var wkKey = uid ? 'rfc_workouts_'+uid : null;
+  var logs = []; if(wkKey){ try{ logs = JSON.parse(localStorage.getItem(wkKey)||'[]'); }catch(e){} }
+
+  /* build set of dates with workout count */
+  var counts = {};
+  logs.forEach(function(s){
+    if(!s.ts) return;
+    var d = new Date(s.ts).toDateString();
+    counts[d] = (counts[d]||0) + 1;
+  });
+  /* also count check-in streak */
+  var pd = {}; try{ pd = JSON.parse(localStorage.getItem('bm_pd')||'{}'); }catch(e){}
+  if(pd.lastCI) counts[new Date(pd.lastCI).toDateString()] = Math.max(counts[new Date(pd.lastCI).toDateString()]||0, 1);
+
+  /* build 10-week grid (most recent week on right) */
+  var WEEKS = 10, today = new Date();
+  today.setHours(0,0,0,0);
+  var cells = [];
+  for(var w = WEEKS-1; w >= 0; w--){
+    var week = [];
+    for(var d = 6; d >= 0; d--){
+      var dt = new Date(today);
+      dt.setDate(today.getDate() - w*7 - d);
+      week.push(dt);
+    }
+    cells.push(week.reverse());
+  }
+
+  var gridHtml = '<div class="sc-grid">';
+  cells.forEach(function(week){
+    gridHtml += '<div class="sc-week">';
+    week.forEach(function(dt){
+      var isToday = dt.toDateString() === today.toDateString();
+      var cnt = counts[dt.toDateString()] || 0;
+      var lvl = cnt === 0 ? '' : cnt === 1 ? 'sc-l1' : cnt === 2 ? 'sc-l2' : 'sc-l3';
+      var todayCls = isToday ? ' sc-today' : '';
+      var future = dt > today ? ' style="opacity:.2"' : '';
+      gridHtml += '<div class="sc-day '+lvl+todayCls+'" title="'+dt.toLocaleDateString('en-IN',{day:'numeric',month:'short'})+': '+(cnt||'no')+' workout'+(cnt===1?'':'s')+'"'+future+'></div>';
+    });
+    gridHtml += '</div>';
+  });
+  gridHtml += '</div>';
+  gridHtml += '<div class="sc-legend"><span>Less</span>'+
+    ['rgba(255,255,255,.06)','rgba(232,0,29,.2)','rgba(232,0,29,.45)','rgba(232,0,29,.7)'].map(function(c){
+      return '<div class="sc-legend-cell" style="background:'+c+'"></div>';
+    }).join('')+
+    '<span>More</span></div>';
+
+  calEl.innerHTML = '<div class="sc-hdr">10-Week Activity</div>' + gridHtml;
+}
+
+/* render on page load + after switchScreen workouts */
+setTimeout(renderStreakCalendar, 1400);
+var _origSSCal = window.switchScreen;
+window.switchScreen = function(name, navEl){
+  _origSSCal && _origSSCal(name, navEl);
+  if(name === 'workouts' || name === 'dashboard'){
+    setTimeout(renderStreakCalendar, 200);
+  }
+};
 
 })();
 </script>
