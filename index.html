@@ -36961,5 +36961,234 @@ setTimeout(function(){ if(!document.getElementById('rfc-circadian-wrap')) _injec
 })();
 </script>
 
+<script>
+/* ===== BATCH 41: Body Composition Estimator | IF Tracker | Band Resistance Tracker ===== */
+(function(){ 'use strict';
+var _origSS39=window.switchScreen;
+function _b41uid(){ try{ return JSON.parse(localStorage.getItem('bm_user')||'{}').uid||'guest'; }catch(e){ return 'guest'; } }
+function _b41today(){ var d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function _b41load(k){ try{ return JSON.parse(localStorage.getItem(k))||null; }catch(e){ return null; } }
+function _b41save(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} }
+function _b41card(id,title){ var d=document.createElement('div'); d.id=id; d.style.cssText='background:#1a1a2e;border-radius:14px;padding:18px;margin:14px 0;color:#e0e0e0;font-family:inherit;'; d.innerHTML='<div style="font-size:15px;font-weight:700;color:#00d4ff;margin-bottom:14px;">'+title+'</div>'; return d; }
+
+/* ---------- BODY COMPOSITION ESTIMATOR (dashboard) ---------- */
+function _bfCalc(gender,heightCm,waistCm,neckCm,hipCm){
+  var h=heightCm,w=waistCm,n=neckCm,hip=hipCm;
+  if(!h||!w||!n) return null;
+  var bf;
+  if(gender==='male'){
+    bf=495/(1.0324-0.19077*Math.log10(w-n)+0.15456*Math.log10(h))-450;
+  } else {
+    if(!hip) return null;
+    bf=495/(1.29579-0.35004*Math.log10(w+hip-n)+0.22100*Math.log10(h))-450;
+  }
+  return Math.max(2,Math.min(60,Math.round(bf*10)/10));
+}
+function _bfCategory(bf,gender){
+  if(gender==='male'){
+    if(bf<6) return {label:'Essential',c:'#ff9f43'};
+    if(bf<14) return {label:'Athlete',c:'#00ff88'};
+    if(bf<18) return {label:'Fitness',c:'#00d4ff'};
+    if(bf<25) return {label:'Average',c:'#ffd700'};
+    return {label:'Obese',c:'#ff6b6b'};
+  } else {
+    if(bf<14) return {label:'Essential',c:'#ff9f43'};
+    if(bf<21) return {label:'Athlete',c:'#00ff88'};
+    if(bf<25) return {label:'Fitness',c:'#00d4ff'};
+    if(bf<32) return {label:'Average',c:'#ffd700'};
+    return {label:'Obese',c:'#ff6b6b'};
+  }
+}
+function _injectBodComp(){
+  if(document.getElementById('rfc-bodcomp-wrap')) return;
+  var anchor=document.getElementById('rfc-circadian-wrap')||document.getElementById('rfc-sleepq-wrap')||document.getElementById('rfc-hydqual-wrap')||document.getElementById('rfc-meditate-wrap')||document.querySelector('.dash-topbar');
+  if(!anchor) return;
+  var card=_b41card('rfc-bodcomp-wrap','📐 Body Composition Estimator');
+  card.style.cssText+='border:1px solid #2a1a3a;';
+  anchor.parentNode.insertBefore(card,anchor.nextSibling);
+  _renderBodComp();
+}
+function _renderBodComp(){
+  var card=document.getElementById('rfc-bodcomp-wrap'); if(!card) return;
+  var uid=_b41uid();
+  var skey='rfc_bcomp_settings_'+uid;
+  var hkey='rfc_bcomp_'+uid;
+  var s=_b41load(skey)||{gender:'male',height:175,waist:85,neck:38,hip:95,weight:80};
+  var hist=_b41load(hkey)||[];
+  var bf=_bfCalc(s.gender,s.height,s.waist,s.neck,s.hip);
+  var cat=bf?_bfCategory(bf,s.gender):{label:'—',c:'#888'};
+  var leanKg=bf&&s.weight?Math.round((s.weight*(1-bf/100))*10)/10:null;
+  var html='<div style="font-size:15px;font-weight:700;color:#00d4ff;margin-bottom:14px;">📐 Body Composition Estimator</div>';
+  html+='<div style="font-size:11px;color:#666;margin-bottom:10px;">US Navy formula — measure at navel (waist), below Adam\'s apple (neck)</div>';
+  if(bf!==null){
+    html+='<div style="display:flex;gap:10px;margin-bottom:14px;">';
+    html+='<div style="flex:1;text-align:center;background:#12122a;border-radius:10px;padding:12px;"><div style="font-size:28px;font-weight:800;color:'+cat.c+';">'+bf+'%</div><div style="font-size:12px;color:'+cat.c+';">'+cat.label+'</div><div style="font-size:11px;color:#666;">Body Fat</div></div>';
+    if(leanKg) html+='<div style="flex:1;text-align:center;background:#12122a;border-radius:10px;padding:12px;"><div style="font-size:28px;font-weight:800;color:#00ff88;">'+leanKg+'<span style="font-size:14px;">kg</span></div><div style="font-size:12px;color:#00ff88;">Lean</div><div style="font-size:11px;color:#666;">Mass</div></div>';
+    if(s.weight) html+='<div style="flex:1;text-align:center;background:#12122a;border-radius:10px;padding:12px;"><div style="font-size:28px;font-weight:800;color:#ff9f43;">'+(s.weight-leanKg).toFixed(1)+'<span style="font-size:14px;">kg</span></div><div style="font-size:12px;color:#ff9f43;">Fat</div><div style="font-size:11px;color:#666;">Mass</div></div>';
+    html+='</div>';
+  }
+  html+='<div style="display:grid;gap:8px;margin-bottom:12px;">';
+  html+='<div style="display:flex;gap:8px;"><button onclick="window._rfcBCGender(\'male\')" style="flex:1;padding:7px;border-radius:7px;border:2px solid '+(s.gender==='male'?'#00d4ff':'#2a2a4a')+';background:'+(s.gender==='male'?'#0d2a3a':'#12122a')+';color:'+(s.gender==='male'?'#00d4ff':'#888')+';cursor:pointer;font-size:12px;">♂ Male</button><button onclick="window._rfcBCGender(\'female\')" style="flex:1;padding:7px;border-radius:7px;border:2px solid '+(s.gender==='female'?'#ff69b4':'#2a2a4a')+';background:'+(s.gender==='female'?'#2a0d1a':'#12122a')+';color:'+(s.gender==='female'?'#ff69b4':'#888')+';cursor:pointer;font-size:12px;">♀ Female</button></div>';
+  [['Height (cm)','height',140,220],['Weight (kg)','weight',40,200],['Waist (cm)','waist',50,180],['Neck (cm)','neck',25,60]].forEach(function(f){
+    html+='<div style="display:flex;align-items:center;gap:8px;"><label style="font-size:12px;color:#aaa;width:100px;">'+f[0]+'</label><input type="number" min="'+f[2]+'" max="'+f[3]+'" value="'+(s[f[1]]||'')+'" onchange="window._rfcBCSet(\''+f[1]+'\',parseFloat(this.value))" style="flex:1;background:#0d0d20;border:1px solid #2a2a4a;color:#fff;border-radius:6px;padding:6px;font-size:13px;"></div>';
+  });
+  if(s.gender==='female') html+='<div style="display:flex;align-items:center;gap:8px;"><label style="font-size:12px;color:#aaa;width:100px;">Hip (cm)</label><input type="number" min="50" max="180" value="'+(s.hip||'')+'" onchange="window._rfcBCSet(\'hip\',parseFloat(this.value))" style="flex:1;background:#0d0d20;border:1px solid #2a2a4a;color:#fff;border-radius:6px;padding:6px;font-size:13px;"></div>';
+  html+='</div>';
+  html+='<button onclick="window._rfcBCSave()" style="width:100%;background:#a855f7;border:none;color:#fff;padding:10px;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;margin-bottom:12px;">Save Measurement</button>';
+  if(hist.length){ html+='<div style="font-size:12px;color:#888;margin-bottom:6px;">History</div><div style="overflow:hidden;max-height:80px;"><table style="width:100%;font-size:11px;border-collapse:collapse;">'; hist.slice(-4).reverse().forEach(function(h){ html+='<tr><td style="color:#888;padding:3px 0;">'+h.date+'</td><td style="color:#00ff88;text-align:right;">'+h.bf+'%</td><td style="color:#ffd700;text-align:right;">'+h.weight+'kg</td></tr>'; }); html+='</table></div>'; }
+  card.innerHTML=html;
+}
+window._rfcBCGender=function(g){ var uid=_b41uid(); var k='rfc_bcomp_settings_'+uid; var s=_b41load(k)||{}; s.gender=g; _b41save(k,s); _renderBodComp(); };
+window._rfcBCSet=function(k,v){ var uid=_b41uid(); var sk='rfc_bcomp_settings_'+uid; var s=_b41load(sk)||{}; s[k]=v; _b41save(sk,s); _renderBodComp(); };
+window._rfcBCSave=function(){
+  var uid=_b41uid(); var sk='rfc_bcomp_settings_'+uid; var hk='rfc_bcomp_'+uid;
+  var s=_b41load(sk)||{}; var bf=_bfCalc(s.gender,s.height,s.waist,s.neck,s.hip);
+  if(bf===null) return;
+  var hist=_b41load(hk)||[];
+  hist.push({date:_b41today(),bf:bf,weight:s.weight||0});
+  if(hist.length>30) hist=hist.slice(-30);
+  _b41save(hk,hist); _renderBodComp();
+};
+
+/* ---------- INTERMITTENT FASTING TRACKER (nutrition) ---------- */
+var IF_PROTOCOLS=[
+  {id:'168',label:'16:8',fast:16,eat:8,desc:'Most popular'},
+  {id:'186',label:'18:6',fast:18,eat:6,desc:'Intermediate'},
+  {id:'204',label:'20:4',fast:20,eat:4,desc:'Advanced'},
+  {id:'231',label:'OMAD',fast:23,eat:1,desc:'One meal a day'},
+  {id:'52',label:'5:2',fast:0,eat:0,desc:'2 days 500kcal'}
+];
+function _injectIF(){
+  if(document.getElementById('rfc-if-wrap')) return;
+  var anchor=document.getElementById('rfc-prebiotic-wrap')||document.getElementById('rfc-protdiv-wrap')||document.getElementById('rfc-antiinfl-wrap')||document.getElementById('rfc-gut-wrap')||document.querySelector('.dash-topbar');
+  if(!anchor) return;
+  var card=_b41card('rfc-if-wrap','⏱️ Intermittent Fasting Tracker');
+  card.style.cssText+='border:1px solid #2a1a1a;';
+  anchor.parentNode.insertBefore(card,anchor.nextSibling);
+  _renderIF();
+}
+function _renderIF(){
+  var card=document.getElementById('rfc-if-wrap'); if(!card) return;
+  var uid=_b41uid();
+  var key='rfc_if_'+uid;
+  var data=_b41load(key)||{protocol:'168',fasting:false,startTime:null,streak:0,lastDate:null,log:[]};
+  var proto=IF_PROTOCOLS.find(function(p){ return p.id===data.protocol; })||IF_PROTOCOLS[0];
+  var elapsed=0, pct=0, remaining='';
+  if(data.fasting&&data.startTime){
+    elapsed=Math.round((Date.now()-data.startTime)/60000);
+    var target=proto.fast*60;
+    pct=Math.min(100,Math.round((elapsed/target)*100));
+    var rem=Math.max(0,target-elapsed);
+    remaining=Math.floor(rem/60)+'h '+String(rem%60).padStart(2,'0')+'m remaining';
+  }
+  var elH=Math.floor(elapsed/60), elM=elapsed%60;
+  var sc=pct>=100?'#00ff88':pct>=50?'#ffd700':'#00d4ff';
+  var html='<div style="font-size:15px;font-weight:700;color:#00d4ff;margin-bottom:14px;">⏱️ Intermittent Fasting Tracker</div>';
+  html+='<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;">';
+  IF_PROTOCOLS.forEach(function(p){ html+='<button onclick="window._rfcIFProto(\''+p.id+'\')" style="padding:6px 10px;border-radius:7px;border:1px solid '+(data.protocol===p.id?'#00d4ff':'#2a2a4a')+';background:'+(data.protocol===p.id?'#0d2a3a':'#12122a')+';color:'+(data.protocol===p.id?'#00d4ff':'#888')+';font-size:12px;cursor:pointer;">'+p.label+'<br><span style="font-size:9px;color:#666;">'+p.desc+'</span></button>'; });
+  html+='</div>';
+  html+='<div style="text-align:center;margin-bottom:16px;">';
+  html+='<svg width="120" height="120" viewBox="0 0 120 120"><circle cx="60" cy="60" r="50" fill="none" stroke="#1a1a3a" stroke-width="10"/><circle cx="60" cy="60" r="50" fill="none" stroke="'+sc+'" stroke-width="10" stroke-dasharray="'+Math.round(pct*3.14)+' 314" stroke-dashoffset="78" style="transition:all 1s;"/><text x="60" y="55" text-anchor="middle" fill="'+sc+'" font-size="22" font-weight="800">'+(data.fasting?elH+'h '+String(elM).padStart(2,'0')+'m':'—')+'</text><text x="60" y="74" text-anchor="middle" fill="#888" font-size="11">'+(data.fasting?'fasting':'not fasting')+'</text></svg>';
+  if(data.fasting&&remaining) html+='<div style="font-size:12px;color:#aaa;margin-top:6px;">'+remaining+'</div>';
+  html+='</div>';
+  html+='<div style="display:flex;gap:10px;margin-bottom:12px;">';
+  if(!data.fasting){
+    html+='<button onclick="window._rfcIFStart()" style="flex:1;background:#00ff88;border:none;color:#000;padding:12px;border-radius:10px;font-size:14px;font-weight:800;cursor:pointer;">Start Fast</button>';
+  } else {
+    html+='<button onclick="window._rfcIFStop()" style="flex:1;background:#ff6b6b;border:none;color:#fff;padding:12px;border-radius:10px;font-size:14px;font-weight:800;cursor:pointer;">Break Fast</button>';
+  }
+  html+='</div>';
+  html+='<div style="display:flex;gap:10px;"><div style="flex:1;background:#12122a;border-radius:8px;padding:10px;text-align:center;"><div style="font-size:22px;font-weight:800;color:#ffd700;">'+data.streak+'</div><div style="font-size:11px;color:#888;">Day Streak</div></div>';
+  html+='<div style="flex:1;background:#12122a;border-radius:8px;padding:10px;text-align:center;"><div style="font-size:22px;font-weight:800;color:#00d4ff;">'+data.log.length+'</div><div style="font-size:11px;color:#888;">Total Fasts</div></div></div>';
+  card.innerHTML=html;
+}
+window._rfcIFProto=function(id){ var uid=_b41uid(); var key='rfc_if_'+uid; var data=_b41load(key)||{protocol:'168',fasting:false,startTime:null,streak:0,lastDate:null,log:[]}; data.protocol=id; _b41save(key,data); _renderIF(); };
+window._rfcIFStart=function(){ var uid=_b41uid(); var key='rfc_if_'+uid; var data=_b41load(key)||{protocol:'168',fasting:false,startTime:null,streak:0,lastDate:null,log:[]}; data.fasting=true; data.startTime=Date.now(); _b41save(key,data); _renderIF(); };
+window._rfcIFStop=function(){
+  var uid=_b41uid(); var key='rfc_if_'+uid;
+  var data=_b41load(key)||{protocol:'168',fasting:false,startTime:null,streak:0,lastDate:null,log:[]};
+  var elapsed=data.startTime?Math.round((Date.now()-data.startTime)/3600000):0;
+  data.fasting=false;
+  var today=_b41today();
+  if(data.lastDate!==today){ data.streak=(data.lastDate===_b41yesterday())?data.streak+1:1; data.lastDate=today; }
+  data.log=data.log||[]; data.log.push({date:today,hrs:elapsed}); if(data.log.length>50) data.log=data.log.slice(-50);
+  data.startTime=null; _b41save(key,data); _renderIF();
+};
+function _b41yesterday(){ var d=new Date(); d.setDate(d.getDate()-1); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+
+/* ---------- BAND RESISTANCE TRACKER (workouts) ---------- */
+var BANDS=[
+  {id:'yellow',label:'Yellow',lbs:'5-15',c:'#ffd700'},
+  {id:'red',label:'Red',lbs:'15-25',c:'#ff4444'},
+  {id:'green',label:'Green',lbs:'25-35',c:'#00cc44'},
+  {id:'blue',label:'Blue',lbs:'35-50',c:'#0099ff'},
+  {id:'black',label:'Black',lbs:'50-70',c:'#888'},
+  {id:'purple',label:'Purple',lbs:'70-120',c:'#a855f7'}
+];
+var BAND_EX=['Bicep Curl','Tricep Extension','Lateral Raise','Face Pull','Band Pull-Apart','Squat','Hip Thrust','Row','Chest Press','Monster Walk'];
+function _injectBands(){
+  if(document.getElementById('rfc-bands-wrap')) return;
+  var anchor=document.getElementById('rfc-deload-wrap')||document.getElementById('rfc-grip-wrap')||document.getElementById('rfc-tempo-wrap')||document.getElementById('rfc-strbal-wrap')||document.querySelector('.dash-topbar');
+  if(!anchor) return;
+  var card=_b41card('rfc-bands-wrap','🎗️ Band Resistance Tracker');
+  card.style.cssText+='border:1px solid #1a1a3a;';
+  anchor.parentNode.insertBefore(card,anchor.nextSibling);
+  _renderBands();
+}
+function _renderBands(){
+  var card=document.getElementById('rfc-bands-wrap'); if(!card) return;
+  var uid=_b41uid(), today=_b41today();
+  var key='rfc_bands_'+uid+'_'+today;
+  var data=_b41load(key)||{exercises:[]};
+  var html='<div style="font-size:15px;font-weight:700;color:#00d4ff;margin-bottom:14px;">🎗️ Band Resistance Tracker</div>';
+  html+='<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;">';
+  BANDS.forEach(function(b){ html+='<div style="background:'+b.c+'22;border:1px solid '+b.c+';border-radius:6px;padding:4px 8px;font-size:11px;color:'+b.c+';">'+b.label+'<br><span style="font-size:10px;color:#888;">'+b.lbs+' lbs</span></div>'; });
+  html+='</div>';
+  html+='<div style="background:#12122a;border-radius:10px;padding:12px;margin-bottom:12px;">';
+  html+='<div style="font-size:12px;color:#aaa;margin-bottom:8px;">Add Exercise:</div>';
+  html+='<select id="rfc-band-ex" style="width:100%;background:#0d0d20;border:1px solid #2a2a4a;color:#fff;border-radius:7px;padding:7px;font-size:12px;margin-bottom:8px;">';
+  BAND_EX.forEach(function(e){ html+='<option value="'+e+'">'+e+'</option>'; }); html+='</select>';
+  html+='<select id="rfc-band-color" style="width:100%;background:#0d0d20;border:1px solid #2a2a4a;color:#fff;border-radius:7px;padding:7px;font-size:12px;margin-bottom:8px;">';
+  BANDS.forEach(function(b){ html+='<option value="'+b.id+'">'+b.label+' Band ('+b.lbs+' lbs)</option>'; }); html+='</select>';
+  html+='<div style="display:flex;gap:8px;margin-bottom:8px;">';
+  html+='<input type="number" id="rfc-band-sets" placeholder="Sets" min="1" max="20" style="flex:1;background:#0d0d20;border:1px solid #2a2a4a;color:#fff;border-radius:6px;padding:7px;font-size:13px;">';
+  html+='<input type="number" id="rfc-band-reps" placeholder="Reps" min="1" max="200" style="flex:1;background:#0d0d20;border:1px solid #2a2a4a;color:#fff;border-radius:6px;padding:7px;font-size:13px;"></div>';
+  html+='<button onclick="window._rfcBandLog()" style="width:100%;background:#00d4ff;border:none;color:#000;padding:9px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;">+ Log Set</button></div>';
+  if(data.exercises.length){
+    html+='<div style="font-size:12px;color:#888;margin-bottom:6px;">Today\'s Exercises ('+data.exercises.length+'):</div>';
+    data.exercises.slice(-6).reverse().forEach(function(e){
+      var band=BANDS.find(function(b){ return b.id===e.band; })||BANDS[0];
+      html+='<div style="display:flex;align-items:center;gap:8px;padding:7px;background:#12122a;border-radius:7px;margin-bottom:4px;">';
+      html+='<div style="width:12px;height:12px;border-radius:50%;background:'+band.c+';flex-shrink:0;"></div>';
+      html+='<div style="flex:1;font-size:12px;color:#ccc;">'+e.exercise+'</div>';
+      html+='<div style="font-size:12px;color:'+band.c+';">'+e.sets+'×'+e.reps+'</div></div>';
+    });
+  }
+  card.innerHTML=html;
+}
+window._rfcBandLog=function(){
+  var ex=document.getElementById('rfc-band-ex'); var col=document.getElementById('rfc-band-color');
+  var sets=parseInt(document.getElementById('rfc-band-sets').value)||0;
+  var reps=parseInt(document.getElementById('rfc-band-reps').value)||0;
+  if(!ex||!col||!sets||!reps) return;
+  var uid=_b41uid(), today=_b41today(); var key='rfc_bands_'+uid+'_'+today;
+  var data=_b41load(key)||{exercises:[]};
+  data.exercises.push({exercise:ex.value,band:col.value,sets:sets,reps:reps,ts:Date.now()});
+  _b41save(key,data);
+  document.getElementById('rfc-band-sets').value=''; document.getElementById('rfc-band-reps').value='';
+  _renderBands();
+};
+
+window.switchScreen=function(name,navEl){
+  _origSS39&&_origSS39(name,navEl);
+  if(name==='dashboard') setTimeout(function(){ _injectBodComp(); _renderBodComp(); },1200);
+  if(name==='nutrition') setTimeout(function(){ _injectIF(); _renderIF(); },1100);
+  if(name==='workouts')  setTimeout(function(){ _injectBands(); _renderBands(); },1050);
+};
+setTimeout(function(){ _injectBodComp(); _injectIF(); _injectBands(); },33000);
+setTimeout(function(){ if(!document.getElementById('rfc-bodcomp-wrap')) _injectBodComp(); if(!document.getElementById('rfc-if-wrap')) _injectIF(); if(!document.getElementById('rfc-bands-wrap')) _injectBands(); },37000);
+})();
+</script>
+
 </body>
 </html>
