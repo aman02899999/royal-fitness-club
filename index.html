@@ -42490,5 +42490,215 @@ setTimeout(function(){
 })();
 </script>
 
+<!-- Batch 67: Screen Time & Digital Detox, Collagen & Skin Nutrition, Bench Press Variations -->
+<script>
+(function(){ 'use strict';
+var _origSS65=window.switchScreen;
+function _b67uid(){ try{ return JSON.parse(localStorage.getItem('bm_user')||'{}').uid||'guest'; }catch(e){ return 'guest'; } }
+function _b67today(){ var d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function _b67load(k){ try{ return JSON.parse(localStorage.getItem(k))||null; }catch(e){ return null; } }
+function _b67save(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} }
+function _b67card(id,title){ var d=document.createElement('div'); d.id=id; d.style.cssText='background:#1a1a2e;border-radius:14px;padding:18px;margin:14px 0;color:#e0e0e0;font-family:inherit;'; d.innerHTML='<div style="font-size:15px;font-weight:700;color:#00d4ff;margin-bottom:14px;">'+title+'</div>'; return d; }
+
+/* ── Screen Time & Digital Detox ── */
+function _injectScreenTime(){
+  if(document.getElementById('rfc-screentime-wrap')) return;
+  var anchor=document.getElementById('rfc-grat-wrap')||document.getElementById('rfc-enbudget-wrap')||document.getElementById('rfc-testhab-wrap')||document.getElementById('rfc-breathpat-wrap');
+  if(!anchor) return;
+  var c=_b67card('rfc-screentime-wrap','📵 Screen Time & Digital Detox');
+  c.innerHTML+=`
+<div style="font-size:12px;color:#aaa;margin-bottom:12px;">Track screen usage and digital wellness habits</div>
+<div style="display:grid;gap:10px;margin-bottom:12px;">
+  <div>
+    <div style="font-size:12px;color:#aaa;margin-bottom:3px;">Total screen time today (hrs)</div>
+    <input id="rfc-st-hrs" type="range" min="0" max="16" step="0.5" value="4" oninput="document.getElementById('rfc-st-hrsv').textContent=this.value+'h'; window._rfcSTCalc();" style="width:100%;">
+    <div id="rfc-st-hrsv" style="text-align:center;font-size:13px;color:#f44336;">4h</div>
+  </div>
+  <div>
+    <div style="font-size:12px;color:#aaa;margin-bottom:3px;">Phone-free morning (hours after waking)</div>
+    <input id="rfc-st-morn" type="range" min="0" max="4" step="0.5" value="0" oninput="document.getElementById('rfc-st-mornv').textContent=this.value+'h'; window._rfcSTCalc();" style="width:100%;">
+    <div id="rfc-st-mornv" style="text-align:center;font-size:13px;color:#00d4ff;">0h</div>
+  </div>
+</div>
+<div style="font-size:12px;color:#aaa;margin-bottom:6px;">Digital detox habits today</div>
+<div id="rfc-st-habits">
+  ${['No phone in bedroom','No screens 1h before sleep','No social media before 10am','Grayscale mode on','20-20-20 rule (eye breaks)','Phone-free meals','Airplane mode 1+ hour','Deep work focus block'].map(function(h,i){
+    return '<label style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid #1a1a2e;cursor:pointer;">'
+      +'<input type="checkbox" id="rfc-st-h-'+i+'" onchange="window._rfcSTCalc()" style="accent-color:#4caf50;">'
+      +'<span style="font-size:12px;">'+h+'</span></label>';
+  }).join('')}
+</div>
+<div id="rfc-st-result" style="margin-top:12px;"></div>`;
+  anchor.after(c);
+}
+window._rfcSTCalc=function(){
+  var hrs=parseFloat(document.getElementById('rfc-st-hrs').value)||0;
+  var morn=parseFloat(document.getElementById('rfc-st-morn').value)||0;
+  var habits=0;
+  for(var i=0;i<8;i++){ var cb=document.getElementById('rfc-st-h-'+i); if(cb&&cb.checked) habits++; }
+  var screenPenalty=Math.min(40,hrs*4);
+  var mornBonus=morn*10;
+  var habitBonus=habits*5;
+  var score=Math.max(0,Math.min(100,100-screenPenalty+mornBonus+habitBonus));
+  var col=score>=70?'#4caf50':score>=45?'#ff9800':'#f44336';
+  var msg=score>=70?'Excellent digital wellness!':score>=45?'Moderate — reduce screen time further':'High digital stress — try a detox period';
+  var r=document.getElementById('rfc-st-result');
+  if(r){
+    r.innerHTML='<div style="background:#0d0d1a;border-radius:8px;padding:10px;">'
+      +'<div style="display:flex;align-items:center;gap:12px;">'
+      +'<div style="text-align:center;"><div style="font-size:24px;font-weight:700;color:'+col+';">'+score+'</div><div style="font-size:10px;color:#aaa;">Digital Score</div></div>'
+      +'<div><div style="font-size:12px;color:'+col+';">'+msg+'</div>'
+      +'<div style="font-size:11px;color:#aaa;margin-top:4px;">Screen: '+hrs+'h (−'+Math.round(screenPenalty)+'pts) · Morning: '+morn+'h (+'+Math.round(mornBonus)+'pts) · Habits: '+habits+'/8 (+'+habitBonus+'pts)</div></div></div></div>';
+  }
+  var uid=_b67uid(), key='rfc_screentime_'+uid+'_'+_b67today(), state={};
+  for(var j=0;j<8;j++){ var cb2=document.getElementById('rfc-st-h-'+j); if(cb2&&cb2.checked) state[j]=1; }
+  _b67save(key,{score:score,hrs:hrs,morn:morn,habits:state});
+};
+function _renderScreenTime(){
+  if(!document.getElementById('rfc-screentime-wrap')) return;
+  var uid=_b67uid(), key='rfc_screentime_'+uid+'_'+_b67today();
+  var saved=_b67load(key);
+  if(saved){
+    document.getElementById('rfc-st-hrs').value=saved.hrs||4;
+    document.getElementById('rfc-st-hrsv').textContent=(saved.hrs||4)+'h';
+    document.getElementById('rfc-st-morn').value=saved.morn||0;
+    document.getElementById('rfc-st-mornv').textContent=(saved.morn||0)+'h';
+    Object.keys(saved.habits||{}).forEach(function(i){ var cb=document.getElementById('rfc-st-h-'+i); if(cb) cb.checked=true; });
+  }
+  window._rfcSTCalc();
+}
+
+/* ── Collagen & Skin Nutrition ── */
+function _injectCollagen(){
+  if(document.getElementById('rfc-collskin-wrap')) return;
+  var anchor=document.getElementById('rfc-wfoods-wrap')||document.getElementById('rfc-digest-wrap')||document.getElementById('rfc-zinc-wrap')||document.getElementById('rfc-protto-wrap');
+  if(!anchor) return;
+  var ITEMS=[
+    {id:'bone',label:'Bone broth (cup)',pts:5},{id:'eggs',label:'Egg whites (protein)',pts:3},
+    {id:'vitc',label:'Vitamin C (citrus, bell pepper)',pts:4},{id:'berr',label:'Berries (antioxidants)',pts:3},
+    {id:'salmon2',label:'Salmon / Tuna (omega-3)',pts:4},{id:'spin2',label:'Spinach / Kale (chlorophyll)',pts:3},
+    {id:'avo',label:'Avocado (hyaluronic acid support)',pts:3},{id:'colsupp',label:'Collagen supplement',pts:5},
+    {id:'nuts',label:'Nuts & seeds (copper + zinc)',pts:3},{id:'water2',label:'2.5L+ water (skin hydration)',pts:4}
+  ];
+  var rows=ITEMS.map(function(it){
+    return '<label style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid #1a1a2e;cursor:pointer;">'
+      +'<input type="checkbox" id="rfc-cs-'+it.id+'" onchange="window._rfcCSCalc()" style="accent-color:#ff69b4;">'
+      +'<span style="flex:1;font-size:12px;">'+it.label+'</span>'
+      +'<span style="font-size:11px;color:#ff69b4;">+'+it.pts+'</span></label>';
+  }).join('');
+  var c=_b67card('rfc-collskin-wrap','✨ Collagen & Skin Nutrition');
+  c.innerHTML+=`
+<div style="font-size:12px;color:#aaa;margin-bottom:10px;">Nutrients that support collagen synthesis and skin health</div>
+<div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+  <div id="rfc-cs-ring" style="width:60px;height:60px;flex-shrink:0;"></div>
+  <div><div id="rfc-cs-pts" style="font-size:22px;font-weight:700;color:#ff69b4;">0<span style="font-size:12px;color:#aaa;">/37</span></div>
+  <div id="rfc-cs-msg" style="font-size:11px;color:#aaa;">Track collagen-supporting foods</div></div>
+</div>
+<div style="max-height:250px;overflow-y:auto;">${rows}</div>`;
+  anchor.after(c);
+}
+window._rfcCSCalc=function(){
+  var ITEMS=[{id:'bone',pts:5},{id:'eggs',pts:3},{id:'vitc',pts:4},{id:'berr',pts:3},{id:'salmon2',pts:4},{id:'spin2',pts:3},{id:'avo',pts:3},{id:'colsupp',pts:5},{id:'nuts',pts:3},{id:'water2',pts:4}];
+  var total=37, pts=0, state={};
+  ITEMS.forEach(function(it){ var cb=document.getElementById('rfc-cs-'+it.id); if(cb&&cb.checked){ pts+=it.pts; state[it.id]=1; } });
+  var uid=_b67uid(), key='rfc_collskin_'+uid+'_'+_b67today();
+  _b67save(key,state);
+  var pct=Math.round(pts/total*100);
+  var col=pct>=70?'#ff69b4':pct>=40?'#ff9800':'#aaa';
+  var msg=pct>=70?'Excellent collagen support!':pct>=40?'Good — add more Vit C sources':'Low collagen nutrition — focus on whole foods';
+  document.getElementById('rfc-cs-pts').innerHTML=pts+'<span style="font-size:12px;color:#aaa;">/'+total+'</span>';
+  document.getElementById('rfc-cs-msg').textContent=msg; document.getElementById('rfc-cs-msg').style.color=col;
+  var r=document.getElementById('rfc-cs-ring');
+  var circ=Math.round(2*Math.PI*24), dash=Math.round(circ*pct/100);
+  r.innerHTML='<svg width="60" height="60" viewBox="0 0 60 60"><circle cx="30" cy="30" r="24" fill="none" stroke="#222" stroke-width="6"/><circle cx="30" cy="30" r="24" fill="none" stroke="'+col+'" stroke-width="6" stroke-dasharray="'+dash+' '+circ+'" stroke-dashoffset="'+Math.round(circ*0.25)+'" stroke-linecap="round"/><text x="30" y="35" text-anchor="middle" fill="'+col+'" font-size="12" font-weight="700">'+pct+'%</text></svg>';
+};
+function _renderCollagen(){
+  if(!document.getElementById('rfc-collskin-wrap')) return;
+  var uid=_b67uid(), key='rfc_collskin_'+uid+'_'+_b67today();
+  var saved=_b67load(key)||{};
+  Object.keys(saved).forEach(function(id){ var cb=document.getElementById('rfc-cs-'+id); if(cb) cb.checked=true; });
+  window._rfcCSCalc();
+}
+
+/* ── Bench Press Variation Tracker ── */
+function _injectBenchVar(){
+  if(document.getElementById('rfc-benchvar-wrap')) return;
+  var anchor=document.getElementById('rfc-ohp-wrap')||document.getElementById('rfc-sqvar-wrap')||document.getElementById('rfc-pushpull-wrap')||document.getElementById('rfc-dlvar-wrap');
+  if(!anchor) return;
+  var VARS=[
+    {id:'fl',label:'Flat Barbell Bench'},{id:'inc',label:'Incline Barbell (30–45°)'},
+    {id:'dec',label:'Decline Barbell'},{id:'dbfl',label:'DB Flat Bench'},
+    {id:'dbinc',label:'DB Incline Bench'},{id:'close',label:'Close-Grip Bench'},
+    {id:'paus',label:'Pause Bench'},{id:'spb',label:'Spoto Press (2" off chest)'},
+    {id:'floor',label:'Floor Press'},{id:'board',label:'Board Press'}
+  ];
+  var rows=VARS.map(function(v){
+    return '<div style="padding:7px 0;border-bottom:1px solid #222;">'
+      +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;">'
+      +'<span style="font-size:13px;">'+v.label+'</span>'
+      +'<span id="rfc-bv-pb-'+v.id+'" style="font-size:10px;color:#ff9800;"></span></div>'
+      +'<div style="display:flex;gap:6px;">'
+      +'<input id="rfc-bv-kg-'+v.id+'" type="number" min="0" step="1.25" placeholder="kg" style="flex:1;padding:6px;border-radius:6px;border:1px solid #333;background:#0d0d1a;color:#e0e0e0;font-size:12px;">'
+      +'<input id="rfc-bv-reps-'+v.id+'" type="number" min="1" max="30" placeholder="reps" style="width:55px;padding:6px;border-radius:6px;border:1px solid #333;background:#0d0d1a;color:#e0e0e0;font-size:12px;">'
+      +'<button onclick="window._rfcBVLog(\''+v.id+'\')" style="padding:6px 10px;border:none;border-radius:6px;background:#ff5722;color:#fff;font-size:11px;cursor:pointer;">Log</button>'
+      +'</div></div>';
+  }).join('');
+  var c=_b67card('rfc-benchvar-wrap','🏋️ Bench Press Variation Tracker');
+  c.innerHTML+=`
+<div style="font-size:12px;color:#aaa;margin-bottom:12px;">Track all bench press variations — builds complete chest strength</div>
+${rows}
+<div id="rfc-bv-today" style="margin-top:12px;"></div>`;
+  anchor.after(c);
+  _renderBenchVar();
+}
+window._rfcBVLog=function(id){
+  var kg=parseFloat(document.getElementById('rfc-bv-kg-'+id).value)||0;
+  var reps=parseInt(document.getElementById('rfc-bv-reps-'+id).value)||1;
+  if(!kg){ alert('Enter weight'); return; }
+  var uid=_b67uid(), pbKey='rfc_benchvar_pbs_'+uid, dayKey='rfc_benchvar_'+uid+'_'+_b67today();
+  var pbs=_b67load(pbKey)||{}, today=_b67load(dayKey)||{};
+  if(!today[id]) today[id]=[];
+  today[id].push({kg:kg,reps:reps});
+  _b67save(dayKey,today);
+  if(!pbs[id]||kg>pbs[id].kg){ pbs[id]={kg:kg,reps:reps,date:_b67today()}; _b67save(pbKey,pbs); }
+  document.getElementById('rfc-bv-kg-'+id).value=''; document.getElementById('rfc-bv-reps-'+id).value='';
+  _showBVPBs(pbs); _showBVToday(today);
+};
+function _showBVPBs(pbs){
+  var VARS=[{id:'fl'},{id:'inc'},{id:'dec'},{id:'dbfl'},{id:'dbinc'},{id:'close'},{id:'paus'},{id:'spb'},{id:'floor'},{id:'board'}];
+  VARS.forEach(function(v){ var el=document.getElementById('rfc-bv-pb-'+v.id); if(el&&pbs[v.id]) el.textContent='PB: '+pbs[v.id].kg+'kg×'+pbs[v.id].reps; });
+}
+function _showBVToday(today){
+  var el=document.getElementById('rfc-bv-today'); if(!el) return;
+  var keys=Object.keys(today); if(!keys.length){ el.innerHTML=''; return; }
+  var LABELS={fl:'Flat BB',inc:'Incline BB',dec:'Decline BB',dbfl:'DB Flat',dbinc:'DB Incline',close:'Close Grip',paus:'Pause',spb:'Spoto',floor:'Floor Press',board:'Board Press'};
+  var html='<div style="font-size:12px;color:#aaa;margin-bottom:6px;">Today\'s Bench Session</div><div style="display:flex;flex-wrap:wrap;gap:5px;">';
+  keys.forEach(function(k){ var best=today[k].reduce(function(a,b){return b.kg>a.kg?b:a;}); html+='<div style="background:#0d0d1a;border-radius:8px;padding:7px 10px;text-align:center;"><div style="font-size:15px;font-weight:700;color:#ff5722;">'+best.kg+'kg</div><div style="font-size:10px;color:#aaa;">'+(LABELS[k]||k)+'×'+best.reps+'</div></div>'; });
+  el.innerHTML=html+'</div>';
+}
+function _renderBenchVar(){
+  if(!document.getElementById('rfc-benchvar-wrap')) return;
+  var uid=_b67uid();
+  _showBVPBs(_b67load('rfc_benchvar_pbs_'+uid)||{});
+  _showBVToday(_b67load('rfc_benchvar_'+uid+'_'+_b67today())||{});
+}
+
+/* ── switchScreen wrapper ── */
+window.switchScreen=function(name,navEl){
+  _origSS65&&_origSS65(name,navEl);
+  if(name==='dashboard') setTimeout(function(){ _injectScreenTime(); _renderScreenTime(); },1200);
+  if(name==='nutrition') setTimeout(function(){ _injectCollagen(); _renderCollagen(); },1100);
+  if(name==='workouts')  setTimeout(function(){ _injectBenchVar(); _renderBenchVar(); },1050);
+};
+
+setTimeout(function(){ _injectScreenTime(); _injectCollagen(); _injectBenchVar(); _renderScreenTime(); _renderCollagen(); _renderBenchVar(); },59000);
+setTimeout(function(){
+  if(!document.getElementById('rfc-screentime-wrap')) { _injectScreenTime(); _renderScreenTime(); }
+  if(!document.getElementById('rfc-collskin-wrap'))  { _injectCollagen(); _renderCollagen(); }
+  if(!document.getElementById('rfc-benchvar-wrap'))  { _injectBenchVar(); _renderBenchVar(); }
+},63000);
+})();
+</script>
+
 </body>
 </html>
