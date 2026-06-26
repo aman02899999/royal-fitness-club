@@ -38345,5 +38345,175 @@ setTimeout(function(){ if(!document.getElementById('rfc-breathwork-wrap')) _inje
 })();
 </script>
 
+<script>
+/* ===== BATCH 48: Cortisol Balance | Protein Synthesis Window | Progressive Overload ===== */
+(function(){ 'use strict';
+var _origSS46=window.switchScreen;
+function _b48uid(){ try{ return JSON.parse(localStorage.getItem('bm_user')||'{}').uid||'guest'; }catch(e){ return 'guest'; } }
+function _b48today(){ var d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function _b48load(k){ try{ return JSON.parse(localStorage.getItem(k))||null; }catch(e){ return null; } }
+function _b48save(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} }
+function _b48card(id,title){ var d=document.createElement('div'); d.id=id; d.style.cssText='background:#1a1a2e;border-radius:14px;padding:18px;margin:14px 0;color:#e0e0e0;font-family:inherit;'; d.innerHTML='<div style="font-size:15px;font-weight:700;color:#00d4ff;margin-bottom:14px;">'+title+'</div>'; return d; }
+
+/* ---------- CORTISOL BALANCE TRACKER (dashboard) ---------- */
+var CORT_REDUCE=[
+  {id:'sun_morning',label:'Morning sunlight (10+ min)',icon:'☀️',pts:2},
+  {id:'meditation_c',label:'Meditation/breathing',icon:'🧘',pts:2},
+  {id:'limit_caff',label:'No caffeine after noon',icon:'☕',pts:1},
+  {id:'sleep_sched',label:'Consistent sleep schedule',icon:'⏰',pts:2},
+  {id:'nature',label:'Outdoor/nature time',icon:'🌳',pts:1},
+  {id:'social',label:'Positive social interaction',icon:'😊',pts:1},
+  {id:'laughter',label:'Laughter/enjoyment',icon:'😂',pts:1},
+  {id:'mod_exercise',label:'Moderate exercise (not late)',icon:'🚶',pts:2}
+];
+var CORT_RAISE=[
+  {id:'late_intense',label:'Intense exercise after 8pm',icon:'⚠️'},
+  {id:'alcohol_c',label:'Alcohol consumption',icon:'🍺'},
+  {id:'stress_news',label:'Prolonged stress/news',icon:'📰'},
+  {id:'screen_late',label:'Screens 2h before bed',icon:'📱'},
+  {id:'skipped_meals',label:'Skipped meals / undereating',icon:'🍽️'}
+];
+function _injectCortisol(){
+  if(document.getElementById('rfc-cortisol-wrap')) return;
+  var anchor=document.getElementById('rfc-breathwork-wrap')||document.getElementById('rfc-cold-wrap')||document.getElementById('rfc-social-wrap')||document.getElementById('rfc-sleepenv-wrap')||document.querySelector('.dash-topbar');
+  if(!anchor) return;
+  var card=_b48card('rfc-cortisol-wrap','🧪 Cortisol Balance');
+  card.style.cssText+='border:1px solid #2a1a1a;';
+  anchor.parentNode.insertBefore(card,anchor.nextSibling);
+  _renderCortisol();
+}
+function _renderCortisol(){
+  var card=document.getElementById('rfc-cortisol-wrap'); if(!card) return;
+  var uid=_b48uid(), today=_b48today();
+  var key='rfc_cortisol_'+uid+'_'+today;
+  var data=_b48load(key)||{};
+  var posScore=CORT_REDUCE.reduce(function(a,c){ return a+(data[c.id]?c.pts:0); },0);
+  var negCount=CORT_RAISE.filter(function(c){ return !!data[c.id]; }).length;
+  var netScore=posScore-negCount*2;
+  var sc=netScore>=6?'#00ff88':netScore>=3?'#ffd700':netScore>=0?'#ff9f43':'#ff6b6b';
+  var html='<div style="font-size:15px;font-weight:700;color:#00d4ff;margin-bottom:14px;">🧪 Cortisol Balance</div>';
+  html+='<div style="display:flex;align-items:center;gap:14px;margin-bottom:14px;">';
+  html+='<div style="font-size:36px;font-weight:800;color:'+sc+';">'+netScore+'</div>';
+  html+='<div><div style="font-size:14px;font-weight:700;color:'+sc+';">'+(netScore>=6?'Well Balanced':netScore>=3?'Moderate':netScore>=0?'Slightly Elevated':'High Cortisol Risk')+'</div><div style="font-size:12px;color:#888;">+'+posScore+' positive, −'+(negCount*2)+' negative</div></div></div>';
+  html+='<div style="font-size:12px;color:#00ff88;font-weight:700;margin-bottom:7px;">✅ Cortisol Reducers</div>';
+  html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:12px;">';
+  CORT_REDUCE.forEach(function(c){ var ok=!!data[c.id]; html+='<div onclick="window._rfcCortTap(\''+c.id+'\')" style="cursor:pointer;background:'+(ok?'#0d2a1a':'#12122a')+';border:1px solid '+(ok?'#00ff88':'#2a2a4a')+';border-radius:8px;padding:8px;display:flex;align-items:center;gap:6px;"><span style="font-size:14px;">'+c.icon+'</span><div style="flex:1;font-size:10px;color:'+(ok?'#00ff88':'#ccc')+';">'+c.label+'</div><span>'+(ok?'✅':'⭕')+'</span></div>'; });
+  html+='</div>';
+  html+='<div style="font-size:12px;color:#ff6b6b;font-weight:700;margin-bottom:7px;">🚨 Cortisol Elevators (did you avoid these?)</div>';
+  html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">';
+  CORT_RAISE.forEach(function(c){ var bad=!!data[c.id]; html+='<div onclick="window._rfcCortTap(\''+c.id+'\')" style="cursor:pointer;background:'+(bad?'#2a0d0d':'#12122a')+';border:1px solid '+(bad?'#ff6b6b':'#2a2a4a')+';border-radius:8px;padding:8px;display:flex;align-items:center;gap:6px;"><span style="font-size:14px;">'+c.icon+'</span><div style="flex:1;font-size:10px;color:'+(bad?'#ff6b6b':'#ccc')+';">'+c.label+'</div><span>'+(bad?'❌':'✅')+'</span></div>'; });
+  html+='</div>';
+  card.innerHTML=html;
+}
+window._rfcCortTap=function(id){ var uid=_b48uid(), today=_b48today(); var key='rfc_cortisol_'+uid+'_'+today; var data=_b48load(key)||{}; data[id]=!data[id]; _b48save(key,data); _renderCortisol(); };
+
+/* ---------- PROTEIN SYNTHESIS WINDOW (nutrition) ---------- */
+var PROSYN_WINDOWS=[
+  {id:'breakfast',label:'Breakfast Protein',note:'Aim 30-40g with leucine-rich foods'},
+  {id:'preWO',label:'Pre-Workout (30-60 min)',note:'20-30g whey or lean protein'},
+  {id:'postWO',label:'Post-Workout (within 2h)',note:'40-50g with fast carbs'},
+  {id:'bedtime',label:'Bedtime Protein',note:'30-40g casein to prevent catabolism'},
+  {id:'other1',label:'Meal 2 Protein',note:'Spread across day for sustained MPS'},
+  {id:'other2',label:'Meal 3 Protein',note:'Keep >2.5g leucine per meal'}
+];
+var LEUCINE_FOODS=[
+  {f:'Whey Protein (30g)',leu:2.7},{f:'Chicken breast (100g)',leu:2.0},{f:'Eggs (3 large)',leu:1.7},
+  {f:'Greek Yogurt (200g)',leu:1.4},{f:'Beef (100g)',leu:2.1},{f:'Salmon (100g)',leu:1.6}
+];
+function _injectProSyn(){
+  if(document.getElementById('rfc-prosyn-wrap')) return;
+  var anchor=document.getElementById('rfc-rainbow-wrap')||document.getElementById('rfc-collagen-wrap')||document.getElementById('rfc-glycemic-wrap')||document.getElementById('rfc-vegvar-wrap')||document.querySelector('.dash-topbar');
+  if(!anchor) return;
+  var card=_b48card('rfc-prosyn-wrap','💪 Protein Synthesis Window');
+  card.style.cssText+='border:1px solid #0d2a1a;';
+  anchor.parentNode.insertBefore(card,anchor.nextSibling);
+  _renderProSyn();
+}
+function _renderProSyn(){
+  var card=document.getElementById('rfc-prosyn-wrap'); if(!card) return;
+  var uid=_b48uid(), today=_b48today();
+  var key='rfc_prosyn_'+uid+'_'+today;
+  var data=_b48load(key)||{};
+  var totalP=PROSYN_WINDOWS.reduce(function(a,w){ return a+(parseFloat(data[w.id])||0); },0);
+  var mpsWindows=PROSYN_WINDOWS.filter(function(w){ return (parseFloat(data[w.id])||0)>=30; }).length;
+  var html='<div style="font-size:15px;font-weight:700;color:#00d4ff;margin-bottom:14px;">💪 Protein Synthesis Window</div>';
+  html+='<div style="display:flex;gap:10px;margin-bottom:14px;">';
+  html+='<div style="flex:1;background:#12122a;border-radius:9px;padding:10px;text-align:center;"><div style="font-size:22px;font-weight:800;color:#00ff88;">'+Math.round(totalP)+'g</div><div style="font-size:11px;color:#888;">Total Protein</div></div>';
+  html+='<div style="flex:1;background:#12122a;border-radius:9px;padding:10px;text-align:center;"><div style="font-size:22px;font-weight:800;color:'+(mpsWindows>=4?'#00ff88':mpsWindows>=2?'#ffd700':'#ff6b6b')+';">'+mpsWindows+'/6</div><div style="font-size:11px;color:#888;">MPS Windows ≥30g</div></div></div>';
+  PROSYN_WINDOWS.forEach(function(w){
+    var val=parseFloat(data[w.id])||0;
+    var ok=val>=30; var leucOk=val>=20;
+    html+='<div style="background:#12122a;border-radius:9px;padding:10px;margin-bottom:8px;">';
+    html+='<div style="display:flex;justify-content:space-between;margin-bottom:4px;"><span style="font-size:12px;font-weight:700;color:#e0e0e0;">'+w.label+'</span><span style="font-size:11px;color:'+(ok?'#00ff88':'#888')+'">'+(ok?'✅ MPS threshold':'<30g')+'</span></div>';
+    html+='<div style="font-size:11px;color:#666;margin-bottom:6px;">'+w.note+'</div>';
+    html+='<input type="number" min="0" max="200" step="1" placeholder="Protein (g)" value="'+(val||'')+'" onchange="window._rfcPSSet(\''+w.id+'\',parseFloat(this.value))" style="width:100%;background:#0d0d20;border:1px solid '+(ok?'#00ff88':'#2a2a4a')+';color:#fff;border-radius:6px;padding:6px;font-size:13px;box-sizing:border-box;">';
+    html+='</div>';
+  });
+  html+='<div style="background:#0d1a0d;border-radius:9px;padding:10px;"><div style="font-size:12px;color:#00ff88;font-weight:700;margin-bottom:6px;">Leucine Reference (≥2.5g triggers MPS)</div>';
+  html+='<div style="display:flex;flex-wrap:wrap;gap:6px;">';
+  LEUCINE_FOODS.forEach(function(f){ html+='<div style="background:#12122a;border-radius:6px;padding:5px 8px;font-size:11px;"><span style="color:#ccc;">'+f.f+'</span> <span style="color:#00ff88;">'+f.leu+'g Leu</span></div>'; });
+  html+='</div></div>';
+  card.innerHTML=html;
+}
+window._rfcPSSet=function(id,val){ var uid=_b48uid(), today=_b48today(); var key='rfc_prosyn_'+uid+'_'+today; var data=_b48load(key)||{}; data[id]=val||0; _b48save(key,data); _renderProSyn(); };
+
+/* ---------- PROGRESSIVE OVERLOAD CALCULATOR (workouts) ---------- */
+var _progState={exercise:'Bench Press',weight:80,reps:8,sets:3,method:'linear',minReps:6,maxReps:12};
+function _calcProgSessions(s){
+  var sessions=[];
+  if(s.method==='linear'){
+    for(var i=1;i<=4;i++) sessions.push({label:'Session '+i,weight:s.weight+(i*2.5),reps:s.reps,sets:s.sets});
+  } else if(s.method==='double'){
+    var r=s.reps; var w=s.weight;
+    for(var j=1;j<=4;j++){ if(r<s.maxReps){ sessions.push({label:'Session '+j,weight:w,reps:r+1,sets:s.sets}); r++; } else { r=s.minReps; w+=2.5; sessions.push({label:'Session '+j+'*',weight:w,reps:r,sets:s.sets}); } }
+  } else if(s.method==='wave'){
+    var waves=[[s.reps+2,s.weight-5],[s.reps,s.weight],[s.reps-2,s.weight+5],[s.reps+2,s.weight-2.5]];
+    waves.forEach(function(w,i){ sessions.push({label:'Session '+(i+1),weight:w[1],reps:w[0],sets:s.sets}); });
+  } else {
+    for(var k=1;k<=4;k++) sessions.push({label:'Session '+k,weight:s.weight+((k-1)*1.25),reps:s.reps,sets:s.sets});
+  }
+  return sessions;
+}
+function _injectProgOver(){
+  if(document.getElementById('rfc-progover-wrap')) return;
+  var anchor=document.getElementById('rfc-unilat-wrap')||document.getElementById('rfc-sprint-wrap')||document.getElementById('rfc-1rm-wrap')||document.getElementById('rfc-cardio-wrap')||document.querySelector('.dash-topbar');
+  if(!anchor) return;
+  var card=_b48card('rfc-progover-wrap','📈 Progressive Overload Calculator');
+  card.style.cssText+='border:1px solid #1a3a1a;';
+  anchor.parentNode.insertBefore(card,anchor.nextSibling);
+  _renderProgOver();
+}
+function _renderProgOver(){
+  var card=document.getElementById('rfc-progover-wrap'); if(!card) return;
+  var s=_progState;
+  var sessions=_calcProgSessions(s);
+  var html='<div style="font-size:15px;font-weight:700;color:#00d4ff;margin-bottom:14px;">📈 Progressive Overload Calculator</div>';
+  html+='<div style="display:grid;gap:8px;margin-bottom:12px;">';
+  html+='<div><div style="font-size:12px;color:#888;margin-bottom:4px;">Exercise</div><input type="text" value="'+s.exercise+'" onchange="window._rfcPOSet(\'exercise\',this.value)" style="width:100%;background:#0d0d20;border:1px solid #2a2a4a;color:#fff;border-radius:7px;padding:8px;font-size:13px;box-sizing:border-box;"></div>';
+  html+='<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">';
+  [['Current Wt (kg)','weight'],['Reps Done','reps'],['Sets','sets']].forEach(function(f){ html+='<div><div style="font-size:11px;color:#888;margin-bottom:4px;">'+f[0]+'</div><input type="number" min="0" max="500" step="0.5" value="'+(s[f[1]]||'')+'" onchange="window._rfcPOSet(\''+f[1]+'\',parseFloat(this.value))" style="width:100%;background:#0d0d20;border:1px solid #2a2a4a;color:#fff;border-radius:6px;padding:6px;font-size:14px;font-weight:700;text-align:center;box-sizing:border-box;"></div>'; });
+  html+='</div>';
+  html+='<div><div style="font-size:12px;color:#888;margin-bottom:6px;">Progression Method</div><div style="display:flex;gap:6px;flex-wrap:wrap;">';
+  [{id:'linear',label:'Linear'},{id:'double',label:'Double Prog'},{id:'wave',label:'Wave Load'},{id:'micro',label:'Micro-Load'}].forEach(function(m){ html+='<button onclick="window._rfcPOSet(\'method\',\''+m.id+'\')" style="flex:1;min-width:70px;padding:7px 4px;border-radius:7px;border:1px solid '+(s.method===m.id?'#00ff88':'#2a2a4a')+';background:'+(s.method===m.id?'#0d2a1a':'#12122a')+';color:'+(s.method===m.id?'#00ff88':'#888')+';font-size:11px;cursor:pointer;">'+m.label+'</button>'; });
+  html+='</div></div></div>';
+  html+='<div style="font-size:12px;color:#888;margin-bottom:8px;">Projected Next 4 Sessions:</div>';
+  html+='<div style="display:grid;gap:6px;">';
+  sessions.forEach(function(ss,i){ var isNext=i===0; html+='<div style="background:'+(isNext?'#0d2a1a':'#12122a')+';border:1px solid '+(isNext?'#00ff88':'#2a2a4a')+';border-radius:9px;padding:10px;display:flex;justify-content:space-between;align-items:center;"><span style="font-size:12px;color:'+(isNext?'#00ff88':'#888')+';">'+ss.label+(isNext?' ← NEXT':'')+'</span><div style="text-align:right;"><span style="font-size:15px;font-weight:700;color:#ffd700;">'+ss.weight+'kg</span><span style="font-size:13px;color:#aaa;"> × '+ss.reps+' × '+ss.sets+'</span></div></div>'; });
+  html+='</div>';
+  card.innerHTML=html;
+}
+window._rfcPOSet=function(k,v){ _progState[k]=v; _renderProgOver(); };
+
+window.switchScreen=function(name,navEl){
+  _origSS46&&_origSS46(name,navEl);
+  if(name==='dashboard') setTimeout(function(){ _injectCortisol(); _renderCortisol(); },1200);
+  if(name==='nutrition') setTimeout(function(){ _injectProSyn(); _renderProSyn(); },1100);
+  if(name==='workouts')  setTimeout(function(){ _injectProgOver(); _renderProgOver(); },1050);
+};
+setTimeout(function(){ _injectCortisol(); _injectProSyn(); _injectProgOver(); },40000);
+setTimeout(function(){ if(!document.getElementById('rfc-cortisol-wrap')) _injectCortisol(); if(!document.getElementById('rfc-prosyn-wrap')) _injectProSyn(); if(!document.getElementById('rfc-progover-wrap')) _injectProgOver(); },44000);
+})();
+</script>
+
 </body>
 </html>
