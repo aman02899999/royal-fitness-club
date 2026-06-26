@@ -39554,5 +39554,306 @@ setTimeout(function(){ if(!document.getElementById('rfc-energydrain-wrap')) _inj
 })();
 </script>
 
+<!-- Batch 55: Nervous System Recovery, Vitamin B Complex, Accessory Work Logger -->
+<script>
+(function(){ 'use strict';
+var _origSS53=window.switchScreen;
+function _b55uid(){ try{ return JSON.parse(localStorage.getItem('bm_user')||'{}').uid||'guest'; }catch(e){ return 'guest'; } }
+function _b55today(){ var d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function _b55load(k){ try{ return JSON.parse(localStorage.getItem(k))||null; }catch(e){ return null; } }
+function _b55save(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} }
+function _b55card(id,title){ var d=document.createElement('div'); d.id=id; d.style.cssText='background:#1a1a2e;border-radius:14px;padding:18px;margin:14px 0;color:#e0e0e0;font-family:inherit;'; d.innerHTML='<div style="font-size:15px;font-weight:700;color:#00d4ff;margin-bottom:14px;">'+title+'</div>'; return d; }
+
+/* ── Nervous System Recovery Tracker ── */
+function _injectNSR(){
+  if(document.getElementById('rfc-nsr-wrap')) return;
+  var anchor=document.getElementById('rfc-energydrain-wrap')||document.getElementById('rfc-metage-wrap')||document.getElementById('rfc-wins-wrap')||document.getElementById('rfc-hormone-wrap');
+  if(!anchor) return;
+  var c=_b55card('rfc-nsr-wrap','🧠 Nervous System Recovery');
+  c.innerHTML+=`
+<div style="font-size:12px;color:#aaa;margin-bottom:12px;">Rate your CNS recovery signals today</div>
+<div id="rfc-nsr-fields" style="display:grid;gap:10px;">
+  <div>
+    <div style="font-size:12px;color:#aaa;margin-bottom:4px;">Resting Heart Rate (bpm)</div>
+    <input id="rfc-nsr-hr" type="number" min="30" max="120" placeholder="e.g. 58" style="width:100%;padding:8px;border-radius:8px;border:1px solid #333;background:#0d0d1a;color:#e0e0e0;font-size:13px;">
+  </div>
+  <div>
+    <div style="font-size:12px;color:#aaa;margin-bottom:4px;">Sleep Quality (1–10)</div>
+    <input id="rfc-nsr-sleep" type="range" min="1" max="10" value="5" style="width:100%;">
+    <div id="rfc-nsr-sleep-v" style="text-align:center;font-size:13px;color:#00d4ff;">5</div>
+  </div>
+  <div>
+    <div style="font-size:12px;color:#aaa;margin-bottom:4px;">Mood / Energy (1–10)</div>
+    <input id="rfc-nsr-mood" type="range" min="1" max="10" value="5" style="width:100%;">
+    <div id="rfc-nsr-mood-v" style="text-align:center;font-size:13px;color:#00d4ff;">5</div>
+  </div>
+  <div>
+    <div style="font-size:12px;color:#aaa;margin-bottom:4px;">Subjective Readiness (1–10)</div>
+    <input id="rfc-nsr-ready" type="range" min="1" max="10" value="5" style="width:100%;">
+    <div id="rfc-nsr-ready-v" style="text-align:center;font-size:13px;color:#00d4ff;">5</div>
+  </div>
+</div>
+<button onclick="window._rfcNSRSave()" style="margin-top:12px;width:100%;padding:9px;border:none;border-radius:8px;background:#00d4ff;color:#000;font-weight:700;cursor:pointer;">Log Today</button>
+<div id="rfc-nsr-result" style="margin-top:12px;display:none;"></div>
+<div id="rfc-nsr-hist" style="margin-top:12px;"></div>`;
+  anchor.after(c);
+  document.getElementById('rfc-nsr-sleep').oninput=function(){ document.getElementById('rfc-nsr-sleep-v').textContent=this.value; };
+  document.getElementById('rfc-nsr-mood').oninput=function(){ document.getElementById('rfc-nsr-mood-v').textContent=this.value; };
+  document.getElementById('rfc-nsr-ready').oninput=function(){ document.getElementById('rfc-nsr-ready-v').textContent=this.value; };
+}
+function _renderNSR(){
+  if(!document.getElementById('rfc-nsr-wrap')) return;
+  var uid=_b55uid(), key='rfc_nsr_'+uid, hist=_b55load(key)||[];
+  var today=_b55today(), td=hist.find(function(e){return e.date===today;});
+  if(td){
+    document.getElementById('rfc-nsr-hr').value=td.hr||'';
+    document.getElementById('rfc-nsr-sleep').value=td.sleep||5;
+    document.getElementById('rfc-nsr-sleep-v').textContent=td.sleep||5;
+    document.getElementById('rfc-nsr-mood').value=td.mood||5;
+    document.getElementById('rfc-nsr-mood-v').textContent=td.mood||5;
+    document.getElementById('rfc-nsr-ready').value=td.ready||5;
+    document.getElementById('rfc-nsr-ready-v').textContent=td.ready||5;
+  }
+  _showNSRResult(hist, today);
+  _showNSRHist(hist);
+}
+window._rfcNSRSave=function(){
+  var uid=_b55uid(), key='rfc_nsr_'+uid;
+  var hr=parseInt(document.getElementById('rfc-nsr-hr').value)||0;
+  var sleep=parseInt(document.getElementById('rfc-nsr-sleep').value);
+  var mood=parseInt(document.getElementById('rfc-nsr-mood').value);
+  var ready=parseInt(document.getElementById('rfc-nsr-ready').value);
+  var today=_b55today();
+  var hist=_b55load(key)||[];
+  var idx=hist.findIndex(function(e){return e.date===today;});
+  var entry={date:today,hr:hr,sleep:sleep,mood:mood,ready:ready};
+  if(idx>=0) hist[idx]=entry; else hist.push(entry);
+  if(hist.length>30) hist=hist.slice(-30);
+  _b55save(key,hist);
+  _showNSRResult(hist,today);
+  _showNSRHist(hist);
+};
+function _showNSRResult(hist,today){
+  var r=document.getElementById('rfc-nsr-result'); if(!r) return;
+  var td=hist.find(function(e){return e.date===today;});
+  if(!td){ r.style.display='none'; return; }
+  var score=Math.round((td.sleep+td.mood+td.ready)/3*10);
+  var prev=hist.filter(function(e){return e.date<today;}).slice(-7);
+  var hrTrend='';
+  if(td.hr&&prev.length>=2){
+    var avgPrevHr=prev.filter(function(e){return e.hr;}).reduce(function(a,b){return a+b.hr;},0)/Math.max(1,prev.filter(function(e){return e.hr;}).length);
+    hrTrend=td.hr<=avgPrevHr?'<span style="color:#4caf50">↓ HR trending down (good)</span>':'<span style="color:#ff9800">↑ HR elevated vs avg</span>';
+  }
+  var col=score>=75?'#4caf50':score>=50?'#ff9800':'#f44336';
+  var msg=score>=75?'Well recovered — green light to train hard':score>=50?'Moderate recovery — train but monitor':' Under-recovered — consider lighter session';
+  r.style.display='block';
+  r.innerHTML='<div style="background:#0d0d1a;border-radius:10px;padding:12px;text-align:center;">'
+    +'<div style="font-size:28px;font-weight:700;color:'+col+';">'+score+'<span style="font-size:14px;">/100</span></div>'
+    +'<div style="font-size:12px;color:#aaa;margin-top:4px;">CNS Recovery Score</div>'
+    +'<div style="font-size:12px;margin-top:6px;color:'+col+';">'+msg+'</div>'
+    +(hrTrend?'<div style="font-size:12px;margin-top:4px;">'+hrTrend+'</div>':'')
+    +'</div>';
+}
+function _showNSRHist(hist){
+  var el=document.getElementById('rfc-nsr-hist'); if(!el) return;
+  if(!hist.length){ el.innerHTML=''; return; }
+  var last7=hist.slice(-7);
+  var bars=last7.map(function(e){
+    var s=Math.round((e.sleep+e.mood+e.ready)/3*10);
+    var col=s>=75?'#4caf50':s>=50?'#ff9800':'#f44336';
+    return '<div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;">'
+      +'<div style="height:'+(s*0.6)+'px;width:18px;background:'+col+';border-radius:4px;min-height:4px;"></div>'
+      +'<div style="font-size:10px;color:#aaa;">'+e.date.slice(5)+'</div></div>';
+  }).join('');
+  el.innerHTML='<div style="font-size:12px;color:#aaa;margin-bottom:6px;">7-Day CNS Score</div>'
+    +'<div style="display:flex;align-items:flex-end;gap:4px;height:80px;">'+bars+'</div>';
+}
+
+/* ── Vitamin B Complex Tracker ── */
+function _injectVitB(){
+  if(document.getElementById('rfc-vitb-wrap')) return;
+  var anchor=document.getElementById('rfc-alcohol-wrap')||document.getElementById('rfc-mealtiming-wrap')||document.getElementById('rfc-inflam-wrap')||document.getElementById('rfc-foodsens-wrap');
+  if(!anchor) return;
+  var BFOODS=[
+    {id:'b1e',label:'Eggs (B1/B12)',b:'B1,B12',pts:2},
+    {id:'b1n',label:'Nutritional Yeast',b:'B1,B2,B3,B6,B12',pts:5},
+    {id:'b2m',label:'Milk / Dairy',b:'B2',pts:2},
+    {id:'b3c',label:'Chicken / Turkey',b:'B3,B6',pts:3},
+    {id:'b5av',label:'Avocado',b:'B5',pts:2},
+    {id:'b6bn',label:'Banana',b:'B6',pts:2},
+    {id:'b6sp',label:'Spinach',b:'B6,B9',pts:3},
+    {id:'b9le',label:'Lentils',b:'B9 (Folate)',pts:4},
+    {id:'b9ch',label:'Chickpeas',b:'B9',pts:3},
+    {id:'b12sa',label:'Salmon / Tuna',b:'B12',pts:4},
+    {id:'b12be',label:'Beef / Liver',b:'B12,B2,B3',pts:5},
+    {id:'b12sh',label:'Shellfish (clams)',b:'B12',pts:5}
+  ];
+  var rows=BFOODS.map(function(f){
+    return '<label style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid #1a1a2e;cursor:pointer;">'
+      +'<input type="checkbox" id="rfc-vitb-'+f.id+'" onchange="window._rfcVitBChg()" style="width:15px;height:15px;accent-color:#00d4ff;">'
+      +'<span style="flex:1;font-size:13px;">'+f.label+'</span>'
+      +'<span style="font-size:10px;color:#888;background:#1a1a2e;padding:2px 5px;border-radius:4px;">'+f.b+'</span>'
+      +'<span style="font-size:12px;color:#00d4ff;min-width:20px;text-align:right;">+'+f.pts+'</span>'
+      +'</label>';
+  }).join('');
+  var c=_b55card('rfc-vitb-wrap','🅱️ Vitamin B Complex Tracker');
+  c.innerHTML+=`
+<div style="font-size:12px;color:#aaa;margin-bottom:10px;">Track B-vitamin rich foods today (B1/B2/B3/B5/B6/B9/B12)</div>
+<div id="rfc-vitb-score-bar" style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+  <div id="rfc-vitb-ring" style="width:60px;height:60px;flex-shrink:0;"></div>
+  <div>
+    <div id="rfc-vitb-pts" style="font-size:22px;font-weight:700;color:#00d4ff;">0<span style="font-size:13px;color:#aaa;">/39</span></div>
+    <div id="rfc-vitb-msg" style="font-size:11px;color:#aaa;">Log B-vitamin foods below</div>
+  </div>
+</div>
+<div style="max-height:260px;overflow-y:auto;">${rows}</div>
+<div style="margin-top:10px;padding:10px;background:#0d0d1a;border-radius:8px;font-size:11px;color:#aaa;">
+  <strong style="color:#e0e0e0;">Key roles:</strong> B1 energy metabolism · B6 protein synthesis · B9 cell division · B12 nerve function
+</div>`;
+  anchor.after(c);
+}
+window._rfcVitBChg=function(){
+  var BFOODS=[
+    {id:'b1e',pts:2},{id:'b1n',pts:5},{id:'b2m',pts:2},{id:'b3c',pts:3},{id:'b5av',pts:2},
+    {id:'b6bn',pts:2},{id:'b6sp',pts:3},{id:'b9le',pts:4},{id:'b9ch',pts:3},
+    {id:'b12sa',pts:4},{id:'b12be',pts:5},{id:'b12sh',pts:5}
+  ];
+  var total=39, pts=0, state={};
+  BFOODS.forEach(function(f){
+    var cb=document.getElementById('rfc-vitb-'+f.id);
+    if(cb&&cb.checked){ pts+=f.pts; state[f.id]=1; }
+  });
+  var uid=_b55uid(), key='rfc_vitb_'+uid+'_'+_b55today();
+  _b55save(key,state);
+  var pct=Math.round(pts/total*100);
+  var col=pct>=70?'#4caf50':pct>=40?'#ff9800':'#f44336';
+  var msg=pct>=70?'Excellent B-vitamin intake!':pct>=40?'Good — keep adding variety':'Add more B-vitamin foods';
+  document.getElementById('rfc-vitb-pts').innerHTML=pts+'<span style="font-size:13px;color:#aaa;">/'+total+'</span>';
+  document.getElementById('rfc-vitb-msg').textContent=msg;
+  document.getElementById('rfc-vitb-msg').style.color=col;
+  var r=document.getElementById('rfc-vitb-ring');
+  var circ=Math.round(2*Math.PI*24), dash=Math.round(circ*pct/100);
+  r.innerHTML='<svg width="60" height="60" viewBox="0 0 60 60"><circle cx="30" cy="30" r="24" fill="none" stroke="#222" stroke-width="6"/><circle cx="30" cy="30" r="24" fill="none" stroke="'+col+'" stroke-width="6" stroke-dasharray="'+dash+' '+circ+'" stroke-dashoffset="'+Math.round(circ*0.25)+'" stroke-linecap="round"/><text x="30" y="35" text-anchor="middle" fill="'+col+'" font-size="12" font-weight="700">'+pct+'%</text></svg>';
+};
+function _renderVitB(){
+  if(!document.getElementById('rfc-vitb-wrap')) return;
+  var BFOODS=[{id:'b1e'},{id:'b1n'},{id:'b2m'},{id:'b3c'},{id:'b5av'},{id:'b6bn'},{id:'b6sp'},{id:'b9le'},{id:'b9ch'},{id:'b12sa'},{id:'b12be'},{id:'b12sh'}];
+  var uid=_b55uid(), key='rfc_vitb_'+uid+'_'+_b55today();
+  var saved=_b55load(key)||{};
+  BFOODS.forEach(function(f){
+    var cb=document.getElementById('rfc-vitb-'+f.id);
+    if(cb) cb.checked=!!saved[f.id];
+  });
+  window._rfcVitBChg();
+}
+
+/* ── Accessory Work Logger ── */
+function _injectAcc(){
+  if(document.getElementById('rfc-acc-wrap')) return;
+  var anchor=document.getElementById('rfc-peaktime-wrap')||document.getElementById('rfc-fittest-wrap')||document.getElementById('rfc-stretch30-wrap')||document.getElementById('rfc-olympic-wrap');
+  if(!anchor) return;
+  var EXLIST=['Bicep Curls','Tricep Pushdowns','Lateral Raises','Face Pulls','Rear Delt Flies','Cable Crunches','Leg Curls','Leg Extensions','Calf Raises','Shrugs','Wrist Curls','Hip Abduction','Nordic Curls','Reverse Curls'];
+  var opts=EXLIST.map(function(e){ return '<option value="'+e+'">'+e+'</option>'; }).join('');
+  var c=_b55card('rfc-acc-wrap','🔧 Accessory Work Logger');
+  c.innerHTML+=`
+<div style="font-size:12px;color:#aaa;margin-bottom:12px;">Log isolation/accessory exercises separate from main lifts</div>
+<div style="display:grid;gap:8px;margin-bottom:12px;">
+  <select id="rfc-acc-ex" style="padding:8px;border-radius:8px;border:1px solid #333;background:#0d0d1a;color:#e0e0e0;font-size:13px;">
+    <option value="">Select exercise…</option>${opts}
+    <option value="__custom">Custom…</option>
+  </select>
+  <input id="rfc-acc-custom" type="text" placeholder="Custom exercise name" style="display:none;padding:8px;border-radius:8px;border:1px solid #333;background:#0d0d1a;color:#e0e0e0;font-size:13px;">
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;">
+    <input id="rfc-acc-sets" type="number" min="1" max="20" placeholder="Sets" style="padding:8px;border-radius:8px;border:1px solid #333;background:#0d0d1a;color:#e0e0e0;font-size:13px;text-align:center;">
+    <input id="rfc-acc-reps" type="number" min="1" max="100" placeholder="Reps" style="padding:8px;border-radius:8px;border:1px solid #333;background:#0d0d1a;color:#e0e0e0;font-size:13px;text-align:center;">
+    <input id="rfc-acc-kg" type="number" min="0" max="300" step="0.5" placeholder="kg" style="padding:8px;border-radius:8px;border:1px solid #333;background:#0d0d1a;color:#e0e0e0;font-size:13px;text-align:center;">
+  </div>
+  <input id="rfc-acc-notes" type="text" placeholder="Notes (optional)" style="padding:8px;border-radius:8px;border:1px solid #333;background:#0d0d1a;color:#e0e0e0;font-size:13px;">
+</div>
+<button onclick="window._rfcAccAdd()" style="width:100%;padding:9px;border:none;border-radius:8px;background:#00d4ff;color:#000;font-weight:700;cursor:pointer;">Add Set</button>
+<div id="rfc-acc-list" style="margin-top:12px;"></div>
+<div id="rfc-acc-summary" style="margin-top:10px;"></div>`;
+  anchor.after(c);
+  document.getElementById('rfc-acc-ex').onchange=function(){
+    var ci=document.getElementById('rfc-acc-custom');
+    ci.style.display=this.value==='__custom'?'block':'none';
+  };
+}
+window._rfcAccAdd=function(){
+  var exEl=document.getElementById('rfc-acc-ex');
+  var ex=exEl.value==='__custom'?document.getElementById('rfc-acc-custom').value.trim():exEl.value;
+  if(!ex){ alert('Select an exercise'); return; }
+  var sets=parseInt(document.getElementById('rfc-acc-sets').value)||1;
+  var reps=parseInt(document.getElementById('rfc-acc-reps').value)||0;
+  var kg=parseFloat(document.getElementById('rfc-acc-kg').value)||0;
+  var notes=document.getElementById('rfc-acc-notes').value.trim();
+  var uid=_b55uid(), key='rfc_acc_'+uid+'_'+_b55today();
+  var log=_b55load(key)||[];
+  log.push({ex:ex,sets:sets,reps:reps,kg:kg,notes:notes,ts:Date.now()});
+  _b55save(key,log);
+  document.getElementById('rfc-acc-sets').value='';
+  document.getElementById('rfc-acc-reps').value='';
+  document.getElementById('rfc-acc-kg').value='';
+  document.getElementById('rfc-acc-notes').value='';
+  _renderAccList(log);
+};
+function _renderAccList(log){
+  var el=document.getElementById('rfc-acc-list'); if(!el) return;
+  if(!log||!log.length){ el.innerHTML='<div style="font-size:12px;color:#555;text-align:center;padding:10px;">No exercises logged today</div>'; return; }
+  var grouped={};
+  log.forEach(function(e){ if(!grouped[e.ex]) grouped[e.ex]=[]; grouped[e.ex].push(e); });
+  var html='';
+  Object.keys(grouped).forEach(function(ex){
+    var entries=grouped[ex];
+    var totalVol=entries.reduce(function(a,b){return a+b.sets*b.reps*b.kg;},0);
+    html+='<div style="background:#0d0d1a;border-radius:8px;padding:10px;margin-bottom:6px;">'
+      +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">'
+      +'<span style="font-size:13px;font-weight:600;color:#00d4ff;">'+ex+'</span>'
+      +(totalVol?'<span style="font-size:11px;color:#aaa;">Vol: '+totalVol.toFixed(0)+'kg</span>':'')
+      +'</div>';
+    entries.forEach(function(e,i){
+      html+='<div style="font-size:12px;color:#aaa;padding:3px 0;display:flex;gap:8px;">'
+        +'<span style="color:#e0e0e0;">Set '+(i+1)+':</span>'
+        +'<span>'+e.sets+'×'+e.reps+(e.kg?' @ '+e.kg+'kg':'')+'</span>'
+        +(e.notes?'<span style="font-style:italic;color:#888;">'+e.notes+'</span>':'')
+        +'</div>';
+    });
+    html+='</div>';
+  });
+  el.innerHTML=html;
+  var sumEl=document.getElementById('rfc-acc-summary'); if(!sumEl) return;
+  var totalExercises=Object.keys(grouped).length;
+  var totalSets=log.reduce(function(a,b){return a+b.sets;},0);
+  var totalVol=log.reduce(function(a,b){return a+b.sets*b.reps*b.kg;},0);
+  sumEl.innerHTML='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center;">'
+    +['<div><div style="font-size:18px;font-weight:700;color:#00d4ff;">'+totalExercises+'</div><div style="font-size:10px;color:#aaa;">Exercises</div></div>',
+      '<div><div style="font-size:18px;font-weight:700;color:#9c27b0;">'+totalSets+'</div><div style="font-size:10px;color:#aaa;">Total Sets</div></div>',
+      '<div><div style="font-size:18px;font-weight:700;color:#4caf50;">'+totalVol.toFixed(0)+'</div><div style="font-size:10px;color:#aaa;">kg Volume</div></div>'
+    ].join('')+'</div>';
+}
+function _renderAcc(){
+  if(!document.getElementById('rfc-acc-wrap')) return;
+  var uid=_b55uid(), key='rfc_acc_'+uid+'_'+_b55today();
+  var log=_b55load(key)||[];
+  _renderAccList(log);
+}
+
+/* ── switchScreen wrapper ── */
+window.switchScreen=function(name,navEl){
+  _origSS53&&_origSS53(name,navEl);
+  if(name==='dashboard') setTimeout(function(){ _injectNSR(); _renderNSR(); },1200);
+  if(name==='nutrition') setTimeout(function(){ _injectVitB(); _renderVitB(); },1100);
+  if(name==='workouts')  setTimeout(function(){ _injectAcc(); _renderAcc(); },1050);
+};
+
+setTimeout(function(){ _injectNSR(); _injectVitB(); _injectAcc(); _renderNSR(); _renderVitB(); _renderAcc(); },47000);
+setTimeout(function(){
+  if(!document.getElementById('rfc-nsr-wrap'))  { _injectNSR(); _renderNSR(); }
+  if(!document.getElementById('rfc-vitb-wrap')) { _injectVitB(); _renderVitB(); }
+  if(!document.getElementById('rfc-acc-wrap'))  { _injectAcc(); _renderAcc(); }
+},51000);
+})();
+</script>
+
 </body>
 </html>
