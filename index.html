@@ -37190,5 +37190,184 @@ setTimeout(function(){ if(!document.getElementById('rfc-bodcomp-wrap')) _injectB
 })();
 </script>
 
+<script>
+/* ===== BATCH 42: Posture & Ergonomics | Omega-3 Tracker | Mobility & ROM Tests ===== */
+(function(){ 'use strict';
+var _origSS40=window.switchScreen;
+function _b42uid(){ try{ return JSON.parse(localStorage.getItem('bm_user')||'{}').uid||'guest'; }catch(e){ return 'guest'; } }
+function _b42today(){ var d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function _b42load(k){ try{ return JSON.parse(localStorage.getItem(k))||null; }catch(e){ return null; } }
+function _b42save(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} }
+function _b42card(id,title){ var d=document.createElement('div'); d.id=id; d.style.cssText='background:#1a1a2e;border-radius:14px;padding:18px;margin:14px 0;color:#e0e0e0;font-family:inherit;'; d.innerHTML='<div style="font-size:15px;font-weight:700;color:#00d4ff;margin-bottom:14px;">'+title+'</div>'; return d; }
+
+/* ---------- POSTURE & ERGONOMICS TRACKER (dashboard) ---------- */
+var POSTURE_CHECKS=[
+  {id:'screen_height',label:'Screen at eye level',icon:'🖥️'},
+  {id:'chair_height',label:'Feet flat on floor',icon:'🪑'},
+  {id:'back_support',label:'Lumbar support in place',icon:'💺'},
+  {id:'wrist_neutral',label:'Wrists neutral at keyboard',icon:'⌨️'},
+  {id:'breaks',label:'Took breaks every hour',icon:'⏰'},
+  {id:'standing',label:'Stood/walked 30+ min',icon:'🚶'},
+  {id:'shoulder_check',label:'Shoulders not hunched',icon:'🧍'},
+  {id:'chin_tuck',label:'Chin tucks done',icon:'🙆'}
+];
+function _injectPosture(){
+  if(document.getElementById('rfc-posture-wrap')) return;
+  var anchor=document.getElementById('rfc-bodcomp-wrap')||document.getElementById('rfc-circadian-wrap')||document.getElementById('rfc-sleepq-wrap')||document.getElementById('rfc-hydqual-wrap')||document.querySelector('.dash-topbar');
+  if(!anchor) return;
+  var card=_b42card('rfc-posture-wrap','🧍 Posture & Ergonomics');
+  card.style.cssText+='border:1px solid #1a3a2a;';
+  anchor.parentNode.insertBefore(card,anchor.nextSibling);
+  _renderPosture();
+}
+function _renderPosture(){
+  var card=document.getElementById('rfc-posture-wrap'); if(!card) return;
+  var uid=_b42uid(), today=_b42today();
+  var key='rfc_posture_'+uid+'_'+today;
+  var data=_b42load(key)||{};
+  var checked=POSTURE_CHECKS.filter(function(c){ return !!data[c.id]; }).length;
+  var pct=Math.round((checked/POSTURE_CHECKS.length)*100);
+  var pc=pct>=75?'#00ff88':pct>=50?'#ffd700':'#ff6b6b';
+  var html='<div style="font-size:15px;font-weight:700;color:#00d4ff;margin-bottom:14px;">🧍 Posture & Ergonomics</div>';
+  html+='<div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">';
+  html+='<div style="font-size:36px;font-weight:800;color:'+pc+';">'+pct+'%</div>';
+  html+='<div><div style="font-size:13px;font-weight:700;color:'+pc+';">'+(pct>=75?'Great Posture':pct>=50?'Average':'Needs Attention')+'</div><div style="font-size:12px;color:#888;">'+checked+'/'+POSTURE_CHECKS.length+' checks done</div></div></div>';
+  html+='<div style="background:#12122a;border-radius:8px;height:8px;margin-bottom:14px;overflow:hidden;"><div style="height:8px;background:'+pc+';width:'+pct+'%;border-radius:8px;transition:width 0.4s;"></div></div>';
+  html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;">';
+  POSTURE_CHECKS.forEach(function(c){
+    var ok=!!data[c.id];
+    html+='<div onclick="window._rfcPostureTap(\''+c.id+'\')" style="cursor:pointer;background:'+(ok?'#0d2a1a':'#12122a')+';border:1px solid '+(ok?'#00ff88':'#2a2a4a')+';border-radius:9px;padding:9px 10px;display:flex;align-items:center;gap:7px;">';
+    html+='<span style="font-size:16px;">'+c.icon+'</span>';
+    html+='<div style="flex:1;font-size:11px;color:'+(ok?'#00ff88':'#ccc')+';">'+c.label+'</div>';
+    html+='<span>'+(ok?'✅':'⭕')+'</span></div>';
+  });
+  html+='</div>';
+  var sittingHrs=data.sittingHrs||0;
+  html+='<div style="margin-top:12px;"><label style="font-size:12px;color:#aaa;">Sitting Hours Today: <strong style="color:'+(sittingHrs>8?'#ff6b6b':sittingHrs>6?'#ffd700':'#00ff88')+';">'+sittingHrs+'h</strong></label>';
+  html+='<br><input type="range" min="0" max="16" step="0.5" value="'+sittingHrs+'" oninput="window._rfcPostureHrs(parseFloat(this.value))" style="width:100%;accent-color:#00d4ff;margin-top:4px;"></div>';
+  card.innerHTML=html;
+}
+window._rfcPostureTap=function(id){ var uid=_b42uid(), today=_b42today(); var key='rfc_posture_'+uid+'_'+today; var data=_b42load(key)||{}; data[id]=!data[id]; _b42save(key,data); _renderPosture(); };
+window._rfcPostureHrs=function(v){ var uid=_b42uid(), today=_b42today(); var key='rfc_posture_'+uid+'_'+today; var data=_b42load(key)||{}; data.sittingHrs=v; _b42save(key,data); _renderPosture(); };
+
+/* ---------- OMEGA-3 TRACKER (nutrition) ---------- */
+var OMEGA3=[
+  {id:'salmon',label:'Salmon (100g)',epa:1000,dha:1500,ala:0,icon:'🐟'},
+  {id:'sardines',label:'Sardines (100g)',epa:900,dha:1000,ala:0,icon:'🐠'},
+  {id:'mackerel',label:'Mackerel (100g)',epa:800,dha:1200,ala:0,icon:'🐡'},
+  {id:'tuna',label:'Tuna (100g)',epa:300,dha:700,ala:0,icon:'🐟'},
+  {id:'flaxseed',label:'Flaxseed (1tbsp)',epa:0,dha:0,ala:2338,icon:'🌻'},
+  {id:'walnuts',label:'Walnuts (30g)',epa:0,dha:0,ala:2570,icon:'🥜'},
+  {id:'chia',label:'Chia Seeds (1tbsp)',epa:0,dha:0,ala:2138,icon:'⚫'},
+  {id:'hemp',label:'Hemp Seeds (3tbsp)',epa:0,dha:0,ala:3000,icon:'🌿'},
+  {id:'supplement',label:'Fish Oil Supplement',epa:300,dha:200,ala:0,icon:'💊'}
+];
+function _injectOmega3(){
+  if(document.getElementById('rfc-omega3-wrap')) return;
+  var anchor=document.getElementById('rfc-if-wrap')||document.getElementById('rfc-prebiotic-wrap')||document.getElementById('rfc-protdiv-wrap')||document.getElementById('rfc-antiinfl-wrap')||document.querySelector('.dash-topbar');
+  if(!anchor) return;
+  var card=_b42card('rfc-omega3-wrap','🐟 Omega-3 Tracker');
+  card.style.cssText+='border:1px solid #1a2a3a;';
+  anchor.parentNode.insertBefore(card,anchor.nextSibling);
+  _renderOmega3();
+}
+function _renderOmega3(){
+  var card=document.getElementById('rfc-omega3-wrap'); if(!card) return;
+  var uid=_b42uid(), today=_b42today();
+  var key='rfc_omega3_'+uid+'_'+today;
+  var data=_b42load(key)||{};
+  var totEPA=0,totDHA=0,totALA=0;
+  OMEGA3.forEach(function(f){ if(data[f.id]){ totEPA+=f.epa*data[f.id]; totDHA+=f.dha*data[f.id]; totALA+=f.ala*data[f.id]; } });
+  var epaDhaMg=Math.round((totEPA+totDHA)/1000*10)/10;
+  var alaMg=Math.round(totALA/1000*10)/10;
+  var epaGoal=1.5, alaGoal=1.6;
+  var epaP=Math.min(100,Math.round((epaDhaMg/epaGoal)*100));
+  var alaP=Math.min(100,Math.round((alaMg/alaGoal)*100));
+  var html='<div style="font-size:15px;font-weight:700;color:#00d4ff;margin-bottom:14px;">🐟 Omega-3 Tracker</div>';
+  html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;">';
+  html+='<div style="background:#12122a;border-radius:9px;padding:10px;text-align:center;"><div style="font-size:20px;font-weight:800;color:'+(epaP>=100?'#00ff88':epaP>=50?'#ffd700':'#ff6b6b')+';">'+epaDhaMg+'g</div><div style="font-size:11px;color:#888;">EPA+DHA (target 1.5g)</div><div style="height:6px;background:#1a2a3a;border-radius:3px;margin-top:6px;overflow:hidden;"><div style="height:6px;background:'+(epaP>=100?'#00ff88':'#00d4ff')+';width:'+epaP+'%;border-radius:3px;"></div></div></div>';
+  html+='<div style="background:#12122a;border-radius:9px;padding:10px;text-align:center;"><div style="font-size:20px;font-weight:800;color:'+(alaP>=100?'#00ff88':alaP>=50?'#ffd700':'#ff6b6b')+';">'+alaMg+'g</div><div style="font-size:11px;color:#888;">ALA (target 1.6g)</div><div style="height:6px;background:#1a2a3a;border-radius:3px;margin-top:6px;overflow:hidden;"><div style="height:6px;background:'+(alaP>=100?'#00ff88':'#ffd700')+';width:'+alaP+'%;border-radius:3px;"></div></div></div></div>';
+  OMEGA3.forEach(function(f){
+    var qty=data[f.id]||0;
+    var hasMarine=f.epa>0||f.dha>0;
+    html+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;padding:9px;background:#12122a;border-radius:9px;">';
+    html+='<span style="font-size:18px;">'+f.icon+'</span>';
+    html+='<div style="flex:1;"><div style="font-size:12px;color:#ccc;">'+f.label+'</div><div style="font-size:11px;color:'+(hasMarine?'#00d4ff':'#ffd700')+'">'+(hasMarine?'EPA '+f.epa+'mg DHA '+f.dha+'mg':'ALA '+f.ala+'mg')+'</div></div>';
+    html+='<div style="display:flex;align-items:center;gap:6px;"><button onclick="window._rfcO3Adj(\''+f.id+'\',-1)" style="background:#2a2a4a;border:none;color:#fff;width:26px;height:26px;border-radius:50%;cursor:pointer;font-size:14px;">-</button>';
+    html+='<span style="font-size:14px;font-weight:700;color:#fff;min-width:20px;text-align:center;">'+qty+'</span>';
+    html+='<button onclick="window._rfcO3Adj(\''+f.id+'\',1)" style="background:#00d4ff;border:none;color:#000;width:26px;height:26px;border-radius:50%;cursor:pointer;font-size:14px;">+</button></div></div>';
+  });
+  card.innerHTML=html;
+}
+window._rfcO3Adj=function(id,delta){ var uid=_b42uid(), today=_b42today(); var key='rfc_omega3_'+uid+'_'+today; var data=_b42load(key)||{}; data[id]=Math.max(0,(data[id]||0)+delta); _b42save(key,data); _renderOmega3(); };
+
+/* ---------- MOBILITY & ROM TESTS (workouts) ---------- */
+var ROM_TESTS=[
+  {id:'sitreach',label:'Sit & Reach',unit:'cm',desc:'Hamstring/lower back',target:27,higher:true,icon:'🧘'},
+  {id:'shoulder',label:'Shoulder Reach',unit:'cm gap',desc:'Shoulder mobility',target:0,higher:false,icon:'🤸'},
+  {id:'deepSquat',label:'Deep Squat Hold',unit:'sec',desc:'Hip/ankle mobility',target:60,higher:true,icon:'🦵'},
+  {id:'thoracic',label:'Thoracic Rotation',unit:'degrees',desc:'Spine mobility',target:50,higher:true,icon:'↩️'},
+  {id:'hip90',label:'Hip 90/90 Left',unit:'sec',desc:'Hip internal rotation',target:30,higher:true,icon:'🦴'},
+  {id:'hip90r',label:'Hip 90/90 Right',unit:'sec',desc:'Hip internal rotation',target:30,higher:true,icon:'🦴'}
+];
+function _injectROM(){
+  if(document.getElementById('rfc-rom-wrap')) return;
+  var anchor=document.getElementById('rfc-bands-wrap')||document.getElementById('rfc-deload-wrap')||document.getElementById('rfc-grip-wrap')||document.getElementById('rfc-tempo-wrap')||document.querySelector('.dash-topbar');
+  if(!anchor) return;
+  var card=_b42card('rfc-rom-wrap','🤸 Mobility & ROM Tests');
+  card.style.cssText+='border:1px solid #2a1a2a;';
+  anchor.parentNode.insertBefore(card,anchor.nextSibling);
+  _renderROM();
+}
+function _renderROM(){
+  var card=document.getElementById('rfc-rom-wrap'); if(!card) return;
+  var uid=_b42uid();
+  var pkey='rfc_rom_pbs_'+uid;
+  var dkey='rfc_rom_'+uid+'_'+_b42today();
+  var pbs=_b42load(pkey)||{};
+  var today_data=_b42load(dkey)||{};
+  var html='<div style="font-size:15px;font-weight:700;color:#00d4ff;margin-bottom:14px;">🤸 Mobility & ROM Tests</div>';
+  html+='<div style="font-size:12px;color:#888;margin-bottom:12px;">Log your mobility measurements. PRs auto-saved.</div>';
+  ROM_TESTS.forEach(function(t){
+    var pb=pbs[t.id]||null;
+    var tod=today_data[t.id]||null;
+    var atTarget=tod!==null&&(t.higher?tod>=t.target:tod<=t.target);
+    var pbBeat=tod!==null&&pb!==null&&(t.higher?tod>pb:tod<pb);
+    html+='<div style="background:#12122a;border-radius:10px;padding:12px;margin-bottom:8px;">';
+    html+='<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">';
+    html+='<div><span style="font-size:16px;">'+t.icon+'</span> <span style="font-size:13px;font-weight:700;color:#e0e0e0;">'+t.label+'</span><div style="font-size:11px;color:#888;">'+t.desc+' — target: '+(t.target||'minimise gap')+' '+t.unit+'</div></div>';
+    if(pb!==null) html+='<div style="text-align:right;"><div style="font-size:12px;color:#ffd700;">PB: '+pb+' '+t.unit+(pbBeat?' 🏆':'')+'</div></div>';
+    html+='</div>';
+    html+='<div style="display:flex;gap:8px;align-items:center;">';
+    html+='<input type="number" id="rfc-rom-'+t.id+'" min="0" max="999" step="0.5" placeholder="Enter '+t.unit+'" value="'+(tod||'')+'" style="flex:1;background:#0d0d20;border:1px solid #2a2a4a;color:#fff;border-radius:7px;padding:7px;font-size:13px;">';
+    html+='<button onclick="window._rfcROMLog(\''+t.id+'\')" style="background:'+(atTarget?'#00ff88':'#a855f7')+';border:none;color:'+(atTarget?'#000':'#fff')+';padding:8px 12px;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;">Log</button>';
+    html+='</div></div>';
+  });
+  card.innerHTML=html;
+}
+window._rfcROMLog=function(id){
+  var inp=document.getElementById('rfc-rom-'+id); if(!inp) return;
+  var val=parseFloat(inp.value); if(isNaN(val)) return;
+  var uid=_b42uid(), today=_b42today();
+  var pkey='rfc_rom_pbs_'+uid; var dkey='rfc_rom_'+uid+'_'+today;
+  var pbs=_b42load(pkey)||{}; var today_data=_b42load(dkey)||{};
+  var t=ROM_TESTS.find(function(r){ return r.id===id; });
+  today_data[id]=val;
+  if(pbs[id]===undefined||(t&&t.higher?val>pbs[id]:val<pbs[id])) pbs[id]=val;
+  _b42save(pkey,pbs); _b42save(dkey,today_data);
+  _renderROM();
+};
+
+window.switchScreen=function(name,navEl){
+  _origSS40&&_origSS40(name,navEl);
+  if(name==='dashboard') setTimeout(function(){ _injectPosture(); _renderPosture(); },1200);
+  if(name==='nutrition') setTimeout(function(){ _injectOmega3(); _renderOmega3(); },1100);
+  if(name==='workouts')  setTimeout(function(){ _injectROM(); _renderROM(); },1050);
+};
+setTimeout(function(){ _injectPosture(); _injectOmega3(); _injectROM(); },34000);
+setTimeout(function(){ if(!document.getElementById('rfc-posture-wrap')) _injectPosture(); if(!document.getElementById('rfc-omega3-wrap')) _injectOmega3(); if(!document.getElementById('rfc-rom-wrap')) _injectROM(); },38000);
+})();
+</script>
+
 </body>
 </html>
