@@ -41122,5 +41122,242 @@ setTimeout(function(){
 })();
 </script>
 
+<!-- Batch 61: Vitamin D & Sun Exposure, Meal Prep Planner, Isometric Hold Logger -->
+<script>
+(function(){ 'use strict';
+var _origSS59=window.switchScreen;
+function _b61uid(){ try{ return JSON.parse(localStorage.getItem('bm_user')||'{}').uid||'guest'; }catch(e){ return 'guest'; } }
+function _b61today(){ var d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function _b61load(k){ try{ return JSON.parse(localStorage.getItem(k))||null; }catch(e){ return null; } }
+function _b61save(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} }
+function _b61card(id,title){ var d=document.createElement('div'); d.id=id; d.style.cssText='background:#1a1a2e;border-radius:14px;padding:18px;margin:14px 0;color:#e0e0e0;font-family:inherit;'; d.innerHTML='<div style="font-size:15px;font-weight:700;color:#00d4ff;margin-bottom:14px;">'+title+'</div>'; return d; }
+
+/* ── Vitamin D & Sun Exposure ── */
+function _injectVitD(){
+  if(document.getElementById('rfc-vitd-wrap')) return;
+  var anchor=document.getElementById('rfc-habits-wrap')||document.getElementById('rfc-recscore-wrap')||document.getElementById('rfc-stress-wrap')||document.getElementById('rfc-mood-wrap');
+  if(!anchor) return;
+  var c=_b61card('rfc-vitd-wrap','☀️ Vitamin D & Sun Exposure');
+  c.innerHTML+=`
+<div style="font-size:12px;color:#aaa;margin-bottom:12px;">Optimal sun exposure supports Vit D synthesis, mood & immunity</div>
+<div style="display:grid;gap:10px;margin-bottom:12px;">
+  <div>
+    <div style="font-size:12px;color:#aaa;margin-bottom:4px;">Sun exposure today (minutes)</div>
+    <input id="rfc-vitd-min" type="range" min="0" max="120" value="0" oninput="document.getElementById('rfc-vitd-min-v').textContent=this.value+'min'; window._rfcVitDCalc();" style="width:100%;">
+    <div id="rfc-vitd-min-v" style="text-align:center;font-size:13px;color:#ffd700;">0min</div>
+  </div>
+  <div>
+    <div style="font-size:12px;color:#aaa;margin-bottom:4px;">Skin exposed (% of body)</div>
+    <select id="rfc-vitd-skin" onchange="window._rfcVitDCalc()" style="width:100%;padding:8px;border-radius:8px;border:1px solid #333;background:#0d0d1a;color:#e0e0e0;font-size:13px;">
+      <option value="0.1">Face & hands only (~10%)</option>
+      <option value="0.25">Arms & legs (~25%)</option>
+      <option value="0.4" selected>Shorts & t-shirt (~40%)</option>
+      <option value="0.7">Swimwear / tank (~70%)</option>
+    </select>
+  </div>
+  <div>
+    <div style="font-size:12px;color:#aaa;margin-bottom:6px;">Vit D food sources today</div>
+    ${['Salmon / Tuna','Egg Yolks','Fortified Milk','Mushrooms (UV-exposed)','Vit D Supplement'].map(function(f,i){
+      return '<label style="display:flex;align-items:center;gap:7px;margin-bottom:4px;cursor:pointer;">'
+        +'<input type="checkbox" id="rfc-vitd-food-'+i+'" onchange="window._rfcVitDCalc()" style="accent-color:#ffd700;">'
+        +'<span style="font-size:12px;">'+f+'</span></label>';
+    }).join('')}
+  </div>
+</div>
+<div id="rfc-vitd-result" style="margin-top:8px;"></div>
+<div id="rfc-vitd-hist" style="margin-top:10px;"></div>`;
+  anchor.after(c);
+}
+window._rfcVitDCalc=function(){
+  var mins=parseInt(document.getElementById('rfc-vitd-min').value)||0;
+  var skin=parseFloat(document.getElementById('rfc-vitd-skin').value)||0.4;
+  var foods=0;
+  [0,1,2,3,4].forEach(function(i){ var cb=document.getElementById('rfc-vitd-food-'+i); if(cb&&cb.checked) foods++; });
+  var sunScore=Math.min(40,Math.round(mins*skin*0.5));
+  var foodScore=foods*12;
+  var total=Math.min(100,sunScore+foodScore);
+  var col=total>=70?'#ffd700':total>=40?'#ff9800':'#aaa';
+  var msg=total>=70?'Excellent Vit D support today!':total>=40?'Moderate — try more sun or supplements':'Low Vit D — go outside or supplement';
+  var r=document.getElementById('rfc-vitd-result');
+  if(r){
+    var circ=Math.round(2*Math.PI*36), dash=Math.round(circ*total/100);
+    r.innerHTML='<div style="display:flex;align-items:center;gap:14px;">'
+      +'<svg width="80" height="80" viewBox="0 0 80 80"><circle cx="40" cy="40" r="32" fill="none" stroke="#222" stroke-width="8"/><circle cx="40" cy="40" r="32" fill="none" stroke="'+col+'" stroke-width="8" stroke-dasharray="'+dash+' '+circ+'" stroke-dashoffset="'+Math.round(circ*0.25)+'" stroke-linecap="round"/><text x="40" y="46" text-anchor="middle" fill="'+col+'" font-size="15" font-weight="700">'+total+'%</text></svg>'
+      +'<div><div style="font-size:13px;font-weight:600;color:'+col+';">'+msg+'</div>'
+      +'<div style="font-size:11px;color:#aaa;margin-top:4px;">Sun: +'+sunScore+' · Foods: +'+foodScore+'</div>'
+      +'<div style="font-size:11px;color:#aaa;margin-top:2px;">Goal: 15–30min midday sun (UVB)</div></div></div>';
+  }
+  var uid=_b61uid(), key='rfc_vitd_'+uid;
+  var hist=_b61load(key)||[];
+  var today=_b61today();
+  var idx=hist.findIndex(function(e){return e.date===today;});
+  var fState={}; [0,1,2,3,4].forEach(function(i){ var cb=document.getElementById('rfc-vitd-food-'+i); if(cb&&cb.checked) fState[i]=1; });
+  var entry={date:today,score:total,mins:mins,foods:fState};
+  if(idx>=0) hist[idx]=entry; else hist.push(entry);
+  if(hist.length>30) hist=hist.slice(-30);
+  _b61save(key,hist);
+  _showVitDHist(hist);
+};
+function _showVitDHist(hist){
+  var el=document.getElementById('rfc-vitd-hist'); if(!el||!hist.length) return;
+  var last7=hist.slice(-7);
+  var bars=last7.map(function(e){
+    var col=e.score>=70?'#ffd700':e.score>=40?'#ff9800':'#aaa';
+    return '<div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;">'
+      +'<div style="height:'+Math.max(4,e.score*0.5)+'px;width:16px;background:'+col+';border-radius:3px;"></div>'
+      +'<div style="font-size:9px;color:#aaa;">'+e.date.slice(5)+'</div></div>';
+  }).join('');
+  el.innerHTML='<div style="font-size:11px;color:#aaa;margin-bottom:4px;">7-Day Vit D</div>'
+    +'<div style="display:flex;align-items:flex-end;gap:4px;height:60px;">'+bars+'</div>';
+}
+function _renderVitD(){
+  if(!document.getElementById('rfc-vitd-wrap')) return;
+  var uid=_b61uid(), key='rfc_vitd_'+uid;
+  var hist=_b61load(key)||[];
+  var td=hist.find(function(e){return e.date===_b61today();});
+  if(td){
+    document.getElementById('rfc-vitd-min').value=td.mins||0;
+    document.getElementById('rfc-vitd-min-v').textContent=(td.mins||0)+'min';
+    Object.keys(td.foods||{}).forEach(function(i){ var cb=document.getElementById('rfc-vitd-food-'+i); if(cb) cb.checked=true; });
+  }
+  window._rfcVitDCalc();
+}
+
+/* ── Meal Prep Planner ── */
+function _injectMealPrep(){
+  if(document.getElementById('rfc-mealprep-wrap')) return;
+  var anchor=document.getElementById('rfc-hfat-wrap')||document.getElementById('rfc-antioxid-wrap')||document.getElementById('rfc-fiber-wrap')||document.getElementById('rfc-micro-wrap');
+  if(!anchor) return;
+  var DAYS=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  var MEALS=['Breakfast','Lunch','Dinner','Snack'];
+  var grid=DAYS.map(function(day){
+    var mealCols=MEALS.map(function(meal){
+      var key=day+'_'+meal;
+      return '<td style="padding:4px;"><input id="rfc-mp-'+key+'" type="text" placeholder="…" style="width:100%;min-width:70px;padding:4px;border-radius:5px;border:1px solid #333;background:#0d0d1a;color:#e0e0e0;font-size:10px;box-sizing:border-box;"></td>';
+    }).join('');
+    return '<tr><td style="padding:4px 8px;font-size:11px;font-weight:600;color:#00d4ff;white-space:nowrap;">'+day+'</td>'+mealCols+'</tr>';
+  }).join('');
+  var headers=MEALS.map(function(m){ return '<th style="padding:4px 6px;font-size:10px;color:#aaa;font-weight:600;">'+m+'</th>'; }).join('');
+  var c=_b61card('rfc-mealprep-wrap','🍱 Meal Prep Planner');
+  c.innerHTML+=`
+<div style="font-size:12px;color:#aaa;margin-bottom:10px;">Plan your weekly meals — tap a cell to enter a meal</div>
+<div style="overflow-x:auto;margin-bottom:10px;">
+<table style="border-collapse:collapse;width:100%;min-width:320px;">
+  <thead><tr><th style="padding:4px 8px;font-size:10px;color:#aaa;"></th>${headers}</tr></thead>
+  <tbody>${grid}</tbody>
+</table>
+</div>
+<button onclick="window._rfcMealPrepSave()" style="width:100%;padding:9px;border:none;border-radius:8px;background:#00d4ff;color:#000;font-weight:700;cursor:pointer;">Save Plan</button>
+<div id="rfc-mp-status" style="margin-top:8px;font-size:12px;color:#4caf50;text-align:center;"></div>`;
+  anchor.after(c);
+  _renderMealPrep();
+}
+window._rfcMealPrepSave=function(){
+  var DAYS=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'], MEALS=['Breakfast','Lunch','Dinner','Snack'];
+  var plan={};
+  DAYS.forEach(function(day){ MEALS.forEach(function(meal){ var el=document.getElementById('rfc-mp-'+day+'_'+meal); if(el&&el.value.trim()) plan[day+'_'+meal]=el.value.trim(); }); });
+  var uid=_b61uid(), wk=_b61today().slice(0,7);
+  _b61save('rfc_mealprep_'+uid+'_'+wk, plan);
+  var el=document.getElementById('rfc-mp-status');
+  if(el){ el.textContent='Plan saved ✓'; setTimeout(function(){ el.textContent=''; },2000); }
+};
+function _renderMealPrep(){
+  if(!document.getElementById('rfc-mealprep-wrap')) return;
+  var uid=_b61uid(), wk=_b61today().slice(0,7);
+  var plan=_b61load('rfc_mealprep_'+uid+'_'+wk)||{};
+  Object.keys(plan).forEach(function(k){ var el=document.getElementById('rfc-mp-'+k); if(el) el.value=plan[k]; });
+}
+
+/* ── Isometric Hold Logger ── */
+function _injectIso(){
+  if(document.getElementById('rfc-iso-wrap')) return;
+  var anchor=document.getElementById('rfc-resband-wrap')||document.getElementById('rfc-kb-wrap')||document.getElementById('rfc-wvest-wrap')||document.getElementById('rfc-cali-wrap');
+  if(!anchor) return;
+  var ISO_EX=[
+    {id:'plk',label:'Plank'},
+    {id:'wst',label:'Wall Sit'},
+    {id:'lsit2',label:'L-Sit'},
+    {id:'dead',label:'Dead Hang'},
+    {id:'glute',label:'Glute Bridge Hold'},
+    {id:'side',label:'Side Plank (each)'},
+    {id:'sqhold',label:'Squat Hold'},
+    {id:'calf',label:'Calf Raise Hold'},
+    {id:'rev',label:'Reverse Plank'},
+    {id:'hollow',label:'Hollow Body Hold'}
+  ];
+  var rows=ISO_EX.map(function(e){
+    return '<div style="padding:7px 0;border-bottom:1px solid #222;">'
+      +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;">'
+      +'<span style="font-size:13px;">'+e.label+'</span>'
+      +'<span id="rfc-iso-pb-'+e.id+'" style="font-size:10px;color:#ff9800;"></span></div>'
+      +'<div style="display:flex;gap:6px;align-items:center;">'
+      +'<input id="rfc-iso-s-'+e.id+'" type="number" min="0" step="1" placeholder="seconds" style="flex:1;padding:6px;border-radius:6px;border:1px solid #333;background:#0d0d1a;color:#e0e0e0;font-size:12px;">'
+      +'<button onclick="window._rfcIsoLog(\''+e.id+'\')" style="padding:6px 12px;border:none;border-radius:6px;background:#4caf50;color:#fff;font-size:11px;cursor:pointer;">Log</button>'
+      +'</div></div>';
+  }).join('');
+  var c=_b61card('rfc-iso-wrap','⏱️ Isometric Hold Logger');
+  c.innerHTML+=`
+<div style="font-size:12px;color:#aaa;margin-bottom:12px;">Log static holds in seconds — PBs tracked per exercise</div>
+${rows}
+<div id="rfc-iso-today" style="margin-top:12px;"></div>`;
+  anchor.after(c);
+  _renderIso();
+}
+window._rfcIsoLog=function(id){
+  var secs=parseFloat(document.getElementById('rfc-iso-s-'+id).value)||0;
+  if(!secs){ alert('Enter seconds'); return; }
+  var uid=_b61uid(), pbKey='rfc_iso_pbs_'+uid, dayKey='rfc_iso_'+uid+'_'+_b61today();
+  var pbs=_b61load(pbKey)||{}, today=_b61load(dayKey)||{};
+  if(!today[id]) today[id]=[];
+  today[id].push(secs);
+  _b61save(dayKey,today);
+  if(!pbs[id]||secs>pbs[id]) pbs[id]=secs;
+  _b61save(pbKey,pbs);
+  document.getElementById('rfc-iso-s-'+id).value='';
+  _showIsoPBs(pbs);
+  _showIsoToday(today);
+};
+function _showIsoPBs(pbs){
+  var ISO_EX=[{id:'plk'},{id:'wst'},{id:'lsit2'},{id:'dead'},{id:'glute'},{id:'side'},{id:'sqhold'},{id:'calf'},{id:'rev'},{id:'hollow'}];
+  ISO_EX.forEach(function(e){ var el=document.getElementById('rfc-iso-pb-'+e.id); if(el&&pbs[e.id]) el.textContent='PB: '+pbs[e.id]+'s'; });
+}
+function _showIsoToday(today){
+  var el=document.getElementById('rfc-iso-today'); if(!el) return;
+  var keys=Object.keys(today);
+  if(!keys.length){ el.innerHTML=''; return; }
+  var LABELS={plk:'Plank',wst:'Wall Sit',lsit2:'L-Sit',dead:'Dead Hang',glute:'Glute Hold',side:'Side Plank',sqhold:'Squat Hold',calf:'Calf Hold',rev:'Rev Plank',hollow:'Hollow'};
+  var html='<div style="font-size:12px;color:#aaa;margin-bottom:6px;">Today\'s Best Holds</div><div style="display:flex;flex-wrap:wrap;gap:6px;">';
+  keys.forEach(function(k){
+    var best=Math.max.apply(null,today[k]);
+    var m=Math.floor(best/60), s=Math.round(best%60);
+    var disp=m>0?m+'m '+s+'s':best+'s';
+    html+='<div style="background:#0d0d1a;border-radius:8px;padding:8px 10px;text-align:center;"><div style="font-size:16px;font-weight:700;color:#4caf50;">'+disp+'</div><div style="font-size:10px;color:#aaa;">'+(LABELS[k]||k)+'</div></div>';
+  });
+  el.innerHTML=html+'</div>';
+}
+function _renderIso(){
+  if(!document.getElementById('rfc-iso-wrap')) return;
+  var uid=_b61uid();
+  _showIsoPBs(_b61load('rfc_iso_pbs_'+uid)||{});
+  _showIsoToday(_b61load('rfc_iso_'+uid+'_'+_b61today())||{});
+}
+
+/* ── switchScreen wrapper ── */
+window.switchScreen=function(name,navEl){
+  _origSS59&&_origSS59(name,navEl);
+  if(name==='dashboard') setTimeout(function(){ _injectVitD(); _renderVitD(); },1200);
+  if(name==='nutrition') setTimeout(function(){ _injectMealPrep(); _renderMealPrep(); },1100);
+  if(name==='workouts')  setTimeout(function(){ _injectIso(); _renderIso(); },1050);
+};
+
+setTimeout(function(){ _injectVitD(); _injectMealPrep(); _injectIso(); _renderVitD(); _renderMealPrep(); _renderIso(); },53000);
+setTimeout(function(){
+  if(!document.getElementById('rfc-vitd-wrap'))     { _injectVitD(); _renderVitD(); }
+  if(!document.getElementById('rfc-mealprep-wrap')) { _injectMealPrep(); _renderMealPrep(); }
+  if(!document.getElementById('rfc-iso-wrap'))      { _injectIso(); _renderIso(); }
+},57000);
+})();
+</script>
+
 </body>
 </html>
