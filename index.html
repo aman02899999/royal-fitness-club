@@ -42020,5 +42020,236 @@ setTimeout(function(){
 })();
 </script>
 
+<!-- Batch 65: Daily Energy Budget, Digestive Enzyme & Probiotic Log, Squat Variation Tracker -->
+<script>
+(function(){ 'use strict';
+var _origSS63=window.switchScreen;
+function _b65uid(){ try{ return JSON.parse(localStorage.getItem('bm_user')||'{}').uid||'guest'; }catch(e){ return 'guest'; } }
+function _b65today(){ var d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function _b65load(k){ try{ return JSON.parse(localStorage.getItem(k))||null; }catch(e){ return null; } }
+function _b65save(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} }
+function _b65card(id,title){ var d=document.createElement('div'); d.id=id; d.style.cssText='background:#1a1a2e;border-radius:14px;padding:18px;margin:14px 0;color:#e0e0e0;font-family:inherit;'; d.innerHTML='<div style="font-size:15px;font-weight:700;color:#00d4ff;margin-bottom:14px;">'+title+'</div>'; return d; }
+
+/* ── Daily Energy Budget ── */
+function _injectEnergyBudget(){
+  if(document.getElementById('rfc-enbudget-wrap')) return;
+  var anchor=document.getElementById('rfc-testhab-wrap')||document.getElementById('rfc-breathpat-wrap')||document.getElementById('rfc-injprev-wrap')||document.getElementById('rfc-vitd-wrap');
+  if(!anchor) return;
+  var DRAINS=[
+    {id:'mtg',label:'Meetings/calls',drain:15},{id:'decd',label:'Decision-making',drain:20},
+    {id:'commu',label:'Commute',drain:10},{id:'scroll',label:'Social media scrolling',drain:10},
+    {id:'conflict',label:'Conflict/difficult conv.',drain:25},{id:'multitask',label:'Multitasking',drain:20},
+    {id:'newnews',label:'Negative news',drain:10},{id:'procrast',label:'Procrastination',drain:15}
+  ];
+  var BOOST=[
+    {id:'sleep2',label:'Good sleep last night',boost:30},{id:'exercise',label:'Exercise session',boost:25},
+    {id:'nature',label:'Nature walk / outdoor time',boost:20},{id:'laugh',label:'Laughter / fun',boost:15},
+    {id:'purpose',label:'Meaningful work',boost:20},{id:'music',label:'Music / creative activity',boost:10},
+    {id:'food',label:'Nutritious meal (no junk)',boost:15},{id:'nap',label:'Power nap (10–20 min)',boost:20}
+  ];
+  var drainRows=DRAINS.map(function(d){
+    return '<label style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid #1a1a2e;cursor:pointer;">'
+      +'<input type="checkbox" id="rfc-eb-d-'+d.id+'" onchange="window._rfcEBCalc()" style="accent-color:#f44336;">'
+      +'<span style="flex:1;font-size:12px;">'+d.label+'</span>'
+      +'<span style="font-size:11px;color:#f44336;">-'+d.drain+'%</span></label>';
+  }).join('');
+  var boostRows=BOOST.map(function(b){
+    return '<label style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid #1a1a2e;cursor:pointer;">'
+      +'<input type="checkbox" id="rfc-eb-b-'+b.id+'" onchange="window._rfcEBCalc()" style="accent-color:#4caf50;">'
+      +'<span style="flex:1;font-size:12px;">'+b.label+'</span>'
+      +'<span style="font-size:11px;color:#4caf50;">+'+b.boost+'%</span></label>';
+  }).join('');
+  var c=_b65card('rfc-enbudget-wrap','🔋 Daily Energy Budget');
+  c.innerHTML+=`
+<div style="font-size:12px;color:#aaa;margin-bottom:10px;">Track what drains vs charges your daily energy</div>
+<div id="rfc-eb-battery" style="text-align:center;margin-bottom:12px;"></div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+  <div><div style="font-size:11px;color:#f44336;font-weight:600;margin-bottom:6px;">Drains</div><div style="max-height:200px;overflow-y:auto;">${drainRows}</div></div>
+  <div><div style="font-size:11px;color:#4caf50;font-weight:600;margin-bottom:6px;">Boosters</div><div style="max-height:200px;overflow-y:auto;">${boostRows}</div></div>
+</div>
+<div id="rfc-eb-advice" style="margin-top:10px;font-size:12px;text-align:center;"></div>`;
+  anchor.after(c);
+}
+window._rfcEBCalc=function(){
+  var DRAINS=[{id:'mtg',drain:15},{id:'decd',drain:20},{id:'commu',drain:10},{id:'scroll',drain:10},{id:'conflict',drain:25},{id:'multitask',drain:20},{id:'newnews',drain:10},{id:'procrast',drain:15}];
+  var BOOST=[{id:'sleep2',boost:30},{id:'exercise',boost:25},{id:'nature',boost:20},{id:'laugh',boost:15},{id:'purpose',boost:20},{id:'music',boost:10},{id:'food',boost:15},{id:'nap',boost:20}];
+  var net=100;
+  DRAINS.forEach(function(d){ var cb=document.getElementById('rfc-eb-d-'+d.id); if(cb&&cb.checked) net-=d.drain; });
+  BOOST.forEach(function(b){ var cb=document.getElementById('rfc-eb-b-'+b.id); if(cb&&cb.checked) net+=b.boost; });
+  net=Math.max(0,Math.min(200,net));
+  var col=net>=100?'#4caf50':net>=60?'#ff9800':'#f44336';
+  var msg=net>=130?'Supercharged — peak performance day!':net>=100?'Well-fueled — good energy balance':net>=60?'Low — prioritize rest & recovery':'Depleted — rest is essential';
+  var bat=document.getElementById('rfc-eb-battery');
+  if(bat){
+    var pct=Math.min(100,Math.round(net/200*100));
+    bat.innerHTML='<div style="display:inline-block;text-align:left;">'
+      +'<div style="width:80px;height:30px;border:2px solid '+col+';border-radius:5px;position:relative;display:inline-block;">'
+      +'<div style="position:absolute;top:2px;left:2px;height:calc(100% - 4px);width:'+Math.round(pct*0.72)+'px;background:'+col+';border-radius:3px;transition:width 0.3s;"></div>'
+      +'<span style="position:absolute;right:-14px;top:3px;width:10px;height:12px;background:'+col+';border-radius:0 3px 3px 0;"></span></div>'
+      +'<div style="font-size:20px;font-weight:700;color:'+col+';margin-top:6px;">'+net+'%</div>'
+      +'<div style="font-size:12px;color:'+col+';">'+msg+'</div></div>';
+  }
+  var adv=document.getElementById('rfc-eb-advice'); if(adv){ adv.textContent=''; }
+  var uid=_b65uid(), key='rfc_enbudget_'+uid+'_'+_b65today(), state={};
+  DRAINS.forEach(function(d){ var cb=document.getElementById('rfc-eb-d-'+d.id); if(cb&&cb.checked) state['d_'+d.id]=1; });
+  BOOST.forEach(function(b){ var cb=document.getElementById('rfc-eb-b-'+b.id); if(cb&&cb.checked) state['b_'+b.id]=1; });
+  _b65save(key,{net:net,state:state});
+};
+function _renderEnergyBudget(){
+  if(!document.getElementById('rfc-enbudget-wrap')) return;
+  var uid=_b65uid(), key='rfc_enbudget_'+uid+'_'+_b65today();
+  var saved=_b65load(key)||{};
+  Object.keys(saved.state||{}).forEach(function(k){
+    var id=k.slice(2); var prefix=k.slice(0,2);
+    var cb=document.getElementById(prefix==='d_'?'rfc-eb-d-'+id:'rfc-eb-b-'+id);
+    if(cb) cb.checked=true;
+  });
+  window._rfcEBCalc();
+}
+
+/* ── Digestive Enzyme & Probiotic Log ── */
+function _injectDigest(){
+  if(document.getElementById('rfc-digest-wrap')) return;
+  var anchor=document.getElementById('rfc-zinc-wrap')||document.getElementById('rfc-protto-wrap')||document.getElementById('rfc-hydlog-wrap')||document.getElementById('rfc-mealprep-wrap');
+  if(!anchor) return;
+  var PROBIOTICS=[
+    {id:'yog',label:'Yogurt / Kefir',pts:4},{id:'kimchi',label:'Kimchi / Sauerkraut',pts:5},
+    {id:'kombu',label:'Kombucha',pts:3},{id:'miso',label:'Miso / Tempeh',pts:4},
+    {id:'suppl',label:'Probiotic supplement',pts:4},{id:'cheese',label:'Aged cheese (parmesan)',pts:2}
+  ];
+  var ENZYMES=[
+    {id:'apple',label:'Apple cider vinegar pre-meal',pts:3},{id:'pineapple',label:'Pineapple / papaya (bromelain)',pts:3},
+    {id:'ginger',label:'Ginger tea after meal',pts:3},{id:'fennel',label:'Fennel / peppermint tea',pts:2},
+    {id:'chew',label:'Chewed food slowly (20+ times)',pts:4},{id:'ezsuppl',label:'Digestive enzyme supplement',pts:3}
+  ];
+  var proRows=PROBIOTICS.map(function(p){
+    return '<label style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid #1a1a2e;cursor:pointer;">'
+      +'<input type="checkbox" id="rfc-dg-'+p.id+'" onchange="window._rfcDGCalc()" style="accent-color:#4caf50;">'
+      +'<span style="flex:1;font-size:12px;">'+p.label+'</span>'
+      +'<span style="font-size:11px;color:#4caf50;">+'+p.pts+'</span></label>';
+  }).join('');
+  var ezRows=ENZYMES.map(function(e){
+    return '<label style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid #1a1a2e;cursor:pointer;">'
+      +'<input type="checkbox" id="rfc-dg-'+e.id+'" onchange="window._rfcDGCalc()" style="accent-color:#ff9800;">'
+      +'<span style="flex:1;font-size:12px;">'+e.label+'</span>'
+      +'<span style="font-size:11px;color:#ff9800;">+'+e.pts+'</span></label>';
+  }).join('');
+  var c=_b65card('rfc-digest-wrap','🦠 Digestive Enzyme & Probiotic Log');
+  c.innerHTML+=`
+<div style="font-size:12px;color:#aaa;margin-bottom:10px;">Support gut microbiome and digestion efficiency</div>
+<div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+  <div id="rfc-dg-ring" style="width:60px;height:60px;flex-shrink:0;"></div>
+  <div><div id="rfc-dg-pts" style="font-size:22px;font-weight:700;color:#4caf50;">0<span style="font-size:12px;color:#aaa;">/40</span></div>
+  <div id="rfc-dg-msg" style="font-size:11px;color:#aaa;">Log probiotic & enzyme sources</div></div>
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+  <div><div style="font-size:11px;color:#4caf50;font-weight:600;margin-bottom:5px;">Probiotics</div>${proRows}</div>
+  <div><div style="font-size:11px;color:#ff9800;font-weight:600;margin-bottom:5px;">Enzymes / Aids</div>${ezRows}</div>
+</div>`;
+  anchor.after(c);
+}
+window._rfcDGCalc=function(){
+  var ALL=[{id:'yog',pts:4},{id:'kimchi',pts:5},{id:'kombu',pts:3},{id:'miso',pts:4},{id:'suppl',pts:4},{id:'cheese',pts:2},{id:'apple',pts:3},{id:'pineapple',pts:3},{id:'ginger',pts:3},{id:'fennel',pts:2},{id:'chew',pts:4},{id:'ezsuppl',pts:3}];
+  var total=40, pts=0, state={};
+  ALL.forEach(function(a){ var cb=document.getElementById('rfc-dg-'+a.id); if(cb&&cb.checked){ pts+=a.pts; state[a.id]=1; } });
+  var uid=_b65uid(), key='rfc_digest_'+uid+'_'+_b65today();
+  _b65save(key,state);
+  var pct=Math.round(pts/total*100);
+  var col=pct>=70?'#4caf50':pct>=40?'#ff9800':'#f44336';
+  var msg=pct>=70?'Excellent gut health support!':pct>=40?'Good — consider adding fermented foods':'Add more probiotics & digestive aids';
+  document.getElementById('rfc-dg-pts').innerHTML=pts+'<span style="font-size:12px;color:#aaa;">/'+total+'</span>';
+  document.getElementById('rfc-dg-msg').textContent=msg; document.getElementById('rfc-dg-msg').style.color=col;
+  var r=document.getElementById('rfc-dg-ring');
+  var circ=Math.round(2*Math.PI*24), dash=Math.round(circ*pct/100);
+  r.innerHTML='<svg width="60" height="60" viewBox="0 0 60 60"><circle cx="30" cy="30" r="24" fill="none" stroke="#222" stroke-width="6"/><circle cx="30" cy="30" r="24" fill="none" stroke="'+col+'" stroke-width="6" stroke-dasharray="'+dash+' '+circ+'" stroke-dashoffset="'+Math.round(circ*0.25)+'" stroke-linecap="round"/><text x="30" y="35" text-anchor="middle" fill="'+col+'" font-size="12" font-weight="700">'+pct+'%</text></svg>';
+};
+function _renderDigest(){
+  if(!document.getElementById('rfc-digest-wrap')) return;
+  var uid=_b65uid(), key='rfc_digest_'+uid+'_'+_b65today();
+  var saved=_b65load(key)||{};
+  Object.keys(saved).forEach(function(id){ var cb=document.getElementById('rfc-dg-'+id); if(cb) cb.checked=true; });
+  window._rfcDGCalc();
+}
+
+/* ── Squat Variation Tracker ── */
+function _injectSquatVar(){
+  if(document.getElementById('rfc-sqvar-wrap')) return;
+  var anchor=document.getElementById('rfc-pushpull-wrap')||document.getElementById('rfc-dlvar-wrap')||document.getElementById('rfc-agility-wrap')||document.getElementById('rfc-iso-wrap');
+  if(!anchor) return;
+  var SQVARS=[
+    {id:'bs',label:'Back Squat'},{id:'fs',label:'Front Squat'},
+    {id:'gob',label:'Goblet Squat'},{id:'bssp',label:'Bulgarian Split Squat'},
+    {id:'hack',label:'Hack Squat'},{id:'box',label:'Box Squat'},
+    {id:'paus',label:'Pause Squat'},{id:'low',label:'Low-Bar Squat'},
+    {id:'zee',label:'Zercher Squat'},{id:'ohs',label:'Overhead Squat'}
+  ];
+  var rows=SQVARS.map(function(v){
+    return '<div style="padding:7px 0;border-bottom:1px solid #222;">'
+      +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;">'
+      +'<span style="font-size:13px;">'+v.label+'</span>'
+      +'<span id="rfc-sq-pb-'+v.id+'" style="font-size:10px;color:#ff9800;"></span></div>'
+      +'<div style="display:flex;gap:6px;">'
+      +'<input id="rfc-sq-kg-'+v.id+'" type="number" min="0" step="2.5" placeholder="kg" style="flex:1;padding:6px;border-radius:6px;border:1px solid #333;background:#0d0d1a;color:#e0e0e0;font-size:12px;">'
+      +'<input id="rfc-sq-reps-'+v.id+'" type="number" min="1" max="30" placeholder="reps" style="width:55px;padding:6px;border-radius:6px;border:1px solid #333;background:#0d0d1a;color:#e0e0e0;font-size:12px;">'
+      +'<button onclick="window._rfcSQLog(\''+v.id+'\')" style="padding:6px 10px;border:none;border-radius:6px;background:#9c27b0;color:#fff;font-size:11px;cursor:pointer;">Log</button>'
+      +'</div></div>';
+  }).join('');
+  var c=_b65card('rfc-sqvar-wrap','🦵 Squat Variation Tracker');
+  c.innerHTML+=`
+<div style="font-size:12px;color:#aaa;margin-bottom:12px;">Log all squat variations — tracks PRs per variant</div>
+${rows}
+<div id="rfc-sq-today" style="margin-top:12px;"></div>`;
+  anchor.after(c);
+  _renderSquatVar();
+}
+window._rfcSQLog=function(id){
+  var kg=parseFloat(document.getElementById('rfc-sq-kg-'+id).value)||0;
+  var reps=parseInt(document.getElementById('rfc-sq-reps-'+id).value)||1;
+  if(!kg){ alert('Enter weight'); return; }
+  var uid=_b65uid(), pbKey='rfc_sqvar_pbs_'+uid, dayKey='rfc_sqvar_'+uid+'_'+_b65today();
+  var pbs=_b65load(pbKey)||{}, today=_b65load(dayKey)||{};
+  if(!today[id]) today[id]=[];
+  today[id].push({kg:kg,reps:reps});
+  _b65save(dayKey,today);
+  if(!pbs[id]||kg>pbs[id].kg){ pbs[id]={kg:kg,reps:reps,date:_b65today()}; _b65save(pbKey,pbs); }
+  document.getElementById('rfc-sq-kg-'+id).value=''; document.getElementById('rfc-sq-reps-'+id).value='';
+  _showSQPBs(pbs); _showSQToday(today);
+};
+function _showSQPBs(pbs){
+  var SQVARS=[{id:'bs'},{id:'fs'},{id:'gob'},{id:'bssp'},{id:'hack'},{id:'box'},{id:'paus'},{id:'low'},{id:'zee'},{id:'ohs'}];
+  SQVARS.forEach(function(v){ var el=document.getElementById('rfc-sq-pb-'+v.id); if(el&&pbs[v.id]) el.textContent='PB: '+pbs[v.id].kg+'kg×'+pbs[v.id].reps; });
+}
+function _showSQToday(today){
+  var el=document.getElementById('rfc-sq-today'); if(!el) return;
+  var keys=Object.keys(today); if(!keys.length){ el.innerHTML=''; return; }
+  var LABELS={bs:'Back Squat',fs:'Front Squat',gob:'Goblet',bssp:'Bulgarian SS',hack:'Hack Squat',box:'Box Squat',paus:'Pause Squat',low:'Low-Bar',zee:'Zercher',ohs:'Overhead'};
+  var html='<div style="font-size:12px;color:#aaa;margin-bottom:6px;">Today\'s Squat Session</div><div style="display:flex;flex-wrap:wrap;gap:5px;">';
+  keys.forEach(function(k){ var best=today[k].reduce(function(a,b){return b.kg>a.kg?b:a;}); html+='<div style="background:#0d0d1a;border-radius:8px;padding:7px 10px;text-align:center;"><div style="font-size:15px;font-weight:700;color:#9c27b0;">'+best.kg+'kg</div><div style="font-size:10px;color:#aaa;">'+(LABELS[k]||k)+'×'+best.reps+'</div></div>'; });
+  el.innerHTML=html+'</div>';
+}
+function _renderSquatVar(){
+  if(!document.getElementById('rfc-sqvar-wrap')) return;
+  var uid=_b65uid();
+  _showSQPBs(_b65load('rfc_sqvar_pbs_'+uid)||{});
+  _showSQToday(_b65load('rfc_sqvar_'+uid+'_'+_b65today())||{});
+}
+
+/* ── switchScreen wrapper ── */
+window.switchScreen=function(name,navEl){
+  _origSS63&&_origSS63(name,navEl);
+  if(name==='dashboard') setTimeout(function(){ _injectEnergyBudget(); _renderEnergyBudget(); },1200);
+  if(name==='nutrition') setTimeout(function(){ _injectDigest(); _renderDigest(); },1100);
+  if(name==='workouts')  setTimeout(function(){ _injectSquatVar(); _renderSquatVar(); },1050);
+};
+
+setTimeout(function(){ _injectEnergyBudget(); _injectDigest(); _injectSquatVar(); _renderEnergyBudget(); _renderDigest(); _renderSquatVar(); },57000);
+setTimeout(function(){
+  if(!document.getElementById('rfc-enbudget-wrap')) { _injectEnergyBudget(); _renderEnergyBudget(); }
+  if(!document.getElementById('rfc-digest-wrap'))   { _injectDigest(); _renderDigest(); }
+  if(!document.getElementById('rfc-sqvar-wrap'))    { _injectSquatVar(); _renderSquatVar(); }
+},61000);
+})();
+</script>
+
 </body>
 </html>
