@@ -30111,5 +30111,374 @@ setTimeout(function(){
 })();
 </script>
 
+<script>
+/* ════════════════════════════════════════════════════════════
+   BATCH 20 — Cardio Logger | Micronutrient Checklist | Transformation Score
+   ════════════════════════════════════════════════════════════ */
+(function(){ 'use strict';
+
+function _uid20(){ try{return JSON.parse(localStorage.getItem('bm_user')||'{}').uid||null;}catch(e){return null;} }
+function _b20card(id,title){
+  var d=document.createElement('div');
+  d.id=id; d.className='rfc-b12-card';
+  d.style.cssText='background:#111;border:1px solid #222;border-radius:14px;padding:14px;margin:10px 0;';
+  var h=document.createElement('div');
+  h.style.cssText='font-size:13px;font-weight:700;color:#aaa;letter-spacing:1px;text-transform:uppercase;margin-bottom:12px;';
+  h.textContent=title; d.appendChild(h);
+  return d;
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   1. CARDIO SESSION LOGGER (workouts)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+var CARDIO_TYPES=[
+  {id:'run',   label:'🏃 Run',      met:9.8},
+  {id:'bike',  label:'🚴 Cycle',    met:7.5},
+  {id:'swim',  label:'🏊 Swim',     met:8.0},
+  {id:'walk',  label:'🚶 Walk',     met:3.5},
+  {id:'row',   label:'🚣 Row',      met:7.0},
+  {id:'hiit',  label:'⚡ HIIT',     met:12.0},
+  {id:'ellip', label:'🔄 Elliptical',met:5.0},
+  {id:'skip',  label:'🪢 Jump Rope', met:11.0}
+];
+
+function _injectCardio(){
+  if(document.getElementById('rfc-cardio-wrap')) return;
+  var anchor = document.getElementById('rfc-tmpl-wrap') ||
+               document.getElementById('rfc-musrec-wrap') ||
+               document.getElementById('rfc-pol-wrap') ||
+               document.getElementById('rfc-deload-wrap') ||
+               document.getElementById('rfc-orm-wrap') ||
+               document.getElementById('wl-history');
+  if(!anchor) return;
+  var card=_b20card('rfc-cardio-wrap','🏃 Cardio Log');
+  card.innerHTML+=(
+    '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;">'+
+      '<select id="rfc-cardio-type" style="flex:1;min-width:110px;background:#1a1a1a;border:1px solid #333;border-radius:8px;padding:8px 10px;color:#fff;font-size:13px;outline:none;">'+
+        CARDIO_TYPES.map(function(t){return '<option value="'+t.id+'">'+t.label+'</option>';}).join('')+
+      '</select>'+
+      '<input id="rfc-cardio-dur" type="number" min="1" max="300" placeholder="min" '+
+        'style="width:65px;background:#1a1a1a;border:1px solid #333;border-radius:8px;padding:8px 10px;color:#fff;font-size:13px;outline:none;">'+
+      '<input id="rfc-cardio-dist" type="number" min="0" max="200" step="0.1" placeholder="km" '+
+        'style="width:65px;background:#1a1a1a;border:1px solid #333;border-radius:8px;padding:8px 10px;color:#fff;font-size:13px;outline:none;">'+
+      '<button onclick="window._rfcLogCardio()" '+
+        'style="background:linear-gradient(135deg,#0ea5e9,#0284c7);color:#fff;border:none;border-radius:8px;padding:8px 16px;font-size:13px;font-weight:700;cursor:pointer;">Log</button>'+
+    '</div>'+
+    '<div id="rfc-cardio-list"></div>'+
+    '<div id="rfc-cardio-stats" style="margin-top:10px;"></div>'
+  );
+  anchor.insertAdjacentElement('afterend', card);
+  _renderCardio();
+}
+
+window._rfcLogCardio=function(){
+  var uid=_uid20(); if(!uid){ if(window.toast) toast('Log in first','gold'); return; }
+  var typeId=(document.getElementById('rfc-cardio-type')||{}).value||'run';
+  var dur=parseInt((document.getElementById('rfc-cardio-dur')||{}).value)||0;
+  var dist=parseFloat((document.getElementById('rfc-cardio-dist')||{}).value)||0;
+  if(!dur||dur<1){ if(window.toast) toast('Enter duration (minutes)','gold'); return; }
+  var met=(CARDIO_TYPES.find(function(t){return t.id===typeId;})||{}).met||7;
+  var pd={}; try{pd=JSON.parse(localStorage.getItem('bm_pd')||'{}');}catch(e){}
+  var wt=+(pd.weights&&pd.weights.length?pd.weights[pd.weights.length-1].kg:70);
+  var cal=Math.round(met*wt*(dur/60));
+  var key='rfc_cardio_'+uid;
+  var log=[]; try{log=JSON.parse(localStorage.getItem(key)||'[]');}catch(e){}
+  log.unshift({date:new Date().toISOString().slice(0,10),type:typeId,dur:dur,dist:dist,cal:cal,ts:Date.now()});
+  if(log.length>50) log.length=50;
+  localStorage.setItem(key,JSON.stringify(log));
+  var d1=document.getElementById('rfc-cardio-dur'); if(d1) d1.value='';
+  var d2=document.getElementById('rfc-cardio-dist'); if(d2) d2.value='';
+  _renderCardio();
+  if(window.toast) toast('🏃 '+dur+'min logged · ~'+cal+' kcal burned','fire');
+};
+
+function _renderCardio(){
+  var listEl=document.getElementById('rfc-cardio-list');
+  var statEl=document.getElementById('rfc-cardio-stats');
+  if(!listEl||!statEl) return;
+  var uid=_uid20(); if(!uid) return;
+  var log=[]; try{log=JSON.parse(localStorage.getItem('rfc_cardio_'+uid)||'[]');}catch(e){}
+  if(!log.length){
+    listEl.innerHTML='<p style="color:#444;font-size:12px;text-align:center;padding:8px 0;">No cardio sessions logged yet.</p>';
+    statEl.innerHTML=''; return;
+  }
+
+  // Last 5 sessions
+  var typeMap={};
+  CARDIO_TYPES.forEach(function(t){typeMap[t.id]=t.label;});
+  listEl.innerHTML=log.slice(0,5).map(function(e,i){
+    return '<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid #1a1a1a;">'+
+      '<span style="font-size:12px;color:#ccc;">'+(typeMap[e.type]||e.type)+'</span>'+
+      '<span style="font-size:12px;color:#aaa;">'+e.dur+'min'+(e.dist?' · '+e.dist+'km':'')+'</span>'+
+      '<span style="font-size:12px;color:#0ea5e9;">~'+e.cal+' kcal</span>'+
+      '<span style="font-size:10px;color:#444;">'+e.date+'</span>'+
+      '<button onclick="window._rfcDelCardio('+i+')" style="background:none;border:none;color:#333;cursor:pointer;font-size:14px;padding:0 2px;">✕</button>'+
+    '</div>';
+  }).join('');
+
+  // Weekly stats
+  var weekAgo=Date.now()-7*864e5;
+  var weekly=log.filter(function(e){return e.ts&&e.ts>weekAgo;});
+  var wDur=0,wCal=0,wDist=0;
+  weekly.forEach(function(e){wDur+=e.dur;wCal+=e.cal;wDist+=e.dist||0;});
+  statEl.innerHTML=
+    '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:6px;">'+
+      [['⏱ '+wDur+'min','This week'],['🔥 '+wCal,'kcal burned'],['📍 '+wDist.toFixed(1)+'km','distance']].map(function(s){
+        return '<div style="background:#1a1a1a;border-radius:8px;padding:8px;text-align:center;">'+
+          '<div style="font-size:13px;font-weight:700;color:#0ea5e9;">'+s[0]+'</div>'+
+          '<div style="font-size:10px;color:#555;">'+s[1]+'</div>'+
+        '</div>';
+      }).join('')+
+    '</div>';
+}
+
+window._rfcDelCardio=function(idx){
+  var uid=_uid20(); if(!uid) return;
+  var key='rfc_cardio_'+uid;
+  var log=[]; try{log=JSON.parse(localStorage.getItem(key)||'[]');}catch(e){}
+  log.splice(idx,1);
+  localStorage.setItem(key,JSON.stringify(log));
+  _renderCardio();
+};
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   2. MICRONUTRIENT CHECKLIST (nutrition)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+var MICROS20=[
+  {id:'iron',    label:'Iron',       icon:'🩸', tip:'Spinach, lentils, red meat, tofu, pumpkin seeds'},
+  {id:'calcium', label:'Calcium',    icon:'🦴', tip:'Milk, paneer, yogurt, almonds, chia seeds'},
+  {id:'vitd',    label:'Vitamin D',  icon:'☀️', tip:'Sunlight 20min, egg yolk, fatty fish, fortified milk'},
+  {id:'magn',    label:'Magnesium',  icon:'💚', tip:'Dark chocolate, avocado, nuts, legumes, whole grains'},
+  {id:'zinc',    label:'Zinc',       icon:'⚡', tip:'Meat, shellfish, pumpkin seeds, chickpeas, cashews'},
+  {id:'b12',     label:'Vitamin B12',icon:'🧠', tip:'Meat, fish, dairy, eggs; supplement if vegetarian'},
+  {id:'omega3',  label:'Omega-3',    icon:'🐟', tip:'Fatty fish, flaxseeds, chia seeds, walnuts, fish oil'},
+  {id:'potassium',label:'Potassium', icon:'🍌', tip:'Banana, sweet potato, coconut water, spinach, avocado'}
+];
+
+function _injectMicros(){
+  if(document.getElementById('rfc-micros-wrap')) return;
+  var anchor = document.getElementById('rfc-fast-wrap') ||
+               document.getElementById('rfc-macro-donut-wrap') ||
+               document.getElementById('rfc-cal-balance-wrap') ||
+               document.getElementById('rfc-custom-supp-wrap') ||
+               document.getElementById('rfc-protein-timing-wrap') ||
+               document.getElementById('rfc-food-wrap');
+  if(!anchor) return;
+  var card=_b20card('rfc-micros-wrap','🧬 Micronutrient Checklist');
+  var inner=document.createElement('div'); inner.id='rfc-micros-body';
+  card.appendChild(inner);
+  anchor.insertAdjacentElement('afterend', card);
+  _renderMicros();
+}
+
+function _renderMicros(){
+  var el=document.getElementById('rfc-micros-body'); if(!el) return;
+  var uid=_uid20();
+  if(!uid){ el.innerHTML='<p style="color:#555;font-size:12px;">Log in to track micronutrients.</p>'; return; }
+  var today=new Date().toISOString().slice(0,10);
+  var key='rfc_micros_'+uid+'_'+today;
+  var saved={}; try{saved=JSON.parse(localStorage.getItem(key)||'{}');}catch(e){}
+  var done=MICROS20.filter(function(m){return saved[m.id];}).length;
+  var pct=Math.round(done/MICROS20.length*100);
+  var barColor=pct>=75?'#22c55e':pct>=50?'#f59e0b':'#ef4444';
+
+  el.innerHTML=
+    '<div style="margin-bottom:10px;">'+
+      '<div style="display:flex;justify-content:space-between;margin-bottom:4px;">'+
+        '<span style="font-size:11px;color:#555;">Tap to mark covered from today\'s meals</span>'+
+        '<span style="font-size:12px;font-weight:700;color:'+barColor+';">'+done+'/'+MICROS20.length+'</span>'+
+      '</div>'+
+      '<div style="height:5px;background:#1a1a1a;border-radius:3px;overflow:hidden;">'+
+        '<div style="height:100%;width:'+pct+'%;background:'+barColor+';border-radius:3px;transition:width .5s;"></div>'+
+      '</div>'+
+    '</div>'+
+    '<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:5px;">'+
+    MICROS20.map(function(m){
+      var chk=!!saved[m.id];
+      return '<div onclick="window._rfcToggleMicro(\''+m.id+'\')" title="'+m.tip+'" '+
+        'style="cursor:pointer;display:flex;align-items:center;gap:6px;padding:7px 9px;'+
+        'background:'+(chk?'rgba(34,197,94,.08)':'#1a1a1a')+';border:1px solid '+(chk?'#22c55e33':'#222')+';'+
+        'border-radius:8px;transition:all .2s;">'+
+        '<span style="font-size:15px;">'+m.icon+'</span>'+
+        '<div style="flex:1;min-width:0;">'+
+          '<div style="font-size:12px;color:'+(chk?'#22c55e':'#ccc')+';">'+m.label+'</div>'+
+          '<div style="font-size:9px;color:#444;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+m.tip+'</div>'+
+        '</div>'+
+        '<span style="font-size:14px;">'+(chk?'✅':'⬜')+'</span>'+
+      '</div>';
+    }).join('')+
+    '</div>';
+}
+
+window._rfcToggleMicro=function(id){
+  var uid=_uid20(); if(!uid) return;
+  var today=new Date().toISOString().slice(0,10);
+  var key='rfc_micros_'+uid+'_'+today;
+  var saved={}; try{saved=JSON.parse(localStorage.getItem(key)||'{}');}catch(e){}
+  if(saved[id]) delete saved[id]; else saved[id]=true;
+  localStorage.setItem(key,JSON.stringify(saved));
+  _renderMicros();
+};
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   3. TRANSFORMATION PROGRESS SCORE (dashboard)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+function _injectTransform(){
+  if(document.getElementById('rfc-xform-wrap')) return;
+  var anchor = document.getElementById('rfc-sleepj-wrap') ||
+               document.getElementById('rfc-circ-wrap') ||
+               document.getElementById('rfc-habits-wrap') ||
+               document.getElementById('rfc-wt-trend-wrap') ||
+               document.getElementById('rfc-recovery-wrap') ||
+               document.querySelector('.dash-topbar');
+  if(!anchor) return;
+  var card=_b20card('rfc-xform-wrap','🏆 Transformation Progress');
+  var inner=document.createElement('div'); inner.id='rfc-xform-body';
+  card.appendChild(inner);
+  anchor.insertAdjacentElement('afterend', card);
+  _renderTransform();
+}
+
+function _renderTransform(){
+  var el=document.getElementById('rfc-xform-body'); if(!el) return;
+  var uid=_uid20();
+  if(!uid){ el.innerHTML='<p style="color:#555;font-size:12px;">Log in to see your transformation score.</p>'; return; }
+
+  var lastRes={}; try{lastRes=JSON.parse(localStorage.getItem('bm_last_result')||'{}');}catch(e){}
+  var pd={}; try{pd=JSON.parse(localStorage.getItem('bm_pd')||'{}');}catch(e){}
+  var wts=pd.weights||[];
+
+  // Dimension 1: Weight progress (0-25pts)
+  var wtScore=0, wtLabel='No weight data', wtSub='';
+  if(wts.length>=2){
+    var startWt=+wts[0].kg, curWt=+wts[wts.length-1].kg;
+    var goalWt=lastRes.ibw?+lastRes.ibw:curWt;
+    var totalChange=Math.abs(startWt-goalWt)||1;
+    var achieved=Math.abs(startWt-curWt);
+    wtScore=Math.min(25,Math.round(achieved/totalChange*25));
+    var diff=(curWt-startWt).toFixed(1);
+    wtLabel=(diff<0?'▼ ':diff>0?'▲ ':'')+Math.abs(diff)+'kg '+(diff<0?'lost':'gained');
+    wtSub='Start: '+startWt+'kg · Now: '+curWt+'kg';
+  } else if(wts.length===1){
+    wtScore=5; wtLabel='Baseline set';
+    wtSub='Log more entries to track progress';
+  }
+
+  // Dimension 2: Strength progress from 1RM history (0-25pts)
+  var strScore=0, strLabel='No 1RM data', strSub='';
+  var orms=[]; try{orms=JSON.parse(localStorage.getItem('rfc_1rm_'+uid)||'[]');}catch(e){}
+  if(orms.length>=2){
+    // Group by exercise, find biggest improvement
+    var exMap={};
+    orms.slice().reverse().forEach(function(r){
+      if(!exMap[r.ex]) exMap[r.ex]={first:r.orm,last:r.orm};
+      exMap[r.ex].last=r.orm;
+    });
+    var bestPct=0; var bestEx='';
+    Object.keys(exMap).forEach(function(k){
+      var e=exMap[k]; var pct=e.first>0?(e.last-e.first)/e.first*100:0;
+      if(pct>bestPct){bestPct=pct;bestEx=k;}
+    });
+    strScore=Math.min(25,Math.round(bestPct/20*25));
+    strLabel=bestEx?'+'+bestPct.toFixed(1)+'% on '+bestEx:'Strength improving';
+    strSub=Object.keys(exMap).length+' exercise'+(Object.keys(exMap).length!==1?'s':'');
+  } else if(orms.length===1){
+    strScore=5; strLabel='First 1RM recorded';
+    strSub='Track more lifts over time';
+  }
+
+  // Dimension 3: Consistency - workouts last 30 days (0-25pts)
+  var wkLog=[]; try{wkLog=JSON.parse(localStorage.getItem('rfc_workouts_'+uid)||'[]');}catch(e){}
+  var now=Date.now();
+  var wkRecent=wkLog.filter(function(w){return (w.ts||0)>now-30*864e5;}).length;
+  var TARGET_SESSIONS=20;
+  var conScore=Math.min(25,Math.round(wkRecent/TARGET_SESSIONS*25));
+  var conLabel=wkRecent+' workouts this month';
+  var conSub=(wkRecent>=20?'Excellent!':wkRecent>=12?'Good effort':'Keep going — target '+TARGET_SESSIONS+'/month');
+
+  // Dimension 4: Body measurements improvement (0-25pts)
+  var measScore=0, measLabel='No measurements', measSub='';
+  var measLog=[]; try{measLog=JSON.parse(localStorage.getItem('rfc_measurements_'+uid)||'[]');}catch(e){}
+  if(measLog.length>=2){
+    var mFirst=measLog[0], mLast=measLog[measLog.length-1];
+    var waistDelta=mFirst.waist&&mLast.waist?(mFirst.waist-mLast.waist):0; // positive = lost
+    var armsDelta=mFirst.arms&&mLast.arms?(mLast.arms-mFirst.arms):0; // positive = gained
+    var improvement=(waistDelta>0?waistDelta*3:0)+(armsDelta>0?armsDelta*2:0);
+    measScore=Math.min(25,Math.round(improvement*2.5));
+    measLabel=(waistDelta>0?'Waist ▼'+waistDelta.toFixed(1)+'cm':'Waist tracked')+(armsDelta>0?' · Arms ▲'+armsDelta.toFixed(1)+'cm':'');
+    measSub=measLog.length+' measurement entries';
+  } else if(measLog.length===1){
+    measScore=3; measLabel='Baseline logged';
+    measSub='Log measurements over time';
+  }
+
+  var total=wtScore+strScore+conScore+measScore;
+  var grade=total>=90?'S':total>=75?'A':total>=60?'B':total>=45?'C':total>=30?'D':'F';
+  var gradeColor=total>=90?'#f59e0b':total>=75?'#22c55e':total>=60?'#3b82f6':total>=45?'#a78bfa':'#ef4444';
+  var dims=[
+    {label:'⚖ Weight',score:wtScore,max:25,detail:wtLabel,sub:wtSub},
+    {label:'💪 Strength',score:strScore,max:25,detail:strLabel,sub:strSub},
+    {label:'🔥 Consistency',score:conScore,max:25,detail:conLabel,sub:conSub},
+    {label:'📏 Body Comp',score:measScore,max:25,detail:measLabel,sub:measSub}
+  ];
+
+  el.innerHTML=
+    '<div style="display:flex;align-items:center;gap:20px;margin-bottom:14px;flex-wrap:wrap;">'+
+      '<div style="text-align:center;flex-shrink:0;">'+
+        '<div style="font-size:52px;font-weight:900;color:'+gradeColor+';line-height:1;">'+grade+'</div>'+
+        '<div style="font-size:28px;font-weight:900;color:#fff;line-height:1;">'+total+'</div>'+
+        '<div style="font-size:10px;color:#555;">/ 100</div>'+
+      '</div>'+
+      '<div style="flex:1;min-width:160px;">'+
+        dims.map(function(d){
+          var pct=Math.round(d.score/d.max*100);
+          var c=pct>=80?'#22c55e':pct>=50?'#f59e0b':'#ef4444';
+          return '<div style="margin-bottom:8px;">'+
+            '<div style="display:flex;justify-content:space-between;margin-bottom:2px;">'+
+              '<span style="font-size:11px;color:#aaa;">'+d.label+'</span>'+
+              '<span style="font-size:11px;font-weight:700;color:'+c+';">'+d.score+'/'+d.max+'</span>'+
+            '</div>'+
+            '<div style="height:5px;background:#1a1a1a;border-radius:3px;overflow:hidden;">'+
+              '<div style="height:100%;width:'+pct+'%;background:'+c+';border-radius:3px;transition:width .6s;"></div>'+
+            '</div>'+
+            '<div style="font-size:10px;color:#555;margin-top:1px;">'+d.detail+'</div>'+
+          '</div>';
+        }).join('')+
+      '</div>'+
+    '</div>';
+}
+
+/* ════════════════════════════════════════════════════
+   switchScreen + initial inject
+   ════════════════════════════════════════════════════ */
+var _origSS18=window.switchScreen;
+window.switchScreen=function(name,navEl){
+  _origSS18&&_origSS18(name,navEl);
+  if(name==='workouts'){
+    setTimeout(function(){ _injectCardio(); _renderCardio(); }, 850);
+  }
+  if(name==='nutrition'){
+    setTimeout(function(){ _injectMicros(); _renderMicros(); }, 900);
+  }
+  if(name==='dashboard'){
+    setTimeout(function(){ _injectTransform(); _renderTransform(); }, 1050);
+  }
+};
+
+setTimeout(function(){
+  _injectCardio();
+  _injectMicros();
+  _injectTransform();
+}, 12000);
+
+setTimeout(function(){
+  if(!document.getElementById('rfc-cardio-wrap')) _injectCardio();
+  if(!document.getElementById('rfc-micros-wrap')) _injectMicros();
+  if(!document.getElementById('rfc-xform-wrap'))  _injectTransform();
+}, 15000);
+
+})();
+</script>
+
 </body>
 </html>
