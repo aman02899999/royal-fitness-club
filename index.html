@@ -38697,5 +38697,176 @@ setTimeout(function(){ if(!document.getElementById('rfc-longevity-wrap')) _injec
 })();
 </script>
 
+<script>
+/* ===== BATCH 50: Wellness Wheel | Macro Cycling Planner | Training Block Tracker ===== */
+(function(){ 'use strict';
+var _origSS48=window.switchScreen;
+function _b50uid(){ try{ return JSON.parse(localStorage.getItem('bm_user')||'{}').uid||'guest'; }catch(e){ return 'guest'; } }
+function _b50today(){ var d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function _b50load(k){ try{ return JSON.parse(localStorage.getItem(k))||null; }catch(e){ return null; } }
+function _b50save(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} }
+function _b50card(id,title){ var d=document.createElement('div'); d.id=id; d.style.cssText='background:#1a1a2e;border-radius:14px;padding:18px;margin:14px 0;color:#e0e0e0;font-family:inherit;'; d.innerHTML='<div style="font-size:15px;font-weight:700;color:#00d4ff;margin-bottom:14px;">'+title+'</div>'; return d; }
+
+/* ---------- WELLNESS WHEEL (dashboard) ---------- */
+var WW_DIMS=[
+  {id:'physical',label:'Physical',color:'#ff6b6b'},
+  {id:'nutrition',label:'Nutrition',color:'#ff9f43'},
+  {id:'mental',label:'Mental',color:'#ffd700'},
+  {id:'sleep',label:'Sleep',color:'#00d4ff'},
+  {id:'social',label:'Social',color:'#00ff88'},
+  {id:'spiritual',label:'Spiritual',color:'#a855f7'},
+  {id:'environmental',label:'Environment',color:'#0eb5ff'},
+  {id:'financial',label:'Financial',color:'#ff69b4'}
+];
+function _injectWellWheel(){
+  if(document.getElementById('rfc-wellwheel-wrap')) return;
+  var anchor=document.getElementById('rfc-longevity-wrap')||document.getElementById('rfc-cortisol-wrap')||document.getElementById('rfc-breathwork-wrap')||document.getElementById('rfc-cold-wrap')||document.querySelector('.dash-topbar');
+  if(!anchor) return;
+  var card=_b50card('rfc-wellwheel-wrap','🎯 Wellness Wheel');
+  card.style.cssText+='border:1px solid #1a2a3a;';
+  anchor.parentNode.insertBefore(card,anchor.nextSibling);
+  _renderWellWheel();
+}
+function _renderWellWheel(){
+  var card=document.getElementById('rfc-wellwheel-wrap'); if(!card) return;
+  var uid=_b50uid();
+  var key='rfc_wellwheel_'+uid;
+  var data=_b50load(key)||{};
+  var n=WW_DIMS.length, cx=90, cy=90, maxR=80;
+  var avg=Math.round(WW_DIMS.reduce(function(a,d){ return a+(data[d.id]||5); },0)/n*10)/10;
+  var html='<div style="font-size:15px;font-weight:700;color:#00d4ff;margin-bottom:14px;">🎯 Wellness Wheel</div>';
+  html+='<div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;"><div style="font-size:13px;color:#888;">Overall Wellness Score:</div><div style="font-size:22px;font-weight:800;color:'+(avg>=7?'#00ff88':avg>=5?'#ffd700':'#ff6b6b')+';">'+avg+'/10</div></div>';
+  var svgPts=WW_DIMS.map(function(d,i){ var angle=(2*Math.PI*i/n)-(Math.PI/2); var r=((data[d.id]||5)/10)*maxR; return {x:cx+r*Math.cos(angle),y:cy+r*Math.sin(angle),lx:cx+(maxR+14)*Math.cos(angle),ly:cy+(maxR+14)*Math.sin(angle),label:d.label,color:d.color}; });
+  var polyPts=svgPts.map(function(p){ return p.x+','+p.y; }).join(' ');
+  html+='<div style="text-align:center;margin-bottom:12px;">';
+  html+='<svg width="180" height="180" viewBox="0 0 180 180">';
+  for(var ring=2;ring<=10;ring+=2){ var rr=(ring/10)*maxR; html+='<polygon points="'+WW_DIMS.map(function(d,i){ var a=(2*Math.PI*i/n)-(Math.PI/2); return (cx+rr*Math.cos(a))+','+(cy+rr*Math.sin(a)); }).join(' ')+'" fill="none" stroke="#2a2a4a" stroke-width="0.5"/>'; }
+  WW_DIMS.forEach(function(d,i){ var a=(2*Math.PI*i/n)-(Math.PI/2); html+='<line x1="'+cx+'" y1="'+cy+'" x2="'+(cx+maxR*Math.cos(a))+'" y2="'+(cy+maxR*Math.sin(a))+'" stroke="#2a2a4a" stroke-width="1"/>'; });
+  html+='<polygon points="'+polyPts+'" fill="#00d4ff22" stroke="#00d4ff" stroke-width="2"/>';
+  svgPts.forEach(function(p,i){ html+='<circle cx="'+p.x+'" cy="'+p.y+'" r="4" fill="'+p.color+'"/>'; html+='<text x="'+p.lx+'" y="'+p.ly+'" text-anchor="middle" dominant-baseline="middle" fill="'+p.color+'" font-size="9">'+p.label+'</text>'; });
+  html+='</svg></div>';
+  html+='<div style="display:grid;gap:8px;">';
+  WW_DIMS.forEach(function(d){ var val=data[d.id]||5; html+='<div><div style="display:flex;justify-content:space-between;margin-bottom:2px;"><label style="font-size:12px;color:'+d.color+';">'+d.label+'</label><strong style="font-size:12px;color:'+d.color+';">'+val+'/10</strong></div><input type="range" min="1" max="10" step="1" value="'+val+'" oninput="window._rfcWWSet(\''+d.id+'\',parseInt(this.value))" style="width:100%;accent-color:'+d.color+';"></div>'; });
+  html+='</div>';
+  card.innerHTML=html;
+}
+window._rfcWWSet=function(k,v){ var uid=_b50uid(); var key='rfc_wellwheel_'+uid; var data=_b50load(key)||{}; data[k]=v; _b50save(key,data); _renderWellWheel(); };
+
+/* ---------- MACRO CYCLING PLANNER (nutrition) ---------- */
+var MC_DAY_TYPES=[
+  {id:'training',label:'Training Day',color:'#00ff88',carbs_mult:1.3},
+  {id:'moderate',label:'Moderate Day',color:'#ffd700',carbs_mult:1.0},
+  {id:'rest',label:'Rest Day',color:'#ff9f43',carbs_mult:0.6}
+];
+var MC_DAYS=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+function _b50weekKey(){ var d=new Date(); var day=d.getDay(); var diff=d.getDate()-day+(day===0?-6:1); d.setDate(diff); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function _injectMacCycle(){
+  if(document.getElementById('rfc-maccycle50-wrap')) return;
+  var anchor=document.getElementById('rfc-callog-wrap')||document.getElementById('rfc-prosyn-wrap')||document.getElementById('rfc-rainbow-wrap')||document.getElementById('rfc-collagen-wrap')||document.querySelector('.dash-topbar');
+  if(!anchor) return;
+  var card=_b50card('rfc-maccycle50-wrap','📅 Macro Cycling Planner');
+  card.style.cssText+='border:1px solid #1a3a2a;';
+  anchor.parentNode.insertBefore(card,anchor.nextSibling);
+  _renderMacCycle();
+}
+function _renderMacCycle(){
+  var card=document.getElementById('rfc-maccycle50-wrap'); if(!card) return;
+  var uid=_b50uid(), wk=_b50weekKey();
+  var skey='rfc_maccycle_'+uid; var wkey='rfc_maccyclew_'+uid+'_'+wk;
+  var settings=_b50load(skey)||{base_protein:170,base_carbs:200,base_fat:70};
+  var week=_b50load(wkey)||{Mon:'training',Tue:'training',Wed:'moderate',Thu:'training',Fri:'moderate',Sat:'rest',Sun:'rest'};
+  var html='<div style="font-size:15px;font-weight:700;color:#00d4ff;margin-bottom:14px;">📅 Macro Cycling Planner</div>';
+  html+='<div style="font-size:12px;color:#888;margin-bottom:10px;">Set base macros (for moderate day) then cycle training/rest days automatically.</div>';
+  html+='<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px;">';
+  [['Protein (g)','base_protein'],['Carbs (g)','base_carbs'],['Fat (g)','base_fat']].forEach(function(f){ html+='<div style="background:#12122a;border-radius:8px;padding:8px;"><div style="font-size:11px;color:#888;margin-bottom:4px;">'+f[0]+'</div><input type="number" min="0" max="500" step="5" value="'+(settings[f[1]]||0)+'" onchange="window._rfcMCSet(\''+f[1]+'\',parseInt(this.value))" style="width:100%;background:transparent;border:none;border-bottom:1px solid #3a3a6a;color:#ffd700;font-size:16px;font-weight:700;text-align:center;"></div>'; });
+  html+='</div>';
+  html+='<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:12px;">';
+  MC_DAYS.forEach(function(day){ var type=week[day]||'moderate'; var dt=MC_DAY_TYPES.find(function(t){ return t.id===type; })||MC_DAY_TYPES[1]; html+='<div onclick="window._rfcMCCycleDayType(\''+day+'\')" style="cursor:pointer;background:#12122a;border:1px solid '+dt.color+';border-radius:7px;padding:5px;text-align:center;"><div style="font-size:10px;color:#888;">'+day+'</div><div style="font-size:9px;color:'+dt.color+';margin-top:2px;">'+(type==='training'?'TRAIN':type==='rest'?'REST':'MOD')+'</div></div>'; });
+  html+='</div>';
+  html+='<div style="display:grid;gap:6px;">';
+  MC_DAY_TYPES.forEach(function(dt){
+    var mult=dt.carbs_mult;
+    var p=settings.base_protein||170, c=Math.round((settings.base_carbs||200)*mult), f=Math.round((settings.base_fat||70)*(dt.id==='rest'?0.8:1));
+    var kcal=p*4+c*4+f*9;
+    html+='<div style="background:#12122a;border-left:4px solid '+dt.color+';border-radius:8px;padding:9px 12px;"><div style="font-size:12px;font-weight:700;color:'+dt.color+';margin-bottom:4px;">'+dt.label+' — '+kcal+' kcal</div><div style="font-size:12px;color:#ccc;">P: '+p+'g  C: '+c+'g  F: '+f+'g</div></div>';
+  });
+  html+='</div>';
+  card.innerHTML=html;
+}
+window._rfcMCSet=function(k,v){ var uid=_b50uid(); var skey='rfc_maccycle_'+uid; var s=_b50load(skey)||{}; s[k]=v; _b50save(skey,s); _renderMacCycle(); };
+window._rfcMCCycleDayType=function(day){ var uid=_b50uid(), wk=_b50weekKey(); var wkey='rfc_maccyclew_'+uid+'_'+wk; var w=_b50load(wkey)||{}; var cur=w[day]||'moderate'; var order=['training','moderate','rest']; var next=order[(order.indexOf(cur)+1)%3]; w[day]=next; _b50save(wkey,w); _renderMacCycle(); };
+
+/* ---------- TRAINING BLOCK TRACKER (workouts) ---------- */
+var BLOCK_PHASES=[
+  {id:'hypertrophy',label:'Hypertrophy',color:'#00d4ff',repRange:'8-15',weeks:'4-8',goal:'Muscle size'},
+  {id:'strength',label:'Strength',color:'#ffd700',repRange:'3-6',weeks:'3-6',goal:'Max strength'},
+  {id:'power',label:'Power',color:'#ff9f43',repRange:'1-5',weeks:'2-4',goal:'Explosive speed'},
+  {id:'peak',label:'Peak',color:'#ff6b6b',repRange:'1-3',weeks:'1-2',goal:'Competition prep'},
+  {id:'deload',label:'Deload',color:'#00ff88',repRange:'Any',weeks:'1',goal:'Recovery'}
+];
+function _injectBlockPlan(){
+  if(document.getElementById('rfc-blockplan-wrap')) return;
+  var anchor=document.getElementById('rfc-restimer-wrap')||document.getElementById('rfc-progover-wrap')||document.getElementById('rfc-unilat-wrap')||document.getElementById('rfc-sprint-wrap')||document.querySelector('.dash-topbar');
+  if(!anchor) return;
+  var card=_b50card('rfc-blockplan-wrap','🏗️ Training Block Tracker');
+  card.style.cssText+='border:1px solid #2a1a3a;';
+  anchor.parentNode.insertBefore(card,anchor.nextSibling);
+  _renderBlockPlan();
+}
+function _renderBlockPlan(){
+  var card=document.getElementById('rfc-blockplan-wrap'); if(!card) return;
+  var uid=_b50uid();
+  var key='rfc_blocks_'+uid;
+  var data=_b50load(key)||{current:null,history:[]};
+  var cur=data.current;
+  var html='<div style="font-size:15px;font-weight:700;color:#00d4ff;margin-bottom:14px;">🏗️ Training Block Tracker</div>';
+  if(cur){
+    var phase=BLOCK_PHASES.find(function(p){ return p.id===cur.phase; })||BLOCK_PHASES[0];
+    var daysSince=cur.startDate?Math.floor((Date.now()-new Date(cur.startDate).getTime())/86400000):0;
+    var totalDays=(cur.weeks||6)*7;
+    var pct=Math.min(100,Math.round((daysSince/totalDays)*100));
+    html+='<div style="background:#0d1a2e;border:2px solid '+phase.color+';border-radius:12px;padding:14px;margin-bottom:12px;">';
+    html+='<div style="font-size:12px;color:#888;margin-bottom:4px;">Current Block</div>';
+    html+='<div style="font-size:20px;font-weight:800;color:'+phase.color+';">'+phase.label+' Phase</div>';
+    html+='<div style="font-size:12px;color:#aaa;margin-bottom:10px;">Goal: '+phase.goal+' • Reps: '+phase.repRange+' • Week '+Math.min(cur.weeks,Math.ceil(daysSince/7)+1)+' of '+cur.weeks+'</div>';
+    html+='<div style="height:8px;background:#1a1a3a;border-radius:4px;overflow:hidden;margin-bottom:8px;"><div style="height:8px;background:'+phase.color+';width:'+pct+'%;border-radius:4px;transition:width 0.4s;"></div></div>';
+    html+='<div style="display:flex;justify-content:space-between;font-size:11px;color:#888;margin-bottom:10px;"><span>Day '+daysSince+'</span><span>'+pct+'% complete</span><span>Day '+totalDays+'</span></div>';
+    html+='<button onclick="window._rfcBPEnd()" style="width:100%;background:#ff6b6b;border:none;color:#fff;padding:7px;border-radius:7px;font-size:12px;cursor:pointer;">✅ Complete Block</button></div>';
+  } else {
+    html+='<div style="background:#12122a;border-radius:10px;padding:12px;margin-bottom:12px;">';
+    html+='<div style="font-size:12px;color:#aaa;margin-bottom:8px;">Start New Training Block:</div>';
+    html+='<div style="display:grid;gap:6px;margin-bottom:10px;">';
+    BLOCK_PHASES.forEach(function(p){ html+='<div onclick="window._rfcBPStart(\''+p.id+'\')" style="cursor:pointer;background:#0d0d20;border:1px solid '+p.color+';border-radius:8px;padding:9px 12px;display:flex;align-items:center;justify-content:space-between;"><div><div style="font-size:13px;font-weight:700;color:'+p.color+';">'+p.label+'</div><div style="font-size:11px;color:#888;">'+p.goal+' • '+p.repRange+' reps • '+p.weeks+' wk</div></div><span style="font-size:18px;color:'+p.color+';">→</span></div>'; });
+    html+='</div></div>';
+  }
+  if(data.history&&data.history.length){
+    html+='<div style="font-size:12px;color:#888;margin-bottom:6px;">Past Blocks</div>';
+    data.history.slice(-3).reverse().forEach(function(h){ var ph=BLOCK_PHASES.find(function(p){ return p.id===h.phase; })||BLOCK_PHASES[0]; html+='<div style="display:flex;justify-content:space-between;padding:6px;background:#12122a;border-radius:7px;margin-bottom:4px;"><span style="font-size:12px;color:'+ph.color+';">'+ph.label+'</span><span style="font-size:11px;color:#888;">'+h.weeks+' weeks — '+h.startDate+'</span></div>'; });
+  }
+  card.innerHTML=html;
+}
+window._rfcBPStart=function(phaseId){
+  var uid=_b50uid(); var key='rfc_blocks_'+uid; var data=_b50load(key)||{current:null,history:[]};
+  var phase=BLOCK_PHASES.find(function(p){ return p.id===phaseId; })||BLOCK_PHASES[0];
+  var wks=phaseId==='deload'?1:phaseId==='peak'?2:phaseId==='power'?3:phaseId==='strength'?4:6;
+  data.current={phase:phaseId,startDate:_b50today(),weeks:wks}; _b50save(key,data); _renderBlockPlan();
+};
+window._rfcBPEnd=function(){
+  var uid=_b50uid(); var key='rfc_blocks_'+uid; var data=_b50load(key)||{current:null,history:[]};
+  if(data.current){ data.history=data.history||[]; data.history.push(data.current); if(data.history.length>10) data.history=data.history.slice(-10); data.current=null; }
+  _b50save(key,data); _renderBlockPlan();
+};
+
+window.switchScreen=function(name,navEl){
+  _origSS48&&_origSS48(name,navEl);
+  if(name==='dashboard') setTimeout(function(){ _injectWellWheel(); _renderWellWheel(); },1200);
+  if(name==='nutrition') setTimeout(function(){ _injectMacCycle(); _renderMacCycle(); },1100);
+  if(name==='workouts')  setTimeout(function(){ _injectBlockPlan(); _renderBlockPlan(); },1050);
+};
+setTimeout(function(){ _injectWellWheel(); _injectMacCycle(); _injectBlockPlan(); },42000);
+setTimeout(function(){ if(!document.getElementById('rfc-wellwheel-wrap')) _injectWellWheel(); if(!document.getElementById('rfc-maccycle50-wrap')) _injectMacCycle(); if(!document.getElementById('rfc-blockplan-wrap')) _injectBlockPlan(); },46000);
+})();
+</script>
+
 </body>
 </html>
