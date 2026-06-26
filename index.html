@@ -24494,5 +24494,673 @@ if(_origSW4 && !_origSW4._sw4Hooked){
 })();
 </script>
 
+<!-- ═══ BATCH 8: Confetti · 1RM Calc · Food Log · Volume Chart · Water Upgrade ═══ -->
+<style>
+/* ── CONFETTI ── */
+#rfc-confetti-canvas{
+  position:fixed;inset:0;pointer-events:none;z-index:99999;
+  opacity:0;transition:opacity .3s;
+}
+#rfc-confetti-canvas.active{opacity:1;}
+
+/* ── 1RM CALCULATOR ── */
+#rfc-1rm-panel{
+  display:none;position:fixed;bottom:140px;right:16px;
+  width:270px;background:#161616;border:1px solid rgba(255,255,255,.1);
+  border-radius:16px;padding:18px;z-index:9990;
+  box-shadow:0 20px 60px rgba(0,0,0,.7);
+}
+body.rfc-light #rfc-1rm-panel{background:#fff;border-color:#ddd;box-shadow:0 20px 60px rgba(0,0,0,.15);}
+.orm-title{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;margin-bottom:12px;color:#e8001d;}
+.orm-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.orm-lbl{font-size:10px;color:rgba(255,255,255,.4);letter-spacing:1px;text-transform:uppercase;width:52px;flex-shrink:0;}
+body.rfc-light .orm-lbl{color:#888;}
+.orm-inp{flex:1;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);
+  color:#fff;border-radius:8px;padding:7px 10px;font-size:14px;font-family:'Bebas Neue',sans-serif;letter-spacing:1px;}
+body.rfc-light .orm-inp{background:#f5f5f5;border-color:#ddd;color:#111;}
+.orm-result{
+  background:linear-gradient(135deg,rgba(232,0,29,.15),rgba(232,0,29,.05));
+  border:1px solid rgba(232,0,29,.2);border-radius:10px;padding:12px;margin-top:10px;text-align:center;
+}
+.orm-val{font-family:'Bebas Neue',sans-serif;font-size:36px;color:#e8001d;letter-spacing:2px;}
+.orm-sub{font-size:10px;color:rgba(255,255,255,.3);letter-spacing:1px;text-transform:uppercase;margin-top:2px;}
+body.rfc-light .orm-sub{color:#aaa;}
+.orm-table{width:100%;border-collapse:collapse;margin-top:10px;font-size:11px;}
+.orm-table td{padding:4px 6px;border-bottom:1px solid rgba(255,255,255,.05);}
+body.rfc-light .orm-table td{border-bottom-color:#f0f0f0;}
+.orm-table td:first-child{color:rgba(255,255,255,.3);}
+body.rfc-light .orm-table td:first-child{color:#888;}
+.orm-table td:last-child{color:#f59e0b;font-family:'Bebas Neue',sans-serif;letter-spacing:1px;}
+.orm-close-btn{position:absolute;top:10px;right:12px;background:none;border:none;color:rgba(255,255,255,.3);font-size:18px;cursor:pointer;line-height:1;}
+body.rfc-light .orm-close-btn{color:#bbb;}
+#rfc-1rm-btn{
+  position:fixed;bottom:84px;right:16px;background:#1a1a1a;
+  border:1px solid rgba(232,0,29,.3);color:#e8001d;border-radius:50%;
+  width:46px;height:46px;font-size:19px;cursor:pointer;z-index:9989;
+  box-shadow:0 4px 18px rgba(0,0,0,.5);transition:transform .15s,box-shadow .15s;
+  display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;
+  letter-spacing:0;
+}
+body.rfc-light #rfc-1rm-btn{background:#fff;}
+#rfc-1rm-btn:hover{transform:scale(1.08);box-shadow:0 6px 24px rgba(232,0,29,.4);}
+#rfc-1rm-btn.active-1rm{background:rgba(232,0,29,.2);}
+
+/* ── FOOD QUICK-LOG ── */
+#rfc-food-wrap{
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);
+  border-radius:14px;padding:16px;margin:16px 0;
+}
+body.rfc-light #rfc-food-wrap{background:#fff;border-color:#eee;}
+.food-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+.food-title{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.4);}
+body.rfc-light .food-title{color:#888;}
+.food-date{font-size:10px;color:rgba(255,255,255,.25);letter-spacing:1px;}
+body.rfc-light .food-date{color:#aaa;}
+.food-macro-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:12px;}
+.food-macro-card{
+  background:rgba(255,255,255,.04);border-radius:8px;padding:8px;text-align:center;
+}
+body.rfc-light .food-macro-card{background:#f5f5f5;}
+.food-macro-val{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1px;}
+.food-macro-lbl{font-size:9px;color:rgba(255,255,255,.3);letter-spacing:1px;text-transform:uppercase;margin-top:1px;}
+body.rfc-light .food-macro-lbl{color:#aaa;}
+.food-input-row{display:flex;gap:6px;margin-bottom:10px;}
+.food-name-inp{flex:2;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);
+  color:#fff;border-radius:8px;padding:8px 10px;font-size:12px;}
+body.rfc-light .food-name-inp{background:#f5f5f5;border-color:#ddd;color:#111;}
+.food-cal-inp{flex:1;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);
+  color:#fff;border-radius:8px;padding:8px 10px;font-size:12px;text-align:center;}
+body.rfc-light .food-cal-inp{background:#f5f5f5;border-color:#ddd;color:#111;}
+.food-add-btn{
+  background:rgba(232,0,29,.2);border:1px solid rgba(232,0,29,.3);color:#e8001d;
+  border-radius:8px;padding:8px 14px;font-size:12px;cursor:pointer;font-family:'Bebas Neue',sans-serif;
+  letter-spacing:1px;transition:background .2s;white-space:nowrap;
+}
+.food-add-btn:hover{background:rgba(232,0,29,.35);}
+.food-list{display:flex;flex-direction:column;gap:5px;max-height:150px;overflow-y:auto;}
+.food-item{display:flex;justify-content:space-between;align-items:center;
+  padding:6px 8px;background:rgba(255,255,255,.03);border-radius:7px;font-size:11px;}
+body.rfc-light .food-item{background:#f8f8f8;}
+.food-item-name{color:rgba(255,255,255,.7);flex:1;}
+body.rfc-light .food-item-name{color:#444;}
+.food-item-cal{font-family:'Bebas Neue',sans-serif;font-size:13px;color:#f59e0b;letter-spacing:1px;margin-left:8px;}
+.food-item-del{background:none;border:none;color:rgba(255,255,255,.2);cursor:pointer;font-size:14px;padding:0 4px;}
+body.rfc-light .food-item-del{color:#ccc;}
+.food-item-del:hover{color:#e8001d;}
+.food-progress-row{display:flex;align-items:center;gap:8px;margin-top:10px;}
+.food-progress-bg{flex:1;height:6px;background:rgba(255,255,255,.08);border-radius:3px;overflow:hidden;}
+body.rfc-light .food-progress-bg{background:#eee;}
+.food-progress-fill{height:100%;border-radius:3px;transition:width .4s;}
+.food-progress-lbl{font-size:10px;color:rgba(255,255,255,.3);white-space:nowrap;}
+body.rfc-light .food-progress-lbl{color:#aaa;}
+
+/* ── VOLUME CHART ── */
+#rfc-vol-wrap{
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);
+  border-radius:14px;padding:16px;margin:16px 0;
+}
+body.rfc-light #rfc-vol-wrap{background:#fff;border-color:#eee;}
+.vol-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
+.vol-title{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.4);}
+body.rfc-light .vol-title{color:#888;}
+.vol-period{font-size:10px;color:rgba(255,255,255,.25);letter-spacing:1px;}
+body.rfc-light .vol-period{color:#aaa;}
+.vol-chart{display:flex;align-items:flex-end;gap:6px;height:90px;}
+.vol-bar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;}
+.vol-bar{
+  width:100%;background:linear-gradient(to top,rgba(232,0,29,.8),rgba(232,0,29,.3));
+  border-radius:4px 4px 0 0;min-height:4px;transition:height .5s cubic-bezier(.34,1.56,.64,1);
+  position:relative;
+}
+.vol-bar:hover::after{
+  content:attr(data-tip);position:absolute;bottom:calc(100% + 4px);left:50%;
+  transform:translateX(-50%);background:#111;color:#fff;font-size:9px;
+  padding:3px 7px;border-radius:4px;white-space:nowrap;pointer-events:none;z-index:2;
+}
+body.rfc-light .vol-bar:hover::after{background:#333;}
+.vol-bar-lbl{font-size:8px;color:rgba(255,255,255,.3);letter-spacing:.5px;text-align:center;text-transform:uppercase;}
+body.rfc-light .vol-bar-lbl{color:#aaa;}
+.vol-empty{text-align:center;font-size:11px;color:rgba(255,255,255,.2);padding:20px 0;}
+body.rfc-light .vol-empty{color:#ccc;}
+
+/* ── ENHANCED WATER BOTTLE ── */
+#rfc-water-bottle{display:block;margin:10px auto 0;overflow:visible;}
+.water-wave-path{transition:d .6s ease;}
+
+/* ── WATER UPGRADE on dashboard ── */
+#rfc-water-ring-wrap{text-align:center;margin:8px 0 12px;}
+#rfc-water-ring-svg{display:inline-block;}
+
+/* ── STREAK CELEBRATION ── */
+.rfc-celeb-toast{
+  position:fixed;top:80px;left:50%;transform:translateX(-50%) translateY(-120%);
+  background:linear-gradient(135deg,#f59e0b,#e8001d);color:#fff;
+  font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:3px;
+  padding:14px 28px;border-radius:14px;z-index:99998;
+  box-shadow:0 8px 32px rgba(0,0,0,.5);transition:transform .4s cubic-bezier(.34,1.56,.64,1);
+  text-align:center;max-width:280px;
+}
+.rfc-celeb-toast.show{transform:translateX(-50%) translateY(0);}
+</style>
+
+<script>
+(function(){
+'use strict';
+
+/* ════════════════════════════════════
+   1. CONFETTI ENGINE
+════════════════════════════════════ */
+var _cnv = document.createElement('canvas');
+_cnv.id = 'rfc-confetti-canvas';
+document.body.appendChild(_cnv);
+var _ctx = _cnv.getContext('2d');
+
+var _particles = [];
+var _animId = null;
+
+var COLORS = ['#e8001d','#f59e0b','#ffffff','#3b82f6','#10b981','#a78bfa'];
+
+function _resizeCanvas(){
+  _cnv.width = window.innerWidth;
+  _cnv.height = window.innerHeight;
+}
+_resizeCanvas();
+window.addEventListener('resize', _resizeCanvas);
+
+function _launchConfetti(count){
+  _resizeCanvas();
+  _particles = [];
+  for(var i = 0; i < (count || 80); i++){
+    _particles.push({
+      x: Math.random() * _cnv.width,
+      y: -10 - Math.random() * 100,
+      w: 6 + Math.random() * 6,
+      h: 4 + Math.random() * 4,
+      color: COLORS[Math.floor(Math.random() * COLORS.length)],
+      rot: Math.random() * Math.PI * 2,
+      rotV: (Math.random() - 0.5) * 0.15,
+      vx: (Math.random() - 0.5) * 4,
+      vy: 2 + Math.random() * 3,
+      alpha: 1,
+    });
+  }
+  _cnv.classList.add('active');
+  if(_animId) cancelAnimationFrame(_animId);
+  _tick();
+  setTimeout(function(){
+    _cnv.classList.remove('active');
+    _particles = [];
+    if(_animId) cancelAnimationFrame(_animId);
+    _animId = null;
+  }, 3500);
+}
+
+function _tick(){
+  _ctx.clearRect(0, 0, _cnv.width, _cnv.height);
+  _particles.forEach(function(p){
+    p.y += p.vy;
+    p.x += p.vx;
+    p.rot += p.rotV;
+    p.vy += 0.04; // gravity
+    if(p.y > _cnv.height - 60) p.alpha -= 0.03;
+    _ctx.save();
+    _ctx.globalAlpha = Math.max(0, p.alpha);
+    _ctx.translate(p.x, p.y);
+    _ctx.rotate(p.rot);
+    _ctx.fillStyle = p.color;
+    _ctx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
+    _ctx.restore();
+  });
+  _particles = _particles.filter(function(p){ return p.alpha > 0; });
+  if(_particles.length) _animId = requestAnimationFrame(_tick);
+}
+
+window.rfcConfetti = _launchConfetti;
+
+/* celebration toast */
+function _celebToast(msg){
+  var t = document.createElement('div');
+  t.className = 'rfc-celeb-toast';
+  t.textContent = msg;
+  document.body.appendChild(t);
+  requestAnimationFrame(function(){
+    requestAnimationFrame(function(){ t.classList.add('show'); });
+  });
+  setTimeout(function(){
+    t.classList.remove('show');
+    setTimeout(function(){ t.parentNode && t.parentNode.removeChild(t); }, 500);
+  }, 3200);
+}
+
+window.rfcCelebrate = function(msg, count){
+  _launchConfetti(count || 80);
+  _celebToast(msg || '🎉 ACHIEVEMENT UNLOCKED!');
+};
+
+// Hook into PR detection
+var _origSWConf = window.saveWorkout;
+if(_origSWConf && !_origSWConf._confHooked){
+  window.saveWorkout = function(){
+    var prsBefore = Object.keys(JSON.parse(localStorage.getItem('rfc_prs_' + ((window.user && window.user.uid) || 'guest')) || '{}')).length;
+    var r = _origSWConf.apply(this, arguments);
+    setTimeout(function(){
+      var prsAfter = Object.keys(JSON.parse(localStorage.getItem('rfc_prs_' + ((window.user && window.user.uid) || 'guest')) || '{}')).length;
+      if(prsAfter > prsBefore) rfcCelebrate('🏆 NEW PERSONAL RECORD!', 100);
+    }, 500);
+    return r;
+  };
+  window.saveWorkout._confHooked = true;
+}
+
+/* ════════════════════════════════════
+   2. ONE-REP MAX CALCULATOR
+════════════════════════════════════ */
+// Brzycki formula: 1RM = weight / (1.0278 − 0.0278 × reps)
+function _calc1RM(kg, reps){
+  if(reps <= 0 || reps > 30 || kg <= 0) return 0;
+  if(reps === 1) return kg;
+  return Math.round(kg / (1.0278 - 0.0278 * reps));
+}
+
+function _inject1RM(){
+  if(document.getElementById('rfc-1rm-btn')) return;
+
+  var btn = document.createElement('button');
+  btn.id = 'rfc-1rm-btn';
+  btn.title = '1RM Calculator';
+  btn.innerHTML = '1RM';
+  btn.setAttribute('aria-label', 'One Rep Max Calculator');
+  document.body.appendChild(btn);
+
+  var panel = document.createElement('div');
+  panel.id = 'rfc-1rm-panel';
+  panel.innerHTML = '<button class="orm-close-btn" onclick="this.closest(\'#rfc-1rm-panel\').style.display=\'none\'">✕</button>'
+    + '<div class="orm-title">1RM Calculator</div>'
+    + '<div class="orm-row"><div class="orm-lbl">Weight</div><input class="orm-inp" id="orm-kg" type="number" placeholder="kg" min="1" oninput="window._orm_update()"></div>'
+    + '<div class="orm-row"><div class="orm-lbl">Reps</div><input class="orm-inp" id="orm-reps" type="number" placeholder="reps" min="1" max="30" oninput="window._orm_update()"></div>'
+    + '<div class="orm-result" id="orm-result" style="display:none;">'
+    + '<div class="orm-val" id="orm-val">--</div><div class="orm-sub">Estimated 1RM (Brzycki)</div>'
+    + '<table class="orm-table" id="orm-pct-table"></table>'
+    + '</div>';
+  document.body.appendChild(panel);
+
+  btn.addEventListener('click', function(){
+    var p = document.getElementById('rfc-1rm-panel');
+    var showing = p.style.display === 'block';
+    p.style.display = showing ? 'none' : 'block';
+    btn.classList.toggle('active-1rm', !showing);
+    if(!showing) document.getElementById('orm-kg').focus();
+  });
+}
+
+window._orm_update = function(){
+  var kg = parseFloat(document.getElementById('orm-kg').value) || 0;
+  var reps = parseInt(document.getElementById('orm-reps').value) || 0;
+  var result = document.getElementById('orm-result');
+  if(kg <= 0 || reps <= 0){ result.style.display = 'none'; return; }
+  var orm = _calc1RM(kg, reps);
+  document.getElementById('orm-val').textContent = orm + ' kg';
+  result.style.display = 'block';
+  var pcts = [
+    {p:100,l:'1 Rep (Max)'},
+    {p:90, l:'3 Reps'},
+    {p:80, l:'5 Reps'},
+    {p:70, l:'8 Reps'},
+    {p:60, l:'12 Reps'},
+  ];
+  var tbl = document.getElementById('orm-pct-table');
+  tbl.innerHTML = pcts.map(function(r){
+    return '<tr><td>'+r.l+'</td><td>'+Math.round(orm * r.p / 100)+' kg</td></tr>';
+  }).join('');
+};
+
+// Show 1RM button on workouts screen
+var _origSS5 = window.switchScreen;
+window.switchScreen = function(name, navEl){
+  _origSS5 && _origSS5(name, navEl);
+  var btn = document.getElementById('rfc-1rm-btn');
+  if(btn) btn.style.display = (name === 'workouts') ? 'flex' : 'none';
+  if(name === 'workouts' && !document.getElementById('rfc-1rm-btn')){
+    _inject1RM();
+  }
+};
+
+setTimeout(function(){
+  _inject1RM();
+  var wlSection = document.getElementById('workoutlog');
+  var btn = document.getElementById('rfc-1rm-btn');
+  if(btn) btn.style.display = (wlSection && wlSection.style.display !== 'none') ? 'flex' : 'none';
+}, 800);
+
+/* ════════════════════════════════════
+   3. FOOD QUICK-LOG
+════════════════════════════════════ */
+var FOOD_KEY = 'rfc_food_';
+function _foodKey(){
+  var d = new Date(); var ds = d.toISOString().split('T')[0];
+  return FOOD_KEY + ((window.user && window.user.uid) || 'guest') + '_' + ds;
+}
+function _getFoods(){ return JSON.parse(localStorage.getItem(_foodKey()) || '[]'); }
+function _saveFoods(arr){ localStorage.setItem(_foodKey(), JSON.stringify(arr)); }
+
+// Common foods DB (name → {cal, p, c, f})
+var FOOD_DB = {
+  'rice':         {cal:206,p:4,c:45,f:0},
+  'chicken':      {cal:165,p:31,c:0,f:4},
+  'egg':          {cal:77, p:6,c:1,f:5},
+  'banana':       {cal:89, p:1,c:23,f:0},
+  'whey protein': {cal:120,p:25,c:3,f:2},
+  'oats':         {cal:150,p:5,c:27,f:3},
+  'bread':        {cal:79, p:3,c:15,f:1},
+  'milk':         {cal:61, p:3,c:5,f:3},
+  'peanut butter':{cal:190,p:8,c:6,f:16},
+  'almonds':      {cal:164,p:6,c:6,f:14},
+  'paneer':       {cal:265,p:18,c:2,f:21},
+  'dal':          {cal:116,p:9,c:20,f:1},
+  'salmon':       {cal:208,p:20,c:0,f:13},
+  'sweet potato': {cal:86, p:2,c:20,f:0},
+  'apple':        {cal:52, p:0,c:14,f:0},
+};
+
+function _foodTotals(){
+  return _getFoods().reduce(function(t,f){ return {
+    cal: t.cal + (f.cal||0),
+    p:   t.p   + (f.p  ||0),
+    c:   t.c   + (f.c  ||0),
+    fat: t.fat + (f.fat||0),
+  };}, {cal:0, p:0, c:0, fat:0});
+}
+
+function _renderFoodLog(){
+  var list = document.getElementById('rfc-food-list');
+  if(!list) return;
+  var foods = _getFoods();
+  var totals = _foodTotals();
+  var target = window.lastRes ? window.lastRes.targetCals : 2000;
+
+  // Update macro cards
+  var els = {cal:'#rfc-food-kcal',p:'#rfc-food-prot',c:'#rfc-food-carb',fat:'#rfc-food-fat'};
+  ['cal','p','c','fat'].forEach(function(k){
+    var el = document.querySelector(els[k]);
+    if(el) el.textContent = Math.round(totals[k]);
+  });
+
+  // Progress bar
+  var fill = document.getElementById('rfc-food-prog-fill');
+  var lbl = document.getElementById('rfc-food-prog-lbl');
+  if(fill){
+    var pct = Math.min(100, (totals.cal / target) * 100);
+    fill.style.width = pct + '%';
+    fill.style.background = pct > 100 ? '#e8001d' : pct > 75 ? '#f59e0b' : '#10b981';
+  }
+  if(lbl) lbl.textContent = Math.round(totals.cal) + ' / ' + target + ' kcal';
+
+  // Food list
+  list.innerHTML = '';
+  foods.forEach(function(f, idx){
+    var item = document.createElement('div');
+    item.className = 'food-item';
+    item.innerHTML = '<div class="food-item-name">'+f.name+'</div>'
+      + '<div class="food-item-cal">'+f.cal+' cal</div>'
+      + '<button class="food-item-del" onclick="window._rfcDelFood('+idx+')">✕</button>';
+    list.appendChild(item);
+  });
+  if(!foods.length){
+    list.innerHTML = '<div style="text-align:center;font-size:11px;color:rgba(255,255,255,.2);padding:10px;">No meals logged yet</div>';
+  }
+}
+
+window._rfcDelFood = function(idx){
+  var arr = _getFoods();
+  arr.splice(idx, 1);
+  _saveFoods(arr);
+  _renderFoodLog();
+};
+
+window._rfcAddFood = function(){
+  var nameEl = document.getElementById('rfc-food-name');
+  var calEl  = document.getElementById('rfc-food-cal');
+  var name = (nameEl ? nameEl.value.trim() : '');
+  var cal  = parseInt(calEl ? calEl.value : 0) || 0;
+  if(!name || cal <= 0) return;
+
+  // Look up macros from DB
+  var db = FOOD_DB[name.toLowerCase()] || {};
+  var arr = _getFoods();
+  arr.push({
+    name: name,
+    cal:  db.cal || cal,
+    p:    db.p   || 0,
+    c:    db.c   || 0,
+    fat:  db.fat || 0,
+  });
+  _saveFoods(arr);
+  if(nameEl) nameEl.value = '';
+  if(calEl)  calEl.value  = '';
+  _renderFoodLog();
+};
+
+window._rfcFoodNameInput = function(el){
+  var v = el.value.toLowerCase();
+  var calEl = document.getElementById('rfc-food-cal');
+  var db = FOOD_DB[v];
+  if(db && calEl && !calEl.value) calEl.value = db.cal;
+};
+
+function _injectFoodLog(){
+  var anchor = document.getElementById('rfc-badges-wrap') || document.getElementById('rfc-split-wrap') || document.getElementById('rfc-heatmap-wrap');
+  if(!anchor) return;
+  if(document.getElementById('rfc-food-wrap')) return;
+
+  var today = new Date().toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short'});
+  var wrap = document.createElement('div');
+  wrap.id = 'rfc-food-wrap';
+  wrap.innerHTML = '<div class="food-header"><div class="food-title">Food Log</div><div class="food-date">'+today+'</div></div>'
+    + '<div class="food-macro-bar">'
+    + '<div class="food-macro-card"><div class="food-macro-val" id="rfc-food-kcal" style="color:#e8001d;">0</div><div class="food-macro-lbl">kcal</div></div>'
+    + '<div class="food-macro-card"><div class="food-macro-val" id="rfc-food-prot" style="color:#f59e0b;">0</div><div class="food-macro-lbl">prot g</div></div>'
+    + '<div class="food-macro-card"><div class="food-macro-val" id="rfc-food-carb" style="color:#3b82f6;">0</div><div class="food-macro-lbl">carb g</div></div>'
+    + '<div class="food-macro-card"><div class="food-macro-val" id="rfc-food-fat" style="color:#10b981;">0</div><div class="food-macro-lbl">fat g</div></div>'
+    + '</div>'
+    + '<div class="food-input-row">'
+    + '<input id="rfc-food-name" class="food-name-inp" placeholder="Food name (e.g. chicken)" list="rfc-food-suggestions" oninput="window._rfcFoodNameInput(this)">'
+    + '<datalist id="rfc-food-suggestions">'
+    + Object.keys(FOOD_DB).map(function(k){ return '<option value="'+k+'">'; }).join('')
+    + '</datalist>'
+    + '<input id="rfc-food-cal" class="food-cal-inp" type="number" placeholder="Cal" min="1">'
+    + '<button class="food-add-btn" onclick="window._rfcAddFood()">+ ADD</button>'
+    + '</div>'
+    + '<div class="food-list" id="rfc-food-list"></div>'
+    + '<div class="food-progress-row">'
+    + '<div class="food-progress-bg"><div class="food-progress-fill" id="rfc-food-prog-fill" style="width:0%"></div></div>'
+    + '<div class="food-progress-lbl" id="rfc-food-prog-lbl">0 / 2000 kcal</div>'
+    + '</div>';
+
+  anchor.parentNode.insertBefore(wrap, anchor.nextSibling);
+  _renderFoodLog();
+}
+
+/* ════════════════════════════════════
+   4. WEEKLY VOLUME BAR CHART
+════════════════════════════════════ */
+var VOL_MUSCLES = ['chest','back','shoulders','biceps','triceps','abs','quads','hams','glutes','calves'];
+var VOL_LABELS  = ['CH',   'BK',  'SH',       'BI',    'TRI',   'AB', 'QU',  'HA',  'GL',   'CA'];
+var VOL_COLORS  = ['#e8001d','#3b82f6','#8b5cf6','#f59e0b','#ec4899','#10b981','#06b6d4','#f97316','#a78bfa','#34d399'];
+
+var EX_MUS2 = {
+  'Bench Press':'chest','Incline Press':'chest','Push-Up':'chest','Dumbbell Fly':'chest','Chest Press':'chest','Cable Fly':'chest','Dips':'chest',
+  'Pull-Up':'back','Lat Pulldown':'back','Bent-Over Row':'back','Seated Row':'back','Deadlift':'back','Cable Row':'back','Face Pull':'back',
+  'Overhead Press':'shoulders','Lateral Raise':'shoulders','Front Raise':'shoulders','Arnold Press':'shoulders','OHP':'shoulders',
+  'Bicep Curl':'biceps','Hammer Curl':'biceps','Preacher Curl':'biceps','Barbell Curl':'biceps',
+  'Tricep Dip':'triceps','Skull Crusher':'triceps','Tricep Pushdown':'triceps',
+  'Plank':'abs','Crunch':'abs','Leg Raise':'abs','Russian Twist':'abs','Ab Wheel':'abs',
+  'Squat':'quads','Leg Press':'quads','Lunge':'quads','Leg Extension':'quads',
+  'Romanian Deadlift':'hams','RDL':'hams','Leg Curl':'hams','Nordic Curl':'hams','Nordic Curl':'hams',
+  'Hip Thrust':'glutes','Glute Bridge':'glutes',
+  'Calf Raise':'calves','Standing Calf Raise':'calves',
+};
+
+function _getVolumeData(){
+  var uid = (window.user && window.user.uid) || 'guest';
+  var logs = JSON.parse(localStorage.getItem('rfc_workouts_'+uid) || '[]');
+  var cutoff = Date.now() - 7 * 86400000;
+  var vol = {};
+  VOL_MUSCLES.forEach(function(m){ vol[m] = 0; });
+  logs.filter(function(l){ return new Date(l.date).getTime() >= cutoff; })
+    .forEach(function(log){
+      (log.exercises||[]).forEach(function(ex){
+        var m = EX_MUS2[(ex.name||'').trim()];
+        if(m) vol[m] = (vol[m]||0) + ((ex.sets||1) * (ex.reps||1));
+      });
+    });
+  return vol;
+}
+
+function _renderVolumeChart(){
+  var chart = document.getElementById('rfc-vol-chart');
+  if(!chart) return;
+  var vol = _getVolumeData();
+  var maxVol = Math.max.apply(null, Object.values(vol).concat([1]));
+  chart.innerHTML = '';
+  VOL_MUSCLES.forEach(function(m, i){
+    var v = vol[m] || 0;
+    var pct = maxVol > 0 ? (v / maxVol) * 100 : 0;
+    var barWrap = document.createElement('div');
+    barWrap.className = 'vol-bar-wrap';
+    var bar = document.createElement('div');
+    bar.className = 'vol-bar';
+    bar.style.height = '0px';
+    bar.style.background = 'linear-gradient(to top,'+VOL_COLORS[i]+','+VOL_COLORS[i]+'55)';
+    bar.setAttribute('data-tip', VOL_LABELS[i]+': '+v+' reps');
+    var lbl = document.createElement('div');
+    lbl.className = 'vol-bar-lbl';
+    lbl.textContent = VOL_LABELS[i];
+    barWrap.appendChild(bar);
+    barWrap.appendChild(lbl);
+    chart.appendChild(barWrap);
+    // Animate in
+    setTimeout(function(){ bar.style.height = Math.max(4, pct * 0.9) + 'px'; }, 50 + i * 30);
+  });
+  if(maxVol <= 0){
+    chart.innerHTML = '<div class="vol-empty">Log workouts to see volume breakdown</div>';
+  }
+}
+
+function _injectVolumeChart(){
+  var anchor = document.getElementById('rfc-food-wrap') || document.getElementById('rfc-badges-wrap') || document.getElementById('rfc-heatmap-wrap');
+  if(!anchor) return;
+  if(document.getElementById('rfc-vol-wrap')) return;
+
+  var wrap = document.createElement('div');
+  wrap.id = 'rfc-vol-wrap';
+  wrap.innerHTML = '<div class="vol-header"><div class="vol-title">Weekly Volume</div><div class="vol-period">Sets × Reps per Muscle</div></div>'
+    + '<div class="vol-chart" id="rfc-vol-chart"></div>';
+  anchor.parentNode.insertBefore(wrap, anchor.nextSibling);
+  _renderVolumeChart();
+}
+
+/* ════════════════════════════════════
+   5. ENHANCED WATER RING on Dashboard
+════════════════════════════════════ */
+function _injectWaterRing(){
+  var waterCard = document.getElementById('water-card');
+  if(!waterCard || document.getElementById('rfc-water-ring-wrap')) return;
+
+  var ringWrap = document.createElement('div');
+  ringWrap.id = 'rfc-water-ring-wrap';
+  var SIZE = 100, R = 40, CX = 50, CY = 50;
+  var circ = 2 * Math.PI * R;
+  ringWrap.innerHTML = '<svg id="rfc-water-ring-svg" viewBox="0 0 100 100" width="'+SIZE+'" height="'+SIZE+'">'
+    + '<circle cx="'+CX+'" cy="'+CY+'" r="'+R+'" fill="none" stroke="rgba(255,255,255,.06)" stroke-width="8"/>'
+    + '<circle id="rfc-wr-fill" cx="'+CX+'" cy="'+CY+'" r="'+R+'" fill="none"'
+    + ' stroke="url(#rfc-wr-grad)" stroke-width="8" stroke-linecap="round"'
+    + ' stroke-dasharray="'+circ.toFixed(1)+' '+circ.toFixed(1)+'"'
+    + ' stroke-dashoffset="'+circ.toFixed(1)+'"'
+    + ' transform="rotate(-90 '+CX+' '+CY+')" style="transition:stroke-dashoffset .7s ease;"/>'
+    + '<defs><linearGradient id="rfc-wr-grad" x1="0%" y1="0%" x2="100%" y2="0%">'
+    + '<stop offset="0%" stop-color="#0284c7"/><stop offset="100%" stop-color="#38bdf8"/>'
+    + '</linearGradient></defs>'
+    + '<text x="'+CX+'" y="'+(CY+5)+'" text-anchor="middle" font-family="Bebas Neue,sans-serif" font-size="16" id="rfc-wr-pct" fill="#38bdf8">0%</text>'
+    + '</svg>';
+
+  // Insert before the ml display
+  var mlDisplay = waterCard.querySelector('#water-ml');
+  if(mlDisplay){
+    waterCard.insertBefore(ringWrap, mlDisplay.parentNode);
+  } else {
+    waterCard.insertBefore(ringWrap, waterCard.firstChild);
+  }
+
+  // Hook into logWater if available
+  var _origLW = window.logWater;
+  if(_origLW && !_origLW._ringHooked){
+    window.logWater = function(amt){
+      var r = _origLW.apply(this, arguments);
+      setTimeout(_updateWaterRing, 100);
+      return r;
+    };
+    window.logWater._ringHooked = true;
+  }
+  _updateWaterRing();
+}
+
+function _updateWaterRing(){
+  var mlEl = document.getElementById('water-ml');
+  var fillEl = document.getElementById('rfc-wr-fill');
+  var pctEl  = document.getElementById('rfc-wr-pct');
+  if(!fillEl || !pctEl) return;
+  var ml = parseInt(mlEl ? mlEl.textContent : 0) || 0;
+  var goal = 2500;
+  var pct = Math.min(100, ml / goal * 100);
+  var circ = 2 * Math.PI * 40;
+  var offset = circ * (1 - pct / 100);
+  fillEl.setAttribute('stroke-dashoffset', offset.toFixed(1));
+  pctEl.textContent = Math.round(pct) + '%';
+}
+
+/* ════════════════════════════════════
+   Wire everything up
+════════════════════════════════════ */
+var _origSS6 = window.switchScreen;
+window.switchScreen = function(name, navEl){
+  _origSS6 && _origSS6(name, navEl);
+  if(name === 'workouts'){
+    setTimeout(function(){
+      _injectFoodLog();
+      _injectVolumeChart();
+    }, 500);
+  }
+  if(name === 'dashboard'){
+    setTimeout(_injectWaterRing, 400);
+  }
+};
+
+// On saveWorkout: refresh food, volume
+var _origSW5 = window.saveWorkout;
+if(_origSW5 && !_origSW5._sw5Hooked){
+  window.saveWorkout = function(){
+    var r = _origSW5.apply(this, arguments);
+    setTimeout(function(){
+      _renderVolumeChart();
+    }, 600);
+    return r;
+  };
+  window.saveWorkout._sw5Hooked = true;
+}
+
+// Initial pass for whichever screen is active
+setTimeout(function(){
+  _injectWaterRing();
+  // Inject workout widgets if already on workouts
+  var wl = document.getElementById('workoutlog');
+  if(wl && wl.style.display !== 'none'){
+    _injectFoodLog();
+    _injectVolumeChart();
+  }
+}, 2500);
+
+})();
+</script>
+
 </body>
 </html>
