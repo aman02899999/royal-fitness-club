@@ -39380,5 +39380,179 @@ setTimeout(function(){ if(!document.getElementById('rfc-metage-wrap')) _injectMe
 })();
 </script>
 
+<script>
+/* ===== BATCH 54: Energy Drain Audit | Alcohol & Recovery | Peak Performance Times ===== */
+(function(){ 'use strict';
+var _origSS52=window.switchScreen;
+function _b54uid(){ try{ return JSON.parse(localStorage.getItem('bm_user')||'{}').uid||'guest'; }catch(e){ return 'guest'; } }
+function _b54today(){ var d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function _b54load(k){ try{ return JSON.parse(localStorage.getItem(k))||null; }catch(e){ return null; } }
+function _b54save(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} }
+function _b54card(id,title){ var d=document.createElement('div'); d.id=id; d.style.cssText='background:#1a1a2e;border-radius:14px;padding:18px;margin:14px 0;color:#e0e0e0;font-family:inherit;'; d.innerHTML='<div style="font-size:15px;font-weight:700;color:#00d4ff;margin-bottom:14px;">'+title+'</div>'; return d; }
+
+/* ---------- ENERGY DRAIN AUDIT (dashboard) ---------- */
+var ENERGY_DRAINS=[
+  {id:'screen',label:'Excessive screen/social media',icon:'📱'},
+  {id:'poor_sleep_e',label:'Poor sleep last night',icon:'😴'},
+  {id:'sedentary',label:'Sedentary for most of day',icon:'🪑'},
+  {id:'poor_food',label:'Poor nutrition choices',icon:'🍔'},
+  {id:'stress_e',label:'High work/life stress',icon:'😤'},
+  {id:'neg_relations',label:'Toxic interactions',icon:'😠'},
+  {id:'overthinking',label:'Overthinking/rumination',icon:'🧠'},
+  {id:'decision',label:'Decision fatigue',icon:'🎲'},
+  {id:'noise',label:'Noise/environmental chaos',icon:'🔊'},
+  {id:'dehydration',label:'Dehydration',icon:'💧'}
+];
+var SEV_LABELS=['None','Mild','Mod','Severe'];
+var SEV_COLORS=['#00ff88','#ffd700','#ff9f43','#ff6b6b'];
+function _injectEnergyDrain(){
+  if(document.getElementById('rfc-energydrain-wrap')) return;
+  var anchor=document.getElementById('rfc-metage-wrap')||document.getElementById('rfc-wins-wrap')||document.getElementById('rfc-hormone-wrap')||document.getElementById('rfc-wellwheel-wrap')||document.querySelector('.dash-topbar');
+  if(!anchor) return;
+  var card=_b54card('rfc-energydrain-wrap','⚡ Energy Drain Audit');
+  card.style.cssText+='border:1px solid #2a1a00;';
+  anchor.parentNode.insertBefore(card,anchor.nextSibling);
+  _renderEnergyDrain();
+}
+function _renderEnergyDrain(){
+  var card=document.getElementById('rfc-energydrain-wrap'); if(!card) return;
+  var uid=_b54uid(), today=_b54today();
+  var key='rfc_energydrain_'+uid+'_'+today;
+  var data=_b54load(key)||{};
+  var totalDrain=ENERGY_DRAINS.reduce(function(a,d){ return a+(data[d.id]||0); },0);
+  var maxDrain=ENERGY_DRAINS.length*3;
+  var drainPct=Math.round((totalDrain/maxDrain)*100);
+  var dc=drainPct<=20?'#00ff88':drainPct<=45?'#ffd700':drainPct<=70?'#ff9f43':'#ff6b6b';
+  var topDrains=ENERGY_DRAINS.filter(function(d){ return (data[d.id]||0)>=2; }).sort(function(a,b){ return (data[b.id]||0)-(data[a.id]||0); }).slice(0,3);
+  var html='<div style="font-size:15px;font-weight:700;color:#00d4ff;margin-bottom:14px;">⚡ Energy Drain Audit</div>';
+  html+='<div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">';
+  html+='<div style="font-size:36px;font-weight:800;color:'+dc+';">'+drainPct+'%</div>';
+  html+='<div><div style="font-size:14px;font-weight:700;color:'+dc+';">'+(drainPct<=20?'High Energy':drainPct<=45?'Moderate Drain':drainPct<=70?'High Drain':'Severe Drain')+'</div><div style="font-size:11px;color:#888;">'+totalDrain+'/'+maxDrain+' drain points</div></div></div>';
+  if(topDrains.length){ html+='<div style="background:#2a0d0d;border-radius:8px;padding:10px;margin-bottom:12px;"><div style="font-size:11px;color:#ff6b6b;font-weight:700;margin-bottom:6px;">Top Drains to Address:</div>'; topDrains.forEach(function(d){ html+='<div style="font-size:12px;color:#ff9f43;margin-bottom:3px;">'+d.icon+' '+d.label+' ('+SEV_LABELS[data[d.id]||0]+')</div>'; }); html+='</div>'; }
+  ENERGY_DRAINS.forEach(function(d){
+    var sev=data[d.id]||0;
+    html+='<div style="background:#12122a;border-radius:9px;padding:9px 12px;margin-bottom:6px;">';
+    html+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:5px;"><span style="font-size:15px;">'+d.icon+'</span><span style="flex:1;font-size:12px;color:#ccc;">'+d.label+'</span></div>';
+    html+='<div style="display:flex;gap:5px;">';
+    SEV_LABELS.forEach(function(sl,i){ html+='<button onclick="window._rfcEDSet(\''+d.id+'\','+i+')" style="flex:1;padding:5px;border-radius:5px;border:1px solid '+(sev===i?SEV_COLORS[i]:'#2a2a4a')+';background:'+(sev===i?SEV_COLORS[i]+'22':'#0d0d1a')+';color:'+(sev===i?SEV_COLORS[i]:'#555')+';font-size:10px;cursor:pointer;">'+sl+'</button>'; });
+    html+='</div></div>';
+  });
+  card.innerHTML=html;
+}
+window._rfcEDSet=function(id,sev){ var uid=_b54uid(), today=_b54today(); var key='rfc_energydrain_'+uid+'_'+today; var data=_b54load(key)||{}; data[id]=sev; _b54save(key,data); _renderEnergyDrain(); };
+
+/* ---------- ALCOHOL & RECOVERY TRACKER (nutrition) ---------- */
+function _injectAlcohol(){
+  if(document.getElementById('rfc-alcohol-wrap')) return;
+  var anchor=document.getElementById('rfc-mealtiming-wrap')||document.getElementById('rfc-inflam-wrap')||document.getElementById('rfc-foodsens-wrap')||document.getElementById('rfc-maccycle50-wrap')||document.querySelector('.dash-topbar');
+  if(!anchor) return;
+  var card=_b54card('rfc-alcohol-wrap','🍺 Alcohol & Recovery Tracker');
+  card.style.cssText+='border:1px solid #2a1a00;';
+  anchor.parentNode.insertBefore(card,anchor.nextSibling);
+  _renderAlcohol();
+}
+function _renderAlcohol(){
+  var card=document.getElementById('rfc-alcohol-wrap'); if(!card) return;
+  var uid=_b54uid(), today=_b54today();
+  var key='rfc_alcohol_'+uid+'_'+today;
+  var data=_b54load(key)||{units:0,lastDrinkHr:20,recovery:null};
+  var units=data.units||0;
+  var impact=units===0?'No impact':units<=2?'Minimal impact':units<=4?'Moderate impact':units<=6?'Significant impact':'Severe impact';
+  var impactColor=units===0?'#00ff88':units<=2?'#ffd700':units<=4?'#ff9f43':'#ff6b6b';
+  var yesterday=new Date(); yesterday.setDate(yesterday.getDate()-1);
+  var yKey=yesterday.getFullYear()+'-'+String(yesterday.getMonth()+1).padStart(2,'0')+'-'+String(yesterday.getDate()).padStart(2,'0');
+  var ydData=_b54load('rfc_alcohol_'+uid+'_'+yKey)||null;
+  var hist=[]; for(var i=6;i>=0;i--){ var dt=new Date(); dt.setDate(dt.getDate()-i); var dk=dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0')+'-'+String(dt.getDate()).padStart(2,'0'); var hd=_b54load('rfc_alcohol_'+uid+'_'+dk)||{units:0}; hist.push({date:dk,units:hd.units||0,rec:hd.recovery||null}); }
+  var html='<div style="font-size:15px;font-weight:700;color:#00d4ff;margin-bottom:14px;">🍺 Alcohol & Recovery Tracker</div>';
+  html+='<div style="background:#12122a;border-radius:10px;padding:12px;margin-bottom:12px;">';
+  html+='<div style="font-size:12px;color:#aaa;margin-bottom:8px;">Tonight\'s Consumption:</div>';
+  html+='<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">';
+  html+='<button onclick="window._rfcAlcAdj(-1)" style="background:#2a2a4a;border:none;color:#fff;width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:18px;">-</button>';
+  html+='<div style="flex:1;text-align:center;"><div style="font-size:32px;font-weight:800;color:'+impactColor+';">'+units+'</div><div style="font-size:11px;color:#888;">standard units</div></div>';
+  html+='<button onclick="window._rfcAlcAdj(1)" style="background:#ff9f43;border:none;color:#000;width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:18px;">+</button></div>';
+  html+='<div style="font-size:12px;color:'+impactColor+';font-weight:700;text-align:center;margin-bottom:8px;">'+impact+' on recovery</div>';
+  if(units>0){ html+='<label style="font-size:12px;color:#aaa;">Last drink at: <strong style="color:#ffd700;">'+String(data.lastDrinkHr||20).padStart(2,'0')+':00</strong></label><input type="range" min="12" max="23" step="1" value="'+(data.lastDrinkHr||20)+'" oninput="window._rfcAlcTime(parseInt(this.value))" style="width:100%;accent-color:#ff9f43;margin-top:4px;">'; }
+  html+='</div>';
+  if(ydData&&ydData.units>0){
+    html+='<div style="background:#12122a;border-radius:9px;padding:10px;margin-bottom:12px;">';
+    html+='<div style="font-size:12px;color:#aaa;margin-bottom:6px;">Yesterday\'s recovery ('+ydData.units+' units):</div>';
+    html+='<div style="display:flex;gap:6px;">';
+    [1,2,3,4,5,6,7,8,9,10].forEach(function(i){ html+='<div onclick="window._rfcAlcRec(\''+yKey+'\','+i+')" style="flex:1;text-align:center;padding:5px 0;border-radius:5px;background:'+(ydData.recovery===i?'#1a1a2a':'#0d0d1a')+';border:1px solid '+(ydData.recovery===i?'#00d4ff':'#2a2a4a')+';cursor:pointer;font-size:11px;color:'+(ydData.recovery===i?'#00d4ff':'#555')+';">'+i+'</div>'; });
+    html+='</div><div style="font-size:11px;color:#666;margin-top:4px;">Rate your recovery today (1=terrible, 10=perfect)</div></div>';
+  }
+  html+='<div style="display:flex;align-items:flex-end;gap:4px;height:48px;">';
+  hist.forEach(function(h){ var hc=h.units===0?'#00ff88':h.units<=2?'#ffd700':h.units<=4?'#ff9f43':'#ff6b6b'; var ht=h.units===0?4:Math.min(44,h.units*8); html+='<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;"><div style="width:100%;height:'+ht+'px;background:'+hc+';border-radius:3px;"></div><div style="font-size:9px;color:#555;">'+h.date.slice(8)+'</div></div>'; });
+  html+='</div>';
+  card.innerHTML=html;
+}
+window._rfcAlcAdj=function(delta){ var uid=_b54uid(), today=_b54today(); var key='rfc_alcohol_'+uid+'_'+today; var data=_b54load(key)||{units:0}; data.units=Math.max(0,(data.units||0)+delta); _b54save(key,data); _renderAlcohol(); };
+window._rfcAlcTime=function(hr){ var uid=_b54uid(), today=_b54today(); var key='rfc_alcohol_'+uid+'_'+today; var data=_b54load(key)||{units:0}; data.lastDrinkHr=hr; _b54save(key,data); _renderAlcohol(); };
+window._rfcAlcRec=function(date,score){ var uid=_b54uid(); var key='rfc_alcohol_'+uid+'_'+date; var data=_b54load(key)||{}; data.recovery=score; _b54save(key,data); _renderAlcohol(); };
+
+/* ---------- PEAK PERFORMANCE TIME FINDER (workouts) ---------- */
+function _injectPeakTime(){
+  if(document.getElementById('rfc-peaktime-wrap')) return;
+  var anchor=document.getElementById('rfc-fittest-wrap')||document.getElementById('rfc-stretch30-wrap')||document.getElementById('rfc-olympic-wrap')||document.getElementById('rfc-blockplan-wrap')||document.querySelector('.dash-topbar');
+  if(!anchor) return;
+  var card=_b54card('rfc-peaktime-wrap','⏰ Peak Performance Finder');
+  card.style.cssText+='border:1px solid #1a1a3a;';
+  anchor.parentNode.insertBefore(card,anchor.nextSibling);
+  _renderPeakTime();
+}
+function _renderPeakTime(){
+  var card=document.getElementById('rfc-peaktime-wrap'); if(!card) return;
+  var uid=_b54uid();
+  var key='rfc_peaktime_'+uid;
+  var data=_b54load(key)||{sessions:[]};
+  var sessions=data.sessions||[];
+  var slotData={};
+  sessions.forEach(function(s){ var slot=Math.floor(s.hr/2)*2; if(!slotData[slot]) slotData[slot]={total:0,count:0}; slotData[slot].total+=s.perf; slotData[slot].count++; });
+  var bestSlot=null, bestAvg=0;
+  Object.keys(slotData).forEach(function(slot){ var avg=slotData[slot].total/slotData[slot].count; if(avg>bestAvg){ bestAvg=avg; bestSlot=parseInt(slot); } });
+  var now=new Date(); var curHr=now.getHours();
+  var html='<div style="font-size:15px;font-weight:700;color:#00d4ff;margin-bottom:14px;">⏰ Peak Performance Finder</div>';
+  html+='<div style="font-size:12px;color:#888;margin-bottom:12px;">Log how you feel after each workout to find your optimal training time.</div>';
+  if(sessions.length>=5&&bestSlot!==null){ html+='<div style="background:#0d2a1a;border:1px solid #00ff88;border-radius:9px;padding:10px;margin-bottom:12px;"><div style="font-size:12px;color:#00ff88;font-weight:700;">🏆 Your Peak Performance Window</div><div style="font-size:18px;font-weight:800;color:#ffd700;margin-top:4px;">'+String(bestSlot).padStart(2,'0')+':00 — '+String(bestSlot+2).padStart(2,'0')+':00</div><div style="font-size:11px;color:#aaa;margin-top:2px;">Avg performance: '+Math.round(bestAvg*10)/10+'/10</div></div>'; }
+  html+='<div style="background:#12122a;border-radius:10px;padding:12px;margin-bottom:12px;">';
+  html+='<div style="font-size:12px;color:#aaa;margin-bottom:8px;">Log this session:</div>';
+  html+='<div style="display:flex;gap:8px;margin-bottom:8px;">';
+  html+='<div style="flex:1;"><div style="font-size:11px;color:#888;margin-bottom:3px;">Time of workout</div><input type="number" id="rfc-pt-hr" min="0" max="23" value="'+curHr+'" style="width:100%;background:#0d0d20;border:1px solid #2a2a4a;color:#fff;border-radius:6px;padding:6px;font-size:13px;box-sizing:border-box;"></div>';
+  html+='<div style="flex:1;"><div style="font-size:11px;color:#888;margin-bottom:3px;">Performance (1-10)</div><input type="number" id="rfc-pt-perf" min="1" max="10" step="1" placeholder="1-10" style="width:100%;background:#0d0d20;border:1px solid #2a2a4a;color:#fff;border-radius:6px;padding:6px;font-size:13px;box-sizing:border-box;"></div>';
+  html+='</div>';
+  html+='<button onclick="window._rfcPTLog()" style="width:100%;background:#a855f7;border:none;color:#fff;padding:9px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;">+ Log Session</button></div>';
+  if(sessions.length){
+    html+='<div style="font-size:12px;color:#888;margin-bottom:6px;">Performance by Time ('+sessions.length+' sessions)</div>';
+    html+='<div style="display:flex;align-items:flex-end;gap:3px;height:56px;">';
+    for(var h=6;h<=22;h+=2){
+      var sd=slotData[h]; var avg=sd?Math.round(sd.total/sd.count):0; var ht=avg?Math.round(avg*5):2;
+      var hc=avg>=8?'#00ff88':avg>=6?'#ffd700':avg>=4?'#ff9f43':avg>0?'#ff6b6b':'#2a2a4a';
+      html+='<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:1px;"><div style="width:100%;height:'+ht+'px;background:'+hc+';border-radius:2px;"></div><div style="font-size:8px;color:#555;">'+h+'h</div></div>';
+    }
+    html+='</div>';
+  }
+  card.innerHTML=html;
+}
+window._rfcPTLog=function(){
+  var hrEl=document.getElementById('rfc-pt-hr'); var perfEl=document.getElementById('rfc-pt-perf');
+  var hr=parseInt(hrEl.value); var perf=parseFloat(perfEl.value)||0;
+  if(isNaN(hr)||!perf) return;
+  var uid=_b54uid(); var key='rfc_peaktime_'+uid;
+  var data=_b54load(key)||{sessions:[]};
+  data.sessions.push({hr:hr,perf:perf,date:_b54today()});
+  if(data.sessions.length>100) data.sessions=data.sessions.slice(-100);
+  _b54save(key,data); perfEl.value=''; _renderPeakTime();
+};
+
+window.switchScreen=function(name,navEl){
+  _origSS52&&_origSS52(name,navEl);
+  if(name==='dashboard') setTimeout(function(){ _injectEnergyDrain(); _renderEnergyDrain(); },1200);
+  if(name==='nutrition') setTimeout(function(){ _injectAlcohol(); _renderAlcohol(); },1100);
+  if(name==='workouts')  setTimeout(function(){ _injectPeakTime(); _renderPeakTime(); },1050);
+};
+setTimeout(function(){ _injectEnergyDrain(); _injectAlcohol(); _injectPeakTime(); },46000);
+setTimeout(function(){ if(!document.getElementById('rfc-energydrain-wrap')) _injectEnergyDrain(); if(!document.getElementById('rfc-alcohol-wrap')) _injectAlcohol(); if(!document.getElementById('rfc-peaktime-wrap')) _injectPeakTime(); },50000);
+})();
+</script>
+
 </body>
 </html>
