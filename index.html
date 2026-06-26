@@ -30480,5 +30480,378 @@ setTimeout(function(){
 })();
 </script>
 
+<script>
+/* ════════════════════════════════════════════════════════════
+   BATCH 21 — RPE Tracker | Nutrition Compliance Calendar | Fitness Age
+   ════════════════════════════════════════════════════════════ */
+(function(){ 'use strict';
+
+function _uid21(){ try{return JSON.parse(localStorage.getItem('bm_user')||'{}').uid||null;}catch(e){return null;} }
+function _b21card(id,title){
+  var d=document.createElement('div');
+  d.id=id; d.className='rfc-b12-card';
+  d.style.cssText='background:#111;border:1px solid #222;border-radius:14px;padding:14px;margin:10px 0;';
+  var h=document.createElement('div');
+  h.style.cssText='font-size:13px;font-weight:700;color:#aaa;letter-spacing:1px;text-transform:uppercase;margin-bottom:12px;';
+  h.textContent=title; d.appendChild(h);
+  return d;
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   1. RPE SESSION TRACKER (workouts)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+var RPE_DESC=['','Very Light','Light','Moderate','Somewhat Hard','Hard','Hard','Very Hard','Very Hard','Extremely Hard','Max Effort'];
+var RPE_COLOR=['','#22c55e','#22c55e','#4ade80','#a3e635','#facc15','#fb923c','#f97316','#ef4444','#dc2626','#b91c1c'];
+
+function _injectRPE(){
+  if(document.getElementById('rfc-rpe-wrap')) return;
+  var anchor = document.getElementById('rfc-cardio-wrap') ||
+               document.getElementById('rfc-tmpl-wrap') ||
+               document.getElementById('rfc-musrec-wrap') ||
+               document.getElementById('rfc-pol-wrap') ||
+               document.getElementById('rfc-deload-wrap') ||
+               document.getElementById('wl-history');
+  if(!anchor) return;
+  var card=_b21card('rfc-rpe-wrap','💥 Session RPE Log');
+  card.innerHTML+=(
+    '<div style="margin-bottom:12px;">'+
+      '<div style="font-size:11px;color:#555;margin-bottom:6px;">Rate how hard today\'s session felt (1 = easy, 10 = max effort):</div>'+
+      '<div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px;" id="rfc-rpe-btns">'+
+        [1,2,3,4,5,6,7,8,9,10].map(function(n){
+          return '<button onclick="window._rfcSetRPE('+n+')" id="rfc-rpe-b'+n+'" '+
+            'style="width:36px;height:36px;border-radius:8px;border:1px solid #333;background:#1a1a1a;color:#aaa;font-size:14px;font-weight:700;cursor:pointer;transition:all .15s;">'+n+'</button>';
+        }).join('')+
+      '</div>'+
+      '<div id="rfc-rpe-desc" style="font-size:12px;color:#555;min-height:16px;"></div>'+
+    '</div>'+
+    '<div style="display:flex;gap:8px;margin-bottom:10px;">'+
+      '<input id="rfc-rpe-note" type="text" placeholder="Quick note (optional)" '+
+        'style="flex:1;background:#1a1a1a;border:1px solid #333;border-radius:8px;padding:7px 10px;color:#fff;font-size:12px;outline:none;">'+
+      '<button onclick="window._rfcLogRPE()" '+
+        'style="background:linear-gradient(135deg,#8b5cf6,#6d28d9);color:#fff;border:none;border-radius:8px;padding:7px 16px;font-size:13px;font-weight:700;cursor:pointer;">Log</button>'+
+    '</div>'+
+    '<div id="rfc-rpe-chart"></div>'
+  );
+  anchor.insertAdjacentElement('afterend', card);
+  window._rfcRpeSel=0;
+  _renderRPEChart();
+}
+
+window._rfcSetRPE=function(n){
+  window._rfcRpeSel=n;
+  for(var i=1;i<=10;i++){
+    var b=document.getElementById('rfc-rpe-b'+i); if(!b) continue;
+    var active=(i<=n);
+    b.style.background=active?RPE_COLOR[i]:'#1a1a1a';
+    b.style.color=active?'#000':'#aaa';
+    b.style.borderColor=active?RPE_COLOR[i]:'#333';
+  }
+  var desc=document.getElementById('rfc-rpe-desc');
+  if(desc) desc.textContent=n+' — '+RPE_DESC[n];
+};
+
+window._rfcLogRPE=function(){
+  var uid=_uid21(); if(!uid){ if(window.toast) toast('Log in first','gold'); return; }
+  var rpe=window._rfcRpeSel||0;
+  if(!rpe){ if(window.toast) toast('Select an RPE value (1-10)','gold'); return; }
+  var note=((document.getElementById('rfc-rpe-note')||{}).value||'').trim();
+  var today=new Date().toISOString().slice(0,10);
+  var key='rfc_rpe_'+uid;
+  var log=[]; try{log=JSON.parse(localStorage.getItem(key)||'[]');}catch(e){}
+  var idx=log.findIndex(function(e){return e.date===today;});
+  var entry={date:today,rpe:rpe,note:note,ts:Date.now()};
+  if(idx>=0) log[idx]=entry; else log.unshift(entry);
+  if(log.length>30) log.length=30;
+  localStorage.setItem(key,JSON.stringify(log));
+  var ni=document.getElementById('rfc-rpe-note'); if(ni) ni.value='';
+  window._rfcRpeSel=0;
+  for(var i=1;i<=10;i++){
+    var b2=document.getElementById('rfc-rpe-b'+i); if(!b2) continue;
+    b2.style.background='#1a1a1a'; b2.style.color='#aaa'; b2.style.borderColor='#333';
+  }
+  var desc2=document.getElementById('rfc-rpe-desc'); if(desc2) desc2.textContent='';
+  _renderRPEChart();
+  if(window.toast) toast('RPE '+rpe+' logged — '+RPE_DESC[rpe],'fire');
+};
+
+function _renderRPEChart(){
+  var el=document.getElementById('rfc-rpe-chart'); if(!el) return;
+  var uid=_uid21(); if(!uid) return;
+  var log=[]; try{log=JSON.parse(localStorage.getItem('rfc_rpe_'+uid)||'[]');}catch(e){}
+  if(!log.length){ el.innerHTML='<p style="color:#444;font-size:12px;text-align:center;padding:8px 0;">No sessions rated yet.</p>'; return; }
+  var pts=log.slice(0,10).slice().reverse();
+  var avgRpe=(pts.reduce(function(a,p){return a+p.rpe;},0)/pts.length).toFixed(1);
+  var highCount=pts.filter(function(p){return p.rpe>=8;}).length;
+  var warning=highCount>=3?'⚠ '+highCount+' high-RPE sessions recently — consider a lighter day':'';
+
+  el.innerHTML=
+    '<div style="display:flex;gap:4px;align-items:flex-end;margin-bottom:8px;">'+
+    pts.map(function(p){
+      var h=Math.round(p.rpe/10*50);
+      return '<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;" title="'+p.date+': RPE '+p.rpe+(p.note?' ('+p.note+')'):'')+'">'+
+        '<div style="font-size:9px;color:'+RPE_COLOR[p.rpe]+';">'+p.rpe+'</div>'+
+        '<div style="width:100%;background:#1a1a1a;border-radius:4px;height:50px;display:flex;align-items:flex-end;">'+
+          '<div style="width:100%;height:'+h+'px;background:'+RPE_COLOR[p.rpe]+';border-radius:4px 4px 0 0;transition:height .4s;"></div>'+
+        '</div>'+
+        '<div style="font-size:8px;color:#444;">'+p.date.slice(5)+'</div>'+
+      '</div>';
+    }).join('')+
+    '</div>'+
+    '<div style="display:flex;gap:12px;flex-wrap:wrap;">'+
+      '<span style="font-size:12px;color:#aaa;">Avg RPE: <b style="color:#fff">'+avgRpe+'</b></span>'+
+      (warning?'<span style="font-size:11px;color:#f59e0b;">'+warning+'</span>':'')+
+    '</div>';
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   2. NUTRITION COMPLIANCE CALENDAR (nutrition)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+function _injectCalendar(){
+  if(document.getElementById('rfc-nccal-wrap')) return;
+  var anchor = document.getElementById('rfc-micros-wrap') ||
+               document.getElementById('rfc-fast-wrap') ||
+               document.getElementById('rfc-macro-donut-wrap') ||
+               document.getElementById('rfc-cal-balance-wrap') ||
+               document.getElementById('rfc-custom-supp-wrap') ||
+               document.getElementById('rfc-food-wrap');
+  if(!anchor) return;
+  var card=_b21card('rfc-nccal-wrap','📆 Nutrition Compliance — 5 Weeks');
+  var inner=document.createElement('div'); inner.id='rfc-nccal-body';
+  card.appendChild(inner);
+  anchor.insertAdjacentElement('afterend', card);
+  _renderCalendar();
+}
+
+function _renderCalendar(){
+  var el=document.getElementById('rfc-nccal-body'); if(!el) return;
+  var uid=_uid21();
+  if(!uid){ el.innerHTML='<p style="color:#555;font-size:12px;">Log in to see compliance.</p>'; return; }
+  var lastRes={}; try{lastRes=JSON.parse(localStorage.getItem('bm_last_result')||'{}');}catch(e){}
+  var target=+(lastRes.targetCals||0);
+
+  var now=new Date(); now.setHours(0,0,0,0);
+  // Start from 35 days ago, aligned to Sunday
+  var start=new Date(now); start.setDate(start.getDate()-34);
+  var dow=start.getDay();
+  start.setDate(start.getDate()-dow);
+
+  var DAYS=['S','M','T','W','T','F','S'];
+  var days=[];
+  for(var i=0;i<42;i++){
+    var d=new Date(start); d.setDate(start.getDate()+i);
+    days.push(d);
+  }
+
+  function dayCell(d){
+    var isFuture=d>now;
+    var ds=d.toISOString().slice(0,10);
+    var food=[]; try{food=JSON.parse(localStorage.getItem('rfc_food_'+uid+'_'+ds)||'[]');}catch(e){}
+    var cals=food.reduce(function(a,f){return a++(f.calories||0);},0);
+    var isToday=ds===now.toISOString().slice(0,10);
+
+    var bg,title;
+    if(isFuture){ bg='#0d0d0d'; title=''; }
+    else if(!food.length){ bg='#1a1a1a'; title=ds+': Not logged'; }
+    else if(!target){ bg='#2d7a4f'; title=ds+': '+cals+' kcal logged'; }
+    else {
+      var ratio=cals/target;
+      if(ratio>=0.9&&ratio<=1.1){ bg='#22c55e'; title=ds+': '+cals+'/'+target+' ✓'; }
+      else if(ratio>1.1){ bg='#f97316'; title=ds+': '+cals+'/'+target+' (over)'; }
+      else { bg='#3b82f6'; title=ds+': '+cals+'/'+target+' (under)'; }
+    }
+    return '<div title="'+title+'" style="aspect-ratio:1;border-radius:3px;background:'+bg+';'+
+      (isToday?'outline:2px solid #fff;outline-offset:1px;':'')+'"></div>';
+  }
+
+  var weekRows='';
+  for(var w=0;w<6;w++){
+    if(days[w*7]>now) break;
+    weekRows+='<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:3px;">'+
+      days.slice(w*7,w*7+7).map(dayCell).join('')+
+    '</div>';
+  }
+  var dayHeader='<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:5px;">'+
+    DAYS.map(function(d){return '<div style="text-align:center;font-size:9px;color:#444;">'+d+'</div>';}).join('')+
+  '</div>';
+
+  // Compliance stats
+  var logged=0,compliant=0,over=0,under=0;
+  for(var i2=0;i2<35;i2++){
+    var d2=new Date(now); d2.setDate(now.getDate()-i2);
+    var ds2=d2.toISOString().slice(0,10);
+    var f2=[]; try{f2=JSON.parse(localStorage.getItem('rfc_food_'+uid+'_'+ds2)||'[]');}catch(e){}
+    if(!f2.length) continue;
+    logged++;
+    var c2=f2.reduce(function(a,f){return a++(f.calories||0);},0);
+    if(!target){compliant++;continue;}
+    var r2=c2/target;
+    if(r2>=0.9&&r2<=1.1) compliant++;
+    else if(r2>1.1) over++;
+    else under++;
+  }
+
+  el.innerHTML=
+    dayHeader+weekRows+
+    '<div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;">'+
+      [['#22c55e','On Target (±10%)'],['#f97316','Over'],['#3b82f6','Under'],['#1a1a1a','Not logged']].map(function(l){
+        return '<span style="display:flex;align-items:center;gap:4px;font-size:10px;color:#555;">'+
+          '<span style="width:10px;height:10px;border-radius:2px;background:'+l[0]+';display:inline-block;"></span>'+l[1]+'</span>';
+      }).join('')+
+    '</div>'+
+    '<div style="margin-top:8px;font-size:12px;color:#aaa;">'+
+      logged+' days logged · <span style="color:#22c55e;">'+compliant+' on target</span>'+
+      (over?' · <span style="color:#f97316;">'+over+' over</span>':'')+
+      (under?' · <span style="color:#3b82f6;">'+under+' under</span>':'')+
+    '</div>';
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   3. FITNESS AGE ESTIMATOR (dashboard)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+function _injectFitnessAge(){
+  if(document.getElementById('rfc-fitage-wrap')) return;
+  var anchor = document.getElementById('rfc-xform-wrap') ||
+               document.getElementById('rfc-sleepj-wrap') ||
+               document.getElementById('rfc-circ-wrap') ||
+               document.getElementById('rfc-habits-wrap') ||
+               document.getElementById('rfc-wt-trend-wrap') ||
+               document.querySelector('.dash-topbar');
+  if(!anchor) return;
+  var card=_b21card('rfc-fitage-wrap','🔬 Fitness Age Estimator');
+  var inner=document.createElement('div'); inner.id='rfc-fitage-body';
+  card.appendChild(inner);
+  anchor.insertAdjacentElement('afterend', card);
+  _renderFitnessAge();
+}
+
+function _renderFitnessAge(){
+  var el=document.getElementById('rfc-fitage-body'); if(!el) return;
+  var uid=_uid21();
+  if(!uid){ el.innerHTML='<p style="color:#555;font-size:12px;">Log in to estimate fitness age.</p>'; return; }
+
+  var lastRes={}; try{lastRes=JSON.parse(localStorage.getItem('bm_last_result')||'{}');}catch(e){}
+  var age=+(lastRes.age||30);
+  var gender=lastRes.gender||'male';
+  var bf=+(lastRes.bf||20);
+  var actLevel=lastRes.act||'moderate';
+
+  // VO2max proxy (ml/kg/min) — Uth-Sørensen-Overgaard-Pedersen formula proxy
+  // Base by age+gender: males avg ~40, females avg ~35
+  var vo2base=(gender==='male'?44:38)-(age-25)*0.3;
+
+  // Adjust for activity level
+  var actBonus={sedentary:-6,light:-3,moderate:0,active:4,very_active:8};
+  vo2base+=actBonus[actLevel]||0;
+
+  // Bonus from recent training
+  var wkLog=[]; try{wkLog=JSON.parse(localStorage.getItem('rfc_workouts_'+uid)||'[]');}catch(e){}
+  var wkPerWeek=wkLog.filter(function(w){return (w.ts||0)>Date.now()-28*864e5;}).length/4;
+  vo2base+=Math.min(6,wkPerWeek*1.2);
+
+  // Cardio bonus
+  var cLog=[]; try{cLog=JSON.parse(localStorage.getItem('rfc_cardio_'+uid)||'[]');}catch(e){}
+  var cardioMin=cLog.filter(function(c){return (c.ts||0)>Date.now()-28*864e5;}).reduce(function(a,c){return a+c.dur;},0)/4;
+  vo2base+=Math.min(5,cardioMin/30);
+
+  // BF% penalty
+  if(bf>25) vo2base-=(bf-25)*0.3;
+  else if(bf<15&&gender==='male') vo2base+=2;
+
+  vo2base=Math.max(15,Math.min(70,vo2base));
+
+  // Fitness age from VO2max — reference: Cooper Institute norms
+  // Males: Age = (42-vo2max)/0.35 + 20, clamped
+  // Females: Age = (37-vo2max)/0.3 + 20
+  var fitnessAge;
+  if(gender==='male'){
+    fitnessAge=Math.round(20+(42-vo2base)/0.35);
+  } else {
+    fitnessAge=Math.round(20+(37-vo2base)/0.3);
+  }
+  fitnessAge=Math.max(15,Math.min(80,fitnessAge));
+
+  var diff=age-fitnessAge;
+  var diffColor=diff>0?'#22c55e':diff<0?'#ef4444':'#aaa';
+  var diffLabel=diff>0?'💚 '+diff+' years YOUNGER than your age':diff<0?'⚠ '+Math.abs(diff)+' years older than your age':'🎯 Exactly your age';
+  var fitnessZone=vo2base>=55?'Elite':vo2base>=47?'Superior':vo2base>=39?'Excellent':vo2base>=31?'Good':vo2base>=24?'Fair':'Poor';
+  var zoneColor=vo2base>=55?'#f59e0b':vo2base>=47?'#22c55e':vo2base>=39?'#4ade80':vo2base>=31?'#3b82f6':vo2base>=24?'#f97316':'#ef4444';
+
+  // Mini side-by-side bars
+  var maxAge=80;
+  var chPct=Math.min(100,age/maxAge*100);
+  var faPct=Math.min(100,fitnessAge/maxAge*100);
+
+  el.innerHTML=
+    '<div style="display:flex;gap:20px;align-items:center;flex-wrap:wrap;margin-bottom:14px;">'+
+      '<div style="flex-shrink:0;text-align:center;">'+
+        '<div style="font-size:48px;font-weight:900;color:'+diffColor+';line-height:1;">'+fitnessAge+'</div>'+
+        '<div style="font-size:11px;color:#555;">Fitness Age</div>'+
+      '</div>'+
+      '<div style="flex:1;min-width:160px;">'+
+        '<div style="font-size:13px;color:'+diffColor+';margin-bottom:8px;font-weight:700;">'+diffLabel+'</div>'+
+        '<div style="margin-bottom:6px;">'+
+          '<div style="display:flex;justify-content:space-between;font-size:11px;color:#555;margin-bottom:2px;">'+
+            '<span>Chronological age</span><span>'+age+'</span>'+
+          '</div>'+
+          '<div style="height:8px;background:#1a1a1a;border-radius:4px;overflow:hidden;">'+
+            '<div style="height:100%;width:'+chPct+'%;background:#555;border-radius:4px;"></div>'+
+          '</div>'+
+        '</div>'+
+        '<div>'+
+          '<div style="display:flex;justify-content:space-between;font-size:11px;color:#aaa;margin-bottom:2px;">'+
+            '<span>Fitness age</span><span>'+fitnessAge+'</span>'+
+          '</div>'+
+          '<div style="height:8px;background:#1a1a1a;border-radius:4px;overflow:hidden;">'+
+            '<div style="height:100%;width:'+faPct+'%;background:'+diffColor+';border-radius:4px;transition:width .6s;"></div>'+
+          '</div>'+
+        '</div>'+
+      '</div>'+
+    '</div>'+
+    '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;">'+
+      [['VO₂max Proxy',vo2base.toFixed(0)+' ml/kg/min',zoneColor],
+       ['Fitness Zone',fitnessZone,zoneColor],
+       ['Training Load',wkPerWeek.toFixed(1)+' sessions/wk','#aaa']].map(function(s){
+         return '<div style="background:#1a1a1a;border-radius:8px;padding:8px;text-align:center;">'+
+           '<div style="font-size:13px;font-weight:700;color:'+s[2]+';">'+s[1]+'</div>'+
+           '<div style="font-size:10px;color:#555;">'+s[0]+'</div>'+
+         '</div>';
+       }).join('')+
+    '</div>';
+}
+
+/* ════════════════════════════════════════════════════
+   switchScreen + initial inject
+   ════════════════════════════════════════════════════ */
+var _origSS19=window.switchScreen;
+window.switchScreen=function(name,navEl){
+  _origSS19&&_origSS19(name,navEl);
+  if(name==='workouts'){
+    setTimeout(function(){ _injectRPE(); _renderRPEChart(); }, 900);
+  }
+  if(name==='nutrition'){
+    setTimeout(function(){ _injectCalendar(); _renderCalendar(); }, 950);
+  }
+  if(name==='dashboard'){
+    setTimeout(function(){ _injectFitnessAge(); _renderFitnessAge(); }, 1100);
+  }
+};
+
+setTimeout(function(){
+  _injectRPE();
+  _injectCalendar();
+  _injectFitnessAge();
+}, 13000);
+
+setTimeout(function(){
+  if(!document.getElementById('rfc-rpe-wrap'))    _injectRPE();
+  if(!document.getElementById('rfc-nccal-wrap'))  _injectCalendar();
+  if(!document.getElementById('rfc-fitage-wrap')) _injectFitnessAge();
+}, 16000);
+
+window.addEventListener('rfc-food-updated', _renderCalendar);
+
+})();
+</script>
+
 </body>
 </html>
