@@ -34815,4 +34815,380 @@ setTimeout(function(){
 </script>
 
 </body>
+
+<script>
+/* ============================================================
+   BATCH 33 — Goal Weight Timeline | Electrolyte Tracker | Drop Set Logger
+   ============================================================ */
+(function(){ 'use strict';
+
+var _origSS31 = window.switchScreen;
+
+/* ── helpers ── */
+function _b33uid(){ try{ return JSON.parse(localStorage.getItem('bm_user')||'{}').uid||'guest'; }catch(e){ return 'guest'; } }
+function _b33today(){ var d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function _b33load(k){ try{ return JSON.parse(localStorage.getItem(k))||null; }catch(e){ return null; } }
+function _b33save(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} }
+function _b33card(id,title){
+  var d=document.createElement('div');
+  d.id=id;
+  d.style.cssText='background:#1a1a2e;border-radius:14px;padding:18px;margin:14px 0;color:#e0e0e0;font-family:inherit;';
+  d.innerHTML='<div style="font-size:15px;font-weight:700;color:#00d4ff;margin-bottom:14px;">'+title+'</div>';
+  return d;
+}
+
+/* ════════════════════════════════════════════════════════════
+   1. GOAL WEIGHT TIMELINE (dashboard)
+   ════════════════════════════════════════════════════════════ */
+function _injectGoalWt(){
+  if(document.getElementById('rfc-goalwt-wrap')) return;
+  var anchors=['rfc-vitals-wrap','rfc-injury-wrap','rfc-wkreport-wrap','rfc-recovery-wrap','rfc-stretch-wrap','rfc-steps-wrap'];
+  var host=null;
+  for(var i=0;i<anchors.length;i++){ var el=document.getElementById(anchors[i]); if(el){ host=el; break; } }
+  if(!host){ var tb=document.querySelector('.dash-topbar'); if(tb) host=tb; }
+  if(!host) return;
+
+  var c=_b33card('rfc-goalwt-wrap','🎯 Goal Weight Timeline');
+  c.innerHTML+=
+    '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px;">'+
+      '<div><div style="font-size:10px;color:#555;margin-bottom:4px;">Current weight (kg)</div>'+
+        '<input id="rfc-gwt-cur" type="number" min="30" max="300" step="0.1" placeholder="75.0" style="width:100%;box-sizing:border-box;background:#0d0d1a;border:1px solid #333;color:#ddd;padding:7px;border-radius:8px;font-size:15px;font-weight:700;text-align:center;"></div>'+
+      '<div><div style="font-size:10px;color:#555;margin-bottom:4px;">Goal weight (kg)</div>'+
+        '<input id="rfc-gwt-goal" type="number" min="30" max="300" step="0.1" placeholder="70.0" style="width:100%;box-sizing:border-box;background:#0d0d1a;border:1px solid #333;color:#ddd;padding:7px;border-radius:8px;font-size:15px;font-weight:700;text-align:center;"></div>'+
+      '<div><div style="font-size:10px;color:#555;margin-bottom:4px;">Target date</div>'+
+        '<input id="rfc-gwt-date" type="date" style="width:100%;box-sizing:border-box;background:#0d0d1a;border:1px solid #333;color:#ddd;padding:7px;border-radius:8px;font-size:12px;"></div>'+
+    '</div>'+
+    '<button onclick="window._rfcGwtCalc()" style="width:100%;background:#00d4ff22;border:1px solid #00d4ff44;color:#00d4ff;padding:8px;border-radius:8px;cursor:pointer;font-size:13px;margin-bottom:14px;">Calculate Timeline</button>'+
+    '<div id="rfc-gwt-result" style="display:none;">'+
+      '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px;" id="rfc-gwt-stats"></div>'+
+      '<div style="font-size:11px;color:#555;margin-bottom:6px;">Projected weight curve</div>'+
+      '<div style="position:relative;height:70px;background:#0d0d1a;border-radius:8px;overflow:hidden;" id="rfc-gwt-chart"></div>'+
+      '<div id="rfc-gwt-advice" style="margin-top:10px;font-size:12px;color:#888;padding:10px;background:#0d0d1a;border-radius:8px;border-left:3px solid #00d4ff;"></div>'+
+    '</div>';
+
+  if(host.nextSibling) host.parentNode.insertBefore(c,host.nextSibling);
+  else host.parentNode.appendChild(c);
+
+  /* restore saved values */
+  var uid=_b33uid();
+  var saved=_b33load('rfc_gwt_'+uid)||{};
+  if(saved.cur){ var ci=document.getElementById('rfc-gwt-cur'); if(ci) ci.value=saved.cur; }
+  if(saved.goal){ var gi=document.getElementById('rfc-gwt-goal'); if(gi) gi.value=saved.goal; }
+  if(saved.date){ var di=document.getElementById('rfc-gwt-date'); if(di) di.value=saved.date; }
+  if(saved.cur&&saved.goal&&saved.date) window._rfcGwtCalc();
+}
+
+window._rfcGwtCalc=function(){
+  var uid=_b33uid();
+  var curEl=document.getElementById('rfc-gwt-cur');
+  var goalEl=document.getElementById('rfc-gwt-goal');
+  var dateEl=document.getElementById('rfc-gwt-date');
+  var cur=parseFloat((curEl&&curEl.value)||0);
+  var goal=parseFloat((goalEl&&goalEl.value)||0);
+  var dateStr=(dateEl&&dateEl.value)||'';
+  if(!cur||!goal||!dateStr) return;
+
+  _b33save('rfc_gwt_'+uid,{cur:cur,goal:goal,date:dateStr});
+
+  var today=new Date(); today.setHours(0,0,0,0);
+  var target=new Date(dateStr); target.setHours(0,0,0,0);
+  var daysLeft=Math.round((target-today)/864e5);
+  var diff=goal-cur; /* negative = loss, positive = gain */
+  var weeksLeft=daysLeft/7;
+  var kgPerWeek=weeksLeft>0?Math.round(Math.abs(diff)/weeksLeft*100)/100:0;
+  var isLoss=diff<0;
+
+  var resEl=document.getElementById('rfc-gwt-result');
+  var statsEl=document.getElementById('rfc-gwt-stats');
+  var chartEl=document.getElementById('rfc-gwt-chart');
+  var advEl=document.getElementById('rfc-gwt-advice');
+  if(!resEl) return;
+  resEl.style.display='block';
+
+  var feasible=kgPerWeek<=1; /* >1 kg/week is aggressive */
+  var col=feasible?'#22c55e':'#f97316';
+
+  if(statsEl) statsEl.innerHTML=[
+    {label:'To lose/gain', val:(diff>0?'+':'')+diff.toFixed(1)+' kg', color:isLoss?'#22c55e':'#f97316'},
+    {label:'Days left',    val:Math.max(0,daysLeft),                  color:'#00d4ff'},
+    {label:'Rate needed',  val:kgPerWeek+' kg/wk',                   color:col}
+  ].map(function(s){
+    return '<div style="background:#0d0d1a;border-radius:9px;padding:10px 6px;text-align:center;">'+
+      '<div style="font-size:16px;font-weight:800;color:'+s.color+';">'+s.val+'</div>'+
+      '<div style="font-size:10px;color:#555;margin-top:2px;">'+s.label+'</div>'+
+    '</div>';
+  }).join('');
+
+  /* simple SVG line chart */
+  if(chartEl&&daysLeft>0){
+    var W=chartEl.offsetWidth||300, H=70;
+    var pts=[];
+    var steps=Math.min(10,daysLeft);
+    for(var i=0;i<=steps;i++){
+      var w=cur+(diff*(i/steps));
+      pts.push({x:Math.round(i/steps*(W-20))+10, y:Math.round(H-10-((w-Math.min(cur,goal))/(Math.max(cur,goal)-Math.min(cur,goal)+0.01))*(H-20))});
+    }
+    var path=pts.map(function(p,i){ return (i===0?'M':'L')+p.x+' '+p.y; }).join(' ');
+    chartEl.innerHTML='<svg width="'+W+'" height="'+H+'" style="display:block;">'+
+      '<polyline points="'+pts.map(function(p){ return p.x+','+p.y; }).join(' ')+'" fill="none" stroke="'+col+'" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>'+
+      '<circle cx="'+pts[0].x+'" cy="'+pts[0].y+'" r="4" fill="#00d4ff"/>'+
+      '<circle cx="'+pts[pts.length-1].x+'" cy="'+pts[pts.length-1].y+'" r="4" fill="'+col+'"/>'+
+    '</svg>'+
+    '<div style="position:absolute;bottom:3px;left:8px;font-size:9px;color:#555;">Now: '+cur+'kg</div>'+
+    '<div style="position:absolute;bottom:3px;right:8px;font-size:9px;color:#555;">Goal: '+goal+'kg</div>';
+  }
+
+  if(advEl){
+    var msg='';
+    if(daysLeft<=0) msg='Target date has passed. Update your date to continue tracking.';
+    else if(kgPerWeek===0) msg='You\'re already at your goal weight!';
+    else if(kgPerWeek<=0.5) msg='Excellent! This is a very sustainable rate. Consistency wins.';
+    else if(kgPerWeek<=1) msg='Achievable with a disciplined diet and training plan.';
+    else msg='⚠️ This rate ('+kgPerWeek+'kg/wk) is aggressive — consider extending your timeline to protect muscle.';
+    advEl.textContent=msg; advEl.style.borderColor=col;
+  }
+};
+
+/* ════════════════════════════════════════════════════════════
+   2. ELECTROLYTE TRACKER (nutrition)
+   ════════════════════════════════════════════════════════════ */
+var ELEC_FOODS=[
+  {id:'salt',   label:'Table salt (1g)',        na:393, k:0,   mg:0},
+  {id:'banana', label:'Banana (1 medium)',       na:1,   k:422, mg:32},
+  {id:'potato', label:'Sweet potato (100g)',     na:55,  k:337, mg:25},
+  {id:'spinach',label:'Spinach (100g)',          na:79,  k:558, mg:79},
+  {id:'milk',   label:'Milk (250ml)',            na:107, k:366, mg:27},
+  {id:'nuts',   label:'Mixed nuts (30g)',        na:3,   k:196, mg:57},
+  {id:'avocado',label:'Avocado (½)',             na:7,   k:487, mg:29},
+  {id:'oats',   label:'Oats (40g serving)',      na:2,   k:140, mg:40}
+];
+/* daily targets (mg) */
+var ELEC_TARGETS={na:2300,k:3500,mg:320};
+
+function _injectElectro(){
+  if(document.getElementById('rfc-electro-wrap')) return;
+  var anchors=['rfc-sugar-wrap','rfc-fiber-wrap','rfc-calbal-wrap','rfc-grocery-wrap','rfc-mealprep-wrap','rfc-protiming-wrap'];
+  var host=null;
+  for(var i=0;i<anchors.length;i++){ var el=document.getElementById(anchors[i]); if(el){ host=el; break; } }
+  if(!host) host=document.getElementById('rfc-food-wrap');
+  if(!host) return;
+
+  var c=_b33card('rfc-electro-wrap','⚡ Electrolyte Tracker');
+  c.innerHTML+=
+    '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;" id="rfc-elec-totals"></div>'+
+    '<div style="display:flex;flex-direction:column;gap:5px;" id="rfc-elec-list"></div>'+
+    '<div style="margin-top:10px;font-size:11px;color:#555;">Electrolytes matter for muscle function and hydration. Tap +/− to log servings.</div>';
+
+  if(host.nextSibling) host.parentNode.insertBefore(c,host.nextSibling);
+  else host.parentNode.appendChild(c);
+  _renderElectro();
+}
+
+function _renderElectro(){
+  var uid=_b33uid(), date=_b33today();
+  var key='rfc_elec_'+uid+'_'+date;
+  var data=_b33load(key)||{};
+  var totals={na:0,k:0,mg:0};
+  ELEC_FOODS.forEach(function(f){
+    var cnt=data[f.id]||0;
+    totals.na+=cnt*f.na; totals.k+=cnt*f.k; totals.mg+=cnt*f.mg;
+  });
+
+  var totsEl=document.getElementById('rfc-elec-totals');
+  var listEl=document.getElementById('rfc-elec-list');
+  if(!totsEl) return;
+
+  var elecInfo=[
+    {key:'na',label:'Sodium',   color:'#f97316',unit:'mg',limit:true},
+    {key:'k', label:'Potassium',color:'#a78bfa',unit:'mg',limit:false},
+    {key:'mg',label:'Magnesium',color:'#22c55e', unit:'mg',limit:false}
+  ];
+  totsEl.innerHTML=elecInfo.map(function(e){
+    var val=Math.round(totals[e.key]);
+    var tgt=ELEC_TARGETS[e.key];
+    var pct=Math.min(100,Math.round(val/tgt*100));
+    var col=e.limit?(pct>100?'#ef4444':pct>80?'#f97316':'#22c55e'):e.color;
+    return '<div style="background:#0d0d1a;border-radius:9px;padding:9px 8px;text-align:center;">'+
+      '<div style="font-size:14px;font-weight:800;color:'+col+';">'+val+'<span style="font-size:9px;font-weight:400;color:#555;">mg</span></div>'+
+      '<div style="font-size:10px;color:#666;">'+e.label+'</div>'+
+      '<div style="background:#111;border-radius:4px;height:4px;margin-top:4px;overflow:hidden;">'+
+        '<div style="height:100%;width:'+pct+'%;background:'+col+';border-radius:4px;"></div>'+
+      '</div>'+
+      '<div style="font-size:9px;color:#444;margin-top:2px;">'+pct+'% of '+tgt+'mg</div>'+
+    '</div>';
+  }).join('');
+
+  if(listEl){
+    listEl.innerHTML=ELEC_FOODS.map(function(f){
+      var cnt=data[f.id]||0;
+      var parts=[f.na?'Na '+f.na:'',f.k?'K '+f.k:'',f.mg?'Mg '+f.mg:''].filter(Boolean).join(' · ');
+      return '<div style="display:flex;align-items:center;gap:8px;background:#0d0d1a;border-radius:8px;padding:7px 10px;">'+
+        '<div style="flex:1;min-width:0;">'+
+          '<div style="font-size:12px;color:'+(cnt>0?'#e0e0e0':'#888')+';white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+f.label+'</div>'+
+          '<div style="font-size:10px;color:#555;">'+parts+'</div>'+
+        '</div>'+
+        '<button onclick="window._rfcElecAdj(\''+f.id+'\',-1)" style="background:#1a1a2e;border:1px solid #333;color:#888;width:26px;height:26px;border-radius:6px;cursor:pointer;font-size:14px;">−</button>'+
+        '<div style="min-width:20px;text-align:center;font-size:13px;font-weight:700;color:'+(cnt>0?'#00d4ff':'#555')+';">'+cnt+'</div>'+
+        '<button onclick="window._rfcElecAdj(\''+f.id+'\',1)" style="background:#1a1a2e;border:1px solid #333;color:#00d4ff;width:26px;height:26px;border-radius:6px;cursor:pointer;font-size:14px;">+</button>'+
+      '</div>';
+    }).join('');
+  }
+}
+window._rfcElecAdj=function(id,delta){
+  var uid=_b33uid(), date=_b33today();
+  var key='rfc_elec_'+uid+'_'+date;
+  var data=_b33load(key)||{};
+  data[id]=Math.max(0,(data[id]||0)+delta);
+  _b33save(key,data);
+  _renderElectro();
+};
+
+/* ════════════════════════════════════════════════════════════
+   3. DROP SET LOGGER (workouts)
+   ════════════════════════════════════════════════════════════ */
+function _injectDropSet(){
+  if(document.getElementById('rfc-dropset-wrap')) return;
+  var anchors=['rfc-pyramid-wrap','rfc-amrap-wrap','rfc-superset-wrap','rfc-hrzone-wrap','rfc-warmup-wrap','rfc-wkstreak-wrap'];
+  var host=null;
+  for(var i=0;i<anchors.length;i++){ var el=document.getElementById(anchors[i]); if(el){ host=el; break; } }
+  if(!host) host=document.getElementById('wl-history');
+  if(!host) return;
+
+  var c=_b33card('rfc-dropset-wrap','📉 Drop Set Logger');
+  c.innerHTML+=
+    '<div style="background:#0d0d1a;border-radius:10px;padding:12px;margin-bottom:12px;">'+
+      '<div style="font-size:12px;color:#888;margin-bottom:8px;">New drop set:</div>'+
+      '<div style="display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap;">'+
+        '<input id="rfc-ds-name" type="text" placeholder="Exercise name" style="flex:2;min-width:120px;background:#1a1a2e;border:1px solid #333;color:#ddd;padding:7px 9px;border-radius:7px;font-size:12px;">'+
+        '<input id="rfc-ds-startkg" type="number" placeholder="Start kg" min="1" max="500" style="flex:1;min-width:70px;background:#1a1a2e;border:1px solid #333;color:#ddd;padding:7px 9px;border-radius:7px;font-size:12px;text-align:center;">'+
+        '<input id="rfc-ds-drops" type="number" placeholder="# drops" min="1" max="6" value="3" style="flex:1;min-width:60px;background:#1a1a2e;border:1px solid #333;color:#ddd;padding:7px 9px;border-radius:7px;font-size:12px;text-align:center;">'+
+      '</div>'+
+      '<div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">'+
+        '<span style="font-size:11px;color:#555;">Drop by:</span>'+
+        '<select id="rfc-ds-droppct" style="background:#1a1a2e;border:1px solid #333;color:#aaa;padding:6px 8px;border-radius:7px;font-size:12px;">'+
+          '<option value="10">10% each drop</option>'+
+          '<option value="15">15% each drop</option>'+
+          '<option value="20" selected>20% each drop</option>'+
+          '<option value="25">25% each drop</option>'+
+        '</select>'+
+        '<button onclick="window._rfcDSCreate()" style="background:#ef444422;border:1px solid #ef444444;color:#ef4444;padding:7px 14px;border-radius:7px;cursor:pointer;font-size:12px;">Build</button>'+
+      '</div>'+
+    '</div>'+
+    '<div id="rfc-ds-sets" style="display:flex;flex-direction:column;gap:10px;"></div>'+
+    '<div id="rfc-ds-empty" style="color:#555;font-size:13px;text-align:center;padding:16px;">No drop sets logged today. Build one above.</div>';
+
+  if(host.nextSibling) host.parentNode.insertBefore(c,host.nextSibling);
+  else host.parentNode.appendChild(c);
+  _renderDropSets();
+}
+
+function _renderDropSets(){
+  var uid=_b33uid(), today=_b33today();
+  var data=_b33load('rfc_dropset_'+uid+'_'+today)||{sets:[]};
+  var container=document.getElementById('rfc-ds-sets');
+  var empty=document.getElementById('rfc-ds-empty');
+  if(!container) return;
+
+  if(!data.sets.length){ container.innerHTML=''; if(empty) empty.style.display='block'; return; }
+  if(empty) empty.style.display='none';
+
+  container.innerHTML=data.sets.map(function(ds,si){
+    var totalReps=ds.drops.reduce(function(t,d){ return t+(d.reps||0); },0);
+    var totalVol=ds.drops.reduce(function(t,d){ return t+(d.kg||0)*(d.reps||0); },0);
+    var dropRows=ds.drops.map(function(d,di){
+      return '<div style="display:grid;grid-template-columns:auto 1fr 1fr auto;gap:5px;align-items:center;margin-bottom:4px;">'+
+        '<span style="font-size:10px;color:'+(di===0?'#ef4444':'#888')+';width:36px;text-align:right;padding-right:4px;">'+(di===0?'Start':'Drop '+di)+'</span>'+
+        '<input type="number" value="'+(d.kg||'')+'" placeholder="kg" oninput="window._rfcDSUpdate('+si+','+di+',\'kg\',this.value)" style="background:#1a1a2e;border:1px solid #282828;color:#ddd;padding:5px;border-radius:5px;font-size:12px;text-align:center;width:0;min-width:0;">'+
+        '<input type="number" value="'+(d.reps||'')+'" placeholder="reps" oninput="window._rfcDSUpdate('+si+','+di+',\'reps\',this.value)" style="background:#1a1a2e;border:1px solid #282828;color:#ddd;padding:5px;border-radius:5px;font-size:12px;text-align:center;width:0;min-width:0;">'+
+        '<div style="font-size:10px;color:#555;text-align:right;min-width:40px;">'+(d.kg&&d.reps?Math.round(d.kg*d.reps)+' kg':'' )+'</div>'+
+      '</div>';
+    }).join('');
+    return '<div style="background:#0d0d1a;border-radius:10px;padding:12px;">'+
+      '<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">'+
+        '<span style="font-size:18px;">📉</span>'+
+        '<div style="flex:1;">'+
+          '<div style="font-size:13px;font-weight:700;color:#ef4444;">'+ds.name+'</div>'+
+          '<div style="font-size:11px;color:#666;">'+ds.drops.length+' drops</div>'+
+        '</div>'+
+        '<div style="text-align:right;font-size:11px;color:#555;">'+
+          '<div>'+totalReps+' total reps</div>'+
+          '<div>'+totalVol+' kg vol</div>'+
+        '</div>'+
+        '<button onclick="window._rfcDSDelete('+si+')" style="background:transparent;border:none;color:#444;cursor:pointer;font-size:16px;">🗑</button>'+
+      '</div>'+
+      '<div style="display:grid;grid-template-columns:auto 1fr 1fr auto;gap:5px;margin-bottom:5px;">'+
+        '<div></div>'+
+        '<div style="font-size:9px;color:#888;text-align:center;">kg</div>'+
+        '<div style="font-size:9px;color:#888;text-align:center;">reps</div>'+
+        '<div style="font-size:9px;color:#555;text-align:right;">vol</div>'+
+      '</div>'+
+      dropRows+
+    '</div>';
+  }).join('');
+}
+
+window._rfcDSCreate=function(){
+  var uid=_b33uid(), today=_b33today();
+  var name=(document.getElementById('rfc-ds-name')||{}).value||'Exercise';
+  var startKg=parseFloat((document.getElementById('rfc-ds-startkg')||{}).value)||0;
+  var numDrops=parseInt((document.getElementById('rfc-ds-drops')||{}).value)||3;
+  var dropPct=parseInt((document.getElementById('rfc-ds-droppct')||{}).value)||20;
+
+  var drops=[];
+  var kg=startKg;
+  for(var i=0;i<=numDrops;i++){
+    drops.push({kg:Math.round(kg/2.5)*2.5||0,reps:''});
+    kg=kg*(1-dropPct/100);
+  }
+  var data=_b33load('rfc_dropset_'+uid+'_'+today)||{sets:[]};
+  data.sets.push({name:name.trim()||'Exercise',drops:drops});
+  _b33save('rfc_dropset_'+uid+'_'+today,data);
+  var ni=document.getElementById('rfc-ds-name'); if(ni) ni.value='';
+  var ki=document.getElementById('rfc-ds-startkg'); if(ki) ki.value='';
+  _renderDropSets();
+};
+window._rfcDSUpdate=function(si,di,field,val){
+  var uid=_b33uid(), today=_b33today();
+  var data=_b33load('rfc_dropset_'+uid+'_'+today)||{sets:[]};
+  if(data.sets[si]&&data.sets[si].drops[di]) data.sets[si].drops[di][field]=parseFloat(val)||0;
+  _b33save('rfc_dropset_'+uid+'_'+today,data);
+};
+window._rfcDSDelete=function(si){
+  var uid=_b33uid(), today=_b33today();
+  var data=_b33load('rfc_dropset_'+uid+'_'+today)||{sets:[]};
+  data.sets.splice(si,1);
+  _b33save('rfc_dropset_'+uid+'_'+today,data);
+  _renderDropSets();
+};
+
+/* ── switchScreen wrap ── */
+window.switchScreen=function(name,navEl){
+  _origSS31&&_origSS31(name,navEl);
+  if(name==='dashboard'){
+    setTimeout(function(){ _injectGoalWt(); }, 1200);
+  }
+  if(name==='nutrition'){
+    setTimeout(function(){ _injectElectro(); _renderElectro(); }, 1100);
+  }
+  if(name==='workouts'){
+    setTimeout(function(){ _injectDropSet(); _renderDropSets(); }, 1050);
+  }
+};
+
+setTimeout(function(){
+  _injectGoalWt();
+  _injectElectro();
+  _injectDropSet();
+}, 25000);
+
+setTimeout(function(){
+  if(!document.getElementById('rfc-goalwt-wrap'))  _injectGoalWt();
+  if(!document.getElementById('rfc-electro-wrap')) _injectElectro();
+  if(!document.getElementById('rfc-dropset-wrap')) _injectDropSet();
+}, 29000);
+
+})();
+</script>
+
+</body>
 </html>
