@@ -39855,5 +39855,268 @@ setTimeout(function(){
 })();
 </script>
 
+<!-- Batch 56: Joint Health, Electrolyte Balance, Plyometric Logger -->
+<script>
+(function(){ 'use strict';
+var _origSS54=window.switchScreen;
+function _b56uid(){ try{ return JSON.parse(localStorage.getItem('bm_user')||'{}').uid||'guest'; }catch(e){ return 'guest'; } }
+function _b56today(){ var d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function _b56load(k){ try{ return JSON.parse(localStorage.getItem(k))||null; }catch(e){ return null; } }
+function _b56save(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} }
+function _b56card(id,title){ var d=document.createElement('div'); d.id=id; d.style.cssText='background:#1a1a2e;border-radius:14px;padding:18px;margin:14px 0;color:#e0e0e0;font-family:inherit;'; d.innerHTML='<div style="font-size:15px;font-weight:700;color:#00d4ff;margin-bottom:14px;">'+title+'</div>'; return d; }
+
+/* ── Joint Health Tracker ── */
+function _injectJoint(){
+  if(document.getElementById('rfc-joint-wrap')) return;
+  var anchor=document.getElementById('rfc-nsr-wrap')||document.getElementById('rfc-energydrain-wrap')||document.getElementById('rfc-metage-wrap')||document.getElementById('rfc-wins-wrap');
+  if(!anchor) return;
+  var JOINTS=[
+    {id:'kn',label:'Knees'},
+    {id:'sh',label:'Shoulders'},
+    {id:'hi',label:'Hips'},
+    {id:'lw',label:'Lower Back'},
+    {id:'el',label:'Elbows'},
+    {id:'an',label:'Ankles'},
+    {id:'wr',label:'Wrists'},
+    {id:'ne',label:'Neck'}
+  ];
+  var rows=JOINTS.map(function(j){
+    return '<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid #222;">'
+      +'<span style="width:90px;font-size:12px;color:#aaa;">'+j.label+'</span>'
+      +'<div style="display:flex;gap:4px;">'
+      +[0,1,2,3,4].map(function(v){
+        var lbl=['None','Mild','Dull','Sharp','Severe'][v];
+        var col=['#4caf50','#8bc34a','#ff9800','#ff5722','#f44336'][v];
+        return '<button onclick="window._rfcJointSet(\''+j.id+'\','+v+')" id="rfc-joint-'+j.id+'-'+v+'" '
+          +'style="padding:3px 7px;border:1px solid #333;border-radius:6px;background:#0d0d1a;color:#aaa;font-size:10px;cursor:pointer;" '
+          +'title="'+lbl+'">'+v+'</button>';
+      }).join('')
+      +'</div>'
+      +'<span id="rfc-joint-'+j.id+'-lbl" style="font-size:10px;color:#888;margin-left:4px;min-width:42px;"></span>'
+      +'</div>';
+  }).join('');
+  var c=_b56card('rfc-joint-wrap','🦴 Joint Health Tracker');
+  c.innerHTML+=`
+<div style="font-size:12px;color:#aaa;margin-bottom:10px;">Rate pain/discomfort per joint (0=none, 4=severe)</div>
+${rows}
+<button onclick="window._rfcJointSave()" style="margin-top:12px;width:100%;padding:9px;border:none;border-radius:8px;background:#00d4ff;color:#000;font-weight:700;cursor:pointer;">Save Today</button>
+<div id="rfc-joint-result" style="margin-top:10px;display:none;"></div>
+<div id="rfc-joint-tips" style="margin-top:8px;font-size:11px;color:#aaa;padding:8px;background:#0d0d1a;border-radius:8px;">
+  <strong style="color:#e0e0e0;">Joint care tips:</strong> Fish oil · Collagen + Vit C · Warm-up properly · Avoid locking joints under load
+</div>`;
+  anchor.after(c);
+}
+var _jointState={};
+window._rfcJointSet=function(id,val){
+  _jointState[id]=val;
+  var LABELS=['None','Mild','Dull','Sharp','Severe'];
+  var COLORS=['#4caf50','#8bc34a','#ff9800','#ff5722','#f44336'];
+  [0,1,2,3,4].forEach(function(v){
+    var btn=document.getElementById('rfc-joint-'+id+'-'+v);
+    if(btn){ btn.style.background=v===val?COLORS[v]:'#0d0d1a'; btn.style.color=v===val?'#000':'#aaa'; btn.style.borderColor=v===val?COLORS[v]:'#333'; }
+  });
+  var lbl=document.getElementById('rfc-joint-'+id+'-lbl');
+  if(lbl){ lbl.textContent=LABELS[val]; lbl.style.color=COLORS[val]; }
+};
+window._rfcJointSave=function(){
+  var uid=_b56uid(), key='rfc_joint_'+uid+'_'+_b56today();
+  _b56save(key,_jointState);
+  _showJointResult();
+};
+function _showJointResult(){
+  var el=document.getElementById('rfc-joint-result'); if(!el) return;
+  var vals=Object.values(_jointState);
+  if(!vals.length){ el.style.display='none'; return; }
+  var total=vals.reduce(function(a,b){return a+b;},0);
+  var max=vals.length*4;
+  var pct=Math.round(total/max*100);
+  var col=pct===0?'#4caf50':pct<=25?'#8bc34a':pct<=50?'#ff9800':'#f44336';
+  var msg=pct===0?'No joint issues reported — great!':pct<=25?'Minor discomfort — monitor closely':pct<=50?'Moderate — consider deload or physio':'Significant joint stress — rest advised';
+  el.style.display='block';
+  el.innerHTML='<div style="background:#0d0d1a;border-radius:8px;padding:10px;text-align:center;">'
+    +'<div style="font-size:20px;font-weight:700;color:'+col+';">'+pct+'% Stress</div>'
+    +'<div style="font-size:12px;color:'+col+';margin-top:4px;">'+msg+'</div></div>';
+}
+function _renderJoint(){
+  if(!document.getElementById('rfc-joint-wrap')) return;
+  var uid=_b56uid(), key='rfc_joint_'+uid+'_'+_b56today();
+  var saved=_b56load(key)||{};
+  _jointState=Object.assign({},saved);
+  Object.keys(_jointState).forEach(function(id){ window._rfcJointSet(id,_jointState[id]); });
+  _showJointResult();
+}
+
+/* ── Electrolyte Balance ── */
+function _injectElec(){
+  if(document.getElementById('rfc-elec-wrap')) return;
+  var anchor=document.getElementById('rfc-vitb-wrap')||document.getElementById('rfc-alcohol-wrap')||document.getElementById('rfc-mealtiming-wrap')||document.getElementById('rfc-inflam-wrap');
+  if(!anchor) return;
+  var ITEMS=[
+    {id:'so',label:'Sodium — salt, pickles, bouillon',role:'Fluid balance',rda:'1.5–2.3g',pts:3},
+    {id:'po',label:'Potassium — banana, potato, avocado',role:'Muscle contraction',rda:'2.6–3.4g',pts:3},
+    {id:'mg',label:'Magnesium — nuts, seeds, dark choc',role:'300+ enzyme reactions',rda:'310–420mg',pts:3},
+    {id:'ca',label:'Calcium — dairy, leafy greens',role:'Bone & muscle function',rda:'1000mg',pts:3},
+    {id:'ch',label:'Chloride — salt, seaweed',role:'Stomach acid / pH',rda:'2.3g',pts:2},
+    {id:'ph',label:'Phosphate — meat, fish, eggs',role:'ATP energy production',rda:'700mg',pts:2},
+    {id:'hy',label:'Hydration — 2L+ water today',role:'All electrolyte function',rda:'2–3L',pts:4}
+  ];
+  var rows=ITEMS.map(function(it){
+    return '<label style="display:flex;align-items:flex-start;gap:8px;padding:7px 0;border-bottom:1px solid #1a1a2e;cursor:pointer;">'
+      +'<input type="checkbox" id="rfc-elec-'+it.id+'" onchange="window._rfcElecChg()" style="width:15px;height:15px;margin-top:2px;accent-color:#00d4ff;">'
+      +'<div style="flex:1;"><div style="font-size:13px;">'+it.label+'</div>'
+      +'<div style="font-size:10px;color:#888;">'+it.role+' · RDA: '+it.rda+'</div></div>'
+      +'<span style="font-size:12px;color:#00d4ff;min-width:22px;text-align:right;">+'+it.pts+'</span></label>';
+  }).join('');
+  var c=_b56card('rfc-elec-wrap','⚡ Electrolyte Balance');
+  c.innerHTML+=`
+<div style="font-size:12px;color:#aaa;margin-bottom:10px;">Track electrolyte sources consumed today</div>
+<div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+  <div id="rfc-elec-ring" style="width:60px;height:60px;flex-shrink:0;"></div>
+  <div><div id="rfc-elec-pts" style="font-size:22px;font-weight:700;color:#00d4ff;">0<span style="font-size:12px;color:#aaa;">/20</span></div>
+  <div id="rfc-elec-msg" style="font-size:11px;color:#aaa;">Check off electrolytes below</div></div>
+</div>
+<div style="max-height:260px;overflow-y:auto;">${rows}</div>
+<div id="rfc-elec-warn" style="margin-top:10px;font-size:11px;padding:8px;background:#0d0d1a;border-radius:8px;color:#ff9800;display:none;"></div>`;
+  anchor.after(c);
+}
+window._rfcElecChg=function(){
+  var ITEMS=[{id:'so',pts:3},{id:'po',pts:3},{id:'mg',pts:3},{id:'ca',pts:3},{id:'ch',pts:2},{id:'ph',pts:2},{id:'hy',pts:4}];
+  var total=20, pts=0, state={};
+  ITEMS.forEach(function(it){
+    var cb=document.getElementById('rfc-elec-'+it.id);
+    if(cb&&cb.checked){ pts+=it.pts; state[it.id]=1; }
+  });
+  var uid=_b56uid(), key='rfc_elec_'+uid+'_'+_b56today();
+  _b56save(key,state);
+  var pct=Math.round(pts/total*100);
+  var col=pct>=75?'#4caf50':pct>=50?'#ff9800':'#f44336';
+  var msg=pct>=75?'Well electrolyte-balanced!':pct>=50?'Decent — keep hydrating':'Low electrolytes — risk of cramping';
+  document.getElementById('rfc-elec-pts').innerHTML=pts+'<span style="font-size:12px;color:#aaa;">/'+total+'</span>';
+  document.getElementById('rfc-elec-msg').textContent=msg;
+  document.getElementById('rfc-elec-msg').style.color=col;
+  var r=document.getElementById('rfc-elec-ring');
+  var circ=Math.round(2*Math.PI*24), dash=Math.round(circ*pct/100);
+  r.innerHTML='<svg width="60" height="60" viewBox="0 0 60 60"><circle cx="30" cy="30" r="24" fill="none" stroke="#222" stroke-width="6"/><circle cx="30" cy="30" r="24" fill="none" stroke="'+col+'" stroke-width="6" stroke-dasharray="'+dash+' '+circ+'" stroke-dashoffset="'+Math.round(circ*0.25)+'" stroke-linecap="round"/><text x="30" y="35" text-anchor="middle" fill="'+col+'" font-size="12" font-weight="700">'+pct+'%</text></svg>';
+  var warn=document.getElementById('rfc-elec-warn');
+  var hyEl=document.getElementById('rfc-elec-hy');
+  if(hyEl&&!hyEl.checked){ warn.style.display='block'; warn.textContent='⚠️ Hydration not checked — electrolytes are ineffective without adequate water intake.'; }
+  else{ warn.style.display='none'; }
+};
+function _renderElec(){
+  if(!document.getElementById('rfc-elec-wrap')) return;
+  var ITEMS=[{id:'so'},{id:'po'},{id:'mg'},{id:'ca'},{id:'ch'},{id:'ph'},{id:'hy'}];
+  var uid=_b56uid(), key='rfc_elec_'+uid+'_'+_b56today();
+  var saved=_b56load(key)||{};
+  ITEMS.forEach(function(it){
+    var cb=document.getElementById('rfc-elec-'+it.id);
+    if(cb) cb.checked=!!saved[it.id];
+  });
+  window._rfcElecChg();
+}
+
+/* ── Plyometric Logger ── */
+function _injectPlyо(){
+  if(document.getElementById('rfc-plyo-wrap')) return;
+  var anchor=document.getElementById('rfc-acc-wrap')||document.getElementById('rfc-peaktime-wrap')||document.getElementById('rfc-fittest-wrap')||document.getElementById('rfc-stretch30-wrap');
+  if(!anchor) return;
+  var EXERCISES=[
+    {id:'bj',label:'Box Jumps',unit:'cm',higher:true},
+    {id:'brd',label:'Broad Jump',unit:'cm',higher:true},
+    {id:'dj',label:'Depth Jump',unit:'cm',higher:true},
+    {id:'sj',label:'Standing Vertical',unit:'cm',higher:true},
+    {id:'lp',label:'Lateral Bounds',unit:'reps',higher:true},
+    {id:'sp',label:'Speed Skaters',unit:'reps',higher:true},
+    {id:'tj',label:'Tuck Jumps',unit:'reps',higher:true},
+    {id:'bj2',label:'Burpee Broad Jumps',unit:'reps',higher:true}
+  ];
+  var rows=EXERCISES.map(function(e){
+    return '<div style="padding:7px 0;border-bottom:1px solid #222;">'
+      +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">'
+      +'<span style="font-size:13px;">'+e.label+'</span>'
+      +'<span id="rfc-plyo-pb-'+e.id+'" style="font-size:10px;color:#ff9800;"></span></div>'
+      +'<div style="display:flex;gap:6px;">'
+      +'<input id="rfc-plyo-v-'+e.id+'" type="number" min="0" step="0.5" placeholder="'+e.unit+'" style="flex:1;padding:6px;border-radius:6px;border:1px solid #333;background:#0d0d1a;color:#e0e0e0;font-size:12px;">'
+      +'<button onclick="window._rfcPlyoLog(\''+e.id+'\')" style="padding:6px 12px;border:none;border-radius:6px;background:#9c27b0;color:#fff;font-size:11px;cursor:pointer;">Log</button>'
+      +'</div></div>';
+  }).join('');
+  var c=_b56card('rfc-plyo-wrap','💥 Plyometric Logger');
+  c.innerHTML+=`
+<div style="font-size:12px;color:#aaa;margin-bottom:12px;">Log explosive power exercises — PRs tracked automatically</div>
+${rows}
+<div id="rfc-plyo-today" style="margin-top:12px;"></div>`;
+  anchor.after(c);
+  _renderPlyo();
+}
+window._rfcPlyoLog=function(id){
+  var EXERCISES=[
+    {id:'bj',label:'Box Jumps',unit:'cm',higher:true},
+    {id:'brd',label:'Broad Jump',unit:'cm',higher:true},
+    {id:'dj',label:'Depth Jump',unit:'cm',higher:true},
+    {id:'sj',label:'Standing Vertical',unit:'cm',higher:true},
+    {id:'lp',label:'Lateral Bounds',unit:'reps',higher:true},
+    {id:'sp',label:'Speed Skaters',unit:'reps',higher:true},
+    {id:'tj',label:'Tuck Jumps',unit:'reps',higher:true},
+    {id:'bj2',label:'Burpee Broad Jumps',unit:'reps',higher:true}
+  ];
+  var ex=EXERCISES.find(function(e){return e.id===id;});
+  if(!ex) return;
+  var val=parseFloat(document.getElementById('rfc-plyo-v-'+id).value);
+  if(!val||isNaN(val)){ alert('Enter a value'); return; }
+  var uid=_b56uid();
+  var pbKey='rfc_plyo_pbs_'+uid;
+  var dayKey='rfc_plyo_'+uid+'_'+_b56today();
+  var pbs=_b56load(pbKey)||{};
+  var today=_b56load(dayKey)||{};
+  today[id]=val;
+  _b56save(dayKey,today);
+  if(!pbs[id]||val>pbs[id]) pbs[id]=val;
+  _b56save(pbKey,pbs);
+  document.getElementById('rfc-plyo-v-'+id).value='';
+  _showPlyoPBs(pbs);
+  _showPlyoToday(today);
+};
+function _showPlyoPBs(pbs){
+  var EXERCISES=[{id:'bj',unit:'cm'},{id:'brd',unit:'cm'},{id:'dj',unit:'cm'},{id:'sj',unit:'cm'},{id:'lp',unit:'reps'},{id:'sp',unit:'reps'},{id:'tj',unit:'reps'},{id:'bj2',unit:'reps'}];
+  EXERCISES.forEach(function(e){
+    var el=document.getElementById('rfc-plyo-pb-'+e.id);
+    if(el&&pbs[e.id]) el.textContent='PB: '+pbs[e.id]+e.unit;
+  });
+}
+function _showPlyoToday(today){
+  var el=document.getElementById('rfc-plyo-today'); if(!el) return;
+  var entries=Object.keys(today);
+  if(!entries.length){ el.innerHTML=''; return; }
+  var LABELS={bj:'Box Jumps',brd:'Broad Jump',dj:'Depth Jump',sj:'Vertical',lp:'Lat Bounds',sp:'Speed Skater',tj:'Tuck Jumps',bj2:'Burpee BJ'};
+  var UNITS={bj:'cm',brd:'cm',dj:'cm',sj:'cm',lp:'reps',sp:'reps',tj:'reps',bj2:'reps'};
+  var html='<div style="font-size:12px;color:#aaa;margin-bottom:6px;">Today\'s Plyo Session</div><div style="display:flex;flex-wrap:wrap;gap:6px;">';
+  entries.forEach(function(k){ html+='<div style="background:#0d0d1a;border-radius:8px;padding:8px 12px;text-align:center;"><div style="font-size:16px;font-weight:700;color:#9c27b0;">'+today[k]+'<span style="font-size:10px;">'+UNITS[k]+'</span></div><div style="font-size:10px;color:#aaa;">'+LABELS[k]+'</div></div>'; });
+  el.innerHTML=html+'</div>';
+}
+function _renderPlyo(){
+  if(!document.getElementById('rfc-plyo-wrap')) return;
+  var uid=_b56uid();
+  var pbs=_b56load('rfc_plyo_pbs_'+uid)||{};
+  var today=_b56load('rfc_plyo_'+uid+'_'+_b56today())||{};
+  _showPlyoPBs(pbs);
+  _showPlyoToday(today);
+}
+
+/* ── switchScreen wrapper ── */
+window.switchScreen=function(name,navEl){
+  _origSS54&&_origSS54(name,navEl);
+  if(name==='dashboard') setTimeout(function(){ _injectJoint(); _renderJoint(); },1200);
+  if(name==='nutrition') setTimeout(function(){ _injectElec(); _renderElec(); },1100);
+  if(name==='workouts')  setTimeout(function(){ _injectPlyо(); _renderPlyo(); },1050);
+};
+
+setTimeout(function(){ _injectJoint(); _injectElec(); _injectPlyо(); _renderJoint(); _renderElec(); _renderPlyo(); },48000);
+setTimeout(function(){
+  if(!document.getElementById('rfc-joint-wrap')) { _injectJoint(); _renderJoint(); }
+  if(!document.getElementById('rfc-elec-wrap'))  { _injectElec(); _renderElec(); }
+  if(!document.getElementById('rfc-plyo-wrap'))  { _injectPlyо(); _renderPlyo(); }
+},52000);
+})();
+</script>
+
 </body>
 </html>
