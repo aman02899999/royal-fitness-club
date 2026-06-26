@@ -37943,5 +37943,191 @@ setTimeout(function(){ if(!document.getElementById('rfc-social-wrap')) _injectSo
 })();
 </script>
 
+<script>
+/* ===== BATCH 46: Cold Therapy Tracker | Collagen & Bone Health | Sprint Logger ===== */
+(function(){ 'use strict';
+var _origSS44=window.switchScreen;
+function _b46uid(){ try{ return JSON.parse(localStorage.getItem('bm_user')||'{}').uid||'guest'; }catch(e){ return 'guest'; } }
+function _b46today(){ var d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function _b46load(k){ try{ return JSON.parse(localStorage.getItem(k))||null; }catch(e){ return null; } }
+function _b46save(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} }
+function _b46card(id,title){ var d=document.createElement('div'); d.id=id; d.style.cssText='background:#1a1a2e;border-radius:14px;padding:18px;margin:14px 0;color:#e0e0e0;font-family:inherit;'; d.innerHTML='<div style="font-size:15px;font-weight:700;color:#00d4ff;margin-bottom:14px;">'+title+'</div>'; return d; }
+
+/* ---------- COLD THERAPY TRACKER (dashboard) ---------- */
+var _coldState={timer:null,running:false,elapsed:0,ctx:null};
+function _coldBeep(freq){ try{ if(!_coldState.ctx) _coldState.ctx=new(window.AudioContext||window.webkitAudioContext)(); var o=_coldState.ctx.createOscillator(); var g=_coldState.ctx.createGain(); o.connect(g); g.connect(_coldState.ctx.destination); o.type='sine'; o.frequency.value=freq; g.gain.setValueAtTime(0.2,_coldState.ctx.currentTime); g.gain.exponentialRampToValueAtTime(0.001,_coldState.ctx.currentTime+0.3); o.start(); o.stop(_coldState.ctx.currentTime+0.3); }catch(e){} }
+function _injectCold(){
+  if(document.getElementById('rfc-cold-wrap')) return;
+  var anchor=document.getElementById('rfc-social-wrap')||document.getElementById('rfc-sleepenv-wrap')||document.getElementById('rfc-focus-wrap')||document.getElementById('rfc-posture-wrap')||document.querySelector('.dash-topbar');
+  if(!anchor) return;
+  var card=_b46card('rfc-cold-wrap','🧊 Cold Therapy Tracker');
+  card.style.cssText+='border:1px solid #1a2a4a;';
+  anchor.parentNode.insertBefore(card,anchor.nextSibling);
+  _renderCold();
+}
+function _renderCold(){
+  var card=document.getElementById('rfc-cold-wrap'); if(!card) return;
+  var uid=_b46uid(), today=_b46today();
+  var key='rfc_cold_'+uid+'_'+today;
+  var data=_b46load(key)||{sessions:[],type:'shower',temp:10,mood_before:5};
+  var sessions=data.sessions||[];
+  var totalSec=sessions.reduce(function(a,s){ return a+(s.sec||0); },0);
+  var avgMoodAfter=sessions.length?Math.round(sessions.reduce(function(a,s){ return a+(s.mood_after||5); },0)/sessions.length):0;
+  var html='<div style="font-size:15px;font-weight:700;color:#00d4ff;margin-bottom:14px;">🧊 Cold Therapy Tracker</div>';
+  html+='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;">';
+  html+='<div style="background:#0d1a2e;border-radius:9px;padding:9px;text-align:center;"><div style="font-size:18px;font-weight:800;color:#00d4ff;">'+sessions.length+'</div><div style="font-size:10px;color:#888;">Sessions</div></div>';
+  html+='<div style="background:#0d1a2e;border-radius:9px;padding:9px;text-align:center;"><div style="font-size:18px;font-weight:800;color:#00d4ff;">'+Math.floor(totalSec/60)+'m '+String(totalSec%60).padStart(2,'0')+'s</div><div style="font-size:10px;color:#888;">Total Time</div></div>';
+  html+='<div style="background:#0d1a2e;border-radius:9px;padding:9px;text-align:center;"><div style="font-size:18px;font-weight:800;color:'+(avgMoodAfter>=7?'#00ff88':avgMoodAfter>=5?'#ffd700':'#aaa')+'">'+(avgMoodAfter||'—')+'</div><div style="font-size:10px;color:#888;">Avg Mood After</div></div></div>';
+  if(_coldState.running){
+    html+='<div style="background:#0d1a2e;border:2px solid #00d4ff;border-radius:12px;padding:16px;text-align:center;margin-bottom:12px;">';
+    html+='<div style="font-size:38px;font-weight:800;color:#00d4ff;">'+Math.floor(_coldState.elapsed/60)+'m '+String(_coldState.elapsed%60).padStart(2,'0')+'s</div>';
+    html+='<div style="font-size:12px;color:#aaa;margin-bottom:12px;">Session in progress...</div>';
+    html+='<label style="font-size:12px;color:#aaa;">Mood After: <strong id="rfc-cold-ma-label" style="color:#ffd700;">5</strong></label><br>';
+    html+='<input type="range" min="1" max="10" value="5" id="rfc-cold-ma" style="width:100%;accent-color:#00d4ff;margin:6px 0;" oninput="document.getElementById(\'rfc-cold-ma-label\').textContent=this.value">';
+    html+='<button onclick="window._rfcColdStop()" style="width:100%;background:#00d4ff;border:none;color:#000;padding:10px;border-radius:8px;font-size:13px;font-weight:800;cursor:pointer;">■ End Session</button></div>';
+  } else {
+    html+='<div style="background:#0d1a2e;border-radius:10px;padding:12px;margin-bottom:12px;">';
+    html+='<div style="display:flex;gap:8px;margin-bottom:8px;"><button onclick="window._rfcColdType(\'shower\')" style="flex:1;padding:7px;border-radius:7px;border:1px solid '+(data.type==='shower'?'#00d4ff':'#2a2a4a')+';background:'+(data.type==='shower'?'#0d2a3a':'#12122a')+';color:'+(data.type==='shower'?'#00d4ff':'#888')+';font-size:12px;cursor:pointer;">🚿 Cold Shower</button><button onclick="window._rfcColdType(\'bath\')" style="flex:1;padding:7px;border-radius:7px;border:1px solid '+(data.type==='bath'?'#00d4ff':'#2a2a4a')+';background:'+(data.type==='bath'?'#0d2a3a':'#12122a')+';color:'+(data.type==='bath'?'#00d4ff':'#888')+';font-size:12px;cursor:pointer;">🛁 Ice Bath</button></div>';
+    html+='<label style="font-size:12px;color:#aaa;">Temperature: <strong style="color:#00d4ff;">'+(data.temp||10)+'°C</strong></label><br><input type="range" min="0" max="25" step="1" value="'+(data.temp||10)+'" oninput="window._rfcColdTemp(parseInt(this.value))" style="width:100%;accent-color:#00d4ff;margin:6px 0;">';
+    html+='<label style="font-size:12px;color:#aaa;">Mood Before: <strong style="color:#ffd700;">'+(data.mood_before||5)+'/10</strong></label><br><input type="range" min="1" max="10" value="'+(data.mood_before||5)+'" oninput="window._rfcColdMoodBefore(parseInt(this.value))" style="width:100%;accent-color:#ffd700;margin:6px 0;">';
+    html+='<button onclick="window._rfcColdStart()" style="width:100%;background:#00d4ff;border:none;color:#000;padding:10px;border-radius:8px;font-size:13px;font-weight:800;cursor:pointer;margin-top:6px;">▶ Start Session</button></div>';
+  }
+  if(sessions.length){ html+='<div style="font-size:12px;color:#888;margin-bottom:6px;">Recent</div>'; sessions.slice(-3).reverse().forEach(function(s){ html+='<div style="display:flex;gap:8px;padding:7px;background:#0d1a2e;border-radius:7px;margin-bottom:4px;"><span style="font-size:14px;">'+(s.type==='bath'?'🛁':'🚿')+'</span><div style="flex:1;font-size:12px;color:#ccc;">'+Math.floor(s.sec/60)+'m '+String(s.sec%60).padStart(2,'0')+'s at '+s.temp+'°C</div><span style="font-size:12px;color:#ffd700;">'+s.mood_after+'/10 after</span></div>'; }); }
+  card.innerHTML=html;
+}
+window._rfcColdType=function(t){ var uid=_b46uid(), today=_b46today(); var k='rfc_cold_'+uid+'_'+today; var d=_b46load(k)||{sessions:[],type:'shower',temp:10,mood_before:5}; d.type=t; _b46save(k,d); _renderCold(); };
+window._rfcColdTemp=function(v){ var uid=_b46uid(), today=_b46today(); var k='rfc_cold_'+uid+'_'+today; var d=_b46load(k)||{sessions:[],type:'shower',temp:10,mood_before:5}; d.temp=v; _b46save(k,d); _renderCold(); };
+window._rfcColdMoodBefore=function(v){ var uid=_b46uid(), today=_b46today(); var k='rfc_cold_'+uid+'_'+today; var d=_b46load(k)||{sessions:[],type:'shower',temp:10,mood_before:5}; d.mood_before=v; _b46save(k,d); _renderCold(); };
+window._rfcColdStart=function(){ _coldState.running=true; _coldState.elapsed=0; _coldBeep(528); if(_coldState.timer) clearInterval(_coldState.timer); _coldState.timer=setInterval(function(){ _coldState.elapsed++; _renderCold(); },1000); _renderCold(); };
+window._rfcColdStop=function(){
+  if(_coldState.timer){ clearInterval(_coldState.timer); _coldState.timer=null; } _coldState.running=false;
+  var ma=document.getElementById('rfc-cold-ma'); var moodAfter=ma?parseInt(ma.value):5;
+  var uid=_b46uid(), today=_b46today(); var k='rfc_cold_'+uid+'_'+today;
+  var d=_b46load(k)||{sessions:[],type:'shower',temp:10,mood_before:5};
+  d.sessions=d.sessions||[];
+  d.sessions.push({sec:_coldState.elapsed,type:d.type,temp:d.temp,mood_before:d.mood_before,mood_after:moodAfter});
+  _coldBeep(660); _b46save(k,d); _coldState.elapsed=0; _renderCold();
+};
+
+/* ---------- COLLAGEN & BONE HEALTH (nutrition) ---------- */
+var COLLAGEN_FOODS=[
+  {id:'bone_broth',label:'Bone Broth (cup)',icon:'🍲',pts:3},
+  {id:'chicken_skin',label:'Chicken with Skin',icon:'🍗',pts:2},
+  {id:'egg_white',label:'Egg Whites',icon:'🥚',pts:2},
+  {id:'vitc_pepper',label:'Bell Pepper (Vit C)',icon:'🫑',pts:2},
+  {id:'vitc_citrus',label:'Citrus Fruit (Vit C)',icon:'🍊',pts:2},
+  {id:'berries_col',label:'Berries (anthocyanins)',icon:'🫐',pts:2},
+  {id:'leafy_col',label:'Dark Leafy Greens',icon:'🥬',pts:2},
+  {id:'pumpkin_col',label:'Pumpkin Seeds (zinc)',icon:'🎃',pts:1},
+  {id:'dairy_ca',label:'Dairy (calcium)',icon:'🥛',pts:2},
+  {id:'salmon_col',label:'Salmon (omega-3)',icon:'🐟',pts:2},
+  {id:'soy_col',label:'Soy Foods (genistein)',icon:'🫘',pts:1},
+  {id:'vit_d',label:'Vitamin D supplement',icon:'☀️',pts:2}
+];
+function _injectCollagen(){
+  if(document.getElementById('rfc-collagen-wrap')) return;
+  var anchor=document.getElementById('rfc-glycemic-wrap')||document.getElementById('rfc-vegvar-wrap')||document.getElementById('rfc-macsplit-wrap')||document.getElementById('rfc-omega3-wrap')||document.querySelector('.dash-topbar');
+  if(!anchor) return;
+  var card=_b46card('rfc-collagen-wrap','🦴 Collagen & Bone Health');
+  card.style.cssText+='border:1px solid #2a2a1a;';
+  anchor.parentNode.insertBefore(card,anchor.nextSibling);
+  _renderCollagen();
+}
+function _renderCollagen(){
+  var card=document.getElementById('rfc-collagen-wrap'); if(!card) return;
+  var uid=_b46uid(), today=_b46today();
+  var key='rfc_collagen_'+uid+'_'+today;
+  var data=_b46load(key)||{};
+  var maxPts=26;
+  var got=COLLAGEN_FOODS.reduce(function(a,f){ return a+(data[f.id]?f.pts:0); },0);
+  var pct=Math.min(100,Math.round((got/maxPts)*100));
+  var pc=pct>=65?'#00ff88':pct>=35?'#ffd700':'#ff6b6b';
+  var html='<div style="font-size:15px;font-weight:700;color:#00d4ff;margin-bottom:14px;">🦴 Collagen & Bone Health</div>';
+  html+='<div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;"><div style="font-size:36px;font-weight:800;color:'+pc+';">'+pct+'%</div><div><div style="font-size:13px;color:'+pc+';">'+(pct>=65?'Excellent bone support!':pct>=35?'Moderate — add more':'Needs improvement')+'</div><div style="font-size:11px;color:#888;">Score: '+got+'/'+maxPts+'</div></div></div>';
+  html+='<div style="background:#12122a;border-radius:8px;height:8px;margin-bottom:14px;overflow:hidden;"><div style="height:8px;background:'+pc+';width:'+pct+'%;border-radius:8px;transition:width 0.4s;"></div></div>';
+  html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;">';
+  COLLAGEN_FOODS.forEach(function(f){
+    var ok=!!data[f.id];
+    html+='<div onclick="window._rfcColTap(\''+f.id+'\')" style="cursor:pointer;background:'+(ok?'#1a1a0d':'#12122a')+';border:1px solid '+(ok?'#ffd700':'#2a2a4a')+';border-radius:9px;padding:9px;display:flex;align-items:center;gap:6px;">';
+    html+='<span style="font-size:15px;">'+f.icon+'</span>';
+    html+='<div style="flex:1;"><div style="font-size:11px;color:'+(ok?'#ffd700':'#ccc')+';">'+f.label+'</div><div style="font-size:10px;color:#aaa;">+'+f.pts+' pts</div></div>';
+    html+='<span>'+(ok?'✅':'⭕')+'</span></div>';
+  });
+  html+='</div>';
+  card.innerHTML=html;
+}
+window._rfcColTap=function(id){ var uid=_b46uid(), today=_b46today(); var key='rfc_collagen_'+uid+'_'+today; var data=_b46load(key)||{}; data[id]=!data[id]; _b46save(key,data); _renderCollagen(); };
+
+/* ---------- SPRINT TRAINING LOGGER (workouts) ---------- */
+var SPRINT_DISTS=[40,60,100,150,200,400];
+var _sprintState={dist:100,rest:90};
+function _injectSprint(){
+  if(document.getElementById('rfc-sprint-wrap')) return;
+  var anchor=document.getElementById('rfc-1rm-wrap')||document.getElementById('rfc-cardio-wrap')||document.getElementById('rfc-p2w-wrap')||document.getElementById('rfc-rom-wrap')||document.querySelector('.dash-topbar');
+  if(!anchor) return;
+  var card=_b46card('rfc-sprint-wrap','🏃 Sprint Training Logger');
+  card.style.cssText+='border:1px solid #2a1a1a;';
+  anchor.parentNode.insertBefore(card,anchor.nextSibling);
+  _renderSprint();
+}
+function _renderSprint(){
+  var card=document.getElementById('rfc-sprint-wrap'); if(!card) return;
+  var uid=_b46uid(), today=_b46today();
+  var dkey='rfc_sprint_'+uid+'_'+today;
+  var pkey='rfc_sprint_pbs_'+uid;
+  var data=_b46load(dkey)||{reps:[]};
+  var pbs=_b46load(pkey)||{};
+  var dist=_sprintState.dist||100;
+  var reps=data.reps||[];
+  var distReps=reps.filter(function(r){ return r.dist===dist; });
+  var bestTime=distReps.length?Math.min.apply(null,distReps.map(function(r){ return r.sec; })):null;
+  var pb=pbs[dist]||null;
+  var html='<div style="font-size:15px;font-weight:700;color:#00d4ff;margin-bottom:14px;">🏃 Sprint Training Logger</div>';
+  html+='<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;">';
+  SPRINT_DISTS.forEach(function(d){ html+='<button onclick="window._rfcSprintDist('+d+')" style="flex:1;min-width:46px;padding:8px 4px;border-radius:7px;border:1px solid '+(dist===d?'#ff6b6b':'#2a2a4a')+';background:'+(dist===d?'#2a0d0d':'#12122a')+';color:'+(dist===d?'#ff6b6b':'#888')+';font-size:12px;font-weight:700;cursor:pointer;">'+d+'m</button>'; });
+  html+='</div>';
+  html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">';
+  html+='<div style="background:#12122a;border-radius:9px;padding:10px;text-align:center;"><div style="font-size:22px;font-weight:800;color:#ffd700;">'+(pb?pb+'s':'—')+'</div><div style="font-size:11px;color:#888;">PB for '+dist+'m</div></div>';
+  html+='<div style="background:#12122a;border-radius:9px;padding:10px;text-align:center;"><div style="font-size:22px;font-weight:800;color:#00d4ff;">'+distReps.length+'</div><div style="font-size:11px;color:#888;">Reps Today</div></div></div>';
+  html+='<div style="background:#12122a;border-radius:10px;padding:12px;margin-bottom:10px;">';
+  html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">';
+  html+='<div><div style="font-size:11px;color:#888;margin-bottom:4px;">Time (sec)</div><input type="number" id="rfc-sprint-sec" min="1" max="300" step="0.1" placeholder="sec" style="width:100%;background:#0d0d20;border:1px solid #2a2a4a;color:#fff;border-radius:6px;padding:7px;font-size:16px;font-weight:700;box-sizing:border-box;"></div>';
+  html+='<div><div style="font-size:11px;color:#888;margin-bottom:4px;">Rest Between (sec)</div><input type="number" id="rfc-sprint-rest" min="10" max="600" value="'+(data.restSec||90)+'" style="width:100%;background:#0d0d20;border:1px solid #2a2a4a;color:#fff;border-radius:6px;padding:7px;font-size:16px;box-sizing:border-box;"></div>';
+  html+='</div>';
+  html+='<button onclick="window._rfcSprintLog()" style="width:100%;background:#ff6b6b;border:none;color:#fff;padding:9px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;">+ Log Rep</button></div>';
+  if(distReps.length){
+    html+='<div style="font-size:12px;color:#888;margin-bottom:6px;">Today\'s '+dist+'m Reps:</div>';
+    html+='<div style="display:flex;gap:6px;flex-wrap:wrap;">';
+    distReps.forEach(function(r,i){ var isPB=r.sec===bestTime&&r.sec===pb; html+='<div style="background:'+(isPB?'#2a1a00':'#12122a')+';border:1px solid '+(isPB?'#ffd700':'#2a2a4a')+';border-radius:7px;padding:6px 10px;text-align:center;"><div style="font-size:11px;color:#888;">Rep '+(i+1)+'</div><div style="font-size:14px;font-weight:700;color:'+(isPB?'#ffd700':'#fff')+';">'+r.sec+'s'+(isPB?' 🏆':'')+'</div></div>'; });
+    html+='</div>';
+    if(distReps.length>1){ var avg=Math.round(distReps.reduce(function(a,r){ return a+r.sec; },0)/distReps.length*10)/10; html+='<div style="margin-top:8px;font-size:12px;color:#888;">Avg: <strong style="color:#00d4ff;">'+avg+'s</strong></div>'; }
+  }
+  card.innerHTML=html;
+}
+window._rfcSprintDist=function(d){ _sprintState.dist=d; _renderSprint(); };
+window._rfcSprintLog=function(){
+  var secInp=document.getElementById('rfc-sprint-sec'); var restInp=document.getElementById('rfc-sprint-rest');
+  var sec=parseFloat(secInp.value)||0; if(!sec) return;
+  var rest=parseInt(restInp.value)||90;
+  var uid=_b46uid(), today=_b46today();
+  var dkey='rfc_sprint_'+uid+'_'+today; var pkey='rfc_sprint_pbs_'+uid;
+  var data=_b46load(dkey)||{reps:[]}; var pbs=_b46load(pkey)||{};
+  data.reps=data.reps||[]; data.reps.push({dist:_sprintState.dist,sec:sec,rest:rest,ts:Date.now()}); data.restSec=rest;
+  if(!pbs[_sprintState.dist]||sec<pbs[_sprintState.dist]) pbs[_sprintState.dist]=sec;
+  _b46save(dkey,data); _b46save(pkey,pbs);
+  secInp.value=''; _renderSprint();
+};
+
+window.switchScreen=function(name,navEl){
+  _origSS44&&_origSS44(name,navEl);
+  if(name==='dashboard') setTimeout(function(){ _injectCold(); _renderCold(); },1200);
+  if(name==='nutrition') setTimeout(function(){ _injectCollagen(); _renderCollagen(); },1100);
+  if(name==='workouts')  setTimeout(function(){ _injectSprint(); _renderSprint(); },1050);
+};
+setTimeout(function(){ _injectCold(); _injectCollagen(); _injectSprint(); },38000);
+setTimeout(function(){ if(!document.getElementById('rfc-cold-wrap')) _injectCold(); if(!document.getElementById('rfc-collagen-wrap')) _injectCollagen(); if(!document.getElementById('rfc-sprint-wrap')) _injectSprint(); },42000);
+})();
+</script>
+
 </body>
 </html>
