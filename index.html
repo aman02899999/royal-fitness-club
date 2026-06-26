@@ -41359,5 +41359,233 @@ setTimeout(function(){
 })();
 </script>
 
+<!-- Batch 62: Injury Prevention Checklist, Hydration Reminder Log, Agility Ladder Drills -->
+<script>
+(function(){ 'use strict';
+var _origSS60=window.switchScreen;
+function _b62uid(){ try{ return JSON.parse(localStorage.getItem('bm_user')||'{}').uid||'guest'; }catch(e){ return 'guest'; } }
+function _b62today(){ var d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function _b62load(k){ try{ return JSON.parse(localStorage.getItem(k))||null; }catch(e){ return null; } }
+function _b62save(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} }
+function _b62card(id,title){ var d=document.createElement('div'); d.id=id; d.style.cssText='background:#1a1a2e;border-radius:14px;padding:18px;margin:14px 0;color:#e0e0e0;font-family:inherit;'; d.innerHTML='<div style="font-size:15px;font-weight:700;color:#00d4ff;margin-bottom:14px;">'+title+'</div>'; return d; }
+
+/* ── Injury Prevention Checklist ── */
+var _injPrev=[
+  {id:'wu',label:'Proper warm-up (5–10 min)',pts:3},
+  {id:'form',label:'Good form on all lifts',pts:3},
+  {id:'prog',label:'Progressive overload (no sudden spikes)',pts:2},
+  {id:'mob',label:'Post-workout mobility / stretching',pts:2},
+  {id:'rest',label:'Adequate rest between sessions',pts:2},
+  {id:'sleep',label:'7–9 hours sleep',pts:2},
+  {id:'nutr',label:'Adequate protein & nutrition',pts:2},
+  {id:'shoes',label:'Appropriate footwear',pts:1},
+  {id:'belt',label:'Belt / supports used correctly',pts:1},
+  {id:'listen',label:'Listened to body — stopped if pain',pts:3},
+  {id:'foam',label:'Foam rolling / massage done',pts:1},
+  {id:'hydra',label:'Well-hydrated during workout',pts:2}
+];
+function _injectInjPrev(){
+  if(document.getElementById('rfc-injprev-wrap')) return;
+  var anchor=document.getElementById('rfc-vitd-wrap')||document.getElementById('rfc-habits-wrap')||document.getElementById('rfc-recscore-wrap')||document.getElementById('rfc-stress-wrap');
+  if(!anchor) return;
+  var rows=_injPrev.map(function(it){
+    return '<label style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid #1a1a2e;cursor:pointer;">'
+      +'<input type="checkbox" id="rfc-inj-'+it.id+'" onchange="window._rfcInjCalc()" style="accent-color:#4caf50;">'
+      +'<span style="flex:1;font-size:12px;">'+it.label+'</span>'
+      +'<span style="font-size:11px;color:#4caf50;">+'+it.pts+'</span></label>';
+  }).join('');
+  var c=_b62card('rfc-injprev-wrap','🛡️ Injury Prevention Checklist');
+  c.innerHTML+=`
+<div id="rfc-inj-gauge" style="text-align:center;margin-bottom:12px;"></div>
+<div style="max-height:280px;overflow-y:auto;">${rows}</div>
+<div id="rfc-inj-msg" style="margin-top:10px;font-size:12px;text-align:center;"></div>`;
+  anchor.after(c);
+}
+window._rfcInjCalc=function(){
+  var total=24, pts=0, state={};
+  _injPrev.forEach(function(it){
+    var cb=document.getElementById('rfc-inj-'+it.id);
+    if(cb&&cb.checked){ pts+=it.pts; state[it.id]=1; }
+  });
+  var uid=_b62uid(), key='rfc_injprev_'+uid+'_'+_b62today();
+  _b62save(key,state);
+  var pct=Math.round(pts/total*100);
+  var col=pct>=80?'#4caf50':pct>=50?'#ff9800':'#f44336';
+  var msg=pct>=80?'Excellent injury prevention habits!':pct>=50?'Good — a few more precautions recommended':'High injury risk — review training practices';
+  var g=document.getElementById('rfc-inj-gauge');
+  if(g){
+    var circ=Math.round(2*Math.PI*36), dash=Math.round(circ*pct/100);
+    g.innerHTML='<svg width="90" height="90" viewBox="0 0 90 90"><circle cx="45" cy="45" r="36" fill="none" stroke="#222" stroke-width="8"/><circle cx="45" cy="45" r="36" fill="none" stroke="'+col+'" stroke-width="8" stroke-dasharray="'+dash+' '+circ+'" stroke-dashoffset="'+Math.round(circ*0.25)+'" stroke-linecap="round"/><text x="45" y="50" text-anchor="middle" fill="'+col+'" font-size="16" font-weight="700">'+pct+'%</text></svg>'
+      +'<div style="font-size:11px;color:'+col+';">'+msg+'</div>';
+  }
+};
+function _renderInjPrev(){
+  if(!document.getElementById('rfc-injprev-wrap')) return;
+  var uid=_b62uid(), key='rfc_injprev_'+uid+'_'+_b62today();
+  var saved=_b62load(key)||{};
+  Object.keys(saved).forEach(function(id){ var cb=document.getElementById('rfc-inj-'+id); if(cb) cb.checked=true; });
+  window._rfcInjCalc();
+}
+
+/* ── Hydration Reminder Log ── */
+function _injectHydLog(){
+  if(document.getElementById('rfc-hydlog-wrap')) return;
+  var anchor=document.getElementById('rfc-mealprep-wrap')||document.getElementById('rfc-hfat-wrap')||document.getElementById('rfc-antioxid-wrap')||document.getElementById('rfc-fiber-wrap');
+  if(!anchor) return;
+  var c=_b62card('rfc-hydlog-wrap','💧 Hydration Reminder Log');
+  c.innerHTML+=`
+<div style="font-size:12px;color:#aaa;margin-bottom:12px;">Log each glass/bottle consumed — stay on top of hydration</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;">
+  <div>
+    <div style="font-size:11px;color:#aaa;margin-bottom:3px;">Amount (ml)</div>
+    <input id="rfc-hyd-ml" type="number" min="50" max="1000" step="50" value="250" style="width:100%;padding:8px;border-radius:8px;border:1px solid #333;background:#0d0d1a;color:#e0e0e0;font-size:13px;box-sizing:border-box;">
+  </div>
+  <div>
+    <div style="font-size:11px;color:#aaa;margin-bottom:3px;">Type</div>
+    <select id="rfc-hyd-type" style="width:100%;padding:8px;border-radius:8px;border:1px solid #333;background:#0d0d1a;color:#e0e0e0;font-size:13px;box-sizing:border-box;">
+      <option>Water</option><option>Electrolyte drink</option><option>Green tea</option><option>Black coffee</option><option>Protein shake</option><option>Juice</option>
+    </select>
+  </div>
+</div>
+<div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+  <div style="flex:1;">
+    <div style="font-size:11px;color:#aaa;margin-bottom:3px;">Daily target (L)</div>
+    <input id="rfc-hyd-tgt" type="number" min="1" max="6" step="0.1" value="2.5" style="width:100%;padding:8px;border-radius:8px;border:1px solid #333;background:#0d0d1a;color:#e0e0e0;font-size:13px;box-sizing:border-box;">
+  </div>
+  <button onclick="window._rfcHydAdd()" style="margin-top:16px;padding:9px 16px;border:none;border-radius:8px;background:#00d4ff;color:#000;font-weight:700;cursor:pointer;">+Add</button>
+</div>
+<div id="rfc-hyd-progress" style="margin-bottom:12px;"></div>
+<div id="rfc-hyd-list" style="max-height:160px;overflow-y:auto;"></div>`;
+  anchor.after(c);
+  _renderHydLog();
+}
+window._rfcHydAdd=function(){
+  var ml=parseInt(document.getElementById('rfc-hyd-ml').value)||250;
+  var type=document.getElementById('rfc-hyd-type').value;
+  var tgt=parseFloat(document.getElementById('rfc-hyd-tgt').value)||2.5;
+  var uid=_b62uid(), key='rfc_hydlog_'+uid+'_'+_b62today();
+  var log=_b62load(key)||{entries:[],tgt:tgt};
+  log.entries.push({ml:ml,type:type,ts:Date.now()});
+  log.tgt=tgt;
+  _b62save(key,log);
+  _renderHydProgress(log);
+  _renderHydList(log.entries);
+};
+function _renderHydProgress(log){
+  var el=document.getElementById('rfc-hyd-progress'); if(!el) return;
+  var total=log.entries.reduce(function(a,b){return a+b.ml;},0);
+  var tgtMl=log.tgt*1000, pct=Math.min(100,Math.round(total/tgtMl*100));
+  var col=pct>=100?'#4caf50':pct>=60?'#00d4ff':'#ff9800';
+  el.innerHTML='<div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;">'
+    +'<span style="color:'+col+';">'+(total/1000).toFixed(2)+'L / '+log.tgt+'L</span>'
+    +'<span style="color:#aaa;">'+pct+'%</span></div>'
+    +'<div style="height:10px;background:#222;border-radius:5px;overflow:hidden;">'
+    +'<div style="height:100%;width:'+pct+'%;background:'+col+';border-radius:5px;transition:width 0.3s;"></div></div>'
+    +(pct>=100?'<div style="font-size:11px;color:#4caf50;text-align:center;margin-top:4px;">✓ Daily target reached!</div>':'');
+}
+function _renderHydList(entries){
+  var el=document.getElementById('rfc-hyd-list'); if(!el) return;
+  if(!entries||!entries.length){ el.innerHTML='<div style="font-size:12px;color:#555;text-align:center;padding:8px;">No entries today</div>'; return; }
+  var html='';
+  entries.slice().reverse().forEach(function(e,i){
+    var t=new Date(e.ts); var hm=t.getHours()+':'+String(t.getMinutes()).padStart(2,'0');
+    html+='<div style="display:flex;align-items:center;gap:8px;padding:5px;background:#0d0d1a;border-radius:6px;margin-bottom:3px;font-size:12px;">'
+      +'<span style="color:#00d4ff;">'+hm+'</span>'
+      +'<span style="flex:1;">'+e.type+'</span>'
+      +'<span style="color:#4caf50;font-weight:600;">'+e.ml+'ml</span></div>';
+  });
+  el.innerHTML=html;
+}
+function _renderHydLog(){
+  if(!document.getElementById('rfc-hydlog-wrap')) return;
+  var uid=_b62uid(), key='rfc_hydlog_'+uid+'_'+_b62today();
+  var log=_b62load(key)||{entries:[],tgt:2.5};
+  if(log.tgt) document.getElementById('rfc-hyd-tgt').value=log.tgt;
+  _renderHydProgress(log);
+  _renderHydList(log.entries);
+}
+
+/* ── Agility Ladder Drills ── */
+function _injectAgility(){
+  if(document.getElementById('rfc-agility-wrap')) return;
+  var anchor=document.getElementById('rfc-iso-wrap')||document.getElementById('rfc-resband-wrap')||document.getElementById('rfc-kb-wrap')||document.getElementById('rfc-wvest-wrap');
+  if(!anchor) return;
+  var DRILLS=[
+    {id:'one',label:'1-in-1-out (single step)',unit:'s'},
+    {id:'two',label:'2-in-2-out (double step)',unit:'s'},
+    {id:'lat',label:'Lateral Shuffle',unit:'s'},
+    {id:'xcross',label:'Cross-over run',unit:'s'},
+    {id:'inch',label:'Inchworm forward',unit:'s'},
+    {id:'hopscotch',label:'Hopscotch',unit:'s'},
+    {id:'icky',label:'Icky Shuffle',unit:'s'},
+    {id:'fast',label:'Fast Feet (10m sprint)',unit:'s'}
+  ];
+  var rows=DRILLS.map(function(d){
+    return '<div style="padding:7px 0;border-bottom:1px solid #222;">'
+      +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;">'
+      +'<span style="font-size:13px;">'+d.label+'</span>'
+      +'<span id="rfc-ag-pb-'+d.id+'" style="font-size:10px;color:#ff9800;"></span></div>'
+      +'<div style="display:flex;gap:6px;">'
+      +'<input id="rfc-ag-s-'+d.id+'" type="number" min="0" step="0.01" placeholder="sec" style="flex:1;padding:6px;border-radius:6px;border:1px solid #333;background:#0d0d1a;color:#e0e0e0;font-size:12px;">'
+      +'<button onclick="window._rfcAgilityLog(\''+d.id+'\')" style="padding:6px 12px;border:none;border-radius:6px;background:#ff5722;color:#fff;font-size:11px;cursor:pointer;">Log</button>'
+      +'</div></div>';
+  }).join('');
+  var c=_b62card('rfc-agility-wrap','⚡ Agility Ladder Drills');
+  c.innerHTML+=`
+<div style="font-size:12px;color:#aaa;margin-bottom:12px;">Log drill times in seconds — lower is better, PBs tracked</div>
+${rows}
+<div id="rfc-agility-today" style="margin-top:12px;"></div>`;
+  anchor.after(c);
+  _renderAgility();
+}
+window._rfcAgilityLog=function(id){
+  var secs=parseFloat(document.getElementById('rfc-ag-s-'+id).value);
+  if(!secs||isNaN(secs)){ alert('Enter time in seconds'); return; }
+  var uid=_b62uid(), pbKey='rfc_agility_pbs_'+uid, dayKey='rfc_agility_'+uid+'_'+_b62today();
+  var pbs=_b62load(pbKey)||{}, today=_b62load(dayKey)||{};
+  today[id]=secs;
+  _b62save(dayKey,today);
+  if(!pbs[id]||secs<pbs[id]) pbs[id]=secs;
+  _b62save(pbKey,pbs);
+  document.getElementById('rfc-ag-s-'+id).value='';
+  _showAgilityPBs(pbs);
+  _showAgilityToday(today);
+};
+function _showAgilityPBs(pbs){
+  var DRILLS=[{id:'one'},{id:'two'},{id:'lat'},{id:'xcross'},{id:'inch'},{id:'hopscotch'},{id:'icky'},{id:'fast'}];
+  DRILLS.forEach(function(d){ var el=document.getElementById('rfc-ag-pb-'+d.id); if(el&&pbs[d.id]) el.textContent='PB: '+pbs[d.id]+'s'; });
+}
+function _showAgilityToday(today){
+  var el=document.getElementById('rfc-agility-today'); if(!el) return;
+  var keys=Object.keys(today); if(!keys.length){ el.innerHTML=''; return; }
+  var LABELS={one:'1-in-1-out',two:'2-in-2-out',lat:'Lat Shuffle',xcross:'Cross-over',inch:'Inchworm',hopscotch:'Hopscotch',icky:'Icky Shuffle',fast:'Fast Feet'};
+  var html='<div style="font-size:12px;color:#aaa;margin-bottom:6px;">Today\'s Times</div><div style="display:flex;flex-wrap:wrap;gap:6px;">';
+  keys.forEach(function(k){ html+='<div style="background:#0d0d1a;border-radius:8px;padding:7px 10px;text-align:center;"><div style="font-size:15px;font-weight:700;color:#ff5722;">'+today[k]+'s</div><div style="font-size:10px;color:#aaa;">'+(LABELS[k]||k)+'</div></div>'; });
+  el.innerHTML=html+'</div>';
+}
+function _renderAgility(){
+  if(!document.getElementById('rfc-agility-wrap')) return;
+  var uid=_b62uid();
+  _showAgilityPBs(_b62load('rfc_agility_pbs_'+uid)||{});
+  _showAgilityToday(_b62load('rfc_agility_'+uid+'_'+_b62today())||{});
+}
+
+/* ── switchScreen wrapper ── */
+window.switchScreen=function(name,navEl){
+  _origSS60&&_origSS60(name,navEl);
+  if(name==='dashboard') setTimeout(function(){ _injectInjPrev(); _renderInjPrev(); },1200);
+  if(name==='nutrition') setTimeout(function(){ _injectHydLog(); _renderHydLog(); },1100);
+  if(name==='workouts')  setTimeout(function(){ _injectAgility(); _renderAgility(); },1050);
+};
+
+setTimeout(function(){ _injectInjPrev(); _injectHydLog(); _injectAgility(); _renderInjPrev(); _renderHydLog(); _renderAgility(); },54000);
+setTimeout(function(){
+  if(!document.getElementById('rfc-injprev-wrap')) { _injectInjPrev(); _renderInjPrev(); }
+  if(!document.getElementById('rfc-hydlog-wrap'))  { _injectHydLog(); _renderHydLog(); }
+  if(!document.getElementById('rfc-agility-wrap')) { _injectAgility(); _renderAgility(); }
+},58000);
+})();
+</script>
+
 </body>
 </html>
