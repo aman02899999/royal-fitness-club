@@ -37565,5 +37565,184 @@ setTimeout(function(){ if(!document.getElementById('rfc-focus-wrap')) _injectFoc
 })();
 </script>
 
+<script>
+/* ===== BATCH 44: Sleep Environment | Vegetable Variety | Cardio Conditioning Logger ===== */
+(function(){ 'use strict';
+var _origSS42=window.switchScreen;
+function _b44uid(){ try{ return JSON.parse(localStorage.getItem('bm_user')||'{}').uid||'guest'; }catch(e){ return 'guest'; } }
+function _b44today(){ var d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function _b44load(k){ try{ return JSON.parse(localStorage.getItem(k))||null; }catch(e){ return null; } }
+function _b44save(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} }
+function _b44card(id,title){ var d=document.createElement('div'); d.id=id; d.style.cssText='background:#1a1a2e;border-radius:14px;padding:18px;margin:14px 0;color:#e0e0e0;font-family:inherit;'; d.innerHTML='<div style="font-size:15px;font-weight:700;color:#00d4ff;margin-bottom:14px;">'+title+'</div>'; return d; }
+
+/* ---------- SLEEP ENVIRONMENT CHECKLIST (dashboard) ---------- */
+var SLEEP_ENV=[
+  {id:'temp',label:'Room temp ≤68°F/20°C',icon:'🌡️'},
+  {id:'dark',label:'Blackout curtains/mask',icon:'🌑'},
+  {id:'quiet',label:'Quiet or white noise',icon:'🔇'},
+  {id:'nophone',label:'Phone out of bedroom',icon:'📵'},
+  {id:'caff',label:'No caffeine 6h before bed',icon:'☕'},
+  {id:'nolight',label:'No blue light 1h before',icon:'💻'},
+  {id:'bedtime',label:'Same bed time ±30min',icon:'⏰'},
+  {id:'shower',label:'Cool shower before bed',icon:'🚿'}
+];
+function _injectSleepEnv(){
+  if(document.getElementById('rfc-sleepenv-wrap')) return;
+  var anchor=document.getElementById('rfc-focus-wrap')||document.getElementById('rfc-posture-wrap')||document.getElementById('rfc-bodcomp-wrap')||document.getElementById('rfc-circadian-wrap')||document.querySelector('.dash-topbar');
+  if(!anchor) return;
+  var card=_b44card('rfc-sleepenv-wrap','🌙 Sleep Environment');
+  card.style.cssText+='border:1px solid #1a1a4a;';
+  anchor.parentNode.insertBefore(card,anchor.nextSibling);
+  _renderSleepEnv();
+}
+function _renderSleepEnv(){
+  var card=document.getElementById('rfc-sleepenv-wrap'); if(!card) return;
+  var uid=_b44uid(), today=_b44today();
+  var key='rfc_sleepenv_'+uid+'_'+today;
+  var data=_b44load(key)||{};
+  var done=SLEEP_ENV.filter(function(e){ return !!data[e.id]; }).length;
+  var pct=Math.round((done/SLEEP_ENV.length)*100);
+  var pc=pct>=75?'#00ff88':pct>=50?'#ffd700':'#ff6b6b';
+  var html='<div style="font-size:15px;font-weight:700;color:#00d4ff;margin-bottom:14px;">🌙 Sleep Environment</div>';
+  html+='<div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">';
+  html+='<svg width="64" height="64" viewBox="0 0 64 64"><circle cx="32" cy="32" r="26" fill="none" stroke="#1e1e4a" stroke-width="7"/><circle cx="32" cy="32" r="26" fill="none" stroke="'+pc+'" stroke-width="7" stroke-dasharray="'+Math.round(pct*1.633)+' 163.3" stroke-dashoffset="41" style="transition:all 0.5s;"/><text x="32" y="37" text-anchor="middle" fill="'+pc+'" font-size="16" font-weight="800">'+pct+'%</text></svg>';
+  html+='<div><div style="font-size:20px;font-weight:800;color:'+pc+';">'+(pct>=75?'Optimised':pct>=50?'Decent':'Needs Work')+'</div><div style="font-size:12px;color:#888;">'+done+'/'+SLEEP_ENV.length+' optimised</div></div></div>';
+  html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;">';
+  SLEEP_ENV.forEach(function(e){
+    var ok=!!data[e.id];
+    html+='<div onclick="window._rfcSETap(\''+e.id+'\')" style="cursor:pointer;background:'+(ok?'#0d1a2e':'#12122a')+';border:1px solid '+(ok?'#00d4ff':'#2a2a4a')+';border-radius:9px;padding:9px 10px;display:flex;align-items:center;gap:7px;">';
+    html+='<span style="font-size:15px;">'+e.icon+'</span>';
+    html+='<div style="flex:1;font-size:11px;color:'+(ok?'#00d4ff':'#ccc')+';">'+e.label+'</div>';
+    html+='<span>'+(ok?'✅':'⭕')+'</span></div>';
+  });
+  html+='</div>';
+  card.innerHTML=html;
+}
+window._rfcSETap=function(id){ var uid=_b44uid(), today=_b44today(); var key='rfc_sleepenv_'+uid+'_'+today; var data=_b44load(key)||{}; data[id]=!data[id]; _b44save(key,data); _renderSleepEnv(); };
+
+/* ---------- VEGETABLE VARIETY TRACKER (nutrition) ---------- */
+var VEGS=[
+  {id:'spinach',label:'Spinach',icon:'🥬'},{id:'broc',label:'Broccoli',icon:'🥦'},
+  {id:'carrot',label:'Carrots',icon:'🥕'},{id:'tomato',label:'Tomatoes',icon:'🍅'},
+  {id:'pepper',label:'Bell Peppers',icon:'🫑'},{id:'cucumber',label:'Cucumber',icon:'🥒'},
+  {id:'zucch',label:'Zucchini',icon:'🥒'},{id:'onion',label:'Onion/Garlic',icon:'🧅'},
+  {id:'cauli',label:'Cauliflower',icon:'🥦'},{id:'kale',label:'Kale',icon:'🥬'},
+  {id:'asparagus',label:'Asparagus',icon:'🌿'},{id:'beet',label:'Beetroot',icon:'🟣'},
+  {id:'celery',label:'Celery',icon:'🟢'},{id:'cabbage',label:'Cabbage',icon:'🥬'},
+  {id:'mushroom',label:'Mushrooms',icon:'🍄'}
+];
+function _injectVegVar(){
+  if(document.getElementById('rfc-vegvar-wrap')) return;
+  var anchor=document.getElementById('rfc-macsplit-wrap')||document.getElementById('rfc-omega3-wrap')||document.getElementById('rfc-if-wrap')||document.getElementById('rfc-prebiotic-wrap')||document.querySelector('.dash-topbar');
+  if(!anchor) return;
+  var card=_b44card('rfc-vegvar-wrap','🥗 Vegetable Variety Tracker');
+  card.style.cssText+='border:1px solid #1a2a1a;';
+  anchor.parentNode.insertBefore(card,anchor.nextSibling);
+  _renderVegVar();
+}
+function _renderVegVar(){
+  var card=document.getElementById('rfc-vegvar-wrap'); if(!card) return;
+  var uid=_b44uid(), today=_b44today();
+  var key='rfc_vegvar_'+uid+'_'+today;
+  var data=_b44load(key)||{};
+  var count=VEGS.filter(function(v){ return !!data[v.id]; }).length;
+  var pc=count>=7?'#00ff88':count>=4?'#ffd700':'#ff6b6b';
+  var html='<div style="font-size:15px;font-weight:700;color:#00d4ff;margin-bottom:14px;">🥗 Vegetable Variety Tracker</div>';
+  html+='<div style="text-align:center;margin-bottom:14px;">';
+  html+='<div style="font-size:48px;font-weight:800;color:'+pc+';">'+count+'<span style="font-size:18px;color:#888;">/15</span></div>';
+  html+='<div style="font-size:13px;color:'+pc+';">'+(count>=10?'Rainbow Plate!':count>=7?'Excellent Variety':count>=4?'Good — add more':count>0?'Keep going!':'Log your veggies')+'</div>';
+  html+='<div style="font-size:11px;color:#666;margin-top:4px;">Target: 7+ different vegetables daily</div></div>';
+  html+='<div style="display:flex;flex-wrap:wrap;gap:7px;">';
+  VEGS.forEach(function(v){
+    var ok=!!data[v.id];
+    html+='<div onclick="window._rfcVVTap(\''+v.id+'\')" style="cursor:pointer;background:'+(ok?'#0d2a1a':'#12122a')+';border:1px solid '+(ok?'#00ff88':'#2a2a4a')+';border-radius:8px;padding:7px 10px;display:flex;align-items:center;gap:6px;transition:all 0.2s;">';
+    html+='<span style="font-size:16px;">'+v.icon+'</span><span style="font-size:12px;color:'+(ok?'#00ff88':'#aaa')+';">'+v.label+'</span></div>';
+  });
+  html+='</div>';
+  card.innerHTML=html;
+}
+window._rfcVVTap=function(id){ var uid=_b44uid(), today=_b44today(); var key='rfc_vegvar_'+uid+'_'+today; var data=_b44load(key)||{}; data[id]=!data[id]; _b44save(key,data); _renderVegVar(); };
+
+/* ---------- CARDIO CONDITIONING LOGGER (workouts) ---------- */
+var CARDIO_TYPES=[
+  {id:'run',label:'Running',icon:'🏃',met:9.8},
+  {id:'cycle',label:'Cycling',icon:'🚴',met:7.5},
+  {id:'row',label:'Rowing',icon:'🚣',met:8.5},
+  {id:'jumprope',label:'Jump Rope',icon:'⭕',met:11.0},
+  {id:'swim',label:'Swimming',icon:'🏊',met:8.0},
+  {id:'stairs',label:'Stair Climbing',icon:'🪜',met:9.0},
+  {id:'battle',label:'Battle Ropes',icon:'💪',met:10.5}
+];
+function _injectCardio(){
+  if(document.getElementById('rfc-cardio-wrap')) return;
+  var anchor=document.getElementById('rfc-p2w-wrap')||document.getElementById('rfc-rom-wrap')||document.getElementById('rfc-bands-wrap')||document.getElementById('rfc-deload-wrap')||document.querySelector('.dash-topbar');
+  if(!anchor) return;
+  var card=_b44card('rfc-cardio-wrap','🏃 Cardio Conditioning Logger');
+  card.style.cssText+='border:1px solid #2a1a1a;';
+  anchor.parentNode.insertBefore(card,anchor.nextSibling);
+  _renderCardio();
+}
+function _renderCardio(){
+  var card=document.getElementById('rfc-cardio-wrap'); if(!card) return;
+  var uid=_b44uid(), today=_b44today();
+  var dkey='rfc_cardio_'+uid+'_'+today;
+  var data=_b44load(dkey)||{sessions:[]};
+  var sessions=data.sessions||[];
+  var totMin=sessions.reduce(function(a,s){ return a+(s.min||0); },0);
+  var totKcal=sessions.reduce(function(a,s){ return a+(s.kcal||0); },0);
+  var totKm=sessions.reduce(function(a,s){ return a+(s.km||0); },0);
+  var html='<div style="font-size:15px;font-weight:700;color:#00d4ff;margin-bottom:14px;">🏃 Cardio Conditioning Logger</div>';
+  html+='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;">';
+  html+='<div style="background:#12122a;border-radius:8px;padding:9px;text-align:center;"><div style="font-size:18px;font-weight:800;color:#00d4ff;">'+totMin+'</div><div style="font-size:10px;color:#888;">Minutes</div></div>';
+  html+='<div style="background:#12122a;border-radius:8px;padding:9px;text-align:center;"><div style="font-size:18px;font-weight:800;color:#ff6b6b;">'+Math.round(totKcal)+'</div><div style="font-size:10px;color:#888;">Calories</div></div>';
+  html+='<div style="background:#12122a;border-radius:8px;padding:9px;text-align:center;"><div style="font-size:18px;font-weight:800;color:#ffd700;">'+Math.round(totKm*10)/10+'</div><div style="font-size:10px;color:#888;">km</div></div></div>';
+  html+='<div style="background:#12122a;border-radius:10px;padding:12px;margin-bottom:12px;">';
+  html+='<select id="rfc-cardio-type" style="width:100%;background:#0d0d20;border:1px solid #2a2a4a;color:#fff;border-radius:7px;padding:7px;font-size:12px;margin-bottom:8px;">';
+  CARDIO_TYPES.forEach(function(t){ html+='<option value="'+t.id+'">'+t.icon+' '+t.label+'</option>'; }); html+='</select>';
+  html+='<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:8px;">';
+  html+='<div><div style="font-size:11px;color:#888;margin-bottom:4px;">Duration (min)</div><input type="number" id="rfc-cardio-min" min="1" max="300" placeholder="min" style="width:100%;background:#0d0d20;border:1px solid #2a2a4a;color:#fff;border-radius:6px;padding:6px;font-size:13px;"></div>';
+  html+='<div><div style="font-size:11px;color:#888;margin-bottom:4px;">Distance (km)</div><input type="number" id="rfc-cardio-km" min="0" max="200" step="0.1" placeholder="km" style="width:100%;background:#0d0d20;border:1px solid #2a2a4a;color:#fff;border-radius:6px;padding:6px;font-size:13px;"></div>';
+  html+='<div><div style="font-size:11px;color:#888;margin-bottom:4px;">Body wt (kg)</div><input type="number" id="rfc-cardio-bw" min="30" max="200" placeholder="kg" style="width:100%;background:#0d0d20;border:1px solid #2a2a4a;color:#fff;border-radius:6px;padding:6px;font-size:13px;"></div>';
+  html+='</div>';
+  html+='<button onclick="window._rfcCardioLog()" style="width:100%;background:#ff6b6b;border:none;color:#fff;padding:9px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;">+ Log Session</button></div>';
+  if(sessions.length){
+    html+='<div style="font-size:12px;color:#888;margin-bottom:6px;">Today\'s Sessions ('+sessions.length+'):</div>';
+    sessions.slice(-5).reverse().forEach(function(s){
+      var ct=CARDIO_TYPES.find(function(t){ return t.id===s.type; })||CARDIO_TYPES[0];
+      html+='<div style="display:flex;align-items:center;gap:8px;padding:8px;background:#12122a;border-radius:7px;margin-bottom:4px;">';
+      html+='<span style="font-size:18px;">'+ct.icon+'</span>';
+      html+='<div style="flex:1;"><div style="font-size:12px;color:#ccc;">'+ct.label+' • '+s.min+' min</div>';
+      html+='<div style="font-size:11px;color:#888;">'+(s.km?s.km+'km':'')+(s.km&&s.kcal?' • ':'')+(s.kcal?Math.round(s.kcal)+' kcal':'')+'</div></div></div>';
+    });
+  }
+  card.innerHTML=html;
+}
+window._rfcCardioLog=function(){
+  var typeEl=document.getElementById('rfc-cardio-type');
+  var min=parseInt(document.getElementById('rfc-cardio-min').value)||0;
+  var km=parseFloat(document.getElementById('rfc-cardio-km').value)||0;
+  var bw=parseFloat(document.getElementById('rfc-cardio-bw').value)||75;
+  if(!min) return;
+  var ct=CARDIO_TYPES.find(function(t){ return t.id===typeEl.value; })||CARDIO_TYPES[0];
+  var kcal=Math.round(ct.met*bw*(min/60));
+  var uid=_b44uid(), today=_b44today(); var dkey='rfc_cardio_'+uid+'_'+today;
+  var data=_b44load(dkey)||{sessions:[]}; data.sessions=data.sessions||[];
+  data.sessions.push({type:ct.id,min:min,km:km,kcal:kcal,ts:Date.now()});
+  _b44save(dkey,data);
+  document.getElementById('rfc-cardio-min').value=''; document.getElementById('rfc-cardio-km').value='';
+  _renderCardio();
+};
+
+window.switchScreen=function(name,navEl){
+  _origSS42&&_origSS42(name,navEl);
+  if(name==='dashboard') setTimeout(function(){ _injectSleepEnv(); _renderSleepEnv(); },1200);
+  if(name==='nutrition') setTimeout(function(){ _injectVegVar(); _renderVegVar(); },1100);
+  if(name==='workouts')  setTimeout(function(){ _injectCardio(); _renderCardio(); },1050);
+};
+setTimeout(function(){ _injectSleepEnv(); _injectVegVar(); _injectCardio(); },36000);
+setTimeout(function(){ if(!document.getElementById('rfc-sleepenv-wrap')) _injectSleepEnv(); if(!document.getElementById('rfc-vegvar-wrap')) _injectVegVar(); if(!document.getElementById('rfc-cardio-wrap')) _injectCardio(); },40000);
+})();
+</script>
+
 </body>
 </html>
