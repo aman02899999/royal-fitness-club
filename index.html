@@ -31580,5 +31580,337 @@ setTimeout(function(){
 })();
 </script>
 
+<script>
+/* ════════════════════════════════════════════════════════════
+   BATCH 24 — NEAT Activity Boost | Macro Cycling Planner | Workout Generator
+   ════════════════════════════════════════════════════════════ */
+(function(){ 'use strict';
+
+function _uid24(){ try{return JSON.parse(localStorage.getItem('bm_user')||'{}').uid||null;}catch(e){return null;} }
+function _b24card(id,title){
+  var d=document.createElement('div');
+  d.id=id; d.className='rfc-b12-card';
+  d.style.cssText='background:#111;border:1px solid #222;border-radius:14px;padding:14px;margin:10px 0;';
+  var h=document.createElement('div');
+  h.style.cssText='font-size:13px;font-weight:700;color:#aaa;letter-spacing:1px;text-transform:uppercase;margin-bottom:12px;';
+  h.textContent=title; d.appendChild(h);
+  return d;
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   1. NEAT ACTIVITY BOOST (dashboard)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+var NEAT_ACTS=[
+  {id:'steps10k', label:'10,000 steps',          icon:'👟', kcal:300},
+  {id:'stairs',   label:'Take stairs all day',   icon:'🪜', kcal:80},
+  {id:'stand1hr', label:'Stand desk 1h+',         icon:'🧍', kcal:50},
+  {id:'walk_call',label:'Walk during calls',      icon:'📱', kcal:60},
+  {id:'park_far', label:'Park farther away',      icon:'🚗', kcal:30},
+  {id:'eve_walk', label:'Evening walk (20min)',   icon:'🌙', kcal:90},
+  {id:'house',    label:'Housework (30min)',      icon:'🏠', kcal:100},
+  {id:'active_cm',label:'Active commute',         icon:'🚴', kcal:150}
+];
+
+function _injectNEAT(){
+  if(document.getElementById('rfc-neat-wrap')) return;
+  var anchor = document.getElementById('rfc-breath-wrap') ||
+               document.getElementById('rfc-bodycomp-wrap') ||
+               document.getElementById('rfc-fitage-wrap') ||
+               document.getElementById('rfc-xform-wrap') ||
+               document.getElementById('rfc-mgoal-wrap') ||
+               document.querySelector('.dash-topbar');
+  if(!anchor) return;
+  var card=_b24card('rfc-neat-wrap','⚡ NEAT Activity Boost');
+  card.innerHTML+='<div style="font-size:11px;color:#555;margin-bottom:8px;">Non-Exercise Activity Thermogenesis — check off what you did today</div>'+
+    '<div id="rfc-neat-body"></div>';
+  anchor.insertAdjacentElement('afterend', card);
+  _renderNEAT();
+}
+
+function _renderNEAT(){
+  var el=document.getElementById('rfc-neat-body'); if(!el) return;
+  var uid=_uid24();
+  if(!uid){ el.innerHTML='<p style="color:#555;font-size:12px;">Log in to track NEAT.</p>'; return; }
+  var today=new Date().toISOString().slice(0,10);
+  var key='rfc_neat_'+uid+'_'+today;
+  var saved={}; try{saved=JSON.parse(localStorage.getItem(key)||'{}');}catch(e){}
+  var totalKcal=NEAT_ACTS.reduce(function(a,act){return a+(saved[act.id]?act.kcal:0);},0);
+  var maxKcal=NEAT_ACTS.reduce(function(a,act){return a+act.kcal;},0);
+  var pct=Math.round(totalKcal/maxKcal*100);
+  var barColor=pct>=70?'#22c55e':pct>=40?'#f59e0b':'#ef4444';
+
+  el.innerHTML=
+    '<div style="margin-bottom:10px;">'+
+      '<div style="display:flex;justify-content:space-between;margin-bottom:4px;">'+
+        '<span style="font-size:12px;color:#aaa;">Extra NEAT calories</span>'+
+        '<span style="font-size:14px;font-weight:700;color:'+barColor+';">+'+totalKcal+' kcal</span>'+
+      '</div>'+
+      '<div style="height:6px;background:#1a1a1a;border-radius:3px;overflow:hidden;">'+
+        '<div style="height:100%;width:'+pct+'%;background:'+barColor+';border-radius:3px;transition:width .5s;"></div>'+
+      '</div>'+
+      '<div style="font-size:10px;color:#444;margin-top:2px;">Max potential: +'+maxKcal+' kcal/day from NEAT</div>'+
+    '</div>'+
+    '<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:5px;">'+
+    NEAT_ACTS.map(function(act){
+      var chk=!!saved[act.id];
+      return '<div onclick="window._rfcToggleNEAT(\''+act.id+'\')" '+
+        'style="cursor:pointer;display:flex;align-items:center;gap:6px;padding:7px 9px;'+
+        'background:'+(chk?'rgba(34,197,94,.08)':'#1a1a1a')+';border:1px solid '+(chk?'#22c55e33':'#222')+';'+
+        'border-radius:8px;transition:all .2s;">'+
+        '<span style="font-size:14px;">'+act.icon+'</span>'+
+        '<div style="flex:1;min-width:0;">'+
+          '<div style="font-size:11px;color:'+(chk?'#22c55e':'#ccc')+';">'+act.label+'</div>'+
+          '<div style="font-size:10px;color:#555;">+'+act.kcal+' kcal</div>'+
+        '</div>'+
+        '<span style="font-size:13px;">'+(chk?'✅':'⬜')+'</span>'+
+      '</div>';
+    }).join('')+
+    '</div>';
+}
+
+window._rfcToggleNEAT=function(id){
+  var uid=_uid24(); if(!uid) return;
+  var today=new Date().toISOString().slice(0,10);
+  var key='rfc_neat_'+uid+'_'+today;
+  var saved={}; try{saved=JSON.parse(localStorage.getItem(key)||'{}');}catch(e){}
+  if(saved[id]) delete saved[id]; else saved[id]=true;
+  localStorage.setItem(key,JSON.stringify(saved));
+  _renderNEAT();
+};
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   2. MACRO CYCLING PLANNER (nutrition)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+function _injectMacroCycle(){
+  if(document.getElementById('rfc-mccycle-wrap')) return;
+  var anchor = document.getElementById('rfc-fdiary-wrap') ||
+               document.getElementById('rfc-nccal-wrap') ||
+               document.getElementById('rfc-micros-wrap') ||
+               document.getElementById('rfc-fast-wrap') ||
+               document.getElementById('rfc-macro-donut-wrap') ||
+               document.getElementById('rfc-food-wrap');
+  if(!anchor) return;
+  var card=_b24card('rfc-mccycle-wrap','🔄 Macro Cycling Planner');
+  var inner=document.createElement('div'); inner.id='rfc-mccycle-body';
+  card.appendChild(inner);
+  anchor.insertAdjacentElement('afterend', card);
+  _renderMacroCycle();
+}
+
+function _renderMacroCycle(){
+  var el=document.getElementById('rfc-mccycle-body'); if(!el) return;
+  var lastRes={}; try{lastRes=JSON.parse(localStorage.getItem('bm_last_result')||'{}');}catch(e){}
+  var tc=+(lastRes.targetCals||2000);
+  var mac=lastRes.macros||{prot:150,carbs:200,fat:60};
+  var prot=+(mac.prot||150), carbs=+(mac.carbs||200), fat=+(mac.fat||60);
+
+  if(!tc){
+    el.innerHTML='<p style="color:#555;font-size:12px;text-align:center;padding:10px 0;">Calculate your plan first to use macro cycling.</p>';
+    return;
+  }
+
+  var uid=_uid24();
+  var wks=[]; if(uid) try{wks=JSON.parse(localStorage.getItem('rfc_workouts_'+uid)||'[]');}catch(e){}
+
+  // Determine training days in last 7 days
+  var now=new Date(); now.setHours(0,0,0,0);
+  var trainingDays={};
+  wks.forEach(function(w){
+    var wts=w.ts?new Date(w.ts):new Date(w.date);
+    wts.setHours(0,0,0,0);
+    if(now-wts<7*864e5) trainingDays[wts.toISOString().slice(0,10)]=true;
+  });
+
+  var DNAMES=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  var days=[];
+  for(var i=0;i<7;i++){
+    var d=new Date(now); d.setDate(now.getDate()+i);
+    days.push(d);
+  }
+
+  var rows=days.map(function(d){
+    var ds=d.toISOString().slice(0,10);
+    var isTrain=!!trainingDays[ds];
+    var isToday=ds===now.toISOString().slice(0,10);
+    // Carb cycling: high on training, low on rest
+    var carbMult=isTrain?1.25:0.7;
+    var calAdjust=isTrain?150:-200;
+    var dayCals=Math.round(tc+calAdjust);
+    var dayCarbs=Math.round(carbs*carbMult);
+    var dayType=isTrain?'🔥 High Carb':'💤 Low Carb';
+    var typeColor=isTrain?'#f59e0b':'#3b82f6';
+    return '<div style="display:flex;align-items:center;gap:8px;padding:6px 8px;background:'+(isToday?'#1a1a2a':'#1a1a1a')+';border-radius:8px;border:1px solid '+(isToday?'#3b82f622':'transparent')+';">'+
+      '<div style="width:32px;text-align:center;">'+
+        '<div style="font-size:11px;font-weight:700;color:'+(isToday?'#fff':'#aaa')+';">'+DNAMES[d.getDay()]+'</div>'+
+        '<div style="font-size:9px;color:#444;">'+(isToday?'Today':'')+'</div>'+
+      '</div>'+
+      '<div style="flex:1;">'+
+        '<div style="font-size:11px;font-weight:700;color:'+typeColor+';">'+dayType+'</div>'+
+        '<div style="font-size:10px;color:#555;">P:'+prot+'g  C:'+dayCarbs+'g  F:'+fat+'g  · '+dayCals+'kcal</div>'+
+      '</div>'+
+      '<div style="font-size:10px;color:#333;">'+(isTrain?'💪':'🌿')+'</div>'+
+    '</div>';
+  }).join('');
+
+  el.innerHTML=
+    '<div style="font-size:11px;color:#555;margin-bottom:8px;">Training days → +25% carbs. Rest days → -30% carbs. Protein stays constant.</div>'+
+    '<div style="display:flex;flex-direction:column;gap:4px;">'+rows+'</div>'+
+    '<div style="margin-top:10px;display:flex;gap:12px;font-size:11px;color:#555;flex-wrap:wrap;">'+
+      '<span>🔥 High: '+Math.round(carbs*1.25)+'g carbs / '+Math.round(tc+150)+'kcal</span>'+
+      '<span>💤 Low: '+Math.round(carbs*0.7)+'g carbs / '+Math.round(tc-200)+'kcal</span>'+
+    '</div>';
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   3. RANDOM WORKOUT GENERATOR (workouts)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+var WG_DB={
+  push:{
+    barbell:['Bench Press','Incline Bench Press','Overhead Press','Close Grip Bench'],
+    dumbbell:['Dumbbell Press','Incline DB Press','DB Shoulder Press','DB Lateral Raise','DB Fly'],
+    machine:['Chest Press Machine','Smith Machine Press','Cable Fly','Pec Deck','Shoulder Press Machine'],
+    bodyweight:['Push Up','Pike Push Up','Dips','Diamond Push Up','Wide Push Up']
+  },
+  pull:{
+    barbell:['Barbell Row','Deadlift','Pendlay Row','Rack Pull'],
+    dumbbell:['DB Row','DB Shrug','DB Pullover','Single Arm Row'],
+    machine:['Lat Pulldown','Seated Cable Row','Face Pull','Cable Pullover'],
+    bodyweight:['Pull Up','Chin Up','Inverted Row','Band Pull Apart']
+  },
+  legs:{
+    barbell:['Back Squat','Front Squat','Romanian Deadlift','Good Morning'],
+    dumbbell:['DB Squat','DB Lunge','DB RDL','Bulgarian Split Squat','DB Step Up'],
+    machine:['Leg Press','Leg Curl','Leg Extension','Hip Thrust Machine','Calf Raise'],
+    bodyweight:['Squat','Lunge','Glute Bridge','Jump Squat','Wall Sit','Step Up']
+  },
+  upper:{
+    barbell:['Bench Press','Barbell Row','Overhead Press','Barbell Curl'],
+    dumbbell:['DB Press','DB Row','DB Lateral Raise','DB Curl','DB Tricep Extension'],
+    machine:['Chest Press','Lat Pulldown','Shoulder Press Machine','Cable Curl','Tricep Pushdown'],
+    bodyweight:['Push Up','Pull Up','Dips','Inverted Row','Pike Push Up']
+  },
+  full:{
+    barbell:['Deadlift','Back Squat','Overhead Press','Barbell Row','Romanian Deadlift'],
+    dumbbell:['DB Thruster','DB Burpee','DB Clean','DB Snatch','Turkish Get Up'],
+    machine:['Leg Press','Lat Pulldown','Chest Press','Leg Curl','Cable Row'],
+    bodyweight:['Burpee','Push Up','Squat','Pull Up','Mountain Climber','Plank']
+  },
+  core:{
+    barbell:['Ab Rollout','Barbell Landmine Rotation'],
+    dumbbell:['DB Woodchop','DB Side Bend','DB Russian Twist'],
+    machine:['Cable Crunch','Cable Woodchop','Decline Crunch','Ab Machine'],
+    bodyweight:['Plank','Crunch','Leg Raise','Russian Twist','Bicycle Crunch','Hollow Hold','V-Up']
+  }
+};
+var WG_SETS={push:'4×8-12',pull:'4×8-12',legs:'4×6-10',upper:'3×10-12',full:'3×12-15',core:'3×15-20'};
+
+function _injectWGen(){
+  if(document.getElementById('rfc-wgen-wrap')) return;
+  var anchor = document.getElementById('rfc-strstd-wrap') ||
+               document.getElementById('rfc-rest-wrap') ||
+               document.getElementById('rfc-rpe-wrap') ||
+               document.getElementById('rfc-cardio-wrap') ||
+               document.getElementById('rfc-tmpl-wrap') ||
+               document.getElementById('wl-history');
+  if(!anchor) return;
+  var card=_b24card('rfc-wgen-wrap','🎲 Random Workout Generator');
+  card.innerHTML+=(
+    '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;">'+
+      '<select id="rfc-wgen-focus" style="flex:1;min-width:100px;background:#1a1a1a;border:1px solid #333;border-radius:8px;padding:8px 10px;color:#fff;font-size:13px;outline:none;">'+
+        [['push','Push (Chest/Shoulders/Tri)'],['pull','Pull (Back/Biceps)'],['legs','Legs'],
+         ['upper','Upper Body'],['full','Full Body'],['core','Core & Abs']].map(function(o){
+          return '<option value="'+o[0]+'">'+o[1]+'</option>';
+        }).join('')+
+      '</select>'+
+      '<select id="rfc-wgen-equip" style="width:130px;background:#1a1a1a;border:1px solid #333;border-radius:8px;padding:8px 10px;color:#fff;font-size:13px;outline:none;">'+
+        [['barbell','Barbell'],['dumbbell','Dumbbell'],['machine','Machine'],['bodyweight','Bodyweight']].map(function(o){
+          return '<option value="'+o[0]+'">'+o[1]+'</option>';
+        }).join('')+
+      '</select>'+
+      '<button onclick="window._rfcGenWorkout()" '+
+        'style="background:linear-gradient(135deg,#8b5cf6,#6d28d9);color:#fff;border:none;border-radius:8px;padding:8px 16px;font-size:13px;font-weight:700;cursor:pointer;">🎲 Generate</button>'+
+    '</div>'+
+    '<div id="rfc-wgen-result"></div>'
+  );
+  anchor.insertAdjacentElement('afterend', card);
+}
+
+window._rfcGenWorkout=function(){
+  var res=document.getElementById('rfc-wgen-result'); if(!res) return;
+  var focus=(document.getElementById('rfc-wgen-focus')||{}).value||'push';
+  var equip=(document.getElementById('rfc-wgen-equip')||{}).value||'barbell';
+  var pool=(WG_DB[focus]&&WG_DB[focus][equip])||[];
+  if(!pool.length){ res.innerHTML='<p style="color:#555;font-size:12px;">No exercises for this combination.</p>'; return; }
+
+  // Shuffle and pick 5-6
+  var shuffled=pool.slice().sort(function(){return Math.random()-0.5;});
+  var count=Math.min(pool.length,focus==='core'?5:6);
+  var picked=shuffled.slice(0,count);
+  var setsRec=WG_SETS[focus]||'3×10-12';
+  var setsNum=setsRec.split('×')[0], repsRange=setsRec.split('×')[1];
+
+  res.innerHTML=
+    '<div style="margin-bottom:8px;font-size:11px;color:#555;">'+focus.charAt(0).toUpperCase()+focus.slice(1)+' Day · '+equip+' · '+setsRec+' per exercise</div>'+
+    picked.map(function(ex,i){
+      return '<div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid #1a1a1a;">'+
+        '<span style="font-size:14px;color:#555;">'+( i+1)+'.</span>'+
+        '<span style="flex:1;font-size:13px;color:#fff;">'+ex+'</span>'+
+        '<span style="font-size:11px;color:#aaa;background:#1a1a1a;padding:3px 8px;border-radius:6px;">'+setsNum+'×'+repsRange+'</span>'+
+      '</div>';
+    }).join('')+
+    '<button onclick="window._rfcLoadGenWorkout()" '+
+      'style="margin-top:10px;width:100%;background:linear-gradient(135deg,#22c55e,#15803d);color:#fff;border:none;border-radius:8px;padding:9px;font-size:13px;font-weight:700;cursor:pointer;">📋 Load to Workout Form</button>';
+  window._lastGenPicked=picked; window._lastGenSets=setsNum; window._lastGenReps=repsRange;
+};
+
+window._rfcLoadGenWorkout=function(){
+  var rowsEl=document.getElementById('wl-rows'); if(!rowsEl) return;
+  var picked=window._lastGenPicked||[]; if(!picked.length) return;
+  if(!confirm('Load generated workout? This replaces the current exercise list.')) return;
+  rowsEl.innerHTML='';
+  picked.forEach(function(ex){
+    if(typeof window.addExerciseRow==='function') window.addExerciseRow();
+    var rows=[].slice.call(rowsEl.querySelectorAll(':scope > div'));
+    var last=rows[rows.length-1]; if(!last) return;
+    var ins=last.querySelectorAll('input');
+    if(ins[0]) ins[0].value=ex;
+    if(ins[1]) ins[1].value=window._lastGenSets||'3';
+    if(ins[2]) ins[2].value=(window._lastGenReps||'10-12').split('-')[0];
+  });
+  if(window.toast) toast('💪 Workout loaded!','fire');
+};
+
+/* ════════════════════════════════════════════════════
+   switchScreen + initial inject
+   ════════════════════════════════════════════════════ */
+var _origSS22=window.switchScreen;
+window.switchScreen=function(name,navEl){
+  _origSS22&&_origSS22(name,navEl);
+  if(name==='dashboard'){
+    setTimeout(function(){ _injectNEAT(); _renderNEAT(); }, 1150);
+  }
+  if(name==='nutrition'){
+    setTimeout(function(){ _injectMacroCycle(); _renderMacroCycle(); }, 1000);
+  }
+  if(name==='workouts'){
+    setTimeout(function(){ _injectWGen(); }, 1000);
+  }
+};
+
+setTimeout(function(){
+  _injectNEAT();
+  _injectMacroCycle();
+  _injectWGen();
+}, 16000);
+
+setTimeout(function(){
+  if(!document.getElementById('rfc-neat-wrap'))   _injectNEAT();
+  if(!document.getElementById('rfc-mccycle-wrap')) _injectMacroCycle();
+  if(!document.getElementById('rfc-wgen-wrap'))   _injectWGen();
+}, 19000);
+
+})();
+</script>
+
 </body>
 </html>
