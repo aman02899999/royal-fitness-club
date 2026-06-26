@@ -37369,5 +37369,201 @@ setTimeout(function(){ if(!document.getElementById('rfc-posture-wrap')) _injectP
 })();
 </script>
 
+<script>
+/* ===== BATCH 43: Focus Session Journal | Macro Meal Splitter | Power-to-Weight Calculator ===== */
+(function(){ 'use strict';
+var _origSS41=window.switchScreen;
+function _b43uid(){ try{ return JSON.parse(localStorage.getItem('bm_user')||'{}').uid||'guest'; }catch(e){ return 'guest'; } }
+function _b43today(){ var d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function _b43load(k){ try{ return JSON.parse(localStorage.getItem(k))||null; }catch(e){ return null; } }
+function _b43save(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} }
+function _b43card(id,title){ var d=document.createElement('div'); d.id=id; d.style.cssText='background:#1a1a2e;border-radius:14px;padding:18px;margin:14px 0;color:#e0e0e0;font-family:inherit;'; d.innerHTML='<div style="font-size:15px;font-weight:700;color:#00d4ff;margin-bottom:14px;">'+title+'</div>'; return d; }
+
+/* ---------- FOCUS SESSION JOURNAL (dashboard) ---------- */
+var _focusState={running:false,start:null,iv:null};
+function _injectFocus(){
+  if(document.getElementById('rfc-focus-wrap')) return;
+  var anchor=document.getElementById('rfc-posture-wrap')||document.getElementById('rfc-bodcomp-wrap')||document.getElementById('rfc-circadian-wrap')||document.getElementById('rfc-sleepq-wrap')||document.querySelector('.dash-topbar');
+  if(!anchor) return;
+  var card=_b43card('rfc-focus-wrap','🧠 Focus Session Journal');
+  card.style.cssText+='border:1px solid #1a2a4a;';
+  anchor.parentNode.insertBefore(card,anchor.nextSibling);
+  _renderFocus();
+}
+function _renderFocus(){
+  var card=document.getElementById('rfc-focus-wrap'); if(!card) return;
+  var uid=_b43uid(), today=_b43today();
+  var key='rfc_focus_'+uid+'_'+today;
+  var data=_b43load(key)||{sessions:[],totalMin:0};
+  var sessions=data.sessions||[];
+  var totalMin=sessions.reduce(function(a,s){ return a+(s.min||0); },0);
+  var flowSessions=sessions.filter(function(s){ return s.flow; }).length;
+  var distractFree=sessions.filter(function(s){ return !s.distracted; }).length;
+  var elapsed=0;
+  if(_focusState.running&&_focusState.start) elapsed=Math.round((Date.now()-_focusState.start)/60000);
+  var html='<div style="font-size:15px;font-weight:700;color:#00d4ff;margin-bottom:14px;">🧠 Focus Session Journal</div>';
+  html+='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;">';
+  html+='<div style="background:#12122a;border-radius:9px;padding:10px;text-align:center;"><div style="font-size:20px;font-weight:800;color:#00d4ff;">'+Math.floor(totalMin/60)+'h '+String(totalMin%60).padStart(2,'0')+'m</div><div style="font-size:10px;color:#888;">Deep Work</div></div>';
+  html+='<div style="background:#12122a;border-radius:9px;padding:10px;text-align:center;"><div style="font-size:20px;font-weight:800;color:#a855f7;">'+flowSessions+'</div><div style="font-size:10px;color:#888;">Flow States</div></div>';
+  html+='<div style="background:#12122a;border-radius:9px;padding:10px;text-align:center;"><div style="font-size:20px;font-weight:800;color:#00ff88;">'+sessions.length+'</div><div style="font-size:10px;color:#888;">Sessions</div></div></div>';
+  if(_focusState.running){
+    html+='<div style="background:#0d2a0d;border:1px solid #00ff88;border-radius:10px;padding:14px;margin-bottom:12px;text-align:center;">';
+    html+='<div style="font-size:32px;font-weight:800;color:#00ff88;">'+Math.floor(elapsed/60)+'h '+String(elapsed%60).padStart(2,'0')+'m</div>';
+    html+='<div style="font-size:12px;color:#aaa;margin-bottom:10px;">Focus session in progress...</div>';
+    html+='<div style="display:flex;gap:8px;"><button onclick="window._rfcFocusEnd(true,false)" style="flex:1;background:#00ff88;border:none;color:#000;padding:8px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">✅ Done (Clean)</button><button onclick="window._rfcFocusEnd(false,true)" style="flex:1;background:#ffd700;border:none;color:#000;padding:8px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">⚡ Flow State</button></div>';
+    html+='<button onclick="window._rfcFocusEnd(false,false)" style="width:100%;margin-top:8px;background:#ff6b6b;border:none;color:#fff;padding:7px;border-radius:8px;font-size:12px;cursor:pointer;">✕ Stop (Distracted)</button></div>';
+  } else {
+    html+='<div style="background:#12122a;border-radius:10px;padding:12px;margin-bottom:12px;">';
+    html+='<div style="font-size:12px;color:#aaa;margin-bottom:8px;">Quick Start:</div>';
+    html+='<div style="display:flex;gap:8px;flex-wrap:wrap;">';
+    [25,45,60,90].forEach(function(min){ html+='<button onclick="window._rfcFocusPomodoro('+min+')" style="flex:1;min-width:60px;background:#12122a;border:1px solid #2a2a4a;color:#aaa;padding:8px;border-radius:8px;font-size:12px;cursor:pointer;">'+min+'m</button>'; });
+    html+='</div><button onclick="window._rfcFocusStart()" style="width:100%;margin-top:10px;background:#a855f7;border:none;color:#fff;padding:10px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;">▶ Start Focus Session</button></div>';
+  }
+  if(sessions.length){
+    html+='<div style="font-size:12px;color:#888;margin-bottom:6px;">Recent Sessions</div>';
+    sessions.slice(-4).reverse().forEach(function(s){
+      html+='<div style="display:flex;align-items:center;gap:8px;padding:7px;background:#12122a;border-radius:7px;margin-bottom:4px;">';
+      html+='<span style="font-size:16px;">'+(s.flow?'⚡':s.distracted?'😵':'✅')+'</span>';
+      html+='<div style="flex:1;"><div style="font-size:12px;color:#ccc;">'+s.min+' min '+(s.flow?'• flow state':s.distracted?'• distracted':'• clean')+'</div></div>';
+      html+='<div style="font-size:11px;color:#666;">'+s.time+'</div></div>';
+    });
+  }
+  card.innerHTML=html;
+}
+window._rfcFocusPomodoro=function(min){
+  _focusState.running=true; _focusState.start=Date.now()-(min*60000);
+  window._rfcFocusEnd(true,false);
+};
+window._rfcFocusStart=function(){ _focusState.running=true; _focusState.start=Date.now(); if(_focusState.iv) clearInterval(_focusState.iv); _focusState.iv=setInterval(function(){ _renderFocus(); },30000); _renderFocus(); };
+window._rfcFocusEnd=function(clean,flow){
+  if(_focusState.iv){ clearInterval(_focusState.iv); _focusState.iv=null; }
+  var elapsed=_focusState.start?Math.round((Date.now()-_focusState.start)/60000):0;
+  _focusState.running=false; _focusState.start=null;
+  if(elapsed<1) return _renderFocus();
+  var uid=_b43uid(), today=_b43today(); var key='rfc_focus_'+uid+'_'+today;
+  var data=_b43load(key)||{sessions:[]}; data.sessions=data.sessions||[];
+  var now=new Date(); var time=String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
+  data.sessions.push({min:elapsed,flow:flow,distracted:!clean&&!flow,time:time});
+  _b43save(key,data); _renderFocus();
+};
+
+/* ---------- MACRO MEAL SPLITTER (nutrition) ---------- */
+function _injectMacSplit(){
+  if(document.getElementById('rfc-macsplit-wrap')) return;
+  var anchor=document.getElementById('rfc-omega3-wrap')||document.getElementById('rfc-if-wrap')||document.getElementById('rfc-prebiotic-wrap')||document.getElementById('rfc-protdiv-wrap')||document.querySelector('.dash-topbar');
+  if(!anchor) return;
+  var card=_b43card('rfc-macsplit-wrap','🍽️ Macro Meal Splitter');
+  card.style.cssText+='border:1px solid #2a1a3a;';
+  anchor.parentNode.insertBefore(card,anchor.nextSibling);
+  _renderMacSplit();
+}
+function _renderMacSplit(){
+  var card=document.getElementById('rfc-macsplit-wrap'); if(!card) return;
+  var uid=_b43uid();
+  var key='rfc_macsplit_'+uid;
+  var s=_b43load(key)||{protein:160,carbs:250,fat:70,meals:4,preWorkout:true};
+  var meals=s.meals||4;
+  var splits=[];
+  if(s.preWorkout&&meals>=3){
+    var base=Math.floor(1/meals*100);
+    var preP=Math.round(s.protein*0.30), preC=Math.round(s.carbs*0.35), preF=Math.round(s.fat*0.20);
+    var postP=Math.round(s.protein*0.30), postC=Math.round(s.carbs*0.30), postF=Math.round(s.fat*0.20);
+    var remP=s.protein-preP-postP, remC=s.carbs-preC-postC, remF=s.fat-preF-postF;
+    var otherMeals=meals-2; var oppM=Math.max(1,otherMeals);
+    splits.push({name:'Pre-Workout',p:preP,c:preC,f:preF,special:true});
+    for(var i=0;i<otherMeals;i++) splits.push({name:'Meal '+(i+1),p:Math.round(remP/oppM),c:Math.round(remC/oppM),f:Math.round(remF/oppM),special:false});
+    splits.push({name:'Post-Workout',p:postP,c:postC,f:postF,special:true});
+  } else {
+    for(var j=0;j<meals;j++){
+      var w=j===0?0.25:j===meals-1?0.25:(0.5/(meals-2||1));
+      splits.push({name:'Meal '+(j+1),p:Math.round(s.protein*w),c:Math.round(s.carbs*w),f:Math.round(s.fat*w),special:false});
+    }
+  }
+  var html='<div style="font-size:15px;font-weight:700;color:#00d4ff;margin-bottom:14px;">🍽️ Macro Meal Splitter</div>';
+  html+='<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px;">';
+  [['Protein (g)','protein',0,400],['Carbs (g)','carbs',0,600],['Fat (g)','fat',0,300]].forEach(function(f){
+    html+='<div style="background:#12122a;border-radius:8px;padding:8px;text-align:center;"><div style="font-size:11px;color:#888;">'+f[0]+'</div><input type="number" min="'+f[2]+'" max="'+f[3]+'" value="'+(s[f[1]]||0)+'" onchange="window._rfcMSSet(\''+f[1]+'\',parseInt(this.value))" style="width:100%;background:transparent;border:none;border-bottom:1px solid #3a3a6a;color:#ffd700;text-align:center;font-size:18px;font-weight:700;"></div>';
+  });
+  html+='</div>';
+  html+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">';
+  html+='<div style="display:flex;gap:6px;">';
+  [3,4,5,6].forEach(function(n){ html+='<button onclick="window._rfcMSSet(\'meals\','+n+')" style="width:34px;height:34px;border-radius:50%;border:1px solid '+(s.meals===n?'#00d4ff':'#2a2a4a')+';background:'+(s.meals===n?'#0d2a3a':'#12122a')+';color:'+(s.meals===n?'#00d4ff':'#888')+';font-size:13px;font-weight:700;cursor:pointer;">'+n+'</button>'; });
+  html+='<span style="font-size:12px;color:#888;line-height:34px;margin-left:4px;">meals</span></div>';
+  html+='<label style="font-size:12px;color:#aaa;display:flex;align-items:center;gap:6px;cursor:pointer;"><input type="checkbox" '+(s.preWorkout?'checked':'')+' onchange="window._rfcMSSet(\'preWorkout\',this.checked)" style="accent-color:#00d4ff;">Pre/Post Workout</label></div>';
+  html+='<div style="display:grid;gap:8px;">';
+  splits.forEach(function(meal){
+    var kcal=meal.p*4+meal.c*4+meal.f*9;
+    html+='<div style="background:'+(meal.special?'#0d2a3a':'#12122a')+';border:1px solid '+(meal.special?'#00d4ff':'#2a2a4a')+';border-radius:9px;padding:10px;">';
+    html+='<div style="display:flex;justify-content:space-between;margin-bottom:6px;"><span style="font-size:12px;font-weight:700;color:'+(meal.special?'#00d4ff':'#ccc')+';">'+meal.name+'</span><span style="font-size:11px;color:#888;">'+kcal+' kcal</span></div>';
+    html+='<div style="display:flex;gap:8px;"><span style="font-size:13px;color:#00ff88;">P: '+meal.p+'g</span><span style="font-size:13px;color:#ffd700;">C: '+meal.c+'g</span><span style="font-size:13px;color:#ff9f43;">F: '+meal.f+'g</span></div></div>';
+  });
+  html+='</div>';
+  card.innerHTML=html;
+}
+window._rfcMSSet=function(k,v){ var uid=_b43uid(); var key='rfc_macsplit_'+uid; var s=_b43load(key)||{protein:160,carbs:250,fat:70,meals:4,preWorkout:true}; s[k]=v; _b43save(key,s); _renderMacSplit(); };
+
+/* ---------- POWER-TO-WEIGHT CALCULATOR (workouts) ---------- */
+var PTW_STANDARDS=[
+  {lift:'Squat',   key:'squat',    bw:[0.75,1.25,1.75,2.25,2.75],labels:['Beginner','Novice','Intermediate','Advanced','Elite']},
+  {lift:'Deadlift',key:'deadlift', bw:[1.0, 1.5, 2.0, 2.5, 3.0], labels:['Beginner','Novice','Intermediate','Advanced','Elite']},
+  {lift:'Bench',   key:'bench',    bw:[0.5, 0.75,1.25,1.75,2.0], labels:['Beginner','Novice','Intermediate','Advanced','Elite']},
+  {lift:'OHP',     key:'ohp',      bw:[0.3, 0.5, 0.75,1.0, 1.25],labels:['Beginner','Novice','Intermediate','Advanced','Elite']},
+  {lift:'Row',     key:'row',      bw:[0.4, 0.65,1.0, 1.35,1.6], labels:['Beginner','Novice','Intermediate','Advanced','Elite']}
+];
+function _injectP2W(){
+  if(document.getElementById('rfc-p2w-wrap')) return;
+  var anchor=document.getElementById('rfc-rom-wrap')||document.getElementById('rfc-bands-wrap')||document.getElementById('rfc-deload-wrap')||document.getElementById('rfc-grip-wrap')||document.querySelector('.dash-topbar');
+  if(!anchor) return;
+  var card=_b43card('rfc-p2w-wrap','⚡ Power-to-Weight Calculator');
+  card.style.cssText+='border:1px solid #2a2a1a;';
+  anchor.parentNode.insertBefore(card,anchor.nextSibling);
+  _renderP2W();
+}
+function _renderP2W(){
+  var card=document.getElementById('rfc-p2w-wrap'); if(!card) return;
+  var uid=_b43uid();
+  var skey='rfc_p2w_'+uid;
+  var s=_b43load(skey)||{bw:80};
+  var allW=_b43load('rfc_workouts_'+uid)||[];
+  var prs={};
+  allW.forEach(function(w){ (w.exercises||[]).forEach(function(e){ var nm=(e.name||'').toLowerCase().trim(); (e.sets||[]).forEach(function(st){ var kg=parseFloat(st.kg||st.weight||0); if(kg>0&&(!prs[nm]||kg>prs[nm])) prs[nm]=kg; }); }); });
+  var findPR=function(key){ var k=key.toLowerCase(); if(prs[k]) return prs[k]; var found=null; Object.keys(prs).forEach(function(nm){ if(nm.includes(k)&&(!found||prs[nm]>found)) found=prs[nm]; }); return found; };
+  var html='<div style="font-size:15px;font-weight:700;color:#00d4ff;margin-bottom:14px;">⚡ Power-to-Weight Calculator</div>';
+  html+='<div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;background:#12122a;border-radius:9px;padding:10px;">';
+  html+='<label style="font-size:13px;color:#aaa;">Bodyweight:</label>';
+  html+='<input type="number" min="30" max="250" step="0.5" value="'+(s.bw||80)+'" onchange="window._rfcP2WBW(parseFloat(this.value))" style="flex:1;background:#0d0d20;border:1px solid #2a2a4a;color:#ffd700;border-radius:6px;padding:7px;font-size:16px;font-weight:700;text-align:center;">';
+  html+='<label style="font-size:13px;color:#aaa;">kg</label></div>';
+  PTW_STANDARDS.forEach(function(std){
+    var pr=findPR(std.key)||s[std.key+'_manual']||null;
+    var ratio=pr&&s.bw?Math.round((pr/s.bw)*100)/100:null;
+    var level='No data'; var levelC='#555'; var levelIdx=-1;
+    if(ratio!==null){ for(var i=std.bw.length-1;i>=0;i--){ if(ratio>=std.bw[i]){ levelIdx=i; level=std.labels[i]; break; } } if(levelIdx===-1){ level='Below Beginner'; levelC='#888'; } else { var colors=['#aaa','#00d4ff','#00ff88','#ffd700','#ff9f43']; levelC=colors[levelIdx]; } }
+    html+='<div style="background:#12122a;border-radius:10px;padding:10px;margin-bottom:8px;">';
+    html+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">';
+    html+='<div style="font-size:13px;font-weight:700;color:#e0e0e0;">'+std.lift+'</div>';
+    html+='<div style="text-align:right;"><div style="font-size:12px;color:'+levelC+';">'+level+'</div>'+(ratio?'<div style="font-size:11px;color:#888;">'+ratio+'× BW'+(pr?' ('+pr+'kg)':'')+'</div>':'')+'</div></div>';
+    if(ratio!==null){ var pct=Math.min(100,Math.round((ratio/std.bw[std.bw.length-1])*100)); html+='<div style="height:6px;background:#1a1a3a;border-radius:3px;overflow:hidden;margin-bottom:6px;"><div style="height:6px;background:'+levelC+';width:'+pct+'%;border-radius:3px;transition:width 0.4s;"></div></div>'; }
+    if(!pr){
+      html+='<div style="display:flex;gap:6px;"><input type="number" id="rfc-p2w-'+std.key+'" placeholder="Enter '+std.lift+' PR (kg)" style="flex:1;background:#0d0d20;border:1px solid #2a2a4a;color:#fff;border-radius:6px;padding:6px;font-size:12px;">';
+      html+='<button onclick="window._rfcP2WManual(\''+std.key+'\')" style="background:#00d4ff;border:none;color:#000;padding:6px 10px;border-radius:6px;font-size:12px;cursor:pointer;">Set</button></div>';
+    }
+    html+='</div>';
+  });
+  card.innerHTML=html;
+}
+window._rfcP2WBW=function(v){ var uid=_b43uid(); var k='rfc_p2w_'+uid; var s=_b43load(k)||{}; s.bw=v; _b43save(k,s); _renderP2W(); };
+window._rfcP2WManual=function(key){ var inp=document.getElementById('rfc-p2w-'+key); if(!inp) return; var val=parseFloat(inp.value)||0; if(!val) return; var uid=_b43uid(); var k='rfc_p2w_'+uid; var s=_b43load(k)||{}; s[key+'_manual']=val; _b43save(k,s); _renderP2W(); };
+
+window.switchScreen=function(name,navEl){
+  _origSS41&&_origSS41(name,navEl);
+  if(name==='dashboard') setTimeout(function(){ _injectFocus(); _renderFocus(); },1200);
+  if(name==='nutrition') setTimeout(function(){ _injectMacSplit(); _renderMacSplit(); },1100);
+  if(name==='workouts')  setTimeout(function(){ _injectP2W(); _renderP2W(); },1050);
+};
+setTimeout(function(){ _injectFocus(); _injectMacSplit(); _injectP2W(); },35000);
+setTimeout(function(){ if(!document.getElementById('rfc-focus-wrap')) _injectFocus(); if(!document.getElementById('rfc-macsplit-wrap')) _injectMacSplit(); if(!document.getElementById('rfc-p2w-wrap')) _injectP2W(); },39000);
+})();
+</script>
+
 </body>
 </html>
