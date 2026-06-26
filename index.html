@@ -32983,4 +32983,372 @@ setTimeout(function(){
 </script>
 
 </body>
+
+<script>
+/* ============================================================
+   BATCH 28 — Flexibility Log | Meal Prep Planner | Warm-up Generator
+   ============================================================ */
+(function(){ 'use strict';
+
+var _origSS26 = window.switchScreen;
+
+/* ── helpers ── */
+function _b28uid(){ try{ return JSON.parse(localStorage.getItem('bm_user')||'{}').uid||'guest'; }catch(e){ return 'guest'; } }
+function _b28today(){ var d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function _b28load(k){ try{ return JSON.parse(localStorage.getItem(k))||null; }catch(e){ return null; } }
+function _b28save(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} }
+function _b28card(id,title){
+  var d=document.createElement('div');
+  d.id=id;
+  d.style.cssText='background:#1a1a2e;border-radius:14px;padding:18px;margin:14px 0;color:#e0e0e0;font-family:inherit;';
+  d.innerHTML='<div style="font-size:15px;font-weight:700;color:#00d4ff;margin-bottom:14px;">'+title+'</div>';
+  return d;
+}
+
+/* ════════════════════════════════════════════════════════════
+   1. FLEXIBILITY & STRETCHING LOG (dashboard)
+   ════════════════════════════════════════════════════════════ */
+var FLEX_AREAS=[
+  {id:'ham',  label:'Hamstrings', icon:'🦵'},
+  {id:'hip',  label:'Hips',       icon:'🔄'},
+  {id:'sho',  label:'Shoulders',  icon:'💪'},
+  {id:'back', label:'Back',       icon:'🔙'},
+  {id:'ank',  label:'Ankles',     icon:'🦶'}
+];
+
+function _injectFlex(){
+  if(document.getElementById('rfc-stretch-wrap')) return;
+  var anchors=['rfc-steps-wrap','rfc-mood-wrap','rfc-water-wrap','rfc-neat-wrap','rfc-breath-wrap','rfc-bodycomp-wrap'];
+  var host=null;
+  for(var i=0;i<anchors.length;i++){ var el=document.getElementById(anchors[i]); if(el){ host=el; break; } }
+  if(!host){ var tb=document.querySelector('.dash-topbar'); if(tb) host=tb; }
+  if(!host) return;
+
+  var c=_b28card('rfc-stretch-wrap','🤸 Flexibility & Stretching Log');
+  var areaRows='';
+  FLEX_AREAS.forEach(function(a){
+    areaRows+='<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">'+
+      '<span style="font-size:16px;width:22px;flex-shrink:0;">'+a.icon+'</span>'+
+      '<span style="font-size:12px;color:#aaa;flex:1;">'+a.label+'</span>'+
+      '<div id="rfc-flex-stars-'+a.id+'" style="display:flex;gap:3px;">'+
+        [1,2,3,4,5].map(function(n){
+          return '<span onclick="window._rfcFlexRate(\''+a.id+'\','+n+')" style="font-size:18px;cursor:pointer;transition:transform .1s;" title="'+n+'/5">☆</span>';
+        }).join('')+
+      '</div>'+
+    '</div>';
+  });
+  c.innerHTML+=
+    '<div style="display:flex;gap:10px;align-items:center;margin-bottom:12px;">'+
+      '<span style="font-size:12px;color:#888;">Duration:</span>'+
+      '<select id="rfc-flex-dur" onchange="window._rfcFlexSave()" style="background:#0d0d1a;border:1px solid #333;color:#ddd;padding:5px 10px;border-radius:8px;font-size:12px;flex:1;">'+
+        '<option value="0">Not stretched today</option>'+
+        '<option value="5">5 min</option>'+
+        '<option value="10">10 min</option>'+
+        '<option value="15">15 min</option>'+
+        '<option value="20">20 min</option>'+
+        '<option value="30">30 min</option>'+
+        '<option value="45">45+ min</option>'+
+      '</select>'+
+    '</div>'+
+    areaRows+
+    '<div style="margin-top:10px;padding-top:10px;border-top:1px solid #222;">'+
+      '<div style="font-size:11px;color:#555;margin-bottom:6px;">Last 7 days average score</div>'+
+      '<div id="rfc-flex-week" style="display:flex;align-items:flex-end;gap:4px;height:40px;"></div>'+
+    '</div>';
+
+  if(host.nextSibling) host.parentNode.insertBefore(c,host.nextSibling);
+  else host.parentNode.appendChild(c);
+  _renderFlex();
+}
+
+function _renderFlex(){
+  var uid=_b28uid(), date=_b28today();
+  var key='rfc_flex_'+uid+'_'+date;
+  var data=_b28load(key)||{};
+
+  FLEX_AREAS.forEach(function(a){
+    var val=data[a.id]||0;
+    var container=document.getElementById('rfc-flex-stars-'+a.id);
+    if(!container) return;
+    var spans=container.querySelectorAll('span');
+    spans.forEach(function(s,i){
+      s.textContent=i<val?'★':'☆';
+      s.style.color=i<val?'#fbbf24':'#444';
+    });
+  });
+
+  var dur=document.getElementById('rfc-flex-dur');
+  if(dur && dur!==document.activeElement) dur.value=String(data.dur||0);
+
+  var week=document.getElementById('rfc-flex-week');
+  if(week){
+    var days=[]; var maxA=1;
+    for(var d=6;d>=0;d--){
+      var dd=new Date(); dd.setDate(dd.getDate()-d);
+      var dk=dd.getFullYear()+'-'+String(dd.getMonth()+1).padStart(2,'0')+'-'+String(dd.getDate()).padStart(2,'0');
+      var rec=_b28load('rfc_flex_'+uid+'_'+dk)||{};
+      var sum=0, cnt=0;
+      FLEX_AREAS.forEach(function(a){ if(rec[a.id]){ sum+=rec[a.id]; cnt++; } });
+      var avg=cnt>0?sum/cnt:0; if(avg>maxA) maxA=avg;
+      days.push({avg:avg,isToday:d===0});
+    }
+    var html='';
+    days.forEach(function(r){
+      var h=Math.max(r.avg>0?6:2, Math.round(r.avg/5*38));
+      html+='<div style="flex:1;display:flex;flex-direction:column;justify-content:flex-end;">'+
+        '<div style="width:100%;height:'+h+'px;background:'+(r.avg>0?(r.isToday?'#fbbf24':'#fbbf2488'):'#111')+';border-radius:3px;transition:height .3s;" title="Avg '+r.avg.toFixed(1)+'/5"></div>'+
+      '</div>';
+    });
+    week.innerHTML=html;
+  }
+}
+window._rfcFlexRate=function(areaId, val){
+  var uid=_b28uid(), date=_b28today();
+  var key='rfc_flex_'+uid+'_'+date;
+  var data=_b28load(key)||{};
+  data[areaId]=data[areaId]===val?0:val;
+  _b28save(key,data);
+  _renderFlex();
+};
+window._rfcFlexSave=function(){
+  var uid=_b28uid(), date=_b28today();
+  var key='rfc_flex_'+uid+'_'+date;
+  var data=_b28load(key)||{};
+  var dur=document.getElementById('rfc-flex-dur');
+  if(dur) data.dur=parseInt(dur.value,10)||0;
+  _b28save(key,data);
+};
+
+/* ════════════════════════════════════════════════════════════
+   2. MEAL PREP PLANNER (nutrition)
+   ════════════════════════════════════════════════════════════ */
+var PREP_TASKS=[
+  {id:'rice',    label:'Cook rice / grains',   icon:'🍚'},
+  {id:'protein', label:'Prep proteins (cook)', icon:'🍗'},
+  {id:'veggies', label:'Chop & roast veggies', icon:'🥦'},
+  {id:'sauce',   label:'Make sauces / dressings',icon:'🫙'},
+  {id:'snacks',  label:'Portion snack bags',   icon:'🥜'},
+  {id:'oats',    label:'Overnight oats (×5)',  icon:'🥣'},
+  {id:'portion', label:'Container portion meals',icon:'📦'},
+  {id:'shakes',  label:'Pre-measure shake bags',icon:'🥛'}
+];
+
+function _b28weekKey(){
+  var d=new Date();
+  var day=d.getDay(); /* 0=sun */
+  var mon=new Date(d); mon.setDate(d.getDate()-(day===0?6:day-1));
+  return mon.getFullYear()+'-'+String(mon.getMonth()+1).padStart(2,'0')+'-'+String(mon.getDate()).padStart(2,'0');
+}
+
+function _injectMealPrep(){
+  if(document.getElementById('rfc-mealprep-wrap')) return;
+  var anchors=['rfc-protiming-wrap','rfc-caff-wrap','rfc-supps-wrap','rfc-mccycle-wrap','rfc-fdiary-wrap','rfc-nccal-wrap'];
+  var host=null;
+  for(var i=0;i<anchors.length;i++){ var el=document.getElementById(anchors[i]); if(el){ host=el; break; } }
+  if(!host) host=document.getElementById('rfc-food-wrap');
+  if(!host) return;
+
+  var c=_b28card('rfc-mealprep-wrap','📦 Weekly Meal Prep Planner');
+  var wk=_b28weekKey();
+  var dd=new Date(wk); var de=new Date(wk); de.setDate(de.getDate()+6);
+  var fmt=function(d){ return d.toLocaleDateString('en-GB',{day:'numeric',month:'short'}); };
+
+  var taskRows='';
+  PREP_TASKS.forEach(function(t){
+    taskRows+='<div onclick="window._rfcPrepToggle(\''+t.id+'\')" id="rfc-prep-row-'+t.id+'" style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:9px;cursor:pointer;margin-bottom:5px;transition:background .2s;background:#0d0d1a;border:1px solid #222;">'+
+      '<span style="font-size:18px;flex-shrink:0;">'+t.icon+'</span>'+
+      '<span id="rfc-prep-lbl-'+t.id+'" style="font-size:13px;color:#bbb;flex:1;">'+t.label+'</span>'+
+      '<span id="rfc-prep-chk-'+t.id+'" style="font-size:16px;">⬜</span>'+
+    '</div>';
+  });
+  c.innerHTML+=
+    '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">'+
+      '<div style="font-size:12px;color:#666;">Week: '+fmt(dd)+' – '+fmt(de)+'</div>'+
+      '<div style="display:flex;align-items:center;gap:6px;">'+
+        '<div style="font-size:11px;color:#888;"><span id="rfc-prep-done">0</span>/'+PREP_TASKS.length+' done</div>'+
+        '<div style="background:#0d0d1a;border-radius:6px;height:6px;width:80px;overflow:hidden;"><div id="rfc-prep-bar" style="height:100%;background:#22c55e;width:0%;border-radius:6px;transition:width .4s;"></div></div>'+
+      '</div>'+
+    '</div>'+
+    taskRows;
+
+  if(host.nextSibling) host.parentNode.insertBefore(c,host.nextSibling);
+  else host.parentNode.appendChild(c);
+  _renderMealPrep();
+}
+
+function _renderMealPrep(){
+  var uid=_b28uid(), wk=_b28weekKey();
+  var key='rfc_mealprep_'+uid+'_'+wk;
+  var data=_b28load(key)||{};
+  var done=0;
+  PREP_TASKS.forEach(function(t){
+    var checked=!!data[t.id];
+    if(checked) done++;
+    var row=document.getElementById('rfc-prep-row-'+t.id);
+    var lbl=document.getElementById('rfc-prep-lbl-'+t.id);
+    var chk=document.getElementById('rfc-prep-chk-'+t.id);
+    if(row) row.style.background=checked?'#22c55e18':'#0d0d1a';
+    if(row) row.style.borderColor=checked?'#22c55e44':'#222';
+    if(lbl){ lbl.style.color=checked?'#22c55e':'#bbb'; lbl.style.textDecoration=checked?'line-through':'none'; }
+    if(chk) chk.textContent=checked?'✅':'⬜';
+  });
+  var doneEl=document.getElementById('rfc-prep-done');
+  var barEl=document.getElementById('rfc-prep-bar');
+  if(doneEl) doneEl.textContent=done;
+  if(barEl) barEl.style.width=Math.round(done/PREP_TASKS.length*100)+'%';
+}
+window._rfcPrepToggle=function(id){
+  var uid=_b28uid(), wk=_b28weekKey();
+  var key='rfc_mealprep_'+uid+'_'+wk;
+  var data=_b28load(key)||{};
+  data[id]=!data[id];
+  _b28save(key,data);
+  _renderMealPrep();
+};
+
+/* ════════════════════════════════════════════════════════════
+   3. WARM-UP GENERATOR (workouts)
+   ════════════════════════════════════════════════════════════ */
+var WU_DB={
+  push:[
+    {name:'Arm Circles',        reps:'30 sec each direction'},
+    {name:'Band Pull-Apart',    reps:'2×15'},
+    {name:'Push-up (slow)',     reps:'2×8'},
+    {name:'Shoulder Dislocate', reps:'10 reps'},
+    {name:'Wall Slide',         reps:'2×12'},
+    {name:'Thoracic Rotation',  reps:'10 each side'},
+    {name:'Scapular Push-up',   reps:'2×10'}
+  ],
+  pull:[
+    {name:'Dead Hang',          reps:'3×20 sec'},
+    {name:'Scapular Pull-up',   reps:'2×10'},
+    {name:'Band Face Pull',     reps:'2×15'},
+    {name:'Cat-Cow Stretch',    reps:'10 reps'},
+    {name:'Lat Stretch (door)', reps:'30 sec each'},
+    {name:'Shoulder CARs',      reps:'5 each side'},
+    {name:'Thoracic Extension', reps:'30 sec'}
+  ],
+  legs:[
+    {name:'Hip Circle',         reps:'10 each direction'},
+    {name:'Leg Swing',          reps:'15 each leg'},
+    {name:'Goblet Squat (BW)',  reps:'2×10'},
+    {name:'Cossack Squat',      reps:'8 each side'},
+    {name:'Ankle Circles',      reps:'10 each direction'},
+    {name:'Hip Flexor Stretch', reps:'30 sec each side'},
+    {name:'Glute Bridge',       reps:'2×15'}
+  ],
+  upper:[
+    {name:'Arm Circles',        reps:'30 sec'},
+    {name:'Band Pull-Apart',    reps:'2×15'},
+    {name:'Thoracic Rotation',  reps:'10 each side'},
+    {name:'Wall Slide',         reps:'2×12'},
+    {name:'Dead Hang',          reps:'20 sec'},
+    {name:'Shoulder CARs',      reps:'5 each side'},
+    {name:'Push-up (slow)',     reps:'1×8'}
+  ],
+  full:[
+    {name:'Hip Circle',         reps:'10 each'},
+    {name:'Arm Circles',        reps:'30 sec'},
+    {name:'Leg Swing',          reps:'10 each'},
+    {name:'Goblet Squat (BW)',  reps:'10 reps'},
+    {name:'Inchworm',           reps:'6 reps'},
+    {name:'World\'s Greatest Stretch', reps:'5 each side'},
+    {name:'Jumping Jack',       reps:'30 sec'}
+  ],
+  core:[
+    {name:'Dead Bug',           reps:'10 each side'},
+    {name:'Bird Dog',           reps:'10 each side'},
+    {name:'Cat-Cow',            reps:'10 reps'},
+    {name:'Hip Flexor Stretch', reps:'30 sec each'},
+    {name:'Glute Bridge',       reps:'15 reps'},
+    {name:'Thoracic Rotation',  reps:'8 each side'},
+    {name:'90/90 Hip Stretch',  reps:'30 sec each side'}
+  ]
+};
+
+function _injectWarmup(){
+  if(document.getElementById('rfc-warmup-wrap')) return;
+  var anchors=['rfc-wkstreak-wrap','rfc-volload-wrap','rfc-prboard-wrap','rfc-wgen-wrap','rfc-strstd-wrap','rfc-rest-wrap'];
+  var host=null;
+  for(var i=0;i<anchors.length;i++){ var el=document.getElementById(anchors[i]); if(el){ host=el; break; } }
+  if(!host) host=document.getElementById('wl-history');
+  if(!host) return;
+
+  var c=_b28card('rfc-warmup-wrap','🌡️ Warm-up Routine Generator');
+  c.innerHTML+=
+    '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;" id="rfc-wu-focus-btns">'+
+      ['push','pull','legs','upper','full','core'].map(function(f){
+        return '<button onclick="window._rfcGenWarmup(\''+f+'\')" style="background:#0d0d1a;border:1px solid #333;color:#aaa;padding:7px 14px;border-radius:8px;cursor:pointer;font-size:12px;transition:all .2s;">'+f.charAt(0).toUpperCase()+f.slice(1)+'</button>';
+      }).join('')+
+    '</div>'+
+    '<div id="rfc-wu-list" style="display:flex;flex-direction:column;gap:6px;"></div>'+
+    '<div id="rfc-wu-tip" style="font-size:12px;color:#555;margin-top:8px;text-align:center;">Select a workout focus to generate your warm-up.</div>';
+
+  if(host.nextSibling) host.parentNode.insertBefore(c,host.nextSibling);
+  else host.parentNode.appendChild(c);
+}
+
+window._rfcGenWarmup=function(focus){
+  var pool=WU_DB[focus]||WU_DB.full;
+  /* shuffle & pick 6 */
+  var shuffled=pool.slice().sort(function(){ return Math.random()-.5; }).slice(0,6);
+
+  /* highlight active button */
+  var btns=document.querySelectorAll('#rfc-wu-focus-btns button');
+  btns.forEach(function(b){
+    var isCur=b.textContent.toLowerCase()===focus;
+    b.style.background=isCur?'#00d4ff22':'#0d0d1a';
+    b.style.borderColor=isCur?'#00d4ff44':'#333';
+    b.style.color=isCur?'#00d4ff':'#aaa';
+  });
+
+  var list=document.getElementById('rfc-wu-list');
+  var tip=document.getElementById('rfc-wu-tip');
+  if(!list) return;
+
+  var colors=['#00d4ff','#a78bfa','#22c55e','#fbbf24','#f97316','#f472b6'];
+  var html='';
+  shuffled.forEach(function(ex,i){
+    html+='<div style="display:flex;align-items:center;gap:10px;background:#0d0d1a;border-radius:9px;padding:9px 12px;border-left:3px solid '+colors[i%colors.length]+';">'+
+      '<div style="width:22px;height:22px;border-radius:50%;background:'+colors[i%colors.length]+'22;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:'+colors[i%colors.length]+';flex-shrink:0;">'+(i+1)+'</div>'+
+      '<div style="flex:1;">'+
+        '<div style="font-size:13px;font-weight:600;color:#ddd;">'+ex.name+'</div>'+
+        '<div style="font-size:11px;color:#666;">'+ex.reps+'</div>'+
+      '</div>'+
+    '</div>';
+  });
+  list.innerHTML=html;
+  if(tip){ tip.textContent='~5-8 min · Do each movement controlled before loading up.'; tip.style.color='#666'; }
+};
+
+/* ── switchScreen wrap ── */
+window.switchScreen=function(name,navEl){
+  _origSS26&&_origSS26(name,navEl);
+  if(name==='dashboard'){
+    setTimeout(function(){ _injectFlex(); _renderFlex(); }, 1200);
+  }
+  if(name==='nutrition'){
+    setTimeout(function(){ _injectMealPrep(); _renderMealPrep(); }, 1100);
+  }
+  if(name==='workouts'){
+    setTimeout(function(){ _injectWarmup(); }, 1050);
+  }
+};
+
+setTimeout(function(){
+  _injectFlex();
+  _injectMealPrep();
+  _injectWarmup();
+}, 20000);
+
+setTimeout(function(){
+  if(!document.getElementById('rfc-stretch-wrap'))   _injectFlex();
+  if(!document.getElementById('rfc-mealprep-wrap'))  _injectMealPrep();
+  if(!document.getElementById('rfc-warmup-wrap'))    _injectWarmup();
+}, 24000);
+
+})();
+</script>
+
+</body>
 </html>
