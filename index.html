@@ -41817,5 +41817,208 @@ setTimeout(function(){
 })();
 </script>
 
+<!-- Batch 64: Testosterone-Boosting Habits, Zinc & Mineral Tracker, Push/Pull Balance -->
+<script>
+(function(){ 'use strict';
+var _origSS62=window.switchScreen;
+function _b64uid(){ try{ return JSON.parse(localStorage.getItem('bm_user')||'{}').uid||'guest'; }catch(e){ return 'guest'; } }
+function _b64today(){ var d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function _b64load(k){ try{ return JSON.parse(localStorage.getItem(k))||null; }catch(e){ return null; } }
+function _b64save(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} }
+function _b64card(id,title){ var d=document.createElement('div'); d.id=id; d.style.cssText='background:#1a1a2e;border-radius:14px;padding:18px;margin:14px 0;color:#e0e0e0;font-family:inherit;'; d.innerHTML='<div style="font-size:15px;font-weight:700;color:#00d4ff;margin-bottom:14px;">'+title+'</div>'; return d; }
+
+/* ── Testosterone-Boosting Habits ── */
+var _testHabits=[
+  {id:'sl',label:'8h quality sleep',pts:4},{id:'st',label:'Strength training (compound lifts)',pts:4},
+  {id:'sp',label:'Sprint or HIIT session',pts:3},{id:'vd',label:'Vitamin D / sun exposure',pts:3},
+  {id:'zn',label:'Zinc-rich foods (oysters, beef, seeds)',pts:3},{id:'mg',label:'Magnesium intake adequate',pts:2},
+  {id:'lf',label:'Healthy fats (eggs, avocado, olive oil)',pts:3},{id:'ls',label:'Low stress day (<5/10)',pts:3},
+  {id:'ex',label:'No excess alcohol',pts:2},{id:'ic',label:'Cold exposure (shower/plunge)',pts:2},
+  {id:'cx',label:'Minimized xeno-estrogens (plastics)',pts:2},{id:'np',label:'No porn/masturbation',pts:2}
+];
+function _injectTestHab(){
+  if(document.getElementById('rfc-testhab-wrap')) return;
+  var anchor=document.getElementById('rfc-breathpat-wrap')||document.getElementById('rfc-injprev-wrap')||document.getElementById('rfc-vitd-wrap')||document.getElementById('rfc-habits-wrap');
+  if(!anchor) return;
+  var rows=_testHabits.map(function(h){
+    return '<label style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid #1a1a2e;cursor:pointer;">'
+      +'<input type="checkbox" id="rfc-th-'+h.id+'" onchange="window._rfcTHCalc()" style="accent-color:#ff9800;">'
+      +'<span style="flex:1;font-size:12px;">'+h.label+'</span>'
+      +'<span style="font-size:11px;color:#ff9800;">+'+h.pts+'</span></label>';
+  }).join('');
+  var c=_b64card('rfc-testhab-wrap','⚡ Testosterone-Boosting Habits');
+  c.innerHTML+=`
+<div style="font-size:12px;color:#aaa;margin-bottom:10px;">Evidence-based habits to support natural testosterone levels</div>
+<div id="rfc-th-gauge" style="text-align:center;margin-bottom:12px;"></div>
+<div style="max-height:260px;overflow-y:auto;">${rows}</div>
+<div id="rfc-th-msg" style="margin-top:10px;font-size:12px;text-align:center;color:#ff9800;"></div>
+<div id="rfc-th-hist" style="margin-top:10px;"></div>`;
+  anchor.after(c);
+}
+window._rfcTHCalc=function(){
+  var total=33, pts=0, state={};
+  _testHabits.forEach(function(h){ var cb=document.getElementById('rfc-th-'+h.id); if(cb&&cb.checked){ pts+=h.pts; state[h.id]=1; } });
+  var pct=Math.round(pts/total*100);
+  var col=pct>=70?'#4caf50':pct>=45?'#ff9800':'#f44336';
+  var msg=pct>=70?'Excellent hormone-supporting lifestyle!':pct>=45?'Good foundation — keep improving':'Low score — focus on sleep & training first';
+  var g=document.getElementById('rfc-th-gauge');
+  if(g){
+    var circ=Math.round(2*Math.PI*36), dash=Math.round(circ*pct/100);
+    g.innerHTML='<svg width="90" height="90" viewBox="0 0 90 90"><circle cx="45" cy="45" r="36" fill="none" stroke="#222" stroke-width="8"/><circle cx="45" cy="45" r="36" fill="none" stroke="'+col+'" stroke-width="8" stroke-dasharray="'+dash+' '+circ+'" stroke-dashoffset="'+Math.round(circ*0.25)+'" stroke-linecap="round"/><text x="45" y="50" text-anchor="middle" fill="'+col+'" font-size="16" font-weight="700">'+pct+'%</text></svg>';
+  }
+  var msgEl=document.getElementById('rfc-th-msg'); if(msgEl){ msgEl.textContent=msg; msgEl.style.color=col; }
+  var uid=_b64uid(), key='rfc_testhab_'+uid;
+  var hist=_b64load(key)||[], today=_b64today();
+  var idx=hist.findIndex(function(e){return e.date===today;});
+  var entry={date:today,pct:pct,state:state};
+  if(idx>=0) hist[idx]=entry; else hist.push(entry);
+  if(hist.length>30) hist=hist.slice(-30);
+  _b64save(key,hist);
+  _showTHHist(hist);
+};
+function _showTHHist(hist){
+  var el=document.getElementById('rfc-th-hist'); if(!el||!hist.length) return;
+  var last7=hist.slice(-7);
+  var bars=last7.map(function(e){
+    var col=e.pct>=70?'#4caf50':e.pct>=45?'#ff9800':'#f44336';
+    return '<div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;">'
+      +'<div style="height:'+Math.max(4,e.pct*0.5)+'px;width:16px;background:'+col+';border-radius:3px;"></div>'
+      +'<div style="font-size:9px;color:#aaa;">'+e.date.slice(5)+'</div></div>';
+  }).join('');
+  el.innerHTML='<div style="font-size:11px;color:#aaa;margin-bottom:4px;">7-Day Score</div>'
+    +'<div style="display:flex;align-items:flex-end;gap:4px;height:60px;">'+bars+'</div>';
+}
+function _renderTestHab(){
+  if(!document.getElementById('rfc-testhab-wrap')) return;
+  var uid=_b64uid(), key='rfc_testhab_'+uid;
+  var hist=_b64load(key)||[];
+  var td=hist.find(function(e){return e.date===_b64today();});
+  if(td){ Object.keys(td.state||{}).forEach(function(id){ var cb=document.getElementById('rfc-th-'+id); if(cb) cb.checked=true; }); }
+  window._rfcTHCalc();
+}
+
+/* ── Zinc & Mineral Tracker ── */
+function _injectZinc(){
+  if(document.getElementById('rfc-zinc-wrap')) return;
+  var anchor=document.getElementById('rfc-protto-wrap')||document.getElementById('rfc-hydlog-wrap')||document.getElementById('rfc-mealprep-wrap')||document.getElementById('rfc-hfat-wrap');
+  if(!anchor) return;
+  var MINERALS=[
+    {id:'oyster',label:'Oysters (3 oz)',zn:74,fe:0,mg:0,note:'Highest zinc food'},
+    {id:'beef',label:'Beef / Lamb',zn:7,fe:3,mg:0,note:'Iron + Zinc'},
+    {id:'pumpkin',label:'Pumpkin Seeds (30g)',zn:2.5,fe:2,mg:150,note:'Zinc + Magnesium'},
+    {id:'lentils',label:'Lentils (1 cup)',zn:2.5,fe:6,mg:71,note:'Iron + Minerals'},
+    {id:'cashew',label:'Cashews / Almonds',zn:1.5,fe:1,mg:80,note:'Mg + Zinc'},
+    {id:'chicken',label:'Chicken / Turkey',zn:2,fe:1,mg:25,note:'Lean Zinc source'},
+    {id:'beans',label:'Black Beans / Chickpeas',zn:2,fe:3,mg:60,note:'Plant-based minerals'},
+    {id:'dark',label:'Dark Chocolate (30g)',zn:1,fe:2,mg:65,note:'Mg + Iron'},
+    {id:'spinach',label:'Spinach (cooked cup)',zn:1,fe:6,mg:157,note:'Iron + Magnesium'},
+    {id:'flax',label:'Hemp / Flax Seeds',zn:1.5,fe:2,mg:80,note:'Omega-3 + Minerals'}
+  ];
+  var rows=MINERALS.map(function(m){
+    return '<label style="display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px solid #1a1a2e;cursor:pointer;">'
+      +'<input type="checkbox" id="rfc-zinc-'+m.id+'" onchange="window._rfcZincChg()" style="accent-color:#00d4ff;margin-top:2px;">'
+      +'<div style="flex:1;"><div style="font-size:12px;">'+m.label+'</div>'
+      +'<div style="font-size:10px;color:#888;">'+m.note+' | '+(m.zn?'Zn:'+m.zn+'mg ':'')+(m.fe?'Fe:'+m.fe+'mg ':'')+(m.mg?'Mg:'+m.mg+'mg':'')+'</div></div></label>';
+  }).join('');
+  var c=_b64card('rfc-zinc-wrap','🔩 Zinc & Mineral Tracker');
+  c.innerHTML+=`
+<div style="font-size:12px;color:#aaa;margin-bottom:10px;">Track Zinc (8–11mg/day), Iron & Magnesium intake</div>
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px;text-align:center;">
+  <div><div id="rfc-zinc-zn" style="font-size:20px;font-weight:700;color:#00d4ff;">0</div><div style="font-size:10px;color:#aaa;">Zinc (mg)</div></div>
+  <div><div id="rfc-zinc-fe" style="font-size:20px;font-weight:700;color:#f44336;">0</div><div style="font-size:10px;color:#aaa;">Iron (mg)</div></div>
+  <div><div id="rfc-zinc-mg" style="font-size:20px;font-weight:700;color:#9c27b0;">0</div><div style="font-size:10px;color:#aaa;">Magnesium (mg)</div></div>
+</div>
+<div style="max-height:240px;overflow-y:auto;">${rows}</div>`;
+  anchor.after(c);
+}
+window._rfcZincChg=function(){
+  var MINERALS=[{id:'oyster',zn:74,fe:0,mg:0},{id:'beef',zn:7,fe:3,mg:0},{id:'pumpkin',zn:2.5,fe:2,mg:150},{id:'lentils',zn:2.5,fe:6,mg:71},{id:'cashew',zn:1.5,fe:1,mg:80},{id:'chicken',zn:2,fe:1,mg:25},{id:'beans',zn:2,fe:3,mg:60},{id:'dark',zn:1,fe:2,mg:65},{id:'spinach',zn:1,fe:6,mg:157},{id:'flax',zn:1.5,fe:2,mg:80}];
+  var zn=0, fe=0, mg=0, state={};
+  MINERALS.forEach(function(m){ var cb=document.getElementById('rfc-zinc-'+m.id); if(cb&&cb.checked){ zn+=m.zn; fe+=m.fe; mg+=m.mg; state[m.id]=1; } });
+  document.getElementById('rfc-zinc-zn').textContent=Math.round(zn*10)/10;
+  document.getElementById('rfc-zinc-fe').textContent=Math.round(fe*10)/10;
+  document.getElementById('rfc-zinc-mg').textContent=Math.round(mg);
+  var uid=_b64uid(), key='rfc_zinc_'+uid+'_'+_b64today();
+  _b64save(key,state);
+};
+function _renderZinc(){
+  if(!document.getElementById('rfc-zinc-wrap')) return;
+  var uid=_b64uid(), key='rfc_zinc_'+uid+'_'+_b64today();
+  var saved=_b64load(key)||{};
+  Object.keys(saved).forEach(function(id){ var cb=document.getElementById('rfc-zinc-'+id); if(cb) cb.checked=true; });
+  window._rfcZincChg();
+}
+
+/* ── Upper Body Push/Pull Balance ── */
+function _injectPushPull(){
+  if(document.getElementById('rfc-pushpull-wrap')) return;
+  var anchor=document.getElementById('rfc-dlvar-wrap')||document.getElementById('rfc-agility-wrap')||document.getElementById('rfc-iso-wrap')||document.getElementById('rfc-resband-wrap');
+  if(!anchor) return;
+  var c=_b64card('rfc-pushpull-wrap','⚖️ Push / Pull Balance Tracker');
+  c.innerHTML+=`
+<div style="font-size:12px;color:#aaa;margin-bottom:12px;">Log sets for each movement type — ideal ratio is 1:1 or more pull than push</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
+  <div>
+    <div style="font-size:13px;color:#00d4ff;font-weight:600;margin-bottom:8px;">PUSH</div>
+    ${['Bench Press','Overhead Press','Push-ups','Dips','Cable Fly','Incline Press'].map(function(e,i){
+      return '<div style="display:flex;align-items:center;gap:6px;margin-bottom:5px;">'
+        +'<span style="flex:1;font-size:11px;color:#aaa;">'+e+'</span>'
+        +'<input id="rfc-pp-push-'+i+'" type="number" min="0" max="20" placeholder="sets" style="width:40px;padding:4px;border-radius:5px;border:1px solid #333;background:#0d0d1a;color:#e0e0e0;font-size:11px;text-align:center;" oninput="window._rfcPPCalc()">'
+        +'</div>';
+    }).join('')}
+  </div>
+  <div>
+    <div style="font-size:13px;color:#9c27b0;font-weight:600;margin-bottom:8px;">PULL</div>
+    ${['Pull-ups / Chin-ups','Barbell Rows','Cable Rows','Face Pulls','Lat Pulldown','Rear Delt Fly'].map(function(e,i){
+      return '<div style="display:flex;align-items:center;gap:6px;margin-bottom:5px;">'
+        +'<span style="flex:1;font-size:11px;color:#aaa;">'+e+'</span>'
+        +'<input id="rfc-pp-pull-'+i+'" type="number" min="0" max="20" placeholder="sets" style="width:40px;padding:4px;border-radius:5px;border:1px solid #333;background:#0d0d1a;color:#e0e0e0;font-size:11px;text-align:center;" oninput="window._rfcPPCalc()">'
+        +'</div>';
+    }).join('')}
+  </div>
+</div>
+<div id="rfc-pp-result" style="margin-top:8px;"></div>`;
+  anchor.after(c);
+  _renderPushPull();
+}
+window._rfcPPCalc=function(){
+  var pushSets=0, pullSets=0;
+  for(var i=0;i<6;i++){ var p=document.getElementById('rfc-pp-push-'+i); if(p) pushSets+=parseInt(p.value)||0; }
+  for(var j=0;j<6;j++){ var q=document.getElementById('rfc-pp-pull-'+j); if(q) pullSets+=parseInt(q.value)||0; }
+  var ratio=pushSets>0?Math.round(pullSets/pushSets*10)/10:'—';
+  var col=typeof ratio==='number'&&ratio>=1?'#4caf50':typeof ratio==='number'&&ratio>=0.7?'#ff9800':'#f44336';
+  var msg=typeof ratio==='number'&&ratio>=1.2?'Balanced — pull-dominant (optimal for shoulder health)':typeof ratio==='number'&&ratio>=0.9?'Balanced push/pull ratio':typeof ratio==='number'&&ratio>=0.7?'Slightly push-dominant — add more rows/pulls':'Push-dominant — risk of shoulder imbalance';
+  var r=document.getElementById('rfc-pp-result');
+  if(r) r.innerHTML='<div style="background:#0d0d1a;border-radius:8px;padding:12px;">'
+    +'<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;text-align:center;margin-bottom:10px;">'
+    +'<div><div style="font-size:20px;font-weight:700;color:#00d4ff;">'+pushSets+'</div><div style="font-size:10px;color:#aaa;">Push Sets</div></div>'
+    +'<div><div style="font-size:20px;font-weight:700;color:'+col+';">'+ratio+'</div><div style="font-size:10px;color:#aaa;">Pull:Push Ratio</div></div>'
+    +'<div><div style="font-size:20px;font-weight:700;color:#9c27b0;">'+pullSets+'</div><div style="font-size:10px;color:#aaa;">Pull Sets</div></div>'
+    +'</div><div style="font-size:12px;color:'+col+';text-align:center;">'+msg+'</div></div>';
+  var uid=_b64uid(), key='rfc_pushpull_'+uid+'_'+_b64today(), data={pushSets:pushSets,pullSets:pullSets};
+  _b64save(key,data);
+};
+function _renderPushPull(){
+  if(!document.getElementById('rfc-pushpull-wrap')) return;
+  window._rfcPPCalc();
+}
+
+/* ── switchScreen wrapper ── */
+window.switchScreen=function(name,navEl){
+  _origSS62&&_origSS62(name,navEl);
+  if(name==='dashboard') setTimeout(function(){ _injectTestHab(); _renderTestHab(); },1200);
+  if(name==='nutrition') setTimeout(function(){ _injectZinc(); _renderZinc(); },1100);
+  if(name==='workouts')  setTimeout(function(){ _injectPushPull(); _renderPushPull(); },1050);
+};
+
+setTimeout(function(){ _injectTestHab(); _injectZinc(); _injectPushPull(); _renderTestHab(); _renderZinc(); _renderPushPull(); },56000);
+setTimeout(function(){
+  if(!document.getElementById('rfc-testhab-wrap'))  { _injectTestHab(); _renderTestHab(); }
+  if(!document.getElementById('rfc-zinc-wrap'))     { _injectZinc(); _renderZinc(); }
+  if(!document.getElementById('rfc-pushpull-wrap')) { _injectPushPull(); _renderPushPull(); }
+},60000);
+})();
+</script>
+
 </body>
 </html>
