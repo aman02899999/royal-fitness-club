@@ -20273,6 +20273,95 @@ body.admin-logged-in #admin-theme-btn{display:flex;}
   transition:opacity .3s;
 }
 .rfc-tilt:hover::before{opacity:1;}
+
+/* ══════════════════════════════════════
+   REST TIMER
+   ══════════════════════════════════════ */
+#rfc-rest-timer{
+  position:fixed;bottom:78px;left:50%;transform:translateX(-50%);
+  background:rgba(8,8,8,.97);border:1.5px solid rgba(232,0,29,.35);
+  border-radius:22px;padding:16px 22px 14px;z-index:9000;
+  display:none;flex-direction:column;align-items:center;gap:10px;
+  box-shadow:0 12px 48px rgba(0,0,0,.75),0 0 0 1px rgba(232,0,29,.1);
+  min-width:270px;
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+}
+#rfc-rest-timer.rt-visible{display:flex;}
+.rt-label{font-size:9px;font-weight:700;letter-spacing:3.5px;
+  color:rgba(255,255,255,.35);text-transform:uppercase;}
+.rt-ring-wrap{position:relative;width:82px;height:82px;flex-shrink:0;}
+.rt-ring-wrap svg{width:82px;height:82px;display:block;transform:rotate(-90deg);}
+.rt-ring-bg{fill:none;stroke:rgba(255,255,255,.05);stroke-width:7;}
+.rt-ring-fg{fill:none;stroke:#e8001d;stroke-width:7;stroke-linecap:round;
+  stroke-dasharray:219.9;stroke-dashoffset:0;
+  transition:stroke-dashoffset .95s linear,stroke .4s ease;}
+.rt-ring-num{
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  font-family:'Bebas Neue',sans-serif;font-size:27px;letter-spacing:1px;color:#fff;
+}
+.rt-presets{display:flex;gap:5px;}
+.rt-preset{
+  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);
+  border-radius:8px;padding:5px 11px;font-size:11px;font-weight:700;
+  color:rgba(255,255,255,.55);cursor:pointer;transition:all .18s;letter-spacing:.5px;
+}
+.rt-preset:hover,.rt-preset.rt-active{
+  background:rgba(232,0,29,.22);border-color:#e8001d;color:#fff;
+}
+.rt-controls{display:flex;gap:7px;}
+.rt-btn{
+  background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);
+  border-radius:9px;padding:7px 16px;font-size:11px;font-weight:700;color:#fff;
+  cursor:pointer;transition:all .18s;letter-spacing:.5px;
+}
+.rt-btn:hover{background:rgba(232,0,29,.28);border-color:#e8001d;}
+.rt-btn.rt-start{background:rgba(232,0,29,.18);border-color:rgba(232,0,29,.5);}
+.rt-close-btn{
+  position:absolute;top:9px;right:12px;background:none;border:none;
+  color:rgba(255,255,255,.25);font-size:16px;cursor:pointer;padding:2px 4px;line-height:1;
+}
+.rt-close-btn:hover{color:rgba(255,255,255,.7);}
+.rt-done-ring .rt-ring-fg{stroke:#22c55e !important;}
+.rt-done-ring .rt-ring-num{color:#22c55e;}
+/* inline REST button in workout rows */
+.rt-row-btn{
+  background:rgba(232,0,29,.14);border:1px solid rgba(232,0,29,.3);
+  border-radius:7px;padding:5px 10px;font-size:10px;font-weight:700;
+  color:#e8001d;cursor:pointer;letter-spacing:.5px;white-space:nowrap;
+  transition:all .18s;margin-top:4px;
+}
+.rt-row-btn:hover{background:rgba(232,0,29,.28);}
+
+/* ══════════════════════════════════════
+   MEASUREMENT PROGRESS CHART
+   ══════════════════════════════════════ */
+#meas-chart-wrap{
+  background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);
+  border-radius:14px;padding:16px 14px 12px;margin-top:14px;
+}
+.meas-chart-title{
+  font-size:10px;font-weight:700;letter-spacing:2px;
+  color:rgba(255,255,255,.35);text-transform:uppercase;margin-bottom:12px;
+}
+#meas-chart-wrap svg{width:100%;max-width:360px;display:block;overflow:visible;}
+.meas-legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:10px;}
+.meas-legend-item{
+  display:inline-flex;align-items:center;gap:5px;
+  font-size:10px;color:rgba(255,255,255,.55);
+}
+.meas-legend-line{width:14px;height:2.5px;border-radius:2px;display:inline-block;}
+
+/* ══════════════════════════════════════
+   3-D SCREEN TRANSITIONS
+   ══════════════════════════════════════ */
+.sb-active-screen.sc-entering{
+  animation:scEnter .3s cubic-bezier(.25,.8,.25,1) both;
+}
+@keyframes scEnter{
+  0%{opacity:0;transform:translateX(22px) translateZ(-14px);}
+  100%{opacity:1;transform:translateX(0) translateZ(0);}
+}
 </style>
 
 <!-- ═══ Marketing JS ═══ -->
@@ -21995,6 +22084,271 @@ window._3dFlipNumber = function(el){
   var hero = document.querySelector('.dash-hero,.home-hero,.welcome-banner');
   if(hero) hero.classList.add('hero-float-3d');
 })();
+
+})();
+</script>
+
+<!-- ═══════════════════════════════════════════════════════
+     REST TIMER  ·  PROGRESS CHART  ·  SCREEN TRANSITIONS
+     ═══════════════════════════════════════════════════════ -->
+<script>
+(function(){
+'use strict';
+
+/* ──────────────────────────────────────────────
+   A. REST TIMER  (floating, circular SVG ring)
+   ────────────────────────────────────────────── */
+var timerEl = document.createElement('div');
+timerEl.id = 'rfc-rest-timer';
+timerEl.innerHTML =
+  '<button class="rt-close-btn" onclick="rfcTimer.close()">✕</button>' +
+  '<div class="rt-label">Rest Timer</div>' +
+  '<div class="rt-ring-wrap">' +
+    '<svg viewBox="0 0 82 82"><circle class="rt-ring-bg" cx="41" cy="41" r="35"/>' +
+    '<circle class="rt-ring-fg" id="rt-fg" cx="41" cy="41" r="35"/></svg>' +
+    '<div class="rt-ring-num" id="rt-num">60s</div>' +
+  '</div>' +
+  '<div class="rt-presets">' +
+    '<button class="rt-preset" onclick="rfcTimer.set(45)">45s</button>' +
+    '<button class="rt-preset rt-active" onclick="rfcTimer.set(60)">60s</button>' +
+    '<button class="rt-preset" onclick="rfcTimer.set(90)">90s</button>' +
+    '<button class="rt-preset" onclick="rfcTimer.set(120)">2m</button>' +
+    '<button class="rt-preset" onclick="rfcTimer.set(180)">3m</button>' +
+  '</div>' +
+  '<div class="rt-controls">' +
+    '<button class="rt-btn rt-start" id="rt-pp" onclick="rfcTimer.toggle()">▶ START</button>' +
+    '<button class="rt-btn" onclick="rfcTimer.reset()">↺ RESET</button>' +
+  '</div>';
+document.body.appendChild(timerEl);
+
+var C = 2 * Math.PI * 35; /* circumference ≈ 219.9 */
+
+window.rfcTimer = (function(){
+  var _total = 60, _rem = 60, _running = false, _iv = null;
+
+  function _ring(pct){
+    var fg = document.getElementById('rt-fg');
+    if(fg) fg.style.strokeDashoffset = (C * (1 - pct)).toFixed(2);
+  }
+  function _display(){
+    var el = document.getElementById('rt-num');
+    if(!el) return;
+    var r = Math.max(0, _rem);
+    var m = Math.floor(r / 60), s = r % 60;
+    el.textContent = m > 0 ? m + ':' + (s < 10 ? '0' : '') + s : r + 's';
+    _ring(_total > 0 ? r / _total : 0);
+  }
+  function _beep(){
+    try{
+      var ac = new (window.AudioContext || window.webkitAudioContext)();
+      [[660,.05],[880,.35],[660,.65]].forEach(function(pair){
+        var osc = ac.createOscillator(), g = ac.createGain();
+        osc.connect(g); g.connect(ac.destination);
+        osc.frequency.value = pair[0];
+        g.gain.setValueAtTime(.35, ac.currentTime + pair[1]);
+        g.gain.exponentialRampToValueAtTime(.001, ac.currentTime + pair[1] + .22);
+        osc.start(ac.currentTime + pair[1]);
+        osc.stop(ac.currentTime + pair[1] + .25);
+      });
+    }catch(e){}
+    if(navigator.vibrate) navigator.vibrate([180,80,180,80,360]);
+  }
+  function _done(){
+    timerEl.classList.add('rt-done-ring');
+    var fg = document.getElementById('rt-fg');
+    if(fg) fg.style.stroke = '#22c55e';
+    var num = document.getElementById('rt-num');
+    if(num){ num.textContent = 'GO!'; num.style.color = '#22c55e'; }
+    var pp = document.getElementById('rt-pp');
+    if(pp) pp.textContent = '▶ START';
+    _beep();
+  }
+  function _setPreset(sec){
+    document.querySelectorAll('.rt-preset').forEach(function(b){
+      b.classList.toggle('rt-active', b.textContent === (sec>=60 ? (sec/60)+'m' : sec+'s') ||
+        b.textContent === sec+'s');
+    });
+  }
+
+  return {
+    open: function(sec){
+      timerEl.classList.add('rt-visible');
+      if(sec && sec !== _total){ this.set(sec); this.toggle(); }
+    },
+    close: function(){
+      clearInterval(_iv); _running = false;
+      timerEl.classList.remove('rt-visible');
+    },
+    set: function(sec){
+      clearInterval(_iv); _running = false;
+      _total = sec; _rem = sec;
+      timerEl.classList.remove('rt-done-ring');
+      var fg = document.getElementById('rt-fg');
+      if(fg){ fg.style.stroke = '#e8001d'; }
+      var num = document.getElementById('rt-num');
+      if(num) num.style.color = '';
+      var pp = document.getElementById('rt-pp');
+      if(pp) pp.textContent = '▶ START';
+      _setPreset(sec);
+      _display();
+    },
+    toggle: function(){
+      if(_running){
+        clearInterval(_iv); _running = false;
+        var pp = document.getElementById('rt-pp');
+        if(pp) pp.textContent = '▶ RESUME';
+      } else {
+        if(_rem <= 0){ this.reset(); }
+        timerEl.classList.remove('rt-done-ring');
+        var fg = document.getElementById('rt-fg');
+        if(fg) fg.style.stroke = '#e8001d';
+        var num = document.getElementById('rt-num');
+        if(num) num.style.color = '';
+        _running = true;
+        var pp = document.getElementById('rt-pp');
+        if(pp) pp.textContent = '⏸ PAUSE';
+        var self = this;
+        _iv = setInterval(function(){
+          _rem--;
+          _display();
+          if(_rem <= 0){ clearInterval(_iv); _running = false; _done(); }
+        }, 1000);
+      }
+    },
+    reset: function(){
+      clearInterval(_iv); _running = false;
+      _rem = _total;
+      timerEl.classList.remove('rt-done-ring');
+      var fg = document.getElementById('rt-fg');
+      if(fg) fg.style.stroke = '#e8001d';
+      var num = document.getElementById('rt-num');
+      if(num) num.style.color = '';
+      var pp = document.getElementById('rt-pp');
+      if(pp) pp.textContent = '▶ START';
+      _display();
+    }
+  };
+})();
+
+/* Add REST button to every exercise row as they're created */
+var _origAddRow = window.addExerciseRow;
+if(_origAddRow){
+  window.addExerciseRow = function(){
+    _origAddRow();
+    var rows = document.querySelectorAll('#wl-rows > div');
+    var lastRow = rows[rows.length - 1];
+    if(!lastRow || lastRow.querySelector('.rt-row-btn')) return;
+    var restWrap = document.createElement('div');
+    restWrap.style.cssText = 'grid-column:1/-1;display:flex;justify-content:flex-end;margin-top:-2px;margin-bottom:4px;';
+    var restBtn = document.createElement('button');
+    restBtn.className = 'rt-row-btn';
+    restBtn.innerHTML = '⏱ REST 90s';
+    restBtn.onclick = function(){ rfcTimer.open(90); };
+    restWrap.appendChild(restBtn);
+    lastRow.appendChild(restWrap);
+  };
+}
+
+
+/* ──────────────────────────────────────────────
+   B. MEASUREMENT PROGRESS CHART  (SVG sparkline)
+   ────────────────────────────────────────────── */
+var _origRenderMeas = window.renderMeas;
+window.renderMeas = function(){
+  _origRenderMeas && _origRenderMeas();
+  _renderMeasChart();
+};
+
+function _renderMeasChart(){
+  var measlog = document.getElementById('measlog');
+  if(!measlog) return;
+
+  var arr;
+  try{ arr = JSON.parse(localStorage.getItem('bm_meas') || '[]'); }catch(e){ arr = []; }
+  if(arr.length < 2){ document.getElementById('meas-chart-wrap') && document.getElementById('meas-chart-wrap').remove(); return; }
+
+  var metrics = [
+    {key:'waist', label:'Waist', color:'#e8001d'},
+    {key:'chest', label:'Chest', color:'#f59e0b'},
+    {key:'arms',  label:'Arms',  color:'#60a5fa'},
+    {key:'hips',  label:'Hips',  color:'#a78bfa'},
+  ];
+
+  var W = 320, H = 90, PAD = 14;
+  var svgParts = ['<svg viewBox="0 0 ' + W + ' ' + H + '" preserveAspectRatio="none">'];
+
+  /* grid lines */
+  [0.25, 0.5, 0.75].forEach(function(f){
+    var y = (PAD + (H - PAD*2) * (1 - f)).toFixed(1);
+    svgParts.push('<line x1="' + PAD + '" y1="' + y + '" x2="' + (W-PAD) + '" y2="' + y + '" stroke="rgba(255,255,255,.06)" stroke-width="1"/>');
+  });
+
+  metrics.forEach(function(m){
+    var vals = arr.map(function(a){ return parseFloat(a[m.key]); }).filter(function(v){ return !isNaN(v) && v > 0; });
+    if(vals.length < 2) return;
+    var mn = Math.min.apply(null, vals), mx = Math.max.apply(null, vals);
+    if(mn === mx){ mn -= 1; mx += 1; }
+    var pts = vals.map(function(v, i){
+      var x = (PAD + (W - PAD*2) * i / (vals.length - 1)).toFixed(1);
+      var y = (PAD + (H - PAD*2) * (1 - (v - mn) / (mx - mn))).toFixed(1);
+      return x + ',' + y;
+    });
+    /* area fill */
+    var area = 'M ' + pts[0] + ' ' + pts.slice(1).map(function(p){ return 'L ' + p; }).join(' ') +
+      ' L ' + pts[pts.length-1].split(',')[0] + ',' + (H - PAD) + ' L ' + PAD + ',' + (H - PAD) + ' Z';
+    svgParts.push('<path d="' + area + '" fill="' + m.color + '" opacity="0.07"/>');
+    /* line */
+    svgParts.push('<polyline points="' + pts.join(' ') + '" fill="none" stroke="' + m.color + '" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" opacity="0.9"/>');
+    /* dots + labels on last point */
+    pts.forEach(function(pt, i){
+      var xy = pt.split(',');
+      svgParts.push('<circle cx="' + xy[0] + '" cy="' + xy[1] + '" r="3.5" fill="' + m.color + '" stroke="#0a0a0a" stroke-width="1.5"/>');
+      if(i === vals.length - 1){
+        svgParts.push('<text x="' + (parseFloat(xy[0]) - 2) + '" y="' + (parseFloat(xy[1]) - 7) + '" font-size="9" fill="' + m.color + '" font-family="\'Barlow Condensed\',sans-serif" font-weight="700">' + vals[i] + '</text>');
+      }
+    });
+  });
+  svgParts.push('</svg>');
+
+  var legend = metrics.map(function(m){
+    return '<span class="meas-legend-item"><span class="meas-legend-line" style="background:' + m.color + '"></span>' + m.label + '</span>';
+  }).join('');
+
+  var old = document.getElementById('meas-chart-wrap');
+  var chartWrap = old || document.createElement('div');
+  chartWrap.id = 'meas-chart-wrap';
+  chartWrap.innerHTML =
+    '<div class="meas-chart-title">Progress Trend</div>' +
+    svgParts.join('') +
+    '<div class="meas-legend">' + legend + '</div>';
+  if(!old) measlog.appendChild(chartWrap);
+}
+
+/* trigger once on load in case measurements already exist */
+_renderMeasChart();
+
+
+/* ──────────────────────────────────────────────
+   C. 3-D SCREEN TRANSITIONS
+   ────────────────────────────────────────────── */
+var _origSwitchScreen = window.switchScreen;
+if(_origSwitchScreen){
+  window.switchScreen = function(name, navEl){
+    _origSwitchScreen(name, navEl);
+    /* add enter animation to newly active screens */
+    requestAnimationFrame(function(){
+      document.querySelectorAll('.sb-active-screen').forEach(function(el){
+        el.classList.remove('sc-entering');
+        void el.offsetWidth; /* reflow to restart */
+        el.classList.add('sc-entering');
+        el.addEventListener('animationend', function once(){
+          el.classList.remove('sc-entering');
+          el.removeEventListener('animationend', once);
+        });
+      });
+    });
+  };
+}
 
 })();
 </script>
