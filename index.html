@@ -33351,4 +33351,356 @@ setTimeout(function(){
 </script>
 
 </body>
+
+<script>
+/* ============================================================
+   BATCH 29 — HR Zone Trainer | Grocery Checklist | Recovery Score
+   ============================================================ */
+(function(){ 'use strict';
+
+var _origSS27 = window.switchScreen;
+
+/* ── helpers ── */
+function _b29uid(){ try{ return JSON.parse(localStorage.getItem('bm_user')||'{}').uid||'guest'; }catch(e){ return 'guest'; } }
+function _b29today(){ var d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function _b29load(k){ try{ return JSON.parse(localStorage.getItem(k))||null; }catch(e){ return null; } }
+function _b29save(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} }
+function _b29weekKey(){ var d=new Date(); var day=d.getDay(); var mon=new Date(d); mon.setDate(d.getDate()-(day===0?6:day-1)); return mon.getFullYear()+'-'+String(mon.getMonth()+1).padStart(2,'0')+'-'+String(mon.getDate()).padStart(2,'0'); }
+function _b29card(id,title){
+  var d=document.createElement('div');
+  d.id=id;
+  d.style.cssText='background:#1a1a2e;border-radius:14px;padding:18px;margin:14px 0;color:#e0e0e0;font-family:inherit;';
+  d.innerHTML='<div style="font-size:15px;font-weight:700;color:#00d4ff;margin-bottom:14px;">'+title+'</div>';
+  return d;
+}
+
+/* ════════════════════════════════════════════════════════════
+   1. HEART RATE ZONE TRAINER (workouts)
+   ════════════════════════════════════════════════════════════ */
+var HR_ZONES=[
+  {z:1, label:'Recovery',    pct:[50,60], color:'#60a5fa', desc:'Easy pace, active recovery'},
+  {z:2, label:'Fat Burn',    pct:[60,70], color:'#34d399', desc:'Aerobic base, fat oxidation'},
+  {z:3, label:'Aerobic',     pct:[70,80], color:'#fbbf24', desc:'Cardio fitness, endurance'},
+  {z:4, label:'Anaerobic',   pct:[80,90], color:'#f97316', desc:'Speed & lactate threshold'},
+  {z:5, label:'Max Effort',  pct:[90,100],color:'#ef4444', desc:'Peak power, short bursts'}
+];
+
+function _injectHRZone(){
+  if(document.getElementById('rfc-hrzone-wrap')) return;
+  var anchors=['rfc-warmup-wrap','rfc-wkstreak-wrap','rfc-volload-wrap','rfc-prboard-wrap','rfc-wgen-wrap','rfc-strstd-wrap'];
+  var host=null;
+  for(var i=0;i<anchors.length;i++){ var el=document.getElementById(anchors[i]); if(el){ host=el; break; } }
+  if(!host) host=document.getElementById('wl-history');
+  if(!host) return;
+
+  var c=_b29card('rfc-hrzone-wrap','❤️ Heart Rate Zone Trainer');
+  c.innerHTML+=
+    '<div style="display:flex;gap:8px;align-items:center;margin-bottom:14px;">'+
+      '<span style="font-size:12px;color:#888;white-space:nowrap;">Age or Max HR:</span>'+
+      '<input id="rfc-hrz-age" type="number" min="15" max="220" placeholder="Age" style="width:70px;background:#0d0d1a;border:1px solid #333;color:#ddd;padding:6px 8px;border-radius:7px;font-size:13px;text-align:center;">'+
+      '<button onclick="window._rfcHRZCalc()" style="background:#ef444422;border:1px solid #ef444455;color:#ef4444;padding:6px 14px;border-radius:8px;cursor:pointer;font-size:12px;">Calculate</button>'+
+      '<span style="font-size:11px;color:#555;">or</span>'+
+      '<input id="rfc-hrz-maxhr" type="number" min="100" max="220" placeholder="Max HR" style="width:72px;background:#0d0d1a;border:1px solid #333;color:#ddd;padding:6px 8px;border-radius:7px;font-size:13px;text-align:center;">'+
+    '</div>'+
+    '<div id="rfc-hrz-zones" style="display:flex;flex-direction:column;gap:6px;margin-bottom:14px;"></div>'+
+    '<div style="font-size:12px;color:#888;margin-bottom:8px;">Log today\'s training zone:</div>'+
+    '<div style="display:flex;gap:6px;flex-wrap:wrap;" id="rfc-hrz-log-btns">'+
+      HR_ZONES.map(function(z){
+        return '<button onclick="window._rfcHRZLog('+z.z+')" style="background:'+z.color+'22;border:1px solid '+z.color+'55;color:'+z.color+';padding:6px 12px;border-radius:8px;cursor:pointer;font-size:12px;">Z'+z.z+' '+z.label+'</button>';
+      }).join('')+
+    '</div>'+
+    '<div id="rfc-hrz-today-log" style="margin-top:10px;font-size:12px;color:#666;"></div>'+
+    '<div style="margin-top:12px;padding-top:10px;border-top:1px solid #222;">'+
+      '<div style="font-size:11px;color:#555;margin-bottom:6px;">Zone distribution — last 14 days</div>'+
+      '<div id="rfc-hrz-dist" style="display:flex;gap:4px;height:36px;align-items:flex-end;"></div>'+
+    '</div>';
+
+  if(host.nextSibling) host.parentNode.insertBefore(c,host.nextSibling);
+  else host.parentNode.appendChild(c);
+
+  /* restore saved maxHR */
+  var uid=_b29uid();
+  var cfg=_b29load('rfc_hrz_cfg_'+uid)||{};
+  if(cfg.maxHR){
+    var inp=document.getElementById('rfc-hrz-maxhr');
+    if(inp) inp.value=cfg.maxHR;
+    _rfcHRZRender(cfg.maxHR);
+  }
+  _renderHRZDist();
+}
+
+function _rfcHRZRender(maxHR){
+  var zones=document.getElementById('rfc-hrz-zones');
+  if(!zones) return;
+  var html='';
+  HR_ZONES.forEach(function(z){
+    var lo=Math.round(maxHR*z.pct[0]/100);
+    var hi=Math.round(maxHR*z.pct[1]/100);
+    html+='<div style="display:flex;align-items:center;gap:8px;background:#0d0d1a;border-radius:8px;padding:8px 12px;border-left:3px solid '+z.color+';">'+
+      '<div style="width:24px;height:24px;border-radius:50%;background:'+z.color+'22;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:'+z.color+';flex-shrink:0;">Z'+z.z+'</div>'+
+      '<div style="flex:1;">'+
+        '<div style="font-size:12px;font-weight:600;color:'+z.color+';">'+z.label+'</div>'+
+        '<div style="font-size:10px;color:#555;">'+z.desc+'</div>'+
+      '</div>'+
+      '<div style="font-size:13px;font-weight:700;color:#ddd;white-space:nowrap;">'+lo+'–'+hi+' bpm</div>'+
+    '</div>';
+  });
+  zones.innerHTML=html;
+}
+
+function _renderHRZDist(){
+  var uid=_b29uid();
+  var counts=[0,0,0,0,0];
+  for(var d=0;d<14;d++){
+    var dd=new Date(); dd.setDate(dd.getDate()-d);
+    var dk=dd.getFullYear()+'-'+String(dd.getMonth()+1).padStart(2,'0')+'-'+String(dd.getDate()).padStart(2,'0');
+    var rec=_b29load('rfc_hrz_'+uid+'_'+dk);
+    if(rec&&rec.zone>=1&&rec.zone<=5) counts[rec.zone-1]++;
+  }
+  var logEl=document.getElementById('rfc-hrz-today-log');
+  var todayRec=_b29load('rfc_hrz_'+uid+'_'+_b29today());
+  if(logEl) logEl.textContent=todayRec?'Today: Zone '+todayRec.zone+' ('+HR_ZONES[todayRec.zone-1].label+') logged ✓':'No zone logged yet today.';
+
+  var dist=document.getElementById('rfc-hrz-dist');
+  if(!dist) return;
+  var maxC=Math.max.apply(null,counts)||1;
+  dist.innerHTML=HR_ZONES.map(function(z,i){
+    var h=Math.max(4,Math.round(counts[i]/maxC*34));
+    return '<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;" title="Zone '+z.z+': '+counts[i]+' sessions">'+
+      '<div style="font-size:9px;color:'+z.color+';">'+counts[i]+'</div>'+
+      '<div style="width:100%;height:'+h+'px;background:'+z.color+'88;border-radius:3px;"></div>'+
+      '<div style="font-size:9px;color:#555;">Z'+z.z+'</div>'+
+    '</div>';
+  }).join('');
+}
+
+window._rfcHRZCalc=function(){
+  var uid=_b29uid();
+  var ageEl=document.getElementById('rfc-hrz-age');
+  var maxEl=document.getElementById('rfc-hrz-maxhr');
+  var maxHR=0;
+  if(maxEl&&maxEl.value) maxHR=parseInt(maxEl.value,10);
+  else if(ageEl&&ageEl.value) maxHR=220-parseInt(ageEl.value,10);
+  if(maxHR<100||maxHR>220) return;
+  if(maxEl) maxEl.value=maxHR;
+  _b29save('rfc_hrz_cfg_'+uid,{maxHR:maxHR});
+  _rfcHRZRender(maxHR);
+};
+window._rfcHRZLog=function(zone){
+  var uid=_b29uid(), date=_b29today();
+  _b29save('rfc_hrz_'+uid+'_'+date,{zone:zone});
+  _renderHRZDist();
+};
+
+/* ════════════════════════════════════════════════════════════
+   2. WEEKLY GROCERY CHECKLIST (nutrition)
+   ════════════════════════════════════════════════════════════ */
+var GROC_ITEMS={
+  'Proteins':   [{id:'g_chicken',label:'Chicken breast'},{id:'g_eggs',label:'Eggs (×12)'},{id:'g_tuna',label:'Canned tuna'},{id:'g_whey',label:'Whey protein'},{id:'g_beef',label:'Lean beef mince'},{id:'g_salmon',label:'Salmon fillets'}],
+  'Carbs':      [{id:'g_rice',label:'White/brown rice'},{id:'g_oats',label:'Rolled oats'},{id:'g_potato',label:'Sweet potato'},{id:'g_bread',label:'Wholegrain bread'},{id:'g_pasta',label:'Wholemeal pasta'}],
+  'Vegetables': [{id:'g_bro',label:'Broccoli'},{id:'g_spin',label:'Spinach / leaves'},{id:'g_tom',label:'Tomatoes'},{id:'g_pep',label:'Bell peppers'},{id:'g_cuc',label:'Cucumber'}],
+  'Dairy & Fats':[{id:'g_gyo',label:'Greek yoghurt'},{id:'g_milk',label:'Milk'},{id:'g_avo',label:'Avocados'},{id:'g_nuts',label:'Mixed nuts'},{id:'g_oil',label:'Olive oil'}]
+};
+
+function _injectGrocery(){
+  if(document.getElementById('rfc-grocery-wrap')) return;
+  var anchors=['rfc-mealprep-wrap','rfc-protiming-wrap','rfc-caff-wrap','rfc-supps-wrap','rfc-mccycle-wrap','rfc-fdiary-wrap'];
+  var host=null;
+  for(var i=0;i<anchors.length;i++){ var el=document.getElementById(anchors[i]); if(el){ host=el; break; } }
+  if(!host) host=document.getElementById('rfc-food-wrap');
+  if(!host) return;
+
+  var c=_b29card('rfc-grocery-wrap','🛒 Weekly Grocery Checklist');
+  var wk=_b29weekKey(); var dd=new Date(wk); var de=new Date(wk); de.setDate(de.getDate()+6);
+  var fmt=function(d){ return d.toLocaleDateString('en-GB',{day:'numeric',month:'short'}); };
+  var bodyHTML='<div style="font-size:11px;color:#666;margin-bottom:12px;">Week: '+fmt(dd)+' – '+fmt(de)+' · <span id="rfc-groc-count">0</span> items checked</div>';
+
+  Object.keys(GROC_ITEMS).forEach(function(cat){
+    bodyHTML+='<div style="font-size:11px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.5px;margin:10px 0 5px;">'+cat+'</div>';
+    GROC_ITEMS[cat].forEach(function(item){
+      bodyHTML+='<div onclick="window._rfcGrocToggle(\''+item.id+'\')" id="rfc-groc-row-'+item.id+'" style="display:flex;align-items:center;gap:9px;padding:7px 10px;border-radius:8px;cursor:pointer;margin-bottom:3px;background:#0d0d1a;transition:background .2s;">'+
+        '<span id="rfc-groc-chk-'+item.id+'" style="font-size:15px;">⬜</span>'+
+        '<span id="rfc-groc-lbl-'+item.id+'" style="font-size:13px;color:#bbb;">'+item.label+'</span>'+
+      '</div>';
+    });
+  });
+  c.innerHTML+=bodyHTML;
+
+  if(host.nextSibling) host.parentNode.insertBefore(c,host.nextSibling);
+  else host.parentNode.appendChild(c);
+  _renderGrocery();
+}
+
+function _renderGrocery(){
+  var uid=_b29uid(), wk=_b29weekKey();
+  var key='rfc_grocery_'+uid+'_'+wk;
+  var data=_b29load(key)||{};
+  var done=0, total=0;
+  Object.values(GROC_ITEMS).forEach(function(arr){ arr.forEach(function(item){
+    total++;
+    var on=!!data[item.id]; if(on) done++;
+    var row=document.getElementById('rfc-groc-row-'+item.id);
+    var chk=document.getElementById('rfc-groc-chk-'+item.id);
+    var lbl=document.getElementById('rfc-groc-lbl-'+item.id);
+    if(row){ row.style.background=on?'#22c55e18':'#0d0d1a'; }
+    if(chk) chk.textContent=on?'✅':'⬜';
+    if(lbl){ lbl.style.color=on?'#22c55e':'#bbb'; lbl.style.textDecoration=on?'line-through':'none'; }
+  }); });
+  var cnt=document.getElementById('rfc-groc-count');
+  if(cnt) cnt.textContent=done+'/'+total;
+}
+window._rfcGrocToggle=function(id){
+  var uid=_b29uid(), wk=_b29weekKey();
+  var key='rfc_grocery_'+uid+'_'+wk;
+  var data=_b29load(key)||{};
+  data[id]=!data[id];
+  _b29save(key,data);
+  _renderGrocery();
+};
+
+/* ════════════════════════════════════════════════════════════
+   3. DAILY RECOVERY SCORE (dashboard)
+   ════════════════════════════════════════════════════════════ */
+function _injectRecovery(){
+  if(document.getElementById('rfc-recovery-wrap')) return;
+  var anchors=['rfc-stretch-wrap','rfc-steps-wrap','rfc-mood-wrap','rfc-water-wrap','rfc-neat-wrap','rfc-breath-wrap'];
+  var host=null;
+  for(var i=0;i<anchors.length;i++){ var el=document.getElementById(anchors[i]); if(el){ host=el; break; } }
+  if(!host){ var tb=document.querySelector('.dash-topbar'); if(tb) host=tb; }
+  if(!host) return;
+
+  var c=_b29card('rfc-recovery-wrap','🔋 Daily Recovery Score');
+  c.innerHTML+=
+    '<div style="display:flex;align-items:center;gap:18px;margin-bottom:16px;">'+
+      '<div style="position:relative;flex-shrink:0;">'+
+        '<svg width="90" height="90" viewBox="0 0 90 90">'+
+          '<circle cx="45" cy="45" r="38" fill="none" stroke="#0d0d1a" stroke-width="9"/>'+
+          '<circle id="rfc-rec-ring" cx="45" cy="45" r="38" fill="none" stroke="#22c55e" stroke-width="9" stroke-linecap="round" stroke-dasharray="0 239" transform="rotate(-90 45 45)" style="transition:stroke-dasharray .6s;"/>'+
+        '</svg>'+
+        '<div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;">'+
+          '<div id="rfc-rec-score" style="font-size:22px;font-weight:800;color:#22c55e;">—</div>'+
+          '<div style="font-size:9px;color:#555;">/100</div>'+
+        '</div>'+
+      '</div>'+
+      '<div style="flex:1;">'+
+        '<div id="rfc-rec-label" style="font-size:16px;font-weight:700;color:#22c55e;margin-bottom:4px;">—</div>'+
+        '<div id="rfc-rec-advice" style="font-size:12px;color:#888;line-height:1.5;"></div>'+
+      '</div>'+
+    '</div>'+
+    '<div id="rfc-rec-factors" style="display:grid;grid-template-columns:1fr 1fr;gap:6px;"></div>'+
+    '<button onclick="window._rfcRecRefresh()" style="margin-top:12px;width:100%;background:#22c55e22;border:1px solid #22c55e44;color:#22c55e;padding:7px;border-radius:8px;cursor:pointer;font-size:12px;">Recalculate</button>';
+
+  if(host.nextSibling) host.parentNode.insertBefore(c,host.nextSibling);
+  else host.parentNode.appendChild(c);
+  _renderRecovery();
+}
+
+function _renderRecovery(){
+  var uid=_b29uid(), today=_b29today();
+  var yesterday=new Date(); yesterday.setDate(yesterday.getDate()-1);
+  var yk=yesterday.getFullYear()+'-'+String(yesterday.getMonth()+1).padStart(2,'0')+'-'+String(yesterday.getDate()).padStart(2,'0');
+
+  /* factor 1: sleep quality (0-25) — from rfc_sleep_q */
+  var sleepRec=_b29load('rfc_sleep_q_'+uid)||{entries:[]};
+  var sleepScore=0;
+  if(sleepRec.entries&&sleepRec.entries.length>0){
+    var last=sleepRec.entries[sleepRec.entries.length-1];
+    sleepScore=Math.round((last.q||0)/5*25);
+  }
+
+  /* factor 2: mood & energy (0-25) */
+  var moodRec=_b29load('rfc_mood_'+uid+'_'+today)||_b29load('rfc_mood_'+uid+'_'+yk)||null;
+  var moodScore=moodRec?Math.round(((moodRec.mood||5)+(moodRec.energy||5))/20*25):12;
+
+  /* factor 3: water & nutrition habits (0-25) */
+  var waterRec=_b29load('rfc_water_'+uid+'_'+today)||{count:0,goal:8};
+  var waterFrac=Math.min(1,(waterRec.count||0)/(waterRec.goal||8));
+  var habRec=_b29load('rfc_habits_'+uid+'_'+today)||{};
+  var habDone=Object.keys(habRec).filter(function(k){ return habRec[k]; }).length;
+  var habFrac=Math.min(1,habDone/8);
+  var nutritionScore=Math.round((waterFrac+habFrac)/2*25);
+
+  /* factor 4: activity balance (0-25) */
+  var stepsRec=_b29load('rfc_steps_'+uid+'_'+today)||{steps:0,goal:10000};
+  var stepFrac=Math.min(1,(stepsRec.steps||0)/(stepsRec.goal||10000));
+  var flexRec=_b29load('rfc_flex_'+uid+'_'+today)||{};
+  var flexDur=flexRec.dur||0;
+  var flexBonus=Math.min(1,flexDur/20);
+  var actScore=Math.round((stepFrac*0.6+flexBonus*0.4)*25);
+
+  var total=sleepScore+moodScore+nutritionScore+actScore;
+
+  var ring=document.getElementById('rfc-rec-ring');
+  var scoreEl=document.getElementById('rfc-rec-score');
+  var labelEl=document.getElementById('rfc-rec-label');
+  var adviceEl=document.getElementById('rfc-rec-advice');
+  var factors=document.getElementById('rfc-rec-factors');
+  if(!ring) return;
+
+  var circ=239;
+  ring.setAttribute('stroke-dasharray',Math.round(total/100*circ)+' '+circ);
+  var color=total>=75?'#22c55e':total>=50?'#fbbf24':'#ef4444';
+  ring.setAttribute('stroke',color);
+  if(scoreEl){ scoreEl.textContent=total; scoreEl.style.color=color; }
+
+  var label=total>=80?'Peak Ready':total>=65?'Train Hard':total>=50?'Moderate Training':total>=35?'Take It Easy':'Rest Day';
+  var advice=total>=80?'All systems go — push hard today.':total>=65?'Good readiness — solid session ahead.':total>=50?'Moderate intensity recommended.':total>=35?'Light activity or mobility work only.':'Prioritise sleep & recovery today.';
+  if(labelEl){ labelEl.textContent=label; labelEl.style.color=color; }
+  if(adviceEl) adviceEl.textContent=advice;
+
+  if(factors){
+    var fdata=[
+      {label:'Sleep Quality', score:sleepScore, max:25, icon:'😴'},
+      {label:'Mood & Energy',  score:moodScore,  max:25, icon:'⚡'},
+      {label:'Hydration & Habits', score:nutritionScore, max:25, icon:'💧'},
+      {label:'Activity Balance',   score:actScore,  max:25, icon:'🏃'}
+    ];
+    factors.innerHTML=fdata.map(function(f){
+      var pct=Math.round(f.score/f.max*100);
+      var fc=pct>=75?'#22c55e':pct>=50?'#fbbf24':'#ef4444';
+      return '<div style="background:#0d0d1a;border-radius:9px;padding:9px 11px;">'+
+        '<div style="display:flex;align-items:center;gap:6px;margin-bottom:5px;">'+
+          '<span style="font-size:14px;">'+f.icon+'</span>'+
+          '<span style="font-size:10px;color:#888;flex:1;">'+f.label+'</span>'+
+          '<span style="font-size:12px;font-weight:700;color:'+fc+';">'+f.score+'/'+f.max+'</span>'+
+        '</div>'+
+        '<div style="background:#1a1a2e;border-radius:4px;height:5px;overflow:hidden;">'+
+          '<div style="height:100%;width:'+pct+'%;background:'+fc+';border-radius:4px;transition:width .5s;"></div>'+
+        '</div>'+
+      '</div>';
+    }).join('');
+  }
+}
+window._rfcRecRefresh=function(){ _renderRecovery(); };
+
+/* ── switchScreen wrap ── */
+window.switchScreen=function(name,navEl){
+  _origSS27&&_origSS27(name,navEl);
+  if(name==='workouts'){
+    setTimeout(function(){ _injectHRZone(); _renderHRZDist(); }, 1050);
+  }
+  if(name==='nutrition'){
+    setTimeout(function(){ _injectGrocery(); _renderGrocery(); }, 1100);
+  }
+  if(name==='dashboard'){
+    setTimeout(function(){ _injectRecovery(); _renderRecovery(); }, 1200);
+  }
+};
+
+setTimeout(function(){
+  _injectHRZone();
+  _injectGrocery();
+  _injectRecovery();
+}, 21000);
+
+setTimeout(function(){
+  if(!document.getElementById('rfc-hrzone-wrap'))   _injectHRZone();
+  if(!document.getElementById('rfc-grocery-wrap'))  _injectGrocery();
+  if(!document.getElementById('rfc-recovery-wrap')) _injectRecovery();
+}, 25000);
+
+})();
+</script>
+
+</body>
 </html>
