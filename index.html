@@ -38129,5 +38129,221 @@ setTimeout(function(){ if(!document.getElementById('rfc-cold-wrap')) _injectCold
 })();
 </script>
 
+<script>
+/* ===== BATCH 47: Breathwork Tracker | Rainbow Food Tracker | Unilateral Strength ===== */
+(function(){ 'use strict';
+var _origSS45=window.switchScreen;
+function _b47uid(){ try{ return JSON.parse(localStorage.getItem('bm_user')||'{}').uid||'guest'; }catch(e){ return 'guest'; } }
+function _b47today(){ var d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function _b47load(k){ try{ return JSON.parse(localStorage.getItem(k))||null; }catch(e){ return null; } }
+function _b47save(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} }
+function _b47card(id,title){ var d=document.createElement('div'); d.id=id; d.style.cssText='background:#1a1a2e;border-radius:14px;padding:18px;margin:14px 0;color:#e0e0e0;font-family:inherit;'; d.innerHTML='<div style="font-size:15px;font-weight:700;color:#00d4ff;margin-bottom:14px;">'+title+'</div>'; return d; }
+
+/* ---------- BREATHWORK TRACKER (dashboard) ---------- */
+var BREATH_TECHS=[
+  {id:'box',label:'Box Breathing',phases:['Inhale','Hold','Exhale','Hold'],dur:[4,4,4,4],rounds:4},
+  {id:'478',label:'4-7-8',phases:['Inhale','Hold','Exhale','—'],dur:[4,7,8,0],rounds:4},
+  {id:'wimhof',label:'Wim Hof',phases:['30 Breaths','Exhale Hold','Inhale Hold','—'],dur:[0,0,0,0],rounds:3},
+  {id:'coher',label:'Coherent 5-5',phases:['Inhale','—','Exhale','—'],dur:[5,0,5,0],rounds:5},
+  {id:'tri',label:'Triangle 4-4-4',phases:['Inhale','Hold','Exhale','—'],dur:[4,4,4,0],rounds:5}
+];
+var _bwState={running:false,techId:'box',phase:0,beat:0,round:0,iv:null,ctx:null};
+function _bwChime(freq,dur){ try{ if(!_bwState.ctx) _bwState.ctx=new(window.AudioContext||window.webkitAudioContext)(); var o=_bwState.ctx.createOscillator(); var g=_bwState.ctx.createGain(); o.connect(g); g.connect(_bwState.ctx.destination); o.type='sine'; o.frequency.value=freq; g.gain.setValueAtTime(0.2,_bwState.ctx.currentTime); g.gain.exponentialRampToValueAtTime(0.001,_bwState.ctx.currentTime+(dur||0.4)); o.start(); o.stop(_bwState.ctx.currentTime+(dur||0.4)); }catch(e){} }
+function _bwTick(){
+  var tech=BREATH_TECHS.find(function(t){ return t.id===_bwState.techId; })||BREATH_TECHS[0];
+  if(tech.id==='wimhof'){ _bwState.beat++; _renderBreathwork(); return; }
+  var dur=tech.dur[_bwState.phase];
+  if(dur===0){ _bwState.phase=(_bwState.phase+1)%4; _renderBreathwork(); return; }
+  _bwState.beat++;
+  if(_bwState.beat>=dur){
+    _bwState.beat=0;
+    var nextPhase=(_bwState.phase+1)%4;
+    while(tech.dur[nextPhase]===0) nextPhase=(nextPhase+1)%4;
+    if(nextPhase<_bwState.phase||(nextPhase===0&&_bwState.phase>0)){ _bwState.round++; if(_bwState.round>=tech.rounds){ _bwChime(880); _bwStop(true); return; } _bwChime(528,0.2); }
+    else _bwChime(440,0.1);
+    _bwState.phase=nextPhase;
+  }
+  _renderBreathwork();
+}
+function _bwStop(done){
+  _bwState.running=false; if(_bwState.iv){ clearInterval(_bwState.iv); _bwState.iv=null; }
+  if(done){
+    var uid=_b47uid(), today=_b47today(); var key='rfc_breathwork_'+uid+'_'+today;
+    var data=_b47load(key)||{sessions:[]};
+    var tech=BREATH_TECHS.find(function(t){ return t.id===_bwState.techId; })||BREATH_TECHS[0];
+    data.sessions.push({tech:tech.label,rounds:_bwState.round}); _b47save(key,data);
+  }
+  _bwState.phase=0; _bwState.beat=0; _bwState.round=0; _renderBreathwork();
+}
+window._rfcBWStart=function(techId){
+  _bwState.running=true; _bwState.techId=techId||_bwState.techId;
+  _bwState.phase=0; _bwState.beat=0; _bwState.round=0;
+  if(_bwState.iv) clearInterval(_bwState.iv);
+  _bwState.iv=setInterval(_bwTick,1000); _bwChime(528,0.3); _renderBreathwork();
+};
+window._rfcBWStop=function(){ _bwStop(false); };
+function _injectBreathwork(){
+  if(document.getElementById('rfc-breathwork-wrap')) return;
+  var anchor=document.getElementById('rfc-cold-wrap')||document.getElementById('rfc-social-wrap')||document.getElementById('rfc-sleepenv-wrap')||document.getElementById('rfc-focus-wrap')||document.querySelector('.dash-topbar');
+  if(!anchor) return;
+  var card=_b47card('rfc-breathwork-wrap','🌬️ Breathwork Tracker');
+  card.style.cssText+='border:1px solid #1a3a3a;';
+  anchor.parentNode.insertBefore(card,anchor.nextSibling);
+  _renderBreathwork();
+}
+function _renderBreathwork(){
+  var card=document.getElementById('rfc-breathwork-wrap'); if(!card) return;
+  var uid=_b47uid(), today=_b47today();
+  var key='rfc_breathwork_'+uid+'_'+today;
+  var data=_b47load(key)||{sessions:[]};
+  var tech=BREATH_TECHS.find(function(t){ return t.id===_bwState.techId; })||BREATH_TECHS[0];
+  var phaseColors=['#00d4ff','#ffd700','#00ff88','#aaa'];
+  var html='<div style="font-size:15px;font-weight:700;color:#00d4ff;margin-bottom:14px;">🌬️ Breathwork Tracker</div>';
+  html+='<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;">';
+  BREATH_TECHS.forEach(function(t){ html+='<button onclick="window._rfcBWStart(\''+t.id+'\')" style="flex:1;min-width:80px;padding:7px 4px;border-radius:7px;border:1px solid '+(_bwState.techId===t.id?'#00d4ff':'#2a2a4a')+';background:'+(_bwState.techId===t.id?'#0d2a3a':'#12122a')+';color:'+(_bwState.techId===t.id?'#00d4ff':'#888')+';font-size:11px;cursor:pointer;">'+t.label+'</button>'; });
+  html+='</div>';
+  if(_bwState.running){
+    if(tech.id==='wimhof'){
+      html+='<div style="text-align:center;background:#0d2a3a;border-radius:12px;padding:16px;margin-bottom:12px;">';
+      html+='<div style="font-size:36px;font-weight:800;color:#00d4ff;">'+_bwState.beat+'</div>';
+      html+='<div style="font-size:14px;color:#aaa;">Round '+(_bwState.round+1)+'/'+tech.rounds+' — Breathe rhythmically</div>';
+      html+='<button onclick="window._rfcBWStop()" style="width:100%;margin-top:10px;background:#ff6b6b;border:none;color:#fff;padding:8px;border-radius:7px;font-size:13px;cursor:pointer;">■ Stop</button></div>';
+    } else {
+      var curPhase=_bwState.phase; var dur=tech.dur[curPhase];
+      html+='<div style="text-align:center;background:#0d2a3a;border-radius:12px;padding:16px;margin-bottom:12px;">';
+      html+='<div style="font-size:14px;color:'+phaseColors[curPhase]+';font-weight:700;margin-bottom:4px;">'+tech.phases[curPhase]+'</div>';
+      html+='<div style="font-size:48px;font-weight:800;color:'+phaseColors[curPhase]+'">'+(dur-_bwState.beat)+'</div>';
+      html+='<div style="font-size:12px;color:#888;">Round '+(_bwState.round+1)+'/'+tech.rounds+'</div>';
+      html+='<div style="display:flex;gap:6px;margin-top:12px;justify-content:center;">';
+      tech.phases.forEach(function(p,i){ if(tech.dur[i]>0) html+='<div style="font-size:11px;color:'+(i===curPhase?phaseColors[i]:'#555')+';">'+p+' '+tech.dur[i]+'s</div>'; });
+      html+='</div>';
+      html+='<button onclick="window._rfcBWStop()" style="width:100%;margin-top:10px;background:#ff6b6b;border:none;color:#fff;padding:7px;border-radius:7px;font-size:12px;cursor:pointer;">■ Stop</button></div>';
+    }
+  } else {
+    html+='<div style="background:#0d2a3a;border-radius:10px;padding:12px;margin-bottom:12px;">';
+    html+='<div style="font-size:13px;font-weight:700;color:#00d4ff;margin-bottom:4px;">'+tech.label+'</div>';
+    html+='<div style="font-size:12px;color:#888;margin-bottom:10px;">'+(tech.id==='wimhof'?'30 power breaths × '+tech.rounds+' rounds — Increases oxygen, reduces stress':tech.phases.filter(function(p,i){ return tech.dur[i]>0; }).map(function(p,i){ var d=[]; var idx=0; tech.phases.forEach(function(ph,j){ if(tech.dur[j]>0){ if(idx===i) d.push(ph+' '+tech.dur[j]+'s'); idx++; } }); return d[0]||''; }).join(' → ')+' × '+tech.rounds+' rounds')+'</div>';
+    html+='<div style="font-size:12px;color:#888;margin-bottom:8px;">Today: '+data.sessions.length+' session(s)</div>';
+    html+='<button onclick="window._rfcBWStart()" style="width:100%;background:#00d4ff;border:none;color:#000;padding:10px;border-radius:8px;font-size:13px;font-weight:800;cursor:pointer;">▶ Start</button></div>';
+  }
+  card.innerHTML=html;
+}
+
+/* ---------- RAINBOW FOOD TRACKER (nutrition) ---------- */
+var RAINBOW=[
+  {color:'Red',hex:'#ff4444',ex:'Tomatoes, strawberries, red peppers, watermelon',key:'red'},
+  {color:'Orange',hex:'#ff9f43',ex:'Carrots, sweet potato, pumpkin, oranges',key:'orange'},
+  {color:'Yellow',hex:'#ffd700',ex:'Banana, corn, yellow pepper, ginger',key:'yellow'},
+  {color:'Green',hex:'#00ff88',ex:'Broccoli, spinach, avocado, kiwi, herbs',key:'green'},
+  {color:'Blue/Purple',hex:'#a855f7',ex:'Blueberries, grapes, eggplant, beetroot',key:'purple'},
+  {color:'White/Tan',hex:'#ccc',ex:'Garlic, onion, cauliflower, mushrooms',key:'white'}
+];
+function _injectRainbow(){
+  if(document.getElementById('rfc-rainbow-wrap')) return;
+  var anchor=document.getElementById('rfc-collagen-wrap')||document.getElementById('rfc-glycemic-wrap')||document.getElementById('rfc-vegvar-wrap')||document.getElementById('rfc-macsplit-wrap')||document.querySelector('.dash-topbar');
+  if(!anchor) return;
+  var card=_b47card('rfc-rainbow-wrap','🌈 Rainbow Food Tracker');
+  card.style.cssText+='border:1px solid #2a1a3a;';
+  anchor.parentNode.insertBefore(card,anchor.nextSibling);
+  _renderRainbow();
+}
+function _renderRainbow(){
+  var card=document.getElementById('rfc-rainbow-wrap'); if(!card) return;
+  var uid=_b47uid(), today=_b47today();
+  var key='rfc_rainbow_'+uid+'_'+today;
+  var data=_b47load(key)||{};
+  var colorsEaten=RAINBOW.filter(function(c){ return (data[c.key]||0)>0; }).length;
+  var pc=colorsEaten===6?'#ffd700':colorsEaten>=4?'#00ff88':colorsEaten>=2?'#00d4ff':'#888';
+  var html='<div style="font-size:15px;font-weight:700;color:#00d4ff;margin-bottom:14px;">🌈 Rainbow Food Tracker</div>';
+  html+='<div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">';
+  html+='<div style="font-size:36px;font-weight:800;color:'+pc+';">'+colorsEaten+'<span style="font-size:18px;color:#888;">/6</span></div>';
+  html+='<div><div style="font-size:14px;font-weight:700;color:'+pc+';">'+(colorsEaten===6?'🌈 Full Rainbow!':colorsEaten>=4?'Excellent Variety':colorsEaten>=2?'Good — add more colors':'Eat the rainbow!')+'</div><div style="font-size:11px;color:#888;">Each color = unique antioxidants</div></div></div>';
+  html+='<div style="display:flex;gap:6px;margin-bottom:14px;">';
+  RAINBOW.forEach(function(c){ html+='<div style="flex:1;height:8px;border-radius:4px;background:'+(data[c.key]?c.hex:'#2a2a4a')+';transition:background 0.3s;"></div>'; });
+  html+='</div>';
+  RAINBOW.forEach(function(c){
+    var srv=data[c.key]||0;
+    html+='<div style="background:#12122a;border-radius:10px;padding:10px;margin-bottom:7px;">';
+    html+='<div style="display:flex;align-items:center;gap:10px;"><div style="width:14px;height:14px;border-radius:50%;background:'+c.hex+';flex-shrink:0;"></div>';
+    html+='<div style="flex:1;"><div style="font-size:12px;font-weight:700;color:'+c.hex+';">'+c.color+'</div><div style="font-size:10px;color:#666;">'+c.ex+'</div></div>';
+    html+='<div style="display:flex;align-items:center;gap:6px;">';
+    html+='<button onclick="window._rfcRBAdj(\''+c.key+'\',-1)" style="background:#2a2a4a;border:none;color:#fff;width:26px;height:26px;border-radius:50%;cursor:pointer;">-</button>';
+    html+='<span style="font-size:14px;font-weight:700;color:'+c.hex+';min-width:18px;text-align:center;">'+srv+'</span>';
+    html+='<button onclick="window._rfcRBAdj(\''+c.key+'\',1)" style="background:'+c.hex+';border:none;color:#000;width:26px;height:26px;border-radius:50%;cursor:pointer;font-weight:700;">+</button></div></div></div>';
+  });
+  card.innerHTML=html;
+}
+window._rfcRBAdj=function(k,delta){ var uid=_b47uid(), today=_b47today(); var key='rfc_rainbow_'+uid+'_'+today; var data=_b47load(key)||{}; data[k]=Math.max(0,(data[k]||0)+delta); _b47save(key,data); _renderRainbow(); };
+
+/* ---------- UNILATERAL STRENGTH TRACKER (workouts) ---------- */
+var UNILAT_EX=[
+  {id:'bsq',label:'Bulgarian Split Squat',unit:'kg'},
+  {id:'sapress',label:'Single-Arm DB Press',unit:'kg'},
+  {id:'pistol',label:'Pistol Squat',unit:'reps'},
+  {id:'sarow',label:'Single-Arm DB Row',unit:'kg'},
+  {id:'stepup',label:'Step-Up',unit:'kg'},
+  {id:'slrdl',label:'Single-Leg RDL',unit:'kg'}
+];
+function _injectUnilat(){
+  if(document.getElementById('rfc-unilat-wrap')) return;
+  var anchor=document.getElementById('rfc-sprint-wrap')||document.getElementById('rfc-1rm-wrap')||document.getElementById('rfc-cardio-wrap')||document.getElementById('rfc-p2w-wrap')||document.querySelector('.dash-topbar');
+  if(!anchor) return;
+  var card=_b47card('rfc-unilat-wrap','⚖️ Unilateral Strength Tracker');
+  card.style.cssText+='border:1px solid #2a1a2a;';
+  anchor.parentNode.insertBefore(card,anchor.nextSibling);
+  _renderUnilat();
+}
+function _renderUnilat(){
+  var card=document.getElementById('rfc-unilat-wrap'); if(!card) return;
+  var uid=_b47uid(), today=_b47today();
+  var dkey='rfc_unilat_'+uid+'_'+today;
+  var pkey='rfc_unilat_pbs_'+uid;
+  var data=_b47load(dkey)||{};
+  var pbs=_b47load(pkey)||{};
+  var html='<div style="font-size:15px;font-weight:700;color:#00d4ff;margin-bottom:14px;">⚖️ Unilateral Strength Tracker</div>';
+  html+='<div style="font-size:12px;color:#888;margin-bottom:12px;">Track left/right imbalances. Flags if difference >10%.</div>';
+  UNILAT_EX.forEach(function(ex){
+    var todL=data[ex.id+'_L']||null, todR=data[ex.id+'_R']||null;
+    var pbL=pbs[ex.id+'_L']||null, pbR=pbs[ex.id+'_R']||null;
+    var imbal=todL&&todR?Math.round(Math.abs(todL-todR)/Math.max(todL,todR)*100):null;
+    var imbalColor=imbal===null?'#888':imbal>15?'#ff6b6b':imbal>10?'#ffd700':'#00ff88';
+    html+='<div style="background:#12122a;border-radius:10px;padding:12px;margin-bottom:8px;">';
+    html+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">';
+    html+='<span style="font-size:13px;font-weight:700;color:#e0e0e0;">'+ex.label+'</span>';
+    if(imbal!==null) html+='<span style="font-size:12px;color:'+imbalColor+';">Δ '+imbal+'%'+(imbal>10?' ⚠️':'')+'</span>';
+    html+='</div>';
+    html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">';
+    ['L','R'].forEach(function(side){
+      var val=data[ex.id+'_'+side], pb=pbs[ex.id+'_'+side];
+      var isWeak=imbal&&imbal>10&&val&&todL&&todR&&val<Math.max(todL,todR);
+      html+='<div><div style="font-size:11px;color:#888;margin-bottom:4px;">'+(side==='L'?'Left':'Right')+(pb?' (PB: '+pb+ex.unit+')':'')+'</div>';
+      html+='<div style="display:flex;gap:6px;align-items:center;">';
+      html+='<input type="number" min="0" max="500" step="0.5" placeholder="'+ex.unit+'" value="'+(val||'')+'" onchange="window._rfcULLog(\''+ex.id+'\',\''+side+'\',parseFloat(this.value))" style="flex:1;background:'+(isWeak?'#2a1a0d':'#0d0d20')+';border:1px solid '+(isWeak?'#ff6b6b':'#2a2a4a')+';color:#fff;border-radius:6px;padding:6px;font-size:13px;"></div></div>';
+    });
+    html+='</div></div>';
+  });
+  card.innerHTML=html;
+}
+window._rfcULLog=function(id,side,val){
+  if(isNaN(val)||val<=0) return;
+  var uid=_b47uid(), today=_b47today();
+  var dkey='rfc_unilat_'+uid+'_'+today; var pkey='rfc_unilat_pbs_'+uid;
+  var data=_b47load(dkey)||{}; var pbs=_b47load(pkey)||{};
+  var k=id+'_'+side; data[k]=val;
+  if(!pbs[k]||val>pbs[k]) pbs[k]=val;
+  _b47save(dkey,data); _b47save(pkey,pbs); _renderUnilat();
+};
+
+window.switchScreen=function(name,navEl){
+  _origSS45&&_origSS45(name,navEl);
+  if(name==='dashboard') setTimeout(function(){ _injectBreathwork(); _renderBreathwork(); },1200);
+  if(name==='nutrition') setTimeout(function(){ _injectRainbow(); _renderRainbow(); },1100);
+  if(name==='workouts')  setTimeout(function(){ _injectUnilat(); _renderUnilat(); },1050);
+};
+setTimeout(function(){ _injectBreathwork(); _injectRainbow(); _injectUnilat(); },39000);
+setTimeout(function(){ if(!document.getElementById('rfc-breathwork-wrap')) _injectBreathwork(); if(!document.getElementById('rfc-rainbow-wrap')) _injectRainbow(); if(!document.getElementById('rfc-unilat-wrap')) _injectUnilat(); },43000);
+})();
+</script>
+
 </body>
 </html>
