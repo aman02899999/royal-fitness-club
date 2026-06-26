@@ -32257,4 +32257,353 @@ setTimeout(function(){
 </script>
 
 </body>
+
+<script>
+/* ============================================================
+   BATCH 26 — Caffeine Tracker | Mood & Energy Journal | Volume Load
+   ============================================================ */
+(function(){ 'use strict';
+
+var _origSS24 = window.switchScreen;
+
+/* ── helpers ── */
+function _b26uid(){ try{ return JSON.parse(localStorage.getItem('bm_user')||'{}').uid||'guest'; }catch(e){ return 'guest'; } }
+function _b26today(){ var d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function _b26load(k){ try{ return JSON.parse(localStorage.getItem(k))||null; }catch(e){ return null; } }
+function _b26save(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} }
+function _b26card(id,title){
+  var d=document.createElement('div');
+  d.id=id;
+  d.style.cssText='background:#1a1a2e;border-radius:14px;padding:18px;margin:14px 0;color:#e0e0e0;font-family:inherit;';
+  d.innerHTML='<div style="font-size:15px;font-weight:700;color:#00d4ff;margin-bottom:14px;">'+title+'</div>';
+  return d;
+}
+
+/* ════════════════════════════════════════════════════════════
+   1. CAFFEINE INTAKE TRACKER (nutrition)
+   ════════════════════════════════════════════════════════════ */
+var CAFF_SRC=[
+  {id:'coffee',   label:'Coffee',        icon:'☕', mg:95},
+  {id:'espresso', label:'Espresso',      icon:'🍵', mg:63},
+  {id:'tea',      label:'Black Tea',     icon:'🫖', mg:47},
+  {id:'gtea',     label:'Green Tea',     icon:'🍃', mg:28},
+  {id:'energy',   label:'Energy Drink',  icon:'⚡', mg:80},
+  {id:'prework',  label:'Pre-workout',   icon:'🔥', mg:150},
+  {id:'soda',     label:'Cola Soda',     icon:'🥤', mg:34},
+  {id:'choc',     label:'Dark Chocolate',icon:'🍫', mg:12}
+];
+var CAFF_LIMIT=400;
+
+function _injectCaff(){
+  if(document.getElementById('rfc-caff-wrap')) return;
+  var anchors=['rfc-supps-wrap','rfc-mccycle-wrap','rfc-fdiary-wrap','rfc-nccal-wrap','rfc-micros-wrap','rfc-fast-wrap','rfc-macro-donut-wrap'];
+  var host=null;
+  for(var i=0;i<anchors.length;i++){ var el=document.getElementById(anchors[i]); if(el){ host=el; break; } }
+  if(!host) host=document.getElementById('rfc-food-wrap');
+  if(!host) return;
+
+  var c=_b26card('rfc-caff-wrap','☕ Caffeine Intake Tracker');
+  c.innerHTML+=
+    '<div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">'+
+      '<div style="text-align:center;">'+
+        '<div id="rfc-caff-total" style="font-size:32px;font-weight:800;color:#f59e0b;">0</div>'+
+        '<div style="font-size:10px;color:#666;">mg today</div>'+
+      '</div>'+
+      '<div style="flex:1;">'+
+        '<div id="rfc-caff-status" style="font-size:12px;color:#aaa;margin-bottom:5px;">Stay under 400mg for best health</div>'+
+        '<div style="background:#0d0d1a;border-radius:8px;height:10px;overflow:hidden;">'+
+          '<div id="rfc-caff-bar" style="height:100%;background:linear-gradient(90deg,#22c55e,#f59e0b);width:0%;border-radius:8px;transition:width .4s;"></div>'+
+        '</div>'+
+        '<div style="display:flex;justify-content:space-between;font-size:10px;color:#555;margin-top:3px;"><span>0</span><span>200mg</span><span>400mg limit</span></div>'+
+      '</div>'+
+    '</div>'+
+    '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:12px;" id="rfc-caff-grid"></div>'+
+    '<div style="display:flex;gap:8px;align-items:center;">'+
+      '<button onclick="window._rfcCaffReset()" style="background:#ff444422;border:1px solid #ff444444;color:#ff8888;padding:6px 14px;border-radius:8px;cursor:pointer;font-size:12px;">Reset</button>'+
+      '<span style="font-size:11px;color:#555;flex:1;">Tap any item to add one serving. Tap again to remove.</span>'+
+    '</div>';
+
+  if(host.nextSibling) host.parentNode.insertBefore(c,host.nextSibling);
+  else host.parentNode.appendChild(c);
+  _renderCaff();
+}
+
+function _renderCaff(){
+  var uid=_b26uid(), date=_b26today();
+  var key='rfc_caff_'+uid+'_'+date;
+  var data=_b26load(key)||{};
+  var grid=document.getElementById('rfc-caff-grid');
+  var totEl=document.getElementById('rfc-caff-total');
+  var barEl=document.getElementById('rfc-caff-bar');
+  var statEl=document.getElementById('rfc-caff-status');
+  if(!grid) return;
+
+  var total=0;
+  CAFF_SRC.forEach(function(s){ total+=(data[s.id]||0)*s.mg; });
+
+  var html='';
+  CAFF_SRC.forEach(function(s){
+    var cnt=data[s.id]||0;
+    html+='<div onclick="window._rfcCaffTap(\''+s.id+'\')" style="background:'+(cnt>0?'#f59e0b22':'#0d0d1a')+';border:1px solid '+(cnt>0?'#f59e0b55':'#222')+';border-radius:9px;padding:8px 4px;text-align:center;cursor:pointer;position:relative;transition:all .2s;">'+
+      '<div style="font-size:20px;">'+s.icon+'</div>'+
+      '<div style="font-size:9px;color:#888;line-height:1.2;margin-top:2px;">'+s.label+'</div>'+
+      '<div style="font-size:9px;color:#666;">'+s.mg+'mg</div>'+
+      (cnt>0?'<div style="position:absolute;top:3px;right:5px;font-size:10px;font-weight:700;color:#f59e0b;">×'+cnt+'</div>':'')+
+    '</div>';
+  });
+  grid.innerHTML=html;
+
+  if(totEl) totEl.textContent=total;
+  var pct=Math.min(100,Math.round(total/CAFF_LIMIT*100));
+  if(barEl){
+    barEl.style.width=pct+'%';
+    barEl.style.background=pct<50?'linear-gradient(90deg,#22c55e,#84cc16)':pct<85?'linear-gradient(90deg,#f59e0b,#fb923c)':'linear-gradient(90deg,#ef4444,#dc2626)';
+  }
+  if(statEl){
+    if(total===0) statEl.textContent='No caffeine logged yet today.';
+    else if(total<200) statEl.textContent='Low intake — feeling good! 🟢';
+    else if(total<400) statEl.textContent='Moderate — cut off by 2pm to protect sleep. 🟡';
+    else statEl.textContent='At or over limit — switch to decaf! 🔴';
+  }
+}
+window._rfcCaffTap=function(id){
+  var uid=_b26uid(), date=_b26today();
+  var key='rfc_caff_'+uid+'_'+date;
+  var data=_b26load(key)||{};
+  data[id]=(data[id]||0)+1;
+  _b26save(key,data);
+  _renderCaff();
+};
+window._rfcCaffReset=function(){
+  var uid=_b26uid(), date=_b26today();
+  _b26save('rfc_caff_'+uid+'_'+date,{});
+  _renderCaff();
+};
+
+/* ════════════════════════════════════════════════════════════
+   2. MOOD & ENERGY JOURNAL (dashboard)
+   ════════════════════════════════════════════════════════════ */
+var MOOD_EMO=['😞','😕','😐','🙂','😊','😄','😁','🤩','💪','🔥'];
+
+function _injectMood(){
+  if(document.getElementById('rfc-mood-wrap')) return;
+  var anchors=['rfc-water-wrap','rfc-neat-wrap','rfc-breath-wrap','rfc-bodycomp-wrap','rfc-fitage-wrap','rfc-xform-wrap','rfc-mgoal-wrap'];
+  var host=null;
+  for(var i=0;i<anchors.length;i++){ var el=document.getElementById(anchors[i]); if(el){ host=el; break; } }
+  if(!host){ var tb=document.querySelector('.dash-topbar'); if(tb) host=tb; }
+  if(!host) return;
+
+  var c=_b26card('rfc-mood-wrap','😊 Mood & Energy Journal');
+  c.innerHTML+=
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">'+
+      '<div>'+
+        '<div style="font-size:12px;color:#888;margin-bottom:6px;">Mood <span id="rfc-mood-emo" style="font-size:18px;">😐</span></div>'+
+        '<input type="range" id="rfc-mood-range" min="1" max="10" value="5" oninput="window._rfcMoodSlide()" style="width:100%;accent-color:#a78bfa;">'+
+        '<div style="display:flex;justify-content:space-between;font-size:10px;color:#555;"><span>1</span><span id="rfc-mood-val" style="color:#a78bfa;font-weight:700;">5</span><span>10</span></div>'+
+      '</div>'+
+      '<div>'+
+        '<div style="font-size:12px;color:#888;margin-bottom:6px;">Energy <span id="rfc-energy-emo" style="font-size:18px;">⚡</span></div>'+
+        '<input type="range" id="rfc-energy-range" min="1" max="10" value="5" oninput="window._rfcEnergySlide()" style="width:100%;accent-color:#fbbf24;">'+
+        '<div style="display:flex;justify-content:space-between;font-size:10px;color:#555;"><span>1</span><span id="rfc-energy-val" style="color:#fbbf24;font-weight:700;">5</span><span>10</span></div>'+
+      '</div>'+
+    '</div>'+
+    '<input id="rfc-mood-note" type="text" placeholder="Optional note... (how do you feel?)" maxlength="80" style="width:100%;box-sizing:border-box;background:#0d0d1a;border:1px solid #333;color:#ddd;padding:8px 10px;border-radius:8px;font-size:12px;margin-bottom:10px;">'+
+    '<button onclick="window._rfcMoodSave()" style="background:#a78bfa22;border:1px solid #a78bfa44;color:#a78bfa;padding:8px 20px;border-radius:8px;cursor:pointer;font-size:13px;width:100%;margin-bottom:14px;">Save Today\'s Log</button>'+
+    '<div id="rfc-mood-chart" style="display:flex;align-items:flex-end;gap:4px;height:60px;"></div>'+
+    '<div style="display:flex;justify-content:space-between;margin-top:3px;font-size:10px;color:#555;"><span>7 days ago</span><span>Today</span></div>'+
+    '<div style="display:flex;gap:12px;margin-top:6px;font-size:11px;color:#777;">'+
+      '<span style="color:#a78bfa;">■ Mood</span><span style="color:#fbbf24;">■ Energy</span>'+
+    '</div>';
+
+  if(host.nextSibling) host.parentNode.insertBefore(c,host.nextSibling);
+  else host.parentNode.appendChild(c);
+  _renderMood();
+}
+
+function _renderMood(){
+  var uid=_b26uid(), today=_b26today();
+  var todayData=_b26load('rfc_mood_'+uid+'_'+today)||{mood:5,energy:5,note:''};
+
+  var mr=document.getElementById('rfc-mood-range');
+  var er=document.getElementById('rfc-energy-range');
+  var mv=document.getElementById('rfc-mood-val');
+  var ev=document.getElementById('rfc-energy-val');
+  var me=document.getElementById('rfc-mood-emo');
+  var ee=document.getElementById('rfc-energy-emo');
+  var ni=document.getElementById('rfc-mood-note');
+  var chart=document.getElementById('rfc-mood-chart');
+  if(!mr) return;
+
+  var m=todayData.mood||5, e=todayData.energy||5;
+  mr.value=m; if(mv) mv.textContent=m; if(me) me.textContent=MOOD_EMO[m-1]||'😐';
+  er.value=e; if(ev) ev.textContent=e; if(ee) ee.textContent=e>=8?'⚡':e>=5?'🔋':'😴';
+  if(ni) ni.value=todayData.note||'';
+
+  if(chart){
+    var days=[];
+    for(var d=6;d>=0;d--){
+      var dd=new Date(); dd.setDate(dd.getDate()-d);
+      var dk=dd.getFullYear()+'-'+String(dd.getMonth()+1).padStart(2,'0')+'-'+String(dd.getDate()).padStart(2,'0');
+      var rec=_b26load('rfc_mood_'+uid+'_'+dk)||null;
+      days.push(rec);
+    }
+    var html='';
+    days.forEach(function(rec,i){
+      var mVal=rec?rec.mood:0, eVal=rec?rec.energy:0;
+      html+='<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;">'+
+        '<div title="Mood: '+mVal+'" style="width:100%;background:'+(mVal>0?'#a78bfa':'#1a1a2e')+';height:'+Math.max(4,mVal*5)+'px;border-radius:3px;transition:height .3s;"></div>'+
+        '<div title="Energy: '+eVal+'" style="width:100%;background:'+(eVal>0?'#fbbf24':'#1a1a2e')+';height:'+Math.max(4,eVal*5)+'px;border-radius:3px;transition:height .3s;"></div>'+
+      '</div>';
+    });
+    chart.innerHTML=html;
+  }
+}
+window._rfcMoodSlide=function(){
+  var v=parseInt(document.getElementById('rfc-mood-range').value,10)||5;
+  var vEl=document.getElementById('rfc-mood-val');
+  var eEl=document.getElementById('rfc-mood-emo');
+  if(vEl) vEl.textContent=v;
+  if(eEl) eEl.textContent=MOOD_EMO[v-1]||'😐';
+};
+window._rfcEnergySlide=function(){
+  var v=parseInt(document.getElementById('rfc-energy-range').value,10)||5;
+  var vEl=document.getElementById('rfc-energy-val');
+  var eEl=document.getElementById('rfc-energy-emo');
+  if(vEl) vEl.textContent=v;
+  if(eEl) eEl.textContent=v>=8?'⚡':v>=5?'🔋':'😴';
+};
+window._rfcMoodSave=function(){
+  var uid=_b26uid(), today=_b26today();
+  var m=parseInt((document.getElementById('rfc-mood-range')||{}).value||5,10);
+  var e=parseInt((document.getElementById('rfc-energy-range')||{}).value||5,10);
+  var n=(document.getElementById('rfc-mood-note')||{}).value||'';
+  _b26save('rfc_mood_'+uid+'_'+today,{mood:m,energy:e,note:n});
+  _renderMood();
+  var btn=document.querySelector('#rfc-mood-wrap button');
+  if(btn){ btn.textContent='✅ Saved!'; setTimeout(function(){ btn.textContent="Save Today's Log"; },1500); }
+};
+
+/* ════════════════════════════════════════════════════════════
+   3. VOLUME LOAD TRACKER (workouts)
+   ════════════════════════════════════════════════════════════ */
+function _injectVolLoad(){
+  if(document.getElementById('rfc-volload-wrap')) return;
+  var anchors=['rfc-prboard-wrap','rfc-wgen-wrap','rfc-strstd-wrap','rfc-rest-wrap','rfc-rpe-wrap','rfc-cardio-wrap'];
+  var host=null;
+  for(var i=0;i<anchors.length;i++){ var el=document.getElementById(anchors[i]); if(el){ host=el; break; } }
+  if(!host) host=document.getElementById('wl-history');
+  if(!host) return;
+
+  var c=_b26card('rfc-volload-wrap','📦 Total Volume Load Tracker');
+  c.innerHTML+=
+    '<div style="display:flex;gap:14px;margin-bottom:14px;">'+
+      '<div style="text-align:center;flex:1;background:#0d0d1a;border-radius:10px;padding:10px;">'+
+        '<div id="rfc-vol-last" style="font-size:22px;font-weight:800;color:#00d4ff;">—</div>'+
+        '<div style="font-size:10px;color:#555;">last session (kg)</div>'+
+      '</div>'+
+      '<div style="text-align:center;flex:1;background:#0d0d1a;border-radius:10px;padding:10px;">'+
+        '<div id="rfc-vol-avg" style="font-size:22px;font-weight:800;color:#a78bfa;">—</div>'+
+        '<div style="font-size:10px;color:#555;">8-session avg (kg)</div>'+
+      '</div>'+
+      '<div style="text-align:center;flex:1;background:#0d0d1a;border-radius:10px;padding:10px;">'+
+        '<div id="rfc-vol-trend" style="font-size:22px;font-weight:800;color:#22c55e;">—</div>'+
+        '<div style="font-size:10px;color:#555;">trend</div>'+
+      '</div>'+
+    '</div>'+
+    '<div style="display:flex;align-items:flex-end;gap:4px;height:80px;margin-bottom:4px;" id="rfc-vol-chart"></div>'+
+    '<div style="font-size:10px;color:#555;text-align:center;">Last 8 sessions · Volume = sets × reps × weight</div>'+
+    '<div id="rfc-vol-empty" style="color:#555;font-size:13px;text-align:center;padding:20px 0;display:none;">Log some workouts to track volume load.</div>';
+
+  if(host.nextSibling) host.parentNode.insertBefore(c,host.nextSibling);
+  else host.parentNode.appendChild(c);
+  _renderVolLoad();
+}
+
+function _renderVolLoad(){
+  var uid=_b26uid();
+  var workouts=[];
+  try{ workouts=JSON.parse(localStorage.getItem('rfc_workouts_'+uid)||'[]'); }catch(e){}
+
+  var chart=document.getElementById('rfc-vol-chart');
+  var lastEl=document.getElementById('rfc-vol-last');
+  var avgEl=document.getElementById('rfc-vol-avg');
+  var trendEl=document.getElementById('rfc-vol-trend');
+  var emptyEl=document.getElementById('rfc-vol-empty');
+  if(!chart) return;
+
+  /* calc volume per session */
+  var vols=workouts.slice(0,8).map(function(w){
+    var v=0;
+    (w.exercises||[]).forEach(function(ex){
+      var s=parseFloat(ex.sets)||0, r=parseFloat(ex.reps)||0, kg=parseFloat(ex.kg)||0;
+      v+=s*r*kg;
+    });
+    return {date:w.date||'',vol:Math.round(v)};
+  }).filter(function(x){ return x.vol>0; }).reverse();
+
+  if(vols.length===0){
+    chart.style.display='none';
+    if(emptyEl) emptyEl.style.display='block';
+    return;
+  }
+  chart.style.display='flex';
+  if(emptyEl) emptyEl.style.display='none';
+
+  var maxV=Math.max.apply(null,vols.map(function(v){ return v.vol; }))||1;
+  var html='';
+  vols.forEach(function(v,i){
+    var pct=Math.round(v.vol/maxV*100);
+    var isLast=i===vols.length-1;
+    html+='<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;">'+
+      '<div style="font-size:9px;color:'+(isLast?'#00d4ff':'#555')+';">'+v.vol+'</div>'+
+      '<div style="width:100%;height:'+Math.max(6,pct*0.7)+'px;background:'+(isLast?'#00d4ff':'#a78bfa88')+';border-radius:4px 4px 0 0;"></div>'+
+    '</div>';
+  });
+  chart.innerHTML=html;
+
+  var last=vols[vols.length-1].vol;
+  var avg=Math.round(vols.reduce(function(s,v){ return s+v.vol; },0)/vols.length);
+  var prev=vols.length>=2?vols[vols.length-2].vol:last;
+  var diff=last-prev;
+
+  if(lastEl) lastEl.textContent=last.toLocaleString();
+  if(avgEl) avgEl.textContent=avg.toLocaleString();
+  if(trendEl){
+    if(vols.length<2){ trendEl.textContent='—'; trendEl.style.color='#888'; }
+    else if(diff>0){ trendEl.textContent='▲ '+diff; trendEl.style.color='#22c55e'; }
+    else if(diff<0){ trendEl.textContent='▼ '+Math.abs(diff); trendEl.style.color='#ef4444'; }
+    else { trendEl.textContent='= 0'; trendEl.style.color='#888'; }
+  }
+}
+
+/* ── switchScreen wrap ── */
+window.switchScreen=function(name,navEl){
+  _origSS24&&_origSS24(name,navEl);
+  if(name==='nutrition'){
+    setTimeout(function(){ _injectCaff(); _renderCaff(); }, 1100);
+  }
+  if(name==='dashboard'){
+    setTimeout(function(){ _injectMood(); _renderMood(); }, 1150);
+  }
+  if(name==='workouts'){
+    setTimeout(function(){ _injectVolLoad(); _renderVolLoad(); }, 1050);
+  }
+};
+
+setTimeout(function(){
+  _injectCaff();
+  _injectMood();
+  _injectVolLoad();
+}, 18000);
+
+setTimeout(function(){
+  if(!document.getElementById('rfc-caff-wrap'))    _injectCaff();
+  if(!document.getElementById('rfc-mood-wrap'))    _injectMood();
+  if(!document.getElementById('rfc-volload-wrap')) _injectVolLoad();
+}, 22000);
+
+})();
+</script>
+
+</body>
 </html>
