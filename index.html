@@ -26968,5 +26968,451 @@ setTimeout(function(){
 })();
 </script>
 
+<script>
+/* ═══════════════════════════════════════════════════════
+   BATCH 12: Nutrition Score · PR Trophy Shelf
+             Calorie Burn Estimator · XP hooks
+   ═══════════════════════════════════════════════════════ */
+(function(){
+'use strict';
+
+/* ── shared helpers ─────────────────────────────── */
+function _b12uid(){
+  try{ var u=JSON.parse(localStorage.getItem('bm_user')||'{}'); return u.uid||'anon'; }catch(e){return'anon';}
+}
+function _b12today(){
+  var d=new Date();
+  return d.getFullYear()+'-'+(d.getMonth()+1<10?'0':'')+(d.getMonth()+1)+'-'+(d.getDate()<10?'0':'')+d.getDate();
+}
+function _b12after(el, anchor){
+  anchor.parentNode.insertBefore(el, anchor.nextSibling);
+}
+
+/* ════════════════════════════════════════════════════
+   1. NUTRITION SCORE CARD
+   ════════════════════════════════════════════════════ */
+function _getNutritionTargets(){
+  // Pull targets from the beast score result stored in lastRes
+  try{
+    var lastRes = JSON.parse(localStorage.getItem('bm_last_result')||'null');
+    if(lastRes && lastRes.tdee){
+      return {
+        cals: Math.round(lastRes.tdee),
+        prot: Math.round((lastRes.tdee * 0.30) / 4),
+        carb: Math.round((lastRes.tdee * 0.40) / 4),
+        fat:  Math.round((lastRes.tdee * 0.30) / 9)
+      };
+    }
+  }catch(e){}
+  // fallback: sensible defaults
+  return {cals:2000, prot:150, carb:200, fat:67};
+}
+
+function _getTodayFoods(){
+  var uid = _b12uid();
+  var today = _b12today();
+  try{ return JSON.parse(localStorage.getItem('rfc_food_'+uid+'_'+today)||'[]'); }catch(e){return [];}
+}
+
+function _calcNutritionScore(){
+  var foods = _getTodayFoods();
+  if(!foods.length) return null;
+  var totals = foods.reduce(function(a,f){
+    return {
+      cal:  a.cal  + (parseFloat(f.cal)  ||0),
+      prot: a.prot + (parseFloat(f.prot) ||0),
+      carb: a.carb + (parseFloat(f.carb) ||0),
+      fat:  a.fat  + (parseFloat(f.fat)  ||0)
+    };
+  }, {cal:0, prot:0, carb:0, fat:0});
+
+  var targets = _getNutritionTargets();
+  // Score each macro: within 10% = 100%, within 25% = 70%, otherwise proportional
+  function macroScore(actual, target){
+    if(!target) return 100;
+    var ratio = actual / target;
+    if(ratio >= 0.9 && ratio <= 1.1) return 100;
+    if(ratio >= 0.75 && ratio <= 1.25) return Math.round(70 + (1 - Math.abs(1 - ratio)/0.25) * 30);
+    return Math.max(0, Math.round(100 - Math.abs(1 - ratio) * 100));
+  }
+
+  var calScore  = macroScore(totals.cal,  targets.cals);
+  var protScore = macroScore(totals.prot, targets.prot);
+  var carbScore = macroScore(totals.carb, targets.carb);
+  var fatScore  = macroScore(totals.fat,  targets.fat);
+  // Protein matters most (40%), cals next (30%), carb/fat 15% each
+  var overall = Math.round(calScore*0.30 + protScore*0.40 + carbScore*0.15 + fatScore*0.15);
+
+  var grade, color;
+  if(overall >= 90){ grade='A'; color='#22c55e'; }
+  else if(overall >= 78){ grade='B'; color='#84cc16'; }
+  else if(overall >= 65){ grade='C'; color='#f59e0b'; }
+  else if(overall >= 50){ grade='D'; color='#f97316'; }
+  else { grade='F'; color='#ef4444'; }
+
+  return {
+    overall:overall, grade:grade, color:color,
+    totals:totals, targets:targets,
+    scores:{cal:calScore, prot:protScore, carb:carbScore, fat:fatScore}
+  };
+}
+
+function _renderNutritionScore(){
+  var wrap = document.getElementById('rfc-nutr-score-wrap');
+  if(!wrap) return;
+  var data = _calcNutritionScore();
+
+  if(!data){
+    wrap.innerHTML =
+      '<div style="font-weight:700;font-size:13px;color:#fff;margin-bottom:8px;">🍽️ Nutrition Score</div>'
+      +'<div style="font-size:12px;color:#888;text-align:center;padding:12px 0;">Log food today to get your nutrition grade.</div>';
+    return;
+  }
+
+  var bars = [
+    {label:'Calories',  actual:Math.round(data.totals.cal),  target:data.targets.cals, unit:'kcal', color:'#f59e0b', score:data.scores.cal},
+    {label:'Protein',   actual:Math.round(data.totals.prot), target:data.targets.prot, unit:'g',    color:'#e8001d', score:data.scores.prot},
+    {label:'Carbs',     actual:Math.round(data.totals.carb), target:data.targets.carb, unit:'g',    color:'#3b82f6', score:data.scores.carb},
+    {label:'Fat',       actual:Math.round(data.totals.fat),  target:data.targets.fat,  unit:'g',    color:'#a78bfa', score:data.scores.fat}
+  ];
+
+  var barsHtml = bars.map(function(b){
+    var pct = Math.min(100, Math.round((b.actual/b.target)*100));
+    var over = b.actual > b.target * 1.1;
+    return '<div style="margin-bottom:8px;">'
+      +'<div style="display:flex;justify-content:space-between;font-size:11px;color:#aaa;margin-bottom:3px;">'
+      +'<span style="color:#fff;">'+b.label+'</span>'
+      +'<span style="color:'+(b.score>=90?'#22c55e':b.score>=70?'#f59e0b':'#f97316')+';">'+b.actual+' / '+b.target+b.unit+'</span>'
+      +'</div>'
+      +'<div style="background:#222;border-radius:4px;height:5px;overflow:hidden;">'
+      +'<div style="height:100%;width:'+Math.min(pct,100)+'%;background:'+(over?'#f97316':b.color)+';border-radius:4px;transition:width .5s;"></div>'
+      +'</div>'
+      +'</div>';
+  }).join('');
+
+  wrap.innerHTML =
+    '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">'
+    +'<span style="font-weight:700;font-size:13px;color:#fff;">🍽️ Nutrition Score</span>'
+    +'<div style="display:flex;flex-direction:column;align-items:center;">'
+    +'<div style="font-family:\'Bebas Neue\',sans-serif;font-size:40px;color:'+data.color+';line-height:1;text-shadow:0 0 20px '+data.color+'44;">'+data.grade+'</div>'
+    +'<div style="font-size:10px;color:#888;">'+data.overall+'%</div>'
+    +'</div>'
+    +'</div>'
+    + barsHtml;
+}
+
+function _injectNutritionScore(){
+  if(document.getElementById('rfc-nutr-score-wrap')) return;
+  // Inject after macro rings on nutrition screen, or after food wrap
+  var anchor = document.getElementById('rfc-macro-rings')
+    || document.getElementById('rfc-food-wrap')
+    || document.getElementById('rfc-water-ring-wrap');
+  if(!anchor) return;
+  var wrap = document.createElement('div');
+  wrap.id = 'rfc-nutr-score-wrap';
+  wrap.className = 'rfc-b12-card';
+  _b12after(wrap, anchor);
+  _renderNutritionScore();
+}
+
+/* ════════════════════════════════════════════════════
+   2. PR TROPHY SHELF
+   ════════════════════════════════════════════════════ */
+function _getPRs(){
+  try{
+    var uid = _b12uid();
+    var prs = JSON.parse(localStorage.getItem('rfc_prs_'+uid)||'{}');
+    return Object.entries(prs).map(function(e){
+      return {lift:e[0], kg:parseFloat(e[1])||0};
+    }).sort(function(a,b){ return b.kg-a.kg; }).slice(0,4);
+  }catch(e){ return []; }
+}
+
+function _renderTrophyShelf(){
+  var wrap = document.getElementById('rfc-trophy-shelf');
+  if(!wrap) return;
+  var prs = _getPRs();
+
+  if(!prs.length){
+    wrap.innerHTML =
+      '<div style="font-weight:700;font-size:13px;color:#fff;margin-bottom:8px;">🏆 PR Trophy Shelf</div>'
+      +'<div style="font-size:12px;color:#888;text-align:center;padding:10px 0;">No PRs logged yet — set a PR in the Workout tab.</div>';
+    return;
+  }
+
+  var medals = ['🥇','🥈','🥉','🎖️'];
+  var trophiesHtml = prs.map(function(pr, i){
+    var label = pr.lift.replace(/_/g,' ').replace(/\b\w/g,function(c){return c.toUpperCase();});
+    var glow = i===0?'rgba(245,158,11,.2)':i===1?'rgba(200,200,200,.1)':i===2?'rgba(180,100,30,.1)':'rgba(100,100,100,.08)';
+    var borderC = i===0?'rgba(245,158,11,.4)':i===1?'rgba(200,200,200,.25)':i===2?'rgba(180,100,30,.3)':'rgba(255,255,255,.1)';
+    return '<div style="flex:1;min-width:70px;background:'+glow+';border:1px solid '+borderC+';border-radius:12px;padding:10px 8px;text-align:center;">'
+      +'<div style="font-size:24px;margin-bottom:4px;">'+medals[i]+'</div>'
+      +'<div style="font-size:13px;font-weight:700;color:#fff;">'+pr.kg+'kg</div>'
+      +'<div style="font-size:9px;color:#aaa;margin-top:3px;line-height:1.3;text-overflow:ellipsis;overflow:hidden;white-space:nowrap;">'+label+'</div>'
+      +'</div>';
+  }).join('');
+
+  wrap.innerHTML =
+    '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">'
+    +'<span style="font-weight:700;font-size:13px;color:#fff;">🏆 PR Trophy Shelf</span>'
+    +'<span style="font-size:11px;color:#888;">Top '+prs.length+' lifts</span>'
+    +'</div>'
+    +'<div style="display:flex;gap:8px;">'+trophiesHtml+'</div>';
+}
+
+function _injectTrophyShelf(){
+  if(document.getElementById('rfc-trophy-shelf')) return;
+  var anchor = document.getElementById('rfc-steps-wrap')
+    || document.getElementById('rfc-goal-wrap')
+    || document.getElementById('rfc-mood-wrap')
+    || document.getElementById('rfc-share-card-btn')
+    || document.querySelector('.dash-topbar');
+  if(!anchor) return;
+  var wrap = document.createElement('div');
+  wrap.id = 'rfc-trophy-shelf';
+  wrap.className = 'rfc-b12-card';
+  _b12after(wrap, anchor);
+  _renderTrophyShelf();
+}
+
+/* ════════════════════════════════════════════════════
+   3. CALORIE BURN ESTIMATOR
+   ════════════════════════════════════════════════════ */
+// MET values per workout type
+var METS = {
+  'strength':5.0, 'hiit':8.0, 'cardio':7.0, 'yoga':3.0,
+  'crossfit':9.0, 'cycling':7.5, 'running':9.8, 'walking':3.8,
+  'swimming':7.0, 'boxing':9.0, 'stretching':2.5, 'other':5.5
+};
+
+function _getBodyWeightKg(){
+  try{
+    var pd = JSON.parse(localStorage.getItem('bm_pd')||'{}');
+    var weights = pd.weights || [];
+    if(weights.length) return parseFloat(weights[weights.length-1].value||weights[weights.length-1].weight||70);
+    var lastRes = JSON.parse(localStorage.getItem('bm_last_result')||'null');
+    if(lastRes && lastRes.weight) return parseFloat(lastRes.weight);
+  }catch(e){}
+  return 70; // default
+}
+
+window._rfcEstimateBurn = function(){
+  var typeEl = document.getElementById('rfc-burn-type');
+  var durEl  = document.getElementById('rfc-burn-dur');
+  var resEl  = document.getElementById('rfc-burn-result');
+  if(!typeEl || !durEl || !resEl) return;
+  var type = typeEl.value;
+  var dur  = parseFloat(durEl.value) || 45;
+  var met  = METS[type] || 5.5;
+  var wkg  = _getBodyWeightKg();
+  // Calories = MET × weight(kg) × time(hr)
+  var calories = Math.round(met * wkg * (dur / 60));
+  // With afterburn (EPOC) ~10% for strength/HIIT
+  var epoc = (type==='strength'||type==='hiit'||type==='crossfit') ? Math.round(calories*0.1) : 0;
+  resEl.innerHTML =
+    '<div style="display:flex;gap:10px;align-items:center;margin-top:10px;">'
+    +'<div style="flex:1;background:#111;border-radius:10px;padding:10px;text-align:center;">'
+    +'<div style="font-size:10px;color:#888;margin-bottom:2px;">Active Burn</div>'
+    +'<div style="font-size:22px;font-weight:700;color:#e8001d;">'+calories+'</div>'
+    +'<div style="font-size:9px;color:#888;">kcal</div>'
+    +'</div>'
+    +(epoc?'<div style="flex:1;background:#111;border-radius:10px;padding:10px;text-align:center;">'
+    +'<div style="font-size:10px;color:#888;margin-bottom:2px;">EPOC bonus</div>'
+    +'<div style="font-size:22px;font-weight:700;color:#f59e0b;">+'+epoc+'</div>'
+    +'<div style="font-size:9px;color:#888;">kcal</div>'
+    +'</div>':'')
+    +'<div style="flex:1;background:#111;border-radius:10px;padding:10px;text-align:center;">'
+    +'<div style="font-size:10px;color:#888;margin-bottom:2px;">Total Est.</div>'
+    +'<div style="font-size:22px;font-weight:700;color:#22c55e;">'+(calories+epoc)+'</div>'
+    +'<div style="font-size:9px;color:#888;">kcal</div>'
+    +'</div>'
+    +'</div>'
+    +'<div style="font-size:10px;color:#666;margin-top:6px;text-align:center;">Based on '+wkg+'kg body weight · MET '+met+' · '+dur+'min</div>';
+};
+
+function _renderBurnEstimator(wrap){
+  var typeOpts = Object.keys(METS).map(function(k){
+    return '<option value="'+k+'">'+k.charAt(0).toUpperCase()+k.slice(1)+'</option>';
+  }).join('');
+
+  wrap.innerHTML =
+    '<div style="font-weight:700;font-size:13px;color:#fff;margin-bottom:10px;">🔥 Calorie Burn Estimator</div>'
+    +'<div style="display:flex;gap:8px;margin-bottom:8px;">'
+    +'<select id="rfc-burn-type" style="flex:1;background:#1a1a1a;border:1px solid #333;border-radius:8px;color:#fff;padding:7px 10px;font-size:12px;">'+typeOpts+'</select>'
+    +'<div style="display:flex;align-items:center;gap:6px;background:#1a1a1a;border:1px solid #333;border-radius:8px;padding:7px 10px;">'
+    +'<input id="rfc-burn-dur" type="number" min="5" max="240" value="45" style="background:transparent;border:none;color:#fff;width:42px;font-size:12px;outline:none;text-align:center;">'
+    +'<span style="font-size:11px;color:#888;">min</span>'
+    +'</div>'
+    +'<button onclick="window._rfcEstimateBurn()" style="background:#e8001d;border:none;border-radius:8px;color:#fff;padding:7px 14px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;">Calc</button>'
+    +'</div>'
+    +'<div id="rfc-burn-result"></div>';
+
+  // Auto-calc on load
+  setTimeout(window._rfcEstimateBurn, 50);
+}
+
+function _injectBurnEstimator(){
+  if(document.getElementById('rfc-burn-wrap')) return;
+  // Inject into workout screen area near wl-history or workoutlog
+  var anchor = document.getElementById('wl-history')
+    || document.getElementById('workoutlog')
+    || document.getElementById('rfc-vol-chart-wrap');
+  if(!anchor) return;
+  var wrap = document.createElement('div');
+  wrap.id = 'rfc-burn-wrap';
+  wrap.className = 'rfc-b12-card';
+  // Insert before the anchor (at top of workouts screen additions)
+  anchor.parentNode.insertBefore(wrap, anchor);
+  _renderBurnEstimator(wrap);
+}
+
+/* ════════════════════════════════════════════════════
+   4. XP HOOKS FOR BATCH 11 ACTIONS
+   ════════════════════════════════════════════════════ */
+(function(){
+  // Hook mood log → +5 XP
+  var _origMood = window._rfcLogMood;
+  if(_origMood && !_origMood._xpHooked){
+    window._rfcLogMood = function(v){
+      _origMood.call(this, v);
+      if(window.awardXP) setTimeout(function(){ window.awardXP('mood_log'); }, 300);
+    };
+    window._rfcLogMood._xpHooked = true;
+  }
+
+  // Hook sleep log → +15 XP
+  var _origSleep = window._rfcLogSleep;
+  if(_origSleep && !_origSleep._xpHooked){
+    window._rfcLogSleep = function(){
+      var result = _origSleep.apply(this, arguments);
+      if(window.awardXP) setTimeout(function(){ window.awardXP('sleep_log'); }, 300);
+      return result;
+    };
+    window._rfcLogSleep._xpHooked = true;
+  }
+
+  // Hook challenge complete → +50 XP (challenge already awards its own XP display but not awardXP system)
+  var _origChal = window._rfcCompleteChallenge;
+  if(_origChal && !_origChal._xpHooked){
+    window._rfcCompleteChallenge = function(){
+      var result = _origChal.apply(this, arguments);
+      if(window.awardXP) setTimeout(function(){ window.awardXP('challenge_done'); }, 300);
+      return result;
+    };
+    window._rfcCompleteChallenge._xpHooked = true;
+  }
+
+  // Hook food log → +5 XP per item logged
+  var _origAddFood = window._rfcAddFood;
+  if(_origAddFood && !_origAddFood._xpHooked){
+    window._rfcAddFood = function(){
+      var result = _origAddFood.apply(this, arguments);
+      if(window.awardXP) setTimeout(function(){ window.awardXP('food_log'); }, 300);
+      return result;
+    };
+    window._rfcAddFood._xpHooked = true;
+  }
+
+  // Register XP actions if awardXP table supports custom keys
+  // awardXP reads from a table — add entries for our new actions
+  setTimeout(function(){
+    if(!window.awardXP) return;
+    // Try to patch XP_ACTIONS table if accessible
+    try{
+      var xpKey = 'rfc_xp';
+      var origAward = window.awardXP;
+      if(!origAward._b12Patched){
+        var XP_EXT = {
+          'mood_log':5, 'sleep_log':15, 'challenge_done':50, 'food_log':5,
+          'steps_goal':25  // when step goal reached
+        };
+        window.awardXP = function(action){
+          if(XP_EXT[action]){
+            var cur = parseInt(localStorage.getItem(xpKey)||'0', 10);
+            localStorage.setItem(xpKey, cur + XP_EXT[action]);
+            // Trigger XP bar update
+            if(document.getElementById('xp-bar-fill')){
+              var updateFn = window._rfcUpdateXPBar || null;
+              if(!updateFn){
+                // find updateXPBar by scanning for xp-bar-fill updater
+                var ev = new CustomEvent('rfc-xp-update');
+                window.dispatchEvent(ev);
+              }
+            }
+          }
+          return origAward.apply(this, arguments);
+        };
+        window.awardXP._b12Patched = true;
+      }
+    }catch(e){}
+  }, 2000);
+})();
+
+/* ════════════════════════════════════════════════════
+   CSS
+   ════════════════════════════════════════════════════ */
+(function(){
+  var s = document.createElement('style');
+  s.textContent = [
+    '.rfc-b12-card{',
+      'background:#111;border:1px solid #222;',
+      'border-top:1px solid #2a2a2a;',
+      'border-radius:14px;padding:14px;margin:10px 0;',
+    '}',
+    'body.rfc-light .rfc-b12-card{background:#fff;border-color:#eee;}',
+    'body.rfc-light .rfc-b12-card *{color:#1a1a1a !important;}',
+    '#rfc-burn-type,#rfc-burn-dur{transition:border-color .2s;}',
+    '#rfc-burn-type:focus,#rfc-burn-dur:focus{border-color:#e8001d !important;outline:none;}',
+    '#rfc-burn-type option{background:#1a1a1a;color:#fff;}',
+  ].join('');
+  document.head.appendChild(s);
+})();
+
+/* ════════════════════════════════════════════════════
+   switchScreen hook + initial inject
+   ════════════════════════════════════════════════════ */
+var _origSS10 = window.switchScreen;
+window.switchScreen = function(name, navEl){
+  _origSS10 && _origSS10(name, navEl);
+  if(name === 'dashboard'){
+    setTimeout(function(){
+      _injectTrophyShelf();
+    }, 700);
+  }
+  if(name === 'workouts'){
+    setTimeout(function(){
+      _injectBurnEstimator();
+      // Refresh trophy shelf when user comes back (new PR may have been set)
+      _renderTrophyShelf();
+    }, 500);
+  }
+  if(name === 'nutrition'){
+    setTimeout(function(){
+      _injectNutritionScore();
+      _renderNutritionScore();
+    }, 600);
+  }
+};
+
+// Initial inject
+setTimeout(function(){
+  _injectTrophyShelf();
+  _injectBurnEstimator();
+  _injectNutritionScore();
+}, 5500);
+
+// Retry pass
+setTimeout(function(){
+  if(!document.getElementById('rfc-trophy-shelf'))     _injectTrophyShelf();
+  if(!document.getElementById('rfc-burn-wrap'))        _injectBurnEstimator();
+  if(!document.getElementById('rfc-nutr-score-wrap'))  _injectNutritionScore();
+}, 8500);
+
+// Refresh nutrition score every time food is added/deleted
+window.addEventListener('rfc-food-updated', _renderNutritionScore);
+
+})();
+</script>
+
 </body>
 </html>
