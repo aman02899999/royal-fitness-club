@@ -29723,5 +29723,393 @@ window.addEventListener('rfc-food-updated', _renderHabits);
 })();
 </script>
 
+<script>
+/* ════════════════════════════════════════════════════════════
+   BATCH 19 — Workout Templates | Circumference Chart | Sleep Journal
+   ════════════════════════════════════════════════════════════ */
+(function(){ 'use strict';
+
+function _uid19(){ try{return JSON.parse(localStorage.getItem('bm_user')||'{}').uid||null;}catch(e){return null;} }
+function _b19card(id,title){
+  var d=document.createElement('div');
+  d.id=id; d.className='rfc-b12-card';
+  d.style.cssText='background:#111;border:1px solid #222;border-radius:14px;padding:14px;margin:10px 0;';
+  var h=document.createElement('div');
+  h.style.cssText='font-size:13px;font-weight:700;color:#aaa;letter-spacing:1px;text-transform:uppercase;margin-bottom:12px;';
+  h.textContent=title; d.appendChild(h);
+  return d;
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   1. WORKOUT TEMPLATE MANAGER (workouts)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+function _injectTemplates(){
+  if(document.getElementById('rfc-tmpl-wrap')) return;
+  var anchor = document.getElementById('rfc-musrec-wrap') ||
+               document.getElementById('rfc-pol-wrap') ||
+               document.getElementById('rfc-deload-wrap') ||
+               document.getElementById('rfc-orm-wrap') ||
+               document.getElementById('rfc-heatmap-wrap') ||
+               document.getElementById('rfc-mev-wrap') ||
+               document.getElementById('wl-history');
+  if(!anchor) return;
+  var card=_b19card('rfc-tmpl-wrap','📋 Workout Templates');
+  card.innerHTML+=(
+    '<div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;">'+
+      '<input id="rfc-tmpl-name" type="text" placeholder="Template name (e.g. Push Day A)" '+
+        'style="flex:1;min-width:140px;background:#1a1a1a;border:1px solid #333;border-radius:8px;padding:8px 10px;color:#fff;font-size:13px;outline:none;">'+
+      '<button onclick="window._rfcSaveTmpl()" '+
+        'style="background:linear-gradient(135deg,#22c55e,#15803d);color:#fff;border:none;border-radius:8px;padding:8px 16px;font-size:13px;font-weight:700;cursor:pointer;">Save Current</button>'+
+    '</div>'+
+    '<div id="rfc-tmpl-list"></div>'
+  );
+  anchor.insertAdjacentElement('afterend', card);
+  _renderTemplates();
+}
+
+function _tmplKey(){ return 'rfc_templates_'+_uid19(); }
+
+function _renderTemplates(){
+  var el=document.getElementById('rfc-tmpl-list'); if(!el) return;
+  var uid=_uid19(); if(!uid){ el.innerHTML='<p style="color:#555;font-size:12px;">Log in to use templates.</p>'; return; }
+  var tmpls=[]; try{tmpls=JSON.parse(localStorage.getItem(_tmplKey())||'[]');}catch(e){}
+  if(!tmpls.length){
+    el.innerHTML='<p style="color:#444;font-size:12px;text-align:center;padding:8px 0;">No templates saved yet. Build a workout and click "Save Current".</p>';
+    return;
+  }
+  el.innerHTML=tmpls.map(function(t,i){
+    var exList=(t.exercises||[]).slice(0,3).map(function(e){return e.name;}).join(', ')+(t.exercises&&t.exercises.length>3?' +more':'');
+    return '<div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #1a1a1a;">'+
+      '<div style="flex:1;min-width:0;">'+
+        '<div style="font-size:13px;font-weight:700;color:#fff;">'+t.name+'</div>'+
+        '<div style="font-size:11px;color:#555;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+(t.exercises?t.exercises.length:0)+' exercises · '+exList+'</div>'+
+      '</div>'+
+      '<button onclick="window._rfcLoadTmpl('+i+')" '+
+        'style="background:#1a1a1a;border:1px solid #333;color:#f59e0b;border-radius:7px;padding:5px 12px;font-size:12px;cursor:pointer;">Load</button>'+
+      '<button onclick="window._rfcDelTmpl('+i+')" '+
+        'style="background:none;border:none;color:#333;cursor:pointer;font-size:15px;padding:4px;">✕</button>'+
+    '</div>';
+  }).join('');
+}
+
+window._rfcSaveTmpl=function(){
+  var uid=_uid19(); if(!uid){ if(window.toast) toast('Log in first','gold'); return; }
+  var nameEl=document.getElementById('rfc-tmpl-name');
+  var name=(nameEl&&nameEl.value.trim())||'Workout '+(new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short'}));
+  var rows=[].slice.call(document.querySelectorAll('#wl-rows > div'));
+  var exercises=rows.map(function(r){
+    var ins=r.querySelectorAll('input');
+    return {name:(ins[0]&&ins[0].value.trim())||'',sets:(ins[1]&&ins[1].value)||'',reps:(ins[2]&&ins[2].value)||'',kg:(ins[3]&&ins[3].value)||''};
+  }).filter(function(e){return e.name;});
+  if(!exercises.length){ if(window.toast) toast('Add exercises to the workout form first','gold'); return; }
+  var tmpls=[]; try{tmpls=JSON.parse(localStorage.getItem(_tmplKey())||'[]');}catch(e){}
+  tmpls.unshift({name:name,exercises:exercises,ts:Date.now()});
+  if(tmpls.length>15) tmpls.length=15;
+  localStorage.setItem(_tmplKey(),JSON.stringify(tmpls));
+  if(nameEl) nameEl.value='';
+  _renderTemplates();
+  if(window.toast) toast('📋 Template "'+name+'" saved!','gold');
+};
+
+window._rfcLoadTmpl=function(idx){
+  var tmpls=[]; try{tmpls=JSON.parse(localStorage.getItem(_tmplKey())||'[]');}catch(e){}
+  var t=tmpls[idx]; if(!t||!t.exercises) return;
+  if(!confirm('Load "'+t.name+'"? This replaces the current exercise list.')) return;
+  var rowsEl=document.getElementById('wl-rows'); if(!rowsEl) return;
+  rowsEl.innerHTML='';
+  t.exercises.forEach(function(ex){
+    if(typeof window.addExerciseRow==='function') window.addExerciseRow();
+    var rows=[].slice.call(rowsEl.querySelectorAll(':scope > div'));
+    var last=rows[rows.length-1]; if(!last) return;
+    var ins=last.querySelectorAll('input');
+    if(ins[0]) ins[0].value=ex.name;
+    if(ins[1]) ins[1].value=ex.sets;
+    if(ins[2]) ins[2].value=ex.reps;
+    if(ins[3]) ins[3].value=ex.kg;
+  });
+  if(window.toast) toast('📋 "'+t.name+'" loaded!','fire');
+};
+
+window._rfcDelTmpl=function(idx){
+  var tmpls=[]; try{tmpls=JSON.parse(localStorage.getItem(_tmplKey())||'[]');}catch(e){}
+  tmpls.splice(idx,1);
+  localStorage.setItem(_tmplKey(),JSON.stringify(tmpls));
+  _renderTemplates();
+};
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   2. CIRCUMFERENCE TREND CHART (dashboard)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+var CIRC_FIELDS19=[
+  {key:'waist', label:'Waist',  color:'#f59e0b'},
+  {key:'chest', label:'Chest',  color:'#3b82f6'},
+  {key:'hips',  label:'Hips',   color:'#a78bfa'},
+  {key:'arms',  label:'Arms',   color:'#22c55e'},
+  {key:'thighs',label:'Thighs', color:'#f97316'}
+];
+
+function _injectCircChart(){
+  if(document.getElementById('rfc-circ-wrap')) return;
+  var anchor = document.getElementById('rfc-habits-wrap') ||
+               document.getElementById('rfc-wt-trend-wrap') ||
+               document.getElementById('rfc-recovery-wrap') ||
+               document.getElementById('rfc-sleep-sched-wrap') ||
+               document.getElementById('rfc-rings-wrap') ||
+               document.querySelector('.dash-topbar');
+  if(!anchor) return;
+  var card=_b19card('rfc-circ-wrap','📏 Circumference Trend');
+  card.innerHTML+=(
+    '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;" id="rfc-circ-tabs">'+
+    CIRC_FIELDS19.map(function(f,i){
+      return '<button onclick="window._rfcCircField(\''+f.key+'\')" id="rfc-circ-btn-'+f.key+'" '+
+        'style="background:'+(i===0?f.color:'#1a1a1a')+';color:'+(i===0?'#000':'#aaa')+';border:1px solid '+(i===0?f.color:'#333')+';border-radius:20px;padding:4px 12px;font-size:12px;cursor:pointer;transition:all .2s;">'+f.label+'</button>';
+    }).join('')+
+    '</div>'+
+    '<div id="rfc-circ-chart"></div>'
+  );
+  anchor.insertAdjacentElement('afterend', card);
+  window._rfcCircActive='waist';
+  _renderCircChart('waist');
+}
+
+window._rfcCircField=function(key){
+  window._rfcCircActive=key;
+  CIRC_FIELDS19.forEach(function(f){
+    var btn=document.getElementById('rfc-circ-btn-'+f.key); if(!btn) return;
+    var active=(f.key===key);
+    btn.style.background=active?f.color:'#1a1a1a';
+    btn.style.color=active?'#000':'#aaa';
+    btn.style.borderColor=active?f.color:'#333';
+  });
+  _renderCircChart(key);
+};
+
+function _renderCircChart(key){
+  var el=document.getElementById('rfc-circ-chart'); if(!el) return;
+  var uid=_uid19(); if(!uid){ el.innerHTML='<p style="color:#555;font-size:12px;">Log in to view trends.</p>'; return; }
+  var log=[]; try{log=JSON.parse(localStorage.getItem('rfc_measurements_'+uid)||'[]');}catch(e){}
+  var pts=log.filter(function(e){return e[key]&&e.date;})
+    .sort(function(a,b){return a.date>b.date?1:-1;})
+    .map(function(e){return {date:e.date,v:parseFloat(e[key])};});
+  var fld=CIRC_FIELDS19.find(function(f){return f.key===key;})||CIRC_FIELDS19[0];
+
+  if(pts.length<2){
+    el.innerHTML='<p style="color:#555;font-size:12px;text-align:center;padding:12px 0;">Log measurements with '+fld.label.toLowerCase()+' data to see the trend.</p>';
+    return;
+  }
+
+  var W=320,H=100,PAD={l:38,r:12,t:10,b:22};
+  var vals=pts.map(function(p){return p.v;});
+  var minV=Math.floor(Math.min.apply(null,vals)-1);
+  var maxV=Math.ceil(Math.max.apply(null,vals)+1);
+  var rng=maxV-minV||1;
+  var cW=W-PAD.l-PAD.r, cH=H-PAD.t-PAD.b;
+  function xp(i){return (PAD.l+i/(pts.length-1)*cW).toFixed(1);}
+  function yp(v){return (PAD.t+cH-(v-minV)/rng*cH).toFixed(1);}
+
+  var ticks='';
+  for(var t=0;t<=3;t++){
+    var tv=(minV+t/3*rng).toFixed(0);
+    var ty=(PAD.t+cH-t/3*cH).toFixed(1);
+    ticks+='<text x="'+(PAD.l-4)+'" y="'+(+ty+3)+'" font-size="9" fill="#444" text-anchor="end">'+tv+'</text>';
+    ticks+='<line x1="'+PAD.l+'" y1="'+ty+'" x2="'+(PAD.l+cW)+'" y2="'+ty+'" stroke="#1a1a1a" stroke-width="1"/>';
+  }
+  var dLabels='';
+  [0,Math.floor((pts.length-1)/2),pts.length-1].forEach(function(i){
+    dLabels+='<text x="'+xp(i)+'" y="'+(H-5)+'" font-size="9" fill="#444" text-anchor="middle">'+pts[i].date.slice(5)+'</text>';
+  });
+
+  var pathD='M'+xp(0)+','+yp(vals[0]);
+  pts.forEach(function(_,i){if(i>0) pathD+=' L'+xp(i)+','+yp(vals[i]);});
+  var fillD=pathD+' L'+xp(pts.length-1)+','+(PAD.t+cH)+' L'+PAD.l+','+(PAD.t+cH)+' Z';
+  var dots=pts.map(function(p,i){
+    return '<circle cx="'+xp(i)+'" cy="'+yp(p.v)+'" r="3" fill="'+fld.color+'" stroke="#111" stroke-width="1"><title>'+p.date+': '+p.v+'cm</title></circle>';
+  }).join('');
+
+  var first=vals[0], last=vals[vals.length-1];
+  var diff=(last-first).toFixed(1);
+  var isLoss=key==='waist'||key==='hips'||key==='thighs';
+  var dColor=diff<0?(isLoss?'#22c55e':'#ef4444'):diff>0?(isLoss?'#ef4444':'#22c55e'):'#aaa';
+  var dLabel=diff<0?'▼ '+Math.abs(diff)+'cm':diff>0?'▲ '+diff+'cm':'→ Stable';
+
+  el.innerHTML=
+    '<svg width="100%" viewBox="0 0 '+W+' '+H+'" style="display:block;max-width:'+W+'px;">'+
+      '<defs><linearGradient id="circGrad19" x1="0" y1="0" x2="0" y2="1">'+
+        '<stop offset="0%" stop-color="'+fld.color+'" stop-opacity="0.25"/>'+
+        '<stop offset="100%" stop-color="'+fld.color+'" stop-opacity="0"/>'+
+      '</linearGradient></defs>'+
+      ticks+dLabels+
+      '<path d="'+fillD+'" fill="url(#circGrad19)"/>'+
+      '<path d="'+pathD+'" fill="none" stroke="'+fld.color+'" stroke-width="2" stroke-linejoin="round"/>'+
+      dots+
+    '</svg>'+
+    '<div style="display:flex;gap:16px;margin-top:6px;flex-wrap:wrap;">'+
+      '<span style="font-size:12px;color:'+dColor+';">'+dLabel+'</span>'+
+      '<span style="font-size:12px;color:#aaa;">'+fld.label+': <b style="color:#fff">'+last+'cm</b></span>'+
+      '<span style="font-size:12px;color:#aaa;">'+pts.length+' entries</span>'+
+    '</div>';
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   3. SLEEP QUALITY JOURNAL (dashboard)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+function _injectSleepJournal(){
+  if(document.getElementById('rfc-sleepj-wrap')) return;
+  var anchor = document.getElementById('rfc-circ-wrap') ||
+               document.getElementById('rfc-habits-wrap') ||
+               document.getElementById('rfc-wt-trend-wrap') ||
+               document.getElementById('rfc-recovery-wrap') ||
+               document.getElementById('rfc-sleep-sched-wrap') ||
+               document.querySelector('.dash-topbar');
+  if(!anchor) return;
+  var card=_b19card('rfc-sleepj-wrap','🌙 Sleep Quality Journal');
+  card.innerHTML+=(
+    '<div id="rfc-sleepj-entry" style="display:flex;gap:8px;align-items:flex-start;flex-wrap:wrap;margin-bottom:12px;">'+
+      '<div style="flex:1;min-width:200px;">'+
+        '<div style="font-size:11px;color:#555;margin-bottom:4px;text-transform:uppercase;letter-spacing:1px;">Last night\'s sleep</div>'+
+        '<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">'+
+          '<div style="display:flex;align-items:center;gap:4px;">'+
+            '<span style="font-size:12px;color:#aaa;">Hours:</span>'+
+            '<input id="rfc-slpj-h" type="number" min="1" max="14" step="0.5" placeholder="7.5" '+
+              'style="width:60px;background:#1a1a1a;border:1px solid #333;border-radius:6px;padding:5px 8px;color:#fff;font-size:13px;outline:none;">'+
+          '</div>'+
+          '<div style="display:flex;align-items:center;gap:4px;">'+
+            '<span style="font-size:12px;color:#aaa;">Quality:</span>'+
+            '<div id="rfc-slpj-stars" style="display:flex;gap:2px;">'+
+              [1,2,3,4,5].map(function(n){
+                return '<span onclick="window._rfcSetStar('+n+')" id="rfc-slpj-s'+n+'" '+
+                  'style="font-size:20px;cursor:pointer;color:#333;transition:color .15s;">★</span>';
+              }).join('')+
+            '</div>'+
+          '</div>'+
+        '</div>'+
+        '<input id="rfc-slpj-note" type="text" placeholder="Note (optional: vivid dreams, woke up at 3am...)" '+
+          'style="margin-top:6px;width:100%;box-sizing:border-box;background:#1a1a1a;border:1px solid #333;border-radius:6px;padding:6px 10px;color:#fff;font-size:12px;outline:none;">'+
+      '</div>'+
+      '<button onclick="window._rfcLogSleep()" '+
+        'style="background:linear-gradient(135deg,#1e40af,#3b82f6);color:#fff;border:none;border-radius:8px;padding:8px 14px;font-size:13px;font-weight:700;cursor:pointer;align-self:flex-end;">Log</button>'+
+    '</div>'+
+    '<div id="rfc-sleepj-chart"></div>'
+  );
+  anchor.insertAdjacentElement('afterend', card);
+  window._rfcSlpjStar=0;
+  _renderSleepJournal();
+}
+
+window._rfcSetStar=function(n){
+  window._rfcSlpjStar=n;
+  for(var i=1;i<=5;i++){
+    var s=document.getElementById('rfc-slpj-s'+i); if(!s) continue;
+    s.style.color=i<=n?'#f59e0b':'#333';
+  }
+};
+
+window._rfcLogSleep=function(){
+  var uid=_uid19(); if(!uid){ if(window.toast) toast('Log in first','gold'); return; }
+  var h=parseFloat((document.getElementById('rfc-slpj-h')||{}).value)||0;
+  var q=window._rfcSlpjStar||0;
+  if(!h||h<1||h>14){ if(window.toast) toast('Enter valid hours (1-14)','gold'); return; }
+  if(!q){ if(window.toast) toast('Rate sleep quality (1-5 stars)','gold'); return; }
+  var note=((document.getElementById('rfc-slpj-note')||{}).value||'').trim();
+  var today=new Date().toISOString().slice(0,10);
+  var key='rfc_sleep_q_'+uid;
+  var log=[]; try{log=JSON.parse(localStorage.getItem(key)||'[]');}catch(e){}
+  var idx=log.findIndex(function(e){return e.date===today;});
+  var entry={date:today,hours:h,quality:q,note:note};
+  if(idx>=0) log[idx]=entry; else log.unshift(entry);
+  if(log.length>30) log.length=30;
+  localStorage.setItem(key,JSON.stringify(log));
+  var hi=document.getElementById('rfc-slpj-h'); if(hi) hi.value='';
+  var ni=document.getElementById('rfc-slpj-note'); if(ni) ni.value='';
+  window._rfcSlpjStar=0;
+  for(var i=1;i<=5;i++){ var si=document.getElementById('rfc-slpj-s'+i); if(si) si.style.color='#333'; }
+  _renderSleepJournal();
+  if(window.toast) toast('🌙 Sleep logged!','gold');
+};
+
+function _renderSleepJournal(){
+  var el=document.getElementById('rfc-sleepj-chart'); if(!el) return;
+  var uid=_uid19(); if(!uid) return;
+  var key='rfc_sleep_q_'+uid;
+  var log=[]; try{log=JSON.parse(localStorage.getItem(key)||'[]');}catch(e){}
+  if(!log.length){
+    el.innerHTML='<p style="color:#444;font-size:12px;text-align:center;padding:8px 0;">Log your first sleep entry above.</p>';
+    return;
+  }
+
+  // Last 7 days bars
+  var days=[]; var now=new Date();
+  for(var i=6;i>=0;i--){
+    var d=new Date(now); d.setDate(d.getDate()-i);
+    var ds=d.toISOString().slice(0,10);
+    var entry=log.find(function(e){return e.date===ds;})||null;
+    var dayLabel=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][d.getDay()];
+    days.push({ds:ds,label:dayLabel,entry:entry});
+  }
+
+  var avgH=0,avgQ=0,cnt=0;
+  log.slice(0,7).forEach(function(e){avgH+=e.hours;avgQ+=e.quality;cnt++;});
+  if(cnt){avgH=(avgH/cnt).toFixed(1);avgQ=(avgQ/cnt).toFixed(1);}
+
+  function qualColor(q){return q>=4?'#22c55e':q>=3?'#f59e0b':q>=2?'#f97316':'#ef4444';}
+  var MAX_H=10;
+
+  var barsHTML=days.map(function(d){
+    var h=d.entry?d.entry.hours:0;
+    var q=d.entry?d.entry.quality:0;
+    var hPct=Math.min(100,h/MAX_H*100);
+    var isToday=d.ds===new Date().toISOString().slice(0,10);
+    var bc=h?qualColor(q):'#1a1a1a';
+    var title=d.entry?(h+'h · '+q+'★'+(d.entry.note?' · '+d.entry.note:'')):'No data';
+    return '<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;" title="'+title+'">'+
+      '<div style="font-size:9px;color:#555;">'+( h?h+'h':'')+'</div>'+
+      '<div style="width:100%;background:#1a1a1a;border-radius:4px;height:50px;display:flex;align-items:flex-end;overflow:hidden;">'+
+        '<div style="width:100%;height:'+hPct+'%;background:'+bc+';transition:height .4s ease;border-radius:4px 4px 0 0;"></div>'+
+      '</div>'+
+      '<div style="font-size:9px;color:'+(isToday?'#fff':'#555')+(isToday?';font-weight:700':'')+';">'+d.label+'</div>'+
+    '</div>';
+  }).join('');
+
+  el.innerHTML=
+    '<div style="display:flex;gap:6px;align-items:flex-end;margin-bottom:10px;">'+barsHTML+'</div>'+
+    (cnt?'<div style="display:flex;gap:16px;flex-wrap:wrap;">'+
+      '<span style="font-size:12px;color:#aaa;">Avg sleep: <b style="color:#fff">'+avgH+'h</b></span>'+
+      '<span style="font-size:12px;color:#aaa;">Avg quality: <b style="color:'+qualColor(avgQ)+'">'+avgQ+' ★</b></span>'+
+      '<span style="font-size:12px;color:#aaa;">'+cnt+' entries</span>'+
+    '</div>':'');
+}
+
+/* ════════════════════════════════════════════════════
+   switchScreen + initial inject
+   ════════════════════════════════════════════════════ */
+var _origSS17=window.switchScreen;
+window.switchScreen=function(name,navEl){
+  _origSS17&&_origSS17(name,navEl);
+  if(name==='workouts'){
+    setTimeout(function(){ _injectTemplates(); _renderTemplates(); }, 800);
+  }
+  if(name==='dashboard'){
+    setTimeout(function(){
+      _injectCircChart(); _renderCircChart(window._rfcCircActive||'waist');
+      _injectSleepJournal(); _renderSleepJournal();
+    }, 1000);
+  }
+};
+
+setTimeout(function(){
+  _injectTemplates();
+  _injectCircChart();
+  _injectSleepJournal();
+}, 11000);
+
+setTimeout(function(){
+  if(!document.getElementById('rfc-tmpl-wrap'))   _injectTemplates();
+  if(!document.getElementById('rfc-circ-wrap'))   _injectCircChart();
+  if(!document.getElementById('rfc-sleepj-wrap')) _injectSleepJournal();
+}, 14000);
+
+})();
+</script>
+
 </body>
 </html>
