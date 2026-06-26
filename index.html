@@ -35589,4 +35589,335 @@ setTimeout(function(){
 </script>
 
 </body>
+
+<script>
+/* ============================================================
+   BATCH 35 — Gratitude Journal | Meal Macro Builder | Explosive Power Tracker
+   ============================================================ */
+(function(){ 'use strict';
+
+var _origSS33 = window.switchScreen;
+
+/* ── helpers ── */
+function _b35uid(){ try{ return JSON.parse(localStorage.getItem('bm_user')||'{}').uid||'guest'; }catch(e){ return 'guest'; } }
+function _b35today(){ var d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function _b35load(k){ try{ return JSON.parse(localStorage.getItem(k))||null; }catch(e){ return null; } }
+function _b35save(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} }
+function _b35card(id,title){
+  var d=document.createElement('div');
+  d.id=id;
+  d.style.cssText='background:#1a1a2e;border-radius:14px;padding:18px;margin:14px 0;color:#e0e0e0;font-family:inherit;';
+  d.innerHTML='<div style="font-size:15px;font-weight:700;color:#00d4ff;margin-bottom:14px;">'+title+'</div>';
+  return d;
+}
+
+/* ════════════════════════════════════════════════════════════
+   1. GRATITUDE & AFFIRMATIONS JOURNAL (dashboard)
+   ════════════════════════════════════════════════════════════ */
+function _injectGratitude(){
+  if(document.getElementById('rfc-gratitude-wrap')) return;
+  var anchors=['rfc-stress-wrap','rfc-goalwt-wrap','rfc-vitals-wrap','rfc-injury-wrap','rfc-wkreport-wrap','rfc-recovery-wrap'];
+  var host=null;
+  for(var i=0;i<anchors.length;i++){ var el=document.getElementById(anchors[i]); if(el){ host=el; break; } }
+  if(!host){ var tb=document.querySelector('.dash-topbar'); if(tb) host=tb; }
+  if(!host) return;
+
+  var c=_b35card('rfc-gratitude-wrap','🙏 Gratitude & Affirmations');
+  c.innerHTML+=
+    '<div style="font-size:11px;color:#888;margin-bottom:8px;">Three things I\'m grateful for today:</div>'+
+    [1,2,3].map(function(n){
+      return '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">'+
+        '<span style="font-size:16px;flex-shrink:0;">'+['🌟','💛','✨'][n-1]+'</span>'+
+        '<input id="rfc-grat-g'+n+'" type="text" maxlength="120" placeholder="I\'m grateful for..." style="flex:1;background:#0d0d1a;border:1px solid #333;color:#ddd;padding:8px 10px;border-radius:8px;font-size:12px;">'+
+      '</div>';
+    }).join('')+
+    '<div style="font-size:11px;color:#888;margin:10px 0 8px;">Today\'s intention:</div>'+
+    '<div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">'+
+      '<span style="font-size:16px;flex-shrink:0;">🎯</span>'+
+      '<input id="rfc-grat-int" type="text" maxlength="120" placeholder="Today I intend to..." style="flex:1;background:#0d0d1a;border:1px solid #333;color:#ddd;padding:8px 10px;border-radius:8px;font-size:12px;">'+
+    '</div>'+
+    '<button onclick="window._rfcGratSave()" style="width:100%;background:#fbbf2422;border:1px solid #fbbf2444;color:#fbbf24;padding:8px;border-radius:8px;cursor:pointer;font-size:13px;margin-bottom:14px;">Save Today\'s Entry</button>'+
+    '<div style="font-size:11px;color:#555;margin-bottom:6px;">Last 14 days</div>'+
+    '<div style="display:flex;gap:4px;" id="rfc-grat-dots"></div>'+
+    '<div id="rfc-grat-streak" style="font-size:12px;color:#666;margin-top:8px;"></div>';
+
+  if(host.nextSibling) host.parentNode.insertBefore(c,host.nextSibling);
+  else host.parentNode.appendChild(c);
+  _renderGratitude();
+}
+
+function _renderGratitude(){
+  var uid=_b35uid(), today=_b35today();
+  var rec=_b35load('rfc_grat_'+uid+'_'+today)||{};
+  var fields=['g1','g2','g3','int'];
+  var ids=['rfc-grat-g1','rfc-grat-g2','rfc-grat-g3','rfc-grat-int'];
+  fields.forEach(function(f,i){
+    var el=document.getElementById(ids[i]);
+    if(el&&el!==document.activeElement&&rec[f]) el.value=rec[f]||'';
+  });
+
+  var dots=document.getElementById('rfc-grat-dots');
+  var streakEl=document.getElementById('rfc-grat-streak');
+  var streak=0;
+  if(dots){
+    var html='';
+    for(var d=13;d>=0;d--){
+      var dd=new Date(); dd.setDate(dd.getDate()-d);
+      var dk=dd.getFullYear()+'-'+String(dd.getMonth()+1).padStart(2,'0')+'-'+String(dd.getDate()).padStart(2,'0');
+      var r=_b35load('rfc_grat_'+uid+'_'+dk)||{};
+      var hasEntry=!!(r.g1||r.g2||r.g3||r.int);
+      var isToday=d===0;
+      html+='<div title="'+dk+(hasEntry?' ✓':'')+'" style="flex:1;aspect-ratio:1;min-width:10px;border-radius:3px;background:'+(hasEntry?'#fbbf24':isToday?'#333':'#111')+';border:1px solid '+(isToday?'#fbbf2488':'transparent')+';"></div>';
+    }
+    dots.innerHTML=html;
+  }
+  if(streakEl){
+    for(var s=0;s<60;s++){
+      var ds=new Date(); ds.setDate(ds.getDate()-s);
+      var dsk=ds.getFullYear()+'-'+String(ds.getMonth()+1).padStart(2,'0')+'-'+String(ds.getDate()).padStart(2,'0');
+      var rs=_b35load('rfc_grat_'+uid+'_'+dsk)||{};
+      if(rs.g1||rs.g2||rs.g3||rs.int) streak++; else if(s>0) break;
+    }
+    streakEl.textContent=streak>=1?'🔥 '+streak+'-day journaling streak':'Start your streak — write today\'s entry!';
+  }
+}
+window._rfcGratSave=function(){
+  var uid=_b35uid(), today=_b35today();
+  var data={};
+  ['g1','g2','g3','int'].forEach(function(f,i){
+    var el=document.getElementById(['rfc-grat-g1','rfc-grat-g2','rfc-grat-g3','rfc-grat-int'][i]);
+    if(el) data[f]=el.value.trim();
+  });
+  _b35save('rfc_grat_'+uid+'_'+today,data);
+  _renderGratitude();
+  var btn=document.querySelector('#rfc-gratitude-wrap button');
+  if(btn){ btn.textContent='✅ Saved!'; setTimeout(function(){ btn.textContent="Save Today's Entry"; },1500); }
+};
+
+/* ════════════════════════════════════════════════════════════
+   2. MEAL MACRO BUILDER (nutrition)
+   ════════════════════════════════════════════════════════════ */
+/* macros per 100g: {p, c, f, kcal} */
+var MMB_FOODS=[
+  {id:'chicken', label:'Chicken breast',  p:31,  c:0,   f:3.6, kcal:165},
+  {id:'rice',    label:'White rice',      p:2.7, c:28,  f:0.3, kcal:130},
+  {id:'egg',     label:'Whole egg',       p:13,  c:1.1, f:11,  kcal:155},
+  {id:'oats',    label:'Rolled oats',     p:17,  c:66,  f:7,   kcal:389},
+  {id:'salmon',  label:'Salmon',          p:20,  c:0,   f:13,  kcal:208},
+  {id:'broc',    label:'Broccoli',        p:2.8, c:7,   f:0.4, kcal:34},
+  {id:'sweetpot',label:'Sweet potato',   p:1.6, c:20,  f:0.1, kcal:86},
+  {id:'greek',   label:'Greek yoghurt',  p:10,  c:3.6, f:0.4, kcal:59},
+  {id:'bread',   label:'Wholegrain bread',p:9,  c:41,  f:3.4, kcal:247},
+  {id:'banana',  label:'Banana',          p:1.1, c:23,  f:0.3, kcal:89},
+  {id:'almond',  label:'Almonds',         p:21,  c:22,  f:50,  kcal:579},
+  {id:'tuna',    label:'Canned tuna',     p:25,  c:0,   f:1,   kcal:116},
+  {id:'beef',    label:'Lean beef mince', p:26,  c:0,   f:8,   kcal:175},
+  {id:'milk',    label:'Whole milk',      p:3.2, c:4.8, f:3.5, kcal:61},
+  {id:'quinoa',  label:'Quinoa (cooked)', p:4.4, c:22,  f:1.9, kcal:120}
+];
+
+function _injectMealBuilder(){
+  if(document.getElementById('rfc-mealbuilder-wrap')) return;
+  var anchors=['rfc-fatqual-wrap','rfc-electro-wrap','rfc-sugar-wrap','rfc-fiber-wrap','rfc-calbal-wrap','rfc-grocery-wrap'];
+  var host=null;
+  for(var i=0;i<anchors.length;i++){ var el=document.getElementById(anchors[i]); if(el){ host=el; break; } }
+  if(!host) host=document.getElementById('rfc-food-wrap');
+  if(!host) return;
+
+  var c=_b35card('rfc-mealbuilder-wrap','🍽️ Meal Macro Builder');
+  c.innerHTML+=
+    '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px;" id="rfc-mmb-totals">'+
+      ['Calories','Protein','Carbs','Fat'].map(function(l,i){
+        var ids=['rfc-mmb-kcal','rfc-mmb-p','rfc-mmb-c','rfc-mmb-f'];
+        var cols=['#fbbf24','#f97316','#60a5fa','#22c55e'];
+        var units=['kcal','g','g','g'];
+        return '<div style="background:#0d0d1a;border-radius:9px;padding:8px;text-align:center;">'+
+          '<div id="'+ids[i]+'" style="font-size:16px;font-weight:800;color:'+cols[i]+';">0</div>'+
+          '<div style="font-size:9px;color:#555;">'+l+' ('+units[i]+')</div>'+
+        '</div>';
+      }).join('')+
+    '</div>'+
+    '<div style="display:flex;flex-direction:column;gap:5px;max-height:340px;overflow-y:auto;" id="rfc-mmb-list"></div>'+
+    '<button onclick="window._rfcMMBClear()" style="margin-top:10px;width:100%;background:#333;border:none;color:#888;padding:7px;border-radius:8px;cursor:pointer;font-size:12px;">Clear All</button>';
+
+  if(host.nextSibling) host.parentNode.insertBefore(c,host.nextSibling);
+  else host.parentNode.appendChild(c);
+  _renderMealBuilder();
+}
+
+function _renderMealBuilder(){
+  var uid=_b35uid(), date=_b35today();
+  var key='rfc_mmb_'+uid+'_'+date;
+  var data=_b35load(key)||{};
+  var totals={kcal:0,p:0,c:0,f:0};
+
+  MMB_FOODS.forEach(function(f){
+    var g=data[f.id]||0;
+    totals.kcal+=g/100*f.kcal; totals.p+=g/100*f.p; totals.c+=g/100*f.c; totals.f+=g/100*f.f;
+  });
+
+  ['kcal','p','c','f'].forEach(function(k){
+    var el=document.getElementById('rfc-mmb-'+k);
+    if(el) el.textContent=Math.round(totals[k]);
+  });
+
+  var list=document.getElementById('rfc-mmb-list');
+  if(!list) return;
+  list.innerHTML=MMB_FOODS.map(function(f){
+    var g=data[f.id]||0;
+    return '<div style="display:flex;align-items:center;gap:7px;background:#0d0d1a;border-radius:8px;padding:6px 10px;'+(g>0?'border-left:2px solid #fbbf2488;':'')+'">'+
+      '<div style="flex:1;min-width:0;">'+
+        '<div style="font-size:12px;color:'+(g>0?'#e0e0e0':'#777')+';white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+f.label+'</div>'+
+        '<div style="font-size:10px;color:#444;">P'+f.p+' C'+f.c+' F'+f.f+' / 100g</div>'+
+      '</div>'+
+      '<button onclick="window._rfcMMBAdj(\''+f.id+'\',-10)" style="background:#1a1a2e;border:1px solid #333;color:#888;width:24px;height:24px;border-radius:5px;cursor:pointer;font-size:12px;line-height:1;">−</button>'+
+      '<input type="number" id="rfc-mmb-inp-'+f.id+'" value="'+(g||'')+'" placeholder="g" min="0" max="2000" oninput="window._rfcMMBSet(\''+f.id+'\',this.value)" style="width:52px;background:#111;border:1px solid #282828;color:#ddd;padding:4px;border-radius:5px;font-size:12px;text-align:center;">'+
+      '<button onclick="window._rfcMMBAdj(\''+f.id+'\',10)" style="background:#1a1a2e;border:1px solid #333;color:#fbbf24;width:24px;height:24px;border-radius:5px;cursor:pointer;font-size:12px;line-height:1;">+</button>'+
+    '</div>';
+  }).join('');
+}
+window._rfcMMBAdj=function(id,delta){
+  var uid=_b35uid(), date=_b35today();
+  var key='rfc_mmb_'+uid+'_'+date;
+  var data=_b35load(key)||{};
+  data[id]=Math.max(0,(data[id]||0)+delta);
+  _b35save(key,data);
+  _renderMealBuilder();
+};
+window._rfcMMBSet=function(id,val){
+  var uid=_b35uid(), date=_b35today();
+  var key='rfc_mmb_'+uid+'_'+date;
+  var data=_b35load(key)||{};
+  data[id]=Math.max(0,parseFloat(val)||0);
+  _b35save(key,data);
+  /* update totals without full re-render to keep focus */
+  var totals={kcal:0,p:0,c:0,f:0};
+  MMB_FOODS.forEach(function(f){ var g=data[f.id]||0; totals.kcal+=g/100*f.kcal; totals.p+=g/100*f.p; totals.c+=g/100*f.c; totals.f+=g/100*f.f; });
+  ['kcal','p','c','f'].forEach(function(k){ var el=document.getElementById('rfc-mmb-'+k); if(el) el.textContent=Math.round(totals[k]); });
+};
+window._rfcMMBClear=function(){
+  var uid=_b35uid(), date=_b35today();
+  _b35save('rfc_mmb_'+uid+'_'+date,{});
+  _renderMealBuilder();
+};
+
+/* ════════════════════════════════════════════════════════════
+   3. EXPLOSIVE POWER TRACKER (workouts)
+   ════════════════════════════════════════════════════════════ */
+var PLYO_EX=[
+  {id:'boxjump',  label:'Box Jump',       icon:'📦', unit:'cm',  note:'Height of box'},
+  {id:'broad',    label:'Broad Jump',     icon:'↔️', unit:'cm',  note:'Distance from toes'},
+  {id:'vertical', label:'Vertical Jump',  icon:'⬆️', unit:'cm',  note:'Reach height - standing reach'},
+  {id:'depth',    label:'Depth Jump',     icon:'⬇️', unit:'cm',  note:'Height dropped from'},
+  {id:'sprint10', label:'10m Sprint',     icon:'💨', unit:'sec', note:'Lower is better'},
+  {id:'medball',  label:'Med Ball Throw', icon:'⚽', unit:'m',   note:'Distance thrown'}
+];
+
+function _injectPlyo(){
+  if(document.getElementById('rfc-plyo-wrap')) return;
+  var anchors=['rfc-isometric-wrap','rfc-dropset-wrap','rfc-pyramid-wrap','rfc-amrap-wrap','rfc-superset-wrap','rfc-hrzone-wrap'];
+  var host=null;
+  for(var i=0;i<anchors.length;i++){ var el=document.getElementById(anchors[i]); if(el){ host=el; break; } }
+  if(!host) host=document.getElementById('wl-history');
+  if(!host) return;
+
+  var c=_b35card('rfc-plyo-wrap','💥 Explosive Power Tracker');
+  c.innerHTML+=
+    '<div style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px;" id="rfc-plyo-list"></div>'+
+    '<button onclick="window._rfcPlyoSave()" style="width:100%;background:#ef444422;border:1px solid #ef444444;color:#ef4444;padding:8px;border-radius:8px;cursor:pointer;font-size:13px;margin-bottom:12px;">Save Session</button>'+
+    '<div style="font-size:11px;color:#555;margin-bottom:6px;">Personal Bests</div>'+
+    '<div id="rfc-plyo-pbs" style="display:grid;grid-template-columns:1fr 1fr;gap:5px;"></div>';
+
+  if(host.nextSibling) host.parentNode.insertBefore(c,host.nextSibling);
+  else host.parentNode.appendChild(c);
+  _renderPlyo();
+}
+
+function _renderPlyo(){
+  var uid=_b35uid(), today=_b35today();
+  var todayData=_b35load('rfc_plyo_'+uid+'_'+today)||{};
+  var pbs=_b35load('rfc_plyo_pbs_'+uid)||{};
+
+  var list=document.getElementById('rfc-plyo-list');
+  if(list){
+    list.innerHTML=PLYO_EX.map(function(ex){
+      var val=todayData[ex.id]||'';
+      var pb=pbs[ex.id];
+      var isSprint=ex.unit==='sec';
+      var isNewBest=pb&&val&&(isSprint?(parseFloat(val)<pb):(parseFloat(val)>pb));
+      return '<div style="display:flex;align-items:center;gap:10px;background:#0d0d1a;border-radius:9px;padding:9px 12px;">'+
+        '<span style="font-size:20px;flex-shrink:0;">'+ex.icon+'</span>'+
+        '<div style="flex:1;min-width:0;">'+
+          '<div style="font-size:13px;font-weight:600;color:#ddd;">'+ex.label+'</div>'+
+          '<div style="font-size:10px;color:#555;">'+ex.note+(pb?' · PB: '+pb+ex.unit:'')+'</div>'+
+        '</div>'+
+        '<input type="number" id="rfc-plyo-inp-'+ex.id+'" value="'+(val||'')+'" placeholder="—" min="0" style="width:64px;background:#111;border:1px solid '+(isNewBest?'#ffd700':'#282828')+';color:'+(isNewBest?'#ffd700':'#ddd')+';padding:6px;border-radius:7px;font-size:14px;font-weight:700;text-align:center;">'+
+        '<span style="font-size:11px;color:#555;min-width:24px;">'+ex.unit+'</span>'+
+      '</div>';
+    }).join('');
+  }
+
+  var pbEl=document.getElementById('rfc-plyo-pbs');
+  if(pbEl){
+    var pbEntries=PLYO_EX.filter(function(ex){ return pbs[ex.id]; });
+    pbEl.innerHTML=pbEntries.length?pbEntries.map(function(ex){
+      return '<div style="background:#0d0d1a;border-radius:8px;padding:8px 10px;display:flex;align-items:center;gap:6px;">'+
+        '<span style="font-size:14px;">'+ex.icon+'</span>'+
+        '<div style="flex:1;min-width:0;"><div style="font-size:11px;color:#aaa;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+ex.label+'</div></div>'+
+        '<div style="font-size:13px;font-weight:700;color:#ffd700;">'+pbs[ex.id]+' '+ex.unit+'</div>'+
+      '</div>';
+    }).join(''):'<div style="font-size:11px;color:#555;padding:8px;grid-column:span 2;text-align:center;">Log a session to see personal bests.</div>';
+  }
+}
+window._rfcPlyoSave=function(){
+  var uid=_b35uid(), today=_b35today();
+  var data={}; var pbs=_b35load('rfc_plyo_pbs_'+uid)||{};
+  var hasAny=false;
+  PLYO_EX.forEach(function(ex){
+    var inp=document.getElementById('rfc-plyo-inp-'+ex.id);
+    if(!inp||!inp.value) return;
+    var v=parseFloat(inp.value);
+    if(isNaN(v)||v<=0) return;
+    hasAny=true; data[ex.id]=v;
+    var isSprint=ex.unit==='sec';
+    if(!pbs[ex.id]||(isSprint?v<pbs[ex.id]:v>pbs[ex.id])) pbs[ex.id]=v;
+  });
+  if(!hasAny) return;
+  _b35save('rfc_plyo_'+uid+'_'+today,data);
+  _b35save('rfc_plyo_pbs_'+uid,pbs);
+  _renderPlyo();
+  var btn=document.querySelector('#rfc-plyo-wrap > button');
+  if(btn){ btn.textContent='✅ Saved!'; setTimeout(function(){ btn.textContent='Save Session'; },1500); }
+};
+
+/* ── switchScreen wrap ── */
+window.switchScreen=function(name,navEl){
+  _origSS33&&_origSS33(name,navEl);
+  if(name==='dashboard'){
+    setTimeout(function(){ _injectGratitude(); _renderGratitude(); }, 1200);
+  }
+  if(name==='nutrition'){
+    setTimeout(function(){ _injectMealBuilder(); _renderMealBuilder(); }, 1100);
+  }
+  if(name==='workouts'){
+    setTimeout(function(){ _injectPlyo(); _renderPlyo(); }, 1050);
+  }
+};
+
+setTimeout(function(){
+  _injectGratitude();
+  _injectMealBuilder();
+  _injectPlyo();
+}, 27000);
+
+setTimeout(function(){
+  if(!document.getElementById('rfc-gratitude-wrap'))   _injectGratitude();
+  if(!document.getElementById('rfc-mealbuilder-wrap')) _injectMealBuilder();
+  if(!document.getElementById('rfc-plyo-wrap'))        _injectPlyo();
+}, 31000);
+
+})();
+</script>
+
+</body>
 </html>
