@@ -30853,5 +30853,356 @@ window.addEventListener('rfc-food-updated', _renderCalendar);
 })();
 </script>
 
+<script>
+/* ════════════════════════════════════════════════════════════
+   BATCH 22 — Rest Timer | Monthly Goal Tracker | Weekly Food Diary
+   ════════════════════════════════════════════════════════════ */
+(function(){ 'use strict';
+
+function _uid22(){ try{return JSON.parse(localStorage.getItem('bm_user')||'{}').uid||null;}catch(e){return null;} }
+function _b22card(id,title){
+  var d=document.createElement('div');
+  d.id=id; d.className='rfc-b12-card';
+  d.style.cssText='background:#111;border:1px solid #222;border-radius:14px;padding:14px;margin:10px 0;';
+  var h=document.createElement('div');
+  h.style.cssText='font-size:13px;font-weight:700;color:#aaa;letter-spacing:1px;text-transform:uppercase;margin-bottom:12px;';
+  h.textContent=title; d.appendChild(h);
+  return d;
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   1. REST TIMER (workouts)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+var _rtp={iv:null,left:0,total:0};
+
+function _injectRestTimer(){
+  if(document.getElementById('rfc-rest-wrap')) return;
+  var anchor = document.getElementById('rfc-rpe-wrap') ||
+               document.getElementById('rfc-cardio-wrap') ||
+               document.getElementById('rfc-tmpl-wrap') ||
+               document.getElementById('rfc-musrec-wrap') ||
+               document.getElementById('rfc-pol-wrap') ||
+               document.getElementById('wl-history');
+  if(!anchor) return;
+  var card=_b22card('rfc-rest-wrap','⏱ Set Rest Timer');
+  card.innerHTML+=(
+    '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;">'+
+      [[30,'30s'],[60,'1m'],[90,'1m30'],[120,'2m'],[180,'3m'],[300,'5m']].map(function(p){
+        return '<button onclick="window._rfcStartRest('+p[0]+')" '+
+          'style="flex:1;min-width:44px;background:#1a1a1a;border:1px solid #333;color:#aaa;border-radius:8px;padding:8px 4px;font-size:12px;font-weight:700;cursor:pointer;transition:all .15s;">'+p[1]+'</button>';
+      }).join('')+
+    '</div>'+
+    '<div id="rfc-rest-display" style="text-align:center;display:none;">'+
+      '<div style="position:relative;display:inline-block;margin-bottom:10px;">'+
+        '<svg width="110" height="110" viewBox="0 0 110 110">'+
+          '<circle cx="55" cy="55" r="48" fill="none" stroke="#1a1a1a" stroke-width="8"/>'+
+          '<circle id="rfc-rest-arc" cx="55" cy="55" r="48" fill="none" stroke="#22c55e" stroke-width="8"'+
+            ' stroke-dasharray="301.6 301.6" transform="rotate(-90 55 55)" style="transition:stroke-dasharray .9s linear;stroke-linecap:round;"/>'+
+        '</svg>'+
+        '<div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;">'+
+          '<div id="rfc-rest-num" style="font-size:26px;font-weight:900;color:#fff;line-height:1;"></div>'+
+          '<div id="rfc-rest-lbl" style="font-size:10px;color:#555;">sec</div>'+
+        '</div>'+
+      '</div>'+
+      '<div style="display:flex;gap:8px;justify-content:center;">'+
+        '<button onclick="window._rfcPauseRest()" id="rfc-rest-pause" '+
+          'style="background:#1a1a1a;border:1px solid #333;color:#aaa;border-radius:8px;padding:6px 16px;font-size:12px;cursor:pointer;">Pause</button>'+
+        '<button onclick="window._rfcStopRest()" '+
+          'style="background:#ef4444;border:none;color:#fff;border-radius:8px;padding:6px 16px;font-size:12px;font-weight:700;cursor:pointer;">Stop</button>'+
+      '</div>'+
+    '</div>'+
+    '<div id="rfc-rest-done" style="text-align:center;display:none;padding:10px 0;">'+
+      '<div style="font-size:22px;margin-bottom:4px;">✅</div>'+
+      '<div style="font-size:13px;color:#22c55e;font-weight:700;">Rest complete — get to work!</div>'+
+    '</div>'
+  );
+  anchor.insertAdjacentElement('afterend', card);
+}
+
+function _beep22(){
+  try{
+    var ctx=new (window.AudioContext||window.webkitAudioContext)();
+    var osc=ctx.createOscillator(); var gain=ctx.createGain();
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.type='sine'; osc.frequency.value=880;
+    gain.gain.setValueAtTime(0.4,ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.6);
+    osc.start(); osc.stop(ctx.currentTime+0.6);
+  }catch(e){}
+}
+
+function _updateRestDisplay(){
+  var arc=document.getElementById('rfc-rest-arc');
+  var num=document.getElementById('rfc-rest-num');
+  var lbl=document.getElementById('rfc-rest-lbl');
+  if(!arc||!num) return;
+  var circ=301.6;
+  var pct=_rtp.total>0?_rtp.left/_rtp.total:0;
+  var filled=pct*circ;
+  arc.setAttribute('stroke-dasharray',filled.toFixed(1)+' '+circ);
+  var col=pct>0.5?'#22c55e':pct>0.25?'#f59e0b':'#ef4444';
+  arc.setAttribute('stroke',col);
+  var m=Math.floor(_rtp.left/60), s=_rtp.left%60;
+  if(m>0){ num.textContent=m+':'+(s<10?'0':'')+s; if(lbl) lbl.textContent='min'; }
+  else { num.textContent=_rtp.left; if(lbl) lbl.textContent='sec'; }
+}
+
+window._rfcStartRest=function(sec){
+  if(_rtp.iv) clearInterval(_rtp.iv);
+  _rtp.left=sec; _rtp.total=sec; _rtp.paused=false;
+  var disp=document.getElementById('rfc-rest-display');
+  var done=document.getElementById('rfc-rest-done');
+  if(disp) disp.style.display='block';
+  if(done) done.style.display='none';
+  _updateRestDisplay();
+  _rtp.iv=setInterval(function(){
+    if(_rtp.paused) return;
+    _rtp.left--;
+    _updateRestDisplay();
+    if(_rtp.left<=0){
+      clearInterval(_rtp.iv); _rtp.iv=null;
+      _beep22();
+      var d2=document.getElementById('rfc-rest-display');
+      var d3=document.getElementById('rfc-rest-done');
+      if(d2) d2.style.display='none';
+      if(d3) d3.style.display='block';
+      setTimeout(function(){if(d3) d3.style.display='none';},3000);
+    }
+  },1000);
+};
+
+window._rfcPauseRest=function(){
+  _rtp.paused=!_rtp.paused;
+  var btn=document.getElementById('rfc-rest-pause');
+  if(btn) btn.textContent=_rtp.paused?'Resume':'Pause';
+};
+
+window._rfcStopRest=function(){
+  if(_rtp.iv){clearInterval(_rtp.iv);_rtp.iv=null;}
+  var d=document.getElementById('rfc-rest-display');
+  if(d) d.style.display='none';
+};
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   2. MONTHLY GOAL TRACKER (dashboard)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+function _mGoalKey(){
+  var d=new Date(); return 'rfc_goals_'+_uid22()+'_'+d.getFullYear()+'_'+(d.getMonth()+1);
+}
+
+function _injectMonthGoals(){
+  if(document.getElementById('rfc-mgoal-wrap')) return;
+  var anchor = document.getElementById('rfc-fitage-wrap') ||
+               document.getElementById('rfc-xform-wrap') ||
+               document.getElementById('rfc-sleepj-wrap') ||
+               document.getElementById('rfc-circ-wrap') ||
+               document.getElementById('rfc-habits-wrap') ||
+               document.querySelector('.dash-topbar');
+  if(!anchor) return;
+  var card=_b22card('rfc-mgoal-wrap','🎯 Monthly Goals');
+  var now=new Date();
+  var monthName=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][now.getMonth()]+' '+now.getFullYear();
+  card.innerHTML+=(
+    '<div style="font-size:11px;color:#555;margin-bottom:8px;">'+monthName+' · up to 3 goals</div>'+
+    '<div id="rfc-mgoal-list"></div>'+
+    '<div id="rfc-mgoal-add" style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;">'+
+      '<input id="rfc-mg-title" type="text" placeholder="Goal (e.g. Hit gym 20x)" '+
+        'style="flex:2;min-width:100px;background:#1a1a1a;border:1px solid #333;border-radius:8px;padding:7px 10px;color:#fff;font-size:12px;outline:none;">'+
+      '<input id="rfc-mg-target" type="number" min="1" placeholder="Target" '+
+        'style="width:70px;background:#1a1a1a;border:1px solid #333;border-radius:8px;padding:7px 10px;color:#fff;font-size:12px;outline:none;">'+
+      '<input id="rfc-mg-unit" type="text" placeholder="unit" '+
+        'style="width:55px;background:#1a1a1a;border:1px solid #333;border-radius:8px;padding:7px 10px;color:#fff;font-size:12px;outline:none;">'+
+      '<button onclick="window._rfcAddGoal()" '+
+        'style="background:linear-gradient(135deg,#ef4444,#b91c1c);color:#fff;border:none;border-radius:8px;padding:7px 14px;font-size:13px;font-weight:700;cursor:pointer;">+</button>'+
+    '</div>'
+  );
+  anchor.insertAdjacentElement('afterend', card);
+  _renderMonthGoals();
+}
+
+function _renderMonthGoals(){
+  var el=document.getElementById('rfc-mgoal-list'); if(!el) return;
+  var uid=_uid22(); if(!uid){ el.innerHTML='<p style="color:#555;font-size:12px;">Log in to set goals.</p>'; return; }
+  var goals=[]; try{goals=JSON.parse(localStorage.getItem(_mGoalKey())||'[]');}catch(e){}
+  if(!goals.length){
+    el.innerHTML='<p style="color:#444;font-size:12px;text-align:center;padding:6px 0;">No goals set this month. Add up to 3 below.</p>';
+    var addEl=document.getElementById('rfc-mgoal-add'); if(addEl) addEl.style.display='flex'; return;
+  }
+  var addEl2=document.getElementById('rfc-mgoal-add');
+  if(addEl2) addEl2.style.display=goals.length>=3?'none':'flex';
+
+  el.innerHTML=goals.map(function(g,i){
+    var pct=Math.min(100,Math.round(g.progress/g.target*100));
+    var barColor=pct>=100?'#22c55e':pct>=60?'#f59e0b':'#ef4444';
+    return '<div style="padding:10px 0;border-bottom:1px solid #1a1a1a;">'+
+      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">'+
+        '<span style="font-size:13px;font-weight:600;color:#fff;">'+g.title+'</span>'+
+        '<span style="font-size:12px;color:'+barColor+';">'+g.progress+' / '+g.target+' '+g.unit+'</span>'+
+      '</div>'+
+      '<div style="height:6px;background:#1a1a1a;border-radius:3px;overflow:hidden;margin-bottom:6px;">'+
+        '<div style="height:100%;width:'+pct+'%;background:'+barColor+';border-radius:3px;transition:width .5s;"></div>'+
+      '</div>'+
+      '<div style="display:flex;gap:6px;">'+
+        '<button onclick="window._rfcGoalStep('+i+',-1)" style="width:28px;height:28px;background:#1a1a1a;border:1px solid #333;color:#aaa;border-radius:6px;cursor:pointer;font-size:16px;line-height:1;">−</button>'+
+        '<button onclick="window._rfcGoalStep('+i+',1)" style="width:28px;height:28px;background:#22c55e;border:none;color:#000;border-radius:6px;cursor:pointer;font-size:16px;font-weight:700;line-height:1;">+</button>'+
+        '<button onclick="window._rfcGoalStep('+i+',5)" style="padding:0 10px;height:28px;background:#1a1a1a;border:1px solid #333;color:#aaa;border-radius:6px;cursor:pointer;font-size:12px;">+5</button>'+
+        '<button onclick="window._rfcDelGoal('+i+')" style="margin-left:auto;background:none;border:none;color:#333;cursor:pointer;font-size:14px;padding:0 4px;">✕</button>'+
+        (pct>=100?'<span style="font-size:12px;color:#22c55e;align-self:center;margin-left:4px;">🏆 Complete!</span>':'')+
+      '</div>'+
+    '</div>';
+  }).join('');
+}
+
+window._rfcAddGoal=function(){
+  var uid=_uid22(); if(!uid) return;
+  var goals=[]; try{goals=JSON.parse(localStorage.getItem(_mGoalKey())||'[]');}catch(e){}
+  if(goals.length>=3){ if(window.toast) toast('Max 3 goals per month','gold'); return; }
+  var title=((document.getElementById('rfc-mg-title')||{}).value||'').trim();
+  var target=parseInt((document.getElementById('rfc-mg-target')||{}).value)||0;
+  var unit=((document.getElementById('rfc-mg-unit')||{}).value||'').trim()||'times';
+  if(!title||!target){ if(window.toast) toast('Enter a goal title and target','gold'); return; }
+  goals.push({title:title,target:target,unit:unit,progress:0});
+  localStorage.setItem(_mGoalKey(),JSON.stringify(goals));
+  ['rfc-mg-title','rfc-mg-target','rfc-mg-unit'].forEach(function(id){var e=document.getElementById(id);if(e)e.value='';});
+  _renderMonthGoals();
+};
+
+window._rfcGoalStep=function(idx,delta){
+  var uid=_uid22(); if(!uid) return;
+  var goals=[]; try{goals=JSON.parse(localStorage.getItem(_mGoalKey())||'[]');}catch(e){}
+  if(!goals[idx]) return;
+  goals[idx].progress=Math.max(0,goals[idx].progress+delta);
+  localStorage.setItem(_mGoalKey(),JSON.stringify(goals));
+  _renderMonthGoals();
+  if(goals[idx].progress>=goals[idx].target&&window.rfcCelebrate) rfcCelebrate('Goal complete! 🏆',30);
+};
+
+window._rfcDelGoal=function(idx){
+  var uid=_uid22(); if(!uid) return;
+  var goals=[]; try{goals=JSON.parse(localStorage.getItem(_mGoalKey())||'[]');}catch(e){}
+  goals.splice(idx,1);
+  localStorage.setItem(_mGoalKey(),JSON.stringify(goals));
+  _renderMonthGoals();
+};
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   3. WEEKLY FOOD DIARY SUMMARY (nutrition)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+function _injectFoodDiary(){
+  if(document.getElementById('rfc-fdiary-wrap')) return;
+  var anchor = document.getElementById('rfc-nccal-wrap') ||
+               document.getElementById('rfc-micros-wrap') ||
+               document.getElementById('rfc-fast-wrap') ||
+               document.getElementById('rfc-macro-donut-wrap') ||
+               document.getElementById('rfc-cal-balance-wrap') ||
+               document.getElementById('rfc-food-wrap');
+  if(!anchor) return;
+  var card=_b22card('rfc-fdiary-wrap','📔 Weekly Food Diary');
+  var inner=document.createElement('div'); inner.id='rfc-fdiary-body';
+  card.appendChild(inner);
+  anchor.insertAdjacentElement('afterend', card);
+  _renderFoodDiary();
+}
+
+function _renderFoodDiary(){
+  var el=document.getElementById('rfc-fdiary-body'); if(!el) return;
+  var uid=_uid22();
+  if(!uid){ el.innerHTML='<p style="color:#555;font-size:12px;">Log in to see diary summary.</p>'; return; }
+  var lastRes={}; try{lastRes=JSON.parse(localStorage.getItem('bm_last_result')||'{}');}catch(e){}
+  var target=+(lastRes.targetCals||0);
+  var tP=+(lastRes.macros&&lastRes.macros.prot||0);
+
+  var now=new Date();
+  var days=[]; var totals={cal:0,prot:0,carbs:0,fat:0,count:0};
+  var foodFreq={};
+  var DNAMES=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+
+  for(var i=6;i>=0;i--){
+    var d=new Date(now); d.setDate(d.getDate()-i);
+    var ds=d.toISOString().slice(0,10);
+    var food=[]; try{food=JSON.parse(localStorage.getItem('rfc_food_'+uid+'_'+ds)||'[]');}catch(e){}
+    var dc=0,dp=0,dcarb=0,dfat=0;
+    food.forEach(function(f){
+      dc+=+(f.calories||0); dp+=+(f.protein||0); dcarb+=+(f.carbs||0); dfat+=+(f.fat||0);
+      if(f.name){ foodFreq[f.name]=(foodFreq[f.name]||0)+1; }
+    });
+    if(food.length){ totals.cal+=dc;totals.prot+=dp;totals.carbs+=dcarb;totals.fat+=dfat;totals.count++; }
+    days.push({ds:ds,label:DNAMES[d.getDay()],cal:dc,prot:dp,logged:food.length>0,meals:food.length});
+  }
+
+  var avgCal=totals.count?Math.round(totals.cal/totals.count):0;
+  var avgProt=totals.count?(totals.prot/totals.count).toFixed(0):0;
+  var topFoods=Object.keys(foodFreq).sort(function(a,b){return foodFreq[b]-foodFreq[a];}).slice(0,3);
+
+  // Day bars
+  var maxCal=Math.max.apply(null,days.map(function(d){return d.cal;}));
+  var barsHTML=days.map(function(d){
+    var h=d.cal&&maxCal?Math.max(6,Math.round(d.cal/maxCal*50)):0;
+    var isToday=d.ds===new Date().toISOString().slice(0,10);
+    var bc=!d.logged?'#1a1a1a':target&&d.cal/target>=0.9&&d.cal/target<=1.1?'#22c55e':target&&d.cal/target>1.1?'#f97316':'#3b82f6';
+    return '<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;">'+
+      '<div style="font-size:9px;color:#555;">'+(d.cal?Math.round(d.cal/1000*10)/10+'k':'')+'</div>'+
+      '<div style="width:100%;background:#1a1a1a;border-radius:4px;height:50px;display:flex;align-items:flex-end;overflow:hidden;">'+
+        '<div style="width:100%;height:'+h+'px;background:'+bc+';border-radius:4px 4px 0 0;"></div>'+
+      '</div>'+
+      '<div style="font-size:9px;color:'+(isToday?'#fff':'#555')+(isToday?';font-weight:700':'')+';">'+d.label+'</div>'+
+      '<div style="font-size:9px;color:#333;">'+d.meals+'🍽</div>'+
+    '</div>';
+  }).join('');
+
+  el.innerHTML=
+    '<div style="display:flex;gap:4px;align-items:flex-end;margin-bottom:10px;">'+barsHTML+'</div>'+
+    '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:10px;">'+
+      [['📅 '+totals.count+'/7','Days logged'],['🔥 '+avgCal,'Avg kcal/day'],['🥩 '+avgProt+'g','Avg protein/day']].map(function(s){
+        return '<div style="background:#1a1a1a;border-radius:8px;padding:8px;text-align:center;">'+
+          '<div style="font-size:13px;font-weight:700;color:#fff;">'+s[0]+'</div>'+
+          '<div style="font-size:10px;color:#555;">'+s[1]+'</div>'+
+        '</div>';
+      }).join('')+
+    '</div>'+
+    (topFoods.length?
+      '<div style="font-size:11px;color:#555;margin-bottom:4px;">Most logged this week:</div>'+
+      '<div style="display:flex;gap:5px;flex-wrap:wrap;">'+
+        topFoods.map(function(f){
+          return '<span style="background:#1a1a1a;border:1px solid #222;border-radius:12px;padding:3px 10px;font-size:11px;color:#aaa;">'+f+' ×'+foodFreq[f]+'</span>';
+        }).join('')+
+      '</div>':'');
+}
+
+/* ════════════════════════════════════════════════════
+   switchScreen + initial inject
+   ════════════════════════════════════════════════════ */
+var _origSS20=window.switchScreen;
+window.switchScreen=function(name,navEl){
+  _origSS20&&_origSS20(name,navEl);
+  if(name==='workouts'){
+    setTimeout(function(){ _injectRestTimer(); }, 950);
+  }
+  if(name==='dashboard'){
+    setTimeout(function(){ _injectMonthGoals(); _renderMonthGoals(); }, 1100);
+  }
+  if(name==='nutrition'){
+    setTimeout(function(){ _injectFoodDiary(); _renderFoodDiary(); }, 1000);
+  }
+};
+
+setTimeout(function(){
+  _injectRestTimer();
+  _injectMonthGoals();
+  _injectFoodDiary();
+}, 14000);
+
+setTimeout(function(){
+  if(!document.getElementById('rfc-rest-wrap'))  _injectRestTimer();
+  if(!document.getElementById('rfc-mgoal-wrap')) _injectMonthGoals();
+  if(!document.getElementById('rfc-fdiary-wrap')) _injectFoodDiary();
+}, 17000);
+
+
+window.addEventListener('rfc-food-updated', _renderFoodDiary);
+
+})();
+</script>
+
 </body>
 </html>
