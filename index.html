@@ -40904,5 +40904,223 @@ setTimeout(function(){
 })();
 </script>
 
+<!-- Batch 60: Habit Streaks Board, Healthy Fat Tracker, Resistance Band Workout -->
+<script>
+(function(){ 'use strict';
+var _origSS58=window.switchScreen;
+function _b60uid(){ try{ return JSON.parse(localStorage.getItem('bm_user')||'{}').uid||'guest'; }catch(e){ return 'guest'; } }
+function _b60today(){ var d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function _b60load(k){ try{ return JSON.parse(localStorage.getItem(k))||null; }catch(e){ return null; } }
+function _b60save(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} }
+function _b60card(id,title){ var d=document.createElement('div'); d.id=id; d.style.cssText='background:#1a1a2e;border-radius:14px;padding:18px;margin:14px 0;color:#e0e0e0;font-family:inherit;'; d.innerHTML='<div style="font-size:15px;font-weight:700;color:#00d4ff;margin-bottom:14px;">'+title+'</div>'; return d; }
+
+/* ── Habit Streaks Board ── */
+var _habitList=[
+  'Morning workout','Cold shower','8h sleep','2L water','No sugar','10 min meditation',
+  'Read 10 min','No alcohol','Stretch / mobility','Protein goal met'
+];
+function _injectHabits(){
+  if(document.getElementById('rfc-habits-wrap')) return;
+  var anchor=document.getElementById('rfc-recscore-wrap')||document.getElementById('rfc-stress-wrap')||document.getElementById('rfc-mood-wrap')||document.getElementById('rfc-joint-wrap');
+  if(!anchor) return;
+  var rows=_habitList.map(function(h,i){
+    return '<div style="display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid #1a1a2e;">'
+      +'<span style="flex:1;font-size:13px;">'+h+'</span>'
+      +'<span id="rfc-habit-streak-'+i+'" style="font-size:11px;color:#ff9800;min-width:40px;text-align:right;"></span>'
+      +'<button id="rfc-habit-btn-'+i+'" onclick="window._rfcHabitToggle('+i+')" style="padding:5px 12px;border-radius:8px;border:none;background:#0d0d1a;color:#aaa;font-size:12px;cursor:pointer;border:1px solid #333;">Done</button></div>';
+  }).join('');
+  var c=_b60card('rfc-habits-wrap','🔥 Habit Streaks Board');
+  c.innerHTML+=`
+<div style="font-size:12px;color:#aaa;margin-bottom:10px;">Mark habits done today to build streaks</div>
+<div id="rfc-habits-summary" style="display:flex;gap:10px;margin-bottom:12px;"></div>
+${rows}
+<div id="rfc-habits-best" style="margin-top:12px;font-size:12px;color:#aaa;"></div>`;
+  anchor.after(c);
+}
+function _getHabitData(uid){
+  var key='rfc_habits_'+uid;
+  return _b60load(key)||{};
+}
+function _saveHabitData(uid,data){
+  _b60save('rfc_habits_'+uid,data);
+}
+function _calcStreak(dates){
+  if(!dates||!dates.length) return 0;
+  var sorted=dates.slice().sort();
+  var streak=0, cur=new Date(_b60today());
+  for(var i=sorted.length-1;i>=0;i--){
+    var d=new Date(sorted[i]);
+    var diff=Math.round((cur-d)/(86400000));
+    if(diff===streak){ streak++; } else { break; }
+  }
+  return streak;
+}
+window._rfcHabitToggle=function(idx){
+  var uid=_b60uid(), data=_getHabitData(uid), today=_b60today();
+  if(!data[idx]) data[idx]=[];
+  var pos=data[idx].indexOf(today);
+  if(pos>=0) data[idx].splice(pos,1); else data[idx].push(today);
+  _saveHabitData(uid,data);
+  _renderHabits(data);
+};
+function _renderHabits(data){
+  var uid=_b60uid();
+  if(!data) data=_getHabitData(uid);
+  var today=_b60today(), done=0;
+  _habitList.forEach(function(h,i){
+    var dates=data[i]||[];
+    var isDone=dates.indexOf(today)>=0;
+    var streak=_calcStreak(dates);
+    var btn=document.getElementById('rfc-habit-btn-'+i);
+    var strkEl=document.getElementById('rfc-habit-streak-'+i);
+    if(btn){ btn.style.background=isDone?'#4caf50':'#0d0d1a'; btn.style.color=isDone?'#000':'#aaa'; btn.style.borderColor=isDone?'#4caf50':'#333'; btn.textContent=isDone?'✓ Done':'Done'; }
+    if(strkEl) strkEl.textContent=streak>0?'🔥 '+streak+'d':'';
+    if(isDone) done++;
+  });
+  var sumEl=document.getElementById('rfc-habits-summary');
+  if(sumEl){ sumEl.innerHTML='<div style="background:#0d0d1a;border-radius:8px;padding:8px 14px;text-align:center;"><div style="font-size:20px;font-weight:700;color:#4caf50;">'+done+'/'+ _habitList.length+'</div><div style="font-size:10px;color:#aaa;">Done today</div></div>'; }
+  var bestEl=document.getElementById('rfc-habits-best');
+  if(bestEl){
+    var max=0, bestH='';
+    _habitList.forEach(function(h,i){ var s=_calcStreak(data[i]||[]); if(s>max){max=s;bestH=h;} });
+    bestEl.innerHTML=max>0?'🏆 Best streak: <strong style="color:#ff9800;">'+bestH+'</strong> — '+max+' days':'Start checking habits to build streaks!';
+  }
+}
+
+/* ── Healthy Fat Tracker ── */
+function _injectHealthyFat(){
+  if(document.getElementById('rfc-hfat-wrap')) return;
+  var anchor=document.getElementById('rfc-antioxid-wrap')||document.getElementById('rfc-fiber-wrap')||document.getElementById('rfc-micro-wrap')||document.getElementById('rfc-elec-wrap');
+  if(!anchor) return;
+  var FATS=[
+    {id:'avoc',label:'Avocado / Avocado Oil',pts:4},{id:'olv',label:'Olive Oil / Olives',pts:4},
+    {id:'salm',label:'Salmon / Mackerel / Sardines',pts:5},{id:'egg',label:'Whole Eggs (2+)',pts:3},
+    {id:'alm',label:'Almonds / Cashews',pts:3},{id:'wal',label:'Walnuts',pts:4},
+    {id:'chia',label:'Chia / Hemp Seeds',pts:4},{id:'coc',label:'Coconut Oil / MCT',pts:2},
+    {id:'ghee',label:'Ghee / Grass-fed Butter',pts:2},{id:'flax',label:'Flaxseed Oil',pts:3}
+  ];
+  var rows=FATS.map(function(f){
+    return '<label style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid #1a1a2e;cursor:pointer;">'
+      +'<input type="checkbox" id="rfc-hfat-'+f.id+'" onchange="window._rfcHFatChg()" style="accent-color:#ff9800;">'
+      +'<span style="flex:1;font-size:12px;">'+f.label+'</span>'
+      +'<span style="font-size:11px;color:#ff9800;">+'+f.pts+'</span></label>';
+  }).join('');
+  var c=_b60card('rfc-hfat-wrap','🥑 Healthy Fat Tracker');
+  c.innerHTML+=`
+<div style="font-size:12px;color:#aaa;margin-bottom:10px;">Aim for 20–35% calories from healthy fats</div>
+<div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+  <div id="rfc-hfat-ring" style="width:60px;height:60px;flex-shrink:0;"></div>
+  <div><div id="rfc-hfat-pts" style="font-size:22px;font-weight:700;color:#ff9800;">0<span style="font-size:12px;color:#aaa;">/34</span></div>
+  <div id="rfc-hfat-msg" style="font-size:11px;color:#aaa;">Check off healthy fat sources</div></div>
+</div>
+<div style="max-height:240px;overflow-y:auto;">${rows}</div>
+<div style="margin-top:10px;font-size:11px;color:#aaa;padding:8px;background:#0d0d1a;border-radius:8px;">
+  <strong style="color:#e0e0e0;">Fat types:</strong> Mono (olive, avocado) · Poly/Omega-3 (fish, flax) · Saturated (small amounts OK)
+</div>`;
+  anchor.after(c);
+}
+window._rfcHFatChg=function(){
+  var FATS=[{id:'avoc',pts:4},{id:'olv',pts:4},{id:'salm',pts:5},{id:'egg',pts:3},{id:'alm',pts:3},{id:'wal',pts:4},{id:'chia',pts:4},{id:'coc',pts:2},{id:'ghee',pts:2},{id:'flax',pts:3}];
+  var total=34, pts=0, state={};
+  FATS.forEach(function(f){ var cb=document.getElementById('rfc-hfat-'+f.id); if(cb&&cb.checked){ pts+=f.pts; state[f.id]=1; } });
+  var uid=_b60uid(), key='rfc_hfat_'+uid+'_'+_b60today();
+  _b60save(key,state);
+  var pct=Math.round(pts/total*100);
+  var col=pct>=70?'#4caf50':pct>=40?'#ff9800':'#f44336';
+  var msg=pct>=70?'Great healthy fat diversity!':pct>=40?'Good — keep adding variety':'Include more healthy fats';
+  document.getElementById('rfc-hfat-pts').innerHTML=pts+'<span style="font-size:12px;color:#aaa;">/'+total+'</span>';
+  document.getElementById('rfc-hfat-msg').textContent=msg; document.getElementById('rfc-hfat-msg').style.color=col;
+  var r=document.getElementById('rfc-hfat-ring');
+  var circ=Math.round(2*Math.PI*24), dash=Math.round(circ*pct/100);
+  r.innerHTML='<svg width="60" height="60" viewBox="0 0 60 60"><circle cx="30" cy="30" r="24" fill="none" stroke="#222" stroke-width="6"/><circle cx="30" cy="30" r="24" fill="none" stroke="'+col+'" stroke-width="6" stroke-dasharray="'+dash+' '+circ+'" stroke-dashoffset="'+Math.round(circ*0.25)+'" stroke-linecap="round"/><text x="30" y="35" text-anchor="middle" fill="'+col+'" font-size="12" font-weight="700">'+pct+'%</text></svg>';
+};
+function _renderHealthyFat(){
+  if(!document.getElementById('rfc-hfat-wrap')) return;
+  var uid=_b60uid(), key='rfc_hfat_'+uid+'_'+_b60today();
+  var saved=_b60load(key)||{};
+  Object.keys(saved).forEach(function(id){ var cb=document.getElementById('rfc-hfat-'+id); if(cb) cb.checked=true; });
+  window._rfcHFatChg();
+}
+
+/* ── Resistance Band Workout Logger ── */
+function _injectResband(){
+  if(document.getElementById('rfc-resband-wrap')) return;
+  var anchor=document.getElementById('rfc-kb-wrap')||document.getElementById('rfc-wvest-wrap')||document.getElementById('rfc-cali-wrap')||document.getElementById('rfc-plyo-wrap');
+  if(!anchor) return;
+  var BAND_EX=['Pull-Aparts','Face Pulls','Banded Rows','Banded Push-ups','Bicep Curls','Tricep Extensions','Clamshells','Hip Thrusts','Lateral Walks','Shoulder Press','Chest Fly','Squat'];
+  var TENSIONS=['X-light (5–10lb)','Light (10–25lb)','Medium (25–50lb)','Heavy (50–80lb)','X-Heavy (80lb+)'];
+  var exOpts=BAND_EX.map(function(e){ return '<option value="'+e+'">'+e+'</option>'; }).join('');
+  var tensOpts=TENSIONS.map(function(t,i){ return '<option value="'+i+'">'+t+'</option>'; }).join('');
+  var c=_b59card('rfc-resband-wrap','🎯 Resistance Band Logger');
+  c.innerHTML+=`
+<div style="font-size:12px;color:#aaa;margin-bottom:12px;">Log band exercises — track tension & volume progression</div>
+<div style="display:grid;gap:8px;margin-bottom:12px;">
+  <select id="rfc-rb-ex" style="padding:8px;border-radius:8px;border:1px solid #333;background:#0d0d1a;color:#e0e0e0;font-size:13px;">
+    <option value="">Select exercise…</option>${exOpts}
+  </select>
+  <select id="rfc-rb-tens" style="padding:8px;border-radius:8px;border:1px solid #333;background:#0d0d1a;color:#e0e0e0;font-size:13px;">
+    <option value="">Band tension…</option>${tensOpts}
+  </select>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+    <input id="rfc-rb-sets" type="number" min="1" max="20" placeholder="Sets" style="padding:8px;border-radius:8px;border:1px solid #333;background:#0d0d1a;color:#e0e0e0;font-size:13px;text-align:center;">
+    <input id="rfc-rb-reps" type="number" min="1" max="200" placeholder="Reps" style="padding:8px;border-radius:8px;border:1px solid #333;background:#0d0d1a;color:#e0e0e0;font-size:13px;text-align:center;">
+  </div>
+</div>
+<button onclick="window._rfcRBAdd()" style="width:100%;padding:9px;border:none;border-radius:8px;background:#00d4ff;color:#000;font-weight:700;cursor:pointer;">Log Set</button>
+<div id="rfc-rb-list" style="margin-top:12px;"></div>`;
+  anchor.after(c);
+  _renderResband();
+}
+window._rfcRBAdd=function(){
+  var ex=document.getElementById('rfc-rb-ex').value;
+  var tens=document.getElementById('rfc-rb-tens').value;
+  if(!ex||tens===''){ alert('Select exercise and tension'); return; }
+  var sets=parseInt(document.getElementById('rfc-rb-sets').value)||1;
+  var reps=parseInt(document.getElementById('rfc-rb-reps').value)||0;
+  var uid=_b60uid(), key='rfc_resband_'+uid+'_'+_b60today();
+  var log=_b60load(key)||[];
+  var TENSIONS=['X-light','Light','Medium','Heavy','X-Heavy'];
+  log.push({ex:ex,tens:parseInt(tens),tensLabel:TENSIONS[parseInt(tens)],sets:sets,reps:reps,ts:Date.now()});
+  _b60save(key,log);
+  document.getElementById('rfc-rb-sets').value=''; document.getElementById('rfc-rb-reps').value='';
+  _renderRBList(log);
+};
+function _renderRBList(log){
+  var el=document.getElementById('rfc-rb-list'); if(!el) return;
+  if(!log||!log.length){ el.innerHTML='<div style="font-size:12px;color:#555;text-align:center;padding:8px;">No sets logged today</div>'; return; }
+  var TCOLS=['#aaa','#8bc34a','#ff9800','#f44336','#9c27b0'];
+  var html='';
+  log.forEach(function(e,i){
+    html+='<div style="display:flex;align-items:center;gap:8px;padding:5px;background:#0d0d1a;border-radius:7px;margin-bottom:3px;font-size:12px;">'
+      +'<span style="color:#00d4ff;">#'+(i+1)+'</span>'
+      +'<span style="flex:1;">'+e.ex+'</span>'
+      +'<span style="color:'+(TCOLS[e.tens]||'#aaa')+';">'+e.tensLabel+'</span>'
+      +'<span style="color:#aaa;">'+e.sets+'×'+e.reps+'</span></div>';
+  });
+  el.innerHTML=html;
+}
+function _renderResband(){
+  if(!document.getElementById('rfc-resband-wrap')) return;
+  var uid=_b60uid(), key='rfc_resband_'+uid+'_'+_b60today();
+  _renderRBList(_b60load(key)||[]);
+}
+
+/* ── switchScreen wrapper ── */
+window.switchScreen=function(name,navEl){
+  _origSS58&&_origSS58(name,navEl);
+  if(name==='dashboard') setTimeout(function(){ _injectHabits(); _renderHabits(); },1200);
+  if(name==='nutrition') setTimeout(function(){ _injectHealthyFat(); _renderHealthyFat(); },1100);
+  if(name==='workouts')  setTimeout(function(){ _injectResband(); _renderResband(); },1050);
+};
+
+setTimeout(function(){ _injectHabits(); _injectHealthyFat(); _injectResband(); _renderHabits(); _renderHealthyFat(); _renderResband(); },52000);
+setTimeout(function(){
+  if(!document.getElementById('rfc-habits-wrap'))  { _injectHabits(); _renderHabits(); }
+  if(!document.getElementById('rfc-hfat-wrap'))    { _injectHealthyFat(); _renderHealthyFat(); }
+  if(!document.getElementById('rfc-resband-wrap')) { _injectResband(); _renderResband(); }
+},56000);
+})();
+</script>
+
 </body>
 </html>
