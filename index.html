@@ -35920,4 +35920,188 @@ setTimeout(function(){
 </script>
 
 </body>
+
+<script>
+/* ============================================================
+   BATCH 36 — Environmental Wellness | Vitamin Tracker | Calisthenics Skill Tracker
+   ============================================================ */
+(function(){ 'use strict';
+var _origSS34=window.switchScreen;
+function _b36uid(){ try{ return JSON.parse(localStorage.getItem('bm_user')||'{}').uid||'guest'; }catch(e){ return 'guest'; } }
+function _b36today(){ var d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function _b36load(k){ try{ return JSON.parse(localStorage.getItem(k))||null; }catch(e){ return null; } }
+function _b36save(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} }
+function _b36card(id,title){ var d=document.createElement('div'); d.id=id; d.style.cssText='background:#1a1a2e;border-radius:14px;padding:18px;margin:14px 0;color:#e0e0e0;font-family:inherit;'; d.innerHTML='<div style="font-size:15px;font-weight:700;color:#00d4ff;margin-bottom:14px;">'+title+'</div>'; return d; }
+
+/* 1. ENVIRONMENTAL WELLNESS */
+var ENV_ITEMS=[
+  {id:'sun',    label:'10+ min sunlight',    icon:'☀️'},
+  {id:'fresh',  label:'Fresh air / outdoor', icon:'🌿'},
+  {id:'cold',   label:'Cold shower / exposure',icon:'🚿'},
+  {id:'screen', label:'1hr screen-free time',icon:'📵'},
+  {id:'nature', label:'Nature walk / park',  icon:'🌳'},
+  {id:'social', label:'Meaningful conversation',icon:'💬'},
+  {id:'tidy',   label:'Tidy living space',   icon:'🏠'},
+  {id:'music',  label:'Uplifting music/art',  icon:'🎵'}
+];
+function _injectEnvWell(){
+  if(document.getElementById('rfc-envwell-wrap')) return;
+  var anchors=['rfc-gratitude-wrap','rfc-stress-wrap','rfc-goalwt-wrap','rfc-vitals-wrap','rfc-injury-wrap','rfc-wkreport-wrap'];
+  var host=null; for(var i=0;i<anchors.length;i++){ var el=document.getElementById(anchors[i]); if(el){ host=el; break; } }
+  if(!host){ var tb=document.querySelector('.dash-topbar'); if(tb) host=tb; } if(!host) return;
+  var c=_b36card('rfc-envwell-wrap','🌱 Environmental Wellness');
+  c.innerHTML+=
+    '<div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">'+
+      '<div style="text-align:center;min-width:56px;"><div id="rfc-ew-score" style="font-size:28px;font-weight:800;color:#22c55e;">0</div><div style="font-size:10px;color:#555;">/8 today</div></div>'+
+      '<div style="flex:1;background:#0d0d1a;border-radius:8px;height:10px;overflow:hidden;"><div id="rfc-ew-bar" style="height:100%;background:linear-gradient(90deg,#22c55e,#84cc16);width:0%;border-radius:8px;transition:width .4s;"></div></div>'+
+    '</div>'+
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;" id="rfc-ew-grid"></div>'+
+    '<div id="rfc-ew-streak" style="margin-top:10px;font-size:12px;color:#666;text-align:center;"></div>';
+  if(host.nextSibling) host.parentNode.insertBefore(c,host.nextSibling); else host.parentNode.appendChild(c);
+  _renderEnvWell();
+}
+function _renderEnvWell(){
+  var uid=_b36uid(),date=_b36today(),key='rfc_ew_'+uid+'_'+date;
+  var data=_b36load(key)||{};
+  var done=0;
+  var grid=document.getElementById('rfc-ew-grid');
+  if(!grid) return;
+  grid.innerHTML=ENV_ITEMS.map(function(item){
+    var on=!!data[item.id]; if(on) done++;
+    return '<div onclick="window._rfcEWTap(\''+item.id+'\')" style="display:flex;align-items:center;gap:7px;background:'+(on?'#22c55e18':'#0d0d1a')+';border:1px solid '+(on?'#22c55e44':'#222')+';border-radius:9px;padding:8px 10px;cursor:pointer;transition:all .2s;">'+
+      '<span style="font-size:16px;">'+item.icon+'</span>'+
+      '<span style="font-size:11px;color:'+(on?'#22c55e':'#aaa')+';flex:1;">'+item.label+'</span>'+
+      '<span style="font-size:13px;">'+(on?'✅':'⬜')+'</span></div>';
+  }).join('');
+  var sc=document.getElementById('rfc-ew-score'); if(sc){ sc.textContent=done; sc.style.color=done>=6?'#22c55e':done>=4?'#fbbf24':'#f97316'; }
+  var bar=document.getElementById('rfc-ew-bar'); if(bar) bar.style.width=Math.round(done/8*100)+'%';
+  var streak=0;
+  for(var d=0;d<30;d++){
+    var dd=new Date(); dd.setDate(dd.getDate()-d);
+    var dk=dd.getFullYear()+'-'+String(dd.getMonth()+1).padStart(2,'0')+'-'+String(dd.getDate()).padStart(2,'0');
+    if(dk===date) continue;
+    var r=_b36load('rfc_ew_'+uid+'_'+dk)||{};
+    var cnt=Object.keys(r).filter(function(k){ return r[k]; }).length;
+    if(cnt>=4) streak++; else break;
+  }
+  var sel=document.getElementById('rfc-ew-streak');
+  if(sel) sel.textContent=streak>0?'🌿 '+streak+'-day streak of 4+ wellness habits':'Complete 4+ habits to build a streak.';
+}
+window._rfcEWTap=function(id){ var uid=_b36uid(),date=_b36today(),key='rfc_ew_'+uid+'_'+date; var data=_b36load(key)||{}; data[id]=!data[id]; _b36save(key,data); _renderEnvWell(); };
+
+/* 2. VITAMIN TRACKER */
+var VIT_LIST=[
+  {id:'vitA', label:'Vitamin A', rda:900,  unit:'mcg', foods:'Liver, eggs, carrots'},
+  {id:'b12',  label:'Vitamin B12',rda:2.4, unit:'mcg', foods:'Meat, fish, dairy'},
+  {id:'vitC', label:'Vitamin C', rda:90,   unit:'mg',  foods:'Citrus, peppers, kiwi'},
+  {id:'vitD', label:'Vitamin D', rda:600,  unit:'IU',  foods:'Sunlight, salmon, eggs'},
+  {id:'vitE', label:'Vitamin E', rda:15,   unit:'mg',  foods:'Nuts, seeds, olive oil'},
+  {id:'fol',  label:'Folate',   rda:400,  unit:'mcg', foods:'Leafy greens, legumes'}
+];
+function _injectVitamin(){
+  if(document.getElementById('rfc-vitamin-wrap')) return;
+  var anchors=['rfc-mealbuilder-wrap','rfc-fatqual-wrap','rfc-electro-wrap','rfc-sugar-wrap','rfc-fiber-wrap','rfc-calbal-wrap'];
+  var host=null; for(var i=0;i<anchors.length;i++){ var el=document.getElementById(anchors[i]); if(el){ host=el; break; } }
+  if(!host) host=document.getElementById('rfc-food-wrap'); if(!host) return;
+  var c=_b36card('rfc-vitamin-wrap','💊 Daily Vitamin Tracker');
+  c.innerHTML+=
+    '<div style="display:flex;flex-direction:column;gap:8px;" id="rfc-vit-list"></div>'+
+    '<div style="margin-top:10px;font-size:11px;color:#555;">Enter estimated intake for each vitamin. RDA = Recommended Daily Allowance.</div>';
+  if(host.nextSibling) host.parentNode.insertBefore(c,host.nextSibling); else host.parentNode.appendChild(c);
+  _renderVitamin();
+}
+function _renderVitamin(){
+  var uid=_b36uid(),date=_b36today(),key='rfc_vit_'+uid+'_'+date;
+  var data=_b36load(key)||{};
+  var list=document.getElementById('rfc-vit-list'); if(!list) return;
+  list.innerHTML=VIT_LIST.map(function(v){
+    var val=data[v.id]||0; var pct=Math.min(150,Math.round(val/v.rda*100));
+    var col=pct>=100?'#22c55e':pct>=50?'#fbbf24':'#f97316';
+    return '<div style="background:#0d0d1a;border-radius:9px;padding:9px 12px;">'+
+      '<div style="display:flex;align-items:center;gap:8px;margin-bottom:5px;">'+
+        '<div style="flex:1;"><div style="font-size:12px;font-weight:600;color:#ddd;">'+v.label+'</div><div style="font-size:10px;color:#555;">'+v.foods+'</div></div>'+
+        '<input type="number" id="rfc-vit-inp-'+v.id+'" value="'+(val||'')+'" placeholder="0" min="0" oninput="window._rfcVitSet(\''+v.id+'\',this.value)" style="width:70px;background:#111;border:1px solid #333;color:#ddd;padding:5px;border-radius:6px;font-size:13px;text-align:center;">'+
+        '<span style="font-size:10px;color:#555;min-width:28px;">'+v.unit+'</span>'+
+        '<span style="font-size:12px;font-weight:700;color:'+col+';min-width:36px;text-align:right;">'+pct+'%</span>'+
+      '</div>'+
+      '<div style="background:#111;border-radius:4px;height:5px;overflow:hidden;">'+
+        '<div style="height:100%;width:'+Math.min(100,pct)+'%;background:'+col+';border-radius:4px;transition:width .4s;"></div>'+
+      '</div>'+
+    '</div>';
+  }).join('');
+}
+window._rfcVitSet=function(id,val){
+  var uid=_b36uid(),date=_b36today(),key='rfc_vit_'+uid+'_'+date;
+  var data=_b36load(key)||{}; data[id]=Math.max(0,parseFloat(val)||0); _b36save(key,data); _renderVitamin();
+};
+
+/* 3. CALISTHENICS SKILL TRACKER */
+var CALIS_EX=[
+  {id:'pushup',  label:'Push-ups',     icon:'💪', unit:'reps', note:'Max unbroken set'},
+  {id:'pullup',  label:'Pull-ups',     icon:'🏋️', unit:'reps', note:'Max clean reps'},
+  {id:'dip',     label:'Dips',         icon:'🔽', unit:'reps', note:'Full ROM'},
+  {id:'squat',   label:'Bodyweight Squats',icon:'🦵',unit:'reps',note:'Below parallel'},
+  {id:'lunge',   label:'Lunges (each)', icon:'🚶', unit:'reps', note:'Per leg'},
+  {id:'plankmin',label:'Plank',         icon:'⏱️', unit:'sec',  note:'Strict form'},
+  {id:'hstand',  label:'Handstand',     icon:'🤸', unit:'sec',  note:'Free or wall'},
+  {id:'muscle',  label:'Muscle-up',     icon:'🎯', unit:'reps', note:'Chest-to-bar'}
+];
+function _injectCalis(){
+  if(document.getElementById('rfc-calis-wrap')) return;
+  var anchors=['rfc-plyo-wrap','rfc-isometric-wrap','rfc-dropset-wrap','rfc-pyramid-wrap','rfc-amrap-wrap','rfc-superset-wrap'];
+  var host=null; for(var i=0;i<anchors.length;i++){ var el=document.getElementById(anchors[i]); if(el){ host=el; break; } }
+  if(!host) host=document.getElementById('wl-history'); if(!host) return;
+  var c=_b36card('rfc-calis-wrap','🤸 Calisthenics Skill Tracker');
+  c.innerHTML+=
+    '<div style="display:flex;flex-direction:column;gap:7px;margin-bottom:12px;" id="rfc-cal-list"></div>'+
+    '<button onclick="window._rfcCalSave()" style="width:100%;background:#a78bfa22;border:1px solid #a78bfa44;color:#a78bfa;padding:8px;border-radius:8px;cursor:pointer;font-size:13px;margin-bottom:12px;">Save Session</button>'+
+    '<div style="font-size:11px;color:#555;margin-bottom:6px;">All-time bests</div>'+
+    '<div id="rfc-cal-pbs" style="display:grid;grid-template-columns:1fr 1fr;gap:5px;"></div>';
+  if(host.nextSibling) host.parentNode.insertBefore(c,host.nextSibling); else host.parentNode.appendChild(c);
+  _renderCalis();
+}
+function _renderCalis(){
+  var uid=_b36uid(),today=_b36today();
+  var todayData=_b36load('rfc_calis_'+uid+'_'+today)||{};
+  var pbs=_b36load('rfc_calis_pbs_'+uid)||{};
+  var list=document.getElementById('rfc-cal-list');
+  if(list){
+    list.innerHTML=CALIS_EX.map(function(ex){
+      var val=todayData[ex.id]||''; var pb=pbs[ex.id];
+      var isNew=pb&&val&&parseFloat(val)>pb;
+      return '<div style="display:flex;align-items:center;gap:10px;background:#0d0d1a;border-radius:9px;padding:8px 12px;">'+
+        '<span style="font-size:18px;flex-shrink:0;">'+ex.icon+'</span>'+
+        '<div style="flex:1;min-width:0;"><div style="font-size:12px;font-weight:600;color:#ddd;">'+ex.label+'</div><div style="font-size:10px;color:#555;">'+ex.note+(pb?' · PB: '+pb+' '+ex.unit:'')+'</div></div>'+
+        '<input type="number" id="rfc-cal-inp-'+ex.id+'" value="'+(val||'')+'" placeholder="—" min="0" style="width:60px;background:#111;border:1px solid '+(isNew?'#ffd700':'#282828')+';color:'+(isNew?'#ffd700':'#ddd')+';padding:5px;border-radius:7px;font-size:14px;font-weight:700;text-align:center;">'+
+        '<span style="font-size:10px;color:#555;min-width:28px;">'+ex.unit+'</span>'+
+      '</div>';
+    }).join('');
+  }
+  var pbEl=document.getElementById('rfc-cal-pbs');
+  if(pbEl){
+    var entries=CALIS_EX.filter(function(e){ return pbs[e.id]; });
+    pbEl.innerHTML=entries.length?entries.map(function(e){
+      return '<div style="background:#0d0d1a;border-radius:8px;padding:7px 10px;display:flex;align-items:center;gap:6px;"><span style="font-size:13px;">'+e.icon+'</span><div style="flex:1;min-width:0;font-size:11px;color:#aaa;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+e.label+'</div><div style="font-size:12px;font-weight:700;color:#ffd700;">'+pbs[e.id]+' '+e.unit+'</div></div>';
+    }).join(''):'<div style="font-size:11px;color:#555;padding:8px;grid-column:span 2;text-align:center;">No records yet.</div>';
+  }
+}
+window._rfcCalSave=function(){
+  var uid=_b36uid(),today=_b36today(); var data={}; var pbs=_b36load('rfc_calis_pbs_'+uid)||{};
+  CALIS_EX.forEach(function(ex){ var inp=document.getElementById('rfc-cal-inp-'+ex.id); if(!inp||!inp.value) return; var v=parseFloat(inp.value); if(isNaN(v)||v<=0) return; data[ex.id]=v; if(!pbs[ex.id]||v>pbs[ex.id]) pbs[ex.id]=v; });
+  _b36save('rfc_calis_'+uid+'_'+today,data); _b36save('rfc_calis_pbs_'+uid,pbs); _renderCalis();
+  var btn=document.querySelector('#rfc-calis-wrap button'); if(btn){ btn.textContent='✅ Saved!'; setTimeout(function(){ btn.textContent='Save Session'; },1500); }
+};
+
+window.switchScreen=function(name,navEl){
+  _origSS34&&_origSS34(name,navEl);
+  if(name==='dashboard') setTimeout(function(){ _injectEnvWell(); _renderEnvWell(); },1200);
+  if(name==='nutrition') setTimeout(function(){ _injectVitamin(); _renderVitamin(); },1100);
+  if(name==='workouts')  setTimeout(function(){ _injectCalis(); _renderCalis(); },1050);
+};
+setTimeout(function(){ _injectEnvWell(); _injectVitamin(); _injectCalis(); },28000);
+setTimeout(function(){ if(!document.getElementById('rfc-envwell-wrap')) _injectEnvWell(); if(!document.getElementById('rfc-vitamin-wrap')) _injectVitamin(); if(!document.getElementById('rfc-calis-wrap')) _injectCalis(); },32000);
+})();
+</script>
+
+</body>
 </html>
