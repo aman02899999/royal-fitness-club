@@ -43164,5 +43164,244 @@ setTimeout(function(){
 })();
 </script>
 
+<!-- Batch 70: Mindset Resilience Score, Healthy Carb Sources, Athletic Performance Test -->
+<script>
+(function(){ 'use strict';
+var _origSS68=window.switchScreen;
+function _b70uid(){ try{ return JSON.parse(localStorage.getItem('bm_user')||'{}').uid||'guest'; }catch(e){ return 'guest'; } }
+function _b70today(){ var d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function _b70load(k){ try{ return JSON.parse(localStorage.getItem(k))||null; }catch(e){ return null; } }
+function _b70save(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} }
+function _b70card(id,title){ var d=document.createElement('div'); d.id=id; d.style.cssText='background:#1a1a2e;border-radius:14px;padding:18px;margin:14px 0;color:#e0e0e0;font-family:inherit;'; d.innerHTML='<div style="font-size:15px;font-weight:700;color:#00d4ff;margin-bottom:14px;">'+title+'</div>'; return d; }
+
+/* ── Mindset Resilience Score ── */
+var _mindsetItems=[
+  {id:'growth',label:'Growth mindset — embraced a challenge today',pts:4},
+  {id:'reframe',label:'Reframed a negative thought',pts:3},
+  {id:'goal',label:'Reviewed or worked toward a goal',pts:3},
+  {id:'reflect',label:'Self-reflection / journaling done',pts:3},
+  {id:'learn',label:'Learned something new',pts:3},
+  {id:'persist',label:'Persisted despite resistance or setback',pts:4},
+  {id:'compar',label:'Avoided unhealthy social comparison',pts:3},
+  {id:'bound',label:'Set a boundary or said no when needed',pts:3},
+  {id:'visual',label:'Visualized success / mental rehearsal',pts:2},
+  {id:'selfcomp',label:'Practiced self-compassion (not harsh self-criticism)',pts:3}
+];
+function _injectMindset(){
+  if(document.getElementById('rfc-mindset-wrap')) return;
+  var anchor=document.getElementById('rfc-wateropt-wrap')||document.getElementById('rfc-slpdebt-wrap')||document.getElementById('rfc-screentime-wrap')||document.getElementById('rfc-grat-wrap');
+  if(!anchor) return;
+  var rows=_mindsetItems.map(function(m){
+    return '<label style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid #1a1a2e;cursor:pointer;">'
+      +'<input type="checkbox" id="rfc-ms-'+m.id+'" onchange="window._rfcMSCalc()" style="accent-color:#9c27b0;">'
+      +'<span style="flex:1;font-size:12px;">'+m.label+'</span>'
+      +'<span style="font-size:11px;color:#9c27b0;">+'+m.pts+'</span></label>';
+  }).join('');
+  var c=_b70card('rfc-mindset-wrap','🧩 Mindset Resilience Score');
+  c.innerHTML+=`
+<div style="font-size:12px;color:#aaa;margin-bottom:10px;">Mental skills that build resilience over time</div>
+<div id="rfc-ms-gauge" style="text-align:center;margin-bottom:12px;"></div>
+<div style="max-height:260px;overflow-y:auto;">${rows}</div>
+<div id="rfc-ms-msg" style="margin-top:10px;font-size:12px;text-align:center;"></div>
+<div id="rfc-ms-hist" style="margin-top:10px;"></div>`;
+  anchor.after(c);
+}
+window._rfcMSCalc=function(){
+  var total=31, pts=0, state={};
+  _mindsetItems.forEach(function(m){ var cb=document.getElementById('rfc-ms-'+m.id); if(cb&&cb.checked){ pts+=m.pts; state[m.id]=1; } });
+  var pct=Math.round(pts/total*100);
+  var col=pct>=75?'#9c27b0':pct>=50?'#ff9800':'#f44336';
+  var msg=pct>=75?'Strong mental resilience today!':pct>=50?'Good mindset work — keep building':'Focus on one resilience habit at a time';
+  var g=document.getElementById('rfc-ms-gauge');
+  if(g){
+    var circ=Math.round(2*Math.PI*36), dash=Math.round(circ*pct/100);
+    g.innerHTML='<svg width="90" height="90" viewBox="0 0 90 90"><circle cx="45" cy="45" r="36" fill="none" stroke="#222" stroke-width="8"/><circle cx="45" cy="45" r="36" fill="none" stroke="'+col+'" stroke-width="8" stroke-dasharray="'+dash+' '+circ+'" stroke-dashoffset="'+Math.round(circ*0.25)+'" stroke-linecap="round"/><text x="45" y="50" text-anchor="middle" fill="'+col+'" font-size="16" font-weight="700">'+pct+'%</text></svg>';
+  }
+  var msgEl=document.getElementById('rfc-ms-msg'); if(msgEl){ msgEl.textContent=msg; msgEl.style.color=col; }
+  var uid=_b70uid(), key='rfc_mindset_'+uid;
+  var hist=_b70load(key)||[], today=_b70today();
+  var idx=hist.findIndex(function(e){return e.date===today;});
+  var entry={date:today,pct:pct,state:state};
+  if(idx>=0) hist[idx]=entry; else hist.push(entry);
+  if(hist.length>30) hist=hist.slice(-30);
+  _b70save(key,hist);
+  _showMSHist(hist);
+};
+function _showMSHist(hist){
+  var el=document.getElementById('rfc-ms-hist'); if(!el||!hist.length) return;
+  var last7=hist.slice(-7);
+  var bars=last7.map(function(e){
+    var col=e.pct>=75?'#9c27b0':e.pct>=50?'#ff9800':'#f44336';
+    return '<div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;">'
+      +'<div style="height:'+Math.max(4,e.pct*0.5)+'px;width:16px;background:'+col+';border-radius:3px;"></div>'
+      +'<div style="font-size:9px;color:#aaa;">'+e.date.slice(5)+'</div></div>';
+  }).join('');
+  el.innerHTML='<div style="font-size:11px;color:#aaa;margin-bottom:4px;">7-Day Mindset</div>'
+    +'<div style="display:flex;align-items:flex-end;gap:4px;height:60px;">'+bars+'</div>';
+}
+function _renderMindset(){
+  if(!document.getElementById('rfc-mindset-wrap')) return;
+  var uid=_b70uid(), key='rfc_mindset_'+uid;
+  var hist=_b70load(key)||[];
+  var td=hist.find(function(e){return e.date===_b70today();});
+  if(td){ Object.keys(td.state||{}).forEach(function(id){ var cb=document.getElementById('rfc-ms-'+id); if(cb) cb.checked=true; }); }
+  window._rfcMSCalc();
+}
+
+/* ── Healthy Carb Sources Tracker ── */
+function _injectHealthyCarb(){
+  if(document.getElementById('rfc-hcarb-wrap')) return;
+  var anchor=document.getElementById('rfc-plantprot-wrap')||document.getElementById('rfc-creat-wrap')||document.getElementById('rfc-collskin-wrap')||document.getElementById('rfc-wfoods-wrap');
+  if(!anchor) return;
+  var CARBS=[
+    {id:'oat',label:'Oats / Porridge',carbs:27,gi:'Low'},{id:'swpot',label:'Sweet Potato (medium)',carbs:26,gi:'Medium'},
+    {id:'brow',label:'Brown Rice (1 cup)',carbs:45,gi:'Medium'},{id:'quinoa2',label:'Quinoa (1 cup)',carbs:39,gi:'Low'},
+    {id:'banana2',label:'Banana',carbs:27,gi:'Medium'},{id:'apple2',label:'Apple / Pear',carbs:25,gi:'Low'},
+    {id:'lentils3',label:'Lentils / Legumes (1 cup)',carbs:40,gi:'Low'},{id:'berr2',label:'Mixed Berries (1 cup)',carbs:14,gi:'Low'},
+    {id:'bp',label:'Buckwheat / Millet',carbs:33,gi:'Low'},{id:'wp',label:'Wholegrain bread (2 slices)',carbs:24,gi:'Med-Low'},
+    {id:'pst',label:'Whole Pasta (1 cup)',carbs:37,gi:'Low'},{id:'corn',label:'Corn / Maize',carbs:27,gi:'Medium'}
+  ];
+  var rows=CARBS.map(function(c){
+    var col=c.gi==='Low'?'#4caf50':c.gi==='Medium'?'#ff9800':'#ff5722';
+    return '<label style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid #1a1a2e;cursor:pointer;">'
+      +'<input type="checkbox" id="rfc-hc-'+c.id+'" onchange="window._rfcHCCalc()" style="accent-color:#ff9800;">'
+      +'<span style="flex:1;font-size:12px;">'+c.label+'</span>'
+      +'<span style="font-size:10px;color:'+col+';min-width:28px;">'+c.gi+'</span>'
+      +'<span style="font-size:11px;color:#ff9800;min-width:32px;text-align:right;">'+c.carbs+'g</span></label>';
+  }).join('');
+  var c=_b70card('rfc-hcarb-wrap','🌾 Healthy Carb Sources Tracker');
+  c.innerHTML+=`
+<div style="font-size:12px;color:#aaa;margin-bottom:10px;">Track complex carbohydrate quality — low-GI preferred for stable energy</div>
+<div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
+  <div id="rfc-hc-ring" style="width:60px;height:60px;flex-shrink:0;"></div>
+  <div><div id="rfc-hc-g" style="font-size:22px;font-weight:700;color:#ff9800;">0g<span style="font-size:12px;color:#aaa;"></span></div>
+  <div id="rfc-hc-msg" style="font-size:11px;color:#aaa;">Track healthy carb sources</div></div>
+</div>
+<div style="font-size:10px;color:#aaa;margin-bottom:6px;">GI: <span style="color:#4caf50;">Low (&lt;55)</span> · <span style="color:#ff9800;">Medium (56–69)</span> · <span style="color:#ff5722;">High (&gt;70)</span></div>
+<div style="max-height:250px;overflow-y:auto;">${rows}</div>`;
+  anchor.after(c);
+}
+window._rfcHCCalc=function(){
+  var CARBS=[{id:'oat',carbs:27},{id:'swpot',carbs:26},{id:'brow',carbs:45},{id:'quinoa2',carbs:39},{id:'banana2',carbs:27},{id:'apple2',carbs:25},{id:'lentils3',carbs:40},{id:'berr2',carbs:14},{id:'bp',carbs:33},{id:'wp',carbs:24},{id:'pst',carbs:37},{id:'corn',carbs:27}];
+  var total=0, state={};
+  CARBS.forEach(function(c){ var cb=document.getElementById('rfc-hc-'+c.id); if(cb&&cb.checked){ total+=c.carbs; state[c.id]=1; } });
+  var uid=_b70uid(), key='rfc_hcarb_'+uid+'_'+_b70today();
+  _b70save(key,state);
+  var target=200, pct=Math.min(100,Math.round(total/target*100));
+  var col=pct>=80?'#4caf50':pct>=50?'#ff9800':'#aaa';
+  document.getElementById('rfc-hc-g').innerHTML=total+'g<span style="font-size:12px;color:#aaa;"> carbs</span>';
+  document.getElementById('rfc-hc-msg').textContent=pct>=80?'Good carb variety!':pct>=50?'Decent — add more sources':'Log more healthy carb foods';
+  document.getElementById('rfc-hc-msg').style.color=col;
+  var r=document.getElementById('rfc-hc-ring');
+  var circ=Math.round(2*Math.PI*24), dash=Math.round(circ*pct/100);
+  r.innerHTML='<svg width="60" height="60" viewBox="0 0 60 60"><circle cx="30" cy="30" r="24" fill="none" stroke="#222" stroke-width="6"/><circle cx="30" cy="30" r="24" fill="none" stroke="'+col+'" stroke-width="6" stroke-dasharray="'+dash+' '+circ+'" stroke-dashoffset="'+Math.round(circ*0.25)+'" stroke-linecap="round"/><text x="30" y="35" text-anchor="middle" fill="'+col+'" font-size="12" font-weight="700">'+pct+'%</text></svg>';
+};
+function _renderHealthyCarb(){
+  if(!document.getElementById('rfc-hcarb-wrap')) return;
+  var uid=_b70uid(), key='rfc_hcarb_'+uid+'_'+_b70today();
+  var saved=_b70load(key)||{};
+  Object.keys(saved).forEach(function(id){ var cb=document.getElementById('rfc-hc-'+id); if(cb) cb.checked=true; });
+  window._rfcHCCalc();
+}
+
+/* ── Athletic Performance Test ── */
+function _injectAthPerf(){
+  if(document.getElementById('rfc-athperf-wrap')) return;
+  var anchor=document.getElementById('rfc-fms-wrap')||document.getElementById('rfc-rowvar-wrap')||document.getElementById('rfc-benchvar-wrap')||document.getElementById('rfc-ohp-wrap');
+  if(!anchor) return;
+  var TESTS=[
+    {id:'speed',label:'30m Sprint Time (secs)',unit:'s',lower:true,benchmarks:[['Elite','<4.2'],['Good','4.2–4.8'],['Average','4.8–5.5'],['Below avg','>5.5']]},
+    {id:'jump',label:'Vertical Jump (cm)',unit:'cm',lower:false,benchmarks:[['Elite','>70'],['Good','55–70'],['Average','40–55'],['Below avg','<40']]},
+    {id:'broad2',label:'Standing Broad Jump (m)',unit:'m',lower:false,benchmarks:[['Elite','>2.7'],['Good','2.3–2.7'],['Average','1.8–2.3'],['Below avg','<1.8']]},
+    {id:'maxpull',label:'Max Pull-ups (reps)',unit:'reps',lower:false,benchmarks:[['Elite','>20'],['Good','12–20'],['Average','6–12'],['Below avg','<6']]},
+    {id:'maxpush',label:'Max Push-ups (reps)',unit:'reps',lower:false,benchmarks:[['Elite','>60'],['Good','40–60'],['Average','20–40'],['Below avg','<20']]},
+    {id:'mile',label:'1 Mile Run (mins)',unit:'min',lower:true,benchmarks:[['Elite','<5'],['Good','5–7'],['Average','7–10'],['Below avg','>10']]}
+  ];
+  var rows=TESTS.map(function(t){
+    return '<div style="padding:7px 0;border-bottom:1px solid #222;">'
+      +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;">'
+      +'<span style="font-size:13px;">'+t.label+'</span>'
+      +'<span id="rfc-ap-bm-'+t.id+'" style="font-size:10px;color:#ff9800;"></span></div>'
+      +'<div style="display:flex;gap:6px;">'
+      +'<input id="rfc-ap-v-'+t.id+'" type="number" min="0" step="0.01" placeholder="'+t.unit+'" style="flex:1;padding:6px;border-radius:6px;border:1px solid #333;background:#0d0d1a;color:#e0e0e0;font-size:12px;">'
+      +'<button onclick="window._rfcAPSave(\''+t.id+'\')" style="padding:6px 12px;border:none;border-radius:6px;background:#2196f3;color:#fff;font-size:11px;cursor:pointer;">Save</button>'
+      +'</div>'
+      +'<div style="font-size:10px;color:#555;margin-top:3px;">'+t.benchmarks.map(function(b){return '<span style="margin-right:6px;">'+b[0]+': '+b[1]+'</span>';}).join('')+'</div>'
+      +'</div>';
+  }).join('');
+  var c=_b70card('rfc-athperf-wrap','🏆 Athletic Performance Test');
+  c.innerHTML+=`
+<div style="font-size:12px;color:#aaa;margin-bottom:12px;">Log athletic performance benchmarks — compare to standards</div>
+${rows}
+<div id="rfc-ap-summary" style="margin-top:12px;"></div>`;
+  anchor.after(c);
+  _renderAthPerf();
+}
+window._rfcAPSave=function(id){
+  var val=parseFloat(document.getElementById('rfc-ap-v-'+id).value);
+  if(isNaN(val)){ alert('Enter a value'); return; }
+  var uid=_b70uid(), key='rfc_athperf_'+uid;
+  var data=_b70load(key)||{};
+  data[id]={val:val,date:_b70today()};
+  _b70save(key,data);
+  _showAPBenchmarks(id,val);
+  _showAPSummary(data);
+};
+function _showAPBenchmarks(id,val){
+  var TESTS=[
+    {id:'speed',lower:true,tiers:[4.2,4.8,5.5]},
+    {id:'jump',lower:false,tiers:[70,55,40]},
+    {id:'broad2',lower:false,tiers:[2.7,2.3,1.8]},
+    {id:'maxpull',lower:false,tiers:[20,12,6]},
+    {id:'maxpush',lower:false,tiers:[60,40,20]},
+    {id:'mile',lower:true,tiers:[5,7,10]}
+  ];
+  var t=TESTS.find(function(x){return x.id===id;});
+  if(!t) return;
+  var el=document.getElementById('rfc-ap-bm-'+id); if(!el) return;
+  var rank, col;
+  if(t.lower){ rank=val<t.tiers[0]?'Elite':val<t.tiers[1]?'Good':val<t.tiers[2]?'Average':'Below avg'; }
+  else { rank=val>t.tiers[0]?'Elite':val>t.tiers[1]?'Good':val>t.tiers[2]?'Average':'Below avg'; }
+  col=rank==='Elite'?'#ffd700':rank==='Good'?'#4caf50':rank==='Average'?'#ff9800':'#f44336';
+  el.textContent=rank; el.style.color=col;
+}
+function _showAPSummary(data){
+  var el=document.getElementById('rfc-ap-summary'); if(!el||!Object.keys(data).length) return;
+  el.innerHTML='<div style="font-size:12px;color:#aaa;margin-bottom:6px;">Last saved results</div><div style="display:flex;flex-wrap:wrap;gap:5px;">'
+    +Object.keys(data).map(function(k){
+      var LABELS={speed:'30m Sprint',jump:'Vertical',broad2:'Broad Jump',maxpull:'Pull-ups',maxpush:'Push-ups',mile:'Mile Run'};
+      var UNITS={speed:'s',jump:'cm',broad2:'m',maxpull:'reps',maxpush:'reps',mile:'min'};
+      return '<div style="background:#0d0d1a;border-radius:8px;padding:7px 10px;text-align:center;"><div style="font-size:14px;font-weight:700;color:#2196f3;">'+data[k].val+(UNITS[k]||'')+' </div><div style="font-size:10px;color:#aaa;">'+(LABELS[k]||k)+'</div></div>';
+    }).join('')+'</div>';
+}
+function _renderAthPerf(){
+  if(!document.getElementById('rfc-athperf-wrap')) return;
+  var uid=_b70uid(), key='rfc_athperf_'+uid;
+  var data=_b70load(key)||{};
+  Object.keys(data).forEach(function(id){
+    var el=document.getElementById('rfc-ap-v-'+id);
+    if(el) el.value=data[id].val;
+    _showAPBenchmarks(id,data[id].val);
+  });
+  _showAPSummary(data);
+}
+
+/* ── switchScreen wrapper ── */
+window.switchScreen=function(name,navEl){
+  _origSS68&&_origSS68(name,navEl);
+  if(name==='dashboard') setTimeout(function(){ _injectMindset(); _renderMindset(); },1200);
+  if(name==='nutrition') setTimeout(function(){ _injectHealthyCarb(); _renderHealthyCarb(); },1100);
+  if(name==='workouts')  setTimeout(function(){ _injectAthPerf(); _renderAthPerf(); },1050);
+};
+
+setTimeout(function(){ _injectMindset(); _injectHealthyCarb(); _injectAthPerf(); _renderMindset(); _renderHealthyCarb(); _renderAthPerf(); },62000);
+setTimeout(function(){
+  if(!document.getElementById('rfc-mindset-wrap')) { _injectMindset(); _renderMindset(); }
+  if(!document.getElementById('rfc-hcarb-wrap'))   { _injectHealthyCarb(); _renderHealthyCarb(); }
+  if(!document.getElementById('rfc-athperf-wrap')) { _injectAthPerf(); _renderAthPerf(); }
+},66000);
+})();
+</script>
+
 </body>
 </html>
