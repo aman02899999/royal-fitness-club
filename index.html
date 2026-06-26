@@ -39043,5 +39043,176 @@ setTimeout(function(){ if(!document.getElementById('rfc-hormone-wrap')) _injectH
 })();
 </script>
 
+<script>
+/* ===== BATCH 52: Daily Wins Journal | Inflammation Index | 30-Day Stretch Challenge ===== */
+(function(){ 'use strict';
+var _origSS50=window.switchScreen;
+function _b52uid(){ try{ return JSON.parse(localStorage.getItem('bm_user')||'{}').uid||'guest'; }catch(e){ return 'guest'; } }
+function _b52today(){ var d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function _b52load(k){ try{ return JSON.parse(localStorage.getItem(k))||null; }catch(e){ return null; } }
+function _b52save(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} }
+function _b52card(id,title){ var d=document.createElement('div'); d.id=id; d.style.cssText='background:#1a1a2e;border-radius:14px;padding:18px;margin:14px 0;color:#e0e0e0;font-family:inherit;'; d.innerHTML='<div style="font-size:15px;font-weight:700;color:#00d4ff;margin-bottom:14px;">'+title+'</div>'; return d; }
+
+/* ---------- DAILY WINS JOURNAL (dashboard) ---------- */
+function _injectWins(){
+  if(document.getElementById('rfc-wins-wrap')) return;
+  var anchor=document.getElementById('rfc-hormone-wrap')||document.getElementById('rfc-wellwheel-wrap')||document.getElementById('rfc-longevity-wrap')||document.getElementById('rfc-cortisol-wrap')||document.querySelector('.dash-topbar');
+  if(!anchor) return;
+  var card=_b52card('rfc-wins-wrap','🏆 Daily Wins Journal');
+  card.style.cssText+='border:1px solid #2a1a00;';
+  anchor.parentNode.insertBefore(card,anchor.nextSibling);
+  _renderWins();
+}
+function _renderWins(){
+  var card=document.getElementById('rfc-wins-wrap'); if(!card) return;
+  var uid=_b52uid(), today=_b52today();
+  var key='rfc_wins_'+uid+'_'+today;
+  var wins=_b52load(key)||[];
+  var streak=0; var d=new Date(); for(var i=0;i<30;i++){ var dk=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); var w=_b52load('rfc_wins_'+uid+'_'+dk); if(w&&w.length>0) streak++; else if(i>0) break; d.setDate(d.getDate()-1); }
+  var html='<div style="font-size:15px;font-weight:700;color:#00d4ff;margin-bottom:14px;">🏆 Daily Wins Journal</div>';
+  html+='<div style="display:flex;gap:10px;margin-bottom:14px;">';
+  html+='<div style="flex:1;background:#12122a;border-radius:9px;padding:10px;text-align:center;"><div style="font-size:24px;font-weight:800;color:#ffd700;">'+wins.length+'</div><div style="font-size:11px;color:#888;">Wins Today</div></div>';
+  html+='<div style="flex:1;background:#12122a;border-radius:9px;padding:10px;text-align:center;"><div style="font-size:24px;font-weight:800;color:#ff9f43;">'+streak+'</div><div style="font-size:11px;color:#888;">Day Streak 🔥</div></div></div>';
+  html+='<div style="font-size:12px;color:#aaa;margin-bottom:8px;">Log a win — big or small:</div>';
+  html+='<div style="display:flex;gap:8px;margin-bottom:12px;">';
+  html+='<input type="text" id="rfc-win-inp" placeholder="e.g. Hit my protein goal..." style="flex:1;background:#0d0d20;border:1px solid #2a2a4a;color:#fff;border-radius:7px;padding:9px;font-size:13px;">';
+  html+='<button onclick="window._rfcWinAdd()" style="background:#ffd700;border:none;color:#000;padding:9px 14px;border-radius:7px;font-size:13px;font-weight:800;cursor:pointer;">+</button></div>';
+  if(wins.length){
+    html+='<div style="margin-bottom:12px;">';
+    wins.forEach(function(w,i){ html+='<div style="display:flex;align-items:center;gap:8px;padding:8px;background:#1a1a0d;border-left:3px solid #ffd700;border-radius:0 7px 7px 0;margin-bottom:4px;"><span style="font-size:14px;">🏆</span><div style="flex:1;font-size:13px;color:#ffd700;">'+w+'</div><button onclick="window._rfcWinDel('+i+')" style="background:none;border:none;color:#555;font-size:14px;cursor:pointer;">✕</button></div>'; });
+    html+='</div>';
+  }
+  html+='<div style="font-size:12px;color:#888;margin-bottom:6px;">Recent Days:</div>';
+  var histDays=[]; var hd=new Date(); for(var j=1;j<=5;j++){ hd.setDate(hd.getDate()-1); var hdk=hd.getFullYear()+'-'+String(hd.getMonth()+1).padStart(2,'0')+'-'+String(hd.getDate()).padStart(2,'0'); var hw=_b52load('rfc_wins_'+uid+'_'+hdk)||[]; histDays.push({date:hdk,wins:hw}); }
+  html+='<div style="display:flex;gap:6px;">';
+  histDays.forEach(function(h){ html+='<div style="flex:1;text-align:center;background:#12122a;border-radius:7px;padding:6px;"><div style="font-size:16px;">'+(h.wins.length>0?'🏆':'·')+'</div><div style="font-size:9px;color:#666;">'+h.date.slice(8)+'/'+h.date.slice(5,7)+'</div><div style="font-size:10px;color:'+(h.wins.length?'#ffd700':'#555')+';">'+h.wins.length+'w</div></div>'; });
+  html+='</div>';
+  card.innerHTML=html;
+}
+window._rfcWinAdd=function(){ var inp=document.getElementById('rfc-win-inp'); var val=inp&&inp.value.trim(); if(!val) return; var uid=_b52uid(), today=_b52today(); var key='rfc_wins_'+uid+'_'+today; var wins=_b52load(key)||[]; wins.push(val); if(wins.length>10) wins=wins.slice(-10); _b52save(key,wins); inp.value=''; _renderWins(); };
+window._rfcWinDel=function(i){ var uid=_b52uid(), today=_b52today(); var key='rfc_wins_'+uid+'_'+today; var wins=_b52load(key)||[]; wins.splice(i,1); _b52save(key,wins); _renderWins(); };
+
+/* ---------- INFLAMMATION INDEX (nutrition) ---------- */
+var ANTI_INFL_I=[
+  {id:'ai_turmeric',label:'Turmeric/Curcumin',icon:'🟡'},
+  {id:'ai_ginger',label:'Ginger',icon:'🫚'},
+  {id:'ai_berries_i',label:'Berries',icon:'🫐'},
+  {id:'ai_fish_i',label:'Fatty Fish',icon:'🐟'},
+  {id:'ai_nuts_i',label:'Walnuts/Almonds',icon:'🥜'},
+  {id:'ai_leafy_i',label:'Dark Leafy Greens',icon:'🥬'},
+  {id:'ai_olive_i',label:'Extra Virgin Olive Oil',icon:'🫒'},
+  {id:'ai_greentea_i',label:'Green Tea',icon:'🍵'},
+  {id:'ai_beet_i',label:'Beetroot',icon:'🟣'},
+  {id:'ai_broc_i',label:'Broccoli',icon:'🥦'}
+];
+var PRO_INFL_I=[
+  {id:'pi_trans',label:'Fried/Trans fat foods',icon:'🍟'},
+  {id:'pi_sugar',label:'Refined sugar/sweets',icon:'🍬'},
+  {id:'pi_procmeat',label:'Processed meat',icon:'🥓'},
+  {id:'pi_refined',label:'White bread/refined carbs',icon:'🍞'},
+  {id:'pi_alc_i',label:'Alcohol',icon:'🍺'}
+];
+function _injectInflam(){
+  if(document.getElementById('rfc-inflam-wrap')) return;
+  var anchor=document.getElementById('rfc-foodsens-wrap')||document.getElementById('rfc-maccycle50-wrap')||document.getElementById('rfc-callog-wrap')||document.getElementById('rfc-prosyn-wrap')||document.querySelector('.dash-topbar');
+  if(!anchor) return;
+  var card=_b52card('rfc-inflam-wrap','🔥 Inflammation Index');
+  card.style.cssText+='border:1px solid #2a1a1a;';
+  anchor.parentNode.insertBefore(card,anchor.nextSibling);
+  _renderInflam();
+}
+function _renderInflam(){
+  var card=document.getElementById('rfc-inflam-wrap'); if(!card) return;
+  var uid=_b52uid(), today=_b52today();
+  var key='rfc_inflam_'+uid+'_'+today;
+  var data=_b52load(key)||{};
+  var anti=ANTI_INFL_I.filter(function(f){ return !!data[f.id]; }).length;
+  var pro=PRO_INFL_I.filter(function(f){ return !!data[f.id]; }).length;
+  var idx=anti-pro*2;
+  var ic=idx>=5?'#00ff88':idx>=1?'#ffd700':idx>=0?'#ff9f43':'#ff6b6b';
+  var html='<div style="font-size:15px;font-weight:700;color:#00d4ff;margin-bottom:14px;">🔥 Inflammation Index</div>';
+  html+='<div style="display:flex;align-items:center;gap:14px;margin-bottom:14px;">';
+  html+='<div style="font-size:42px;font-weight:800;color:'+ic+';">'+(idx>0?'+':'')+idx+'</div>';
+  html+='<div><div style="font-size:14px;font-weight:700;color:'+ic+';">'+(idx>=5?'Anti-Inflammatory':idx>=1?'Slight Anti':idx===0?'Neutral':'Pro-Inflammatory')+'</div><div style="font-size:12px;color:#888;">'+anti+' anti − '+pro+'×2 pro = '+idx+'</div></div></div>';
+  html+='<div style="font-size:12px;color:#00ff88;font-weight:700;margin-bottom:7px;">Anti-Inflammatory Foods:</div>';
+  html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px;">';
+  ANTI_INFL_I.forEach(function(f){ var ok=!!data[f.id]; html+='<div onclick="window._rfcIITap(\''+f.id+'\')" style="cursor:pointer;background:'+(ok?'#0d2a1a':'#12122a')+';border:1px solid '+(ok?'#00ff88':'#2a2a4a')+';border-radius:8px;padding:7px;display:flex;align-items:center;gap:6px;"><span style="font-size:13px;">'+f.icon+'</span><span style="flex:1;font-size:11px;color:'+(ok?'#00ff88':'#ccc')+';">'+f.label+'</span><span>'+(ok?'✅':'⭕')+'</span></div>'; });
+  html+='</div>';
+  html+='<div style="font-size:12px;color:#ff6b6b;font-weight:700;margin-bottom:7px;">Pro-Inflammatory Foods Eaten:</div>';
+  html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">';
+  PRO_INFL_I.forEach(function(f){ var ok=!!data[f.id]; html+='<div onclick="window._rfcIITap(\''+f.id+'\')" style="cursor:pointer;background:'+(ok?'#2a0d0d':'#12122a')+';border:1px solid '+(ok?'#ff6b6b':'#2a2a4a')+';border-radius:8px;padding:7px;display:flex;align-items:center;gap:6px;"><span style="font-size:13px;">'+f.icon+'</span><span style="flex:1;font-size:11px;color:'+(ok?'#ff6b6b':'#ccc')+';">'+f.label+'</span><span>'+(ok?'❌':'✅')+'</span></div>'; });
+  html+='</div>';
+  card.innerHTML=html;
+}
+window._rfcIITap=function(id){ var uid=_b52uid(), today=_b52today(); var key='rfc_inflam_'+uid+'_'+today; var data=_b52load(key)||{}; data[id]=!data[id]; _b52save(key,data); _renderInflam(); };
+
+/* ---------- 30-DAY STRETCH CHALLENGE (workouts) ---------- */
+var STRETCH30_SESSIONS=[
+  'Hip flexor stretch (2min each side)','Hamstring doorway stretch (90sec each)','Thoracic spine opener (2min)','Pigeon pose (2min each side)','Shoulder cross-body stretch (90sec)','Cat-cow spine mobilisation (2min)','Standing quad stretch (90sec each)','Seated forward fold (2min)','Wall ankle stretch (90sec each)','Child\'s pose (2min)','Lizard lunge (2min each side)','Overhead tricep stretch (90sec)','Side-lying quad stretch (2min each)','Downward dog hold (2min)','Butterfly inner thigh (2min)','Neck rolls and tilts (2min)','Lower back knee hug (2min)','Supine spinal twist (2min each)','Standing side bend (90sec each)','Glute figure-4 stretch (2min each)','Wrist and forearm stretch (2min)','Chest doorway stretch (2min)','IT band foam roll (2min each)','Deep squat hold (2min)','Frog hip stretch (2min)','Bridge hip opener (2min)','Cobra or up-dog (2min)','Eagle arms shoulder stretch (90sec)','Seated straddle fold (2min)','Full body yin session (5min holds)'
+];
+function _injectStretch30(){
+  if(document.getElementById('rfc-stretch30-wrap')) return;
+  var anchor=document.getElementById('rfc-olympic-wrap')||document.getElementById('rfc-blockplan-wrap')||document.getElementById('rfc-restimer-wrap')||document.getElementById('rfc-progover-wrap')||document.querySelector('.dash-topbar');
+  if(!anchor) return;
+  var card=_b52card('rfc-stretch30-wrap','🧘 30-Day Stretch Challenge');
+  card.style.cssText+='border:1px solid #1a2a3a;';
+  anchor.parentNode.insertBefore(card,anchor.nextSibling);
+  _renderStretch30();
+}
+function _renderStretch30(){
+  var card=document.getElementById('rfc-stretch30-wrap'); if(!card) return;
+  var uid=_b52uid(), today=_b52today();
+  var key='rfc_stretch30_'+uid;
+  var data=_b52load(key)||{startDate:null,completed:[]};
+  var completed=data.completed||[];
+  var dayNum=data.startDate?Math.floor((new Date(today).getTime()-new Date(data.startDate).getTime())/86400000)+1:0;
+  var pct=Math.round((completed.length/30)*100);
+  var pc=pct>=80?'#00ff88':pct>=50?'#ffd700':'#00d4ff';
+  var html='<div style="font-size:15px;font-weight:700;color:#00d4ff;margin-bottom:14px;">🧘 30-Day Stretch Challenge</div>';
+  if(!data.startDate){
+    html+='<div style="background:#0d1a2a;border-radius:10px;padding:14px;text-align:center;"><div style="font-size:14px;color:#aaa;margin-bottom:10px;">Start a 30-day daily stretching challenge to dramatically improve your flexibility and mobility.</div><button onclick="window._rfcS30Start()" style="background:#00d4ff;border:none;color:#000;padding:12px 24px;border-radius:10px;font-size:14px;font-weight:800;cursor:pointer;">🚀 Start Challenge</button></div>';
+  } else {
+    html+='<div style="display:flex;align-items:center;gap:14px;margin-bottom:14px;">';
+    html+='<div style="font-size:36px;font-weight:800;color:'+pc+';">'+completed.length+'<span style="font-size:18px;color:#888;">/30</span></div>';
+    html+='<div><div style="font-size:14px;color:'+pc+';font-weight:700;">'+(completed.length>=30?'🎉 COMPLETED!':pct+'% Done')+'</div><div style="font-size:12px;color:#888;">Day '+(dayNum>30?30:dayNum)+' of 30</div></div></div>';
+    html+='<div style="background:#1a2a3a;border-radius:8px;height:10px;margin-bottom:14px;overflow:hidden;"><div style="height:10px;background:'+pc+';width:'+pct+'%;border-radius:8px;transition:width 0.4s;"></div></div>';
+    var todayDone=completed.indexOf(today)!==-1;
+    if(!todayDone&&dayNum>=1&&dayNum<=30){
+      var sessionIdx=dayNum-1;
+      html+='<div style="background:#0d1a2a;border-radius:10px;padding:12px;margin-bottom:12px;">';
+      html+='<div style="font-size:12px;color:#888;margin-bottom:6px;">Day '+dayNum+' Session:</div>';
+      html+='<div style="font-size:13px;color:#00d4ff;margin-bottom:10px;">'+STRETCH30_SESSIONS[sessionIdx]+'</div>';
+      html+='<button onclick="window._rfcS30Done()" style="width:100%;background:#00ff88;border:none;color:#000;padding:10px;border-radius:8px;font-size:13px;font-weight:800;cursor:pointer;">✅ Mark Today Done</button></div>';
+    } else if(todayDone){
+      html+='<div style="background:#0d2a1a;border:1px solid #00ff88;border-radius:9px;padding:10px;margin-bottom:12px;text-align:center;"><div style="font-size:13px;color:#00ff88;">✅ Today\'s session complete! Great work!</div></div>';
+    }
+    html+='<div style="display:grid;grid-template-columns:repeat(6,1fr);gap:4px;">';
+    for(var i=0;i<30;i++){
+      var dt=new Date(data.startDate); dt.setDate(dt.getDate()+i);
+      var dk=dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0')+'-'+String(dt.getDate()).padStart(2,'0');
+      var done=completed.indexOf(dk)!==-1;
+      var isToday=dk===today;
+      html+='<div style="text-align:center;padding:4px;background:'+(done?'#0d2a1a':isToday?'#0d1a2a':'#12122a')+';border:1px solid '+(done?'#00ff88':isToday?'#00d4ff':'#2a2a4a')+';border-radius:5px;"><div style="font-size:9px;color:#666;">'+( i+1)+'</div><div style="font-size:12px;">'+(done?'✅':isToday?'📍':'·')+'</div></div>';
+    }
+    html+='</div>';
+    if(completed.length>=30) html+='<button onclick="window._rfcS30Reset()" style="width:100%;margin-top:10px;background:#ff6b6b;border:none;color:#fff;padding:7px;border-radius:7px;font-size:12px;cursor:pointer;">Reset Challenge</button>';
+  }
+  card.innerHTML=html;
+}
+window._rfcS30Start=function(){ var uid=_b52uid(); var key='rfc_stretch30_'+uid; var data={startDate:_b52today(),completed:[]}; _b52save(key,data); _renderStretch30(); };
+window._rfcS30Done=function(){ var uid=_b52uid(), today=_b52today(); var key='rfc_stretch30_'+uid; var data=_b52load(key)||{completed:[]}; if(!data.completed.includes(today)) data.completed.push(today); _b52save(key,data); _renderStretch30(); };
+window._rfcS30Reset=function(){ var uid=_b52uid(); _b52save('rfc_stretch30_'+uid,{startDate:null,completed:[]}); _renderStretch30(); };
+
+window.switchScreen=function(name,navEl){
+  _origSS50&&_origSS50(name,navEl);
+  if(name==='dashboard') setTimeout(function(){ _injectWins(); _renderWins(); },1200);
+  if(name==='nutrition') setTimeout(function(){ _injectInflam(); _renderInflam(); },1100);
+  if(name==='workouts')  setTimeout(function(){ _injectStretch30(); _renderStretch30(); },1050);
+};
+setTimeout(function(){ _injectWins(); _injectInflam(); _injectStretch30(); },44000);
+setTimeout(function(){ if(!document.getElementById('rfc-wins-wrap')) _injectWins(); if(!document.getElementById('rfc-inflam-wrap')) _injectInflam(); if(!document.getElementById('rfc-stretch30-wrap')) _injectStretch30(); },48000);
+})();
+</script>
+
 </body>
 </html>
