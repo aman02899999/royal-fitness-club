@@ -37744,5 +37744,204 @@ setTimeout(function(){ if(!document.getElementById('rfc-sleepenv-wrap')) _inject
 })();
 </script>
 
+<script>
+/* ===== BATCH 45: Social Fitness Log | Glycemic Load Tracker | 1RM Calculator ===== */
+(function(){ 'use strict';
+var _origSS43=window.switchScreen;
+function _b45uid(){ try{ return JSON.parse(localStorage.getItem('bm_user')||'{}').uid||'guest'; }catch(e){ return 'guest'; } }
+function _b45today(){ var d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function _b45load(k){ try{ return JSON.parse(localStorage.getItem(k))||null; }catch(e){ return null; } }
+function _b45save(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} }
+function _b45card(id,title){ var d=document.createElement('div'); d.id=id; d.style.cssText='background:#1a1a2e;border-radius:14px;padding:18px;margin:14px 0;color:#e0e0e0;font-family:inherit;'; d.innerHTML='<div style="font-size:15px;font-weight:700;color:#00d4ff;margin-bottom:14px;">'+title+'</div>'; return d; }
+
+/* ---------- SOCIAL FITNESS LOG (dashboard) ---------- */
+var SOCIAL_ACTS=[
+  {id:'group',label:'Group Fitness Class',pts:3,icon:'👥'},
+  {id:'trainer',label:'Personal Trainer Session',pts:3,icon:'🏋️'},
+  {id:'partner',label:'Workout with Partner',pts:2,icon:'🤝'},
+  {id:'challenge',label:'Fitness Challenge',pts:2,icon:'🏆'},
+  {id:'shared',label:'Shared Progress Online',pts:1,icon:'📱'},
+  {id:'coached',label:'Online Coaching Session',pts:2,icon:'💻'},
+  {id:'team',label:'Team Sport Activity',pts:3,icon:'⚽'},
+  {id:'event',label:'Fitness Event/Race',pts:3,icon:'🏅'}
+];
+function _b45weekKey(){ var d=new Date(); var day=d.getDay(); var diff=d.getDate()-day+(day===0?-6:1); d.setDate(diff); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function _injectSocial(){
+  if(document.getElementById('rfc-social-wrap')) return;
+  var anchor=document.getElementById('rfc-sleepenv-wrap')||document.getElementById('rfc-focus-wrap')||document.getElementById('rfc-posture-wrap')||document.getElementById('rfc-bodcomp-wrap')||document.querySelector('.dash-topbar');
+  if(!anchor) return;
+  var card=_b45card('rfc-social-wrap','👥 Social Fitness Log');
+  card.style.cssText+='border:1px solid #2a1a3a;';
+  anchor.parentNode.insertBefore(card,anchor.nextSibling);
+  _renderSocial();
+}
+function _renderSocial(){
+  var card=document.getElementById('rfc-social-wrap'); if(!card) return;
+  var uid=_b45uid(), today=_b45today(), wk=_b45weekKey();
+  var dkey='rfc_social_'+uid+'_'+today;
+  var wkey='rfc_socialw_'+uid+'_'+wk;
+  var todayData=_b45load(dkey)||{};
+  var weekData=_b45load(wkey)||{total:0,days:[]};
+  var todayPts=SOCIAL_ACTS.reduce(function(a,s){ return a+(todayData[s.id]?s.pts:0); },0);
+  var weekPts=weekData.total||0;
+  var pc=weekPts>=10?'#00ff88':weekPts>=5?'#ffd700':'#aaa';
+  var html='<div style="font-size:15px;font-weight:700;color:#00d4ff;margin-bottom:14px;">👥 Social Fitness Log</div>';
+  html+='<div style="display:flex;gap:10px;margin-bottom:14px;">';
+  html+='<div style="flex:1;background:#12122a;border-radius:9px;padding:10px;text-align:center;"><div style="font-size:22px;font-weight:800;color:#a855f7;">'+todayPts+'</div><div style="font-size:11px;color:#888;">Today\'s Points</div></div>';
+  html+='<div style="flex:1;background:#12122a;border-radius:9px;padding:10px;text-align:center;"><div style="font-size:22px;font-weight:800;color:'+pc+';">'+weekPts+'</div><div style="font-size:11px;color:#888;">Week Points</div></div>';
+  html+='<div style="flex:1;background:#12122a;border-radius:9px;padding:10px;text-align:center;"><div style="font-size:22px;font-weight:800;color:'+(weekPts>=10?'#ffd700':'#555')+';">'+(weekPts>=15?'🌟':weekPts>=10?'🔥':weekPts>=5?'💪':'😴')+'</div><div style="font-size:11px;color:#888;">Status</div></div></div>';
+  html+='<div style="font-size:12px;color:'+pc+';margin-bottom:10px;font-weight:600;">'+(weekPts>=15?'Social fitness champion this week!':weekPts>=10?'Great social fitness engagement!':weekPts>=5?'Good — try a group class or partner workout':'Schedule a group workout or training partner')+'</div>';
+  html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;">';
+  SOCIAL_ACTS.forEach(function(s){
+    var ok=!!todayData[s.id];
+    html+='<div onclick="window._rfcSocialTap(\''+s.id+'\')" style="cursor:pointer;background:'+(ok?'#1a0a2e':'#12122a')+';border:1px solid '+(ok?'#a855f7':'#2a2a4a')+';border-radius:9px;padding:9px;display:flex;align-items:center;gap:7px;">';
+    html+='<span style="font-size:15px;">'+s.icon+'</span>';
+    html+='<div style="flex:1;"><div style="font-size:11px;color:'+(ok?'#a855f7':'#ccc')+';">'+s.label+'</div><div style="font-size:10px;color:#ffd700;">+'+s.pts+' pts</div></div>';
+    html+='<span>'+(ok?'✅':'⭕')+'</span></div>';
+  });
+  html+='</div>';
+  card.innerHTML=html;
+}
+window._rfcSocialTap=function(id){
+  var uid=_b45uid(), today=_b45today(), wk=_b45weekKey();
+  var dkey='rfc_social_'+uid+'_'+today; var wkey='rfc_socialw_'+uid+'_'+wk;
+  var todayData=_b45load(dkey)||{}; var weekData=_b45load(wkey)||{total:0};
+  var act=SOCIAL_ACTS.find(function(s){ return s.id===id; });
+  var wasOn=!!todayData[id];
+  todayData[id]=!wasOn;
+  weekData.total=(weekData.total||0)+(wasOn?-act.pts:act.pts);
+  weekData.total=Math.max(0,weekData.total);
+  _b45save(dkey,todayData); _b45save(wkey,weekData); _renderSocial();
+};
+
+/* ---------- GLYCEMIC LOAD TRACKER (nutrition) ---------- */
+var GL_FOODS=[
+  {id:'white_rice',label:'White Rice (150g)',gi:72,carbs:55,icon:'🍚'},
+  {id:'brown_rice',label:'Brown Rice (150g)',gi:50,carbs:43,icon:'🍚'},
+  {id:'pasta',label:'Pasta (180g)',gi:41,carbs:56,icon:'🍝'},
+  {id:'bread_white',label:'White Bread (1 slice)',gi:75,carbs:12,icon:'🍞'},
+  {id:'bread_whole',label:'Whole Wheat Bread (1)',gi:51,carbs:12,icon:'🍞'},
+  {id:'banana',label:'Banana (1 medium)',gi:52,carbs:27,icon:'🍌'},
+  {id:'apple',label:'Apple (1 medium)',gi:38,carbs:21,icon:'🍎'},
+  {id:'oats',label:'Oats (50g dry)',gi:55,carbs:34,icon:'🌾'},
+  {id:'potato',label:'Boiled Potato (150g)',gi:82,carbs:27,icon:'🥔'},
+  {id:'sweet_potato',label:'Sweet Potato (150g)',gi:54,carbs:27,icon:'🍠'},
+  {id:'quinoa',label:'Quinoa (185g cooked)',gi:53,carbs:39,icon:'🌾'},
+  {id:'lentils',label:'Lentils (200g cooked)',gi:32,carbs:40,icon:'🫘'}
+];
+function _injectGlycemic(){
+  if(document.getElementById('rfc-glycemic-wrap')) return;
+  var anchor=document.getElementById('rfc-vegvar-wrap')||document.getElementById('rfc-macsplit-wrap')||document.getElementById('rfc-omega3-wrap')||document.getElementById('rfc-if-wrap')||document.querySelector('.dash-topbar');
+  if(!anchor) return;
+  var card=_b45card('rfc-glycemic-wrap','📊 Glycemic Load Tracker');
+  card.style.cssText+='border:1px solid #2a2a1a;';
+  anchor.parentNode.insertBefore(card,anchor.nextSibling);
+  _renderGlycemic();
+}
+function _renderGlycemic(){
+  var card=document.getElementById('rfc-glycemic-wrap'); if(!card) return;
+  var uid=_b45uid(), today=_b45today();
+  var key='rfc_glycemic_'+uid+'_'+today;
+  var data=_b45load(key)||{};
+  var totalGL=0;
+  GL_FOODS.forEach(function(f){ if(data[f.id]) totalGL+=Math.round((f.gi*f.carbs)/100); });
+  var glTarget=100;
+  var pct=Math.min(100,Math.round((totalGL/glTarget)*100));
+  var gc=totalGL<=glTarget?'#00ff88':totalGL<=130?'#ffd700':'#ff6b6b';
+  var html='<div style="font-size:15px;font-weight:700;color:#00d4ff;margin-bottom:14px;">📊 Glycemic Load Tracker</div>';
+  html+='<div style="font-size:12px;color:#888;margin-bottom:10px;">GL = GI × carbs/100. Daily target ≤100 for blood sugar stability.</div>';
+  html+='<div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">';
+  html+='<div style="font-size:36px;font-weight:800;color:'+gc+';">'+totalGL+'<span style="font-size:14px;color:#888;">/'+glTarget+'</span></div>';
+  html+='<div style="flex:1;"><div style="background:#1a2a1a;border-radius:6px;height:10px;overflow:hidden;margin-bottom:4px;"><div style="height:10px;background:'+gc+';width:'+pct+'%;border-radius:6px;transition:width 0.4s;"></div></div><div style="font-size:12px;color:'+gc+';">'+(totalGL<=glTarget?'Low GL — stable blood sugar':totalGL<=130?'Moderate GL':'High GL — may cause spikes')+'</div></div></div>';
+  html+='<div style="display:grid;gap:7px;">';
+  GL_FOODS.forEach(function(f){
+    var gl=Math.round((f.gi*f.carbs)/100);
+    var checked=!!data[f.id];
+    var gc2=f.gi<=55?'#00ff88':f.gi<=69?'#ffd700':'#ff6b6b';
+    html+='<div onclick="window._rfcGLTap(\''+f.id+'\')" style="cursor:pointer;background:'+(checked?'#1a1a0d':'#12122a')+';border:1px solid '+(checked?'#ffd700':'#2a2a4a')+';border-radius:9px;padding:9px 12px;display:flex;align-items:center;gap:8px;">';
+    html+='<span style="font-size:16px;">'+f.icon+'</span>';
+    html+='<div style="flex:1;"><div style="font-size:12px;color:'+(checked?'#ffd700':'#ccc')+';">'+f.label+'</div><div style="font-size:11px;"><span style="color:'+gc2+';">GI: '+f.gi+'</span> <span style="color:#aaa;">• GL: '+gl+'</span></div></div>';
+    html+='<span>'+(checked?'✅':'⭕')+'</span></div>';
+  });
+  html+='</div>';
+  card.innerHTML=html;
+}
+window._rfcGLTap=function(id){ var uid=_b45uid(), today=_b45today(); var key='rfc_glycemic_'+uid+'_'+today; var data=_b45load(key)||{}; data[id]=!data[id]; _b45save(key,data); _renderGlycemic(); };
+
+/* ---------- 1RM CALCULATOR (workouts) ---------- */
+var _1rmFormulas=[
+  {id:'epley',label:'Epley',fn:function(w,r){ return r===1?w:Math.round(w*(1+r/30)); }},
+  {id:'brzycki',label:'Brzycki',fn:function(w,r){ return r===1?w:Math.round(w*(36/(37-r))); }},
+  {id:'lander',label:'Lander',fn:function(w,r){ return r===1?w:Math.round((100*w)/(101.3-2.67123*r)); }},
+  {id:'oconner',label:"O'Conner",fn:function(w,r){ return r===1?w:Math.round(w*(1+r/40)); }}
+];
+var _1rmState={formula:'epley',exercise:'Bench Press',weight:100,reps:5};
+function _inject1RM(){
+  if(document.getElementById('rfc-1rm-wrap')) return;
+  var anchor=document.getElementById('rfc-cardio-wrap')||document.getElementById('rfc-p2w-wrap')||document.getElementById('rfc-rom-wrap')||document.getElementById('rfc-bands-wrap')||document.querySelector('.dash-topbar');
+  if(!anchor) return;
+  var card=_b45card('rfc-1rm-wrap','⚡ 1RM Estimator');
+  card.style.cssText+='border:1px solid #1a2a4a;';
+  anchor.parentNode.insertBefore(card,anchor.nextSibling);
+  _render1RM();
+}
+function _render1RM(){
+  var card=document.getElementById('rfc-1rm-wrap'); if(!card) return;
+  var uid=_b45uid();
+  var hkey='rfc_1rm_'+uid;
+  var hist=_b45load(hkey)||[];
+  var s=_1rmState;
+  var formula=_1rmFormulas.find(function(f){ return f.id===s.formula; })||_1rmFormulas[0];
+  var est=s.weight&&s.reps?formula.fn(s.weight,s.reps):0;
+  var allFormulas=_1rmFormulas.map(function(f){ return {label:f.label,val:f.fn(s.weight||0,s.reps||1)}; });
+  var pct=[100,95,90,85,80,75,70,65,60,55,50];
+  var html='<div style="font-size:15px;font-weight:700;color:#00d4ff;margin-bottom:14px;">⚡ 1RM Estimator</div>';
+  html+='<div style="display:grid;gap:8px;margin-bottom:14px;">';
+  html+='<div><div style="font-size:12px;color:#888;margin-bottom:4px;">Exercise</div><input type="text" id="rfc-1rm-ex" value="'+s.exercise+'" onchange="window._rfcRMSet(\'exercise\',this.value)" style="width:100%;background:#0d0d20;border:1px solid #2a2a4a;color:#fff;border-radius:7px;padding:8px;font-size:13px;box-sizing:border-box;"></div>';
+  html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">';
+  html+='<div><div style="font-size:12px;color:#888;margin-bottom:4px;">Weight (kg)</div><input type="number" id="rfc-1rm-wt" min="1" max="500" value="'+(s.weight||'')+'" onchange="window._rfcRMSet(\'weight\',parseFloat(this.value))" style="width:100%;background:#0d0d20;border:1px solid #2a2a4a;color:#fff;border-radius:7px;padding:8px;font-size:16px;font-weight:700;text-align:center;box-sizing:border-box;"></div>';
+  html+='<div><div style="font-size:12px;color:#888;margin-bottom:4px;">Reps Performed</div><input type="number" id="rfc-1rm-rp" min="1" max="30" value="'+(s.reps||'')+'" onchange="window._rfcRMSet(\'reps\',parseInt(this.value))" style="width:100%;background:#0d0d20;border:1px solid #2a2a4a;color:#fff;border-radius:7px;padding:8px;font-size:16px;font-weight:700;text-align:center;box-sizing:border-box;"></div>';
+  html+='</div></div>';
+  if(est){
+    html+='<div style="text-align:center;background:#0d1a2a;border-radius:12px;padding:14px;margin-bottom:12px;">';
+    html+='<div style="font-size:11px;color:#888;margin-bottom:4px;">Estimated 1RM ('+formula.label+')</div>';
+    html+='<div style="font-size:42px;font-weight:800;color:#ffd700;">'+est+'<span style="font-size:18px;">kg</span></div>';
+    html+='<div style="display:flex;justify-content:center;gap:10px;margin-top:6px;">';
+    allFormulas.forEach(function(f){ html+='<span style="font-size:11px;color:#888;">'+f.label+': '+f.val+'kg</span>'; });
+    html+='</div></div>';
+    html+='<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;">';
+    _1rmFormulas.forEach(function(f){ html+='<button onclick="window._rfcRMSet(\'formula\',\''+f.id+'\')" style="flex:1;min-width:70px;padding:6px;border-radius:7px;border:1px solid '+(s.formula===f.id?'#ffd700':'#2a2a4a')+';background:'+(s.formula===f.id?'#2a2a00':'#12122a')+';color:'+(s.formula===f.id?'#ffd700':'#888')+';font-size:12px;cursor:pointer;">'+f.label+'</button>'; });
+    html+='</div>';
+    html+='<div style="background:#12122a;border-radius:9px;padding:10px;margin-bottom:12px;"><div style="font-size:12px;color:#888;margin-bottom:6px;">Training Percentages</div>';
+    html+='<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:4px;">';
+    [100,95,90,85,80,75,70,65].forEach(function(p){ html+='<div style="text-align:center;padding:5px;background:#0d0d20;border-radius:5px;"><div style="font-size:11px;color:#888;">'+p+'%</div><div style="font-size:13px;font-weight:700;color:#00d4ff;">'+Math.round(est*p/100)+'kg</div></div>'; });
+    html+='</div></div>';
+    html+='<button onclick="window._rfcRMSave()" style="width:100%;background:#00ff88;border:none;color:#000;padding:9px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;margin-bottom:10px;">💾 Save to History</button>';
+  }
+  if(hist.length){ html+='<div style="font-size:12px;color:#888;margin-bottom:6px;">Recent PRs</div>'; hist.slice(-3).reverse().forEach(function(h){ html+='<div style="display:flex;justify-content:space-between;padding:7px;background:#12122a;border-radius:7px;margin-bottom:4px;"><span style="font-size:12px;color:#ccc;">'+h.exercise+'</span><span style="font-size:12px;font-weight:700;color:#ffd700;">'+h.est+'kg est</span><span style="font-size:11px;color:#666;">'+h.date+'</span></div>'; }); }
+  card.innerHTML=html;
+}
+window._rfcRMSet=function(k,v){ _1rmState[k]=v; _render1RM(); };
+window._rfcRMSave=function(){
+  var uid=_b45uid(); var hkey='rfc_1rm_'+uid;
+  var hist=_b45load(hkey)||[];
+  var s=_1rmState; var formula=_1rmFormulas.find(function(f){ return f.id===s.formula; })||_1rmFormulas[0];
+  var est=formula.fn(s.weight||0,s.reps||1);
+  hist.push({exercise:s.exercise,weight:s.weight,reps:s.reps,est:est,date:_b45today()});
+  if(hist.length>20) hist=hist.slice(-20);
+  _b45save(hkey,hist); _render1RM();
+};
+
+window.switchScreen=function(name,navEl){
+  _origSS43&&_origSS43(name,navEl);
+  if(name==='dashboard') setTimeout(function(){ _injectSocial(); _renderSocial(); },1200);
+  if(name==='nutrition') setTimeout(function(){ _injectGlycemic(); _renderGlycemic(); },1100);
+  if(name==='workouts')  setTimeout(function(){ _inject1RM(); _render1RM(); },1050);
+};
+setTimeout(function(){ _injectSocial(); _injectGlycemic(); _inject1RM(); },37000);
+setTimeout(function(){ if(!document.getElementById('rfc-social-wrap')) _injectSocial(); if(!document.getElementById('rfc-glycemic-wrap')) _injectGlycemic(); if(!document.getElementById('rfc-1rm-wrap')) _inject1RM(); },41000);
+})();
+</script>
+
 </body>
 </html>
