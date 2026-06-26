@@ -20362,6 +20362,174 @@ body.admin-logged-in #admin-theme-btn{display:flex;}
   0%{opacity:0;transform:translateX(22px) translateZ(-14px);}
   100%{opacity:1;transform:translateX(0) translateZ(0);}
 }
+
+/* ══════════════════════════════════════
+   AI FITNESS CHATBOT
+   ══════════════════════════════════════ */
+#rfc-chat-btn{
+  position:fixed;bottom:80px;right:16px;width:52px;height:52px;
+  background:linear-gradient(135deg,#e8001d,#b50017);
+  border-radius:50%;border:none;cursor:pointer;z-index:8500;
+  display:flex;align-items:center;justify-content:center;font-size:22px;
+  box-shadow:0 4px 20px rgba(232,0,29,.45);
+  transition:transform .18s,box-shadow .18s;
+}
+#rfc-chat-btn:hover{transform:scale(1.1);box-shadow:0 6px 28px rgba(232,0,29,.6);}
+#rfc-chat-btn .chat-badge{
+  position:absolute;top:-2px;right:-2px;background:#f59e0b;color:#000;
+  font-size:8px;font-weight:900;letter-spacing:.5px;border-radius:6px;
+  padding:1px 5px;font-family:'Barlow Condensed',sans-serif;
+}
+#rfc-chat-panel{
+  position:fixed;bottom:142px;right:12px;width:340px;max-width:calc(100vw - 24px);
+  background:rgba(14,14,16,.97);border:1px solid rgba(255,255,255,.1);
+  border-radius:20px;z-index:8500;
+  display:none;flex-direction:column;
+  box-shadow:0 16px 56px rgba(0,0,0,.8),0 0 0 1px rgba(232,0,29,.1);
+  overflow:hidden;
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
+  transform-origin:bottom right;
+  animation:chatOpen .22s cubic-bezier(.34,1.56,.64,1) both;
+}
+@keyframes chatOpen{
+  0%{opacity:0;transform:scale(.85) translateY(10px);}
+  100%{opacity:1;transform:scale(1) translateY(0);}
+}
+.chat-hdr{
+  background:linear-gradient(135deg,rgba(232,0,29,.18),rgba(245,158,11,.08));
+  border-bottom:1px solid rgba(255,255,255,.07);
+  padding:14px 16px;display:flex;align-items:center;gap:10px;
+}
+.chat-hdr-av{
+  width:34px;height:34px;background:linear-gradient(135deg,#e8001d,#b50017);
+  border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:18px;flex-shrink:0;
+}
+.chat-hdr-info{flex:1;}
+.chat-hdr-name{font-family:'Bebas Neue',sans-serif;font-size:17px;letter-spacing:1px;color:#fff;}
+.chat-hdr-status{font-size:10px;color:#22c55e;letter-spacing:.5px;}
+.chat-hdr-close{background:none;border:none;color:rgba(255,255,255,.35);font-size:20px;cursor:pointer;padding:2px 6px;line-height:1;}
+.chat-hdr-close:hover{color:#fff;}
+#rfc-chat-msgs{
+  height:320px;overflow-y:auto;padding:14px 12px;
+  display:flex;flex-direction:column;gap:8px;
+  scroll-behavior:smooth;
+}
+#rfc-chat-msgs::-webkit-scrollbar{width:3px;}
+#rfc-chat-msgs::-webkit-scrollbar-thumb{background:rgba(255,255,255,.15);border-radius:3px;}
+.chat-msg{
+  max-width:82%;padding:10px 13px;border-radius:14px;
+  font-size:13px;line-height:1.55;word-break:break-word;
+  animation:msgIn .2s ease both;
+}
+@keyframes msgIn{
+  0%{opacity:0;transform:translateY(8px);}
+  100%{opacity:1;transform:translateY(0);}
+}
+.chat-msg.bot{
+  align-self:flex-start;
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.08);
+  border-bottom-left-radius:4px;color:#e5e7eb;
+}
+.chat-msg.user{
+  align-self:flex-end;
+  background:linear-gradient(135deg,#e8001d,#c00019);
+  border-bottom-right-radius:4px;color:#fff;
+}
+.chat-typing{
+  align-self:flex-start;
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);
+  border-radius:14px;border-bottom-left-radius:4px;
+  padding:12px 16px;display:flex;gap:4px;align-items:center;
+}
+.chat-typing span{
+  width:6px;height:6px;background:rgba(255,255,255,.4);border-radius:50%;
+  animation:typingDot 1.2s ease-in-out infinite;
+}
+.chat-typing span:nth-child(2){animation-delay:.2s;}
+.chat-typing span:nth-child(3){animation-delay:.4s;}
+@keyframes typingDot{
+  0%,60%,100%{transform:translateY(0);opacity:.4;}
+  30%{transform:translateY(-5px);opacity:1;}
+}
+.chat-chips{
+  display:flex;gap:6px;flex-wrap:wrap;padding:0 12px 10px;
+}
+.chat-chip{
+  background:rgba(232,0,29,.12);border:1px solid rgba(232,0,29,.3);
+  border-radius:20px;padding:5px 11px;font-size:11px;font-weight:600;
+  color:#e8001d;cursor:pointer;transition:all .15s;
+  white-space:nowrap;
+}
+.chat-chip:hover{background:rgba(232,0,29,.25);color:#fff;}
+.chat-input-row{
+  display:flex;gap:8px;padding:10px 12px;
+  border-top:1px solid rgba(255,255,255,.07);
+  background:rgba(0,0,0,.3);
+}
+#rfc-chat-input{
+  flex:1;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);
+  border-radius:10px;padding:9px 12px;color:#fff;font-size:13px;
+  font-family:'Barlow',sans-serif;outline:none;
+  transition:border-color .2s;
+}
+#rfc-chat-input:focus{border-color:rgba(232,0,29,.5);}
+#rfc-chat-input::placeholder{color:rgba(255,255,255,.25);}
+.chat-send-btn{
+  background:linear-gradient(135deg,#e8001d,#b50017);border:none;
+  border-radius:10px;padding:9px 14px;color:#fff;font-size:16px;
+  cursor:pointer;transition:opacity .2s;flex-shrink:0;
+}
+.chat-send-btn:hover{opacity:.85;}
+
+/* ══════════════════════════════════════
+   WORKOUT TEMPLATES
+   ══════════════════════════════════════ */
+#wl-template-bar{
+  display:flex;gap:8px;align-items:center;margin-bottom:16px;flex-wrap:wrap;
+}
+#wl-tpl-select{
+  flex:1;min-width:0;background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.12);color:#fff;
+  border-radius:9px;padding:8px 12px;font-size:12px;
+  font-family:'Barlow',sans-serif;cursor:pointer;
+}
+#wl-tpl-select option{background:#111;}
+.wl-tpl-btn{
+  background:rgba(232,0,29,.13);border:1px solid rgba(232,0,29,.3);
+  border-radius:9px;padding:8px 13px;font-size:11px;font-weight:700;
+  color:#e8001d;cursor:pointer;letter-spacing:.5px;white-space:nowrap;
+  transition:all .18s;
+}
+.wl-tpl-btn:hover{background:rgba(232,0,29,.28);color:#fff;}
+
+/* ══════════════════════════════════════
+   EXERCISE AUTOCOMPLETE
+   ══════════════════════════════════════ */
+.ex-ac-wrap{position:relative;flex:1 1 0;}
+.ex-ac-input{
+  width:100%;background:var(--bg);border:1px solid var(--border);
+  color:var(--text);padding:8px 10px;border-radius:6px;
+  font-family:'Barlow',sans-serif;font-size:13px;
+}
+.ex-ac-input:focus{border-color:rgba(232,0,29,.5);outline:none;}
+.ex-ac-drop{
+  position:absolute;top:calc(100% + 3px);left:0;right:0;
+  background:#1a1a1a;border:1px solid rgba(255,255,255,.12);
+  border-radius:9px;z-index:9999;max-height:180px;overflow-y:auto;
+  box-shadow:0 8px 24px rgba(0,0,0,.6);display:none;
+}
+.ex-ac-drop.open{display:block;}
+.ex-ac-item{
+  padding:8px 12px;font-size:12px;cursor:pointer;
+  border-bottom:1px solid rgba(255,255,255,.05);color:#e5e7eb;
+  display:flex;gap:6px;align-items:center;transition:background .12s;
+}
+.ex-ac-item:last-child{border-bottom:none;}
+.ex-ac-item:hover,.ex-ac-item.highlighted{background:rgba(232,0,29,.14);}
+.ex-ac-muscle{font-size:10px;color:rgba(255,255,255,.35);margin-left:auto;}
 </style>
 
 <!-- ═══ Marketing JS ═══ -->
@@ -22349,6 +22517,455 @@ if(_origSwitchScreen){
     });
   };
 }
+
+})();
+</script>
+
+<!-- ═══════════════════════════════════════════════════
+     AI COACH CHAT  ·  WORKOUT TEMPLATES  ·  AUTOCOMPLETE
+     ═══════════════════════════════════════════════════ -->
+<button id="rfc-chat-btn" onclick="rfcChat.toggle()" title="Ask RFC Coach">
+  🐯<span class="chat-badge">AI</span>
+</button>
+
+<div id="rfc-chat-panel" style="display:none;">
+  <div class="chat-hdr">
+    <div class="chat-hdr-av">🐯</div>
+    <div class="chat-hdr-info">
+      <div class="chat-hdr-name">RFC Coach</div>
+      <div class="chat-hdr-status">● Online — Ask me anything</div>
+    </div>
+    <button class="chat-hdr-close" onclick="rfcChat.close()">✕</button>
+  </div>
+  <div id="rfc-chat-msgs"></div>
+  <div class="chat-chips" id="rfc-chat-chips"></div>
+  <div class="chat-input-row">
+    <input id="rfc-chat-input" placeholder="Ask about workouts, nutrition…"
+      onkeydown="if(event.key==='Enter')rfcChat.send()">
+    <button class="chat-send-btn" onclick="rfcChat.send()">➤</button>
+  </div>
+</div>
+
+<script>
+(function(){
+'use strict';
+
+/* ═══════════════════════════════════════════════
+   A.  AI FITNESS CHATBOT
+   ═══════════════════════════════════════════════ */
+var panel = document.getElementById('rfc-chat-panel');
+var msgsEl = document.getElementById('rfc-chat-msgs');
+var chipsEl = document.getElementById('rfc-chat-chips');
+var inputEl = document.getElementById('rfc-chat-input');
+var _open = false;
+var _typing = null;
+
+/* ── Q&A Database ── */
+var QA = [
+  /* PROTEIN */
+  { k:['protein','how much protein','protein intake','protein per day','daily protein'],
+    r:function(u){ var w=u&&u.weight?u.weight:null; if(w) return 'For your weight (<strong>'+w+'kg</strong>), aim for <strong>'+(Math.round(w*2.0))+'–'+(Math.round(w*2.5))+'g of protein per day</strong> 🥩<br><br>Best sources: chicken breast, eggs, paneer, Greek yoghurt, dal, whey. Spread across 4–5 meals for best absorption.'; return 'The golden rule: <strong>2.0–2.5g of protein per kg of bodyweight</strong> per day for muscle building.<br><br>For fat loss, keep protein HIGH (2.5g/kg) — it preserves muscle while you lose fat.'; },
+    chips:['Best protein foods?','Veg protein sources?','When to eat protein?'] },
+
+  /* CREATINE */
+  { k:['creatine','creatine monohydrate'],
+    r:function(){ return '<strong>Creatine monohydrate</strong> is the most researched supplement in history ✅<br><br>• 3–5g daily (loading phase not required)<br>• Take any time — with meals is fine<br>• Expect +5–10% strength in first 4 weeks<br>• Drink extra water (500ml more/day)'; },
+    chips:['Any side effects?','Best brand?','Protein shake too?'] },
+
+  /* SLEEP */
+  { k:['sleep','recovery','rest','how many hours'],
+    r:function(){ return '<strong>Sleep is where gains happen</strong> 💤<br><br>Growth hormone peaks during deep sleep (10pm–2am window is key). 7–9 hours is optimal.<br><br>Tips: no screens 1hr before bed, blackout curtains, room temperature 18–20°C, same wake time daily.'; },
+    chips:['Best recovery foods?','Cold shower benefits?','Sleep vs gym?'] },
+
+  /* BELLY FAT */
+  { k:['belly fat','stomach fat','lose belly','reduce waist','abs','six pack'],
+    r:function(){ return 'You cannot spot-reduce fat 🔬 Belly fat goes last for most people.<br><br><strong>The formula:</strong><br>1. Calorie deficit (500 kcal/day = 0.5kg loss/week)<br>2. High protein to preserve muscle<br>3. Resistance training + cardio<br>4. Sleep 7–9 hours<br><br>Your Beast Score in RFC tracks your progress — calculate it in the Score section!'; },
+    chips:['Best cardio for fat loss?','How fast will I see results?','Diet tips?'] },
+
+  /* MUSCLE GAIN */
+  { k:['build muscle','gain muscle','muscle building','hypertrophy','bulk','bulking'],
+    r:function(){ return '<strong>Muscle building requires 3 things:</strong><br><br>1. <strong>Calorie surplus</strong> — 300–400 kcal above TDEE<br>2. <strong>Progressive overload</strong> — add weight or reps every week<br>3. <strong>Protein</strong> — 2–2.5g/kg daily<br><br>Best split: PPL 6×/week or Upper/Lower 4×/week. Your RFC app has all splits programmed! 💪'; },
+    chips:['Best workout split?','How much to eat?','Supplements for muscle?'] },
+
+  /* FAT LOSS */
+  { k:['lose weight','fat loss','weight loss','cutting','reduce weight','slim'],
+    r:function(u){ var g=u&&u.goal?u.goal:''; if(g==='loss') return 'Since your goal is <strong>fat loss</strong>, here\'s your plan 🔥<br><br>• 500 kcal deficit daily<br>• 2.5g protein/kg (muscle protection)<br>• 3–4 resistance sessions + 2–3 cardio/week<br>• Track everything for 30 days<br><br>Check your personalized calorie target in the Beast Score section!'; return 'Fat loss = <strong>consistent calorie deficit</strong> 🔥<br><br>500 kcal/day deficit → ~0.5kg loss/week. Track calories, eat high protein, do resistance training (preserves muscle), add cardio. Sleep 7–9 hours — poor sleep kills fat loss hormones.'; },
+    chips:['Best diet for fat loss?','Cardio or weights?','How fast?'] },
+
+  /* WORKOUT SPLIT */
+  { k:['workout split','training split','best split','ppl','push pull legs','bro split','upper lower'],
+    r:function(){ return '<strong>Best splits for your goal:</strong><br><br>🔴 <strong>Muscle gain:</strong> PPL 6×/week (hits each muscle 2×)<br>🟡 <strong>Fat loss:</strong> Upper/Lower 4×/week<br>🟢 <strong>Beginner:</strong> Full Body 3×/week<br>🔵 <strong>Intermediate:</strong> Upper/Lower or PPL<br><br>RFC Coach Tip: Pick the one you\'ll <em>actually stick to</em> — consistency beats perfect programming.'; },
+    chips:['Explain PPL?','How many rest days?','Sets per muscle?'] },
+
+  /* PPL */
+  { k:['explain ppl','what is ppl','ppl routine'],
+    r:function(){ return '<strong>PPL = Push · Pull · Legs</strong><br><br><strong>Push day:</strong> Bench, OHP, Lateral Raise, Triceps<br><strong>Pull day:</strong> Pull-ups, Rows, Face Pulls, Biceps<br><strong>Legs:</strong> Squat, RDL, Leg Press, Calf<br><br>Run it 6×/week (PPL PPL rest) for max frequency. Each muscle trained <strong>2× per week</strong> — optimal for hypertrophy.'; },
+    chips:['Sets per session?','Can I do 3 days?','Best exercises for Push?'] },
+
+  /* REST DAYS */
+  { k:['rest day','how many rest','when to rest','recovery day'],
+    r:function(){ return 'Rest days are <strong>when you grow</strong> 🌱<br><br>• Beginners: 2–3 rest days/week<br>• Intermediate: 1–2 rest days/week<br>• Advanced: 1 rest day/week max<br><br>Active rest (walking, light yoga, swimming) is better than full rest. Use the RFC Rest Timer during sets and track recovery in the Beast Score!'; },
+    chips:['Best active recovery?','Sleep importance?','Stretching routine?'] },
+
+  /* CARDIO */
+  { k:['cardio','cardio for fat loss','hiit','liss','treadmill','running'],
+    r:function(){ return '<strong>Cardio for fat loss:</strong><br><br>🔥 <strong>HIIT</strong> (20–30 min): Burns more calories post-workout, preserves muscle better. 2–3×/week.<br>🚶 <strong>LISS</strong> (45–60 min): Walking, cycling. Easy on joints. Daily is fine.<br><br>Best combo: Weights first, LISS after. Never do HIIT before a heavy leg day!'; },
+    chips:['HIIT routine?','Can cardio kill gains?','Steps per day?'] },
+
+  /* SUPPLEMENTS */
+  { k:['supplement','supplements','what should i take','vitamins','pre workout'],
+    r:function(){ return '<strong>Supplement priority order:</strong><br><br>1. <strong>Whey protein</strong> (if diet protein is low)<br>2. <strong>Creatine monohydrate</strong> 3–5g/day<br>3. <strong>Vitamin D3+K2</strong> (most Indians are deficient)<br>4. <strong>Magnesium glycinate</strong> (sleep + recovery)<br>5. <strong>Omega-3</strong> fish oil<br><br>Skip the fancy stuff — these 5 cover 90% of gains!'; },
+    chips:['Creatine guide?','Best whey in India?','Do I need pre-workout?'] },
+
+  /* WHEY PROTEIN */
+  { k:['whey','whey protein','protein powder','best protein powder'],
+    r:function(){ return '<strong>Whey protein guide 🥛</strong><br><br>• <strong>Concentrate</strong>: 70–80% protein, cheapest, fine for most<br>• <strong>Isolate</strong>: 90%+ protein, lower fat/lactose, for lactose sensitive<br>• <strong>Hydrolysate</strong>: fastest absorbing, most expensive<br><br>India picks: MuscleBlaze, Optimum Nutrition, MyProtein. Mix with water post-workout, milk anytime else.'; },
+    chips:['When to drink whey?','Veg alternatives?','Is whey harmful?'] },
+
+  /* MEAL TIMING */
+  { k:['meal timing','when to eat','meal frequency','how many meals','pre workout meal','post workout meal'],
+    r:function(){ return '<strong>Meal timing matters less than total intake</strong>, but here\'s the optimal plan:<br><br>🌅 <strong>Pre-workout (1hr before):</strong> Complex carbs + protein<br>💪 <strong>Post-workout (within 2hrs):</strong> Protein + simple carbs<br>🌙 <strong>Before bed:</strong> Casein or paneer (slow protein)<br><br>Eat every 3–4 hours. 4–5 meals/day. Your RFC meal plan is already structured this way!'; },
+    chips:['Best pre-workout food?','Intermittent fasting?','Breakfast important?'] },
+
+  /* INTERMITTENT FASTING */
+  { k:['intermittent fasting','if','16:8','fasting','skip breakfast'],
+    r:function(){ return '<strong>Intermittent Fasting (16:8):</strong><br><br>✅ Works for fat loss — reduces eating window, easier calorie control<br>⚠️ Not ideal for muscle gain — nutrient timing matters more when bulking<br>❌ Don\'t train fasted with heavy weights (go lighter or eat a small pre-workout snack)<br><br>If you do IF: <strong>break fast with protein + carbs</strong>, not fruit juice!'; },
+    chips:['Best IF window?','Coffee in IF?','Train fasted?'] },
+
+  /* BMI */
+  { k:['bmi','body mass index','what is bmi','healthy weight'],
+    r:function(u){ var r=window.lastRes; if(r&&r.bmi) return 'Your current BMI is <strong>'+r.bmi.toFixed(1)+'</strong> 📊<br><br>Classification:<br>• Under 18.5: Underweight<br>• 18.5–24.9: Normal<br>• 25–29.9: Overweight<br>• 30+: Obese<br><br><em>Note:</em> BMI doesn\'t account for muscle mass. A bodybuilder can have a "obese" BMI and low body fat!'; return 'BMI (Body Mass Index) = weight (kg) ÷ height² (m)<br><br>Normal range: 18.5–24.9. Calculate yours in the <strong>Beast Score</strong> section — it also gives you BMR, TDEE, body fat %, and a full transformation plan!'; },
+    chips:['Calculate my BMI?','What is TDEE?','Body fat percentage?'] },
+
+  /* BEAST SCORE */
+  { k:['beast score','royal score','score','tiger score','my score'],
+    r:function(){ var s=document.getElementById('bs2n'); if(s&&s.textContent&&s.textContent!=='0') return 'Your Beast Score is <strong>'+s.textContent+'/100</strong> 🔥<br><br>The score combines: BMI + Recovery + Posture + Mobility + Strength + Nutrition. Log all 6 factors for a perfect 100!'; return 'The <strong>Beast Score</strong> is RFC\'s signature 6-factor fitness rating (0–100) 🔥<br><br>Factors: BMI · Recovery · Posture · Mobility · Strength · Nutrition<br><br>Head to the <strong>Beast Score</strong> section, enter your stats, and get your score + full transformation plan!'; },
+    chips:['How to improve score?','What is Tiger Score?','Check leaderboard?'] },
+
+  /* TIGER SCORE */
+  { k:['tiger score','leaderboard','win prize','monthly challenge','₹15','15000'],
+    r:function(){ return '🏆 <strong>Tiger Score</strong> is our monthly leaderboard competition!<br><br>Earn points for:<br>• Daily check-ins (+5 pts)<br>• Logging workouts (+10 pts)<br>• Calculating Beast Score (+100 pts)<br>• Streak bonuses (+20 pts)<br><br>Top 3 win <strong>₹15,000 in supplements</strong>! Check the Leaderboard tab → Rankings.'; },
+    chips:['How to earn more points?','Check my rank?','Prize details?'] },
+
+  /* STREAK */
+  { k:['streak','daily streak','check in','checkin'],
+    r:function(){ var sd={}; try{sd=JSON.parse(localStorage.getItem('rfc_streak_data')||'{}');}catch(e){} var days=sd.streak||0; if(days>0) return 'You\'re on a <strong>'+days+'-day streak</strong> 🔥<br><br>Keep it going! Check in daily to earn Tiger Score points and streak bonuses. Missing a day resets the streak. Set a phone reminder for 7pm!'; return 'The <strong>Daily Streak</strong> tracks your consecutive days of app activity 🔥<br><br>Every day you check in: +5 Tiger Score points + streak bonus multiplier. Hit 30 days for a special Beast badge! Head to the Workouts screen to check in.'; },
+    chips:['How to check in?','Streak benefits?','Tiger Score?'] },
+
+  /* REFERRAL */
+  { k:['referral','refer','earn money','wallet','₹100','cash','refer and earn'],
+    r:function(){ return '💰 <strong>Refer & Earn with RFC:</strong><br><br>• Share your code → friend signs up → you earn <strong>₹100</strong><br>• Friend buys PRO plan → you earn <strong>₹200 bonus</strong><br>• Minimum ₹500 to withdraw via UPI<br><br>Find your referral code in the <strong>Wallet</strong> section. Share on WhatsApp for instant results!'; },
+    chips:['How to withdraw?','Share my code?','How much can I earn?'] },
+
+  /* MEAL PLAN */
+  { k:['meal plan','diet plan','what to eat','food plan','my diet'],
+    r:function(u){ var g=u&&u.goal?u.goal:''; var diet=u&&u.diet?u.diet:''; if(g) return 'Your personalized meal plan is ready! 🥗 Head to the <strong>Meal Plan</strong> section — it\'s tailored for your '+g+' goal'+(diet?' and '+diet+' diet':'')+'. You\'ll get breakfast, pre-workout, lunch, snack, post-workout, and dinner all planned!'; return 'RFC generates a <strong>personalized meal plan</strong> based on your goal, diet type, and calorie target 🥗<br><br>Calculate your Beast Score first → your plan will auto-generate with exact macros for each meal!'; },
+    chips:['Calculate my plan?','Veg meal plan?','Meal prep tips?'] },
+
+  /* WATER */
+  { k:['water','hydration','how much water','daily water'],
+    r:function(){ var r=window.lastRes; var w=r?r.water:null; if(w) return 'Your daily water target is <strong>'+w+'L</strong> 💧<br><br>Drink 500ml before gym, sip 200–300ml every 15–20 mins during workout, 500ml post-workout. Track it in the Water Tracker on the dashboard!'; return 'General rule: <strong>35ml per kg of bodyweight</strong> daily 💧<br><br>Gym days: add 500–750ml on top. Signs of dehydration: dark urine, headache, fatigue (often mistaken for hunger!). Track daily intake in the RFC Water Tracker!'; },
+    chips:['Water before workout?','Signs of dehydration?','Electrolytes?'] },
+
+  /* BEGINNERS */
+  { k:['beginner','just started','new to gym','start gym','first time'],
+    r:function(){ return 'Welcome to the RFC family! 🐯<br><br><strong>Beginner Action Plan:</strong><br>1. Full Body 3×/week (Mon·Wed·Fri)<br>2. Learn the 5 basics: Squat · Deadlift · Bench · Row · OHP<br>3. Eat at maintenance calories + 2g protein/kg<br>4. Sleep 8 hours<br>5. Give it 3 months before judging results<br><br>Calculate your Beast Score to get your personalized plan!'; },
+    chips:['Best beginner exercises?','How soon will I see results?','Protein for beginners?'] },
+
+  /* BACK PAIN */
+  { k:['back pain','lower back','back injury','spine','pain in back'],
+    r:function(){ return '⚠️ <strong>Back pain + training:</strong><br><br>If acute: REST for 48–72hrs. Ice first 24hrs, heat after.<br><br>For training around it:<br>• Avoid heavy deadlifts/squats temporarily<br>• Do face pulls, bird dogs, hip hinges<br>• Strengthen your core — it protects the spine<br><br>Use RFC\'s <strong>Smart Physio</strong> assessment (Workouts screen) for a personalised recovery plan!'; },
+    chips:['Core exercises for back?','When to see a doctor?','Physio plan?'] },
+
+  /* PRO PLAN */
+  { k:['pro plan','upgrade','royal pro','elite plan','₹499','subscription'],
+    r:function(){ return '⚡ <strong>RFC PRO unlocks:</strong><br><br>• AI Meal Plans (personalized daily)<br>• Blood Report AI Analyser<br>• 10 Fitness Courses (₹49,999 value)<br>• Priority leaderboard ranking<br>• Unlimited workout history<br>• ₹50 welcome wallet credit<br><br>PRO is ₹499/month. RFC gym members get it <strong>FREE</strong>! Check the Plans section to upgrade.'; },
+    chips:['How to upgrade?','Gym member discount?','What\'s in courses?'] },
+
+  /* MOTIVATION */
+  { k:['motivation','not motivated','lazy','give up','tired of gym','demotivated','cant do it'],
+    r:function(){ var QUOTES=['Every champion was once a beginner. 🐯','The body achieves what the mind believes. 💪','You don\'t have to be great to start — but you have to start to be great. 🔥','Your only competition is who you were yesterday. ⚡','The pain you feel today is the strength you\'ll feel tomorrow. 💎']; return QUOTES[Math.floor(Math.random()*QUOTES.length)]+'<br><br>Log ONE workout. Just one. You never regret going to the gym — only skipping it. Your streak is waiting for you! 🐯'; },
+    chips:['Set a goal?','Find a routine?','Streak tips?'] },
+
+  /* CALORIES */
+  { k:['calories','calorie','how many calories','calorie target','tdee','maintenance'],
+    r:function(){ var r=window.lastRes; if(r&&r.targetCals) return 'Your daily calorie target is <strong>'+r.targetCals+' kcal</strong> 📊<br><br>TDEE (maintenance): '+Math.round(r.tdee)+' kcal<br>Your target: '+r.targetCals+' kcal ('+(r.targetCals<r.tdee?'deficit for fat loss':'surplus for muscle gain')+')<br><br>Track your food intake to hit this target consistently!'; return 'Your calorie target depends on your goal:<br><br>• <strong>Fat loss:</strong> TDEE − 500 kcal<br>• <strong>Maintenance:</strong> TDEE<br>• <strong>Muscle gain:</strong> TDEE + 300–400 kcal<br><br>Calculate your TDEE in the <strong>Beast Score section</strong> — enter your stats for exact numbers!'; },
+    chips:['Calculate my TDEE?','What is BMR?','Macros breakdown?'] },
+
+  /* DEFAULT */
+  { k:['__default__'],
+    r:function(){ return 'Great question! 🐯 I can help you with:<br><br>💪 <strong>Workouts</strong> — splits, exercises, volume<br>🥗 <strong>Nutrition</strong> — protein, calories, meal plans<br>💊 <strong>Supplements</strong> — what to take and when<br>📊 <strong>App features</strong> — Beast Score, Tiger Leaderboard, Wallet<br>🔥 <strong>Motivation</strong> — tips and mindset<br><br>What would you like to know?'; },
+    chips:['Workout plan?','Diet tips?','How to improve score?','Referral program?'] }
+];
+
+function _getUser(){
+  try{ return JSON.parse(localStorage.getItem('bm_user')||'null'); }catch(e){ return null; }
+}
+function _match(text){
+  var t = text.toLowerCase().trim();
+  var best = null, bestScore = 0;
+  for(var i=0;i<QA.length-1;i++){
+    var q = QA[i], score = 0;
+    q.k.forEach(function(kw){ if(t.indexOf(kw)>-1) score += kw.length; });
+    if(score > bestScore){ bestScore = score; best = q; }
+  }
+  return best || QA[QA.length-1]; /* fallback to default */
+}
+
+function _addMsg(html, cls){
+  var d = document.createElement('div');
+  d.className = 'chat-msg ' + cls;
+  d.innerHTML = html;
+  msgsEl.appendChild(d);
+  msgsEl.scrollTop = msgsEl.scrollHeight;
+  return d;
+}
+function _showTyping(){
+  var d = document.createElement('div');
+  d.className = 'chat-typing';
+  d.innerHTML = '<span></span><span></span><span></span>';
+  msgsEl.appendChild(d);
+  msgsEl.scrollTop = msgsEl.scrollHeight;
+  return d;
+}
+function _setChips(opts){
+  chipsEl.innerHTML = '';
+  if(!opts||!opts.length) return;
+  opts.forEach(function(c){
+    var btn = document.createElement('button');
+    btn.className = 'chat-chip';
+    btn.textContent = c;
+    btn.onclick = function(){ rfcChat.sendText(c); };
+    chipsEl.appendChild(btn);
+  });
+}
+
+window.rfcChat = {
+  toggle: function(){
+    if(_open) this.close(); else this.open();
+  },
+  open: function(){
+    _open = true;
+    panel.style.display = 'flex';
+    if(!msgsEl.children.length) this._welcome();
+    else setTimeout(function(){ msgsEl.scrollTop = msgsEl.scrollHeight; }, 50);
+    setTimeout(function(){ if(inputEl) inputEl.focus(); }, 200);
+  },
+  close: function(){
+    _open = false;
+    panel.style.display = 'none';
+  },
+  _welcome: function(){
+    var u = _getUser();
+    var name = u && u.name ? u.name.split(' ')[0] : 'Tiger';
+    _addMsg('Hey <strong>'+name+'</strong>! 🐯 I\'m your RFC Coach — powered by Royal Fitness intelligence.<br><br>Ask me about workouts, nutrition, supplements, or any feature in the app!', 'bot');
+    _setChips(['How much protein?','Best workout split?','Improve Beast Score?','Earn with referrals?']);
+  },
+  send: function(){
+    var t = inputEl.value.trim();
+    if(!t) return;
+    inputEl.value = '';
+    this.sendText(t);
+  },
+  sendText: function(text){
+    _setChips([]);
+    _addMsg(text, 'user');
+    var typing = _showTyping();
+    var q = _match(text);
+    var u = _getUser();
+    var self = this;
+    var delay = 600 + Math.random() * 400;
+    setTimeout(function(){
+      if(typing && typing.parentNode) typing.parentNode.removeChild(typing);
+      var resp = typeof q.r === 'function' ? q.r(u) : q.r;
+      _addMsg(resp, 'bot');
+      if(q.chips) _setChips(q.chips);
+      else _setChips([]);
+    }, delay);
+  }
+};
+
+
+/* ═══════════════════════════════════════════════
+   B.  WORKOUT TEMPLATES
+   ═══════════════════════════════════════════════ */
+var DEFAULT_TEMPLATES = [
+  { name:'Push Day', focus:'chest',     exercises:[{name:'Bench Press',sets:'4',reps:'10',kg:'80'},{name:'Incline DB Press',sets:'3',reps:'12',kg:'30'},{name:'OHP',sets:'3',reps:'10',kg:'50'},{name:'Lateral Raise',sets:'3',reps:'15',kg:'10'},{name:'Tricep Pushdown',sets:'3',reps:'12',kg:'30'}] },
+  { name:'Pull Day', focus:'back',      exercises:[{name:'Pull-Ups',sets:'4',reps:'8',kg:'0'},{name:'Bent-Over Row',sets:'4',reps:'10',kg:'70'},{name:'Cable Row',sets:'3',reps:'12',kg:'50'},{name:'Face Pull',sets:'3',reps:'15',kg:'20'},{name:'Barbell Curl',sets:'3',reps:'10',kg:'30'}] },
+  { name:'Leg Day',  focus:'legs',      exercises:[{name:'Squat',sets:'4',reps:'8',kg:'100'},{name:'Leg Press',sets:'3',reps:'12',kg:'140'},{name:'RDL',sets:'3',reps:'10',kg:'80'},{name:'Leg Curl',sets:'3',reps:'12',kg:'40'},{name:'Calf Raise',sets:'4',reps:'20',kg:'60'}] },
+  { name:'Chest Day',focus:'chest',     exercises:[{name:'Bench Press',sets:'5',reps:'5',kg:'90'},{name:'Incline DB Press',sets:'4',reps:'10',kg:'35'},{name:'Cable Fly',sets:'3',reps:'15',kg:'15'},{name:'Push-Ups',sets:'3',reps:'20',kg:'0'},{name:'Dips',sets:'3',reps:'12',kg:'0'}] },
+  { name:'Arms Day', focus:'arms',      exercises:[{name:'Barbell Curl',sets:'4',reps:'10',kg:'35'},{name:'Hammer Curl',sets:'3',reps:'12',kg:'15'},{name:'Skull Crusher',sets:'4',reps:'10',kg:'30'},{name:'Tricep Pushdown',sets:'3',reps:'12',kg:'30'},{name:'Preacher Curl',sets:'3',reps:'12',kg:'25'}] },
+  { name:'Full Body',focus:'fullbody',  exercises:[{name:'Squat',sets:'3',reps:'8',kg:'80'},{name:'Bench Press',sets:'3',reps:'8',kg:'70'},{name:'Bent-Over Row',sets:'3',reps:'8',kg:'65'},{name:'OHP',sets:'3',reps:'10',kg:'45'},{name:'Deadlift',sets:'3',reps:'6',kg:'100'}] },
+];
+
+var TPLKEY = function(){ return 'rfc_wl_tpl_'+(window.user&&window.user.uid?window.user.uid:'x'); };
+
+function getTpls(){
+  try{ return JSON.parse(localStorage.getItem(TPLKEY())||'null') || DEFAULT_TEMPLATES.slice(); }catch(e){ return DEFAULT_TEMPLATES.slice(); }
+}
+function saveTpls(arr){ try{ localStorage.setItem(TPLKEY(), JSON.stringify(arr)); }catch(e){} }
+
+function injectTemplateBar(){
+  var focusRow = document.getElementById('wl-focus-row');
+  if(!focusRow || document.getElementById('wl-template-bar')) return;
+  var bar = document.createElement('div');
+  bar.id = 'wl-template-bar';
+  bar.innerHTML =
+    '<select id="wl-tpl-select"><option value="">⚡ Load Template…</option></select>' +
+    '<button class="wl-tpl-btn" onclick="wlLoadTemplate()">Load</button>' +
+    '<button class="wl-tpl-btn" style="background:rgba(245,158,11,.13);border-color:rgba(245,158,11,.3);color:#f59e0b;" onclick="wlSaveTemplate()">+ Save</button>';
+  focusRow.parentNode.insertBefore(bar, focusRow);
+  wlRefreshSelect();
+}
+
+window.wlRefreshSelect = function(){
+  var sel = document.getElementById('wl-tpl-select');
+  if(!sel) return;
+  var tpls = getTpls();
+  sel.innerHTML = '<option value="">⚡ Load Template…</option>' +
+    tpls.map(function(t,i){ return '<option value="'+i+'">'+t.name+'</option>'; }).join('');
+};
+
+window.wlLoadTemplate = function(){
+  var sel = document.getElementById('wl-tpl-select');
+  if(!sel||sel.value==='') return;
+  var tpls = getTpls();
+  var tpl = tpls[parseInt(sel.value)];
+  if(!tpl) return;
+  /* clear rows and set focus */
+  document.getElementById('wl-rows').innerHTML = '';
+  if(typeof _wlFocus !== 'undefined') window._wlFocus = tpl.focus||'';
+  document.querySelectorAll('#wl-focus-row button').forEach(function(b){
+    var focused = b.getAttribute('data-val')===tpl.focus||b.onclick&&b.onclick.toString().indexOf("'"+tpl.focus+"'")>-1;
+    b.style.background = focused ? 'var(--red)' : 'var(--card)';
+    b.style.borderColor = focused ? 'var(--red)' : 'var(--border)';
+    b.style.color = focused ? '#fff' : 'var(--muted)';
+  });
+  /* add exercise rows */
+  tpl.exercises.forEach(function(ex){
+    if(typeof addExerciseRow === 'function') addExerciseRow();
+    var rows = document.querySelectorAll('#wl-rows > div');
+    var last = rows[rows.length-1];
+    if(!last) return;
+    var inputs = last.querySelectorAll('input[type="text"],input:not([type])');
+    var numInputs = last.querySelectorAll('input[type="number"]');
+    if(inputs[0]) inputs[0].value = ex.name||'';
+    if(numInputs[0]) numInputs[0].value = ex.sets||'';
+    if(numInputs[1]) numInputs[1].value = ex.reps||'';
+    if(numInputs[2]) numInputs[2].value = ex.kg||'';
+  });
+  if(typeof toast==='function') toast('📋 Template "'+tpl.name+'" loaded!');
+};
+
+window.wlSaveTemplate = function(){
+  var rows = document.querySelectorAll('#wl-rows > div');
+  var exercises = [];
+  rows.forEach(function(r){
+    var inputs = r.querySelectorAll('input');
+    var name = (inputs[0]&&inputs[0].value.trim())||'';
+    if(!name) return;
+    exercises.push({name:name,sets:(inputs[1]&&inputs[1].value)||'',reps:(inputs[2]&&inputs[2].value)||'',kg:(inputs[3]&&inputs[3].value)||''});
+  });
+  if(!exercises.length){ if(typeof toast==='function') toast('Add at least one exercise first','gold'); return; }
+  var tplName = prompt('Template name:', (typeof _wlFocus!=='undefined'&&_wlFocus ? _wlFocus.charAt(0).toUpperCase()+_wlFocus.slice(1)+' Day' : 'My Workout'));
+  if(!tplName) return;
+  var tpls = getTpls();
+  tpls.push({name:tplName, focus:(typeof _wlFocus!=='undefined'?_wlFocus:''), exercises:exercises});
+  saveTpls(tpls);
+  wlRefreshSelect();
+  if(typeof toast==='function') toast('💾 Template "'+tplName+'" saved!');
+};
+
+/* inject bar when workouts screen opens */
+var _origSS2 = window.switchScreen;
+window.switchScreen = function(name, navEl){
+  _origSS2 && _origSS2(name, navEl);
+  if(name==='workouts') setTimeout(injectTemplateBar, 80);
+};
+/* also try on page load */
+setTimeout(injectTemplateBar, 1500);
+
+
+/* ═══════════════════════════════════════════════
+   C.  EXERCISE AUTOCOMPLETE
+   ═══════════════════════════════════════════════ */
+var EX_LIST = [
+  /* Chest */  {n:'Bench Press',m:'Chest'},{n:'Incline DB Press',m:'Chest'},{n:'Decline Bench',m:'Chest'},{n:'Cable Fly',m:'Chest'},{n:'Pec Dec',m:'Chest'},{n:'Push-Ups',m:'Chest'},{n:'Dips',m:'Chest'},{n:'Chest Dips',m:'Chest'},
+  /* Back */   {n:'Pull-Ups',m:'Back'},{n:'Chin-Ups',m:'Back'},{n:'Bent-Over Row',m:'Back'},{n:'Cable Row',m:'Back'},{n:'Lat Pulldown',m:'Back'},{n:'T-Bar Row',m:'Back'},{n:'Deadlift',m:'Back'},{n:'Face Pull',m:'Back'},{n:'Single Arm Row',m:'Back'},
+  /* Shoulder*/{n:'OHP',m:'Shoulders'},{n:'Arnold Press',m:'Shoulders'},{n:'Lateral Raise',m:'Shoulders'},{n:'Rear Delt Fly',m:'Shoulders'},{n:'Upright Row',m:'Shoulders'},{n:'Shrugs',m:'Shoulders'},{n:'Cable Lateral Raise',m:'Shoulders'},
+  /* Arms */   {n:'Barbell Curl',m:'Biceps'},{n:'Dumbbell Curl',m:'Biceps'},{n:'Hammer Curl',m:'Biceps'},{n:'Preacher Curl',m:'Biceps'},{n:'Cable Curl',m:'Biceps'},{n:'Skull Crusher',m:'Triceps'},{n:'Tricep Pushdown',m:'Triceps'},{n:'Close-Grip Bench',m:'Triceps'},{n:'Overhead Tricep Extension',m:'Triceps'},{n:'Dips',m:'Triceps'},
+  /* Legs */   {n:'Squat',m:'Legs'},{n:'Leg Press',m:'Legs'},{n:'Romanian Deadlift',m:'Legs'},{n:'RDL',m:'Legs'},{n:'Leg Curl',m:'Legs'},{n:'Leg Extension',m:'Legs'},{n:'Bulgarian Split Squat',m:'Legs'},{n:'Lunges',m:'Legs'},{n:'Calf Raise',m:'Legs'},{n:'Hack Squat',m:'Legs'},{n:'Sumo Squat',m:'Legs'},{n:'Box Jump',m:'Legs'},
+  /* Core */   {n:'Plank',m:'Core'},{n:'Crunches',m:'Core'},{n:'Russian Twist',m:'Core'},{n:'Hanging Leg Raise',m:'Core'},{n:'Cable Crunch',m:'Core'},{n:'Ab Wheel',m:'Core'},{n:'Bicycle Crunch',m:'Core'},{n:'Dead Bug',m:'Core'},
+  /* Cardio */ {n:'Treadmill',m:'Cardio'},{n:'Cycling',m:'Cardio'},{n:'Rowing Machine',m:'Cardio'},{n:'Jump Rope',m:'Cardio'},{n:'Stair Master',m:'Cardio'},{n:'Elliptical',m:'Cardio'},{n:'Battle Ropes',m:'Cardio'},{n:'Box Jump',m:'Cardio'},
+  /* Olympic */{n:'Power Clean',m:'Olympic'},{n:'Snatch',m:'Olympic'},{n:'Clean & Jerk',m:'Olympic'},{n:'Hang Clean',m:'Olympic'},
+];
+
+function attachAutocomplete(input){
+  if(!input || input._acInit) return;
+  input._acInit = true;
+
+  /* wrap in relative container */
+  var wrap = document.createElement('div');
+  wrap.className = 'ex-ac-wrap';
+  input.parentNode.insertBefore(wrap, input);
+  wrap.appendChild(input);
+  input.className = 'ex-ac-input';
+
+  var drop = document.createElement('div');
+  drop.className = 'ex-ac-drop';
+  wrap.appendChild(drop);
+
+  var hi = -1;
+
+  function show(results){
+    drop.innerHTML = results.map(function(r,i){
+      return '<div class="ex-ac-item" data-n="'+r.n+'" data-i="'+i+'">' +
+        '<span>'+r.n+'</span><span class="ex-ac-muscle">'+r.m+'</span></div>';
+    }).join('');
+    drop.classList.toggle('open', results.length > 0);
+    drop.querySelectorAll('.ex-ac-item').forEach(function(item){
+      item.onmousedown = function(e){
+        e.preventDefault();
+        input.value = item.getAttribute('data-n');
+        drop.classList.remove('open');
+      };
+    });
+    hi = -1;
+  }
+
+  input.addEventListener('input', function(){
+    var v = input.value.trim().toLowerCase();
+    if(v.length < 1){ drop.classList.remove('open'); return; }
+    var results = EX_LIST.filter(function(e){ return e.n.toLowerCase().indexOf(v) > -1; }).slice(0,8);
+    show(results);
+  });
+
+  input.addEventListener('keydown', function(e){
+    var items = drop.querySelectorAll('.ex-ac-item');
+    if(!drop.classList.contains('open')) return;
+    if(e.key==='ArrowDown'){ e.preventDefault(); hi=Math.min(hi+1,items.length-1); items.forEach(function(it,i){ it.classList.toggle('highlighted',i===hi); }); }
+    else if(e.key==='ArrowUp'){ e.preventDefault(); hi=Math.max(hi-1,0); items.forEach(function(it,i){ it.classList.toggle('highlighted',i===hi); }); }
+    else if(e.key==='Enter'&&hi>=0){ e.preventDefault(); input.value=items[hi].getAttribute('data-n'); drop.classList.remove('open'); }
+    else if(e.key==='Escape'){ drop.classList.remove('open'); }
+  });
+
+  input.addEventListener('blur', function(){ setTimeout(function(){ drop.classList.remove('open'); }, 160); });
+}
+
+/* attach to existing rows + watch for new ones */
+function initAC(){
+  document.querySelectorAll('#wl-rows > div input:first-child, #wl-rows > div input[placeholder*="e.g"]').forEach(attachAutocomplete);
+}
+new MutationObserver(function(muts){
+  muts.forEach(function(m){
+    m.addedNodes.forEach(function(n){
+      if(n.nodeType!==1) return;
+      var inp = n.querySelector && n.querySelector('input[placeholder*="e.g"], input:first-of-type');
+      if(inp) attachAutocomplete(inp);
+    });
+  });
+}).observe(document.body, {childList:true, subtree:true});
+setTimeout(initAC, 1000);
 
 })();
 </script>
