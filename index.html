@@ -36580,5 +36580,206 @@ setTimeout(function(){ if(!document.getElementById('rfc-hydqual-wrap')) _injectH
 })();
 </script>
 
+<script>
+/* ===== BATCH 39: Sleep Quality Scorer | Protein Source Diversity | Grip Strength Trainer ===== */
+(function(){ 'use strict';
+var _origSS37=window.switchScreen;
+function _b39uid(){ try{ return JSON.parse(localStorage.getItem('bm_user')||'{}').uid||'guest'; }catch(e){ return 'guest'; } }
+function _b39today(){ var d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function _b39load(k){ try{ return JSON.parse(localStorage.getItem(k))||null; }catch(e){ return null; } }
+function _b39save(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} }
+function _b39card(id,title){ var d=document.createElement('div'); d.id=id; d.style.cssText='background:#1a1a2e;border-radius:14px;padding:18px;margin:14px 0;color:#e0e0e0;font-family:inherit;'; d.innerHTML='<div style="font-size:15px;font-weight:700;color:#00d4ff;margin-bottom:14px;">'+title+'</div>'; return d; }
+
+/* ---------- SLEEP QUALITY SCORER (dashboard) ---------- */
+function _sqScore(d){
+  if(!d) return 0;
+  var s=0;
+  var hrs=(d.duration||0); s+=Math.min(30,Math.round((Math.min(hrs,9)/9)*30));
+  var wu=(d.wakeups||3); s+=wu===0?25:wu===1?20:wu===2?12:wu<=4?5:0;
+  var en=(d.energy||5); s+=Math.round((en/10)*25);
+  if(d.dreamRecall) s+=10; if(!d.napNeeded) s+=10;
+  return Math.min(100,s);
+}
+function _injectSleepQ(){
+  if(document.getElementById('rfc-sleepq-wrap')) return;
+  var anchor=document.getElementById('rfc-hydqual-wrap')||document.getElementById('rfc-meditate-wrap')||document.getElementById('rfc-envwell-wrap')||document.getElementById('rfc-gratitude-wrap')||document.querySelector('.dash-topbar');
+  if(!anchor) return;
+  var card=_b39card('rfc-sleepq-wrap','🌙 Sleep Quality Scorer');
+  card.style.cssText+='border:1px solid #1a1a4a;';
+  anchor.parentNode.insertBefore(card,anchor.nextSibling);
+  _renderSleepQ();
+}
+function _renderSleepQ(){
+  var card=document.getElementById('rfc-sleepq-wrap'); if(!card) return;
+  var uid=_b39uid(), today=_b39today();
+  var key='rfc_sleepq_'+uid+'_'+today;
+  var d=_b39load(key)||{duration:7.5,wakeups:1,energy:7,dreamRecall:false,napNeeded:false};
+  var score=_sqScore(d);
+  var sc=score>=80?'#00ff88':score>=55?'#ffd700':'#ff6b6b';
+  var html='<div style="font-size:15px;font-weight:700;color:#00d4ff;margin-bottom:14px;">🌙 Sleep Quality Scorer</div>';
+  html+='<div style="display:flex;align-items:center;gap:16px;margin-bottom:16px;">';
+  html+='<svg width="80" height="80" viewBox="0 0 80 80"><circle cx="40" cy="40" r="32" fill="none" stroke="#1e1e4a" stroke-width="9"/><circle cx="40" cy="40" r="32" fill="none" stroke="'+sc+'" stroke-width="9" stroke-dasharray="'+Math.round(score*2.01)+' 201" stroke-dashoffset="50" style="transition:all 0.6s;"/><text x="40" y="45" text-anchor="middle" fill="'+sc+'" font-size="20" font-weight="800">'+score+'</text></svg>';
+  html+='<div><div style="font-size:22px;font-weight:800;color:'+sc+';">'+(score>=80?'Excellent':score>=55?'Fair':'Poor')+'</div><div style="font-size:12px;color:#888;margin-top:4px;">Quality Score / 100</div></div></div>';
+  html+='<div style="display:grid;gap:12px;">';
+  html+='<div><label style="font-size:12px;color:#aaa;">Sleep Duration: <strong style="color:#ffd700;">'+(d.duration||7.5)+' hrs</strong></label><br><input type="range" min="3" max="12" step="0.5" value="'+(d.duration||7.5)+'" oninput="window._rfcSQSet(\'duration\',parseFloat(this.value))" style="width:100%;accent-color:#00d4ff;"></div>';
+  html+='<div><label style="font-size:12px;color:#aaa;">Night Wake-ups: <strong style="color:#ffd700;">'+(d.wakeups||0)+'</strong></label><br><input type="range" min="0" max="8" step="1" value="'+(d.wakeups||0)+'" oninput="window._rfcSQSet(\'wakeups\',parseInt(this.value))" style="width:100%;accent-color:#00d4ff;"></div>';
+  html+='<div><label style="font-size:12px;color:#aaa;">Morning Energy: <strong style="color:#ffd700;">'+(d.energy||7)+'/10</strong></label><br><input type="range" min="1" max="10" step="1" value="'+(d.energy||7)+'" oninput="window._rfcSQSet(\'energy\',parseInt(this.value))" style="width:100%;accent-color:#00d4ff;"></div>';
+  html+='<div style="display:flex;gap:10px;">';
+  html+='<button onclick="window._rfcSQToggle(\'dreamRecall\')" style="flex:1;background:'+(d.dreamRecall?'#1a2a4a':'#12122a')+';border:1px solid '+(d.dreamRecall?'#00d4ff':'#2a2a4a')+';color:'+(d.dreamRecall?'#00d4ff':'#888')+';border-radius:8px;padding:8px;font-size:12px;cursor:pointer;">Dream Recall '+(d.dreamRecall?'✅':'⭕')+'</button>';
+  html+='<button onclick="window._rfcSQToggle(\'napNeeded\')" style="flex:1;background:'+(d.napNeeded?'#2a1a1a':'#12122a')+';border:1px solid '+(d.napNeeded?'#ff6b6b':'#2a2a4a')+';color:'+(d.napNeeded?'#ff6b6b':'#888')+';border-radius:8px;padding:8px;font-size:12px;cursor:pointer;">Needed Nap '+(d.napNeeded?'✅':'⭕')+'</button>';
+  html+='</div></div>';
+  var hist=[]; for(var i=6;i>=0;i--){ var dt=new Date(); dt.setDate(dt.getDate()-i); var dk=dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0')+'-'+String(dt.getDate()).padStart(2,'0'); var hd=_b39load('rfc_sleepq_'+uid+'_'+dk); hist.push({dk:dk,s:_sqScore(hd)}); }
+  html+='<div style="margin-top:14px;"><div style="font-size:12px;color:#888;margin-bottom:8px;">7-Day Quality Trend</div><div style="display:flex;align-items:flex-end;gap:4px;height:48px;">';
+  hist.forEach(function(h){ var hc=h.s>=80?'#00ff88':h.s>=55?'#ffd700':'#ff6b6b'; var ht=Math.max(4,Math.round((h.s/100)*44)); html+='<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;"><div style="width:100%;height:'+ht+'px;background:'+hc+';border-radius:3px;"></div><div style="font-size:9px;color:#555;">'+h.dk.slice(8)+'</div></div>'; });
+  html+='</div></div>';
+  card.innerHTML=html;
+}
+window._rfcSQSet=function(k,v){
+  var uid=_b39uid(), today=_b39today(); var key='rfc_sleepq_'+uid+'_'+today;
+  var d=_b39load(key)||{duration:7.5,wakeups:1,energy:7,dreamRecall:false,napNeeded:false};
+  d[k]=v; _b39save(key,d); _renderSleepQ();
+};
+window._rfcSQToggle=function(k){
+  var uid=_b39uid(), today=_b39today(); var key='rfc_sleepq_'+uid+'_'+today;
+  var d=_b39load(key)||{duration:7.5,wakeups:1,energy:7,dreamRecall:false,napNeeded:false};
+  d[k]=!d[k]; _b39save(key,d); _renderSleepQ();
+};
+
+/* ---------- PROTEIN SOURCE DIVERSITY (nutrition) ---------- */
+var PD_SOURCES=[
+  {id:'chicken',label:'Chicken/Turkey',icon:'🍗',g:0},
+  {id:'eggs',label:'Eggs',icon:'🥚',g:0},
+  {id:'fish',label:'Fish/Seafood',icon:'🐟',g:0},
+  {id:'beef',label:'Red Meat',icon:'🥩',g:0},
+  {id:'tofu',label:'Tofu/Tempeh',icon:'🧈',g:0},
+  {id:'yogurt',label:'Greek Yogurt',icon:'🫙',g:0},
+  {id:'cottage',label:'Cottage Cheese',icon:'🧀',g:0},
+  {id:'lentils',label:'Lentils/Beans',icon:'🫘',g:0},
+  {id:'quinoa',label:'Quinoa',icon:'🌾',g:0},
+  {id:'shake',label:'Protein Shake',icon:'🥤',g:0},
+  {id:'cheese',label:'Cheese',icon:'🧀',g:0},
+  {id:'nuts',label:'Nuts/Seeds',icon:'🥜',g:0}
+];
+function _injectProtDiv(){
+  if(document.getElementById('rfc-protdiv-wrap')) return;
+  var anchor=document.getElementById('rfc-antiinfl-wrap')||document.getElementById('rfc-gut-wrap')||document.getElementById('rfc-vitamin-wrap')||document.getElementById('rfc-mealbuilder-wrap')||document.querySelector('.dash-topbar');
+  if(!anchor) return;
+  var card=_b39card('rfc-protdiv-wrap','🥗 Protein Source Diversity');
+  card.style.cssText+='border:1px solid #2a1a3a;';
+  anchor.parentNode.insertBefore(card,anchor.nextSibling);
+  _renderProtDiv();
+}
+function _renderProtDiv(){
+  var card=document.getElementById('rfc-protdiv-wrap'); if(!card) return;
+  var uid=_b39uid(), today=_b39today();
+  var key='rfc_protdiv_'+uid+'_'+today;
+  var data=_b39load(key)||{};
+  var sources=0, totalG=0;
+  PD_SOURCES.forEach(function(s){ var g=parseFloat(data[s.id]||0); if(g>0){ sources++; totalG+=g; } });
+  var divScore=Math.round((sources/12)*100);
+  var dc=divScore>=60?'#00ff88':divScore>=33?'#ffd700':'#ff6b6b';
+  var html='<div style="font-size:15px;font-weight:700;color:#00d4ff;margin-bottom:14px;">🥗 Protein Source Diversity</div>';
+  html+='<div style="display:flex;gap:14px;margin-bottom:14px;">';
+  html+='<div style="text-align:center;background:#12122a;border-radius:10px;padding:10px 16px;"><div style="font-size:24px;font-weight:800;color:'+dc+';">'+sources+'<span style="font-size:14px;color:#888;">/12</span></div><div style="font-size:11px;color:#888;">Sources</div></div>';
+  html+='<div style="text-align:center;background:#12122a;border-radius:10px;padding:10px 16px;"><div style="font-size:24px;font-weight:800;color:#00ff88;">'+Math.round(totalG)+'g</div><div style="font-size:11px;color:#888;">Total Protein</div></div>';
+  html+='<div style="text-align:center;background:#12122a;border-radius:10px;padding:10px 16px;"><div style="font-size:24px;font-weight:800;color:'+dc+';">'+divScore+'%</div><div style="font-size:11px;color:#888;">Diversity</div></div></div>';
+  html+='<div style="display:flex;flex-wrap:wrap;gap:6px;">';
+  PD_SOURCES.forEach(function(s){
+    var g=parseFloat(data[s.id]||0);
+    var active=g>0;
+    html+='<div style="background:'+(active?'#0d2a1a':'#12122a')+';border:1px solid '+(active?'#00ff88':'#2a2a4a')+';border-radius:8px;padding:7px 9px;display:flex;align-items:center;gap:6px;">';
+    html+='<span style="font-size:14px;">'+s.icon+'</span>';
+    html+='<div><div style="font-size:11px;color:'+(active?'#00ff88':'#aaa')+';">'+s.label+'</div>';
+    html+='<input type="number" min="0" max="300" step="5" placeholder="0g" value="'+(g||'')+'" onchange="window._rfcPDSet(\''+s.id+'\',this.value)" style="width:56px;background:#0a0a1e;border:1px solid #2a2a4a;color:#fff;border-radius:5px;padding:3px 5px;font-size:12px;"></div></div>';
+  });
+  html+='</div>';
+  card.innerHTML=html;
+}
+window._rfcPDSet=function(id,val){
+  var uid=_b39uid(), today=_b39today(); var key='rfc_protdiv_'+uid+'_'+today;
+  var data=_b39load(key)||{};
+  data[id]=parseFloat(val)||0; _b39save(key,data);
+  var card=document.getElementById('rfc-protdiv-wrap'); if(!card) return;
+  var sources=0, totalG=0;
+  PD_SOURCES.forEach(function(s){ var g=parseFloat(data[s.id]||0); if(g>0){ sources++; totalG+=g; } });
+  var divScore=Math.round((sources/12)*100);
+  var dc=divScore>=60?'#00ff88':divScore>=33?'#ffd700':'#ff6b6b';
+  var s1=card.querySelector('div[style*="Sources"]'); var s2=s1&&s1.previousElementSibling;
+  var scoreEls=card.querySelectorAll('[style*="font-size:24px"]');
+  if(scoreEls[0]) scoreEls[0].innerHTML=sources+'<span style="font-size:14px;color:#888;">/12</span>';
+  if(scoreEls[1]) scoreEls[1].textContent=Math.round(totalG)+'g';
+  if(scoreEls[2]) scoreEls[2].textContent=divScore+'%';
+};
+
+/* ---------- GRIP STRENGTH TRAINER (workouts) ---------- */
+var GRIP_EX=[
+  {id:'deadhang',label:'Dead Hang',unit:'sec',icon:'🏋️'},
+  {id:'farmer',label:"Farmer's Walk",unit:'sec',icon:'🚶'},
+  {id:'pinch',label:'Plate Pinch',unit:'sec',icon:'🖐️'},
+  {id:'towel',label:'Towel Pull-up',unit:'reps',icon:'🧗'},
+  {id:'roller',label:'Wrist Roller',unit:'reps',icon:'🔄'},
+  {id:'crush',label:'Crush Grip',unit:'reps',icon:'✊'}
+];
+function _injectGrip(){
+  if(document.getElementById('rfc-grip-wrap')) return;
+  var anchor=document.getElementById('rfc-tempo-wrap')||document.getElementById('rfc-strbal-wrap')||document.getElementById('rfc-calis-wrap')||document.getElementById('rfc-plyo-wrap')||document.querySelector('.dash-topbar');
+  if(!anchor) return;
+  var card=_b39card('rfc-grip-wrap','✊ Grip Strength Trainer');
+  card.style.cssText+='border:1px solid #2a1a1a;';
+  anchor.parentNode.insertBefore(card,anchor.nextSibling);
+  _renderGrip();
+}
+function _renderGrip(){
+  var card=document.getElementById('rfc-grip-wrap'); if(!card) return;
+  var uid=_b39uid(), today=_b39today();
+  var dkey='rfc_grip_'+uid+'_'+today;
+  var pkey='rfc_grip_pbs_'+uid;
+  var data=_b39load(dkey)||{};
+  var pbs=_b39load(pkey)||{};
+  var html='<div style="font-size:15px;font-weight:700;color:#00d4ff;margin-bottom:14px;">✊ Grip Strength Trainer</div>';
+  html+='<div style="font-size:12px;color:#888;margin-bottom:12px;">Log your best set for each exercise today. PBs auto-tracked.</div>';
+  GRIP_EX.forEach(function(ex){
+    var sets=data[ex.id]||[];
+    var pb=pbs[ex.id]||0;
+    var bestToday=sets.length?Math.max.apply(null,sets):0;
+    var newPB=bestToday>pb;
+    html+='<div style="background:#12122a;border-radius:10px;padding:12px;margin-bottom:8px;">';
+    html+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">';
+    html+='<div style="display:flex;align-items:center;gap:8px;"><span style="font-size:18px;">'+ex.icon+'</span><div><div style="font-size:13px;font-weight:700;color:#e0e0e0;">'+ex.label+'</div><div style="font-size:11px;color:#888;">PB: '+pb+(pb?(' '+ex.unit):'—')+'</div></div></div>';
+    html+='<div style="text-align:right;"><div style="font-size:13px;font-weight:700;color:'+(newPB?'#ffd700':'#00ff88')+';">'+(bestToday||'—')+(bestToday?' '+ex.unit:'')+(newPB?' 🏆':'')+'</div><div style="font-size:11px;color:#888;">Today\'s Best</div></div></div>';
+    html+='<div style="display:flex;gap:8px;align-items:center;">';
+    html+='<input type="number" min="0" max="999" placeholder="'+ex.unit+'" id="rfc-grip-inp-'+ex.id+'" style="flex:1;background:#0d0d20;border:1px solid #2a2a4a;color:#fff;border-radius:7px;padding:8px;font-size:14px;">';
+    html+='<button onclick="window._rfcGripLog(\''+ex.id+'\')" style="background:#00d4ff;border:none;color:#000;padding:8px 14px;border-radius:7px;font-size:13px;font-weight:700;cursor:pointer;">Log</button></div>';
+    if(sets.length){ html+='<div style="margin-top:6px;font-size:11px;color:#555;">Sets: '+sets.join(', ')+' '+ex.unit+'</div>'; }
+    html+='</div>';
+  });
+  card.innerHTML=html;
+}
+window._rfcGripLog=function(id){
+  var inp=document.getElementById('rfc-grip-inp-'+id); if(!inp) return;
+  var val=parseInt(inp.value)||0; if(!val) return;
+  var uid=_b39uid(), today=_b39today();
+  var dkey='rfc_grip_'+uid+'_'+today;
+  var pkey='rfc_grip_pbs_'+uid;
+  var data=_b39load(dkey)||{};
+  var pbs=_b39load(pkey)||{};
+  if(!data[id]) data[id]=[];
+  data[id].push(val);
+  if(val>(pbs[id]||0)) pbs[id]=val;
+  _b39save(dkey,data); _b39save(pkey,pbs);
+  inp.value=''; _renderGrip();
+};
+
+window.switchScreen=function(name,navEl){
+  _origSS37&&_origSS37(name,navEl);
+  if(name==='dashboard') setTimeout(function(){ _injectSleepQ(); _renderSleepQ(); },1200);
+  if(name==='nutrition') setTimeout(function(){ _injectProtDiv(); _renderProtDiv(); },1100);
+  if(name==='workouts')  setTimeout(function(){ _injectGrip(); _renderGrip(); },1050);
+};
+setTimeout(function(){ _injectSleepQ(); _injectProtDiv(); _injectGrip(); },31000);
+setTimeout(function(){ if(!document.getElementById('rfc-sleepq-wrap')) _injectSleepQ(); if(!document.getElementById('rfc-protdiv-wrap')) _injectProtDiv(); if(!document.getElementById('rfc-grip-wrap')) _injectGrip(); },35000);
+})();
+</script>
+
 </body>
 </html>
