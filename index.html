@@ -31913,4 +31913,348 @@ setTimeout(function(){
 </script>
 
 </body>
+
+<script>
+/* ============================================================
+   BATCH 25 — Water Intake Tracker | PR Board | Supplement Stack
+   ============================================================ */
+(function(){ 'use strict';
+
+var _origSS23 = window.switchScreen;
+
+/* ── helpers ── */
+function _b25uid(){ try{ return JSON.parse(localStorage.getItem('bm_user')||'{}').uid||'guest'; }catch(e){ return 'guest'; } }
+function _b25today(){ var d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function _b25load(k){ try{ return JSON.parse(localStorage.getItem(k))||null; }catch(e){ return null; } }
+function _b25save(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} }
+
+function _b25card(id, title){
+  var d=document.createElement('div');
+  d.id=id;
+  d.style.cssText='background:#1a1a2e;border-radius:14px;padding:18px;margin:14px 0;color:#e0e0e0;font-family:inherit;';
+  d.innerHTML='<div style="font-size:15px;font-weight:700;color:#00d4ff;margin-bottom:14px;">'+title+'</div>';
+  return d;
+}
+
+/* ════════════════════════════════════════════════════════════
+   1. WATER INTAKE TRACKER (dashboard)
+   ════════════════════════════════════════════════════════════ */
+function _injectWater(){
+  if(document.getElementById('rfc-water-wrap')) return;
+  var anchor=['rfc-neat-wrap','rfc-breath-wrap','rfc-bodycomp-wrap','rfc-fitage-wrap','rfc-xform-wrap','rfc-mgoal-wrap'];
+  var host=null;
+  for(var i=0;i<anchor.length;i++){
+    var el=document.getElementById(anchor[i]);
+    if(el){ host=el; break; }
+  }
+  if(!host){ var tb=document.querySelector('.dash-topbar'); if(tb) host=tb.parentNode&&tb; }
+  if(!host) return;
+
+  var c=_b25card('rfc-water-wrap','💧 Daily Water Intake');
+  c.innerHTML+=
+    '<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">'+
+      '<div id="rfc-water-count" style="font-size:36px;font-weight:800;color:#00d4ff;min-width:52px;">0</div>'+
+      '<div style="flex:1;">'+
+        '<div style="font-size:12px;color:#888;margin-bottom:4px;">glasses of water (250ml each)</div>'+
+        '<div style="background:#0d0d1a;border-radius:8px;height:10px;overflow:hidden;">'+
+          '<div id="rfc-water-bar" style="height:100%;background:linear-gradient(90deg,#00d4ff,#0088ff);width:0%;border-radius:8px;transition:width .4s;"></div>'+
+        '</div>'+
+        '<div style="font-size:11px;color:#555;margin-top:3px;">Goal: <span id="rfc-water-goal-txt">8</span> glasses (2000ml)</div>'+
+      '</div>'+
+    '</div>'+
+    '<div id="rfc-water-glasses" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;"></div>'+
+    '<div style="display:flex;gap:8px;flex-wrap:wrap;">'+
+      '<button onclick="window._rfcWaterAdd()" style="background:#00d4ff22;border:1px solid #00d4ff44;color:#00d4ff;padding:7px 16px;border-radius:8px;cursor:pointer;font-size:13px;">+ Add Glass</button>'+
+      '<button onclick="window._rfcWaterReset()" style="background:#ff444422;border:1px solid #ff444444;color:#ff8888;padding:7px 16px;border-radius:8px;cursor:pointer;font-size:13px;">Reset Day</button>'+
+      '<select id="rfc-water-goal-sel" onchange="window._rfcWaterGoal(this.value)" style="background:#0d0d1a;border:1px solid #333;color:#aaa;padding:6px 10px;border-radius:8px;font-size:12px;">'+
+        '<option value="6">Goal: 6 glasses</option>'+
+        '<option value="8" selected>Goal: 8 glasses</option>'+
+        '<option value="10">Goal: 10 glasses</option>'+
+        '<option value="12">Goal: 12 glasses</option>'+
+      '</select>'+
+    '</div>';
+
+  if(host.nextSibling) host.parentNode.insertBefore(c, host.nextSibling);
+  else host.parentNode.appendChild(c);
+  _renderWater();
+}
+
+function _renderWater(){
+  var uid=_b25uid(), date=_b25today();
+  var key='rfc_water_'+uid+'_'+date;
+  var data=_b25load(key)||{count:0,goal:8};
+  var cnt=data.count||0, goal=data.goal||8;
+
+  var cc=document.getElementById('rfc-water-count');
+  var bar=document.getElementById('rfc-water-bar');
+  var gt=document.getElementById('rfc-water-goal-txt');
+  var gsel=document.getElementById('rfc-water-goal-sel');
+  var glasses=document.getElementById('rfc-water-glasses');
+  if(!cc) return;
+
+  cc.textContent=cnt;
+  if(bar) bar.style.width=Math.min(100,Math.round(cnt/goal*100))+'%';
+  if(gt) gt.textContent=goal;
+  if(gsel) gsel.value=String(goal);
+
+  if(glasses){
+    var html='';
+    for(var i=0;i<Math.max(goal,cnt);i++){
+      var filled=i<cnt;
+      html+='<div onclick="window._rfcWaterToggle('+i+')" title="Glass '+(i+1)+'" style="width:36px;height:44px;border-radius:8px;border:2px solid '+(filled?'#00d4ff':'#333')+';background:'+(filled?'linear-gradient(180deg,#00d4ff44,#0055ff33)':'#0d0d1a')+';cursor:pointer;display:flex;align-items:flex-end;justify-content:center;padding-bottom:4px;font-size:18px;transition:all .2s;">'+(filled?'💧':'')+'</div>';
+    }
+    glasses.innerHTML=html;
+  }
+
+  if(cnt>=goal){
+    cc.style.color='#00ff88';
+  } else {
+    cc.style.color='#00d4ff';
+  }
+}
+
+window._rfcWaterAdd=function(){
+  var uid=_b25uid(), date=_b25today();
+  var key='rfc_water_'+uid+'_'+date;
+  var data=_b25load(key)||{count:0,goal:8};
+  data.count=(data.count||0)+1;
+  _b25save(key,data);
+  _renderWater();
+};
+window._rfcWaterToggle=function(i){
+  var uid=_b25uid(), date=_b25today();
+  var key='rfc_water_'+uid+'_'+date;
+  var data=_b25load(key)||{count:0,goal:8};
+  var cnt=data.count||0;
+  if(i<cnt){ data.count=i; }
+  else { data.count=i+1; }
+  _b25save(key,data);
+  _renderWater();
+};
+window._rfcWaterReset=function(){
+  var uid=_b25uid(), date=_b25today();
+  var key='rfc_water_'+uid+'_'+date;
+  var data=_b25load(key)||{count:0,goal:8};
+  data.count=0;
+  _b25save(key,data);
+  _renderWater();
+};
+window._rfcWaterGoal=function(v){
+  var uid=_b25uid(), date=_b25today();
+  var key='rfc_water_'+uid+'_'+date;
+  var data=_b25load(key)||{count:0,goal:8};
+  data.goal=parseInt(v,10)||8;
+  _b25save(key,data);
+  _renderWater();
+};
+
+/* ════════════════════════════════════════════════════════════
+   2. PERSONAL RECORD BOARD (workouts)
+   ════════════════════════════════════════════════════════════ */
+function _injectPRBoard(){
+  if(document.getElementById('rfc-prboard-wrap')) return;
+  var anchor=['rfc-wgen-wrap','rfc-strstd-wrap','rfc-rest-wrap','rfc-rpe-wrap','rfc-cardio-wrap','rfc-tmpl-wrap'];
+  var host=null;
+  for(var i=0;i<anchor.length;i++){
+    var el=document.getElementById(anchor[i]);
+    if(el){ host=el; break; }
+  }
+  if(!host){ host=document.getElementById('wl-history'); }
+  if(!host) return;
+
+  var c=_b25card('rfc-prboard-wrap','🏆 Personal Record Board');
+  c.innerHTML+=
+    '<div id="rfc-prboard-list" style="display:flex;flex-direction:column;gap:8px;"></div>'+
+    '<div id="rfc-prboard-empty" style="color:#555;font-size:13px;text-align:center;padding:20px 0;display:none;">No workout history found. Log some exercises to see your PRs!</div>'+
+    '<div style="margin-top:10px;font-size:11px;color:#555;">Calculated from all saved workout history. Tap any row to see when it was set.</div>';
+
+  if(host.nextSibling) host.parentNode.insertBefore(c, host.nextSibling);
+  else host.parentNode.appendChild(c);
+  _renderPRBoard();
+}
+
+function _renderPRBoard(){
+  var uid=_b25uid();
+  var list=document.getElementById('rfc-prboard-list');
+  var empty=document.getElementById('rfc-prboard-empty');
+  if(!list) return;
+
+  var workouts=[];
+  try{ workouts=JSON.parse(localStorage.getItem('rfc_workouts_'+uid)||'[]'); }catch(e){}
+
+  /* aggregate PRs: exercise → {kg, date, reps} */
+  var prs={};
+  workouts.forEach(function(w){
+    (w.exercises||[]).forEach(function(ex){
+      var name=(ex.name||'').trim().toLowerCase();
+      if(!name) return;
+      var kg=parseFloat(ex.kg)||0;
+      if(kg<=0) return;
+      if(!prs[name]||kg>prs[name].kg){
+        prs[name]={kg:kg, date:w.date||'', reps:ex.reps||'', sets:ex.sets||''};
+      }
+    });
+  });
+
+  var entries=Object.keys(prs).map(function(k){ return {name:k,data:prs[k]}; });
+  entries.sort(function(a,b){ return b.data.kg-a.data.kg; });
+  entries=entries.slice(0,15);
+
+  if(entries.length===0){
+    list.style.display='none';
+    if(empty) empty.style.display='block';
+    return;
+  }
+  list.style.display='flex';
+  if(empty) empty.style.display='none';
+
+  var medals=['🥇','🥈','🥉'];
+  var html='';
+  entries.forEach(function(e,i){
+    var medal=medals[i]||'🏅';
+    var disp=e.name.replace(/\b\w/g,function(c){ return c.toUpperCase(); });
+    html+='<div style="display:flex;align-items:center;gap:10px;background:#0d0d1a;border-radius:10px;padding:10px 14px;border-left:3px solid '+(i===0?'#ffd700':i===1?'#c0c0c0':i===2?'#cd7f32':'#333')+';">'+
+      '<span style="font-size:22px;">'+medal+'</span>'+
+      '<div style="flex:1;min-width:0;">'+
+        '<div style="font-size:13px;font-weight:600;color:#e0e0e0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+disp+'</div>'+
+        '<div style="font-size:11px;color:#666;">'+e.data.sets+' × '+e.data.reps+' · '+e.data.date+'</div>'+
+      '</div>'+
+      '<div style="font-size:20px;font-weight:800;color:'+(i===0?'#ffd700':i===1?'#c0c0c0':i===2?'#cd7f32':'#00d4ff')+';">'+e.data.kg+'<span style="font-size:11px;font-weight:400;color:#666;"> kg</span></div>'+
+    '</div>';
+  });
+  list.innerHTML=html;
+}
+
+/* ════════════════════════════════════════════════════════════
+   3. SUPPLEMENT STACK TRACKER (nutrition)
+   ════════════════════════════════════════════════════════════ */
+var SUPP_LIST=[
+  {id:'whey',      label:'Whey Protein',   icon:'🥛', note:'Post-workout'},
+  {id:'creatine',  label:'Creatine',        icon:'⚡', note:'3-5g daily'},
+  {id:'multi',     label:'Multivitamin',    icon:'💊', note:'With meal'},
+  {id:'vitd',      label:'Vitamin D3',      icon:'☀️', note:'1000-2000 IU'},
+  {id:'omega3',    label:'Omega-3',         icon:'🐟', note:'With food'},
+  {id:'magnesium', label:'Magnesium',       icon:'🌙', note:'Before sleep'},
+  {id:'zinc',      label:'Zinc',            icon:'🔩', note:'With meal'},
+  {id:'prework',   label:'Pre-workout',     icon:'🔥', note:'30min before'},
+  {id:'bcaa',      label:'BCAAs',           icon:'💪', note:'During workout'},
+  {id:'collagen',  label:'Collagen',        icon:'✨', note:'With vit C'}
+];
+
+function _injectSupps(){
+  if(document.getElementById('rfc-supps-wrap')) return;
+  var anchor=['rfc-mccycle-wrap','rfc-fdiary-wrap','rfc-nccal-wrap','rfc-micros-wrap','rfc-fast-wrap','rfc-macro-donut-wrap'];
+  var host=null;
+  for(var i=0;i<anchor.length;i++){
+    var el=document.getElementById(anchor[i]);
+    if(el){ host=el; break; }
+  }
+  if(!host){ host=document.getElementById('rfc-food-wrap'); }
+  if(!host) return;
+
+  var c=_b25card('rfc-supps-wrap','💊 Supplement Stack Tracker');
+  c.innerHTML+=
+    '<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">'+
+      '<div id="rfc-supps-score" style="font-size:28px;font-weight:800;color:#a78bfa;">0/0</div>'+
+      '<div style="flex:1;background:#0d0d1a;border-radius:8px;height:8px;overflow:hidden;">'+
+        '<div id="rfc-supps-bar" style="height:100%;background:linear-gradient(90deg,#a78bfa,#7c3aed);width:0%;border-radius:8px;transition:width .4s;"></div>'+
+      '</div>'+
+      '<div style="font-size:11px;color:#666;">today</div>'+
+    '</div>'+
+    '<div id="rfc-supps-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:7px;"></div>'+
+    '<div id="rfc-supps-streak" style="margin-top:12px;font-size:12px;color:#888;"></div>';
+
+  if(host.nextSibling) host.parentNode.insertBefore(c, host.nextSibling);
+  else host.parentNode.appendChild(c);
+  _renderSupps();
+}
+
+function _renderSupps(){
+  var uid=_b25uid(), date=_b25today();
+  var key='rfc_supps_'+uid+'_'+date;
+  var checked=_b25load(key)||{};
+
+  var grid=document.getElementById('rfc-supps-grid');
+  var scoreEl=document.getElementById('rfc-supps-score');
+  var barEl=document.getElementById('rfc-supps-bar');
+  var streakEl=document.getElementById('rfc-supps-streak');
+  if(!grid) return;
+
+  var total=SUPP_LIST.length, done=0;
+  var html='';
+  SUPP_LIST.forEach(function(s){
+    var on=!!checked[s.id];
+    if(on) done++;
+    html+='<div onclick="window._rfcToggleSupp(\''+s.id+'\')" style="display:flex;align-items:center;gap:8px;background:'+(on?'#a78bfa22':'#0d0d1a')+';border:1px solid '+(on?'#a78bfa55':'#222')+';border-radius:9px;padding:8px 10px;cursor:pointer;transition:all .2s;">'+
+      '<span style="font-size:18px;flex-shrink:0;">'+s.icon+'</span>'+
+      '<div style="min-width:0;">'+
+        '<div style="font-size:12px;font-weight:600;color:'+(on?'#a78bfa':'#aaa')+';white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+s.label+'</div>'+
+        '<div style="font-size:10px;color:#555;">'+s.note+'</div>'+
+      '</div>'+
+      '<div style="margin-left:auto;font-size:14px;">'+(on?'✅':'⬜')+'</div>'+
+    '</div>';
+  });
+  grid.innerHTML=html;
+
+  if(scoreEl) scoreEl.textContent=done+'/'+total;
+  if(barEl) barEl.style.width=Math.round(done/total*100)+'%';
+
+  /* compute streak: how many consecutive days at least 5 taken */
+  if(streakEl){
+    var streak=0;
+    for(var d=0;d<30;d++){
+      var dd=new Date(); dd.setDate(dd.getDate()-d);
+      var dk=dd.getFullYear()+'-'+String(dd.getMonth()+1).padStart(2,'0')+'-'+String(dd.getDate()).padStart(2,'0');
+      if(dk===date) continue; /* skip today, may be in-progress */
+      var past=_b25load('rfc_supps_'+uid+'_'+dk)||{};
+      var cnt=Object.keys(past).filter(function(k){ return past[k]; }).length;
+      if(cnt>=5) streak++; else break;
+    }
+    if(streak>0){
+      streakEl.innerHTML='🔥 <strong style="color:#a78bfa;">'+streak+'-day streak</strong> of taking 5+ supplements';
+    } else {
+      streakEl.textContent='Take 5+ supplements daily to build a streak.';
+    }
+  }
+}
+
+window._rfcToggleSupp=function(id){
+  var uid=_b25uid(), date=_b25today();
+  var key='rfc_supps_'+uid+'_'+date;
+  var checked=_b25load(key)||{};
+  checked[id]=!checked[id];
+  _b25save(key,checked);
+  _renderSupps();
+};
+
+/* ── switchScreen wrap ── */
+window.switchScreen=function(name,navEl){
+  _origSS23&&_origSS23(name,navEl);
+  if(name==='dashboard'){
+    setTimeout(function(){ _injectWater(); _renderWater(); }, 1150);
+  }
+  if(name==='workouts'){
+    setTimeout(function(){ _injectPRBoard(); _renderPRBoard(); }, 1050);
+  }
+  if(name==='nutrition'){
+    setTimeout(function(){ _injectSupps(); _renderSupps(); }, 1000);
+  }
+};
+
+setTimeout(function(){
+  _injectWater();
+  _injectPRBoard();
+  _injectSupps();
+}, 17000);
+
+setTimeout(function(){
+  if(!document.getElementById('rfc-water-wrap'))   _injectWater();
+  if(!document.getElementById('rfc-prboard-wrap')) _injectPRBoard();
+  if(!document.getElementById('rfc-supps-wrap'))   _injectSupps();
+}, 20500);
+
+})();
+</script>
+
+</body>
 </html>
