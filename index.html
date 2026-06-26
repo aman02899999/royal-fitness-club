@@ -40663,5 +40663,246 @@ setTimeout(function(){
 })();
 </script>
 
+<!-- Batch 59: Recovery Score Card, Antioxidant Foods, Kettlebell Logger -->
+<script>
+(function(){ 'use strict';
+var _origSS57=window.switchScreen;
+function _b59uid(){ try{ return JSON.parse(localStorage.getItem('bm_user')||'{}').uid||'guest'; }catch(e){ return 'guest'; } }
+function _b59today(){ var d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function _b59load(k){ try{ return JSON.parse(localStorage.getItem(k))||null; }catch(e){ return null; } }
+function _b59save(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} }
+function _b59card(id,title){ var d=document.createElement('div'); d.id=id; d.style.cssText='background:#1a1a2e;border-radius:14px;padding:18px;margin:14px 0;color:#e0e0e0;font-family:inherit;'; d.innerHTML='<div style="font-size:15px;font-weight:700;color:#00d4ff;margin-bottom:14px;">'+title+'</div>'; return d; }
+
+/* ── Recovery Score Card ── */
+var _recMetrics=[
+  {id:'slphr',label:'Sleep Hours',type:'number',min:0,max:12,step:0.5,w:20,tgt:8,higher:true,unit:'h'},
+  {id:'water',label:'Water Intake',type:'number',min:0,max:5,step:0.1,w:10,tgt:2.5,higher:true,unit:'L'},
+  {id:'steps',label:'Steps Today',type:'number',min:0,max:30000,step:100,w:10,tgt:8000,higher:true,unit:'steps'},
+  {id:'soreness',label:'Muscle Soreness (1=none, 10=extreme)',type:'range',min:1,max:10,w:20,tgt:3,higher:false,unit:''},
+  {id:'appetite',label:'Appetite Level (1–10)',type:'range',min:1,max:10,w:10,tgt:7,higher:true,unit:''},
+  {id:'motivation',label:'Training Motivation (1–10)',type:'range',min:1,max:10,w:10,tgt:7,higher:true,unit:''},
+  {id:'rhr',label:'Resting HR (bpm)',type:'number',min:30,max:120,w:20,tgt:60,higher:false,unit:'bpm'}
+];
+function _injectRecScore(){
+  if(document.getElementById('rfc-recscore-wrap')) return;
+  var anchor=document.getElementById('rfc-stress-wrap')||document.getElementById('rfc-mood-wrap')||document.getElementById('rfc-joint-wrap')||document.getElementById('rfc-nsr-wrap');
+  if(!anchor) return;
+  var fields=_recMetrics.map(function(m){
+    var inp=m.type==='range'
+      ? '<input id="rfc-rec-'+m.id+'" type="range" min="'+m.min+'" max="'+m.max+'" value="'+Math.round((m.min+m.max)/2)+'" oninput="document.getElementById(\'rfc-rec-v-'+m.id+'\').textContent=this.value" style="width:100%;"><div id="rfc-rec-v-'+m.id+'" style="text-align:center;font-size:12px;color:#00d4ff;">'+Math.round((m.min+m.max)/2)+'</div>'
+      : '<input id="rfc-rec-'+m.id+'" type="number" min="'+m.min+'" max="'+m.max+'" step="'+(m.step||1)+'" placeholder="'+m.unit+'" style="width:100%;padding:7px;border-radius:7px;border:1px solid #333;background:#0d0d1a;color:#e0e0e0;font-size:12px;box-sizing:border-box;">';
+    return '<div style="padding:6px 0;border-bottom:1px solid #222;">'
+      +'<div style="font-size:12px;color:#aaa;margin-bottom:3px;">'+m.label+'</div>'+inp+'</div>';
+  }).join('');
+  var c=_b59card('rfc-recscore-wrap','♻️ Recovery Score Card');
+  c.innerHTML+=`
+<div id="rfc-rec-ring-wrap" style="text-align:center;margin-bottom:12px;"></div>
+${fields}
+<button onclick="window._rfcRecScoreSave()" style="margin-top:12px;width:100%;padding:9px;border:none;border-radius:8px;background:#00d4ff;color:#000;font-weight:700;cursor:pointer;">Calculate Recovery</button>
+<div id="rfc-rec-breakdown" style="margin-top:10px;"></div>`;
+  anchor.after(c);
+}
+window._rfcRecScoreSave=function(){
+  var vals={};
+  _recMetrics.forEach(function(m){ vals[m.id]=parseFloat(document.getElementById('rfc-rec-'+m.id).value)||0; });
+  var score=0, maxScore=0;
+  _recMetrics.forEach(function(m){
+    maxScore+=m.w;
+    var v=vals[m.id];
+    var fraction;
+    if(m.type==='range'){
+      fraction=m.higher?(v-m.min)/(m.max-m.min):(m.max-v)/(m.max-m.min);
+    } else {
+      fraction=m.higher?Math.min(1,v/m.tgt):Math.min(1,(m.tgt*2-v)/m.tgt);
+    }
+    score+=Math.max(0,fraction)*m.w;
+  });
+  var pct=Math.round(score/maxScore*100);
+  var col=pct>=75?'#4caf50':pct>=50?'#ff9800':'#f44336';
+  var msg=pct>=75?'Fully recovered — ready to train hard':pct>=50?'Partially recovered — moderate training':' Under-recovered — active recovery or rest day';
+  var ring=document.getElementById('rfc-rec-ring-wrap');
+  if(ring){
+    var circ=Math.round(2*Math.PI*36), dash=Math.round(circ*pct/100);
+    ring.innerHTML='<svg width="90" height="90" viewBox="0 0 90 90"><circle cx="45" cy="45" r="36" fill="none" stroke="#222" stroke-width="8"/><circle cx="45" cy="45" r="36" fill="none" stroke="'+col+'" stroke-width="8" stroke-dasharray="'+dash+' '+circ+'" stroke-dashoffset="'+Math.round(circ*0.25)+'" stroke-linecap="round"/><text x="45" y="50" text-anchor="middle" fill="'+col+'" font-size="16" font-weight="700">'+pct+'</text></svg>'
+      +'<div style="font-size:12px;color:'+col+';margin-top:-4px;">'+msg+'</div>';
+  }
+  var uid=_b59uid(), key='rfc_recscore_'+uid;
+  var hist=_b59load(key)||[];
+  var today=_b59today();
+  var idx=hist.findIndex(function(e){return e.date===today;});
+  var entry=Object.assign({date:today,pct:pct},vals);
+  if(idx>=0) hist[idx]=entry; else hist.push(entry);
+  if(hist.length>30) hist=hist.slice(-30);
+  _b59save(key,hist);
+  var bd=document.getElementById('rfc-rec-breakdown');
+  if(bd){
+    var bars=hist.slice(-7).map(function(e){
+      var c2=e.pct>=75?'#4caf50':e.pct>=50?'#ff9800':'#f44336';
+      return '<div style="display:flex;flex-direction:column;align-items:center;gap:2px;flex:1;">'
+        +'<div style="height:'+Math.max(4,e.pct*0.5)+'px;width:16px;background:'+c2+';border-radius:3px;"></div>'
+        +'<div style="font-size:9px;color:#aaa;">'+e.date.slice(5)+'</div></div>';
+    }).join('');
+    bd.innerHTML='<div style="font-size:11px;color:#aaa;margin-bottom:4px;">7-Day Recovery</div>'
+      +'<div style="display:flex;align-items:flex-end;gap:4px;height:60px;">'+bars+'</div>';
+  }
+};
+function _renderRecScore(){
+  if(!document.getElementById('rfc-recscore-wrap')) return;
+  var uid=_b59uid(), key='rfc_recscore_'+uid;
+  var hist=_b59load(key)||[];
+  var td=hist.find(function(e){return e.date===_b59today();});
+  if(td){
+    _recMetrics.forEach(function(m){
+      var el=document.getElementById('rfc-rec-'+m.id);
+      var vel=document.getElementById('rfc-rec-v-'+m.id);
+      if(el&&td[m.id]!==undefined){ el.value=td[m.id]; if(vel) vel.textContent=td[m.id]; }
+    });
+    window._rfcRecScoreSave();
+  }
+}
+
+/* ── Antioxidant Foods Tracker ── */
+function _injectAntioxidant(){
+  if(document.getElementById('rfc-antioxid-wrap')) return;
+  var anchor=document.getElementById('rfc-fiber-wrap')||document.getElementById('rfc-micro-wrap')||document.getElementById('rfc-elec-wrap')||document.getElementById('rfc-vitb-wrap');
+  if(!anchor) return;
+  var FOODS=[
+    {id:'blue',label:'Blueberries / Acai',pts:5},{id:'dark',label:'Dark Chocolate (85%+)',pts:4},
+    {id:'grn',label:'Green Tea / Matcha',pts:4},{id:'spin',label:'Spinach / Kale',pts:4},
+    {id:'tom',label:'Tomatoes / Lycopene',pts:3},{id:'tum',label:'Turmeric / Curcumin',pts:4},
+    {id:'gar',label:'Garlic / Onions',pts:3},{id:'wal',label:'Walnuts / Pecans',pts:3},
+    {id:'pome',label:'Pomegranate / Tart Cherry',pts:5},{id:'beet',label:'Beets',pts:3},
+    {id:'gin',label:'Ginger',pts:3},{id:'citrus',label:'Citrus Fruits (Vit C)',pts:3}
+  ];
+  var rows=FOODS.map(function(f){
+    return '<label style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid #1a1a2e;cursor:pointer;">'
+      +'<input type="checkbox" id="rfc-antioxid-'+f.id+'" onchange="window._rfcAntioxidChg()" style="accent-color:#9c27b0;">'
+      +'<span style="flex:1;font-size:12px;">'+f.label+'</span>'
+      +'<span style="font-size:11px;color:#9c27b0;">+'+f.pts+'</span></label>';
+  }).join('');
+  var c=_b59card('rfc-antioxid-wrap','🫐 Antioxidant Foods Tracker');
+  c.innerHTML+=`
+<div style="font-size:12px;color:#aaa;margin-bottom:10px;">Track antioxidant-rich foods — fight inflammation & oxidative stress</div>
+<div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+  <div id="rfc-antioxid-ring" style="width:60px;height:60px;flex-shrink:0;"></div>
+  <div>
+    <div id="rfc-antioxid-pts" style="font-size:22px;font-weight:700;color:#9c27b0;">0<span style="font-size:12px;color:#aaa;">/44</span></div>
+    <div id="rfc-antioxid-msg" style="font-size:11px;color:#aaa;">Log antioxidant foods</div>
+  </div>
+</div>
+<div style="max-height:250px;overflow-y:auto;">${rows}</div>`;
+  anchor.after(c);
+}
+window._rfcAntioxidChg=function(){
+  var FOODS=[{id:'blue',pts:5},{id:'dark',pts:4},{id:'grn',pts:4},{id:'spin',pts:4},{id:'tom',pts:3},{id:'tum',pts:4},{id:'gar',pts:3},{id:'wal',pts:3},{id:'pome',pts:5},{id:'beet',pts:3},{id:'gin',pts:3},{id:'citrus',pts:3}];
+  var total=44, pts=0, state={};
+  FOODS.forEach(function(f){ var cb=document.getElementById('rfc-antioxid-'+f.id); if(cb&&cb.checked){ pts+=f.pts; state[f.id]=1; } });
+  var uid=_b59uid(), key='rfc_antioxid_'+uid+'_'+_b59today();
+  _b59save(key,state);
+  var pct=Math.round(pts/total*100);
+  var col=pct>=70?'#9c27b0':pct>=40?'#ff9800':'#aaa';
+  var msg=pct>=70?'Excellent antioxidant intake!':pct>=40?'Good — add more variety':'Add more colourful antioxidant foods';
+  document.getElementById('rfc-antioxid-pts').innerHTML=pts+'<span style="font-size:12px;color:#aaa;">/'+total+'</span>';
+  document.getElementById('rfc-antioxid-msg').textContent=msg; document.getElementById('rfc-antioxid-msg').style.color=col;
+  var r=document.getElementById('rfc-antioxid-ring');
+  var circ=Math.round(2*Math.PI*24), dash=Math.round(circ*pct/100);
+  r.innerHTML='<svg width="60" height="60" viewBox="0 0 60 60"><circle cx="30" cy="30" r="24" fill="none" stroke="#222" stroke-width="6"/><circle cx="30" cy="30" r="24" fill="none" stroke="'+col+'" stroke-width="6" stroke-dasharray="'+dash+' '+circ+'" stroke-dashoffset="'+Math.round(circ*0.25)+'" stroke-linecap="round"/><text x="30" y="35" text-anchor="middle" fill="'+col+'" font-size="12" font-weight="700">'+pct+'%</text></svg>';
+};
+function _renderAntioxidant(){
+  if(!document.getElementById('rfc-antioxid-wrap')) return;
+  var uid=_b59uid(), key='rfc_antioxid_'+uid+'_'+_b59today();
+  var saved=_b59load(key)||{};
+  Object.keys(saved).forEach(function(id){ var cb=document.getElementById('rfc-antioxid-'+id); if(cb) cb.checked=true; });
+  window._rfcAntioxidChg();
+}
+
+/* ── Kettlebell Logger ── */
+function _injectKB(){
+  if(document.getElementById('rfc-kb-wrap')) return;
+  var anchor=document.getElementById('rfc-wvest-wrap')||document.getElementById('rfc-cali-wrap')||document.getElementById('rfc-plyo-wrap')||document.getElementById('rfc-acc-wrap');
+  if(!anchor) return;
+  var KBEX=['Swings','Turkish Get-Up','Clean & Press','Snatch','Goblet Squat','Deadlift','Windmill','Farmer Carry','Double Clean','Figure-8'];
+  var opts=KBEX.map(function(e){ return '<option value="'+e+'">'+e+'</option>'; }).join('');
+  var c=_b59card('rfc-kb-wrap','🔔 Kettlebell Logger');
+  c.innerHTML+=`
+<div style="font-size:12px;color:#aaa;margin-bottom:12px;">Log kettlebell exercises — tracks PBs per exercise</div>
+<div style="display:grid;gap:8px;margin-bottom:12px;">
+  <select id="rfc-kb-ex" style="padding:8px;border-radius:8px;border:1px solid #333;background:#0d0d1a;color:#e0e0e0;font-size:13px;">
+    <option value="">Select exercise…</option>${opts}
+  </select>
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;">
+    <input id="rfc-kb-kg" type="number" min="4" max="100" step="2" placeholder="kg" style="padding:8px;border-radius:8px;border:1px solid #333;background:#0d0d1a;color:#e0e0e0;font-size:13px;text-align:center;">
+    <input id="rfc-kb-sets" type="number" min="1" max="20" placeholder="Sets" style="padding:8px;border-radius:8px;border:1px solid #333;background:#0d0d1a;color:#e0e0e0;font-size:13px;text-align:center;">
+    <input id="rfc-kb-reps" type="number" min="1" max="200" placeholder="Reps" style="padding:8px;border-radius:8px;border:1px solid #333;background:#0d0d1a;color:#e0e0e0;font-size:13px;text-align:center;">
+  </div>
+</div>
+<button onclick="window._rfcKBLog()" style="width:100%;padding:9px;border:none;border-radius:8px;background:#00d4ff;color:#000;font-weight:700;cursor:pointer;">Log</button>
+<div id="rfc-kb-list" style="margin-top:12px;"></div>
+<div id="rfc-kb-pbs" style="margin-top:10px;"></div>`;
+  anchor.after(c);
+  _renderKBPBs(_b59uid());
+}
+window._rfcKBLog=function(){
+  var ex=document.getElementById('rfc-kb-ex').value;
+  if(!ex){ alert('Select exercise'); return; }
+  var kg=parseFloat(document.getElementById('rfc-kb-kg').value)||0;
+  var sets=parseInt(document.getElementById('rfc-kb-sets').value)||1;
+  var reps=parseInt(document.getElementById('rfc-kb-reps').value)||0;
+  var uid=_b59uid(), dayKey='rfc_kb_'+uid+'_'+_b59today(), pbKey='rfc_kb_pbs_'+uid;
+  var log=_b59load(dayKey)||[], pbs=_b59load(pbKey)||{};
+  var vol=sets*reps*kg;
+  log.push({ex:ex,kg:kg,sets:sets,reps:reps,vol:vol,ts:Date.now()});
+  _b59save(dayKey,log);
+  if(!pbs[ex]||vol>pbs[ex]){ pbs[ex]={vol:vol,kg:kg,sets:sets,reps:reps,date:_b59today()}; _b59save(pbKey,pbs); }
+  document.getElementById('rfc-kb-kg').value=''; document.getElementById('rfc-kb-sets').value=''; document.getElementById('rfc-kb-reps').value='';
+  _renderKBList(log);
+  _renderKBPBs(uid);
+};
+function _renderKBList(log){
+  var el=document.getElementById('rfc-kb-list'); if(!el) return;
+  if(!log||!log.length){ el.innerHTML='<div style="font-size:12px;color:#555;text-align:center;padding:8px;">No sets logged today</div>'; return; }
+  var html='<div style="font-size:12px;color:#aaa;margin-bottom:6px;">Today\'s KB Session</div>';
+  log.forEach(function(e,i){
+    html+='<div style="display:flex;align-items:center;gap:8px;padding:5px;background:#0d0d1a;border-radius:7px;margin-bottom:3px;font-size:12px;">'
+      +'<span style="color:#00d4ff;">#'+(i+1)+'</span>'
+      +'<span style="flex:1;">'+e.ex+'</span>'
+      +'<span>'+e.kg+'kg</span>'
+      +'<span style="color:#aaa;">'+e.sets+'×'+e.reps+'</span></div>';
+  });
+  el.innerHTML=html;
+}
+function _renderKBPBs(uid){
+  var el=document.getElementById('rfc-kb-pbs'); if(!el) return;
+  var pbs=_b59load('rfc_kb_pbs_'+uid)||{};
+  var keys=Object.keys(pbs);
+  if(!keys.length){ el.innerHTML=''; return; }
+  var html='<div style="font-size:12px;color:#aaa;margin-bottom:6px;">Personal Bests (Volume)</div><div style="display:flex;flex-wrap:wrap;gap:5px;">';
+  keys.forEach(function(k){ html+='<div style="background:#0d0d1a;border:1px solid #9c27b0;border-radius:8px;padding:6px 10px;font-size:11px;"><div style="color:#9c27b0;font-weight:700;">'+k+'</div><div style="color:#e0e0e0;">'+pbs[k].kg+'kg × '+pbs[k].sets+'×'+pbs[k].reps+'</div></div>'; });
+  el.innerHTML=html+'</div>';
+}
+function _renderKB(){
+  if(!document.getElementById('rfc-kb-wrap')) return;
+  var uid=_b59uid(), dayKey='rfc_kb_'+uid+'_'+_b59today();
+  var log=_b59load(dayKey)||[];
+  _renderKBList(log); _renderKBPBs(uid);
+}
+
+/* ── switchScreen wrapper ── */
+window.switchScreen=function(name,navEl){
+  _origSS57&&_origSS57(name,navEl);
+  if(name==='dashboard') setTimeout(function(){ _injectRecScore(); _renderRecScore(); },1200);
+  if(name==='nutrition') setTimeout(function(){ _injectAntioxidant(); _renderAntioxidant(); },1100);
+  if(name==='workouts')  setTimeout(function(){ _injectKB(); _renderKB(); },1050);
+};
+
+setTimeout(function(){ _injectRecScore(); _injectAntioxidant(); _injectKB(); _renderRecScore(); _renderAntioxidant(); _renderKB(); },51000);
+setTimeout(function(){
+  if(!document.getElementById('rfc-recscore-wrap'))  { _injectRecScore(); _renderRecScore(); }
+  if(!document.getElementById('rfc-antioxid-wrap')) { _injectAntioxidant(); _renderAntioxidant(); }
+  if(!document.getElementById('rfc-kb-wrap'))        { _injectKB(); _renderKB(); }
+},55000);
+})();
+</script>
+
 </body>
 </html>
