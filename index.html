@@ -42251,5 +42251,244 @@ setTimeout(function(){
 })();
 </script>
 
+<!-- Batch 66: Gratitude Journal, Water-Rich Foods, Overhead Press Tracker -->
+<script>
+(function(){ 'use strict';
+var _origSS64=window.switchScreen;
+function _b66uid(){ try{ return JSON.parse(localStorage.getItem('bm_user')||'{}').uid||'guest'; }catch(e){ return 'guest'; } }
+function _b66today(){ var d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function _b66load(k){ try{ return JSON.parse(localStorage.getItem(k))||null; }catch(e){ return null; } }
+function _b66save(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} }
+function _b66card(id,title){ var d=document.createElement('div'); d.id=id; d.style.cssText='background:#1a1a2e;border-radius:14px;padding:18px;margin:14px 0;color:#e0e0e0;font-family:inherit;'; d.innerHTML='<div style="font-size:15px;font-weight:700;color:#00d4ff;margin-bottom:14px;">'+title+'</div>'; return d; }
+
+/* ── Gratitude & Positivity Journal ── */
+function _injectGratitude(){
+  if(document.getElementById('rfc-grat-wrap')) return;
+  var anchor=document.getElementById('rfc-enbudget-wrap')||document.getElementById('rfc-testhab-wrap')||document.getElementById('rfc-breathpat-wrap')||document.getElementById('rfc-injprev-wrap');
+  if(!anchor) return;
+  var c=_b66card('rfc-grat-wrap','🙏 Gratitude & Positivity Journal');
+  c.innerHTML+=`
+<div style="font-size:12px;color:#aaa;margin-bottom:12px;">3 things you're grateful for + a positive affirmation (30-day streak)</div>
+<div style="display:grid;gap:8px;margin-bottom:12px;">
+  <div>
+    <div style="font-size:11px;color:#aaa;margin-bottom:3px;">Grateful for #1</div>
+    <input id="rfc-gr-1" type="text" placeholder="I'm grateful for…" style="width:100%;padding:8px;border-radius:8px;border:1px solid #333;background:#0d0d1a;color:#e0e0e0;font-size:12px;box-sizing:border-box;">
+  </div>
+  <div>
+    <div style="font-size:11px;color:#aaa;margin-bottom:3px;">Grateful for #2</div>
+    <input id="rfc-gr-2" type="text" placeholder="I'm grateful for…" style="width:100%;padding:8px;border-radius:8px;border:1px solid #333;background:#0d0d1a;color:#e0e0e0;font-size:12px;box-sizing:border-box;">
+  </div>
+  <div>
+    <div style="font-size:11px;color:#aaa;margin-bottom:3px;">Grateful for #3</div>
+    <input id="rfc-gr-3" type="text" placeholder="I'm grateful for…" style="width:100%;padding:8px;border-radius:8px;border:1px solid #333;background:#0d0d1a;color:#e0e0e0;font-size:12px;box-sizing:border-box;">
+  </div>
+  <div>
+    <div style="font-size:11px;color:#aaa;margin-bottom:3px;">Today's affirmation</div>
+    <input id="rfc-gr-aff" type="text" placeholder="I am…" style="width:100%;padding:8px;border-radius:8px;border:1px solid #ffd700;background:#0d0d1a;color:#ffd700;font-size:13px;font-style:italic;box-sizing:border-box;">
+  </div>
+  <div>
+    <div style="font-size:11px;color:#aaa;margin-bottom:3px;">Overall mood (1–10)</div>
+    <input id="rfc-gr-mood" type="range" min="1" max="10" value="7" style="width:100%;" oninput="document.getElementById('rfc-gr-moodv').textContent=this.value">
+    <div id="rfc-gr-moodv" style="text-align:center;font-size:13px;color:#ffd700;">7</div>
+  </div>
+</div>
+<button onclick="window._rfcGratSave()" style="width:100%;padding:9px;border:none;border-radius:8px;background:#ffd700;color:#000;font-weight:700;cursor:pointer;">Save Journal Entry</button>
+<div id="rfc-gr-streak" style="margin-top:10px;text-align:center;font-size:13px;color:#ffd700;"></div>
+<div id="rfc-gr-hist" style="margin-top:12px;"></div>`;
+  anchor.after(c);
+}
+window._rfcGratSave=function(){
+  var g1=document.getElementById('rfc-gr-1').value.trim();
+  var g2=document.getElementById('rfc-gr-2').value.trim();
+  var g3=document.getElementById('rfc-gr-3').value.trim();
+  var aff=document.getElementById('rfc-gr-aff').value.trim();
+  var mood=parseInt(document.getElementById('rfc-gr-mood').value)||7;
+  if(!g1){ alert('Enter at least 1 gratitude'); return; }
+  var uid=_b66uid(), key='rfc_grat_'+uid;
+  var hist=_b66load(key)||[], today=_b66today();
+  var idx=hist.findIndex(function(e){return e.date===today;});
+  var entry={date:today,g:[g1,g2,g3].filter(Boolean),aff:aff,mood:mood};
+  if(idx>=0) hist[idx]=entry; else hist.push(entry);
+  if(hist.length>90) hist=hist.slice(-90);
+  _b66save(key,hist);
+  _showGratStreak(hist);
+  _showGratHist(hist);
+};
+function _calcGratStreak(hist){
+  var streak=0, cur=new Date(_b66today());
+  for(var i=hist.length-1;i>=0;i--){
+    var d=new Date(hist[i].date);
+    var diff=Math.round((cur-d)/86400000);
+    if(diff===streak) streak++; else break;
+  }
+  return streak;
+}
+function _showGratStreak(hist){
+  var el=document.getElementById('rfc-gr-streak'); if(!el) return;
+  var streak=_calcGratStreak(hist);
+  el.innerHTML=streak>0?'🔥 '+streak+'-day gratitude streak!':'Start your streak today!';
+}
+function _showGratHist(hist){
+  var el=document.getElementById('rfc-gr-hist'); if(!el||!hist.length) return;
+  var last5=hist.slice(-5).reverse();
+  el.innerHTML='<div style="font-size:12px;color:#aaa;margin-bottom:6px;">Recent Entries</div>'
+    +last5.map(function(e){
+      var col=e.mood>=8?'#4caf50':e.mood>=5?'#ff9800':'#f44336';
+      return '<div style="background:#0d0d1a;border-radius:8px;padding:8px;margin-bottom:5px;">'
+        +'<div style="display:flex;justify-content:space-between;font-size:11px;color:#aaa;margin-bottom:4px;">'
+        +'<span>'+e.date+'</span><span style="color:'+col+';">Mood: '+e.mood+'/10</span></div>'
+        +(e.aff?'<div style="font-size:11px;color:#ffd700;font-style:italic;margin-bottom:3px;">"'+e.aff+'"</div>':'')
+        +(e.g&&e.g.length?'<div style="font-size:11px;color:#aaa;">'+e.g.map(function(g,i){return (i+1)+'. '+g;}).join(' · ')+'</div>':'')
+        +'</div>';
+    }).join('');
+}
+function _renderGratitude(){
+  if(!document.getElementById('rfc-grat-wrap')) return;
+  var uid=_b66uid(), key='rfc_grat_'+uid;
+  var hist=_b66load(key)||[], today=_b66today();
+  var td=hist.find(function(e){return e.date===today;});
+  if(td){
+    if(td.g[0]) document.getElementById('rfc-gr-1').value=td.g[0];
+    if(td.g[1]) document.getElementById('rfc-gr-2').value=td.g[1];
+    if(td.g[2]) document.getElementById('rfc-gr-3').value=td.g[2];
+    if(td.aff)  document.getElementById('rfc-gr-aff').value=td.aff;
+    document.getElementById('rfc-gr-mood').value=td.mood||7;
+    document.getElementById('rfc-gr-moodv').textContent=td.mood||7;
+  }
+  _showGratStreak(hist); _showGratHist(hist);
+}
+
+/* ── Water-Rich Foods Tracker ── */
+function _injectWaterFoods(){
+  if(document.getElementById('rfc-wfoods-wrap')) return;
+  var anchor=document.getElementById('rfc-digest-wrap')||document.getElementById('rfc-zinc-wrap')||document.getElementById('rfc-protto-wrap')||document.getElementById('rfc-hydlog-wrap');
+  if(!anchor) return;
+  var WFOODS=[
+    {id:'cuc',label:'Cucumber (96% water)',ml:150},{id:'lettu',label:'Lettuce / Iceberg (96%)',ml:120},
+    {id:'celery',label:'Celery (95%)',ml:100},{id:'tom',label:'Tomatoes (94%)',ml:120},
+    {id:'zuc',label:'Zucchini (94%)',ml:110},{id:'waterml',label:'Watermelon (92%)',ml:200},
+    {id:'straw',label:'Strawberries (91%)',ml:150},{id:'orange',label:'Oranges (87%)',ml:130},
+    {id:'soup',label:'Soup / Broth (bowl)',ml:350},{id:'yog',label:'Yogurt (88%)',ml:120},
+    {id:'broc',label:'Broccoli (89%)',ml:100},{id:'carrot',label:'Carrots (88%)',ml:90}
+  ];
+  var rows=WFOODS.map(function(f){
+    return '<label style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid #1a1a2e;cursor:pointer;">'
+      +'<input type="checkbox" id="rfc-wf-'+f.id+'" onchange="window._rfcWFCalc()" style="accent-color:#00d4ff;">'
+      +'<span style="flex:1;font-size:12px;">'+f.label+'</span>'
+      +'<span style="font-size:11px;color:#00d4ff;">+'+f.ml+'ml</span></label>';
+  }).join('');
+  var c=_b66card('rfc-wfoods-wrap','💦 Water-Rich Foods Tracker');
+  c.innerHTML+=`
+<div style="font-size:12px;color:#aaa;margin-bottom:10px;">Food contributes ~20% of daily water needs — track it!</div>
+<div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+  <div id="rfc-wf-ring" style="width:60px;height:60px;flex-shrink:0;"></div>
+  <div><div id="rfc-wf-ml" style="font-size:22px;font-weight:700;color:#00d4ff;">0<span style="font-size:12px;color:#aaa;">ml / 600ml goal</span></div>
+  <div id="rfc-wf-msg" style="font-size:11px;color:#aaa;">Check off water-rich foods eaten</div></div>
+</div>
+<div style="max-height:250px;overflow-y:auto;">${rows}</div>`;
+  anchor.after(c);
+}
+window._rfcWFCalc=function(){
+  var WFOODS=[{id:'cuc',ml:150},{id:'lettu',ml:120},{id:'celery',ml:100},{id:'tom',ml:120},{id:'zuc',ml:110},{id:'waterml',ml:200},{id:'straw',ml:150},{id:'orange',ml:130},{id:'soup',ml:350},{id:'yog',ml:120},{id:'broc',ml:100},{id:'carrot',ml:90}];
+  var total=0, state={};
+  WFOODS.forEach(function(f){ var cb=document.getElementById('rfc-wf-'+f.id); if(cb&&cb.checked){ total+=f.ml; state[f.id]=1; } });
+  var uid=_b66uid(), key='rfc_wfoods_'+uid+'_'+_b66today();
+  _b66save(key,state);
+  var target=600, pct=Math.min(100,Math.round(total/target*100));
+  var col=pct>=100?'#4caf50':pct>=60?'#00d4ff':'#ff9800';
+  var msg=pct>=100?'Water-food target met!':pct>=60?'Good — getting there':'Add more hydrating foods';
+  document.getElementById('rfc-wf-ml').innerHTML=total+'ml<span style="font-size:12px;color:#aaa;"> / '+target+'ml goal</span>';
+  document.getElementById('rfc-wf-msg').textContent=msg; document.getElementById('rfc-wf-msg').style.color=col;
+  var r=document.getElementById('rfc-wf-ring');
+  var circ=Math.round(2*Math.PI*24), dash=Math.round(circ*pct/100);
+  r.innerHTML='<svg width="60" height="60" viewBox="0 0 60 60"><circle cx="30" cy="30" r="24" fill="none" stroke="#222" stroke-width="6"/><circle cx="30" cy="30" r="24" fill="none" stroke="'+col+'" stroke-width="6" stroke-dasharray="'+dash+' '+circ+'" stroke-dashoffset="'+Math.round(circ*0.25)+'" stroke-linecap="round"/><text x="30" y="35" text-anchor="middle" fill="'+col+'" font-size="12" font-weight="700">'+pct+'%</text></svg>';
+};
+function _renderWaterFoods(){
+  if(!document.getElementById('rfc-wfoods-wrap')) return;
+  var uid=_b66uid(), key='rfc_wfoods_'+uid+'_'+_b66today();
+  var saved=_b66load(key)||{};
+  Object.keys(saved).forEach(function(id){ var cb=document.getElementById('rfc-wf-'+id); if(cb) cb.checked=true; });
+  window._rfcWFCalc();
+}
+
+/* ── Overhead Press Tracker ── */
+function _injectOHP(){
+  if(document.getElementById('rfc-ohp-wrap')) return;
+  var anchor=document.getElementById('rfc-sqvar-wrap')||document.getElementById('rfc-pushpull-wrap')||document.getElementById('rfc-dlvar-wrap')||document.getElementById('rfc-agility-wrap');
+  if(!anchor) return;
+  var VARS=[
+    {id:'bb',label:'Barbell OHP (standing)'},{id:'dbsit',label:'DB Shoulder Press (seated)'},
+    {id:'dbst',label:'DB Shoulder Press (standing)'},{id:'arno',label:'Arnold Press'},
+    {id:'push',label:'Push Press'},{id:'jerk',label:'Push Jerk'},
+    {id:'land',label:'Landmine Press'},{id:'z',label:'Z Press (floor seated)'}
+  ];
+  var rows=VARS.map(function(v){
+    return '<div style="padding:7px 0;border-bottom:1px solid #222;">'
+      +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;">'
+      +'<span style="font-size:13px;">'+v.label+'</span>'
+      +'<span id="rfc-ohp-pb-'+v.id+'" style="font-size:10px;color:#ff9800;"></span></div>'
+      +'<div style="display:flex;gap:6px;">'
+      +'<input id="rfc-ohp-kg-'+v.id+'" type="number" min="0" step="1.25" placeholder="kg" style="flex:1;padding:6px;border-radius:6px;border:1px solid #333;background:#0d0d1a;color:#e0e0e0;font-size:12px;">'
+      +'<input id="rfc-ohp-reps-'+v.id+'" type="number" min="1" max="30" placeholder="reps" style="width:55px;padding:6px;border-radius:6px;border:1px solid #333;background:#0d0d1a;color:#e0e0e0;font-size:12px;">'
+      +'<button onclick="window._rfcOHPLog(\''+v.id+'\')" style="padding:6px 10px;border:none;border-radius:6px;background:#2196f3;color:#fff;font-size:11px;cursor:pointer;">Log</button>'
+      +'</div></div>';
+  }).join('');
+  var c=_b66card('rfc-ohp-wrap','🏋️ Overhead Press Tracker');
+  c.innerHTML+=`
+<div style="font-size:12px;color:#aaa;margin-bottom:12px;">Track all pressing variations — shoulder strength across all angles</div>
+${rows}
+<div id="rfc-ohp-today" style="margin-top:12px;"></div>`;
+  anchor.after(c);
+  _renderOHP();
+}
+window._rfcOHPLog=function(id){
+  var kg=parseFloat(document.getElementById('rfc-ohp-kg-'+id).value)||0;
+  var reps=parseInt(document.getElementById('rfc-ohp-reps-'+id).value)||1;
+  if(!kg){ alert('Enter weight'); return; }
+  var uid=_b66uid(), pbKey='rfc_ohp_pbs_'+uid, dayKey='rfc_ohp_'+uid+'_'+_b66today();
+  var pbs=_b66load(pbKey)||{}, today=_b66load(dayKey)||{};
+  if(!today[id]) today[id]=[];
+  today[id].push({kg:kg,reps:reps});
+  _b66save(dayKey,today);
+  if(!pbs[id]||kg>pbs[id].kg){ pbs[id]={kg:kg,reps:reps,date:_b66today()}; _b66save(pbKey,pbs); }
+  document.getElementById('rfc-ohp-kg-'+id).value=''; document.getElementById('rfc-ohp-reps-'+id).value='';
+  _showOHPPBs(pbs); _showOHPToday(today);
+};
+function _showOHPPBs(pbs){
+  var VARS=[{id:'bb'},{id:'dbsit'},{id:'dbst'},{id:'arno'},{id:'push'},{id:'jerk'},{id:'land'},{id:'z'}];
+  VARS.forEach(function(v){ var el=document.getElementById('rfc-ohp-pb-'+v.id); if(el&&pbs[v.id]) el.textContent='PB: '+pbs[v.id].kg+'kg×'+pbs[v.id].reps; });
+}
+function _showOHPToday(today){
+  var el=document.getElementById('rfc-ohp-today'); if(!el) return;
+  var keys=Object.keys(today); if(!keys.length){ el.innerHTML=''; return; }
+  var LABELS={bb:'BB OHP',dbsit:'DB Seated',dbst:'DB Standing',arno:'Arnold',push:'Push Press',jerk:'Push Jerk',land:'Landmine',z:'Z Press'};
+  var html='<div style="font-size:12px;color:#aaa;margin-bottom:6px;">Today\'s Press Session</div><div style="display:flex;flex-wrap:wrap;gap:5px;">';
+  keys.forEach(function(k){ var best=today[k].reduce(function(a,b){return b.kg>a.kg?b:a;}); html+='<div style="background:#0d0d1a;border-radius:8px;padding:7px 10px;text-align:center;"><div style="font-size:15px;font-weight:700;color:#2196f3;">'+best.kg+'kg</div><div style="font-size:10px;color:#aaa;">'+(LABELS[k]||k)+'×'+best.reps+'</div></div>'; });
+  el.innerHTML=html+'</div>';
+}
+function _renderOHP(){
+  if(!document.getElementById('rfc-ohp-wrap')) return;
+  var uid=_b66uid();
+  _showOHPPBs(_b66load('rfc_ohp_pbs_'+uid)||{});
+  _showOHPToday(_b66load('rfc_ohp_'+uid+'_'+_b66today())||{});
+}
+
+/* ── switchScreen wrapper ── */
+window.switchScreen=function(name,navEl){
+  _origSS64&&_origSS64(name,navEl);
+  if(name==='dashboard') setTimeout(function(){ _injectGratitude(); _renderGratitude(); },1200);
+  if(name==='nutrition') setTimeout(function(){ _injectWaterFoods(); _renderWaterFoods(); },1100);
+  if(name==='workouts')  setTimeout(function(){ _injectOHP(); _renderOHP(); },1050);
+};
+
+setTimeout(function(){ _injectGratitude(); _injectWaterFoods(); _injectOHP(); _renderGratitude(); _renderWaterFoods(); _renderOHP(); },58000);
+setTimeout(function(){
+  if(!document.getElementById('rfc-grat-wrap'))   { _injectGratitude(); _renderGratitude(); }
+  if(!document.getElementById('rfc-wfoods-wrap')) { _injectWaterFoods(); _renderWaterFoods(); }
+  if(!document.getElementById('rfc-ohp-wrap'))    { _injectOHP(); _renderOHP(); }
+},62000);
+})();
+</script>
+
 </body>
 </html>
