@@ -25162,5 +25162,614 @@ setTimeout(function(){
 })();
 </script>
 
+<!-- ═══ BATCH 9: Greeting, BMI Gauge, Timer Presets, PWA Banner, Macro Rings, Referral Share ═══ -->
+<style>
+/* ── GREETING UPGRADE ── */
+#rfc-quote-wrap{
+  background:rgba(255,255,255,.04);border-left:3px solid #e8001d;
+  border-radius:0 10px 10px 0;padding:10px 14px;margin:12px 0 0;
+  font-size:12px;line-height:1.6;color:rgba(255,255,255,.55);
+  font-style:italic;transition:opacity .4s;
+}
+body.rfc-light #rfc-quote-wrap{background:rgba(0,0,0,.04);color:#555;border-left-color:#e8001d;}
+.rfc-quote-author{font-size:10px;color:rgba(255,255,255,.25);margin-top:4px;font-style:normal;letter-spacing:1px;text-transform:uppercase;}
+body.rfc-light .rfc-quote-author{color:#aaa;}
+
+/* ── BMI GAUGE ── */
+#rfc-bmi-wrap{
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);
+  border-radius:14px;padding:16px;margin:16px 0;text-align:center;
+}
+body.rfc-light #rfc-bmi-wrap{background:#fff;border-color:#eee;}
+.bmi-title{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:10px;}
+body.rfc-light .bmi-title{color:#888;}
+#rfc-bmi-svg{overflow:visible;}
+.bmi-val-text{font-family:'Bebas Neue',sans-serif;font-size:24px;fill:#fff;}
+body.rfc-light .bmi-val-text{fill:#111;}
+.bmi-lbl-text{font-size:10px;fill:rgba(255,255,255,.4);letter-spacing:1px;}
+body.rfc-light .bmi-lbl-text{fill:#888;}
+.bmi-zones{display:flex;justify-content:center;gap:6px;margin-top:8px;flex-wrap:wrap;}
+.bmi-zone{font-size:9px;padding:3px 8px;border-radius:10px;letter-spacing:.5px;}
+
+/* ── TIMER PRESETS ── */
+#rfc-timer-presets{
+  display:none;
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);
+  border-radius:12px;padding:12px;margin-bottom:12px;
+}
+.tp-title{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:8px;}
+body.rfc-light .tp-title{color:#aaa;}
+.tp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;}
+.tp-btn{
+  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);
+  border-radius:8px;padding:8px 4px;cursor:pointer;text-align:center;
+  transition:background .2s,border-color .2s;
+}
+body.rfc-light .tp-btn{background:#f5f5f5;border-color:#ddd;}
+.tp-btn:hover{background:rgba(232,0,29,.15);border-color:rgba(232,0,29,.3);}
+.tp-name{font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:1px;color:#fff;display:block;}
+body.rfc-light .tp-name{color:#111;}
+.tp-desc{font-size:9px;color:rgba(255,255,255,.3);letter-spacing:.5px;}
+body.rfc-light .tp-desc{color:#aaa;}
+#rfc-timer-presets.visible{display:block;}
+
+/* ── MACRO RINGS on Food Log ── */
+#rfc-macro-rings{display:flex;justify-content:center;gap:16px;margin:12px 0;}
+.mrg-wrap{display:flex;flex-direction:column;align-items:center;gap:4px;}
+.mrg-lbl{font-size:9px;color:rgba(255,255,255,.3);letter-spacing:1px;text-transform:uppercase;}
+body.rfc-light .mrg-lbl{color:#aaa;}
+
+/* ── PWA INSTALL BANNER ── */
+#rfc-pwa-banner{
+  display:none;
+  position:fixed;bottom:68px;left:12px;right:12px;
+  background:linear-gradient(135deg,#1a1a1a,#111);
+  border:1px solid rgba(232,0,29,.25);border-radius:16px;
+  padding:14px 16px;z-index:9985;
+  box-shadow:0 10px 40px rgba(0,0,0,.7);
+  align-items:center;gap:12px;
+}
+body.rfc-light #rfc-pwa-banner{background:#fff;border-color:rgba(232,0,29,.3);}
+#rfc-pwa-banner.show{display:flex;}
+.pwa-icon{font-size:32px;flex-shrink:0;}
+.pwa-text{flex:1;}
+.pwa-title{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;color:#fff;margin-bottom:2px;}
+body.rfc-light .pwa-title{color:#111;}
+.pwa-sub{font-size:11px;color:rgba(255,255,255,.4);line-height:1.4;}
+body.rfc-light .pwa-sub{color:#777;}
+.pwa-install-btn{
+  background:linear-gradient(135deg,#e8001d,#c00015);border:none;color:#fff;
+  font-family:'Bebas Neue',sans-serif;letter-spacing:2px;font-size:13px;
+  padding:9px 14px;border-radius:10px;cursor:pointer;white-space:nowrap;
+  box-shadow:0 4px 14px rgba(232,0,29,.4);flex-shrink:0;
+}
+.pwa-dismiss-btn{position:absolute;top:8px;right:10px;background:none;border:none;color:rgba(255,255,255,.25);font-size:16px;cursor:pointer;line-height:1;}
+body.rfc-light .pwa-dismiss-btn{color:#bbb;}
+
+/* ── REFERRAL SHARE ── */
+#rfc-ref-share-wrap{
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);
+  border-radius:12px;padding:12px 14px;margin:14px 0;
+}
+body.rfc-light #rfc-ref-share-wrap{background:#fff;border-color:#eee;}
+.ref-share-row{display:flex;align-items:center;gap:8px;}
+.ref-code-box{
+  flex:1;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);
+  border-radius:8px;padding:8px 12px;font-family:'Bebas Neue',sans-serif;
+  font-size:16px;letter-spacing:3px;color:#f59e0b;text-align:center;
+  user-select:all;cursor:copy;
+}
+body.rfc-light .ref-code-box{background:#fafafa;border-color:#ddd;}
+.ref-copy-btn{
+  background:rgba(245,158,11,.15);border:1px solid rgba(245,158,11,.3);
+  color:#f59e0b;border-radius:8px;padding:8px 14px;font-size:12px;cursor:pointer;
+  font-family:'Bebas Neue',sans-serif;letter-spacing:1px;transition:background .2s;white-space:nowrap;
+}
+.ref-copy-btn:hover{background:rgba(245,158,11,.25);}
+.ref-share-btn{
+  background:rgba(16,185,129,.15);border:1px solid rgba(16,185,129,.3);
+  color:#34d399;border-radius:8px;padding:8px 14px;font-size:12px;cursor:pointer;
+  font-family:'Bebas Neue',sans-serif;letter-spacing:1px;transition:background .2s;white-space:nowrap;
+}
+.ref-share-btn:hover{background:rgba(16,185,129,.25);}
+.ref-share-lbl{font-size:10px;color:rgba(255,255,255,.3);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;}
+body.rfc-light .ref-share-lbl{color:#aaa;}
+.ref-share-stats{display:flex;gap:16px;margin-top:10px;padding-top:8px;border-top:1px solid rgba(255,255,255,.06);}
+body.rfc-light .ref-share-stats{border-top-color:#eee;}
+.ref-stat{text-align:center;flex:1;}
+.ref-stat-val{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:1px;color:#f59e0b;}
+.ref-stat-lbl{font-size:9px;color:rgba(255,255,255,.3);letter-spacing:1px;text-transform:uppercase;}
+body.rfc-light .ref-stat-lbl{color:#aaa;}
+</style>
+
+<script>
+(function(){
+'use strict';
+
+/* ════════════════════════════════════
+   1. SMART GREETING + MOTIVATIONAL QUOTES
+════════════════════════════════════ */
+var QUOTES = [
+  {q:'"The last three or four reps is what makes the muscle grow."', a:'Arnold Schwarzenegger'},
+  {q:'"No pain, no gain. Shut up and train."', a:'Unknown'},
+  {q:'"Success usually comes to those who are too busy to be looking for it."', a:'Henry David Thoreau'},
+  {q:'"Your body can stand almost anything. It\'s your mind that you have to convince."', a:'Unknown'},
+  {q:'"The only bad workout is the one that didn\'t happen."', a:'Unknown'},
+  {q:'"Strength doesn\'t come from what you can do. It comes from overcoming what you thought you couldn\'t."', a:'Rikki Rogers'},
+  {q:'"Push yourself because no one else is going to do it for you."', a:'Unknown'},
+  {q:'"Fall seven times, stand up eight."', a:'Japanese Proverb'},
+  {q:'"Train insane or remain the same."', a:'Unknown'},
+  {q:'"It\'s not about being the best. It\'s about being better than you were yesterday."', a:'Unknown'},
+  {q:'"Discipline is choosing between what you want now and what you want most."', a:'Abraham Lincoln'},
+  {q:'"Sweat is just fat crying."', a:'Unknown'},
+  {q:'"The body achieves what the mind believes."', a:'Unknown'},
+  {q:'"One workout at a time. One day at a time."', a:'Unknown'},
+  {q:'"Results happen over time, not overnight. Work hard, stay consistent, be patient."', a:'Unknown'},
+];
+
+function _getGreeting(){
+  var h = new Date().getHours();
+  if(h < 5)  return 'Late Night Grind 🌙';
+  if(h < 12) return 'Good Morning 🌅';
+  if(h < 17) return 'Good Afternoon ☀️';
+  if(h < 21) return 'Good Evening 🌆';
+  return 'Good Night 🌙';
+}
+
+function _getMotivation(){
+  var q = QUOTES[Math.floor(Math.random() * QUOTES.length)];
+  return q;
+}
+
+function _upgradeGreeting(){
+  var grEl = document.getElementById('dash-greeting');
+  if(!grEl || grEl._rfcUpgraded) return;
+  grEl._rfcUpgraded = true;
+  grEl.textContent = _getGreeting();
+
+  // Inject rotating quote below dash-topbar
+  if(document.getElementById('rfc-quote-wrap')) return;
+  var wrap = document.createElement('div');
+  wrap.id = 'rfc-quote-wrap';
+  var q = _getMotivation();
+  wrap.innerHTML = '<div id="rfc-quote-text">'+q.q+'</div><div class="rfc-quote-author">— '+q.a+'</div>';
+
+  var topbar = document.querySelector('.dash-topbar');
+  if(topbar && topbar.parentNode){
+    topbar.parentNode.insertBefore(wrap, topbar.nextSibling);
+  }
+
+  // Rotate quote every 12 seconds
+  setInterval(function(){
+    var wrap2 = document.getElementById('rfc-quote-wrap');
+    if(!wrap2) return;
+    wrap2.style.opacity = '0';
+    setTimeout(function(){
+      var nq = _getMotivation();
+      var t = wrap2.querySelector('#rfc-quote-text');
+      var a = wrap2.querySelector('.rfc-quote-author');
+      if(t) t.textContent = nq.q;
+      if(a) a.textContent = '— ' + nq.a;
+      wrap2.style.opacity = '1';
+    }, 400);
+  }, 12000);
+}
+
+/* ════════════════════════════════════
+   2. BMI GAUGE (SVG speedometer)
+════════════════════════════════════ */
+function _injectBMIGauge(){
+  // Only inject if we have lastRes with bmi
+  if(document.getElementById('rfc-bmi-wrap')) return;
+  var anchor = document.getElementById('rfc-quote-wrap') || document.querySelector('.dash-topbar');
+  if(!anchor || !anchor.parentNode) return;
+
+  var wrap = document.createElement('div');
+  wrap.id = 'rfc-bmi-wrap';
+  wrap.innerHTML = '<div class="bmi-title">BMI Gauge</div>'
+    + '<svg id="rfc-bmi-svg" viewBox="0 0 200 110" width="200" height="110">'
+    // Arc segments: underweight, normal, overweight, obese
+    + '<path d="M 20 100 A 80 80 0 0 1 50 28" fill="none" stroke="#3b82f6" stroke-width="14" stroke-linecap="round"/>'
+    + '<path d="M 50 28 A 80 80 0 0 1 150 28" fill="none" stroke="#10b981" stroke-width="14" stroke-linecap="round"/>'
+    + '<path d="M 150 28 A 80 80 0 0 1 180 100" fill="none" stroke="#f59e0b" stroke-width="14" stroke-linecap="round"/>'
+    // Extra obese tail
+    + '<path d="M 180 100 A 80 80 0 0 1 190 115" fill="none" stroke="#e8001d" stroke-width="14" stroke-linecap="round" opacity=".6"/>'
+    // Needle
+    + '<line id="rfc-bmi-needle" x1="100" y1="100" x2="100" y2="30" stroke="#fff" stroke-width="2.5" stroke-linecap="round" style="transform-origin:100px 100px;transform:rotate(0deg);transition:transform 1s cubic-bezier(.34,1.56,.64,1)"/>'
+    + '<circle cx="100" cy="100" r="5" fill="#e8001d"/>'
+    // Labels
+    + '<text x="14" y="114" class="bmi-lbl-text">UW</text>'
+    + '<text x="82" y="20" class="bmi-lbl-text">Normal</text>'
+    + '<text x="160" y="114" class="bmi-lbl-text">OB</text>'
+    // Value
+    + '<text id="rfc-bmi-val" x="100" y="85" text-anchor="middle" class="bmi-val-text">--</text>'
+    + '<text id="rfc-bmi-cat" x="100" y="102" text-anchor="middle" class="bmi-lbl-text">Calculate plan first</text>'
+    + '</svg>'
+    + '<div class="bmi-zones">'
+    + '<span class="bmi-zone" style="background:rgba(59,130,246,.15);color:#60a5fa;">&lt;18.5 Underweight</span>'
+    + '<span class="bmi-zone" style="background:rgba(16,185,129,.15);color:#34d399;">18.5–24.9 Normal</span>'
+    + '<span class="bmi-zone" style="background:rgba(245,158,11,.15);color:#f59e0b;">25–29.9 Overweight</span>'
+    + '<span class="bmi-zone" style="background:rgba(232,0,29,.15);color:#e8001d;">&gt;30 Obese</span>'
+    + '</div>';
+
+  anchor.parentNode.insertBefore(wrap, anchor.nextSibling);
+  _updateBMIGauge();
+}
+
+function _updateBMIGauge(){
+  var bmi = window.lastRes ? window.lastRes.bmi : 0;
+  if(!bmi) return;
+  var valEl = document.getElementById('rfc-bmi-val');
+  var catEl = document.getElementById('rfc-bmi-cat');
+  var needle = document.getElementById('rfc-bmi-needle');
+  if(!valEl || !needle) return;
+
+  valEl.textContent = bmi.toFixed(1);
+  var cat, color;
+  if(bmi < 18.5){ cat='Underweight'; color='#60a5fa'; }
+  else if(bmi < 25){ cat='Normal Weight'; color='#34d399'; }
+  else if(bmi < 30){ cat='Overweight'; color='#f59e0b'; }
+  else { cat='Obese'; color='#e8001d'; }
+  catEl.textContent = cat;
+  valEl.setAttribute('fill', color);
+
+  // Needle angle: BMI 10 → -90°, BMI 25 → 0°, BMI 40 → +90°
+  // Range 10-40, angle -90 to +90
+  var clamp = Math.max(10, Math.min(40, bmi));
+  var deg = ((clamp - 10) / 30) * 180 - 90;
+  setTimeout(function(){
+    if(needle) needle.style.transform = 'rotate(' + deg.toFixed(1) + 'deg)';
+  }, 300);
+}
+
+// Hook into Beast Score calculation result
+var _origMutObs_bmi = new MutationObserver(function(){
+  if(window.lastRes && window.lastRes.bmi) _updateBMIGauge();
+});
+var rscoreEl = document.getElementById('rscore');
+if(rscoreEl) _origMutObs_bmi.observe(rscoreEl, {childList:true, characterData:true, subtree:true});
+
+/* ════════════════════════════════════
+   3. TIMER PRESETS (Tabata/AMRAP/EMOM)
+════════════════════════════════════ */
+var TIMER_PRESETS = [
+  {name:'Tabata',    desc:'20s on · 8 rounds', work:20, rest:10, rounds:8, type:'interval'},
+  {name:'AMRAP',     desc:'As many as possible', work:600, rest:0, rounds:1, type:'countdown'},
+  {name:'EMOM 10',   desc:'Every minute × 10', work:60, rest:0, rounds:10, type:'interval'},
+  {name:'Rest 60s',  desc:'Standard rest', work:60, rest:0, rounds:1, type:'countdown'},
+  {name:'Rest 90s',  desc:'Heavy compound', work:90, rest:0, rounds:1, type:'countdown'},
+  {name:'5×3 Cycle', desc:'3 min work + 2 min rest', work:180, rest:120, rounds:5, type:'interval'},
+];
+
+var _presetRound = 0, _presetTotal = 0, _presetWork = 0, _presetRest = 0;
+var _presetPhase = 'work', _presetInterval = null;
+
+function _runPreset(p){
+  if(typeof window.rfcTimer === 'undefined') return;
+  _presetTotal = p.rounds;
+  _presetWork  = p.work;
+  _presetRest  = p.rest;
+  _presetRound = 1;
+  _presetPhase = 'work';
+  clearInterval(_presetInterval);
+
+  function _startPhase(){
+    var secs = _presetPhase === 'work' ? _presetWork : _presetRest;
+    var label = _presetPhase === 'work'
+      ? p.name + ' · Round ' + _presetRound + '/' + _presetTotal
+      : 'REST · ' + _presetRound + '/' + _presetTotal;
+    window.rfcTimer.open();
+    window.rfcTimer.set(secs);
+  }
+  _startPhase();
+
+  // Auto-advance using the rest timer countdown
+  var _ticker = setInterval(function(){
+    var timeEl = document.querySelector('.rt-time');
+    if(!timeEl) return;
+    var parts = timeEl.textContent.split(':');
+    var remaining = (parseInt(parts[0])||0)*60 + (parseInt(parts[1])||0);
+    if(remaining <= 0){
+      if(_presetPhase === 'work' && _presetRest > 0){
+        _presetPhase = 'rest';
+        setTimeout(_startPhase, 500);
+      } else {
+        _presetRound++;
+        if(_presetRound > _presetTotal){
+          clearInterval(_ticker);
+          rfcCelebrate && rfcCelebrate('🏁 ' + p.name.toUpperCase() + ' COMPLETE!', 60);
+          return;
+        }
+        _presetPhase = 'work';
+        setTimeout(_startPhase, 500);
+      }
+    }
+  }, 1000);
+}
+
+function _injectTimerPresets(){
+  var timerEl = document.getElementById('rfc-rest-timer');
+  if(!timerEl || document.getElementById('rfc-timer-presets')) return;
+
+  var wrap = document.createElement('div');
+  wrap.id = 'rfc-timer-presets';
+  wrap.innerHTML = '<div class="tp-title">Workout Timers</div>'
+    + '<div class="tp-grid">'
+    + TIMER_PRESETS.map(function(p, i){
+        return '<button class="tp-btn" onclick="window._rfcRunPreset('+i+')">'
+          + '<span class="tp-name">'+p.name+'</span>'
+          + '<span class="tp-desc">'+p.desc+'</span>'
+          + '</button>';
+      }).join('')
+    + '</div>';
+
+  timerEl.parentNode.insertBefore(wrap, timerEl);
+}
+
+window._rfcRunPreset = function(idx){
+  _runPreset(TIMER_PRESETS[idx]);
+};
+
+// Show presets wrap with timer
+var _origRT_open = window.rfcTimer;
+// Inject when workouts screen loads
+setTimeout(function(){
+  if(document.getElementById('rfc-rest-timer')) _injectTimerPresets();
+}, 1000);
+
+/* ════════════════════════════════════
+   4. MACRO RINGS ON FOOD LOG
+════════════════════════════════════ */
+function _buildMacroRing(id, val, max, color, label, size){
+  size = size || 60;
+  var r = (size/2) - 7;
+  var circ = 2 * Math.PI * r;
+  var pct = Math.min(1, val / (max || 1));
+  var offset = circ * (1 - pct);
+  return '<div class="mrg-wrap">'
+    + '<svg viewBox="0 0 '+size+' '+size+'" width="'+size+'" height="'+size+'">'
+    + '<circle cx="'+(size/2)+'" cy="'+(size/2)+'" r="'+r+'" fill="none" stroke="rgba(255,255,255,.07)" stroke-width="6"/>'
+    + '<circle id="'+id+'-arc" cx="'+(size/2)+'" cy="'+(size/2)+'" r="'+r+'" fill="none"'
+    + ' stroke="'+color+'" stroke-width="6" stroke-linecap="round"'
+    + ' stroke-dasharray="'+circ.toFixed(1)+' '+circ.toFixed(1)+'"'
+    + ' stroke-dashoffset="'+offset.toFixed(1)+'"'
+    + ' transform="rotate(-90 '+(size/2)+' '+(size/2)+')"'
+    + ' style="transition:stroke-dashoffset .7s ease;"/>'
+    + '<text x="'+(size/2)+'" y="'+(size/2 + 4)+'" text-anchor="middle"'
+    + ' font-family="Bebas Neue,sans-serif" font-size="11" fill="'+color+'">'+Math.round(val)+'</text>'
+    + '</svg>'
+    + '<div class="mrg-lbl">'+label+'</div>'
+    + '</div>';
+}
+
+function _injectMacroRings(){
+  var foodWrap = document.getElementById('rfc-food-wrap');
+  if(!foodWrap || document.getElementById('rfc-macro-rings')) return;
+  var target = window.lastRes ? window.lastRes.macros : {prot:160, carb:250, fat:70};
+  if(!target) target = {prot:160, carb:250, fat:70};
+
+  var ringsDiv = document.createElement('div');
+  ringsDiv.id = 'rfc-macro-rings';
+  ringsDiv.innerHTML = _buildMacroRing('mrg-p', 0, target.prot, '#f59e0b', 'PROT', 64)
+    + _buildMacroRing('mrg-c', 0, target.carb, '#3b82f6', 'CARB', 64)
+    + _buildMacroRing('mrg-f', 0, target.fat,  '#10b981', 'FAT',  64);
+
+  var macroBar = foodWrap.querySelector('.food-macro-bar');
+  if(macroBar) macroBar.parentNode.insertBefore(ringsDiv, macroBar);
+  else foodWrap.insertBefore(ringsDiv, foodWrap.firstChild);
+}
+
+function _updateMacroRings(){
+  var ringsDiv = document.getElementById('rfc-macro-rings');
+  if(!ringsDiv) return;
+  var target = window.lastRes ? window.lastRes.macros : {prot:160, carb:250, fat:70};
+  if(!target) target = {prot:160, carb:250, fat:70};
+  var foods = JSON.parse(localStorage.getItem('rfc_food_' + ((window.user && window.user.uid)||'guest') + '_' + new Date().toISOString().split('T')[0]) || '[]');
+  var tot = foods.reduce(function(a,f){ return {p:a.p+(f.p||0), c:a.c+(f.c||0), fat:a.fat+(f.fat||0)}; }, {p:0,c:0,fat:0});
+
+  function _setArc(id, val, max, color){
+    var el = document.getElementById(id+'-arc');
+    if(!el) return;
+    var r = parseFloat(el.getAttribute('r'));
+    var circ = 2 * Math.PI * r;
+    var pct = Math.min(1, val / (max||1));
+    el.setAttribute('stroke-dashoffset', (circ*(1-pct)).toFixed(1));
+    // Update number
+    var svg = el.parentNode;
+    var txt = svg && svg.querySelector('text');
+    if(txt) txt.textContent = Math.round(val);
+  }
+  _setArc('mrg-p', tot.p,   target.prot, '#f59e0b');
+  _setArc('mrg-c', tot.c,   target.carb, '#3b82f6');
+  _setArc('mrg-f', tot.fat, target.fat,  '#10b981');
+}
+
+// Patch _rfcAddFood / _rfcDelFood to refresh rings
+var _origAddFood = window._rfcAddFood;
+if(_origAddFood){
+  window._rfcAddFood = function(){
+    _origAddFood.apply(this, arguments);
+    setTimeout(_updateMacroRings, 100);
+  };
+}
+var _origDelFood = window._rfcDelFood;
+if(_origDelFood){
+  window._rfcDelFood = function(){
+    _origDelFood.apply(this, arguments);
+    setTimeout(_updateMacroRings, 100);
+  };
+}
+
+/* ════════════════════════════════════
+   5. PWA INSTALL BANNER
+════════════════════════════════════ */
+var _deferredInstall = null;
+
+window.addEventListener('beforeinstallprompt', function(e){
+  e.preventDefault();
+  _deferredInstall = e;
+  setTimeout(_showPWABanner, 8000); // show after 8s
+});
+
+function _showPWABanner(){
+  if(localStorage.getItem('rfc_pwa_dismissed') === '1') return;
+  var banner = document.getElementById('rfc-pwa-banner');
+  if(banner) { banner.classList.add('show'); return; }
+
+  banner = document.createElement('div');
+  banner.id = 'rfc-pwa-banner';
+  banner.innerHTML = '<div class="pwa-icon">📱</div>'
+    + '<div class="pwa-text">'
+    + '<div class="pwa-title">Install RFC App</div>'
+    + '<div class="pwa-sub">Add to home screen for offline access & faster load</div>'
+    + '</div>'
+    + '<button class="pwa-install-btn" onclick="window._rfcInstallPWA()">INSTALL</button>'
+    + '<button class="pwa-dismiss-btn" onclick="window._rfcDismissPWA()">✕</button>';
+  document.body.appendChild(banner);
+  requestAnimationFrame(function(){ banner.classList.add('show'); });
+}
+
+window._rfcInstallPWA = function(){
+  if(_deferredInstall){
+    _deferredInstall.prompt();
+    _deferredInstall.userChoice.then(function(c){
+      if(c.outcome === 'accepted') _rfcDismissPWA();
+    });
+  } else {
+    // Fallback: iOS instruction toast
+    alert('Tap the Share button then "Add to Home Screen" to install RFC!');
+    window._rfcDismissPWA();
+  }
+};
+
+window._rfcDismissPWA = function(){
+  var b = document.getElementById('rfc-pwa-banner');
+  if(b){ b.classList.remove('show'); setTimeout(function(){ b.remove(); }, 400); }
+  localStorage.setItem('rfc_pwa_dismissed', '1');
+};
+
+// Show after a delay on mobile if already dismissed criteria not met
+setTimeout(function(){
+  var isMobile = /Android|iPhone|iPad/i.test(navigator.userAgent);
+  if(isMobile && !_deferredInstall && !localStorage.getItem('rfc_pwa_dismissed') && window.matchMedia('(display-mode: browser)').matches){
+    _showPWABanner();
+  }
+}, 15000);
+
+/* ════════════════════════════════════
+   6. REFERRAL QUICK-SHARE
+════════════════════════════════════ */
+function _injectReferralShare(){
+  // Find the referral section
+  var refSec = document.getElementById('referrals') || document.querySelector('[id*="referral"]');
+  if(!refSec || document.getElementById('rfc-ref-share-wrap')) return;
+
+  var uid = (window.user && window.user.uid) || '';
+  var code = uid ? 'RFC' + uid.slice(-6).toUpperCase() : 'RFC-LOGIN';
+  var container = refSec.querySelector('.container') || refSec;
+
+  var wrap = document.createElement('div');
+  wrap.id = 'rfc-ref-share-wrap';
+  wrap.innerHTML = '<div class="ref-share-lbl">Your Referral Code</div>'
+    + '<div class="ref-share-row">'
+    + '<div class="ref-code-box" id="rfc-ref-code" title="Click to copy">'+code+'</div>'
+    + '<button class="ref-copy-btn" onclick="window._rfcCopyCode()">📋 COPY</button>'
+    + '<button class="ref-share-btn" onclick="window._rfcShareCode()">↗ SHARE</button>'
+    + '</div>'
+    + '<div class="ref-share-stats">'
+    + '<div class="ref-stat"><div class="ref-stat-val" id="rfc-ref-count">0</div><div class="ref-stat-lbl">Referrals</div></div>'
+    + '<div class="ref-stat"><div class="ref-stat-val" id="rfc-ref-earned">₹0</div><div class="ref-stat-lbl">Earned</div></div>'
+    + '<div class="ref-stat"><div class="ref-stat-val">₹50</div><div class="ref-stat-lbl">Per Referral</div></div>'
+    + '</div>';
+
+  container.insertBefore(wrap, container.firstChild);
+
+  // Load referral stats from localStorage
+  var wallet = JSON.parse(localStorage.getItem('rfc_wallet_'+(uid||'guest')+'_data') || '{"transactions":[]}');
+  var refTxns = (wallet.transactions||[]).filter(function(t){ return (t.type||'').includes('referral') || (t.desc||'').toLowerCase().includes('refer'); });
+  var el = document.getElementById('rfc-ref-count');
+  var el2 = document.getElementById('rfc-ref-earned');
+  if(el) el.textContent = refTxns.length;
+  if(el2) el2.textContent = '₹' + (refTxns.reduce(function(s,t){ return s + (t.amount||0); }, 0));
+}
+
+window._rfcCopyCode = function(){
+  var code = document.getElementById('rfc-ref-code');
+  if(!code) return;
+  var text = code.textContent;
+  if(navigator.clipboard){
+    navigator.clipboard.writeText(text).then(function(){
+      code.textContent = '✓ COPIED!';
+      setTimeout(function(){ code.textContent = text; }, 1500);
+    });
+  } else {
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    ta.remove();
+    code.textContent = '✓ COPIED!';
+    setTimeout(function(){ code.textContent = text; }, 1500);
+  }
+};
+
+window._rfcShareCode = function(){
+  var code = document.getElementById('rfc-ref-code');
+  var text = (code ? code.textContent : 'RFC-FRIEND');
+  var msg = '🐯 Join Royal Fitness Club — India\'s most advanced gym platform!\n\nUse my referral code: ' + text + '\n\nGet smart meal plans, Beast Score, 22 expert guides, courses & PRO coaching.\n\nhttps://royal-fitness-club-7adc1.web.app';
+  if(navigator.share){
+    navigator.share({ title: 'Royal Fitness Club', text: msg });
+  } else {
+    var wa = 'https://wa.me/?text=' + encodeURIComponent(msg);
+    window.open(wa, '_blank');
+  }
+};
+
+/* ════════════════════════════════════
+   Wire up
+════════════════════════════════════ */
+var _origSS7 = window.switchScreen;
+window.switchScreen = function(name, navEl){
+  _origSS7 && _origSS7(name, navEl);
+  if(name === 'dashboard'){
+    setTimeout(function(){
+      _upgradeGreeting();
+      _injectBMIGauge();
+      _injectWaterRing2();
+    }, 300);
+  }
+  if(name === 'workouts'){
+    setTimeout(function(){
+      _injectTimerPresets();
+      _injectMacroRings();
+      _updateMacroRings();
+    }, 600);
+  }
+  if(name === 'referrals'){
+    setTimeout(_injectReferralShare, 300);
+  }
+};
+
+// Dummy if water ring inject2 not already defined
+function _injectWaterRing2(){
+  if(typeof _injectWaterRing === 'function') _injectWaterRing();
+}
+
+// On page load
+setTimeout(function(){
+  _upgradeGreeting();
+  _injectBMIGauge();
+  _injectTimerPresets();
+  _injectMacroRings();
+  _updateMacroRings();
+  _injectReferralShare();
+}, 3000);
+
+})();
+</script>
+
 </body>
 </html>
