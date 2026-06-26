@@ -35191,4 +35191,402 @@ setTimeout(function(){
 </script>
 
 </body>
+
+<script>
+/* ============================================================
+   BATCH 34 — Stress Logger | Fat Quality Tracker | Isometric Timer
+   ============================================================ */
+(function(){ 'use strict';
+
+var _origSS32 = window.switchScreen;
+
+/* ── helpers ── */
+function _b34uid(){ try{ return JSON.parse(localStorage.getItem('bm_user')||'{}').uid||'guest'; }catch(e){ return 'guest'; } }
+function _b34today(){ var d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function _b34load(k){ try{ return JSON.parse(localStorage.getItem(k))||null; }catch(e){ return null; } }
+function _b34save(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} }
+function _b34card(id,title){
+  var d=document.createElement('div');
+  d.id=id;
+  d.style.cssText='background:#1a1a2e;border-radius:14px;padding:18px;margin:14px 0;color:#e0e0e0;font-family:inherit;';
+  d.innerHTML='<div style="font-size:15px;font-weight:700;color:#00d4ff;margin-bottom:14px;">'+title+'</div>';
+  return d;
+}
+
+/* ════════════════════════════════════════════════════════════
+   1. STRESS LEVEL LOGGER (dashboard)
+   ════════════════════════════════════════════════════════════ */
+var STRESS_SOURCES=[
+  {id:'work',   label:'Work / Study',  icon:'💼'},
+  {id:'sleep',  label:'Poor Sleep',    icon:'😴'},
+  {id:'food',   label:'Poor Nutrition',icon:'🍔'},
+  {id:'social', label:'Social / Personal',icon:'👥'},
+  {id:'finance',label:'Financial',     icon:'💸'},
+  {id:'health', label:'Health concern',icon:'🏥'},
+  {id:'over',   label:'Overtraining',  icon:'🏋️'},
+  {id:'other',  label:'Other',         icon:'❓'}
+];
+var STRESS_EMO=['😌','😊','🙂','😐','😕','😟','😰','😤','😫','🤯'];
+
+function _injectStress(){
+  if(document.getElementById('rfc-stress-wrap')) return;
+  var anchors=['rfc-goalwt-wrap','rfc-vitals-wrap','rfc-injury-wrap','rfc-wkreport-wrap','rfc-recovery-wrap','rfc-stretch-wrap'];
+  var host=null;
+  for(var i=0;i<anchors.length;i++){ var el=document.getElementById(anchors[i]); if(el){ host=el; break; } }
+  if(!host){ var tb=document.querySelector('.dash-topbar'); if(tb) host=tb; }
+  if(!host) return;
+
+  var c=_b34card('rfc-stress-wrap','🧠 Daily Stress Logger');
+  c.innerHTML+=
+    '<div style="display:flex;align-items:center;gap:14px;margin-bottom:14px;">'+
+      '<div style="text-align:center;min-width:60px;">'+
+        '<div id="rfc-str-emo" style="font-size:32px;">😐</div>'+
+        '<div id="rfc-str-val" style="font-size:18px;font-weight:800;color:#a78bfa;">5</div>'+
+        '<div style="font-size:10px;color:#555;">/10</div>'+
+      '</div>'+
+      '<div style="flex:1;">'+
+        '<input type="range" id="rfc-str-range" min="1" max="10" value="5" oninput="window._rfcStrSlide()" style="width:100%;accent-color:#a78bfa;margin-bottom:6px;">'+
+        '<div id="rfc-str-label" style="font-size:12px;color:#888;">Moderate — manageable.</div>'+
+      '</div>'+
+    '</div>'+
+    '<div style="font-size:11px;color:#888;margin-bottom:7px;">Stress sources today (tap to tag):</div>'+
+    '<div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px;" id="rfc-str-tags">'+
+      STRESS_SOURCES.map(function(s){
+        return '<div onclick="window._rfcStrTag(\''+s.id+'\')" id="rfc-str-tag-'+s.id+'" style="display:flex;align-items:center;gap:4px;padding:5px 10px;border-radius:20px;border:1px solid #333;background:#0d0d1a;cursor:pointer;font-size:11px;color:#777;transition:all .2s;">'+s.icon+' '+s.label+'</div>';
+      }).join('')+
+    '</div>'+
+    '<button onclick="window._rfcStrSave()" style="width:100%;background:#a78bfa22;border:1px solid #a78bfa44;color:#a78bfa;padding:8px;border-radius:8px;cursor:pointer;font-size:13px;margin-bottom:12px;">Save Log</button>'+
+    '<div style="font-size:11px;color:#555;margin-bottom:5px;">Last 7 days</div>'+
+    '<div style="display:flex;align-items:flex-end;gap:4px;height:44px;" id="rfc-str-chart"></div>';
+
+  if(host.nextSibling) host.parentNode.insertBefore(c,host.nextSibling);
+  else host.parentNode.appendChild(c);
+  _renderStress();
+}
+
+function _renderStress(){
+  var uid=_b34uid(), today=_b34today();
+  var rec=_b34load('rfc_stress_'+uid+'_'+today)||{level:5,sources:{}};
+  var level=rec.level||5;
+  var rng=document.getElementById('rfc-str-range');
+  var emo=document.getElementById('rfc-str-emo');
+  var val=document.getElementById('rfc-str-val');
+  var lbl=document.getElementById('rfc-str-label');
+  if(rng) rng.value=level;
+  if(emo) emo.textContent=STRESS_EMO[level-1]||'😐';
+  if(val){ val.textContent=level; val.style.color=level>=8?'#ef4444':level>=6?'#f97316':level>=4?'#fbbf24':'#22c55e'; }
+  if(lbl) lbl.textContent=level<=2?'Very low — great mental state!':level<=4?'Low — feeling calm.':level<=6?'Moderate — manageable.':level<=8?'High — consider recovery.':'Very high — prioritise rest & support.';
+
+  STRESS_SOURCES.forEach(function(s){
+    var tag=document.getElementById('rfc-str-tag-'+s.id);
+    if(!tag) return;
+    var on=!!(rec.sources&&rec.sources[s.id]);
+    tag.style.background=on?'#a78bfa22':'#0d0d1a';
+    tag.style.borderColor=on?'#a78bfa55':'#333';
+    tag.style.color=on?'#a78bfa':'#777';
+  });
+
+  var chart=document.getElementById('rfc-str-chart');
+  if(chart){
+    var html=''; var maxL=10;
+    for(var d=6;d>=0;d--){
+      var dd=new Date(); dd.setDate(dd.getDate()-d);
+      var dk=dd.getFullYear()+'-'+String(dd.getMonth()+1).padStart(2,'0')+'-'+String(dd.getDate()).padStart(2,'0');
+      var r=_b34load('rfc_stress_'+uid+'_'+dk)||null;
+      var lv=r?r.level||0:0;
+      var h=Math.max(lv?4:2, Math.round(lv/maxL*40));
+      var col=lv>=8?'#ef4444':lv>=6?'#f97316':lv>=4?'#fbbf24':'#22c55e';
+      html+='<div style="flex:1;display:flex;flex-direction:column;justify-content:flex-end;" title="Stress: '+lv+'">'+
+        '<div style="width:100%;height:'+h+'px;background:'+(lv>0?(d===0?col:col+'88'):'#111')+';border-radius:3px;"></div>'+
+      '</div>';
+    }
+    chart.innerHTML=html;
+  }
+}
+window._rfcStrSlide=function(){
+  var v=parseInt((document.getElementById('rfc-str-range')||{}).value||5,10);
+  var emo=document.getElementById('rfc-str-emo'); if(emo) emo.textContent=STRESS_EMO[v-1]||'😐';
+  var val=document.getElementById('rfc-str-val'); if(val){ val.textContent=v; val.style.color=v>=8?'#ef4444':v>=6?'#f97316':v>=4?'#fbbf24':'#22c55e'; }
+  var lbl=document.getElementById('rfc-str-label'); if(lbl) lbl.textContent=v<=2?'Very low — great mental state!':v<=4?'Low — feeling calm.':v<=6?'Moderate — manageable.':v<=8?'High — consider recovery.':'Very high — prioritise rest & support.';
+};
+window._rfcStrTag=function(id){
+  var uid=_b34uid(), today=_b34today();
+  var rec=_b34load('rfc_stress_'+uid+'_'+today)||{level:5,sources:{}};
+  rec.sources=rec.sources||{};
+  rec.sources[id]=!rec.sources[id];
+  _b34save('rfc_stress_'+uid+'_'+today,rec);
+  _renderStress();
+};
+window._rfcStrSave=function(){
+  var uid=_b34uid(), today=_b34today();
+  var rec=_b34load('rfc_stress_'+uid+'_'+today)||{level:5,sources:{}};
+  var v=parseInt((document.getElementById('rfc-str-range')||{}).value||5,10);
+  rec.level=v;
+  _b34save('rfc_stress_'+uid+'_'+today,rec);
+  _renderStress();
+  var btn=document.querySelector('#rfc-stress-wrap button');
+  if(btn){ btn.textContent='✅ Saved!'; setTimeout(function(){ btn.textContent='Save Log'; },1500); }
+};
+
+/* ════════════════════════════════════════════════════════════
+   2. FAT QUALITY TRACKER (nutrition)
+   ════════════════════════════════════════════════════════════ */
+var FAT_FOODS=[
+  /* {id, label, type: 'good'|'bad', g} */
+  {id:'salmon',  label:'Salmon (100g)',       type:'good', g:13, note:'Rich in omega-3'},
+  {id:'avocado', label:'Avocado (½)',         type:'good', g:15, note:'Monounsaturated'},
+  {id:'walnuts', label:'Walnuts (30g)',        type:'good', g:18, note:'Omega-3 + poly'},
+  {id:'olive',   label:'Olive oil (1 tbsp)',  type:'good', g:14, note:'Monounsaturated'},
+  {id:'flax',    label:'Flaxseed (2 tbsp)',   type:'good', g:6,  note:'ALA omega-3'},
+  {id:'butter',  label:'Butter (1 tbsp)',     type:'bad',  g:12, note:'Saturated fat'},
+  {id:'bacon',   label:'Bacon (2 strips)',    type:'bad',  g:10, note:'Saturated + sodium'},
+  {id:'cheese',  label:'Cheddar (30g)',       type:'bad',  g:9,  note:'Saturated fat'},
+  {id:'fries',   label:'Fries (medium)',      type:'bad',  g:17, note:'Trans fat risk'},
+  {id:'palm',    label:'Palm oil (1 tbsp)',   type:'bad',  g:14, note:'High saturated'}
+];
+
+function _injectFatQual(){
+  if(document.getElementById('rfc-fatqual-wrap')) return;
+  var anchors=['rfc-electro-wrap','rfc-sugar-wrap','rfc-fiber-wrap','rfc-calbal-wrap','rfc-grocery-wrap','rfc-mealprep-wrap'];
+  var host=null;
+  for(var i=0;i<anchors.length;i++){ var el=document.getElementById(anchors[i]); if(el){ host=el; break; } }
+  if(!host) host=document.getElementById('rfc-food-wrap');
+  if(!host) return;
+
+  var c=_b34card('rfc-fatqual-wrap','🥑 Fat Quality Tracker');
+  c.innerHTML+=
+    '<div style="display:flex;gap:10px;margin-bottom:14px;" id="rfc-fq-summary">'+
+      '<div style="flex:1;background:#22c55e18;border:1px solid #22c55e33;border-radius:9px;padding:10px;text-align:center;">'+
+        '<div id="rfc-fq-good-g" style="font-size:20px;font-weight:800;color:#22c55e;">0g</div>'+
+        '<div style="font-size:10px;color:#555;">healthy fats</div>'+
+      '</div>'+
+      '<div style="flex:1;background:#0d0d1a;border-radius:9px;padding:10px;text-align:center;">'+
+        '<div id="rfc-fq-ratio" style="font-size:20px;font-weight:800;color:#888;">—</div>'+
+        '<div style="font-size:10px;color:#555;">quality score</div>'+
+      '</div>'+
+      '<div style="flex:1;background:#ef444418;border:1px solid #ef444433;border-radius:9px;padding:10px;text-align:center;">'+
+        '<div id="rfc-fq-bad-g" style="font-size:20px;font-weight:800;color:#ef4444;">0g</div>'+
+        '<div style="font-size:10px;color:#555;">sat/trans fats</div>'+
+      '</div>'+
+    '</div>'+
+    '<div style="display:flex;gap:6px;margin-bottom:10px;">'+
+      '<button onclick="window._rfcFQFilter(\'all\')" id="rfc-fq-f-all" style="flex:1;background:#00d4ff22;border:1px solid #00d4ff44;color:#00d4ff;padding:6px;border-radius:7px;cursor:pointer;font-size:11px;">All</button>'+
+      '<button onclick="window._rfcFQFilter(\'good\')" id="rfc-fq-f-good" style="flex:1;background:#0d0d1a;border:1px solid #333;color:#888;padding:6px;border-radius:7px;cursor:pointer;font-size:11px;">Healthy</button>'+
+      '<button onclick="window._rfcFQFilter(\'bad\')" id="rfc-fq-f-bad" style="flex:1;background:#0d0d1a;border:1px solid #333;color:#888;padding:6px;border-radius:7px;cursor:pointer;font-size:11px;">Limit</button>'+
+    '</div>'+
+    '<div style="display:flex;flex-direction:column;gap:5px;" id="rfc-fq-list"></div>';
+
+  if(host.nextSibling) host.parentNode.insertBefore(c,host.nextSibling);
+  else host.parentNode.appendChild(c);
+  _rfcFQFilter('all');
+}
+
+var _fqFilter='all';
+function _renderFatQual(){
+  var uid=_b34uid(), date=_b34today();
+  var key='rfc_fatqual_'+uid+'_'+date;
+  var data=_b34load(key)||{};
+  var goodG=0, badG=0;
+  FAT_FOODS.forEach(function(f){ var cnt=data[f.id]||0; if(f.type==='good') goodG+=cnt*f.g; else badG+=cnt*f.g; });
+  goodG=Math.round(goodG*10)/10; badG=Math.round(badG*10)/10;
+  var total=goodG+badG;
+  var score=total>0?Math.round(goodG/total*100):0;
+  var scoreCol=score>=70?'#22c55e':score>=40?'#fbbf24':'#ef4444';
+
+  var gg=document.getElementById('rfc-fq-good-g'); if(gg) gg.textContent=goodG+'g';
+  var bg=document.getElementById('rfc-fq-bad-g');  if(bg) bg.textContent=badG+'g';
+  var rt=document.getElementById('rfc-fq-ratio');  if(rt){ rt.textContent=score+'%'; rt.style.color=scoreCol; }
+
+  var list=document.getElementById('rfc-fq-list');
+  if(!list) return;
+  var visible=FAT_FOODS.filter(function(f){ return _fqFilter==='all'||f.type===_fqFilter; });
+  list.innerHTML=visible.map(function(f){
+    var cnt=data[f.id]||0;
+    var isGood=f.type==='good';
+    var col=isGood?'#22c55e':'#ef4444';
+    return '<div style="display:flex;align-items:center;gap:8px;background:#0d0d1a;border-radius:8px;padding:7px 10px;border-left:3px solid '+(cnt>0?col:'#222')+';">'+
+      '<div style="flex:1;min-width:0;">'+
+        '<div style="font-size:12px;color:'+(cnt>0?'#e0e0e0':'#888')+';white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+f.label+'</div>'+
+        '<div style="font-size:10px;color:'+(isGood?'#22c55e55':'#ef444455')+';">'+f.note+' · '+f.g+'g fat/serving</div>'+
+      '</div>'+
+      '<button onclick="window._rfcFQAdj(\''+f.id+'\',-1)" style="background:#1a1a2e;border:1px solid #333;color:#888;width:26px;height:26px;border-radius:6px;cursor:pointer;font-size:14px;">−</button>'+
+      '<div style="min-width:20px;text-align:center;font-size:13px;font-weight:700;color:'+(cnt>0?col:'#555')+';">'+cnt+'</div>'+
+      '<button onclick="window._rfcFQAdj(\''+f.id+'\',1)" style="background:#1a1a2e;border:1px solid #333;color:'+col+';width:26px;height:26px;border-radius:6px;cursor:pointer;font-size:14px;">+</button>'+
+    '</div>';
+  }).join('');
+}
+window._rfcFQFilter=function(f){
+  _fqFilter=f;
+  ['all','good','bad'].forEach(function(k){
+    var b=document.getElementById('rfc-fq-f-'+k);
+    if(!b) return;
+    var on=k===f;
+    b.style.background=on?'#00d4ff22':'#0d0d1a'; b.style.borderColor=on?'#00d4ff44':'#333'; b.style.color=on?'#00d4ff':'#888';
+  });
+  _renderFatQual();
+};
+window._rfcFQAdj=function(id,delta){
+  var uid=_b34uid(), date=_b34today();
+  var key='rfc_fatqual_'+uid+'_'+date;
+  var data=_b34load(key)||{};
+  data[id]=Math.max(0,(data[id]||0)+delta);
+  _b34save(key,data);
+  _renderFatQual();
+};
+
+/* ════════════════════════════════════════════════════════════
+   3. ISOMETRIC HOLD TIMER (workouts)
+   ════════════════════════════════════════════════════════════ */
+var ISO_EXERCISES=[
+  {id:'plank',    label:'Plank',         icon:'🏋️'},
+  {id:'wallsit',  label:'Wall Sit',      icon:'🧱'},
+  {id:'dedhang',  label:'Dead Hang',     icon:'🙌'},
+  {id:'lsit',     label:'L-Sit',         icon:'💺'},
+  {id:'hollow',   label:'Hollow Hold',   icon:'🌙'},
+  {id:'sideplank',label:'Side Plank',    icon:'↔️'},
+  {id:'superman', label:'Superman Hold', icon:'🦸'},
+  {id:'horseride',label:'Horse Stance',  icon:'🐴'}
+];
+var _isoState={iv:null,running:false,startMs:0,elapsed:0,exId:null};
+
+function _injectIso(){
+  if(document.getElementById('rfc-isometric-wrap')) return;
+  var anchors=['rfc-dropset-wrap','rfc-pyramid-wrap','rfc-amrap-wrap','rfc-superset-wrap','rfc-hrzone-wrap','rfc-warmup-wrap'];
+  var host=null;
+  for(var i=0;i<anchors.length;i++){ var el=document.getElementById(anchors[i]); if(el){ host=el; break; } }
+  if(!host) host=document.getElementById('wl-history');
+  if(!host) return;
+
+  var c=_b34card('rfc-isometric-wrap','🧲 Isometric Hold Timer');
+  c.innerHTML+=
+    '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;" id="rfc-iso-btns">'+
+      ISO_EXERCISES.map(function(ex){
+        return '<button onclick="window._rfcIsoSelect(\''+ex.id+'\')" id="rfc-iso-b-'+ex.id+'" style="background:#0d0d1a;border:1px solid #333;color:#888;padding:6px 10px;border-radius:8px;cursor:pointer;font-size:11px;display:flex;align-items:center;gap:4px;transition:all .2s;">'+ex.icon+' '+ex.label+'</button>';
+      }).join('')+
+    '</div>'+
+    '<div style="text-align:center;background:#0d0d1a;border-radius:12px;padding:20px;margin-bottom:12px;">'+
+      '<div id="rfc-iso-name" style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#555;margin-bottom:6px;">Select an exercise</div>'+
+      '<div id="rfc-iso-time" style="font-size:60px;font-weight:800;color:#00d4ff;font-variant-numeric:tabular-nums;line-height:1;">0:00</div>'+
+      '<div id="rfc-iso-best" style="font-size:12px;color:#666;margin-top:4px;"></div>'+
+    '</div>'+
+    '<div style="display:flex;gap:8px;">'+
+      '<button onclick="window._rfcIsoStart()" id="rfc-iso-start" style="flex:1;background:#22c55e22;border:1px solid #22c55e44;color:#22c55e;padding:10px;border-radius:8px;cursor:pointer;font-size:14px;font-weight:700;" disabled>▶ Start</button>'+
+      '<button onclick="window._rfcIsoStop()" id="rfc-iso-stop" style="flex:1;background:#ef444422;border:1px solid #ef444444;color:#ef4444;padding:10px;border-radius:8px;cursor:pointer;font-size:14px;font-weight:700;display:none;">■ Stop & Save</button>'+
+    '</div>'+
+    '<div style="margin-top:12px;" id="rfc-iso-records"></div>';
+
+  if(host.nextSibling) host.parentNode.insertBefore(c,host.nextSibling);
+  else host.parentNode.appendChild(c);
+  _renderIsoRecords();
+}
+
+function _isoFmt(ms){ var s=Math.floor(ms/1000); return Math.floor(s/60)+':'+(String(s%60).padStart(2,'0')); }
+
+function _renderIsoRecords(){
+  var uid=_b34uid();
+  var records=_b34load('rfc_iso_bests_'+uid)||{};
+  var el=document.getElementById('rfc-iso-records');
+  if(!el) return;
+  var entries=ISO_EXERCISES.map(function(ex){ return {ex:ex,best:records[ex.id]||0}; }).filter(function(r){ return r.best>0; }).sort(function(a,b){ return b.best-a.best; });
+  if(!entries.length){ el.innerHTML='<div style="font-size:11px;color:#555;text-align:center;">Complete a hold to see personal records.</div>'; return; }
+  el.innerHTML='<div style="font-size:11px;color:#555;margin-bottom:6px;">Personal Records</div>'+
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;">'+
+    entries.map(function(r){
+      return '<div style="background:#0d0d1a;border-radius:8px;padding:8px 10px;display:flex;align-items:center;gap:6px;">'+
+        '<span style="font-size:14px;">'+r.ex.icon+'</span>'+
+        '<div style="flex:1;min-width:0;"><div style="font-size:11px;color:#aaa;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+r.ex.label+'</div></div>'+
+        '<div style="font-size:13px;font-weight:700;color:#fbbf24;">'+_isoFmt(r.best)+'</div>'+
+      '</div>';
+    }).join('')+
+    '</div>';
+}
+
+window._rfcIsoSelect=function(id){
+  _isoState.exId=id;
+  if(_isoState.iv){ clearInterval(_isoState.iv); _isoState.iv=null; }
+  _isoState.running=false; _isoState.elapsed=0;
+  ISO_EXERCISES.forEach(function(ex){
+    var b=document.getElementById('rfc-iso-b-'+ex.id);
+    if(!b) return;
+    var on=ex.id===id;
+    b.style.background=on?'#00d4ff22':'#0d0d1a'; b.style.borderColor=on?'#00d4ff44':'#333'; b.style.color=on?'#00d4ff':'#888';
+  });
+  var ex=ISO_EXERCISES.find(function(e){ return e.id===id; });
+  var nameEl=document.getElementById('rfc-iso-name'); if(nameEl) nameEl.textContent=(ex?ex.icon+' '+ex.label:'');
+  var timeEl=document.getElementById('rfc-iso-time'); if(timeEl){ timeEl.textContent='0:00'; timeEl.style.color='#00d4ff'; }
+  var uid=_b34uid();
+  var records=_b34load('rfc_iso_bests_'+uid)||{};
+  var bestEl=document.getElementById('rfc-iso-best');
+  if(bestEl) bestEl.textContent=records[id]?'Best: '+_isoFmt(records[id]):'No record yet — set one!';
+  var startBtn=document.getElementById('rfc-iso-start'); if(startBtn) startBtn.disabled=false;
+  var stopBtn=document.getElementById('rfc-iso-stop'); if(stopBtn) stopBtn.style.display='none';
+  if(startBtn) startBtn.style.display='block';
+};
+window._rfcIsoStart=function(){
+  if(!_isoState.exId||_isoState.running) return;
+  _isoState.running=true; _isoState.startMs=Date.now()-_isoState.elapsed;
+  var startBtn=document.getElementById('rfc-iso-start'); if(startBtn) startBtn.style.display='none';
+  var stopBtn=document.getElementById('rfc-iso-stop'); if(stopBtn) stopBtn.style.display='block';
+  var timeEl=document.getElementById('rfc-iso-time');
+  _isoState.iv=setInterval(function(){
+    _isoState.elapsed=Date.now()-_isoState.startMs;
+    var s=Math.floor(_isoState.elapsed/1000);
+    if(timeEl){ timeEl.textContent=_isoFmt(_isoState.elapsed); timeEl.style.color=s>=60?'#22c55e':s>=30?'#fbbf24':'#00d4ff'; }
+  },100);
+};
+window._rfcIsoStop=function(){
+  if(!_isoState.running) return;
+  clearInterval(_isoState.iv); _isoState.running=false;
+  var elapsed=_isoState.elapsed;
+  var uid=_b34uid(), id=_isoState.exId;
+  if(id&&elapsed>1000){
+    var records=_b34load('rfc_iso_bests_'+uid)||{};
+    var isNewBest=!records[id]||elapsed>records[id];
+    if(isNewBest) records[id]=elapsed;
+    _b34save('rfc_iso_bests_'+uid,records);
+    /* also save to today's log */
+    var todayKey='rfc_iso_'+uid+'_'+_b34today();
+    var todayLog=_b34load(todayKey)||[];
+    todayLog.push({id:id,ms:elapsed});
+    _b34save(todayKey,todayLog);
+    var bestEl=document.getElementById('rfc-iso-best');
+    if(bestEl) bestEl.textContent=isNewBest?'🏆 New PB: '+_isoFmt(elapsed):'Best: '+_isoFmt(records[id])+' · This hold: '+_isoFmt(elapsed);
+    _renderIsoRecords();
+  }
+  _isoState.elapsed=0;
+  var timeEl=document.getElementById('rfc-iso-time'); if(timeEl){ timeEl.textContent='0:00'; timeEl.style.color='#00d4ff'; }
+  var startBtn=document.getElementById('rfc-iso-start'); if(startBtn) startBtn.style.display='block';
+  var stopBtn=document.getElementById('rfc-iso-stop'); if(stopBtn) stopBtn.style.display='none';
+};
+
+/* ── switchScreen wrap ── */
+window.switchScreen=function(name,navEl){
+  _origSS32&&_origSS32(name,navEl);
+  if(name==='dashboard'){
+    setTimeout(function(){ _injectStress(); _renderStress(); }, 1200);
+  }
+  if(name==='nutrition'){
+    setTimeout(function(){ _injectFatQual(); _renderFatQual(); }, 1100);
+  }
+  if(name==='workouts'){
+    setTimeout(function(){ _injectIso(); }, 1050);
+  }
+};
+
+setTimeout(function(){
+  _injectStress();
+  _injectFatQual();
+  _injectIso();
+}, 26000);
+
+setTimeout(function(){
+  if(!document.getElementById('rfc-stress-wrap'))   _injectStress();
+  if(!document.getElementById('rfc-fatqual-wrap'))  _injectFatQual();
+  if(!document.getElementById('rfc-isometric-wrap'))_injectIso();
+}, 30000);
+
+})();
+</script>
+
+</body>
 </html>
