@@ -36781,5 +36781,185 @@ setTimeout(function(){ if(!document.getElementById('rfc-sleepq-wrap')) _injectSl
 })();
 </script>
 
+<script>
+/* ===== BATCH 40: Circadian Rhythm Tracker | Prebiotic Foods | Volume & Deload Planner ===== */
+(function(){ 'use strict';
+var _origSS38=window.switchScreen;
+function _b40uid(){ try{ return JSON.parse(localStorage.getItem('bm_user')||'{}').uid||'guest'; }catch(e){ return 'guest'; } }
+function _b40today(){ var d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function _b40load(k){ try{ return JSON.parse(localStorage.getItem(k))||null; }catch(e){ return null; } }
+function _b40save(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} }
+function _b40card(id,title){ var d=document.createElement('div'); d.id=id; d.style.cssText='background:#1a1a2e;border-radius:14px;padding:18px;margin:14px 0;color:#e0e0e0;font-family:inherit;'; d.innerHTML='<div style="font-size:15px;font-weight:700;color:#00d4ff;margin-bottom:14px;">'+title+'</div>'; return d; }
+
+/* ---------- CIRCADIAN RHYTHM TRACKER (dashboard) ---------- */
+function _circ_score(d){
+  if(!d) return 0; var s=0;
+  var lightMin=d.lightMin||30; s+=lightMin<=30?25:lightMin<=60?15:5;
+  var hrs=d.wakeHr!==undefined?d.wakeHr:7; s+=hrs>=5&&hrs<=8?25:hrs>=4&&hrs<=9?15:5;
+  var lastMeal=d.lastMealHr!==undefined?d.lastMealHr:3; s+=lastMeal>=2?25:lastMeal>=1?15:5;
+  var sleep=d.sleepHrs||7.5; s+=sleep>=7&&sleep<=9?25:sleep>=6&&sleep<=10?15:5;
+  return Math.min(100,s);
+}
+function _injectCircadian(){
+  if(document.getElementById('rfc-circadian-wrap')) return;
+  var anchor=document.getElementById('rfc-sleepq-wrap')||document.getElementById('rfc-hydqual-wrap')||document.getElementById('rfc-meditate-wrap')||document.getElementById('rfc-envwell-wrap')||document.querySelector('.dash-topbar');
+  if(!anchor) return;
+  var card=_b40card('rfc-circadian-wrap','⏰ Circadian Rhythm Tracker');
+  card.style.cssText+='border:1px solid #2a2a1a;';
+  anchor.parentNode.insertBefore(card,anchor.nextSibling);
+  _renderCircadian();
+}
+function _renderCircadian(){
+  var card=document.getElementById('rfc-circadian-wrap'); if(!card) return;
+  var uid=_b40uid(), today=_b40today();
+  var key='rfc_circadian_'+uid+'_'+today;
+  var d=_b40load(key)||{wakeHr:6,lightMin:15,lastMealHr:3,sleepHrs:7.5};
+  var score=_circ_score(d);
+  var sc=score>=70?'#00ff88':score>=45?'#ffd700':'#ff6b6b';
+  var tips=[];
+  if((d.lightMin||30)>30) tips.push('☀️ Get sunlight within 30min of waking');
+  if((d.lastMealHr||3)<2) tips.push('🍽️ Finish last meal 2h+ before bed');
+  if((d.sleepHrs||7.5)<7) tips.push('😴 Aim for 7-9 hours of sleep');
+  if((d.wakeHr||6)<5||(d.wakeHr||6)>8) tips.push('⏰ Consistent 5-8am wake time ideal');
+  var html='<div style="font-size:15px;font-weight:700;color:#00d4ff;margin-bottom:14px;">⏰ Circadian Rhythm Tracker</div>';
+  html+='<div style="display:flex;align-items:center;gap:14px;margin-bottom:16px;">';
+  html+='<svg width="76" height="76" viewBox="0 0 76 76"><circle cx="38" cy="38" r="32" fill="none" stroke="#2a2a1a" stroke-width="8"/><circle cx="38" cy="38" r="32" fill="none" stroke="'+sc+'" stroke-width="8" stroke-dasharray="'+Math.round(score*2.01)+' 201" stroke-dashoffset="50" style="transition:all 0.5s;"/><text x="38" y="43" text-anchor="middle" fill="'+sc+'" font-size="19" font-weight="800">'+score+'</text></svg>';
+  html+='<div><div style="font-size:22px;font-weight:800;color:'+sc+';">'+(score>=70?'Optimised':score>=45?'Average':'Off-Rhythm')+'</div><div style="font-size:12px;color:#888;margin-top:4px;">Circadian Score</div></div></div>';
+  html+='<div style="display:grid;gap:10px;">';
+  html+='<div><label style="font-size:12px;color:#aaa;">Wake Hour: <strong style="color:#ffd700;">'+String(d.wakeHr||6).padStart(2,'0')+':00</strong></label><br><input type="range" min="3" max="12" step="1" value="'+(d.wakeHr||6)+'" oninput="window._rfcCircSet(\'wakeHr\',parseInt(this.value))" style="width:100%;accent-color:#ffd700;"></div>';
+  html+='<div><label style="font-size:12px;color:#aaa;">Minutes to First Sunlight: <strong style="color:#ffd700;">'+(d.lightMin||15)+' min</strong></label><br><input type="range" min="0" max="120" step="5" value="'+(d.lightMin||15)+'" oninput="window._rfcCircSet(\'lightMin\',parseInt(this.value))" style="width:100%;accent-color:#ffd700;"></div>';
+  html+='<div><label style="font-size:12px;color:#aaa;">Hours Before Bed — Last Meal: <strong style="color:#ffd700;">'+(d.lastMealHr||3)+' hrs</strong></label><br><input type="range" min="0" max="6" step="0.5" value="'+(d.lastMealHr||3)+'" oninput="window._rfcCircSet(\'lastMealHr\',parseFloat(this.value))" style="width:100%;accent-color:#ffd700;"></div>';
+  html+='<div><label style="font-size:12px;color:#aaa;">Sleep Duration: <strong style="color:#ffd700;">'+(d.sleepHrs||7.5)+' hrs</strong></label><br><input type="range" min="4" max="12" step="0.5" value="'+(d.sleepHrs||7.5)+'" oninput="window._rfcCircSet(\'sleepHrs\',parseFloat(this.value))" style="width:100%;accent-color:#ffd700;"></div>';
+  html+='</div>';
+  if(tips.length){ html+='<div style="margin-top:12px;background:#12122a;border-radius:8px;padding:10px;"><div style="font-size:12px;color:#00d4ff;font-weight:700;margin-bottom:6px;">Suggestions:</div>'; tips.forEach(function(t){ html+='<div style="font-size:12px;color:#ccc;margin-bottom:4px;">'+t+'</div>'; }); html+='</div>'; }
+  card.innerHTML=html;
+}
+window._rfcCircSet=function(k,v){
+  var uid=_b40uid(), today=_b40today(); var key='rfc_circadian_'+uid+'_'+today;
+  var d=_b40load(key)||{wakeHr:6,lightMin:15,lastMealHr:3,sleepHrs:7.5};
+  d[k]=v; _b40save(key,d); _renderCircadian();
+};
+
+/* ---------- PREBIOTIC FOODS TRACKER (nutrition) ---------- */
+var PREBIO=[
+  {id:'garlic',label:'Garlic',pts:3,icon:'🧄'},
+  {id:'onions',label:'Onions/Leeks',pts:3,icon:'🧅'},
+  {id:'oats',label:'Oats',pts:2,icon:'🌾'},
+  {id:'banana',label:'Unripe Banana',pts:2,icon:'🍌'},
+  {id:'asparagus',label:'Asparagus',pts:3,icon:'🌿'},
+  {id:'artichoke',label:'Jerusalem Artichoke',pts:3,icon:'🌱'},
+  {id:'dandelion',label:'Dandelion Greens',pts:2,icon:'🍃'},
+  {id:'flax',label:'Flaxseed',pts:2,icon:'🌻'},
+  {id:'chicory',label:'Chicory Root/Coffee',pts:2,icon:'☕'},
+  {id:'apple',label:'Apples (pectin)',pts:2,icon:'🍎'}
+];
+function _injectPrebiotic(){
+  if(document.getElementById('rfc-prebiotic-wrap')) return;
+  var anchor=document.getElementById('rfc-protdiv-wrap')||document.getElementById('rfc-antiinfl-wrap')||document.getElementById('rfc-gut-wrap')||document.getElementById('rfc-vitamin-wrap')||document.querySelector('.dash-topbar');
+  if(!anchor) return;
+  var card=_b40card('rfc-prebiotic-wrap','🌱 Prebiotic Foods Tracker');
+  card.style.cssText+='border:1px solid #1a2a1a;';
+  anchor.parentNode.insertBefore(card,anchor.nextSibling);
+  _renderPrebiotic();
+}
+function _renderPrebiotic(){
+  var card=document.getElementById('rfc-prebiotic-wrap'); if(!card) return;
+  var uid=_b40uid(), today=_b40today();
+  var key='rfc_prebio_'+uid+'_'+today;
+  var data=_b40load(key)||{};
+  var total=0, maxPts=24;
+  PREBIO.forEach(function(p){ if(data[p.id]) total+=p.pts; });
+  var pct=Math.min(100,Math.round((total/maxPts)*100));
+  var pc=pct>=60?'#00ff88':pct>=30?'#ffd700':'#ff6b6b';
+  var count=PREBIO.filter(function(p){ return !!data[p.id]; }).length;
+  var html='<div style="font-size:15px;font-weight:700;color:#00d4ff;margin-bottom:14px;">🌱 Prebiotic Foods Tracker</div>';
+  html+='<div style="font-size:12px;color:#888;margin-bottom:10px;">Prebiotic fiber feeds beneficial gut bacteria. Aim for 3+ sources daily.</div>';
+  html+='<div style="display:flex;gap:10px;margin-bottom:12px;">';
+  html+='<div style="flex:1;background:#12122a;border-radius:8px;padding:10px;text-align:center;"><div style="font-size:22px;font-weight:800;color:'+pc+';">'+count+'<span style="font-size:14px;color:#888;">/10</span></div><div style="font-size:11px;color:#888;">Foods Today</div></div>';
+  html+='<div style="flex:1;background:#12122a;border-radius:8px;padding:10px;text-align:center;"><div style="font-size:22px;font-weight:800;color:'+pc+';">'+pct+'%</div><div style="font-size:11px;color:#888;">Score</div></div></div>';
+  html+='<div style="background:#1e2a1e;border-radius:8px;height:10px;margin-bottom:14px;overflow:hidden;"><div style="height:10px;background:'+pc+';width:'+pct+'%;border-radius:8px;transition:width 0.4s;"></div></div>';
+  html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;">';
+  PREBIO.forEach(function(p){
+    var checked=!!data[p.id];
+    html+='<div onclick="window._rfcPBTap(\''+p.id+'\')" style="cursor:pointer;background:'+(checked?'#0d2a1a':'#12122a')+';border:1px solid '+(checked?'#00ff88':'#2a2a4a')+';border-radius:9px;padding:9px 10px;display:flex;align-items:center;gap:7px;">';
+    html+='<span style="font-size:15px;">'+p.icon+'</span>';
+    html+='<div style="flex:1;"><div style="font-size:11px;color:'+(checked?'#00ff88':'#ccc')+';">'+p.label+'</div><div style="font-size:10px;color:#ffd700;">+'+p.pts+' pts</div></div>';
+    html+='<span>'+(checked?'✅':'⭕')+'</span></div>';
+  });
+  html+='</div>';
+  card.innerHTML=html;
+}
+window._rfcPBTap=function(id){
+  var uid=_b40uid(), today=_b40today(); var key='rfc_prebio_'+uid+'_'+today;
+  var data=_b40load(key)||{}; data[id]=!data[id]; _b40save(key,data); _renderPrebiotic();
+};
+
+/* ---------- VOLUME & DELOAD PLANNER (workouts) ---------- */
+function _vdWeekKey(offset){
+  var d=new Date(); d.setDate(d.getDate()-offset*7);
+  var day=d.getDay(); var diff=d.getDate()-day+(day===0?-6:1);
+  d.setDate(diff);
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+}
+function _vdGetWeeklySets(uid, weekStart){
+  var ws=new Date(weekStart); var we=new Date(ws); we.setDate(we.getDate()+6);
+  var allW=_b40load('rfc_workouts_'+uid)||[];
+  return allW.filter(function(w){
+    var dt=new Date(w.ts||w.date); return dt>=ws&&dt<=we;
+  }).reduce(function(acc,w){
+    return acc+(w.exercises||[]).reduce(function(a,e){ return a+(e.sets||[]).length; },0);
+  },0);
+}
+function _injectDeload(){
+  if(document.getElementById('rfc-deload-wrap')) return;
+  var anchor=document.getElementById('rfc-grip-wrap')||document.getElementById('rfc-tempo-wrap')||document.getElementById('rfc-strbal-wrap')||document.getElementById('rfc-calis-wrap')||document.querySelector('.dash-topbar');
+  if(!anchor) return;
+  var card=_b40card('rfc-deload-wrap','📊 Volume & Deload Planner');
+  card.style.cssText+='border:1px solid #1a2a3a;';
+  anchor.parentNode.insertBefore(card,anchor.nextSibling);
+  _renderDeload();
+}
+function _renderDeload(){
+  var card=document.getElementById('rfc-deload-wrap'); if(!card) return;
+  var uid=_b40uid();
+  var weeks=[]; var maxSets=0;
+  for(var i=3;i>=0;i--){ var wk=_vdWeekKey(i); var sets=_vdGetWeeklySets(uid,wk); weeks.push({wk:wk,sets:sets,label:'W-'+i}); if(sets>maxSets) maxSets=sets; }
+  weeks[3].label='This Wk';
+  var highWeeks=0; for(var j=0;j<3;j++){ if(weeks[j].sets>=15) highWeeks++; }
+  var needDeload=highWeeks>=2&&weeks[3].sets>=15;
+  var thisWeek=weeks[3].sets;
+  var rec=needDeload?'🟡 Deload Recommended':thisWeek===0?'⚪ No data this week':thisWeek<10?'🟢 Light week — push harder':thisWeek<20?'🟢 Moderate — on track':'🔴 High volume — monitor recovery';
+  var html='<div style="font-size:15px;font-weight:700;color:#00d4ff;margin-bottom:14px;">📊 Volume & Deload Planner</div>';
+  html+='<div style="background:'+(needDeload?'#2a2000':'#0d1a2a')+';border:1px solid '+(needDeload?'#ffd700':'#1e3a5c')+';border-radius:10px;padding:12px;margin-bottom:14px;">';
+  html+='<div style="font-size:13px;font-weight:700;color:'+(needDeload?'#ffd700':'#00d4ff')+';">'+rec+'</div>';
+  if(needDeload){ html+='<div style="font-size:12px;color:#aaa;margin-top:6px;">High training load over multiple weeks. A deload week (40-60% volume reduction) helps prevent overtraining and promotes supercompensation.</div>'; }
+  html+='</div>';
+  html+='<div style="font-size:12px;color:#888;margin-bottom:8px;">Weekly Training Sets (last 4 weeks)</div>';
+  html+='<div style="display:flex;align-items:flex-end;gap:8px;height:80px;margin-bottom:8px;">';
+  var displayMax=Math.max(30,maxSets);
+  weeks.forEach(function(w,i){
+    var h=w.sets===0?4:Math.max(8,Math.round((w.sets/displayMax)*72));
+    var c=w.sets>=25?'#ff6b6b':w.sets>=15?'#ffd700':w.sets>0?'#00ff88':'#2a2a4a';
+    html+='<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;">';
+    html+='<div style="font-size:11px;color:'+c+';">'+w.sets+'</div>';
+    html+='<div style="width:100%;height:'+h+'px;background:'+c+';border-radius:4px;"></div>';
+    html+='<div style="font-size:10px;color:#888;">'+w.label+'</div></div>';
+  });
+  html+='</div>';
+  html+='<div style="background:#12122a;border-radius:8px;padding:10px;"><div style="font-size:12px;color:#888;">Volume Guide: <span style="color:#00ff88;">0-14 sets</span> = Low  <span style="color:#ffd700;">15-24</span> = High  <span style="color:#ff6b6b;">25+</span> = Very High</div></div>';
+  card.innerHTML=html;
+}
+
+window.switchScreen=function(name,navEl){
+  _origSS38&&_origSS38(name,navEl);
+  if(name==='dashboard') setTimeout(function(){ _injectCircadian(); _renderCircadian(); },1200);
+  if(name==='nutrition') setTimeout(function(){ _injectPrebiotic(); _renderPrebiotic(); },1100);
+  if(name==='workouts')  setTimeout(function(){ _injectDeload(); _renderDeload(); },1050);
+};
+setTimeout(function(){ _injectCircadian(); _injectPrebiotic(); _injectDeload(); },32000);
+setTimeout(function(){ if(!document.getElementById('rfc-circadian-wrap')) _injectCircadian(); if(!document.getElementById('rfc-prebiotic-wrap')) _injectPrebiotic(); if(!document.getElementById('rfc-deload-wrap')) _injectDeload(); },36000);
+})();
+</script>
+
 </body>
 </html>
