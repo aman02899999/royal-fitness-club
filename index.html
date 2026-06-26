@@ -23761,5 +23761,738 @@ window.switchScreen = function(name, navEl){
 })();
 </script>
 
+<!-- ═══ BATCH 7: Dark/Light Theme Toggle + Workout Heatmap + Progress Photos + Muscle Map ═══ -->
+<style>
+/* ── THEME TOGGLE ── */
+#rfc-theme-btn{
+  background:none;border:none;cursor:pointer;color:rgba(255,255,255,.7);
+  font-size:18px;padding:6px 8px;line-height:1;transition:color .2s;
+  position:relative;
+}
+#rfc-theme-btn:hover{color:#f59e0b;}
+
+/* Light mode overrides */
+body.rfc-light{
+  --bg:#f0f0f0;--bg2:#ffffff;--text:#111111;--text2:#444444;
+  --card-bg:#ffffff;--card-border:rgba(0,0,0,.1);
+  background:#f0f0f0;color:#111;
+}
+body.rfc-light .screen-content{background:#f0f0f0;}
+body.rfc-light .dash-stat-card,
+body.rfc-light .pcard,
+body.rfc-light .course-card,
+body.rfc-light .wallet-card,
+body.rfc-light .hist-item,
+body.rfc-light .notif-item{
+  background:#ffffff;border-color:rgba(0,0,0,.1);color:#111;
+}
+body.rfc-light .nbar{background:rgba(255,255,255,.95);border-bottom-color:rgba(0,0,0,.1);}
+body.rfc-light .nav-tab{color:#555;}
+body.rfc-light .nav-tab.active{color:#e8001d;}
+body.rfc-light #rfc-bg3d{opacity:.08;}
+body.rfc-light h1,body.rfc-light h2,body.rfc-light h3{color:#111;}
+body.rfc-light .subtext{color:#666;}
+body.rfc-light input,body.rfc-light select,body.rfc-light textarea{
+  background:#f8f8f8;border-color:#ddd;color:#111;
+}
+body.rfc-light .ds-label{color:#555;}
+body.rfc-light .ds-val{color:#111;}
+body.rfc-light .wl-header-row,
+body.rfc-light .ex-row{background:#fafafa;border-color:#eee;}
+body.rfc-light .ex-ac-drop{background:#fff;border-color:#ddd;}
+body.rfc-light .ex-ac-item:hover{background:#f5f5f5;}
+body.rfc-light #rfc-chat-panel{background:#fff;border-color:#ddd;}
+body.rfc-light .chat-msg-bot{background:#f0f0f0;color:#111;}
+body.rfc-light .rfc-qr-chip{background:#f0f0f0;color:#333;border-color:#ddd;}
+body.rfc-light #rfc-rest-timer{background:#fff;border-color:rgba(0,0,0,.12);}
+body.rfc-light #rfc-notif-panel{background:#fff;border-color:rgba(0,0,0,.1);}
+body.rfc-light .notif-item{background:#fafafa;}
+
+/* ── WORKOUT HEATMAP ── */
+#rfc-heatmap-wrap{
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);
+  border-radius:14px;padding:16px;margin:16px 0;
+}
+body.rfc-light #rfc-heatmap-wrap{background:#fff;border-color:#eee;}
+.hm-title{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:10px;}
+body.rfc-light .hm-title{color:#888;}
+#rfc-heatmap-grid{display:flex;gap:3px;flex-wrap:wrap;}
+.hm-day{
+  width:13px;height:13px;border-radius:2px;
+  background:rgba(255,255,255,.06);cursor:default;transition:transform .15s;
+  position:relative;
+}
+.hm-day:hover{transform:scale(1.4);z-index:2;}
+.hm-day.hm-l1{background:rgba(232,0,29,.25);}
+.hm-day.hm-l2{background:rgba(232,0,29,.55);}
+.hm-day.hm-l3{background:rgba(232,0,29,.85);}
+.hm-day.hm-today{box-shadow:0 0 0 1.5px #f59e0b;}
+.hm-tooltip{
+  display:none;position:absolute;bottom:18px;left:50%;transform:translateX(-50%);
+  background:#111;color:#fff;font-size:10px;padding:3px 7px;border-radius:4px;
+  white-space:nowrap;pointer-events:none;z-index:99;
+}
+body.rfc-light .hm-tooltip{background:#333;}
+.hm-day:hover .hm-tooltip{display:block;}
+.hm-legend{display:flex;align-items:center;gap:5px;margin-top:8px;font-size:10px;color:rgba(255,255,255,.3);}
+body.rfc-light .hm-legend{color:#aaa;}
+.hm-legend-sq{width:10px;height:10px;border-radius:2px;}
+
+/* ── PROGRESS PHOTOS ── */
+#rfc-photos-wrap{
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);
+  border-radius:14px;padding:16px;margin:16px 0;
+}
+body.rfc-light #rfc-photos-wrap{background:#fff;border-color:#eee;}
+.photos-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+.photos-title{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.4);}
+body.rfc-light .photos-title{color:#888;}
+.photo-upload-btn{
+  background:rgba(232,0,29,.15);border:1px solid rgba(232,0,29,.3);
+  color:#e8001d;border-radius:8px;padding:6px 12px;font-size:11px;cursor:pointer;
+  font-family:'Bebas Neue',sans-serif;letter-spacing:1px;transition:background .2s;
+}
+.photo-upload-btn:hover{background:rgba(232,0,29,.25);}
+.photos-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.photo-card{
+  border-radius:10px;overflow:hidden;position:relative;aspect-ratio:3/4;
+  background:rgba(255,255,255,.04);border:1px dashed rgba(255,255,255,.1);
+  cursor:pointer;display:flex;align-items:center;justify-content:center;
+  flex-direction:column;gap:6px;transition:border-color .2s;
+}
+body.rfc-light .photo-card{background:#f8f8f8;border-color:#ddd;}
+.photo-card:hover{border-color:rgba(232,0,29,.4);}
+.photo-card img{width:100%;height:100%;object-fit:cover;display:block;}
+.photo-card-date{
+  position:absolute;bottom:0;left:0;right:0;
+  background:linear-gradient(transparent,rgba(0,0,0,.8));
+  color:#fff;font-size:9px;padding:14px 6px 5px;text-align:center;
+  letter-spacing:1px;
+}
+.photo-card-add-icon{font-size:28px;color:rgba(255,255,255,.2);}
+body.rfc-light .photo-card-add-icon{color:#ccc;}
+.photo-card-add-txt{font-size:9px;color:rgba(255,255,255,.25);letter-spacing:1px;text-transform:uppercase;}
+body.rfc-light .photo-card-add-txt{color:#aaa;}
+.photo-del-btn{
+  position:absolute;top:5px;right:5px;background:rgba(0,0,0,.6);border:none;
+  color:#fff;border-radius:50%;width:20px;height:20px;font-size:12px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;line-height:1;
+}
+#photo-file-input{display:none;}
+.photo-compare-btn{
+  display:block;width:100%;margin-top:10px;background:none;
+  border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:8px;
+  color:rgba(255,255,255,.4);font-size:11px;cursor:pointer;text-align:center;
+  transition:border-color .2s,color .2s;
+}
+body.rfc-light .photo-compare-btn{border-color:#ddd;color:#888;}
+.photo-compare-btn:hover{border-color:#e8001d;color:#e8001d;}
+
+/* ── MUSCLE MAP ── */
+#rfc-muscle-wrap{
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);
+  border-radius:14px;padding:16px;margin:16px 0;
+}
+body.rfc-light #rfc-muscle-wrap{background:#fff;border-color:#eee;}
+.muscle-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+.muscle-title{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.4);}
+body.rfc-light .muscle-title{color:#888;}
+.muscle-period{font-size:10px;color:rgba(255,255,255,.3);letter-spacing:1px;}
+body.rfc-light .muscle-period{color:#aaa;}
+#rfc-muscle-svg{display:block;margin:0 auto;max-width:200px;}
+.muscle-legend{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;justify-content:center;}
+.muscle-litem{display:flex;align-items:center;gap:4px;font-size:10px;color:rgba(255,255,255,.4);}
+body.rfc-light .muscle-litem{color:#888;}
+.muscle-lsq{width:10px;height:10px;border-radius:2px;}
+
+/* ── ACHIEVEMENT BADGES ── */
+#rfc-badges-wrap{
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);
+  border-radius:14px;padding:16px;margin:16px 0;
+}
+body.rfc-light #rfc-badges-wrap{background:#fff;border-color:#eee;}
+.badges-title{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:12px;}
+body.rfc-light .badges-title{color:#888;}
+.badges-grid{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;}
+.badge-item{
+  display:flex;flex-direction:column;align-items:center;gap:4px;
+  width:64px;text-align:center;
+}
+.badge-icon{
+  width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:24px;position:relative;transition:transform .2s;cursor:default;
+}
+.badge-icon:hover{transform:scale(1.15);}
+.badge-icon.earned{
+  background:radial-gradient(circle,rgba(245,158,11,.25),rgba(245,158,11,.05));
+  border:2px solid #f59e0b;box-shadow:0 0 14px rgba(245,158,11,.35);
+}
+.badge-icon.locked{
+  background:rgba(255,255,255,.04);border:2px solid rgba(255,255,255,.08);
+  filter:grayscale(1) opacity(.35);
+}
+.badge-name{font-size:9px;color:rgba(255,255,255,.5);letter-spacing:.5px;line-height:1.2;}
+body.rfc-light .badge-name{color:#888;}
+.badge-name.earned-lbl{color:#f59e0b;}
+
+/* ── WORKOUT SPLIT VISUALIZER ── */
+#rfc-split-wrap{
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);
+  border-radius:14px;padding:16px;margin:16px 0;
+}
+body.rfc-light #rfc-split-wrap{background:#fff;border-color:#eee;}
+.split-title{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:12px;}
+body.rfc-light .split-title{color:#888;}
+.split-week{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;}
+.split-day-col{text-align:center;}
+.split-day-lbl{font-size:9px;color:rgba(255,255,255,.3);letter-spacing:1px;text-transform:uppercase;margin-bottom:5px;}
+body.rfc-light .split-day-lbl{color:#aaa;}
+.split-day-pill{
+  border-radius:8px;padding:8px 2px;font-size:9px;font-family:'Bebas Neue',sans-serif;
+  letter-spacing:.5px;line-height:1.25;text-align:center;
+}
+.split-rest{background:rgba(255,255,255,.04);color:rgba(255,255,255,.2);}
+body.rfc-light .split-rest{background:#f0f0f0;color:#bbb;}
+.split-push{background:rgba(232,0,29,.15);color:#e8001d;border:1px solid rgba(232,0,29,.25);}
+.split-pull{background:rgba(59,130,246,.12);color:#60a5fa;border:1px solid rgba(59,130,246,.2);}
+.split-legs{background:rgba(245,158,11,.12);color:#f59e0b;border:1px solid rgba(245,158,11,.2);}
+.split-full{background:rgba(16,185,129,.12);color:#34d399;border:1px solid rgba(16,185,129,.2);}
+.split-upper{background:rgba(139,92,246,.12);color:#a78bfa;border:1px solid rgba(139,92,246,.2);}
+.split-lower{background:rgba(236,72,153,.12);color:#f472b6;border:1px solid rgba(236,72,153,.2);}
+.split-cardio{background:rgba(6,182,212,.12);color:#22d3ee;border:1px solid rgba(6,182,212,.2);}
+
+@media(max-width:400px){
+  .badges-grid{gap:8px;}
+  .badge-item{width:56px;}
+  .badge-icon{width:44px;height:44px;font-size:20px;}
+}
+</style>
+
+<script>
+(function(){
+'use strict';
+
+/* ════════════════════════════════════
+   1. DARK / LIGHT THEME TOGGLE
+════════════════════════════════════ */
+var THEME_KEY = 'rfc_theme';
+
+function _applyTheme(t){
+  document.body.classList.toggle('rfc-light', t === 'light');
+  var btn = document.getElementById('rfc-theme-btn');
+  if(btn) btn.textContent = t === 'light' ? '🌙' : '☀️';
+  localStorage.setItem(THEME_KEY, t);
+}
+
+function _injectThemeBtn(){
+  if(document.getElementById('rfc-theme-btn')) return;
+  var nright = document.querySelector('.nright');
+  if(!nright) return;
+  var btn = document.createElement('button');
+  btn.id = 'rfc-theme-btn';
+  btn.setAttribute('aria-label', 'Toggle theme');
+  var saved = localStorage.getItem(THEME_KEY) || 'dark';
+  btn.textContent = saved === 'light' ? '🌙' : '☀️';
+  btn.addEventListener('click', function(){
+    var cur = document.body.classList.contains('rfc-light') ? 'light' : 'dark';
+    _applyTheme(cur === 'light' ? 'dark' : 'light');
+  });
+  var bell = document.getElementById('rfc-notif-bell');
+  if(bell) nright.insertBefore(btn, bell);
+  else nright.insertBefore(btn, nright.firstChild);
+}
+
+// Apply saved theme on load
+(function(){
+  var saved = localStorage.getItem(THEME_KEY) || 'dark';
+  if(saved === 'light') document.body.classList.add('rfc-light');
+})();
+
+// Inject button once nav is ready
+var _themeObs = new MutationObserver(function(){
+  if(document.querySelector('.nright') && !document.getElementById('rfc-theme-btn')){
+    _injectThemeBtn();
+  }
+});
+_themeObs.observe(document.body, {childList:true, subtree:true});
+setTimeout(_injectThemeBtn, 600);
+
+/* ════════════════════════════════════
+   2. WORKOUT HEATMAP (52 weeks)
+════════════════════════════════════ */
+function _buildHeatmap(){
+  var wrap = document.getElementById('rfc-heatmap-wrap');
+  if(!wrap) return;
+
+  var uid = (window.user && window.user.uid) || 'guest';
+  var logs = JSON.parse(localStorage.getItem('rfc_workouts_'+uid) || '[]');
+
+  // Count workouts per date string
+  var counts = {};
+  logs.forEach(function(l){
+    var d = (l.date || '').split('T')[0];
+    if(d) counts[d] = (counts[d]||0) + 1;
+  });
+
+  var today = new Date();
+  today.setHours(0,0,0,0);
+  var DAY = 86400000;
+  // Build 91 days (13 weeks)
+  var days = 91;
+  var grid = document.getElementById('rfc-heatmap-grid');
+  if(!grid) return;
+  grid.innerHTML = '';
+
+  for(var i = days - 1; i >= 0; i--){
+    var d = new Date(today - i * DAY);
+    var ds = d.toISOString().split('T')[0];
+    var cnt = counts[ds] || 0;
+    var el = document.createElement('div');
+    el.className = 'hm-day' + (cnt===0?'':cnt===1?' hm-l1':cnt===2?' hm-l2':' hm-l3');
+    if(i === 0) el.classList.add('hm-today');
+    var tip = document.createElement('div');
+    tip.className = 'hm-tooltip';
+    tip.textContent = ds + (cnt ? ' · '+cnt+' workout'+(cnt>1?'s':'') : ' · rest day');
+    el.appendChild(tip);
+    grid.appendChild(el);
+  }
+}
+
+function _injectHeatmap(){
+  var anchor = document.getElementById('wl-history') || document.getElementById('workoutlog');
+  if(!anchor) return;
+  var existing = document.getElementById('rfc-heatmap-wrap');
+  if(existing){ _buildHeatmap(); return; }
+
+  var wrap = document.createElement('div');
+  wrap.id = 'rfc-heatmap-wrap';
+  wrap.innerHTML = '<div class="hm-title">Workout Activity — Last 13 Weeks</div>'
+    + '<div id="rfc-heatmap-grid"></div>'
+    + '<div class="hm-legend"><div class="hm-legend-sq" style="background:rgba(255,255,255,.06)"></div> None '
+    + '<div class="hm-legend-sq hm-l1"></div> 1 '
+    + '<div class="hm-legend-sq hm-l2"></div> 2 '
+    + '<div class="hm-legend-sq hm-l3"></div> 3+</div>';
+  // Insert before wl-history if it exists, otherwise inside workoutlog
+  var wlHistory = document.getElementById('wl-history');
+  if(wlHistory){
+    wlHistory.parentNode.insertBefore(wrap, wlHistory);
+  } else {
+    var wlSec = document.getElementById('workoutlog');
+    if(wlSec) wlSec.appendChild(wrap);
+  }
+  _buildHeatmap();
+}
+
+/* ════════════════════════════════════
+   3. PROGRESS PHOTOS TIMELINE
+════════════════════════════════════ */
+var PHOTO_KEY = 'rfc_photos_';
+
+function _photoKey(){ return PHOTO_KEY + ((window.user && window.user.uid) || 'guest'); }
+function _getPhotos(){ return JSON.parse(localStorage.getItem(_photoKey()) || '[]'); }
+function _savePhotos(arr){ localStorage.setItem(_photoKey(), JSON.stringify(arr)); }
+
+function _renderPhotos(){
+  var grid = document.getElementById('rfc-photo-grid');
+  if(!grid) return;
+  var photos = _getPhotos();
+  grid.innerHTML = '';
+
+  photos.slice(0,8).forEach(function(p, idx){
+    var card = document.createElement('div');
+    card.className = 'photo-card';
+    card.innerHTML = '<img src="'+p.src+'" alt="progress photo '+p.date+'">'
+      + '<div class="photo-card-date">'+p.date+'</div>'
+      + '<button class="photo-del-btn" data-idx="'+idx+'" onclick="window._rfcDelPhoto('+idx+')">×</button>';
+    grid.appendChild(card);
+  });
+
+  // Add slot if under 9
+  if(photos.length < 9){
+    var addCard = document.createElement('div');
+    addCard.className = 'photo-card';
+    addCard.setAttribute('onclick', "document.getElementById('photo-file-input').click()");
+    addCard.innerHTML = '<div class="photo-card-add-icon">📷</div><div class="photo-card-add-txt">Add Photo</div>';
+    grid.appendChild(addCard);
+  }
+}
+
+window._rfcDelPhoto = function(idx){
+  var arr = _getPhotos();
+  arr.splice(idx, 1);
+  _savePhotos(arr);
+  _renderPhotos();
+};
+
+function _injectPhotos(){
+  // Find best anchor on workouts screen
+  var anchor = document.getElementById('rfc-heatmap-wrap') || document.getElementById('wl-history') || document.getElementById('workoutlog');
+  if(!anchor) return;
+  if(document.getElementById('rfc-photos-wrap')) return;
+
+  var wrap = document.createElement('div');
+  wrap.id = 'rfc-photos-wrap';
+  wrap.innerHTML = '<div class="photos-header">'
+    + '<div class="photos-title">Progress Photos</div>'
+    + '<button class="photo-upload-btn" onclick="document.getElementById(\'photo-file-input\').click()">+ ADD</button>'
+    + '</div>'
+    + '<div class="photos-grid" id="rfc-photo-grid"></div>'
+    + '<button class="photo-compare-btn" onclick="window._rfcComparePhotos()">Compare First vs Latest ↔</button>'
+    + '<input type="file" id="photo-file-input" accept="image/*" capture="user">';
+
+  anchor.parentNode.insertBefore(wrap, anchor.nextSibling);
+
+  document.getElementById('photo-file-input').addEventListener('change', function(e){
+    var file = e.target.files && e.target.files[0];
+    if(!file) return;
+    var reader = new FileReader();
+    reader.onload = function(ev){
+      var arr = _getPhotos();
+      var today = new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'});
+      arr.unshift({src: ev.target.result, date: today, ts: Date.now()});
+      if(arr.length > 20) arr = arr.slice(0,20); // keep last 20
+      _savePhotos(arr);
+      _renderPhotos();
+    };
+    reader.readAsDataURL(file);
+    e.target.value = '';
+  });
+
+  _renderPhotos();
+}
+
+window._rfcComparePhotos = function(){
+  var photos = _getPhotos();
+  if(photos.length < 2){ alert('Add at least 2 progress photos to compare!'); return; }
+  var first = photos[photos.length - 1];
+  var latest = photos[0];
+  var w = window.open('','_blank','width=800,height=500');
+  w.document.write('<html><body style="background:#000;display:flex;gap:10px;padding:20px;box-sizing:border-box;">'
+    + '<div style="flex:1;text-align:center;"><div style="color:#aaa;font-size:12px;letter-spacing:2px;margin-bottom:8px;">BEFORE — '+first.date+'</div><img src="'+first.src+'" style="max-width:100%;max-height:420px;border-radius:8px;"></div>'
+    + '<div style="flex:1;text-align:center;"><div style="color:#aaa;font-size:12px;letter-spacing:2px;margin-bottom:8px;">LATEST — '+latest.date+'</div><img src="'+latest.src+'" style="max-width:100%;max-height:420px;border-radius:8px;"></div>'
+    + '</body></html>');
+  w.document.close();
+};
+
+/* ════════════════════════════════════
+   4. MUSCLE GROUP MAP (SVG body)
+════════════════════════════════════ */
+var MUSCLE_MAP = {
+  chest:    {label:'Chest',   color:'#e8001d', parts:['m-chest']},
+  back:     {label:'Back',    color:'#3b82f6', parts:['m-back','m-lats']},
+  shoulders:{label:'Delts',   color:'#8b5cf6', parts:['m-lshoulder','m-rshoulder']},
+  biceps:   {label:'Biceps',  color:'#f59e0b', parts:['m-lbicep','m-rbicep']},
+  triceps:  {label:'Triceps', color:'#ec4899', parts:['m-ltricep','m-rtricep']},
+  abs:      {label:'Core',    color:'#10b981', parts:['m-abs']},
+  quads:    {label:'Quads',   color:'#06b6d4', parts:['m-lquad','m-rquad']},
+  hams:     {label:'Hams',    color:'#f97316', parts:['m-lham','m-rham']},
+  glutes:   {label:'Glutes',  color:'#a78bfa', parts:['m-glutes']},
+  calves:   {label:'Calves',  color:'#34d399', parts:['m-lcalf','m-rcalf']},
+};
+
+// Which exercises hit which muscles
+var EX_MUSCLE = {
+  'Bench Press':'chest','Incline Press':'chest','Push-Up':'chest','Dumbbell Fly':'chest','Chest Press':'chest',
+  'Pull-Up':'back','Lat Pulldown':'back','Bent-Over Row':'back','Seated Row':'back','Deadlift':'back',
+  'Overhead Press':'shoulders','Lateral Raise':'shoulders','Front Raise':'shoulders','Arnold Press':'shoulders',
+  'Bicep Curl':'biceps','Hammer Curl':'biceps','Preacher Curl':'biceps',
+  'Tricep Dip':'triceps','Skull Crusher':'triceps','Tricep Pushdown':'triceps',
+  'Plank':'abs','Crunch':'abs','Leg Raise':'abs','Russian Twist':'abs','Ab Wheel':'abs',
+  'Squat':'quads','Leg Press':'quads','Lunge':'quads','Leg Extension':'quads',
+  'Romanian Deadlift':'hams','Leg Curl':'hams','Nordic Curl':'hams',
+  'Hip Thrust':'glutes','Glute Bridge':'glutes',
+  'Calf Raise':'calves','Standing Calf Raise':'calves',
+};
+
+function _getMuscleFreqs(){
+  var uid = (window.user && window.user.uid) || 'guest';
+  var logs = JSON.parse(localStorage.getItem('rfc_workouts_'+uid) || '[]');
+  var freqs = {};
+  var cutoff = Date.now() - 7 * 86400000;
+  logs.filter(function(l){ return new Date(l.date).getTime() >= cutoff; })
+    .forEach(function(log){
+      (log.exercises || []).forEach(function(ex){
+        var name = (ex.name||'').trim();
+        var muscle = EX_MUSCLE[name];
+        if(muscle) freqs[muscle] = (freqs[muscle]||0) + (ex.sets||1);
+      });
+    });
+  return freqs;
+}
+
+function _injectMuscleMap(){
+  var anchor = document.getElementById('rfc-photos-wrap') || document.getElementById('rfc-heatmap-wrap');
+  if(!anchor) return;
+  if(document.getElementById('rfc-muscle-wrap')) return;
+
+  var wrap = document.createElement('div');
+  wrap.id = 'rfc-muscle-wrap';
+  wrap.innerHTML = '<div class="muscle-header">'
+    + '<div class="muscle-title">Muscle Volume Map</div>'
+    + '<div class="muscle-period">Last 7 Days</div>'
+    + '</div>'
+    + '<svg id="rfc-muscle-svg" viewBox="0 0 120 240" xmlns="http://www.w3.org/2000/svg">'
+    // Body silhouette
+    + '<ellipse cx="60" cy="22" rx="17" ry="20" fill="rgba(255,255,255,.06)" stroke="rgba(255,255,255,.12)" stroke-width="1"/>'  // head
+    + '<rect x="37" y="43" width="46" height="50" rx="6" fill="rgba(255,255,255,.06)" stroke="rgba(255,255,255,.12)" stroke-width="1"/>'  // torso
+    // Chest
+    + '<ellipse id="m-chest" cx="60" cy="60" rx="18" ry="13" fill="rgba(255,255,255,.06)" stroke="rgba(255,255,255,.1)" stroke-width=".8"/>'
+    // Abs
+    + '<rect id="m-abs" x="51" y="74" width="18" height="16" rx="4" fill="rgba(255,255,255,.06)" stroke="rgba(255,255,255,.1)" stroke-width=".8"/>'
+    // Left shoulder
+    + '<ellipse id="m-lshoulder" cx="30" cy="55" rx="9" ry="11" fill="rgba(255,255,255,.06)" stroke="rgba(255,255,255,.1)" stroke-width=".8"/>'
+    // Right shoulder
+    + '<ellipse id="m-rshoulder" cx="90" cy="55" rx="9" ry="11" fill="rgba(255,255,255,.06)" stroke="rgba(255,255,255,.1)" stroke-width=".8"/>'
+    // Left bicep
+    + '<rect id="m-lbicep" x="18" y="68" width="10" height="24" rx="4" fill="rgba(255,255,255,.06)" stroke="rgba(255,255,255,.1)" stroke-width=".8"/>'
+    // Right bicep
+    + '<rect id="m-rbicep" x="92" y="68" width="10" height="24" rx="4" fill="rgba(255,255,255,.06)" stroke="rgba(255,255,255,.1)" stroke-width=".8"/>'
+    // Left tricep (behind)
+    + '<rect id="m-ltricep" x="14" y="70" width="7" height="20" rx="3" fill="rgba(255,255,255,.04)" stroke="rgba(255,255,255,.07)" stroke-width=".8"/>'
+    // Right tricep
+    + '<rect id="m-rtricep" x="99" y="70" width="7" height="20" rx="3" fill="rgba(255,255,255,.04)" stroke="rgba(255,255,255,.07)" stroke-width=".8"/>'
+    // Hips / glutes
+    + '<ellipse id="m-glutes" cx="60" cy="97" rx="21" ry="10" fill="rgba(255,255,255,.06)" stroke="rgba(255,255,255,.1)" stroke-width=".8"/>'
+    // Left quad
+    + '<rect id="m-lquad" x="39" y="108" width="16" height="45" rx="5" fill="rgba(255,255,255,.06)" stroke="rgba(255,255,255,.1)" stroke-width=".8"/>'
+    // Right quad
+    + '<rect id="m-rquad" x="65" y="108" width="16" height="45" rx="5" fill="rgba(255,255,255,.06)" stroke="rgba(255,255,255,.1)" stroke-width=".8"/>'
+    // Left ham (slightly offset)
+    + '<rect id="m-lham" x="37" y="110" width="12" height="42" rx="5" fill="rgba(255,255,255,.04)" stroke="rgba(255,255,255,.07)" stroke-width=".8"/>'
+    // Right ham
+    + '<rect id="m-rham" x="71" y="110" width="12" height="42" rx="5" fill="rgba(255,255,255,.04)" stroke="rgba(255,255,255,.07)" stroke-width=".8"/>'
+    // Back (visible on sides)
+    + '<rect id="m-back" x="34" y="45" width="10" height="42" rx="4" fill="rgba(255,255,255,.04)" stroke="rgba(255,255,255,.07)" stroke-width=".8"/>'
+    + '<rect id="m-lats" x="76" y="45" width="10" height="42" rx="4" fill="rgba(255,255,255,.04)" stroke="rgba(255,255,255,.07)" stroke-width=".8"/>'
+    // Left calf
+    + '<ellipse id="m-lcalf" cx="47" cy="168" rx="8" ry="18" fill="rgba(255,255,255,.06)" stroke="rgba(255,255,255,.1)" stroke-width=".8"/>'
+    // Right calf
+    + '<ellipse id="m-rcalf" cx="73" cy="168" rx="8" ry="18" fill="rgba(255,255,255,.06)" stroke="rgba(255,255,255,.1)" stroke-width=".8"/>'
+    // Feet
+    + '<ellipse cx="47" cy="190" rx="10" ry="5" fill="rgba(255,255,255,.05)"/>'
+    + '<ellipse cx="73" cy="190" rx="10" ry="5" fill="rgba(255,255,255,.05)"/>'
+    + '</svg>'
+    + '<div class="muscle-legend" id="rfc-muscle-legend"></div>';
+
+  anchor.parentNode.insertBefore(wrap, anchor.nextSibling);
+  _updateMuscleMap();
+}
+
+function _updateMuscleMap(){
+  var freqs = _getMuscleFreqs();
+  var maxFreq = Math.max.apply(null, Object.values(freqs).concat([1]));
+  var legend = document.getElementById('rfc-muscle-legend');
+  if(legend) legend.innerHTML = '';
+
+  Object.keys(MUSCLE_MAP).forEach(function(key){
+    var def = MUSCLE_MAP[key];
+    var freq = freqs[key] || 0;
+    var intensity = freq / maxFreq;
+    def.parts.forEach(function(partId){
+      var el = document.getElementById(partId);
+      if(!el) return;
+      if(freq > 0){
+        var alpha = 0.2 + intensity * 0.75;
+        var hex = def.color.replace('#','');
+        var r=parseInt(hex.slice(0,2),16), g=parseInt(hex.slice(2,4),16), b=parseInt(hex.slice(4,6),16);
+        el.setAttribute('fill', 'rgba('+r+','+g+','+b+','+alpha.toFixed(2)+')');
+        el.setAttribute('stroke', def.color);
+        el.setAttribute('stroke-width', '1.5');
+      } else {
+        el.setAttribute('fill', 'rgba(255,255,255,.06)');
+        el.setAttribute('stroke', 'rgba(255,255,255,.1)');
+        el.setAttribute('stroke-width', '.8');
+      }
+    });
+
+    if(legend && freq > 0){
+      var li = document.createElement('div');
+      li.className = 'muscle-litem';
+      li.innerHTML = '<div class="muscle-lsq" style="background:'+def.color+'"></div> '+def.label+' ('+freq+'s)';
+      legend.appendChild(li);
+    }
+  });
+
+  if(legend && !legend.children.length){
+    legend.innerHTML = '<div style="font-size:10px;color:rgba(255,255,255,.2);text-align:center;width:100%;">Log workouts to see muscle volume</div>';
+  }
+}
+
+/* ════════════════════════════════════
+   5. ACHIEVEMENT BADGES
+════════════════════════════════════ */
+var BADGES = [
+  {id:'first_workout', icon:'🏋️', name:'First Rep',   desc:'Complete your first workout',   check: function(s){ return s.workouts >= 1; }},
+  {id:'streak_3',      icon:'🔥', name:'On Fire',      desc:'3-day workout streak',           check: function(s){ return s.streak >= 3; }},
+  {id:'streak_7',      icon:'⚡', name:'Week Warrior', desc:'7-day streak',                  check: function(s){ return s.streak >= 7; }},
+  {id:'streak_30',     icon:'👑', name:'Royal',        desc:'30-day streak',                 check: function(s){ return s.streak >= 30; }},
+  {id:'workouts_10',   icon:'💪', name:'10 Strong',    desc:'10 workouts logged',            check: function(s){ return s.workouts >= 10; }},
+  {id:'workouts_50',   icon:'🎯', name:'50 Club',      desc:'50 workouts logged',            check: function(s){ return s.workouts >= 50; }},
+  {id:'workouts_100',  icon:'💯', name:'Centurion',    desc:'100 workouts logged',           check: function(s){ return s.workouts >= 100; }},
+  {id:'pr_first',      icon:'🥇', name:'PR Setter',    desc:'Set your first personal record',check: function(s){ return s.prs >= 1; }},
+  {id:'pr_10',         icon:'🏆', name:'PR Machine',   desc:'10 personal records set',       check: function(s){ return s.prs >= 10; }},
+  {id:'score_80',      icon:'🌟', name:'Beast Mode',   desc:'Royal Score above 80',          check: function(s){ return s.score >= 80; }},
+  {id:'score_95',      icon:'🚀', name:'Elite',        desc:'Royal Score above 95',          check: function(s){ return s.score >= 95; }},
+  {id:'photo_first',   icon:'📷', name:'Progress Pic', desc:'Upload first progress photo',   check: function(s){ return s.photos >= 1; }},
+];
+
+function _getBadgeStats(){
+  var uid = (window.user && window.user.uid) || 'guest';
+  var logs = JSON.parse(localStorage.getItem('rfc_workouts_'+uid) || '[]');
+  var prs = JSON.parse(localStorage.getItem('rfc_prs_'+uid) || '{}');
+  var photos = JSON.parse(localStorage.getItem('rfc_photos_'+uid) || '[]');
+  var score = window.lastRes ? window.lastRes.score : 0;
+
+  // streak calc
+  var today = new Date(); today.setHours(0,0,0,0);
+  var DAY = 86400000;
+  var dates = [...new Set(logs.map(function(l){ return (l.date||'').split('T')[0]; }))].sort().reverse();
+  var streak = 0;
+  for(var i=0;i<dates.length;i++){
+    var d = new Date(dates[i]); d.setHours(0,0,0,0);
+    if((today - d) === streak * DAY){ streak++; } else break;
+  }
+
+  return {
+    workouts: logs.length,
+    streak: streak,
+    prs: Object.keys(prs).length,
+    photos: photos.length,
+    score: score,
+  };
+}
+
+function _renderBadges(){
+  var grid = document.getElementById('rfc-badges-grid');
+  if(!grid) return;
+  var stats = _getBadgeStats();
+  grid.innerHTML = '';
+  BADGES.forEach(function(b){
+    var earned = b.check(stats);
+    var item = document.createElement('div');
+    item.className = 'badge-item';
+    item.innerHTML = '<div class="badge-icon '+(earned?'earned':'locked')+'">'+b.icon+'</div>'
+      + '<div class="badge-name '+(earned?'earned-lbl':'')+'">'+b.name+'</div>';
+    item.title = b.desc + (earned ? ' ✓' : ' (locked)');
+    grid.appendChild(item);
+  });
+}
+
+function _injectBadges(){
+  var anchor = document.getElementById('rfc-muscle-wrap') || document.getElementById('rfc-photos-wrap') || document.getElementById('rfc-heatmap-wrap');
+  if(!anchor) return;
+  if(document.getElementById('rfc-badges-wrap')) return;
+
+  var wrap = document.createElement('div');
+  wrap.id = 'rfc-badges-wrap';
+  wrap.innerHTML = '<div class="badges-title">Achievement Badges</div>'
+    + '<div class="badges-grid" id="rfc-badges-grid"></div>';
+  anchor.parentNode.insertBefore(wrap, anchor.nextSibling);
+  _renderBadges();
+}
+
+/* ════════════════════════════════════
+   6. WORKOUT SPLIT VISUALIZER
+════════════════════════════════════ */
+var SPLIT_PLANS = {
+  ppl: {
+    name:'Push / Pull / Legs',
+    days:['Push','Pull','Legs','Rest','Push','Pull','Legs'],
+    types:['push','pull','legs','rest','push','pull','legs'],
+  },
+  ul: {
+    name:'Upper / Lower',
+    days:['Upper','Lower','Rest','Upper','Lower','Rest','Rest'],
+    types:['upper','lower','rest','upper','lower','rest','rest'],
+  },
+  fullbody: {
+    name:'Full Body',
+    days:['Full','Rest','Full','Rest','Full','Rest','Rest'],
+    types:['full','rest','full','rest','full','rest','rest'],
+  },
+  bro: {
+    name:'Bro Split',
+    days:['Chest','Back','Legs','Shoulders','Arms','Rest','Rest'],
+    types:['push','pull','legs','upper','push','rest','rest'],
+  },
+  cardio: {
+    name:'Cardio + Strength',
+    days:['Strength','Cardio','Strength','Cardio','Strength','Cardio','Rest'],
+    types:['full','cardio','full','cardio','full','cardio','rest'],
+  },
+};
+
+function _injectSplitViz(){
+  var anchor = document.getElementById('rfc-badges-wrap') || document.getElementById('rfc-muscle-wrap') || document.getElementById('rfc-heatmap-wrap');
+  if(!anchor) return;
+  if(document.getElementById('rfc-split-wrap')) return;
+
+  var currentSplitKey = (window.currentSplit || 'ppl');
+  var plan = SPLIT_PLANS[currentSplitKey] || SPLIT_PLANS.ppl;
+  var dayNames = ['MON','TUE','WED','THU','FRI','SAT','SUN'];
+
+  var cols = plan.days.map(function(d, i){
+    return '<div class="split-day-col">'
+      + '<div class="split-day-lbl">'+dayNames[i]+'</div>'
+      + '<div class="split-day-pill split-'+plan.types[i]+'">'+d+'</div>'
+      + '</div>';
+  }).join('');
+
+  var wrap = document.createElement('div');
+  wrap.id = 'rfc-split-wrap';
+  wrap.innerHTML = '<div class="split-title">Weekly Split — '+plan.name+'</div>'
+    + '<div class="split-week">'+cols+'</div>';
+  anchor.parentNode.insertBefore(wrap, anchor.nextSibling);
+}
+
+/* ════════════════════════════════════
+   Wire up: inject on workouts screen
+════════════════════════════════════ */
+function _injectAllWorkoutWidgets(){
+  // Single-pass, no chaining needed - each fn checks its own anchor
+  _injectHeatmap();
+  _injectPhotos();
+  _injectMuscleMap();
+  _injectBadges();
+  _injectSplitViz();
+}
+
+var _origSS4 = window.switchScreen;
+window.switchScreen = function(name, navEl){
+  _origSS4 && _origSS4(name, navEl);
+  if(name === 'workouts'){
+    // 400ms: give the original switchScreen time to render the section
+    setTimeout(_injectAllWorkoutWidgets, 400);
+    // Second pass in case DOM mutations delayed things
+    setTimeout(_injectAllWorkoutWidgets, 900);
+  }
+};
+
+// Also inject on page load after DOM settles
+setTimeout(function(){
+  var wlSection = document.getElementById('workoutlog');
+  if(wlSection && wlSection.style.display !== 'none'){
+    _injectAllWorkoutWidgets();
+  }
+}, 2000);
+
+// Also inject on saveWorkout
+var _origSW4 = window.saveWorkout;
+if(_origSW4 && !_origSW4._sw4Hooked){
+  window.saveWorkout = function(){
+    var r = _origSW4.apply(this, arguments);
+    setTimeout(function(){
+      _buildHeatmap();
+      _updateMuscleMap();
+      _renderBadges();
+    }, 400);
+    return r;
+  };
+  window.saveWorkout._sw4Hooked = true;
+}
+
+})();
+</script>
+
 </body>
 </html>
