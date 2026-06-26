@@ -27822,5 +27822,449 @@ setTimeout(function(){
 })();
 </script>
 
+<script>
+/* ═══════════════════════════════════════════════════════
+   BATCH 14: Recovery Score · Protein Timing Optimizer
+             Custom Supplement Stack Builder
+   ═══════════════════════════════════════════════════════ */
+(function(){
+'use strict';
+
+/* ── helpers ────────────────────────────────────── */
+function _b14uid(){
+  try{ var u=JSON.parse(localStorage.getItem('bm_user')||'{}'); return u.uid||'anon'; }catch(e){return'anon';}
+}
+function _b14today(){
+  var d=new Date();
+  return d.getFullYear()+'-'+(d.getMonth()+1<10?'0':'')+(d.getMonth()+1)+'-'+(d.getDate()<10?'0':'')+d.getDate();
+}
+function _b14insertAfter(el, anchor){
+  anchor.parentNode.insertBefore(el, anchor.nextSibling);
+}
+
+/* ════════════════════════════════════════════════════
+   1. RECOVERY SCORE
+   ════════════════════════════════════════════════════ */
+var RECOVERY_TIPS = {
+  high:  ['Perfect day to train hard — your body is ready. 💪', 'All systems green — push for a new PR today! 🏆', 'Excellent recovery — ideal for high-intensity work. ⚡'],
+  mid:   ['Moderate effort recommended — avoid max lifts today.', 'Focus on form over weight today. Quality > quantity.', 'Good for a moderate session — listen to your body.'],
+  low:   ['Rest or light stretching recommended today. 🧘', 'Prioritize sleep and hydration before heavy training.', 'Active recovery: walk, stretch, foam roll. Avoid intensity.']
+};
+
+function _calcRecoveryScore(){
+  var uid   = _b14uid();
+  var today = _b14today();
+  var score = 0;
+  var factors = [];
+
+  // ── Sleep (35 pts) ──
+  var sleepScore = 0;
+  try{
+    var sleepLog = JSON.parse(localStorage.getItem('rfc_sleep_'+uid)||'[]');
+    if(sleepLog.length){
+      var last = sleepLog[sleepLog.length-1];
+      var hrs  = parseFloat(last.hours||last.h||0);
+      if(hrs >= 8)       { sleepScore = 35; factors.push({label:'Sleep',pts:35,max:35,color:'#22c55e',val:hrs+'h'}); }
+      else if(hrs >= 7)  { sleepScore = 28; factors.push({label:'Sleep',pts:28,max:35,color:'#84cc16',val:hrs+'h'}); }
+      else if(hrs >= 6)  { sleepScore = 18; factors.push({label:'Sleep',pts:18,max:35,color:'#f59e0b',val:hrs+'h'}); }
+      else if(hrs >= 4)  { sleepScore = 8;  factors.push({label:'Sleep',pts:8, max:35,color:'#f97316',val:hrs+'h'}); }
+      else               { sleepScore = 2;  factors.push({label:'Sleep',pts:2, max:35,color:'#ef4444',val:hrs+'h'}); }
+    } else {
+      factors.push({label:'Sleep',pts:0,max:35,color:'#555',val:'—'});
+    }
+  }catch(e){ factors.push({label:'Sleep',pts:0,max:35,color:'#555',val:'—'}); }
+  score += sleepScore;
+
+  // ── Rest days since last workout (25 pts) ──
+  var restScore = 0;
+  try{
+    var wlog = JSON.parse(localStorage.getItem('rfc_workouts_'+uid)||'[]');
+    if(wlog.length){
+      var lastWO  = new Date(wlog[wlog.length-1].date||wlog[wlog.length-1].ts||0);
+      var daysSince = Math.floor((Date.now()-lastWO)/(1000*60*60*24));
+      if(daysSince === 0)      { restScore = 10; factors.push({label:'Rest',pts:10,max:25,color:'#f97316',val:'Trained today'}); }
+      else if(daysSince === 1) { restScore = 20; factors.push({label:'Rest',pts:20,max:25,color:'#84cc16',val:'1 day rest'}); }
+      else if(daysSince === 2) { restScore = 25; factors.push({label:'Rest',pts:25,max:25,color:'#22c55e',val:'2 days rest'}); }
+      else                     { restScore = 22; factors.push({label:'Rest',pts:22,max:25,color:'#22c55e',val:daysSince+'d rest'}); }
+    } else {
+      restScore = 25; factors.push({label:'Rest',pts:25,max:25,color:'#22c55e',val:'No data'});
+    }
+  }catch(e){ restScore=15; factors.push({label:'Rest',pts:15,max:25,color:'#888',val:'—'}); }
+  score += restScore;
+
+  // ── Hydration (20 pts) ──
+  var hydScore = 0;
+  try{
+    var cups = parseInt(localStorage.getItem('rfc_water_'+uid+'_'+today)||'0',10);
+    if(cups >= 8)       { hydScore=20; factors.push({label:'Hydration',pts:20,max:20,color:'#22c55e',val:cups+' cups'}); }
+    else if(cups >= 6)  { hydScore=14; factors.push({label:'Hydration',pts:14,max:20,color:'#84cc16',val:cups+' cups'}); }
+    else if(cups >= 4)  { hydScore=8;  factors.push({label:'Hydration',pts:8, max:20,color:'#f59e0b',val:cups+' cups'}); }
+    else if(cups >= 2)  { hydScore=4;  factors.push({label:'Hydration',pts:4, max:20,color:'#f97316',val:cups+' cups'}); }
+    else                { hydScore=0;  factors.push({label:'Hydration',pts:0, max:20,color:'#ef4444',val:cups+' cups'}); }
+  }catch(e){ factors.push({label:'Hydration',pts:0,max:20,color:'#555',val:'—'}); }
+  score += hydScore;
+
+  // ── Mood (20 pts) ──
+  var moodScore = 0;
+  try{
+    var moodLog = JSON.parse(localStorage.getItem('rfc_mood_'+uid)||'[]');
+    var todayMood = moodLog.find(function(e){ return e.date===today; });
+    if(todayMood){
+      var mv = parseInt(todayMood.v||0);
+      moodScore = [0,4,8,14,18,20][mv] || 0;
+      var moodColors = [null,'#ef4444','#f97316','#f59e0b','#84cc16','#22c55e'];
+      factors.push({label:'Mood',pts:moodScore,max:20,color:moodColors[mv]||'#888',val:['','😞','😕','😐','🙂','😄'][mv]});
+    } else {
+      factors.push({label:'Mood',pts:0,max:20,color:'#555',val:'—'});
+    }
+  }catch(e){ factors.push({label:'Mood',pts:0,max:20,color:'#555',val:'—'}); }
+  score += moodScore;
+
+  var tier  = score >= 75 ? 'high' : score >= 45 ? 'mid' : 'low';
+  var color = score >= 75 ? '#22c55e' : score >= 45 ? '#f59e0b' : '#e8001d';
+  var pool  = RECOVERY_TIPS[tier];
+  var tip   = pool[new Date().getDate() % pool.length];
+
+  return {score:score, color:color, tier:tier, tip:tip, factors:factors};
+}
+
+function _renderRecoveryScore(){
+  var wrap = document.getElementById('rfc-recovery-wrap');
+  if(!wrap) return;
+
+  var data = _calcRecoveryScore();
+  var s    = data.score;
+  var c    = data.color;
+
+  // SVG arc gauge (180° semicircle)
+  var R=48, CX=60, CY=60, SA=Math.PI, EA=2*Math.PI;
+  var arcLen = Math.PI * R; // half circle
+  var fill   = Math.min(1, s/100) * arcLen;
+  var trackPath = 'M '+(CX-R)+' '+CY+' A '+R+' '+R+' 0 0 1 '+(CX+R)+' '+CY;
+  var fillPath  = 'M '+(CX-R)+' '+CY+' A '+R+' '+R+' 0 0 1 '+(CX+R)+' '+CY;
+
+  // Needle angle
+  var angle = (s/100) * 180 - 90; // -90 = left, +90 = right
+  var rad   = angle * Math.PI / 180;
+  var nx    = CX + R*0.7 * Math.cos(rad);
+  var ny    = CY + R*0.7 * Math.sin(rad);
+
+  var svg =
+    '<svg width="120" height="70" viewBox="0 0 120 70" style="flex-shrink:0;">'
+    // Track
+    +'<path d="'+trackPath+'" fill="none" stroke="#222" stroke-width="10" stroke-linecap="round"/>'
+    // Colored zone segments
+    +'<path d="M 12 60 A 48 48 0 0 1 36 18" fill="none" stroke="#ef4444" stroke-width="10" stroke-linecap="butt" opacity=".35"/>'
+    +'<path d="M 36 18 A 48 48 0 0 1 84 18" fill="none" stroke="#f59e0b" stroke-width="10" stroke-linecap="butt" opacity=".35"/>'
+    +'<path d="M 84 18 A 48 48 0 0 1 108 60" fill="none" stroke="#22c55e" stroke-width="10" stroke-linecap="round" opacity=".35"/>'
+    // Fill
+    +'<path d="'+fillPath+'" fill="none" stroke="'+c+'" stroke-width="10" stroke-linecap="round"'
+    +' stroke-dasharray="'+arcLen.toFixed(1)+'" stroke-dashoffset="'+(arcLen-fill).toFixed(1)+'"'
+    +' style="transition:stroke-dashoffset 1s cubic-bezier(.34,1.56,.64,1);"/>'
+    // Needle
+    +'<line x1="'+CX+'" y1="'+CY+'" x2="'+nx.toFixed(1)+'" y2="'+ny.toFixed(1)+'" stroke="'+c+'" stroke-width="2" stroke-linecap="round"/>'
+    +'<circle cx="'+CX+'" cy="'+CY+'" r="4" fill="'+c+'"/>'
+    // Score text
+    +'<text x="'+CX+'" y="'+(CY+16)+'" text-anchor="middle" fill="'+c+'" font-size="20" font-family="\'Bebas Neue\',sans-serif" letter-spacing="1">'+s+'</text>'
+    +'<text x="'+CX+'" y="'+(CY+26)+'" text-anchor="middle" fill="#666" font-size="7" font-family="system-ui" text-transform="uppercase">/ 100</text>'
+    +'</svg>';
+
+  var factorBars = data.factors.map(function(f){
+    var pct = Math.round((f.pts/f.max)*100);
+    return '<div style="display:flex;align-items:center;gap:6px;margin-bottom:5px;">'
+      +'<span style="width:68px;font-size:11px;color:#aaa;flex-shrink:0;">'+f.label+'</span>'
+      +'<div style="flex:1;background:#1a1a1a;border-radius:3px;height:5px;overflow:hidden;">'
+      +'<div style="width:'+pct+'%;height:100%;background:'+f.color+';border-radius:3px;transition:width .6s;"></div>'
+      +'</div>'
+      +'<span style="font-size:11px;color:'+f.color+';width:38px;text-align:right;font-weight:600;">'+f.val+'</span>'
+      +'</div>';
+  }).join('');
+
+  wrap.innerHTML =
+    '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">'
+    +'<span style="font-weight:700;font-size:13px;color:#fff;">🔋 Recovery Score</span>'
+    +'<span style="font-size:11px;padding:2px 10px;border-radius:20px;background:'+c+'22;border:1px solid '+c+'55;color:'+c+';font-weight:700;">'
+    +(data.tier==='high'?'READY TO TRAIN':data.tier==='mid'?'MODERATE':'REST DAY')
+    +'</span>'
+    +'</div>'
+    +'<div style="display:flex;gap:12px;align-items:center;margin-bottom:12px;">'
+    + svg
+    +'<div style="flex:1;">'+factorBars+'</div>'
+    +'</div>'
+    +'<div style="background:#0d0d0d;border-left:3px solid '+c+';border-radius:0 8px 8px 0;padding:8px 12px;font-size:12px;color:#ccc;line-height:1.5;">'+data.tip+'</div>';
+}
+
+function _injectRecoveryScore(){
+  if(document.getElementById('rfc-recovery-wrap')) return;
+  var anchor = document.getElementById('rfc-rings-wrap')
+    || document.getElementById('rfc-hr-wrap')
+    || document.getElementById('rfc-trophy-shelf')
+    || document.querySelector('.dash-topbar');
+  if(!anchor) return;
+  var wrap = document.createElement('div');
+  wrap.id   = 'rfc-recovery-wrap';
+  wrap.className = 'rfc-b12-card';
+  _b14insertAfter(wrap, anchor);
+  _renderRecoveryScore();
+}
+
+/* ════════════════════════════════════════════════════
+   2. PROTEIN TIMING OPTIMIZER
+   ════════════════════════════════════════════════════ */
+function _getProteinTarget(){
+  try{
+    var lr = JSON.parse(localStorage.getItem('bm_last_result')||'null');
+    if(lr){
+      if(lr.macros && lr.macros.prot) return {prot: lr.macros.prot, weight: lr.weight||70, goal: lr.goal||'gain'};
+      if(lr.tdee) return {prot: Math.round(lr.tdee*0.30/4), weight: lr.weight||70, goal: lr.goal||'gain'};
+    }
+  }catch(e){}
+  return {prot:160, weight:70, goal:'gain'};
+}
+
+function _renderProteinTiming(){
+  var wrap = document.getElementById('rfc-protein-timing-wrap');
+  if(!wrap) return;
+
+  var data   = _getProteinTarget();
+  var prot   = data.prot;
+  var mealCt = parseInt((document.getElementById('rfc-pt-meals')||{}).value||'4');
+  var perMeal= Math.round(prot / mealCt);
+
+  // Recommended meal times based on count
+  var TIMES = {
+    3: ['7:30 AM (Breakfast)', '1:00 PM (Lunch)', '7:00 PM (Dinner)'],
+    4: ['7:30 AM (Breakfast)', '12:00 PM (Lunch)', '4:00 PM (Pre-WO)', '8:00 PM (Dinner)'],
+    5: ['7:30 AM (Breakfast)', '11:00 AM (Snack)', '2:00 PM (Lunch)', '5:30 PM (Pre-WO)', '8:30 PM (Dinner)'],
+    6: ['7:00 AM (Wake-up)', '10:00 AM (Snack)', '1:00 PM (Lunch)', '4:00 PM (Pre-WO)', '7:00 PM (Dinner)', '10:00 PM (Casein)']
+  };
+  var times = TIMES[mealCt] || TIMES[4];
+
+  var mealsHtml = times.map(function(t, i){
+    var isPreWO = t.indexOf('Pre-WO') > -1;
+    var isCasein= t.indexOf('Casein') > -1;
+    var highlight= isPreWO||isCasein;
+    return '<div style="display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid #1a1a1a;">'
+      +'<div style="width:24px;height:24px;border-radius:50%;background:'+(highlight?'#e8001d':'#222')+';display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex-shrink:0;">'+(i+1)+'</div>'
+      +'<div style="flex:1;">'
+      +'<div style="font-size:12px;color:#fff;font-weight:600;">'+t.split('(')[0].trim()+'</div>'
+      +'<div style="font-size:10px;color:#888;">'+t.replace(/^[^(]+\(/, '(')+'</div>'
+      +'</div>'
+      +'<div style="text-align:right;">'
+      +'<div style="font-size:14px;font-weight:700;color:#e8001d;">'+perMeal+'g</div>'
+      +'<div style="font-size:9px;color:#888;">protein</div>'
+      +'</div>'
+      +'</div>';
+  }).join('');
+
+  var pct2g = Math.round((prot/(data.weight*2))*100);
+
+  wrap.innerHTML =
+    '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">'
+    +'<span style="font-weight:700;font-size:13px;color:#fff;">🥩 Protein Timing</span>'
+    +'<div style="display:flex;align-items:center;gap:6px;">'
+    +'<span style="font-size:11px;color:#888;">Meals:</span>'
+    +'<select id="rfc-pt-meals" onchange="window._rfcUpdateProteinTiming()" '
+    +'style="background:#1a1a1a;border:1px solid #333;border-radius:6px;color:#fff;padding:3px 6px;font-size:12px;">'
+    +[3,4,5,6].map(function(n){ return '<option value="'+n+'"'+(n===mealCt?' selected':'')+'>'+n+'</option>'; }).join('')
+    +'</select>'
+    +'</div>'
+    +'</div>'
+    +'<div style="display:flex;gap:10px;margin-bottom:10px;">'
+    +'<div style="flex:1;background:#111;border-radius:10px;padding:10px;text-align:center;">'
+    +'<div style="font-size:10px;color:#888;margin-bottom:2px;">Daily Target</div>'
+    +'<div style="font-size:20px;font-weight:700;color:#e8001d;">'+prot+'g</div>'
+    +'<div style="font-size:10px;color:#888;">protein</div>'
+    +'</div>'
+    +'<div style="flex:1;background:#111;border-radius:10px;padding:10px;text-align:center;">'
+    +'<div style="font-size:10px;color:#888;margin-bottom:2px;">Per Meal</div>'
+    +'<div style="font-size:20px;font-weight:700;color:#f59e0b;">'+perMeal+'g</div>'
+    +'<div style="font-size:10px;color:#888;">× '+mealCt+' meals</div>'
+    +'</div>'
+    +'<div style="flex:1;background:#111;border-radius:10px;padding:10px;text-align:center;">'
+    +'<div style="font-size:10px;color:#888;margin-bottom:2px;">g/kg body</div>'
+    +'<div style="font-size:20px;font-weight:700;color:'+(pct2g>=100?'#22c55e':'#f97316')+';">'+(prot/data.weight).toFixed(1)+'</div>'
+    +'<div style="font-size:10px;color:#888;">target: 2.0</div>'
+    +'</div>'
+    +'</div>'
+    + mealsHtml;
+}
+
+window._rfcUpdateProteinTiming = function(){ _renderProteinTiming(); };
+
+function _injectProteinTiming(){
+  if(document.getElementById('rfc-protein-timing-wrap')) return;
+  var anchor = document.getElementById('rfc-nutr-score-wrap')
+    || document.getElementById('rfc-macro-rings')
+    || document.getElementById('rfc-food-wrap')
+    || document.getElementById('rfc-water-ring-wrap');
+  if(!anchor) return;
+  var wrap = document.createElement('div');
+  wrap.id   = 'rfc-protein-timing-wrap';
+  wrap.className = 'rfc-b12-card';
+  _b14insertAfter(wrap, anchor);
+  _renderProteinTiming();
+}
+
+/* ════════════════════════════════════════════════════
+   3. CUSTOM SUPPLEMENT STACK BUILDER
+   ════════════════════════════════════════════════════ */
+var _SUPP_TIMES = ['Upon waking','With breakfast','Pre-workout','Intra-workout','Post-workout','With lunch','Evening','Before bed'];
+
+function _suppKey(){ return 'rfc_custom_supps_'+_b14uid(); }
+function _getSupps(){
+  try{ return JSON.parse(localStorage.getItem(_suppKey())||'[]'); }catch(e){return [];}
+}
+function _saveSupps(arr){ localStorage.setItem(_suppKey(), JSON.stringify(arr)); }
+
+window._rfcAddCustomSupp = function(){
+  var name = (document.getElementById('rfc-supp-name')||{}).value||'';
+  var dose = (document.getElementById('rfc-supp-dose')||{}).value||'';
+  var time = (document.getElementById('rfc-supp-time')||{}).value||'Upon waking';
+  if(!name.trim()){ if(window.toast) toast('Enter supplement name','gold'); return; }
+  var arr = _getSupps();
+  arr.push({id:Date.now(), name:name.trim(), dose:dose.trim(), time:time, active:true});
+  _saveSupps(arr);
+  if(document.getElementById('rfc-supp-name'))     document.getElementById('rfc-supp-name').value='';
+  if(document.getElementById('rfc-supp-dose'))     document.getElementById('rfc-supp-dose').value='';
+  _renderSuppStack();
+  if(window.toast) toast('✅ '+name+' added to stack!','gold');
+};
+
+window._rfcToggleSupp = function(id){
+  var arr = _getSupps();
+  arr = arr.map(function(s){ return s.id===id ? Object.assign({},s,{active:!s.active}) : s; });
+  _saveSupps(arr);
+  _renderSuppStack();
+};
+
+window._rfcDeleteSupp = function(id){
+  var arr = _getSupps().filter(function(s){ return s.id!==id; });
+  _saveSupps(arr);
+  _renderSuppStack();
+};
+
+function _renderSuppStack(){
+  var listEl = document.getElementById('rfc-supp-list');
+  if(!listEl) return;
+  var arr = _getSupps();
+  if(!arr.length){
+    listEl.innerHTML = '<div style="font-size:12px;color:#888;text-align:center;padding:10px 0;">No supplements added yet. Build your stack above.</div>';
+    return;
+  }
+
+  // Group by timing
+  var groups = {};
+  arr.forEach(function(s){
+    if(!groups[s.time]) groups[s.time] = [];
+    groups[s.time].push(s);
+  });
+
+  var html = Object.keys(groups).sort(function(a,b){
+    return _SUPP_TIMES.indexOf(a) - _SUPP_TIMES.indexOf(b);
+  }).map(function(t){
+    var items = groups[t].map(function(s){
+      return '<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid #1a1a1a;opacity:'+(s.active?1:0.4)+';">'
+        +'<button onclick="window._rfcToggleSupp('+s.id+')" style="background:none;border:none;cursor:pointer;font-size:16px;line-height:1;padding:0;flex-shrink:0;">'+(s.active?'✅':'⬜')+'</button>'
+        +'<div style="flex:1;min-width:0;">'
+        +'<div style="font-size:13px;font-weight:600;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+s.name+'</div>'
+        +(s.dose?'<div style="font-size:10px;color:#888;">'+s.dose+'</div>':'')
+        +'</div>'
+        +'<button onclick="window._rfcDeleteSupp('+s.id+')" style="background:none;border:none;cursor:pointer;font-size:14px;color:#555;padding:0;flex-shrink:0;" title="Remove">✕</button>'
+        +'</div>';
+    }).join('');
+    return '<div style="margin-bottom:6px;">'
+      +'<div style="font-size:10px;font-weight:700;color:#e8001d;letter-spacing:2px;text-transform:uppercase;padding:6px 0 2px;">'+t+'</div>'
+      + items
+      +'</div>';
+  }).join('');
+  listEl.innerHTML = html;
+}
+
+function _injectSuppStack(){
+  if(document.getElementById('rfc-custom-supp-wrap')) return;
+  // Inject on nutrition screen after protein timing
+  var anchor = document.getElementById('rfc-protein-timing-wrap')
+    || document.getElementById('rfc-nutr-score-wrap')
+    || document.getElementById('rfc-hyd-streak-wrap')
+    || document.getElementById('rfc-water-ring-wrap');
+  if(!anchor) return;
+  var wrap = document.createElement('div');
+  wrap.id   = 'rfc-custom-supp-wrap';
+  wrap.className = 'rfc-b12-card';
+
+  var timeOpts = _SUPP_TIMES.map(function(t){ return '<option value="'+t+'">'+t+'</option>'; }).join('');
+
+  wrap.innerHTML =
+    '<div style="font-weight:700;font-size:13px;color:#fff;margin-bottom:10px;">💊 My Supplement Stack</div>'
+    +'<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;">'
+    +'<input id="rfc-supp-name" type="text" placeholder="Supplement name" '
+    +'style="flex:2;min-width:100px;background:#1a1a1a;border:1px solid #333;border-radius:8px;color:#fff;padding:7px 10px;font-size:12px;">'
+    +'<input id="rfc-supp-dose" type="text" placeholder="Dose (e.g. 5g)" '
+    +'style="flex:1;min-width:70px;background:#1a1a1a;border:1px solid #333;border-radius:8px;color:#fff;padding:7px 10px;font-size:12px;">'
+    +'</div>'
+    +'<div style="display:flex;gap:6px;margin-bottom:12px;">'
+    +'<select id="rfc-supp-time" style="flex:1;background:#1a1a1a;border:1px solid #333;border-radius:8px;color:#fff;padding:7px 10px;font-size:12px;">'+timeOpts+'</select>'
+    +'<button onclick="window._rfcAddCustomSupp()" style="background:#e8001d;background-image:linear-gradient(180deg,rgba(255,255,255,.15),transparent 55%);border:none;border-radius:8px;color:#fff;padding:7px 16px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;">+ Add</button>'
+    +'</div>'
+    +'<div id="rfc-supp-list"></div>';
+
+  _b14insertAfter(wrap, anchor);
+  _renderSuppStack();
+}
+
+/* ════════════════════════════════════════════════════
+   CSS
+   ════════════════════════════════════════════════════ */
+(function(){
+  var s = document.createElement('style');
+  s.textContent = [
+    '#rfc-supp-name:focus,#rfc-supp-dose:focus{border-color:#e8001d !important;outline:none;}',
+    '#rfc-pt-meals{outline:none;}',
+    '#rfc-pt-meals:focus{border-color:#e8001d !important;}',
+    '#rfc-pt-meals option{background:#1a1a1a;}',
+    'body.rfc-light #rfc-recovery-wrap,body.rfc-light #rfc-protein-timing-wrap,body.rfc-light #rfc-custom-supp-wrap{background:#fff;border-color:#eee;}',
+    'body.rfc-light #rfc-recovery-wrap *,body.rfc-light #rfc-protein-timing-wrap *,body.rfc-light #rfc-custom-supp-wrap *{color:#1a1a1a !important;}',
+  ].join('');
+  document.head.appendChild(s);
+})();
+
+/* ════════════════════════════════════════════════════
+   switchScreen hook + initial inject
+   ════════════════════════════════════════════════════ */
+var _origSS12 = window.switchScreen;
+window.switchScreen = function(name, navEl){
+  _origSS12 && _origSS12(name, navEl);
+  if(name === 'dashboard'){
+    setTimeout(function(){
+      _injectRecoveryScore();
+      _renderRecoveryScore(); // recalc on each visit
+    }, 800);
+  }
+  if(name === 'nutrition'){
+    setTimeout(function(){
+      _injectProteinTiming();
+      _injectSuppStack();
+    }, 700);
+  }
+};
+
+// Initial inject
+setTimeout(function(){
+  _injectRecoveryScore();
+  _injectProteinTiming();
+  _injectSuppStack();
+}, 6500);
+
+// Retry
+setTimeout(function(){
+  if(!document.getElementById('rfc-recovery-wrap'))       _injectRecoveryScore();
+  if(!document.getElementById('rfc-protein-timing-wrap')) _injectProteinTiming();
+  if(!document.getElementById('rfc-custom-supp-wrap'))    _injectSuppStack();
+}, 9500);
+
+})();
+</script>
+
 </body>
 </html>
