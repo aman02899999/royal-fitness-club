@@ -42912,5 +42912,257 @@ setTimeout(function(){
 })();
 </script>
 
+<!-- Batch 69: Water Intake Optimizer, Plant-Based Protein, Functional Movement Screen -->
+<script>
+(function(){ 'use strict';
+var _origSS67=window.switchScreen;
+function _b69uid(){ try{ return JSON.parse(localStorage.getItem('bm_user')||'{}').uid||'guest'; }catch(e){ return 'guest'; } }
+function _b69today(){ var d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function _b69load(k){ try{ return JSON.parse(localStorage.getItem(k))||null; }catch(e){ return null; } }
+function _b69save(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} }
+function _b69card(id,title){ var d=document.createElement('div'); d.id=id; d.style.cssText='background:#1a1a2e;border-radius:14px;padding:18px;margin:14px 0;color:#e0e0e0;font-family:inherit;'; d.innerHTML='<div style="font-size:15px;font-weight:700;color:#00d4ff;margin-bottom:14px;">'+title+'</div>'; return d; }
+
+/* ── Water Intake Optimizer ── */
+function _injectWaterOpt(){
+  if(document.getElementById('rfc-wateropt-wrap')) return;
+  var anchor=document.getElementById('rfc-slpdebt-wrap')||document.getElementById('rfc-screentime-wrap')||document.getElementById('rfc-grat-wrap')||document.getElementById('rfc-enbudget-wrap');
+  if(!anchor) return;
+  var c=_b69card('rfc-wateropt-wrap','🌊 Water Intake Optimizer');
+  c.innerHTML+=`
+<div style="font-size:12px;color:#aaa;margin-bottom:12px;">Calculate personalized hydration target based on your stats</div>
+<div style="display:grid;gap:8px;margin-bottom:12px;">
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+    <div>
+      <div style="font-size:11px;color:#aaa;margin-bottom:3px;">Bodyweight (kg)</div>
+      <input id="rfc-wo-bw" type="number" min="30" max="200" step="0.5" placeholder="kg" style="width:100%;padding:8px;border-radius:8px;border:1px solid #333;background:#0d0d1a;color:#e0e0e0;font-size:13px;box-sizing:border-box;">
+    </div>
+    <div>
+      <div style="font-size:11px;color:#aaa;margin-bottom:3px;">Activity level</div>
+      <select id="rfc-wo-act" style="width:100%;padding:8px;border-radius:8px;border:1px solid #333;background:#0d0d1a;color:#e0e0e0;font-size:12px;box-sizing:border-box;">
+        <option value="30">Sedentary (30ml/kg)</option>
+        <option value="35" selected>Moderate (35ml/kg)</option>
+        <option value="40">Active (40ml/kg)</option>
+        <option value="45">Very Active (45ml/kg)</option>
+      </select>
+    </div>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+    <div>
+      <div style="font-size:11px;color:#aaa;margin-bottom:3px;">Climate</div>
+      <select id="rfc-wo-clim" style="width:100%;padding:8px;border-radius:8px;border:1px solid #333;background:#0d0d1a;color:#e0e0e0;font-size:12px;box-sizing:border-box;">
+        <option value="0">Cool (no adj)</option>
+        <option value="300">Warm (+300ml)</option>
+        <option value="600">Hot (+600ml)</option>
+        <option value="1000">Extreme (+1L)</option>
+      </select>
+    </div>
+    <div>
+      <div style="font-size:11px;color:#aaa;margin-bottom:3px;">Caffeine today</div>
+      <select id="rfc-wo-caff" style="width:100%;padding:8px;border-radius:8px;border:1px solid #333;background:#0d0d1a;color:#e0e0e0;font-size:12px;box-sizing:border-box;">
+        <option value="0">None</option>
+        <option value="100">1 coffee (+100ml)</option>
+        <option value="200">2 coffees (+200ml)</option>
+        <option value="400">3+ coffees (+400ml)</option>
+      </select>
+    </div>
+  </div>
+</div>
+<button onclick="window._rfcWOCalc()" style="width:100%;padding:9px;border:none;border-radius:8px;background:#00d4ff;color:#000;font-weight:700;cursor:pointer;">Calculate My Target</button>
+<div id="rfc-wo-result" style="margin-top:12px;"></div>
+<div style="margin-top:12px;">
+  <div style="font-size:12px;color:#aaa;margin-bottom:4px;">Actual intake today (L)</div>
+  <input id="rfc-wo-actual" type="number" min="0" max="10" step="0.1" placeholder="e.g. 2.5" style="width:100%;padding:8px;border-radius:8px;border:1px solid #333;background:#0d0d1a;color:#e0e0e0;font-size:13px;box-sizing:border-box;" oninput="window._rfcWOTrack()">
+  <div id="rfc-wo-actual-result" style="margin-top:8px;"></div>
+</div>`;
+  anchor.after(c);
+  _renderWaterOpt();
+}
+window._rfcWOCalc=function(){
+  var bw=parseFloat(document.getElementById('rfc-wo-bw').value)||75;
+  var ml_per_kg=parseInt(document.getElementById('rfc-wo-act').value)||35;
+  var climate=parseInt(document.getElementById('rfc-wo-clim').value)||0;
+  var caff=parseInt(document.getElementById('rfc-wo-caff').value)||0;
+  var target=Math.round(bw*ml_per_kg+climate+caff);
+  var r=document.getElementById('rfc-wo-result');
+  if(r){
+    r.innerHTML='<div style="background:#0d0d1a;border-radius:8px;padding:12px;text-align:center;">'
+      +'<div style="font-size:28px;font-weight:700;color:#00d4ff;">'+(target/1000).toFixed(1)+'L</div>'
+      +'<div style="font-size:12px;color:#aaa;">Daily water target</div>'
+      +'<div style="font-size:11px;color:#aaa;margin-top:4px;">Base: '+(bw*ml_per_kg)+'ml | Climate: +'+climate+'ml | Caffeine: +'+caff+'ml</div>'
+      +'<div style="font-size:11px;color:#aaa;">= '+(target/8/1000*1000).toFixed(0)+'ml per glass (8 glasses/day)</div></div>';
+  }
+  var uid=_b69uid(), key='rfc_wateropt_'+uid;
+  _b69save(key,{bw:bw,ml_per_kg:ml_per_kg,climate:climate,caff:caff,target:target,date:_b69today()});
+  window._rfcWOTrack();
+};
+window._rfcWOTrack=function(){
+  var uid=_b69uid(), key='rfc_wateropt_'+uid;
+  var saved=_b69load(key)||{};
+  var target=saved.target||2500;
+  var actual=parseFloat(document.getElementById('rfc-wo-actual').value)||0;
+  var actualMl=actual*1000;
+  var pct=Math.round(actualMl/target*100);
+  var col=pct>=100?'#4caf50':pct>=70?'#00d4ff':'#ff9800';
+  var el=document.getElementById('rfc-wo-actual-result');
+  if(el&&actual>0){
+    el.innerHTML='<div style="height:8px;background:#222;border-radius:4px;overflow:hidden;margin-bottom:4px;">'
+      +'<div style="height:100%;width:'+Math.min(100,pct)+'%;background:'+col+';border-radius:4px;transition:width 0.3s;"></div></div>'
+      +'<div style="font-size:12px;color:'+col+';text-align:center;">'+pct+'% of target ('+actualMl+'ml / '+target+'ml)</div>';
+  }
+};
+function _renderWaterOpt(){
+  if(!document.getElementById('rfc-wateropt-wrap')) return;
+  var uid=_b69uid(), key='rfc_wateropt_'+uid;
+  var saved=_b69load(key);
+  if(saved&&saved.date===_b69today()){
+    if(saved.bw) document.getElementById('rfc-wo-bw').value=saved.bw;
+    if(saved.ml_per_kg) document.getElementById('rfc-wo-act').value=saved.ml_per_kg;
+    if(saved.climate!==undefined) document.getElementById('rfc-wo-clim').value=saved.climate;
+    if(saved.caff!==undefined) document.getElementById('rfc-wo-caff').value=saved.caff;
+    window._rfcWOCalc();
+  }
+}
+
+/* ── Plant-Based Protein Tracker ── */
+function _injectPlantProt(){
+  if(document.getElementById('rfc-plantprot-wrap')) return;
+  var anchor=document.getElementById('rfc-creat-wrap')||document.getElementById('rfc-collskin-wrap')||document.getElementById('rfc-wfoods-wrap')||document.getElementById('rfc-digest-wrap');
+  if(!anchor) return;
+  var FOODS=[
+    {id:'tempeh',label:'Tempeh (100g)',g:19},{id:'seitan',label:'Seitan (100g)',g:25},
+    {id:'tofu',label:'Tofu firm (100g)',g:8},{id:'edamame',label:'Edamame (1 cup)',g:18},
+    {id:'lentils2',label:'Lentils (cooked 1 cup)',g:18},{id:'chickpeas2',label:'Chickpeas (1 cup)',g:15},
+    {id:'blackbeans',label:'Black Beans (1 cup)',g:15},{id:'hemseed',label:'Hemp Seeds (3 tbsp)',g:10},
+    {id:'pea',label:'Pea Protein shake',g:25},{id:'quinoa',label:'Quinoa (1 cup cooked)',g:8},
+    {id:'nutyog',label:'Soy yogurt',g:6},{id:'pb',label:'Peanut Butter (2 tbsp)',g:8}
+  ];
+  var rows=FOODS.map(function(f){
+    return '<label style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid #1a1a2e;cursor:pointer;">'
+      +'<input type="checkbox" id="rfc-pp-'+f.id+'" onchange="window._rfcPPChg()" style="accent-color:#4caf50;">'
+      +'<span style="flex:1;font-size:12px;">'+f.label+'</span>'
+      +'<span style="font-size:11px;color:#4caf50;">+'+f.g+'g</span></label>';
+  }).join('');
+  var c=_b69card('rfc-plantprot-wrap','🌱 Plant-Based Protein Tracker');
+  c.innerHTML+=`
+<div style="font-size:12px;color:#aaa;margin-bottom:10px;">Track plant protein sources — target 1.6–2g/kg bodyweight</div>
+<div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+  <div id="rfc-pp2-ring" style="width:60px;height:60px;flex-shrink:0;"></div>
+  <div><div id="rfc-pp2-g" style="font-size:22px;font-weight:700;color:#4caf50;">0g<span style="font-size:12px;color:#aaa;"> / 120g target</span></div>
+  <div id="rfc-pp2-msg" style="font-size:11px;color:#aaa;">Check off plant proteins eaten</div></div>
+</div>
+<div style="max-height:260px;overflow-y:auto;">${rows}</div>
+<div style="margin-top:10px;font-size:11px;color:#aaa;padding:8px;background:#0d0d1a;border-radius:8px;">
+  <strong style="color:#e0e0e0;">Complete proteins:</strong> Tempeh · Soy · Quinoa · Hemp seed — contain all 9 essential amino acids
+</div>`;
+  anchor.after(c);
+}
+window._rfcPPChg=function(){
+  var FOODS=[{id:'tempeh',g:19},{id:'seitan',g:25},{id:'tofu',g:8},{id:'edamame',g:18},{id:'lentils2',g:18},{id:'chickpeas2',g:15},{id:'blackbeans',g:15},{id:'hemseed',g:10},{id:'pea',g:25},{id:'quinoa',g:8},{id:'nutyog',g:6},{id:'pb',g:8}];
+  var total=0, state={};
+  FOODS.forEach(function(f){ var cb=document.getElementById('rfc-pp-'+f.id); if(cb&&cb.checked){ total+=f.g; state[f.id]=1; } });
+  var uid=_b69uid(), key='rfc_plantprot_'+uid+'_'+_b69today();
+  _b69save(key,state);
+  var target=120, pct=Math.min(100,Math.round(total/target*100));
+  var col=pct>=100?'#4caf50':pct>=60?'#ff9800':'#f44336';
+  var msg=pct>=100?'Plant protein target met!':pct>=60?'Good plant protein intake':'Need more plant protein sources';
+  document.getElementById('rfc-pp2-g').innerHTML=total+'g<span style="font-size:12px;color:#aaa;"> / '+target+'g target</span>';
+  document.getElementById('rfc-pp2-msg').textContent=msg; document.getElementById('rfc-pp2-msg').style.color=col;
+  var r=document.getElementById('rfc-pp2-ring');
+  var circ=Math.round(2*Math.PI*24), dash=Math.round(circ*pct/100);
+  r.innerHTML='<svg width="60" height="60" viewBox="0 0 60 60"><circle cx="30" cy="30" r="24" fill="none" stroke="#222" stroke-width="6"/><circle cx="30" cy="30" r="24" fill="none" stroke="'+col+'" stroke-width="6" stroke-dasharray="'+dash+' '+circ+'" stroke-dashoffset="'+Math.round(circ*0.25)+'" stroke-linecap="round"/><text x="30" y="35" text-anchor="middle" fill="'+col+'" font-size="12" font-weight="700">'+pct+'%</text></svg>';
+};
+function _renderPlantProt(){
+  if(!document.getElementById('rfc-plantprot-wrap')) return;
+  var uid=_b69uid(), key='rfc_plantprot_'+uid+'_'+_b69today();
+  var saved=_b69load(key)||{};
+  Object.keys(saved).forEach(function(id){ var cb=document.getElementById('rfc-pp-'+id); if(cb) cb.checked=true; });
+  window._rfcPPChg();
+}
+
+/* ── Functional Movement Screen ── */
+function _injectFMS(){
+  if(document.getElementById('rfc-fms-wrap')) return;
+  var anchor=document.getElementById('rfc-rowvar-wrap')||document.getElementById('rfc-benchvar-wrap')||document.getElementById('rfc-ohp-wrap')||document.getElementById('rfc-sqvar-wrap');
+  if(!anchor) return;
+  var TESTS=[
+    {id:'ds',label:'Deep Squat',max:3},{id:'hs',label:'Hurdle Step',max:3},
+    {id:'il',label:'Inline Lunge',max:3},{id:'sm',label:'Shoulder Mobility',max:3},
+    {id:'aslr',label:'Active Straight Leg Raise',max:3},
+    {id:'tsp',label:'Trunk Stability Push-up',max:3},
+    {id:'rs',label:'Rotary Stability',max:3}
+  ];
+  var rows=TESTS.map(function(t){
+    return '<div style="padding:7px 0;border-bottom:1px solid #222;display:flex;align-items:center;gap:8px;">'
+      +'<span style="flex:1;font-size:12px;">'+t.label+'</span>'
+      +'<div style="display:flex;gap:4px;">'
+      +[0,1,2,3].map(function(s){
+        return '<button id="rfc-fms-'+t.id+'-'+s+'" onclick="window._rfcFMSSet(\''+t.id+'\','+s+')" '
+          +'style="width:28px;height:28px;border:1px solid #333;border-radius:6px;background:#0d0d1a;color:#aaa;font-size:12px;cursor:pointer;font-weight:600;">'+s+'</button>';
+      }).join('')
+      +'</div></div>';
+  }).join('');
+  var c=_b69card('rfc-fms-wrap','🎯 Functional Movement Screen');
+  c.innerHTML+=`
+<div style="font-size:12px;color:#aaa;margin-bottom:12px;">Score each of 7 movement patterns (0–3) — total out of 21</div>
+${rows}
+<button onclick="window._rfcFMSSave()" style="margin-top:12px;width:100%;padding:9px;border:none;border-radius:8px;background:#00d4ff;color:#000;font-weight:700;cursor:pointer;">Save FMS Score</button>
+<div id="rfc-fms-result" style="margin-top:10px;"></div>`;
+  anchor.after(c);
+  _renderFMS();
+}
+var _fmsState={};
+window._rfcFMSSet=function(id,score){
+  _fmsState[id]=score;
+  [0,1,2,3].forEach(function(s){
+    var btn=document.getElementById('rfc-fms-'+id+'-'+s);
+    if(btn){ btn.style.background=s===score?'#00d4ff':'#0d0d1a'; btn.style.color=s===score?'#000':'#aaa'; btn.style.borderColor=s===score?'#00d4ff':'#333'; }
+  });
+};
+window._rfcFMSSave=function(){
+  var total=Object.values(_fmsState).reduce(function(a,b){return a+b;},0);
+  var tests=Object.keys(_fmsState).length;
+  var col=total>=17?'#4caf50':total>=14?'#ff9800':total>=10?'#ff5722':'#f44336';
+  var msg=total>=17?'Excellent movement quality':total>=14?'Good — minor movement dysfunctions':total>=10?'Moderate — corrective exercise recommended':'Poor movement — high injury risk';
+  var r=document.getElementById('rfc-fms-result');
+  if(r){
+    r.innerHTML='<div style="background:#0d0d1a;border-radius:8px;padding:12px;text-align:center;">'
+      +'<div style="font-size:32px;font-weight:700;color:'+col+';">'+total+'<span style="font-size:16px;">/21</span></div>'
+      +'<div style="font-size:12px;color:'+col+';">'+msg+'</div>'
+      +(tests<7?'<div style="font-size:11px;color:#aaa;margin-top:4px;">'+tests+'/7 tests scored</div>':'')
+      +'</div>';
+  }
+  var uid=_b69uid(), key='rfc_fms_'+uid;
+  var hist=_b69load(key)||[], today=_b69today();
+  var idx=hist.findIndex(function(e){return e.date===today;});
+  var entry={date:today,total:total,state:Object.assign({},_fmsState)};
+  if(idx>=0) hist[idx]=entry; else hist.push(entry);
+  if(hist.length>20) hist=hist.slice(-20);
+  _b69save(key,hist);
+};
+function _renderFMS(){
+  if(!document.getElementById('rfc-fms-wrap')) return;
+  var uid=_b69uid(), key='rfc_fms_'+uid;
+  var hist=_b69load(key)||[];
+  var td=hist[hist.length-1];
+  if(td){ _fmsState=Object.assign({},td.state||{}); Object.keys(_fmsState).forEach(function(id){ window._rfcFMSSet(id,_fmsState[id]); }); window._rfcFMSSave(); }
+}
+
+/* ── switchScreen wrapper ── */
+window.switchScreen=function(name,navEl){
+  _origSS67&&_origSS67(name,navEl);
+  if(name==='dashboard') setTimeout(function(){ _injectWaterOpt(); _renderWaterOpt(); },1200);
+  if(name==='nutrition') setTimeout(function(){ _injectPlantProt(); _renderPlantProt(); },1100);
+  if(name==='workouts')  setTimeout(function(){ _injectFMS(); _renderFMS(); },1050);
+};
+
+setTimeout(function(){ _injectWaterOpt(); _injectPlantProt(); _injectFMS(); _renderWaterOpt(); _renderPlantProt(); _renderFMS(); },61000);
+setTimeout(function(){
+  if(!document.getElementById('rfc-wateropt-wrap'))  { _injectWaterOpt(); _renderWaterOpt(); }
+  if(!document.getElementById('rfc-plantprot-wrap')) { _injectPlantProt(); _renderPlantProt(); }
+  if(!document.getElementById('rfc-fms-wrap'))       { _injectFMS(); _renderFMS(); }
+},65000);
+})();
+</script>
+
 </body>
 </html>
