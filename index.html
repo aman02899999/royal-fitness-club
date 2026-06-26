@@ -33703,4 +33703,400 @@ setTimeout(function(){
 </script>
 
 </body>
+
+<script>
+/* ============================================================
+   BATCH 30 — Weekly Progress Report | Calorie Balance | Superset Tracker
+   ============================================================ */
+(function(){ 'use strict';
+
+var _origSS28 = window.switchScreen;
+
+/* ── helpers ── */
+function _b30uid(){ try{ return JSON.parse(localStorage.getItem('bm_user')||'{}').uid||'guest'; }catch(e){ return 'guest'; } }
+function _b30today(){ var d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function _b30load(k){ try{ return JSON.parse(localStorage.getItem(k))||null; }catch(e){ return null; } }
+function _b30save(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} }
+function _b30card(id,title){
+  var d=document.createElement('div');
+  d.id=id;
+  d.style.cssText='background:#1a1a2e;border-radius:14px;padding:18px;margin:14px 0;color:#e0e0e0;font-family:inherit;';
+  d.innerHTML='<div style="font-size:15px;font-weight:700;color:#00d4ff;margin-bottom:14px;">'+title+'</div>';
+  return d;
+}
+function _b30weekDates(){
+  var days=[]; var d=new Date(); var dow=d.getDay(); var mon=new Date(d);
+  mon.setDate(d.getDate()-(dow===0?6:dow-1));
+  for(var i=0;i<7;i++){ var dd=new Date(mon); dd.setDate(mon.getDate()+i); days.push(dd.getFullYear()+'-'+String(dd.getMonth()+1).padStart(2,'0')+'-'+String(dd.getDate()).padStart(2,'0')); }
+  return days;
+}
+
+/* ════════════════════════════════════════════════════════════
+   1. WEEKLY PROGRESS REPORT (dashboard)
+   ════════════════════════════════════════════════════════════ */
+function _injectWkReport(){
+  if(document.getElementById('rfc-wkreport-wrap')) return;
+  var anchors=['rfc-recovery-wrap','rfc-stretch-wrap','rfc-steps-wrap','rfc-mood-wrap','rfc-water-wrap','rfc-neat-wrap'];
+  var host=null;
+  for(var i=0;i<anchors.length;i++){ var el=document.getElementById(anchors[i]); if(el){ host=el; break; } }
+  if(!host){ var tb=document.querySelector('.dash-topbar'); if(tb) host=tb; }
+  if(!host) return;
+
+  var c=_b30card('rfc-wkreport-wrap','📊 Weekly Progress Report');
+  c.innerHTML+=
+    '<div id="rfc-wkr-header" style="font-size:11px;color:#555;margin-bottom:12px;"></div>'+
+    '<div id="rfc-wkr-stats" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;"></div>'+
+    '<div id="rfc-wkr-bars" style="display:flex;flex-direction:column;gap:6px;"></div>'+
+    '<button onclick="window._rfcWkRptRefresh()" style="margin-top:12px;width:100%;background:#00d4ff22;border:1px solid #00d4ff33;color:#00d4ff;padding:7px;border-radius:8px;cursor:pointer;font-size:12px;">Refresh Report</button>';
+
+  if(host.nextSibling) host.parentNode.insertBefore(c,host.nextSibling);
+  else host.parentNode.appendChild(c);
+  _renderWkReport();
+}
+
+function _renderWkReport(){
+  var uid=_b30uid();
+  var days=_b30weekDates();
+  var hdr=document.getElementById('rfc-wkr-header');
+  var stats=document.getElementById('rfc-wkr-stats');
+  var bars=document.getElementById('rfc-wkr-bars');
+  if(!stats) return;
+
+  var dd=new Date(days[0]), de=new Date(days[6]);
+  var fmt=function(d){ return d.toLocaleDateString('en-GB',{day:'numeric',month:'short'}); };
+  if(hdr) hdr.textContent='Week of '+fmt(dd)+' — '+fmt(de);
+
+  /* aggregate */
+  var workouts=[]; try{ workouts=JSON.parse(localStorage.getItem('rfc_workouts_'+uid)||'[]'); }catch(e){}
+  var woDates=new Set(); workouts.forEach(function(w){ if(w.ts){ var d=new Date(w.ts); woDates.add(d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')); } });
+
+  var woCount=0, sleepSum=0, sleepCnt=0, moodSum=0, moodCnt=0, waterSum=0, waterGoalSum=0, stepSum=0, stepGoalSum=0, habSum=0;
+
+  days.forEach(function(dk){
+    if(woDates.has(dk)) woCount++;
+    var moodR=_b30load('rfc_mood_'+uid+'_'+dk);
+    if(moodR){ moodSum+=(moodR.mood||0)+(moodR.energy||0); moodCnt+=2; }
+    var waterR=_b30load('rfc_water_'+uid+'_'+dk)||{count:0,goal:8};
+    waterSum+=waterR.count||0; waterGoalSum+=waterR.goal||8;
+    var stepR=_b30load('rfc_steps_'+uid+'_'+dk)||{steps:0,goal:10000};
+    stepSum+=stepR.steps||0; stepGoalSum+=stepR.goal||10000;
+    var habR=_b30load('rfc_habits_'+uid+'_'+dk)||{};
+    habSum+=Object.keys(habR).filter(function(k){ return habR[k]; }).length;
+  });
+  var sleepQ=_b30load('rfc_sleep_q_'+uid)||{entries:[]};
+  if(sleepQ.entries&&sleepQ.entries.length){
+    var thisWeek=sleepQ.entries.filter(function(e){ return days.indexOf(e.date)>=0; });
+    if(thisWeek.length){ thisWeek.forEach(function(e){ sleepSum+=e.q||0; sleepCnt++; }); }
+  }
+  var avgSleep=sleepCnt?Math.round(sleepSum/sleepCnt*10)/10:0;
+  var avgMood=moodCnt?Math.round(moodSum/moodCnt*10)/10:0;
+  var waterPct=waterGoalSum?Math.round(waterSum/waterGoalSum*100):0;
+  var stepPct=stepGoalSum?Math.round(stepSum/stepGoalSum*100):0;
+  var avgHab=Math.round(habSum/7*10)/10;
+
+  stats.innerHTML=[
+    {label:'Workouts',  val:woCount+'/7',  color:'#f97316'},
+    {label:'Avg Mood',  val:avgMood||'—',  color:'#a78bfa'},
+    {label:'Avg Sleep', val:avgSleep?avgSleep+'/5':'—', color:'#60a5fa'},
+    {label:'Water %',   val:waterPct+'%',  color:'#00d4ff'},
+    {label:'Steps %',   val:stepPct+'%',   color:'#22c55e'},
+    {label:'Hab/day',   val:avgHab,        color:'#fbbf24'}
+  ].map(function(s){
+    return '<div style="background:#0d0d1a;border-radius:9px;padding:10px 8px;text-align:center;">'+
+      '<div style="font-size:18px;font-weight:800;color:'+s.color+';">'+s.val+'</div>'+
+      '<div style="font-size:10px;color:#555;margin-top:2px;">'+s.label+'</div>'+
+    '</div>';
+  }).join('');
+
+  var barItems=[
+    {label:'Workout days', val:woCount, max:7, color:'#f97316'},
+    {label:'Water goal',   val:waterPct, max:100, color:'#00d4ff', suffix:'%'},
+    {label:'Step goal',    val:stepPct,  max:100, color:'#22c55e', suffix:'%'},
+    {label:'Daily habits', val:avgHab,   max:8,   color:'#fbbf24'}
+  ];
+  bars.innerHTML=barItems.map(function(b){
+    var pct=Math.round(b.val/b.max*100);
+    return '<div>'+
+      '<div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px;">'+
+        '<span style="color:#888;">'+b.label+'</span>'+
+        '<span style="color:'+b.color+';font-weight:700;">'+b.val+(b.suffix||'')+'</span>'+
+      '</div>'+
+      '<div style="background:#0d0d1a;border-radius:5px;height:7px;overflow:hidden;">'+
+        '<div style="height:100%;width:'+pct+'%;background:'+b.color+';border-radius:5px;transition:width .5s;"></div>'+
+      '</div>'+
+    '</div>';
+  }).join('');
+}
+window._rfcWkRptRefresh=function(){ _renderWkReport(); };
+
+/* ════════════════════════════════════════════════════════════
+   2. CALORIE BALANCE TRACKER (nutrition)
+   ════════════════════════════════════════════════════════════ */
+function _injectCalBal(){
+  if(document.getElementById('rfc-calbal-wrap')) return;
+  var anchors=['rfc-grocery-wrap','rfc-mealprep-wrap','rfc-protiming-wrap','rfc-caff-wrap','rfc-supps-wrap','rfc-mccycle-wrap'];
+  var host=null;
+  for(var i=0;i<anchors.length;i++){ var el=document.getElementById(anchors[i]); if(el){ host=el; break; } }
+  if(!host) host=document.getElementById('rfc-food-wrap');
+  if(!host) return;
+
+  var c=_b30card('rfc-calbal-wrap','⚖️ Calorie Balance Tracker');
+  c.innerHTML+=
+    '<div style="display:flex;gap:10px;align-items:flex-end;margin-bottom:14px;flex-wrap:wrap;">'+
+      '<div style="flex:1;min-width:120px;">'+
+        '<div style="font-size:11px;color:#888;margin-bottom:4px;">Calories eaten today</div>'+
+        '<input id="rfc-cb-eaten" type="number" min="0" max="9999" placeholder="e.g. 2200" style="width:100%;box-sizing:border-box;background:#0d0d1a;border:1px solid #333;color:#ddd;padding:8px 10px;border-radius:8px;font-size:15px;font-weight:700;">'+
+      '</div>'+
+      '<div style="flex:1;min-width:120px;">'+
+        '<div style="font-size:11px;color:#888;margin-bottom:4px;">TDEE / daily target</div>'+
+        '<input id="rfc-cb-tdee" type="number" min="0" max="9999" placeholder="e.g. 2500" style="width:100%;box-sizing:border-box;background:#0d0d1a;border:1px solid #333;color:#ddd;padding:8px 10px;border-radius:8px;font-size:15px;font-weight:700;">'+
+      '</div>'+
+      '<button onclick="window._rfcCBSave()" style="background:#00d4ff22;border:1px solid #00d4ff44;color:#00d4ff;padding:9px 16px;border-radius:8px;cursor:pointer;font-size:13px;white-space:nowrap;">Save</button>'+
+    '</div>'+
+    '<div id="rfc-cb-today" style="text-align:center;padding:12px;background:#0d0d1a;border-radius:10px;margin-bottom:12px;">'+
+      '<div style="font-size:11px;color:#555;">Today\'s balance</div>'+
+      '<div id="rfc-cb-bal-num" style="font-size:28px;font-weight:800;color:#888;">—</div>'+
+      '<div id="rfc-cb-bal-lbl" style="font-size:11px;color:#666;"></div>'+
+    '</div>'+
+    '<div style="font-size:12px;color:#888;margin-bottom:6px;">This week — cumulative</div>'+
+    '<div style="display:flex;align-items:flex-end;gap:4px;height:60px;margin-bottom:4px;" id="rfc-cb-week-bars"></div>'+
+    '<div style="display:flex;justify-content:space-between;font-size:10px;color:#555;" id="rfc-cb-week-lbl"></div>'+
+    '<div id="rfc-cb-fat-est" style="margin-top:10px;font-size:12px;color:#777;text-align:center;padding:8px;background:#0d0d1a;border-radius:8px;"></div>';
+
+  if(host.nextSibling) host.parentNode.insertBefore(c,host.nextSibling);
+  else host.parentNode.appendChild(c);
+
+  /* pre-fill TDEE from calculator result */
+  try{
+    var res=JSON.parse(localStorage.getItem('bm_last_result')||'{}');
+    if(res.tdee||res.calories){
+      var tEl=document.getElementById('rfc-cb-tdee');
+      if(tEl&&!tEl.value) tEl.value=Math.round(res.tdee||res.calories||0)||'';
+    }
+  }catch(e){}
+
+  _renderCalBal();
+}
+
+function _renderCalBal(){
+  var uid=_b30uid(), today=_b30today();
+  var days=_b30weekDates();
+  var todayRec=_b30load('rfc_calbal_'+uid+'_'+today)||{};
+
+  var eEl=document.getElementById('rfc-cb-eaten');
+  var tEl=document.getElementById('rfc-cb-tdee');
+  if(eEl&&eEl!==document.activeElement&&todayRec.eaten) eEl.value=todayRec.eaten;
+  if(tEl&&tEl!==document.activeElement&&todayRec.tdee) tEl.value=todayRec.tdee;
+
+  var eaten=todayRec.eaten||0, tdee=todayRec.tdee||0;
+  var balNum=document.getElementById('rfc-cb-bal-num');
+  var balLbl=document.getElementById('rfc-cb-bal-lbl');
+  if(balNum){
+    if(!eaten&&!tdee){ balNum.textContent='—'; balNum.style.color='#888'; if(balLbl) balLbl.textContent='Enter today\'s intake above'; }
+    else {
+      var diff=eaten-tdee;
+      balNum.textContent=(diff>0?'+':'')+diff+' kcal';
+      balNum.style.color=diff<-100?'#22c55e':diff>200?'#ef4444':'#fbbf24';
+      if(balLbl) balLbl.textContent=diff<-100?'Calorie deficit — fat loss mode':diff>200?'Calorie surplus — potential gain':'Near maintenance';
+    }
+  }
+
+  /* week bars */
+  var weekBars=document.getElementById('rfc-cb-week-bars');
+  var weekLbl=document.getElementById('rfc-cb-week-lbl');
+  var weekDayNames=['M','T','W','T','F','S','S'];
+  var totDeficit=0;
+  if(weekBars){
+    var diffs=days.map(function(dk){
+      var r=_b30load('rfc_calbal_'+uid+'_'+dk)||{};
+      return (r.eaten&&r.tdee)?r.eaten-r.tdee:null;
+    });
+    var absMax=diffs.reduce(function(m,v){ return v!==null?Math.max(m,Math.abs(v)):m; },1);
+    weekBars.innerHTML=days.map(function(dk,i){
+      var v=diffs[i];
+      var isToday=dk===today;
+      if(v===null) return '<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;"><div style="width:100%;height:4px;background:#111;border-radius:2px;"></div></div>';
+      var h=Math.max(6,Math.round(Math.abs(v)/absMax*56));
+      var col=v<-100?'#22c55e':v>200?'#ef4444':'#fbbf24';
+      totDeficit+=v;
+      return '<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:2px;" title="'+(v>0?'+':'')+v+' kcal">'+
+        '<div style="font-size:8px;color:'+col+';">'+(v>0?'+':'')+Math.round(v/100)/10+'k</div>'+
+        '<div style="width:80%;height:'+h+'px;background:'+col+(isToday?'':'88')+';border-radius:3px;"></div>'+
+      '</div>';
+    }).join('');
+    if(weekLbl) weekLbl.innerHTML=weekDayNames.map(function(n,i){ return '<span style="flex:1;text-align:center;font-size:9px;">'+n+'</span>'; }).join('');
+  }
+
+  var fatEl=document.getElementById('rfc-cb-fat-est');
+  if(fatEl){
+    var loggedDays=days.filter(function(dk){ var r=_b30load('rfc_calbal_'+uid+'_'+dk); return r&&r.eaten&&r.tdee; }).length;
+    if(loggedDays>0){
+      var fatG=Math.round(totDeficit/7.7)/10;
+      fatEl.textContent='Weekly net: '+(totDeficit>0?'+':'')+totDeficit+' kcal → estimated '+(fatG>0?'+':'')+fatG+' kg fat change';
+    } else {
+      fatEl.textContent='Log daily intake to see estimated fat change.';
+    }
+  }
+}
+window._rfcCBSave=function(){
+  var uid=_b30uid(), today=_b30today();
+  var eEl=document.getElementById('rfc-cb-eaten');
+  var tEl=document.getElementById('rfc-cb-tdee');
+  var eaten=parseInt((eEl&&eEl.value)||0,10)||0;
+  var tdee=parseInt((tEl&&tEl.value)||0,10)||0;
+  _b30save('rfc_calbal_'+uid+'_'+today,{eaten:eaten,tdee:tdee});
+  _renderCalBal();
+};
+
+/* ════════════════════════════════════════════════════════════
+   3. SUPERSET TRACKER (workouts)
+   ════════════════════════════════════════════════════════════ */
+function _injectSuperset(){
+  if(document.getElementById('rfc-superset-wrap')) return;
+  var anchors=['rfc-hrzone-wrap','rfc-warmup-wrap','rfc-wkstreak-wrap','rfc-volload-wrap','rfc-prboard-wrap','rfc-wgen-wrap'];
+  var host=null;
+  for(var i=0;i<anchors.length;i++){ var el=document.getElementById(anchors[i]); if(el){ host=el; break; } }
+  if(!host) host=document.getElementById('wl-history');
+  if(!host) return;
+
+  var c=_b30card('rfc-superset-wrap','🔀 Superset Tracker');
+  c.innerHTML+=
+    '<div style="background:#0d0d1a;border-radius:10px;padding:12px;margin-bottom:12px;">'+
+      '<div style="font-size:12px;color:#888;margin-bottom:8px;">New superset pair:</div>'+
+      '<div style="display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap;">'+
+        '<input id="rfc-ss-exA" type="text" placeholder="Exercise A (e.g. Bench Press)" style="flex:1;min-width:120px;background:#1a1a2e;border:1px solid #333;color:#ddd;padding:7px 9px;border-radius:7px;font-size:12px;">'+
+        '<input id="rfc-ss-exB" type="text" placeholder="Exercise B (e.g. Pull-up)" style="flex:1;min-width:120px;background:#1a1a2e;border:1px solid #333;color:#ddd;padding:7px 9px;border-radius:7px;font-size:12px;">'+
+      '</div>'+
+      '<button onclick="window._rfcSSAddPair()" style="background:#a78bfa22;border:1px solid #a78bfa44;color:#a78bfa;padding:7px 16px;border-radius:8px;cursor:pointer;font-size:12px;">+ Add Pair</button>'+
+    '</div>'+
+    '<div id="rfc-ss-pairs" style="display:flex;flex-direction:column;gap:10px;"></div>'+
+    '<div id="rfc-ss-empty" style="color:#555;font-size:13px;text-align:center;padding:16px;display:none;">No supersets added yet today.</div>';
+
+  if(host.nextSibling) host.parentNode.insertBefore(c,host.nextSibling);
+  else host.parentNode.appendChild(c);
+  _renderSuperset();
+}
+
+function _renderSuperset(){
+  var uid=_b30uid(), today=_b30today();
+  var key='rfc_superset_'+uid+'_'+today;
+  var data=_b30load(key)||{pairs:[]};
+  var pairs=data.pairs||[];
+  var container=document.getElementById('rfc-ss-pairs');
+  var empty=document.getElementById('rfc-ss-empty');
+  if(!container) return;
+
+  if(pairs.length===0){ container.innerHTML=''; if(empty) empty.style.display='block'; return; }
+  if(empty) empty.style.display='none';
+
+  container.innerHTML=pairs.map(function(pair,pi){
+    var setRows=pair.sets.map(function(s,si){
+      return '<div style="display:grid;grid-template-columns:auto 1fr 1fr 1fr 1fr auto;gap:5px;align-items:center;margin-bottom:4px;">'+
+        '<span style="font-size:10px;color:#555;width:18px;">'+('S'+(si+1))+'</span>'+
+        '<input type="number" placeholder="kg" value="'+(s.aKg||'')+'" oninput="window._rfcSSUpdate('+pi+','+si+',\'aKg\',this.value)" style="background:#1a1a2e;border:1px solid #282828;color:#ddd;padding:4px 6px;border-radius:5px;font-size:12px;text-align:center;width:0;min-width:0;">'+
+        '<input type="number" placeholder="reps" value="'+(s.aReps||'')+'" oninput="window._rfcSSUpdate('+pi+','+si+',\'aReps\',this.value)" style="background:#1a1a2e;border:1px solid #282828;color:#ddd;padding:4px 6px;border-radius:5px;font-size:12px;text-align:center;width:0;min-width:0;">'+
+        '<input type="number" placeholder="kg" value="'+(s.bKg||'')+'" oninput="window._rfcSSUpdate('+pi+','+si+',\'bKg\',this.value)" style="background:#1a1a2e;border:1px solid #282828;color:#ddd;padding:4px 6px;border-radius:5px;font-size:12px;text-align:center;width:0;min-width:0;">'+
+        '<input type="number" placeholder="reps" value="'+(s.bReps||'')+'" oninput="window._rfcSSUpdate('+pi+','+si+',\'bReps\',this.value)" style="background:#1a1a2e;border:1px solid #282828;color:#ddd;padding:4px 6px;border-radius:5px;font-size:12px;text-align:center;width:0;min-width:0;">'+
+        '<button onclick="window._rfcSSDelSet('+pi+','+si+')" style="background:transparent;border:none;color:#555;cursor:pointer;font-size:14px;padding:2px;">×</button>'+
+      '</div>';
+    }).join('');
+    var vol=pair.sets.reduce(function(t,s){ return t+(s.aKg||0)*(s.aReps||0)+(s.bKg||0)*(s.bReps||0); },0);
+    return '<div style="background:#0d0d1a;border-radius:10px;padding:12px;">'+
+      '<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">'+
+        '<span style="font-size:20px;">🔀</span>'+
+        '<div style="flex:1;">'+
+          '<div style="font-size:13px;font-weight:700;color:#a78bfa;">'+pair.exA+'</div>'+
+          '<div style="font-size:11px;color:#666;">+ '+pair.exB+'</div>'+
+        '</div>'+
+        '<div style="font-size:11px;color:#555;">Vol: '+vol+' kg</div>'+
+        '<button onclick="window._rfcSSDelPair('+pi+')" style="background:transparent;border:none;color:#444;cursor:pointer;font-size:16px;">🗑</button>'+
+      '</div>'+
+      '<div style="display:grid;grid-template-columns:auto 1fr 1fr 1fr 1fr auto;gap:5px;margin-bottom:6px;">'+
+        '<span></span>'+
+        '<div style="font-size:9px;color:#a78bfa;text-align:center;">'+pair.exA.split(' ').slice(0,2).join(' ')+' kg</div>'+
+        '<div style="font-size:9px;color:#a78bfa;text-align:center;">reps</div>'+
+        '<div style="font-size:9px;color:#60a5fa;text-align:center;">'+pair.exB.split(' ').slice(0,2).join(' ')+' kg</div>'+
+        '<div style="font-size:9px;color:#60a5fa;text-align:center;">reps</div>'+
+        '<span></span>'+
+      '</div>'+
+      setRows+
+      '<button onclick="window._rfcSSAddSet('+pi+')" style="margin-top:6px;background:#a78bfa22;border:1px solid #a78bfa33;color:#a78bfa;padding:5px 12px;border-radius:7px;cursor:pointer;font-size:11px;">+ Set</button>'+
+    '</div>';
+  }).join('');
+}
+window._rfcSSAddPair=function(){
+  var uid=_b30uid(), today=_b30today();
+  var key='rfc_superset_'+uid+'_'+today;
+  var data=_b30load(key)||{pairs:[]};
+  var exA=(document.getElementById('rfc-ss-exA')||{}).value||'Exercise A';
+  var exB=(document.getElementById('rfc-ss-exB')||{}).value||'Exercise B';
+  data.pairs.push({exA:exA.trim()||'Exercise A',exB:exB.trim()||'Exercise B',sets:[{aKg:'',aReps:'',bKg:'',bReps:''}]});
+  _b30save(key,data);
+  var iA=document.getElementById('rfc-ss-exA'); var iB=document.getElementById('rfc-ss-exB');
+  if(iA) iA.value=''; if(iB) iB.value='';
+  _renderSuperset();
+};
+window._rfcSSAddSet=function(pi){
+  var uid=_b30uid(), today=_b30today();
+  var key='rfc_superset_'+uid+'_'+today;
+  var data=_b30load(key)||{pairs:[]};
+  if(data.pairs[pi]) data.pairs[pi].sets.push({aKg:'',aReps:'',bKg:'',bReps:''});
+  _b30save(key,data);
+  _renderSuperset();
+};
+window._rfcSSDelSet=function(pi,si){
+  var uid=_b30uid(), today=_b30today();
+  var key='rfc_superset_'+uid+'_'+today;
+  var data=_b30load(key)||{pairs:[]};
+  if(data.pairs[pi]) data.pairs[pi].sets.splice(si,1);
+  _b30save(key,data);
+  _renderSuperset();
+};
+window._rfcSSDelPair=function(pi){
+  var uid=_b30uid(), today=_b30today();
+  var key='rfc_superset_'+uid+'_'+today;
+  var data=_b30load(key)||{pairs:[]};
+  data.pairs.splice(pi,1);
+  _b30save(key,data);
+  _renderSuperset();
+};
+window._rfcSSUpdate=function(pi,si,field,val){
+  var uid=_b30uid(), today=_b30today();
+  var key='rfc_superset_'+uid+'_'+today;
+  var data=_b30load(key)||{pairs:[]};
+  if(data.pairs[pi]&&data.pairs[pi].sets[si]) data.pairs[pi].sets[si][field]=parseFloat(val)||0;
+  _b30save(key,data);
+  /* update volume display without full re-render to avoid losing focus */
+};
+
+/* ── switchScreen wrap ── */
+window.switchScreen=function(name,navEl){
+  _origSS28&&_origSS28(name,navEl);
+  if(name==='dashboard'){
+    setTimeout(function(){ _injectWkReport(); _renderWkReport(); }, 1200);
+  }
+  if(name==='nutrition'){
+    setTimeout(function(){ _injectCalBal(); _renderCalBal(); }, 1100);
+  }
+  if(name==='workouts'){
+    setTimeout(function(){ _injectSuperset(); _renderSuperset(); }, 1050);
+  }
+};
+
+setTimeout(function(){
+  _injectWkReport();
+  _injectCalBal();
+  _injectSuperset();
+}, 22000);
+
+setTimeout(function(){
+  if(!document.getElementById('rfc-wkreport-wrap'))  _injectWkReport();
+  if(!document.getElementById('rfc-calbal-wrap'))    _injectCalBal();
+  if(!document.getElementById('rfc-superset-wrap'))  _injectSuperset();
+}, 26000);
+
+})();
+</script>
+
+</body>
 </html>
