@@ -28676,5 +28676,345 @@ window.addEventListener('rfc-food-updated', _renderCalBalance);
 })();
 </script>
 
+<script>
+/* ════════════════════════════════════════════════════════════
+   BATCH 16 — Macro Split Donut | Workout Streak Heatmap | 1RM Estimator
+   ════════════════════════════════════════════════════════════ */
+(function(){ 'use strict';
+
+/* ── helpers ── */
+function _getUid16(){
+  try{ return JSON.parse(localStorage.getItem('bm_user')||'{}').uid||null; }
+  catch(e){ return null; }
+}
+function _b16card(id, title){
+  var d=document.createElement('div');
+  d.id=id; d.className='rfc-b12-card';
+  d.style.cssText='background:#111;border:1px solid #222;border-radius:14px;padding:14px;margin:10px 0;';
+  var h=document.createElement('div');
+  h.style.cssText='font-size:13px;font-weight:700;color:#aaa;letter-spacing:1px;text-transform:uppercase;margin-bottom:12px;';
+  h.textContent=title; d.appendChild(h);
+  return d;
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   1. MACRO SPLIT DONUT CHART (nutrition)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+function _injectMacroDonut(){
+  if(document.getElementById('rfc-macro-donut-wrap')) return;
+  var anchor = document.getElementById('rfc-cal-balance-wrap') ||
+               document.getElementById('rfc-custom-supp-wrap') ||
+               document.getElementById('rfc-protein-timing-wrap') ||
+               document.getElementById('rfc-macro-rings') ||
+               document.getElementById('rfc-food-wrap');
+  if(!anchor) return;
+  var card=_b16card('rfc-macro-donut-wrap','🍩 Macro Split — Today');
+  var inner=document.createElement('div'); inner.id='rfc-donut-content';
+  card.appendChild(inner);
+  anchor.insertAdjacentElement('afterend', card);
+  _renderMacroDonut();
+}
+
+function _renderMacroDonut(){
+  var el=document.getElementById('rfc-donut-content'); if(!el) return;
+  var uid=_getUid16();
+  if(!uid){ el.innerHTML='<p style="color:#555;font-size:12px;">Log in to view macro split.</p>'; return; }
+  var today=new Date().toISOString().slice(0,10);
+  var food=JSON.parse(localStorage.getItem('rfc_food_'+uid+'_'+today)||'[]');
+  var tP=0,tC=0,tF=0;
+  food.forEach(function(f){ tP+=+(f.protein||0); tC+=+(f.carbs||0); tF+=+(f.fat||0); });
+  var kcal=tP*4+tC*4+tF*9;
+  var lastRes={};
+  try{ lastRes=JSON.parse(localStorage.getItem('bm_last_result')||'{}'); }catch(e){}
+  var mac=lastRes.macros||{};
+  var gP=+(mac.prot||150), gC=+(mac.carbs||200), gF=+(mac.fat||60);
+  if(kcal===0){
+    el.innerHTML='<p style="color:#555;font-size:12px;text-align:center;padding:20px 0;">No food logged today. Add meals to see your macro split.</p>';
+    return;
+  }
+  var pPct=Math.round(tP*4/kcal*100)||0;
+  var cPct=Math.round(tC*4/kcal*100)||0;
+  var fPct=100-pPct-cPct;
+  var R=46,CX=60,CY=60,STROKE=14,circ=2*Math.PI*R;
+  var segs=[
+    {label:'Protein',g:tP,goal:gP,pct:pPct,color:'#ef4444'},
+    {label:'Carbs',  g:tC,goal:gC,pct:cPct,color:'#3b82f6'},
+    {label:'Fat',    g:tF,goal:gF,pct:fPct,color:'#f59e0b'}
+  ];
+  var svgParts=''; var offFrac=0;
+  segs.forEach(function(s){
+    var arc=(s.pct/100)*circ;
+    var rot=(offFrac*360-90).toFixed(1);
+    svgParts+='<circle cx="'+CX+'" cy="'+CY+'" r="'+R+'" fill="none" stroke="'+s.color+'" stroke-width="'+STROKE+'"'+
+      ' stroke-dasharray="'+arc.toFixed(2)+' '+(circ-arc).toFixed(2)+'"'+
+      ' transform="rotate('+rot+' '+CX+' '+CY+')" style="transition:stroke-dasharray .6s ease;"/>';
+    offFrac+=s.pct/100;
+  });
+  var legend=segs.map(function(s){
+    var p2=Math.min(100,Math.round(s.g/(s.goal||1)*100));
+    var bc=p2>=90?'#22c55e':p2>=60?'#f59e0b':'#ef4444';
+    return '<div style="margin-bottom:8px;">'+
+      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">'+
+        '<span style="display:flex;align-items:center;gap:6px;font-size:12px;color:#ccc;">'+
+          '<span style="width:10px;height:10px;border-radius:50%;background:'+s.color+';display:inline-block;"></span>'+
+          s.label+'</span>'+
+        '<span style="font-size:12px;color:#aaa;">'+s.g.toFixed(0)+'g / '+s.goal+'g  <span style="color:'+bc+'">'+p2+'%</span></span>'+
+      '</div>'+
+      '<div style="height:4px;background:#222;border-radius:2px;overflow:hidden;">'+
+        '<div style="height:100%;width:'+Math.min(p2,100)+'%;background:'+s.color+';border-radius:2px;transition:width .6s ease;"></div>'+
+      '</div></div>';
+  }).join('');
+  el.innerHTML=
+    '<div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap;">'+
+      '<div style="position:relative;flex-shrink:0;">'+
+        '<svg width="120" height="120" viewBox="0 0 120 120">'+svgParts+
+          '<circle cx="'+CX+'" cy="'+CY+'" r="'+(R-STROKE/2-2)+'" fill="#111"/>'+
+        '</svg>'+
+        '<div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;pointer-events:none;">'+
+          '<div style="font-size:16px;font-weight:800;color:#fff;">'+kcal+'</div>'+
+          '<div style="font-size:10px;color:#555;">kcal</div>'+
+        '</div>'+
+      '</div>'+
+      '<div style="flex:1;min-width:160px;">'+legend+'</div>'+
+    '</div>';
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   2. WORKOUT STREAK HEATMAP (workouts)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+function _injectHeatmap(){
+  if(document.getElementById('rfc-heatmap-wrap')) return;
+  var anchor = document.getElementById('rfc-mev-wrap') ||
+               document.getElementById('rfc-burn-wrap') ||
+               document.getElementById('rfc-vol-chart-wrap') ||
+               document.getElementById('rfc-split-wrap') ||
+               document.getElementById('wl-history') ||
+               document.querySelector('.dash-topbar');
+  if(!anchor) return;
+  var card=_b16card('rfc-heatmap-wrap','📅 12-Week Workout Streak');
+  var inner=document.createElement('div'); inner.id='rfc-heatmap-content';
+  card.appendChild(inner);
+  anchor.insertAdjacentElement('afterend', card);
+  _renderHeatmap();
+}
+
+function _renderHeatmap(){
+  var el=document.getElementById('rfc-heatmap-content'); if(!el) return;
+  var uid=_getUid16();
+  if(!uid){ el.innerHTML='<p style="color:#555;font-size:12px;">Log in to view streak heatmap.</p>'; return; }
+  var wks=JSON.parse(localStorage.getItem('rfc_workouts_'+uid)||'[]');
+  var map={};
+  wks.forEach(function(w){ if(w.date){ var d=w.date.slice(0,10); map[d]=(map[d]||0)+1; } });
+
+  var now=new Date(); now.setHours(0,0,0,0);
+  var startDay=new Date(now);
+  startDay.setDate(startDay.getDate()-83);
+  var dow=startDay.getDay();
+  startDay.setDate(startDay.getDate()-dow); // back to Sunday
+
+  var days=[];
+  for(var i=0;i<91;i++){
+    var dd=new Date(startDay); dd.setDate(startDay.getDate()+i);
+    if(dd>now) break;
+    days.push(dd);
+  }
+
+  function cellColor(cnt){
+    if(!cnt) return '#1a1a1a';
+    if(cnt===1) return '#1a4d2e';
+    if(cnt===2) return '#2d7a4f';
+    return '#40b373';
+  }
+
+  var CELL=12,GAP=3;
+  var numWeeks=Math.ceil(days.length/7);
+  var totalW=numWeeks*(CELL+GAP);
+  var MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var lastMo=-1; var monthSVG='';
+  days.forEach(function(d,i){
+    if(d.getDay()===0 && d.getMonth()!==lastMo){
+      lastMo=d.getMonth();
+      var wx=Math.floor(i/7)*(CELL+GAP);
+      monthSVG+='<text x="'+wx+'" y="0" font-size="9" fill="#555">'+MONTHS[d.getMonth()]+'</text>';
+    }
+  });
+  var daySVG='';
+  ['S','M','T','W','T','F','S'].forEach(function(lbl,i){
+    if(i%2===0)
+      daySVG+='<text x="-4" y="'+(i*(CELL+GAP)+CELL-1)+'" font-size="9" fill="#444" text-anchor="end">'+lbl+'</text>';
+  });
+  var cells='';
+  days.forEach(function(d,i){
+    var wIdx=Math.floor(i/7);
+    var dIdx=d.getDay();
+    var ds=d.toISOString().slice(0,10);
+    var cnt=map[ds]||0;
+    cells+='<rect x="'+(wIdx*(CELL+GAP))+'" y="'+(dIdx*(CELL+GAP))+'" width="'+CELL+'" height="'+CELL+'" rx="2" fill="'+cellColor(cnt)+'"><title>'+ds+': '+cnt+' workout'+(cnt!==1?'s':'')+'</title></rect>';
+  });
+
+  var totalActive=Object.keys(map).length;
+  var streak=0; var sc=new Date(now);
+  while(true){
+    var ds2=sc.toISOString().slice(0,10);
+    if(map[ds2]>0){ streak++; sc.setDate(sc.getDate()-1); } else break;
+    if(streak>365) break;
+  }
+  var totalH2=7*(CELL+GAP);
+  el.innerHTML=
+    '<div style="overflow-x:auto;-webkit-overflow-scrolling:touch;">'+
+      '<svg width="'+(totalW+34)+'" height="'+(totalH2+26)+'" viewBox="-28 -16 '+(totalW+28)+' '+(totalH2+16)+'" style="display:block;">'+
+        monthSVG+daySVG+cells+
+      '</svg>'+
+    '</div>'+
+    '<div style="display:flex;gap:16px;margin-top:8px;flex-wrap:wrap;">'+
+      '<span style="font-size:12px;color:#aaa;">🔥 Current streak: <b style="color:#40b373">'+streak+' day'+(streak!==1?'s':'')+'</b></span>'+
+      '<span style="font-size:12px;color:#aaa;">📅 Total active: <b style="color:#fff">'+totalActive+' day'+(totalActive!==1?'s':'')+'</b></span>'+
+    '</div>'+
+    '<div style="display:flex;align-items:center;gap:4px;margin-top:8px;">'+
+      '<span style="font-size:10px;color:#444;">Less</span>'+
+      ['#1a1a1a','#1a4d2e','#2d7a4f','#40b373'].map(function(c){ return '<span style="width:10px;height:10px;border-radius:2px;background:'+c+';display:inline-block;"></span>'; }).join('')+
+      '<span style="font-size:10px;color:#444;">More</span>'+
+    '</div>';
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   3. 1RM ESTIMATOR (workouts)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+var _ORM_REPS={100:1,95:2,90:3,85:5,80:7,75:10,70:12,65:15};
+
+function _injectOneRM(){
+  if(document.getElementById('rfc-orm-wrap')) return;
+  var anchor = document.getElementById('rfc-heatmap-wrap') ||
+               document.getElementById('rfc-mev-wrap') ||
+               document.getElementById('rfc-burn-wrap') ||
+               document.getElementById('rfc-vol-chart-wrap') ||
+               document.getElementById('rfc-split-wrap') ||
+               document.getElementById('wl-history');
+  if(!anchor) return;
+  var card=_b16card('rfc-orm-wrap','💪 1RM Estimator (Epley / Brzycki)');
+  card.innerHTML+=(
+    '<div id="rfc-orm-inputs" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;">'+
+      '<input id="rfc-orm-ex" type="text" placeholder="Exercise (e.g. Bench Press)" '+
+        'style="flex:1;min-width:120px;background:#1a1a1a;border:1px solid #333;border-radius:8px;padding:8px 10px;color:#fff;font-size:13px;outline:none;">'+
+      '<input id="rfc-orm-wt" type="number" min="1" max="500" placeholder="kg" '+
+        'style="width:70px;background:#1a1a1a;border:1px solid #333;border-radius:8px;padding:8px 10px;color:#fff;font-size:13px;outline:none;">'+
+      '<input id="rfc-orm-rp" type="number" min="1" max="30" placeholder="reps" '+
+        'style="width:70px;background:#1a1a1a;border:1px solid #333;border-radius:8px;padding:8px 10px;color:#fff;font-size:13px;outline:none;">'+
+      '<button onclick="window._rfcCalc1RM()" '+
+        'style="background:linear-gradient(135deg,#ef4444,#b91c1c);color:#fff;border:none;border-radius:8px;padding:8px 16px;font-size:13px;font-weight:700;cursor:pointer;">Calculate</button>'+
+    '</div>'+
+    '<div id="rfc-orm-result" style="display:none;">'+
+      '<div style="text-align:center;margin-bottom:14px;padding:14px;background:#1a1a1a;border-radius:10px;">'+
+        '<div style="font-size:11px;color:#555;text-transform:uppercase;letter-spacing:1px;">Estimated 1RM</div>'+
+        '<div id="rfc-orm-kg" style="font-size:36px;font-weight:900;color:#ef4444;line-height:1.1;"></div>'+
+        '<div id="rfc-orm-sub" style="font-size:11px;color:#555;margin-top:2px;"></div>'+
+      '</div>'+
+      '<div id="rfc-orm-pcts" style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:14px;"></div>'+
+      '<div id="rfc-orm-hist" style="border-top:1px solid #222;padding-top:10px;"></div>'+
+    '</div>'
+  );
+  anchor.insertAdjacentElement('afterend', card);
+
+  window._rfcCalc1RM=function(){
+    var ex=(document.getElementById('rfc-orm-ex')||{}).value||'';
+    var wt=parseFloat((document.getElementById('rfc-orm-wt')||{}).value)||0;
+    var reps=parseInt((document.getElementById('rfc-orm-rp')||{}).value)||0;
+    if(!wt||!reps||reps<1||reps>30||wt<1){ alert('Please enter weight (kg) and reps (1–30).'); return; }
+    var epley=wt*(1+reps/30);
+    var brzycki=reps===1?wt:wt*(36/(37-reps));
+    var orm=(epley+brzycki)/2;
+    var kgEl=document.getElementById('rfc-orm-kg');
+    var subEl=document.getElementById('rfc-orm-sub');
+    var resEl=document.getElementById('rfc-orm-result');
+    var pctsEl=document.getElementById('rfc-orm-pcts');
+    var histEl=document.getElementById('rfc-orm-hist');
+    if(!kgEl) return;
+    kgEl.textContent=orm.toFixed(1)+' kg';
+    subEl.textContent='Epley: '+epley.toFixed(1)+' kg  |  Brzycki: '+brzycki.toFixed(1)+' kg';
+    resEl.style.display='block';
+    pctsEl.innerHTML=[100,95,90,85,80,75,70,65].map(function(p){
+      return '<div style="background:#1a1a1a;border-radius:8px;padding:8px;text-align:center;">'+
+        '<div style="font-size:11px;color:#555;">'+p+'%</div>'+
+        '<div style="font-size:14px;font-weight:700;color:#fff;">'+(orm*p/100).toFixed(1)+'<span style="font-size:10px;color:#555;"> kg</span></div>'+
+        '<div style="font-size:10px;color:#666;">~'+_ORM_REPS[p]+' rep'+(_ORM_REPS[p]!==1?'s':'')+'</div>'+
+      '</div>';
+    }).join('');
+    var uid=_getUid16();
+    if(uid){
+      var key='rfc_1rm_'+uid;
+      var hist=JSON.parse(localStorage.getItem(key)||'[]');
+      hist.unshift({ex:ex||'Unknown',wt:wt,reps:reps,orm:+orm.toFixed(1),date:new Date().toISOString().slice(0,10)});
+      if(hist.length>20) hist.length=20;
+      localStorage.setItem(key,JSON.stringify(hist));
+      _render1RMHist(histEl,hist);
+    }
+  };
+
+  window._rfcDelete1RM=function(idx){
+    var uid=_getUid16(); if(!uid) return;
+    var key='rfc_1rm_'+uid;
+    var hist=JSON.parse(localStorage.getItem(key)||'[]');
+    hist.splice(idx,1);
+    localStorage.setItem(key,JSON.stringify(hist));
+    var hEl=document.getElementById('rfc-orm-hist'); if(!hEl) return;
+    _render1RMHist(hEl,hist);
+  };
+
+  // Load existing history
+  var uid2=_getUid16();
+  if(uid2){
+    var h2=JSON.parse(localStorage.getItem('rfc_1rm_'+uid2)||'[]');
+    if(h2.length>0){
+      var r2=document.getElementById('rfc-orm-result');
+      var hh2=document.getElementById('rfc-orm-hist');
+      if(r2&&hh2){ r2.style.display='block'; _render1RMHist(hh2,h2); }
+    }
+  }
+}
+
+function _render1RMHist(el,hist){
+  if(!hist||!hist.length){ el.innerHTML='<p style="font-size:11px;color:#444;">No history yet. Calculate your first 1RM above.</p>'; return; }
+  el.innerHTML='<div style="font-size:11px;color:#555;margin-bottom:6px;text-transform:uppercase;letter-spacing:1px;">Recent Estimates</div>'+
+    hist.slice(0,8).map(function(h,i){
+      return '<div style="display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid #1a1a1a;">'+
+        '<span style="font-size:12px;color:#ccc;min-width:80px;">'+h.ex+'</span>'+
+        '<span style="font-size:12px;color:#aaa;">'+h.wt+'kg × '+h.reps+' → <b style="color:#ef4444">'+h.orm+' kg</b></span>'+
+        '<span style="font-size:10px;color:#444;">'+h.date+'</span>'+
+        '<button onclick="window._rfcDelete1RM('+i+')" style="background:none;border:none;color:#333;cursor:pointer;font-size:14px;padding:0 4px;">✕</button>'+
+      '</div>';
+    }).join('');
+}
+
+/* ════════════════════════════════════════════════════
+   switchScreen + initial inject
+   ════════════════════════════════════════════════════ */
+var _origSS14=window.switchScreen;
+window.switchScreen=function(name,navEl){
+  _origSS14&&_origSS14(name,navEl);
+  if(name==='nutrition'){
+    setTimeout(function(){ _injectMacroDonut(); _renderMacroDonut(); }, 800);
+  }
+  if(name==='workouts'){
+    setTimeout(function(){ _injectHeatmap(); _renderHeatmap(); _injectOneRM(); }, 650);
+  }
+};
+
+setTimeout(function(){
+  _injectMacroDonut();
+  _injectHeatmap();
+  _injectOneRM();
+}, 8000);
+
+setTimeout(function(){
+  if(!document.getElementById('rfc-macro-donut-wrap')) _injectMacroDonut();
+  if(!document.getElementById('rfc-heatmap-wrap'))     _injectHeatmap();
+  if(!document.getElementById('rfc-orm-wrap'))         _injectOneRM();
+}, 11000);
+
+window.addEventListener('rfc-food-updated', _renderMacroDonut);
+
+})();
+</script>
+
 </body>
 </html>
