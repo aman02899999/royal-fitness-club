@@ -39214,5 +39214,171 @@ setTimeout(function(){ if(!document.getElementById('rfc-wins-wrap')) _injectWins
 })();
 </script>
 
+<script>
+/* ===== BATCH 53: Metabolic Age Estimator | Meal Timing Optimizer | Fitness Test Dashboard ===== */
+(function(){ 'use strict';
+var _origSS51=window.switchScreen;
+function _b53uid(){ try{ return JSON.parse(localStorage.getItem('bm_user')||'{}').uid||'guest'; }catch(e){ return 'guest'; } }
+function _b53today(){ var d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function _b53load(k){ try{ return JSON.parse(localStorage.getItem(k))||null; }catch(e){ return null; } }
+function _b53save(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} }
+function _b53card(id,title){ var d=document.createElement('div'); d.id=id; d.style.cssText='background:#1a1a2e;border-radius:14px;padding:18px;margin:14px 0;color:#e0e0e0;font-family:inherit;'; d.innerHTML='<div style="font-size:15px;font-weight:700;color:#00d4ff;margin-bottom:14px;">'+title+'</div>'; return d; }
+
+/* ---------- METABOLIC AGE ESTIMATOR (dashboard) ---------- */
+function _calcMetAge(s){
+  if(!s.age) return null;
+  var base=s.age; var adj=0;
+  var rhr=s.rhr||70; adj+=(rhr<50?8:rhr<60?5:rhr<70?2:rhr<80?0:rhr<90?-3:-6);
+  var sleep=s.sleep||7; adj+=(sleep>=7&&sleep<=9?5:sleep>=6?2:sleep<6?-5:0);
+  var ex=s.exercise||3; adj+=(ex>=5?6:ex>=4?4:ex>=3?2:ex>=2?0:-3);
+  var diet=s.diet||5; adj+=Math.round((diet-5)*0.8);
+  if(s.waist_height){ var whr=s.waist_height; adj+=(whr<0.4?6:whr<0.45?4:whr<0.5?2:whr<0.55?0:whr<0.6?-3:-6); }
+  return Math.max(18,Math.round(base-adj));
+}
+function _injectMetAge(){
+  if(document.getElementById('rfc-metage-wrap')) return;
+  var anchor=document.getElementById('rfc-wins-wrap')||document.getElementById('rfc-hormone-wrap')||document.getElementById('rfc-wellwheel-wrap')||document.getElementById('rfc-longevity-wrap')||document.querySelector('.dash-topbar');
+  if(!anchor) return;
+  var card=_b53card('rfc-metage-wrap','🧬 Metabolic Age Estimator');
+  card.style.cssText+='border:1px solid #1a3a1a;';
+  anchor.parentNode.insertBefore(card,anchor.nextSibling);
+  _renderMetAge();
+}
+function _renderMetAge(){
+  var card=document.getElementById('rfc-metage-wrap'); if(!card) return;
+  var uid=_b53uid();
+  var key='rfc_metage_'+uid;
+  var s=_b53load(key)||{age:30,rhr:65,sleep:7.5,exercise:4,diet:6};
+  var metAge=_calcMetAge(s);
+  var diff=metAge&&s.age?s.age-metAge:0;
+  var dc=diff>0?'#00ff88':diff<0?'#ff6b6b':'#ffd700';
+  var html='<div style="font-size:15px;font-weight:700;color:#00d4ff;margin-bottom:14px;">🧬 Metabolic Age Estimator</div>';
+  html+='<div style="font-size:11px;color:#888;margin-bottom:10px;">Estimates biological age from key health markers. Not medical advice.</div>';
+  if(metAge){
+    html+='<div style="display:flex;gap:12px;margin-bottom:14px;">';
+    html+='<div style="flex:1;text-align:center;background:#12122a;border-radius:10px;padding:12px;"><div style="font-size:11px;color:#888;">Chronological</div><div style="font-size:30px;font-weight:800;color:#aaa;">'+s.age+'</div></div>';
+    html+='<div style="flex:1;text-align:center;background:#12122a;border-radius:10px;padding:12px;border:2px solid '+dc+';"><div style="font-size:11px;color:#888;">Metabolic Age</div><div style="font-size:30px;font-weight:800;color:'+dc+';">'+metAge+'</div></div>';
+    html+='<div style="flex:1;text-align:center;background:#12122a;border-radius:10px;padding:12px;"><div style="font-size:11px;color:#888;">Difference</div><div style="font-size:30px;font-weight:800;color:'+dc+';">'+(diff>=0?'+':'')+diff+'</div></div></div>';
+    html+='<div style="font-size:13px;color:'+dc+';font-weight:700;margin-bottom:12px;text-align:center;">'+(diff>=8?'Biologically Younger!':diff>=3?'Ahead of your age':diff>=-2?'Near chronological age':diff>=-5?'Slightly older metabolically':'Needs improvement')+'</div>';
+  }
+  html+='<div style="display:grid;gap:8px;">';
+  html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">';
+  [['Chronological Age','age',10,100,1],['Resting HR (bpm)','rhr',30,120,1]].forEach(function(f){ html+='<div><label style="font-size:11px;color:#888;">'+f[0]+': <strong style="color:#ffd700;">'+(s[f[1]]||'?')+'</strong></label><input type="number" min="'+f[2]+'" max="'+f[3]+'" step="'+f[4]+'" value="'+(s[f[1]]||'')+'" onchange="window._rfcMASet(\''+f[1]+'\',parseFloat(this.value))" style="width:100%;background:#0d0d20;border:1px solid #2a2a4a;color:#fff;border-radius:6px;padding:6px;font-size:13px;margin-top:3px;box-sizing:border-box;"></div>'; });
+  html+='</div>';
+  html+='<div><label style="font-size:11px;color:#888;">Sleep Quality: <strong style="color:#ffd700;">'+(s.sleep||7.5)+' hrs avg</strong></label><input type="range" min="4" max="12" step="0.5" value="'+(s.sleep||7.5)+'" oninput="window._rfcMASet(\'sleep\',parseFloat(this.value))" style="width:100%;accent-color:#00d4ff;"></div>';
+  html+='<div><label style="font-size:11px;color:#888;">Exercise Freq: <strong style="color:#ffd700;">'+(s.exercise||3)+' days/week</strong></label><input type="range" min="0" max="7" step="1" value="'+(s.exercise||3)+'" oninput="window._rfcMASet(\'exercise\',parseInt(this.value))" style="width:100%;accent-color:#ffd700;"></div>';
+  html+='<div><label style="font-size:11px;color:#888;">Diet Quality: <strong style="color:#ffd700;">'+(s.diet||5)+'/10</strong></label><input type="range" min="1" max="10" step="1" value="'+(s.diet||5)+'" oninput="window._rfcMASet(\'diet\',parseInt(this.value))" style="width:100%;accent-color:#00ff88;"></div>';
+  html+='<div><label style="font-size:11px;color:#888;">Waist÷Height ratio: <strong style="color:#ffd700;">'+(s.waist_height||0.47)+'</strong> (optional)</label><input type="number" min="0.3" max="0.9" step="0.01" placeholder="e.g. 0.47" value="'+(s.waist_height||'')+'" onchange="window._rfcMASet(\'waist_height\',parseFloat(this.value))" style="width:100%;background:#0d0d20;border:1px solid #2a2a4a;color:#fff;border-radius:6px;padding:6px;font-size:13px;margin-top:3px;box-sizing:border-box;"></div>';
+  html+='</div>';
+  card.innerHTML=html;
+}
+window._rfcMASet=function(k,v){ var uid=_b53uid(); var key='rfc_metage_'+uid; var s=_b53load(key)||{}; s[k]=v; _b53save(key,s); _renderMetAge(); };
+
+/* ---------- MEAL TIMING OPTIMIZER (nutrition) ---------- */
+function _injectMealTiming(){
+  if(document.getElementById('rfc-mealtiming-wrap')) return;
+  var anchor=document.getElementById('rfc-inflam-wrap')||document.getElementById('rfc-foodsens-wrap')||document.getElementById('rfc-maccycle50-wrap')||document.getElementById('rfc-callog-wrap')||document.querySelector('.dash-topbar');
+  if(!anchor) return;
+  var card=_b53card('rfc-mealtiming-wrap','🕐 Meal Timing Optimizer');
+  card.style.cssText+='border:1px solid #2a2a1a;';
+  anchor.parentNode.insertBefore(card,anchor.nextSibling);
+  _renderMealTiming();
+}
+function _renderMealTiming(){
+  var card=document.getElementById('rfc-mealtiming-wrap'); if(!card) return;
+  var uid=_b53uid();
+  var key='rfc_mealtiming_'+uid;
+  var s=_b53load(key)||{wakeHr:6,trainHr:18,sleepHr:23,ifWindow:16};
+  var firstMeal=s.wakeHr+(s.ifWindow>0?(24-s.ifWindow):0);
+  var breakFastHr=(s.sleepHr-(24-s.ifWindow)+24)%24;
+  var preWorkout=((s.trainHr-1+24)%24);
+  var postWorkout=(s.trainHr+1)%24;
+  var lastMeal=((s.sleepHr-2+24)%24);
+  function _fmtHr(h){ var hh=Math.floor(h%24); var ap=hh>=12?'PM':'AM'; var h12=hh%12||12; return h12+':00 '+ap; }
+  var html='<div style="font-size:15px;font-weight:700;color:#00d4ff;margin-bottom:14px;">🕐 Meal Timing Optimizer</div>';
+  html+='<div style="display:grid;gap:8px;margin-bottom:14px;">';
+  [['Wake Time','wakeHr',3,12],['Training Time','trainHr',5,23],['Sleep Time','sleepHr',18,24]].forEach(function(f){ html+='<div><label style="font-size:12px;color:#aaa;">'+f[0]+': <strong style="color:#ffd700;">'+_fmtHr(s[f[1]])+'</strong></label><input type="range" min="'+f[2]+'" max="'+f[3]+'" step="1" value="'+(s[f[1]]||0)+'" oninput="window._rfcMTSet(\''+f[1]+'\',parseInt(this.value))" style="width:100%;accent-color:#00d4ff;"></div>'; });
+  html+='<div><label style="font-size:12px;color:#aaa;">Fasting Window: <strong style="color:#ffd700;">'+(s.ifWindow||16)+'h</strong></label><input type="range" min="0" max="23" step="1" value="'+(s.ifWindow||16)+'" oninput="window._rfcMTSet(\'ifWindow\',parseInt(this.value))" style="width:100%;accent-color:#ffd700;"></div>';
+  html+='</div>';
+  html+='<div style="display:grid;gap:7px;">';
+  var windows=[
+    {label:'⏰ Break Fast / First Meal',time:_fmtHr(breakFastHr),color:'#00d4ff',note:'After '+s.ifWindow+'h fast'},
+    {label:'💪 Pre-Workout Meal',time:_fmtHr(preWorkout),color:'#ffd700',note:'60-90 min before training'},
+    {label:'⚡ Post-Workout (Priority)',time:_fmtHr(postWorkout),color:'#00ff88',note:'Within 2h — largest protein meal'},
+    {label:'🌙 Last Meal',time:_fmtHr(lastMeal),color:'#ff9f43',note:'2h+ before sleep'}
+  ];
+  windows.forEach(function(w){ html+='<div style="background:#12122a;border-left:4px solid '+w.color+';border-radius:0 9px 9px 0;padding:10px 12px;display:flex;justify-content:space-between;align-items:center;"><div><div style="font-size:12px;font-weight:700;color:'+w.color+';">'+w.label+'</div><div style="font-size:11px;color:#666;">'+w.note+'</div></div><div style="font-size:16px;font-weight:800;color:'+w.color+';">'+w.time+'</div></div>'; });
+  html+='</div>';
+  card.innerHTML=html;
+}
+window._rfcMTSet=function(k,v){ var uid=_b53uid(); var key='rfc_mealtiming_'+uid; var s=_b53load(key)||{}; s[k]=v; _b53save(key,s); _renderMealTiming(); };
+
+/* ---------- FITNESS TEST DASHBOARD (workouts) ---------- */
+var FIT_TESTS=[
+  {id:'pushups',label:'Push-up Max',unit:'reps',higher:true,icon:'💪'},
+  {id:'pullups',label:'Pull-up Max',unit:'reps',higher:true,icon:'🏋️'},
+  {id:'plank',label:'Plank Hold',unit:'sec',higher:true,icon:'🧱'},
+  {id:'mile_run',label:'1-Mile Run',unit:'sec',higher:false,icon:'🏃'},
+  {id:'vert_jump',label:'Vertical Jump',unit:'cm',higher:true,icon:'🦘'},
+  {id:'resting_hr',label:'Resting Heart Rate',unit:'bpm',higher:false,icon:'❤️'},
+  {id:'grip_str',label:'Grip Strength',unit:'kg',higher:true,icon:'✊'}
+];
+function _injectFitTest(){
+  if(document.getElementById('rfc-fittest-wrap')) return;
+  var anchor=document.getElementById('rfc-stretch30-wrap')||document.getElementById('rfc-olympic-wrap')||document.getElementById('rfc-blockplan-wrap')||document.getElementById('rfc-restimer-wrap')||document.querySelector('.dash-topbar');
+  if(!anchor) return;
+  var card=_b53card('rfc-fittest-wrap','📊 Fitness Test Dashboard');
+  card.style.cssText+='border:1px solid #1a2a1a;';
+  anchor.parentNode.insertBefore(card,anchor.nextSibling);
+  _renderFitTest();
+}
+function _renderFitTest(){
+  var card=document.getElementById('rfc-fittest-wrap'); if(!card) return;
+  var uid=_b53uid();
+  var key='rfc_fittest_'+uid;
+  var data=_b53load(key)||{tests:[],pbs:{}};
+  var tests=data.tests||[]; var pbs=data.pbs||{};
+  var html='<div style="font-size:15px;font-weight:700;color:#00d4ff;margin-bottom:14px;">📊 Fitness Test Dashboard</div>';
+  html+='<div style="font-size:12px;color:#888;margin-bottom:12px;">Log your fitness tests periodically to track overall athletic improvement.</div>';
+  FIT_TESTS.forEach(function(t){
+    var pb=pbs[t.id]; var recent=tests.filter(function(r){ return r.test===t.id; }).slice(-1)[0];
+    var val=recent?recent.value:null;
+    html+='<div style="background:#12122a;border-radius:10px;padding:10px;margin-bottom:7px;display:flex;align-items:center;gap:10px;">';
+    html+='<span style="font-size:20px;flex-shrink:0;">'+t.icon+'</span>';
+    html+='<div style="flex:1;"><div style="font-size:12px;font-weight:700;color:#e0e0e0;">'+t.label+'</div>';
+    if(pb!==undefined) html+='<div style="font-size:11px;color:#ffd700;">PB: '+pb+(t.id==='mile_run'?'s':' '+t.unit)+'</div>';
+    html+='</div>';
+    if(val!==null) html+='<div style="text-align:right;margin-right:8px;"><div style="font-size:16px;font-weight:700;color:#00d4ff;">'+val+(t.id==='mile_run'?'s':' '+t.unit)+'</div><div style="font-size:10px;color:#666;">Latest</div></div>';
+    html+='<div style="display:flex;gap:4px;align-items:center;">';
+    html+='<input type="number" id="rfc-ft-'+t.id+'" min="0" max="9999" step="0.1" placeholder="Value" style="width:70px;background:#0d0d20;border:1px solid #2a2a4a;color:#fff;border-radius:6px;padding:5px;font-size:12px;">';
+    html+='<button onclick="window._rfcFTLog(\''+t.id+'\',\''+t.label+'\','+t.higher+')" style="background:#00ff88;border:none;color:#000;padding:5px 8px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;">Log</button>';
+    html+='</div></div>';
+  });
+  card.innerHTML=html;
+}
+window._rfcFTLog=function(id,label,higher){
+  var inp=document.getElementById('rfc-ft-'+id); if(!inp) return;
+  var val=parseFloat(inp.value); if(isNaN(val)) return;
+  var uid=_b53uid(); var key='rfc_fittest_'+uid;
+  var data=_b53load(key)||{tests:[],pbs:{}};
+  data.tests=data.tests||[]; data.pbs=data.pbs||{};
+  data.tests.push({test:id,label:label,value:val,date:_b53today()});
+  if(data.tests.length>100) data.tests=data.tests.slice(-100);
+  var pb=data.pbs[id];
+  if(pb===undefined||(higher?val>pb:val<pb)) data.pbs[id]=val;
+  _b53save(key,data); inp.value=''; _renderFitTest();
+};
+
+window.switchScreen=function(name,navEl){
+  _origSS51&&_origSS51(name,navEl);
+  if(name==='dashboard') setTimeout(function(){ _injectMetAge(); _renderMetAge(); },1200);
+  if(name==='nutrition') setTimeout(function(){ _injectMealTiming(); _renderMealTiming(); },1100);
+  if(name==='workouts')  setTimeout(function(){ _injectFitTest(); _renderFitTest(); },1050);
+};
+setTimeout(function(){ _injectMetAge(); _injectMealTiming(); _injectFitTest(); },45000);
+setTimeout(function(){ if(!document.getElementById('rfc-metage-wrap')) _injectMetAge(); if(!document.getElementById('rfc-mealtiming-wrap')) _injectMealTiming(); if(!document.getElementById('rfc-fittest-wrap')) _injectFitTest(); },49000);
+})();
+</script>
+
 </body>
 </html>
