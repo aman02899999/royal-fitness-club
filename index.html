@@ -29377,5 +29377,351 @@ window.addEventListener('rfc-food-updated', _renderFastTimer);
 })();
 </script>
 
+<script>
+/* ════════════════════════════════════════════════════════════
+   BATCH 18 — Progressive Overload Tracker | Muscle Recovery | Daily Habits
+   ════════════════════════════════════════════════════════════ */
+(function(){ 'use strict';
+
+function _uid18(){ try{return JSON.parse(localStorage.getItem('bm_user')||'{}').uid||null;}catch(e){return null;} }
+function _b18card(id,title){
+  var d=document.createElement('div');
+  d.id=id; d.className='rfc-b12-card';
+  d.style.cssText='background:#111;border:1px solid #222;border-radius:14px;padding:14px;margin:10px 0;';
+  var h=document.createElement('div');
+  h.style.cssText='font-size:13px;font-weight:700;color:#aaa;letter-spacing:1px;text-transform:uppercase;margin-bottom:12px;';
+  h.textContent=title; d.appendChild(h);
+  return d;
+}
+function _getWks18(uid){ try{return JSON.parse(localStorage.getItem('rfc_workouts_'+uid)||'[]');}catch(e){return[];} }
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   1. PROGRESSIVE OVERLOAD TRACKER (workouts)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+function _injectPOL(){
+  if(document.getElementById('rfc-pol-wrap')) return;
+  var anchor = document.getElementById('rfc-deload-wrap') ||
+               document.getElementById('rfc-orm-wrap') ||
+               document.getElementById('rfc-heatmap-wrap') ||
+               document.getElementById('rfc-mev-wrap') ||
+               document.getElementById('rfc-burn-wrap') ||
+               document.getElementById('wl-history');
+  if(!anchor) return;
+  var card=_b18card('rfc-pol-wrap','📈 Progressive Overload Tracker');
+  card.innerHTML+=(
+    '<div style="margin-bottom:10px;">'+
+      '<select id="rfc-pol-ex" onchange="window._rfcRenderPOL()" '+
+        'style="width:100%;background:#1a1a1a;border:1px solid #333;border-radius:8px;padding:8px 10px;color:#fff;font-size:13px;outline:none;">'+
+        '<option value="">— Select exercise —</option>'+
+      '</select>'+
+    '</div>'+
+    '<div id="rfc-pol-chart"></div>'
+  );
+  anchor.insertAdjacentElement('afterend', card);
+
+  // Populate exercise list
+  var uid=_uid18(); if(!uid) return;
+  var wks=_getWks18(uid);
+  var exSet={};
+  wks.forEach(function(w){ (w.exercises||[]).forEach(function(e){ if(e.name) exSet[e.name.trim()]=1; }); });
+  var sel=document.getElementById('rfc-pol-ex'); if(!sel) return;
+  Object.keys(exSet).sort().forEach(function(name){
+    var opt=document.createElement('option'); opt.value=name; opt.textContent=name;
+    sel.appendChild(opt);
+  });
+}
+
+window._rfcRenderPOL=function(){
+  var chart=document.getElementById('rfc-pol-chart'); if(!chart) return;
+  var sel=document.getElementById('rfc-pol-ex'); if(!sel||!sel.value){ chart.innerHTML=''; return; }
+  var exName=sel.value;
+  var uid=_uid18(); if(!uid){ chart.innerHTML=''; return; }
+  var wks=_getWks18(uid);
+  // Collect max kg per session for this exercise (sessions in chrono order)
+  var pts=[];
+  wks.slice().reverse().forEach(function(w){
+    var maxKg=0;
+    (w.exercises||[]).forEach(function(e){
+      if(e.name&&e.name.trim()===exName&&+e.kg>maxKg) maxKg=+e.kg;
+    });
+    if(maxKg>0) pts.push({ts:w.ts||0,date:w.date||'',kg:maxKg});
+  });
+  if(pts.length<1){ chart.innerHTML='<p style="color:#555;font-size:12px;text-align:center;padding:12px 0;">No data for '+exName+' yet.</p>'; return; }
+  if(pts.length===1){ chart.innerHTML='<div style="text-align:center;padding:12px 0;"><div style="font-size:28px;font-weight:900;color:#ef4444;">'+pts[0].kg+' kg</div><div style="font-size:11px;color:#555;">Only 1 session logged — keep lifting!</div></div>'; return; }
+
+  var W=320,H=100,PAD={l:36,r:12,t:10,b:22};
+  var vals=pts.map(function(p){return p.kg;});
+  var minV=Math.floor(Math.min.apply(null,vals)-1);
+  var maxV=Math.ceil(Math.max.apply(null,vals)+1);
+  var rng=maxV-minV||1;
+  var cW=W-PAD.l-PAD.r, cH=H-PAD.t-PAD.b;
+  function xp(i){return (PAD.l+i/(pts.length-1)*cW).toFixed(1);}
+  function yp(v){return (PAD.t+cH-(v-minV)/rng*cH).toFixed(1);}
+
+  var ticks='';
+  for(var t=0;t<=3;t++){
+    var tv=(minV+t/3*rng).toFixed(0);
+    var ty=(PAD.t+cH-t/3*cH).toFixed(1);
+    ticks+='<text x="'+(PAD.l-4)+'" y="'+(+ty+3)+'" font-size="9" fill="#444" text-anchor="end">'+tv+'</text>';
+    ticks+='<line x1="'+PAD.l+'" y1="'+ty+'" x2="'+(PAD.l+cW)+'" y2="'+ty+'" stroke="#1a1a1a" stroke-width="1"/>';
+  }
+  var dLabels='';
+  [0,Math.floor((pts.length-1)/2),pts.length-1].forEach(function(i){
+    var lbl=pts[i].date?pts[i].date.replace(/\s\d{4}$/,''):'';
+    dLabels+='<text x="'+xp(i)+'" y="'+(H-5)+'" font-size="9" fill="#444" text-anchor="middle">'+lbl+'</text>';
+  });
+
+  var pathD='M'+xp(0)+','+yp(vals[0]);
+  pts.forEach(function(_,i){if(i>0) pathD+=' L'+xp(i)+','+yp(vals[i]);});
+  var fillD=pathD+' L'+xp(pts.length-1)+','+(PAD.t+cH)+' L'+PAD.l+','+(PAD.t+cH)+' Z';
+  var dots=pts.map(function(p,i){
+    return '<circle cx="'+xp(i)+'" cy="'+yp(p.kg)+'" r="3" fill="#f59e0b" stroke="#111" stroke-width="1"><title>'+p.date+': '+p.kg+'kg</title></circle>';
+  }).join('');
+
+  var first=vals[0], last=vals[vals.length-1];
+  var delta=(last-first).toFixed(1);
+  var dColor=delta>0?'#22c55e':delta<0?'#ef4444':'#aaa';
+  var dLabel=delta>0?'▲ +'+delta+'kg overloaded':'▼ '+delta+'kg dropped';
+  var pct=first>0?(((last-first)/first)*100).toFixed(1)+'%':'—';
+
+  chart.innerHTML=
+    '<svg width="100%" viewBox="0 0 '+W+' '+H+'" style="display:block;max-width:'+W+'px;">'+
+      '<defs><linearGradient id="polGrad18" x1="0" y1="0" x2="0" y2="1">'+
+        '<stop offset="0%" stop-color="#f59e0b" stop-opacity="0.3"/>'+
+        '<stop offset="100%" stop-color="#f59e0b" stop-opacity="0"/>'+
+      '</linearGradient></defs>'+
+      ticks+dLabels+
+      '<path d="'+fillD+'" fill="url(#polGrad18)"/>'+
+      '<path d="'+pathD+'" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linejoin="round"/>'+
+      dots+
+    '</svg>'+
+    '<div style="display:flex;gap:16px;margin-top:6px;flex-wrap:wrap;">'+
+      '<span style="font-size:12px;color:'+dColor+';">'+dLabel+' ('+pct+')</span>'+
+      '<span style="font-size:12px;color:#aaa;">Best: <b style="color:#fff">'+Math.max.apply(null,vals)+'kg</b></span>'+
+      '<span style="font-size:12px;color:#aaa;">'+pts.length+' session'+(pts.length!==1?'s':'')+'</span>'+
+    '</div>';
+};
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   2. MUSCLE RECOVERY STATUS (workouts)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+var MUS_LIST18=['Chest','Back','Shoulders','Biceps','Triceps','Quads','Hamstrings','Glutes','Calves','Abs','Traps','Forearms'];
+
+function _injectMusRecovery(){
+  if(document.getElementById('rfc-musrec-wrap')) return;
+  var anchor = document.getElementById('rfc-pol-wrap') ||
+               document.getElementById('rfc-deload-wrap') ||
+               document.getElementById('rfc-orm-wrap') ||
+               document.getElementById('rfc-heatmap-wrap') ||
+               document.getElementById('rfc-mev-wrap') ||
+               document.getElementById('wl-history');
+  if(!anchor) return;
+  var card=_b18card('rfc-musrec-wrap','💪 Muscle Recovery Status');
+  var inner=document.createElement('div'); inner.id='rfc-musrec-body';
+  card.appendChild(inner);
+  anchor.insertAdjacentElement('afterend', card);
+  _renderMusRecovery();
+}
+
+function _renderMusRecovery(){
+  var el=document.getElementById('rfc-musrec-body'); if(!el) return;
+  var uid=_uid18();
+  if(!uid){ el.innerHTML='<p style="color:#555;font-size:12px;">Log in to view muscle recovery.</p>'; return; }
+  var wks=_getWks18(uid);
+  var mus2=(typeof EX_MUS2!=='undefined')?EX_MUS2:{};
+  var now=Date.now();
+
+  // Find last timestamp each muscle was trained
+  var lastTrained={};
+  wks.forEach(function(w){
+    var wts=w.ts||new Date(w.date).getTime()||0;
+    (w.exercises||[]).forEach(function(e){
+      var mName=mus2[(e.name||'').toLowerCase().trim()];
+      if(!mName) return;
+      var canonical=mName.charAt(0).toUpperCase()+mName.slice(1).toLowerCase();
+      if(!lastTrained[canonical]||wts>lastTrained[canonical]) lastTrained[canonical]=wts;
+    });
+  });
+
+  // Also use workout focus tag
+  wks.forEach(function(w){
+    var wts=w.ts||0;
+    if(w.focus){
+      var fl=w.focus.toLowerCase();
+      MUS_LIST18.forEach(function(m){
+        if(fl.indexOf(m.toLowerCase())!==-1){
+          if(!lastTrained[m]||wts>lastTrained[m]) lastTrained[m]=wts;
+        }
+      });
+    }
+  });
+
+  el.innerHTML='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;">'+
+    MUS_LIST18.map(function(m){
+      var lt=lastTrained[m]||0;
+      var hoursAgo=lt?(now-lt)/3600000:999;
+      var status,color,bg;
+      if(lt===0){ status='Ready'; color='#22c55e'; bg='rgba(34,197,94,.08)'; }
+      else if(hoursAgo<24){ status='Sore'; color='#ef4444'; bg='rgba(239,68,68,.08)'; }
+      else if(hoursAgo<48){ status='Recovering'; color='#f59e0b'; bg='rgba(245,158,11,.08)'; }
+      else if(hoursAgo<72){ status='Almost Ready'; color='#a3e635'; bg='rgba(163,230,53,.08)'; }
+      else { status='Ready'; color='#22c55e'; bg='rgba(34,197,94,.08)'; }
+      var lastLbl=lt?Math.floor(hoursAgo)+'h ago':'No data';
+      return '<div style="background:'+bg+';border:1px solid '+color+'30;border-radius:8px;padding:8px;text-align:center;">'+
+        '<div style="font-size:11px;font-weight:700;color:#ccc;margin-bottom:2px;">'+m+'</div>'+
+        '<div style="font-size:11px;font-weight:700;color:'+color+';">'+status+'</div>'+
+        '<div style="font-size:9px;color:#444;margin-top:1px;">'+lastLbl+'</div>'+
+      '</div>';
+    }).join('')+
+  '</div>'+
+  '<div style="display:flex;gap:14px;margin-top:10px;flex-wrap:wrap;">'+
+    [['🔴','Sore','<24h'],['🟡','Recovering','24–48h'],['🟢','Almost Ready','48–72h'],['✅','Ready','>72h / untrained']].map(function(l){
+      return '<span style="font-size:10px;color:#555;">'+l[0]+' '+l[1]+' ('+l[2]+')</span>';
+    }).join('')+
+  '</div>';
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   3. DAILY HABIT TRACKER (dashboard)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+var HABITS18=[
+  {id:'workout',   label:'Workout',          icon:'💪', auto:true},
+  {id:'protein',   label:'Hit Protein Goal', icon:'🥩', auto:true},
+  {id:'water',     label:'Water Goal (8+)',   icon:'💧', auto:true},
+  {id:'steps',     label:'8k+ Steps',         icon:'👟', auto:true},
+  {id:'sleep',     label:'Sleep Logged',      icon:'😴', auto:true},
+  {id:'no_sugar',  label:'No Junk Food',      icon:'🚫', auto:false},
+  {id:'meditate',  label:'Meditate / Stress', icon:'🧘', auto:false},
+  {id:'stretch',   label:'Stretch / Mobility',icon:'🤸', auto:false}
+];
+
+function _injectHabits(){
+  if(document.getElementById('rfc-habits-wrap')) return;
+  var anchor = document.getElementById('rfc-wt-trend-wrap') ||
+               document.getElementById('rfc-recovery-wrap') ||
+               document.getElementById('rfc-sleep-sched-wrap') ||
+               document.getElementById('rfc-rings-wrap') ||
+               document.querySelector('.dash-topbar');
+  if(!anchor) return;
+  var card=_b18card('rfc-habits-wrap','✅ Daily Habit Tracker');
+  var inner=document.createElement('div'); inner.id='rfc-habits-body';
+  card.appendChild(inner);
+  anchor.insertAdjacentElement('afterend', card);
+  _renderHabits();
+}
+
+function _renderHabits(){
+  var el=document.getElementById('rfc-habits-body'); if(!el) return;
+  var uid=_uid18();
+  if(!uid){ el.innerHTML='<p style="color:#555;font-size:12px;">Log in to track daily habits.</p>'; return; }
+  var today=new Date().toISOString().slice(0,10);
+  var hKey='rfc_habits_'+uid+'_'+today;
+  var saved={}; try{saved=JSON.parse(localStorage.getItem(hKey)||'{}');}catch(e){}
+
+  // Auto-fill from other data
+  var lastRes={}; try{lastRes=JSON.parse(localStorage.getItem('bm_last_result')||'{}');}catch(e){}
+  var wks=_getWks18(uid);
+  var todayStr=new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'});
+  var workedOut=wks.some(function(w){ return w.date===todayStr||(w.ts&&new Date(w.ts).toISOString().slice(0,10)===today); });
+  if(workedOut) saved['workout']=true;
+
+  var food=JSON.parse(localStorage.getItem('rfc_food_'+uid+'_'+today)||'[]');
+  var tP=0; food.forEach(function(f){tP+=+(f.protein||0);});
+  var goalP=+(lastRes.macros&&lastRes.macros.prot||150);
+  if(tP>=goalP*0.9) saved['protein']=true;
+
+  var cups=0;
+  try{var wd=JSON.parse(localStorage.getItem('rfc_water_'+uid+'_'+today)||'{}'); cups=+(wd.cups||0);}catch(e){}
+  if(cups>=8) saved['water']=true;
+
+  var stepCount=0;
+  try{var sd=JSON.parse(localStorage.getItem('rfc_steps_'+uid+'_'+today)||'{}'); stepCount=+(sd.count||0);}catch(e){}
+  if(stepCount>=8000) saved['steps']=true;
+
+  var sleepLog={}; try{sleepLog=JSON.parse(localStorage.getItem('rfc_sleep_'+uid)||'{}');}catch(e){}
+  if(sleepLog.date===today) saved['sleep']=true;
+
+  // Count completed
+  var done=HABITS18.filter(function(h){return saved[h.id];}).length;
+  var pct=Math.round(done/HABITS18.length*100);
+  var barColor=pct>=80?'#22c55e':pct>=50?'#f59e0b':'#ef4444';
+
+  el.innerHTML=
+    '<div style="margin-bottom:12px;">'+
+      '<div style="display:flex;justify-content:space-between;margin-bottom:4px;">'+
+        '<span style="font-size:12px;color:#aaa;">Today\'s Progress</span>'+
+        '<span style="font-size:12px;font-weight:700;color:'+barColor+';">'+done+' / '+HABITS18.length+'</span>'+
+      '</div>'+
+      '<div style="height:6px;background:#1a1a1a;border-radius:3px;overflow:hidden;">'+
+        '<div style="height:100%;width:'+pct+'%;background:'+barColor+';border-radius:3px;transition:width .6s ease;"></div>'+
+      '</div>'+
+    '</div>'+
+    '<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:6px;">'+
+    HABITS18.map(function(h){
+      var done2=!!saved[h.id];
+      var toggleFn=h.auto?'':(done2?'window._rfcUncheckHabit(\''+h.id+'\')':'window._rfcCheckHabit(\''+h.id+'\')');
+      var cursor=h.auto?'default':'pointer';
+      return '<div onclick="'+toggleFn+'" style="cursor:'+cursor+';display:flex;align-items:center;gap:8px;padding:8px 10px;background:'+(done2?'rgba(34,197,94,.08)':'#1a1a1a')+';border:1px solid '+(done2?'#22c55e33':'#222')+';border-radius:8px;transition:all .3s;">'+
+        '<span style="font-size:16px;">'+h.icon+'</span>'+
+        '<span style="font-size:12px;color:'+(done2?'#22c55e':'#aaa')+';flex:1;">'+h.label+'</span>'+
+        '<span style="font-size:16px;">'+(done2?'✅':'⬜')+'</span>'+
+      '</div>';
+    }).join('')+
+    '</div>'+
+    (pct===100?'<div style="text-align:center;margin-top:12px;font-size:13px;color:#22c55e;font-weight:700;">🏆 Perfect Day! All habits complete!</div>':'');
+}
+
+window._rfcCheckHabit=function(id){
+  var uid=_uid18(); if(!uid) return;
+  var today=new Date().toISOString().slice(0,10);
+  var hKey='rfc_habits_'+uid+'_'+today;
+  var saved={}; try{saved=JSON.parse(localStorage.getItem(hKey)||'{}');}catch(e){}
+  saved[id]=true;
+  localStorage.setItem(hKey,JSON.stringify(saved));
+  _renderHabits();
+};
+window._rfcUncheckHabit=function(id){
+  var uid=_uid18(); if(!uid) return;
+  var today=new Date().toISOString().slice(0,10);
+  var hKey='rfc_habits_'+uid+'_'+today;
+  var saved={}; try{saved=JSON.parse(localStorage.getItem(hKey)||'{}');}catch(e){}
+  delete saved[id];
+  localStorage.setItem(hKey,JSON.stringify(saved));
+  _renderHabits();
+};
+
+/* ════════════════════════════════════════════════════
+   switchScreen + initial inject
+   ════════════════════════════════════════════════════ */
+var _origSS16=window.switchScreen;
+window.switchScreen=function(name,navEl){
+  _origSS16&&_origSS16(name,navEl);
+  if(name==='workouts'){
+    setTimeout(function(){
+      _injectPOL(); _injectMusRecovery(); _renderMusRecovery();
+    }, 750);
+  }
+  if(name==='dashboard'){
+    setTimeout(function(){ _injectHabits(); _renderHabits(); }, 1000);
+  }
+};
+
+setTimeout(function(){
+  _injectPOL();
+  _injectMusRecovery();
+  _injectHabits();
+}, 10000);
+
+setTimeout(function(){
+  if(!document.getElementById('rfc-pol-wrap'))     _injectPOL();
+  if(!document.getElementById('rfc-musrec-wrap'))  _injectMusRecovery();
+  if(!document.getElementById('rfc-habits-wrap'))  _injectHabits();
+}, 13000);
+
+window.addEventListener('rfc-food-updated', _renderHabits);
+
+})();
+</script>
+
 </body>
 </html>
