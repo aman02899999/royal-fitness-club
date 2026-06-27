@@ -4840,7 +4840,7 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
           <li class="flocked"><span class="fi m">🔒</span> Progress Tracker &amp; Photos</li>
           <li class="flocked"><span class="fi m">🔒</span> Blood Analyser &amp; Physio</li>
         </ul>
-        <div style="padding:8px 10px;background:rgba(34,197,94,.07);border:1px solid rgba(34,197,94,.15);border-radius:6px;font-size:10px;color:#86efac;text-align:center;margin-bottom:10px;">🏋️ RFC Gym Member? Use <strong>GYM CODE</strong> tab — PRO free at 3 months!</div>
+        <div style="padding:8px 10px;background:rgba(34,197,94,.07);border:1px solid rgba(34,197,94,.15);border-radius:6px;font-size:10px;color:#15803d;text-align:center;margin-bottom:10px;">🏋️ RFC Gym Member? Use <strong>GYM CODE</strong> tab — PRO free at 3 months!</div>
         <button class="bfire" style="width:100%;justify-content:center;" onclick="switchAuthTab('google');forceLogin();">🌐 Sign In Free with Google</button>
       </div>
 
@@ -6916,7 +6916,7 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
     </div>
     <!-- REGISTER WITH GYM CODE PANEL -->
     <div id="auth-register-panel" style="display:none;">
-      <div class="mwarn" style="background:rgba(34,197,94,.08);border-color:rgba(34,197,94,.25);color:#86efac;">🎟️ RFC gym member? Enter your membership code. <strong style="color:var(--gold);">3+ months = PRO FREE!</strong></div>
+      <div class="mwarn" style="background:rgba(34,197,94,.08);border-color:rgba(34,197,94,.25);color:#15803d;">🎟️ RFC gym member? Enter your membership code. <strong style="color:var(--gold);">3+ months = PRO FREE!</strong></div>
       <input type="text" class="minp" id="reg-code" placeholder="Membership Code (e.g. RFC-A3K9P2)" autocomplete="off" style="text-transform:uppercase;letter-spacing:2px;font-family:monospace;font-size:15px;">
       <input type="text" class="minp" id="reg-name" placeholder="Your Full Name">
       <input type="tel" class="minp" id="reg-phone" placeholder="Mobile Number (optional)">
@@ -6933,7 +6933,7 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
     <button class="mclose" onclick="closeModal('promodal')">✕</button>
     <h2>ROYAL PRO 👑</h2>
     <p style="color:var(--muted);font-size:12px;">The #1 personalised transformation system</p>
-    <div style="margin-bottom:14px;padding:8px 12px;background:rgba(34,197,94,.07);border:1px solid rgba(34,197,94,.2);border-radius:6px;font-size:11px;color:#86efac;text-align:center;line-height:1.5;">🏋️ <strong>RFC Gym Member?</strong> You get PRO FREE after <strong>3 months</strong> of membership — no payment needed!</div>
+    <div style="margin-bottom:14px;padding:8px 12px;background:rgba(34,197,94,.07);border:1px solid rgba(34,197,94,.2);border-radius:6px;font-size:11px;color:#15803d;text-align:center;line-height:1.5;">🏋️ <strong>RFC Gym Member?</strong> You get PRO FREE after <strong>3 months</strong> of membership — no payment needed!</div>
     <ul class="profl">
       <li><span class="pi">🍛</span><span>Full 7-day meal plan (200+ foods across all diet types)</span></li>
       <li><span class="pi">📊</span><span>Progress tracking with interactive weight chart</span></li>
@@ -11881,7 +11881,7 @@ function renderChallenges() {
         <button class="bsm" style="font-size:11px;background:rgba(239,68,68,.1);border-color:rgba(239,68,68,.3);color:#f87171;" onclick="if(confirm('Delete?')){admDeleteChallenge(${chIdx});switchScreen('challenges',null);}">🗑 Delete</button>
       </div>` : '';
     const actionBtn = _isAdmin
-      ? `<button class="bfire" style="width:100%;padding:13px;font-size:15px;background:rgba(232,0,29,.15);border:1px dashed rgba(232,0,29,.5);cursor:pointer;" onclick="admTab(6);switchScreen('admin',document.getElementById('sb-admin-item'))">⚙️ ADMIN — EDIT THIS CHALLENGE</button>`
+      ? `<button class="bfire" style="width:100%;padding:13px;font-size:15px;background:rgba(232,0,29,.15);border:1px dashed rgba(232,0,29,.5);cursor:pointer;color:#c0021a;" onclick="admTab(6);switchScreen('admin',document.getElementById('sb-admin-item'))">⚙️ ADMIN — EDIT THIS CHALLENGE</button>`
       : ch.status === 'soon'
         ? `<button class="bfire" style="width:100%;padding:13px;font-size:15px;opacity:.5;cursor:not-allowed;" disabled>🔔 NOTIFY ME</button>`
         : joined
@@ -21843,6 +21843,31 @@ function renderMeditation(){
 @media(min-width:901px){
   body.is-admin-session > nav{ padding-right:154px !important; }
 }
+
+/* ── Fix #6: Dashboard progress cards — invisible white-on-white text ──
+   The .pv-* "progress view" cards were built for a dark card but now
+   sit on var(--card) (white), leaving their legend/labels/values/inputs
+   white on white (contrast ~1:1). Re-color for the light theme. */
+.pv-leg,
+.pv-meas-chip-lbl,
+.pv-cal-ml, .pv-cal-dl,
+.pv-hm-dl, .pv-hm-ml,
+.pv-ring-lbl,
+.pv-empty-text{ color:var(--muted) !important; }
+.pv-meas-chip-val{ color:var(--text) !important; }
+.pv-log-row input{ color:var(--text) !important; }
+.pv-log-row input::placeholder{ color:var(--muted) !important; }
+
+/* ── Fix #7: Gold/amber text that was low-contrast on light surfaces ──
+   These were gold (#ffd000) on white/near-white. Darkened to a readable
+   amber that keeps the gold identity but passes contrast. */
+.ch-prize-pill{ color:#8a6000 !important; background:rgba(255,208,0,.16) !important; }
+.wallet-bal{ color:#9a7400 !important; }
+.hc-alert-note{ color:#8a6000 !important; background:rgba(255,208,0,.1) !important; }
+/* gold heading + "₹100" inside the white referral wallet card */
+.wallet-card h4, .wallet-card strong{ color:#9a7400 !important; }
+/* admin challenge status badge: amber on near-white */
+.adm-ch-status.soon{ color:#b45309 !important; }
 </style>
 
 </body>
