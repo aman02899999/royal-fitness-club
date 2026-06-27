@@ -9313,7 +9313,11 @@ window.toast=function(msg,type){
   if(t){
     t.className='toast toast-premium '+(type||'');
     var icon=type==='gold'?'⭐':type==='red'?'❌':'✅';
-    t.innerHTML='<span style="font-size:18px">'+icon+'</span><span>'+msg+'</span>';
+    // Build with textContent so messages (incl. err.message) can't inject HTML.
+    t.textContent='';
+    var _ic=document.createElement('span'); _ic.style.fontSize='18px'; _ic.textContent=icon;
+    var _msg=document.createElement('span'); _msg.textContent=msg;
+    t.appendChild(_ic); t.appendChild(_msg);
     t.style.display='flex';
     t.style.opacity='1';
     clearTimeout(window._toastTimer);
@@ -21968,7 +21972,9 @@ input:focus-visible, select:focus-visible, textarea:focus-visible{
   // Does the control already expose an accessible name? (aria/title or >=2 real letters)
   function hasName(el){
     if(el.getAttribute('aria-label')||el.getAttribute('aria-labelledby')||el.getAttribute('title'))return true;
-    var t=(el.textContent||'').replace(/[\s‐-―−×✕✖←-⇿⌀-➿️‍]|[\u{1F000}-\u{1FAFF}]/gu,'').trim();
+    // Count real letters/digits — robust without over-stripping legit glyphs
+    // (the previous unicode range nuked things like "✓"/"⏱ 5:00").
+    var t=(el.textContent||'').replace(/[^\p{Letter}\p{Number}]/gu,'');
     return t.length>=2;
   }
   // Infer a sensible label for clearly icon-only controls; null if unsure.
@@ -22005,6 +22011,7 @@ input:focus-visible, select:focus-visible, textarea:focus-visible{
     if(!el || NATIVE[el.tagName] || el.isContentEditable) return;
     if(el.getAttribute('tabindex')!=='0') return;
     if(!el.hasAttribute('onclick') && el.getAttribute('role')!=='button') return;
+    if(el.getAttribute('aria-disabled')==='true' || el.hasAttribute('disabled')) return; // don't activate disabled controls
     e.preventDefault();
     el.click();
   }, true);
