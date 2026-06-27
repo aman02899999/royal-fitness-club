@@ -1,4 +1,4 @@
-const CACHE = 'rfc-v63';
+const CACHE = 'rfc-v64';
 const STATIC = [
   '/',
   '/index.html',
@@ -70,24 +70,41 @@ self.addEventListener('fetch', e => {
       url.hostname.includes('googleapis') || url.hostname.includes('gstatic') ||
       url.hostname.includes('fontawesome') || url.hostname.includes('fonts.g')) return;
 
-  const isNavigation = e.request.mode === 'navigate';
+  const isNavigation = e.request.mode === 'navigate' || e.request.destination === 'document';
 
-  e.respondWith(
-    caches.match(e.request).then(cached => {
-      if (cached) return cached;
-      return fetch(e.request).then(res => {
-        if (res.ok && url.origin === self.location.origin) {
+  // ── HTML / navigation → NETWORK-FIRST ──
+  // Serving the page cache-first meant returning users kept an old
+  // index.html until the cache version changed. Network-first delivers
+  // the latest app on every visit, with cache/offline fallback when down.
+  if (isNavigation) {
+    e.respondWith(
+      fetch(e.request).then(res => {
+        if (res && res.ok && url.origin === self.location.origin) {
           const clone = res.clone();
           caches.open(CACHE).then(c => c.put(e.request, clone));
         }
         return res;
-      }).catch(() => {
-        // Navigation requests (page loads) → show offline page
-        if (isNavigation) {
-          return caches.match('/offline.html');
+      }).catch(() =>
+        caches.match(e.request)
+          .then(c => c || caches.match('/index.html'))
+          .then(c => c || caches.match('/offline.html'))
+      )
+    );
+    return;
+  }
+
+  // ── Static assets → STALE-WHILE-REVALIDATE ──
+  // Fast from cache, refreshed in the background so updates self-propagate.
+  e.respondWith(
+    caches.match(e.request).then(cached => {
+      const network = fetch(e.request).then(res => {
+        if (res && res.ok && url.origin === self.location.origin) {
+          const clone = res.clone();
+          caches.open(CACHE).then(c => c.put(e.request, clone));
         }
-        return cached || new Response('', { status: 503, statusText: 'Offline' });
-      });
+        return res;
+      }).catch(() => cached || new Response('', { status: 503, statusText: 'Offline' }));
+      return cached || network;
     })
   );
 });
