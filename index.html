@@ -7347,10 +7347,10 @@ async function loginWithFirebase(){
     $('login-pass').disabled=true;
     await firebase.auth().signInWithEmailAndPassword(email,pass);
     closeLoginModal();
-    toast('Welcome back! 🔥');
+    toast('Welcome back! 🔥','green');
   }catch(err){
     const msg=err.code==='auth/wrong-password'||err.code==='auth/invalid-credential'?'Wrong password. Try the GOOGLE tab or use Forgot password.':err.code==='auth/user-not-found'?'No account found. Use the GOOGLE tab for instant sign-in.':err.message;
-    toast(msg,'gold');
+    toast(msg,'red');
   }finally{if($('login-pass'))$('login-pass').disabled=false;}
 }
 
@@ -7383,12 +7383,12 @@ async function signInWithGoogle(){
         // Page will reload; result handled in initUser()
         return;
       }catch(redirErr){
-        toast('Google sign-in failed. Please allow popups and try again.','gold');
+        toast('Google sign-in failed. Please allow popups and try again.','red');
       }
     } else if(err.code==='auth/network-request-failed'){
       toast('Network error. Please check your connection and try again.','gold');
     } else if(err.code==='auth/unauthorized-domain'){
-      toast('Domain not authorised for Google sign-in. Contact admin.','gold');
+      toast('Domain not authorised for Google sign-in. Contact admin.','red');
     } else {
       toast(err.message||'Google sign-in failed. Try again.','gold');
     }
@@ -21925,6 +21925,22 @@ input:focus-visible, select:focus-visible, textarea:focus-visible{
   }
   .lb-refresh{ min-width:40px !important; }
 }
+
+/* ── Fix #11: Toast / login messages were dark text on a dark toast ──
+   .toast-premium has a near-black background (rgba(14,14,22,.96)) but set
+   no text color, so messages (login successful / failed / wrong password,
+   etc.) inherited --text (#0F0A1A) = dark-on-dark, nearly invisible.
+   Force light text and add a colored accent per status so success vs
+   failure reads instantly. */
+.toast-premium{ color:#ffffff !important; }
+.toast-premium > span{ color:#ffffff !important; }
+.toast-premium > span:last-child{ font-size:13px !important; font-weight:600 !important; line-height:1.35 !important; }
+.toast-premium.green{ border-color:rgba(34,197,94,.85) !important;
+  box-shadow:0 16px 48px rgba(0,0,0,.5), 0 0 0 1px rgba(34,197,94,.35) !important; }
+.toast-premium.red{ border-color:rgba(239,68,68,.9) !important;
+  box-shadow:0 16px 48px rgba(0,0,0,.5), 0 0 0 1px rgba(239,68,68,.4) !important; }
+.toast-premium.gold{ border-color:rgba(245,158,11,.8) !important;
+  box-shadow:0 16px 48px rgba(0,0,0,.5), 0 0 0 1px rgba(245,158,11,.3) !important; }
 </style>
 
 </body>
