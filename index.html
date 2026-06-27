@@ -21868,6 +21868,23 @@ function renderMeditation(){
 .wallet-card h4, .wallet-card strong{ color:#9a7400 !important; }
 /* admin challenge status badge: amber on near-white */
 .adm-ch-status.soon{ color:#b45309 !important; }
+
+/* ── Fix #8: AA pass 2 — genuine text-on-light accents below 4.5:1 ──
+   Darkened while keeping each hue, scoped to the light-surface classes
+   (dark-badge uses of the same hues are untouched). */
+/* dashboard progress big-stat numbers (light pv cards) */
+#pv-weight-card .pv-big-num{ color:#b45309 !important; }  /* amber */
+#pv-streak-card .pv-big-num{ color:#dc2626 !important; }  /* red   */
+#pv-muscle-card .pv-big-num{ color:#15803d !important; }  /* green */
+#pv-heat-card   .pv-big-num{ color:#6d28d9 !important; }  /* violet*/
+/* water quick-add buttons: blue-400 -> blue-600 */
+.water-add-btn{ color:#2563eb !important; }
+/* leaderboard prize value: gold on light card -> readable amber */
+.lb-prize-val{ color:#9a7400 !important; }
+/* PDF store star ratings: amber-500 -> amber-700 */
+.pshop-card-stars{ color:#b45309 !important; }
+/* dashboard AI/smart tag: gold on light -> readable amber */
+.dash-card-tag.ai{ color:#9a7400 !important; }
 </style>
 
 </body>
