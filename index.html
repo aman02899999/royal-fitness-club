@@ -21802,5 +21802,39 @@ function renderMeditation(){
 })();
 </script>
 
+<!-- ════════════════════════════════════════════════════════════
+     AUDIT FIXES — desktop top-bar overlap + landing hero contrast
+     Pure CSS. Scoped so it can't affect mobile or other screens.
+     ════════════════════════════════════════════════════════════ -->
+<style id="rfc-audit-fixes">
+/* ── Fix #1: Desktop top-bar overlap ──
+   When the sidebar is open on desktop it already provides full
+   navigation + branding (every top-nav link target — transform,
+   plans, profile, challenges, leaderboard — exists in the sidebar),
+   so the redundant brand logo and horizontal links in the top bar
+   are hidden. This removes the overflow/overlap and leaves the top
+   bar as a clean utilities strip (currency, timer, user, toggle).
+   Overrides the earlier `body.sb-open > nav .nlinks{display:flex}`. */
+@media(min-width:901px){
+  body.sb-open > nav .nlogo,
+  body.sb-open > nav .nlinks{ display:none !important; }
+  body.sb-open > nav{ justify-content:flex-end !important; }
+}
+
+/* ── Fix #2: Landing hero "YOUR BEAST" was dark-on-dark ──
+   .hh1 inherited --text (#0F0A1A) over the dark hero. Make the plain
+   line readable; the <em>ECOSYSTEM</em> keeps its gradient fill. */
+.hero .hh1{ color:#ffffff; }
+
+/* ── Fix #3: Secondary hero CTA had an invisible label ──
+   .boutl used color:var(--text) (near-black) on the dark hero. */
+.hero .boutl{ color:#ffffff !important; }
+.hero .boutl:hover{ color:#ffffff !important; }
+
+/* ── Fix #4: Minor low-contrast hero subtitles ── */
+.hero .hsub{ color:#d9d4e8 !important; }
+.pshop-hero-sub{ color:rgba(255,255,255,.92) !important; }
+</style>
+
 </body>
 </html>
