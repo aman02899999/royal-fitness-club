@@ -7016,11 +7016,26 @@ document.addEventListener('click',function(e){
 // ── CURSOR ──
 const cur=document.getElementById('cur'),cdot=document.getElementById('cdot');
 let mx=0,my=0,cx=0,cy=0;
-document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cdot.style.left=mx+'px';cdot.style.top=my+'px';});
-(function ac(){cx+=(mx-cx)*.12;cy+=(my-cy)*.12;cur.style.left=cx+'px';cur.style.top=cy+'px';requestAnimationFrame(ac);})();
+// Custom cursor: skip on touch (no cursor there), and only animate while the
+// trailing ring is catching up — no perpetual 60fps idle loop. (perf)
+(function(){
+  var coarse = window.matchMedia && (matchMedia('(hover:none)').matches || matchMedia('(pointer:coarse)').matches);
+  if(coarse){ if(cur)cur.style.display='none'; if(cdot)cdot.style.display='none'; return; }
+  var running=false;
+  function ac(){
+    cx+=(mx-cx)*.12; cy+=(my-cy)*.12;
+    if(cur){ cur.style.left=cx+'px'; cur.style.top=cy+'px'; }
+    if(Math.abs(mx-cx)>0.4 || Math.abs(my-cy)>0.4){ requestAnimationFrame(ac); } else { running=false; }
+  }
+  document.addEventListener('mousemove',function(e){
+    mx=e.clientX; my=e.clientY;
+    if(cdot){ cdot.style.left=mx+'px'; cdot.style.top=my+'px'; }
+    if(!running){ running=true; requestAnimationFrame(ac); }
+  });
+})();
 // ── PARTICLES ──
 const pc=['#e8001d','#ff4500','#ffd000','#ff8c00'];
-setInterval(()=>{const p=document.createElement('div');p.className='pt';const s=Math.random()*5+2;p.style.cssText=`width:${s}px;height:${s}px;left:${Math.random()*100}%;background:${pc[Math.floor(Math.random()*4)]};animation-duration:${Math.random()*8+6}s;animation-delay:${Math.random()*2}s;`;document.getElementById('ptcl').appendChild(p);setTimeout(()=>p.remove(),14000);},700);
+setInterval(()=>{if(document.hidden)return;const p=document.createElement('div');p.className='pt';const s=Math.random()*5+2;p.style.cssText=`width:${s}px;height:${s}px;left:${Math.random()*100}%;background:${pc[Math.floor(Math.random()*4)]};animation-duration:${Math.random()*8+6}s;animation-delay:${Math.random()*2}s;`;document.getElementById('ptcl').appendChild(p);setTimeout(()=>p.remove(),14000);},700);
 // ── HERO BANNER ACTIVE ──
 (function initHero(){
   // Count-up animation helper
