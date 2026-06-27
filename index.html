@@ -4678,7 +4678,7 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
         <!-- Digital Membership Card -->
         <div style="margin-top:16px;">
           <canvas id="member-card-canvas" width="340" height="200" style="width:100%;max-width:340px;border-radius:12px;display:block;box-shadow:0 8px 32px rgba(0,0,0,.4);"></canvas>
-          <button onclick="downloadMemberCard()" style="width:100%;margin-top:8px;background:transparent;border:1px solid var(--border);color:var(--muted);padding:8px;border-radius:6px;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:1.5px;cursor:pointer;">📲 SAVE CARD TO PHONE</button>
+          <button onclick="downloadMemberCard()" style="width:100%;margin-top:8px;background:transparent;border:1px solid var(--border);color:var(--muted);padding:8px;border-radius:6px;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:1.5px;cursor:pointer;min-height:40px;">📲 SAVE CARD TO PHONE</button>
         </div>
       </div>
       <!-- Account details -->
@@ -21885,6 +21885,46 @@ function renderMeditation(){
 .pshop-card-stars{ color:#b45309 !important; }
 /* dashboard AI/smart tag: gold on light -> readable amber */
 .dash-card-tag.ai{ color:#9a7400 !important; }
+
+/* ── Fix #9: Keyboard focus visibility (WCAG 2.4.7) ──
+   24 outline:none rules removed focus indicators and there was no
+   :focus-visible anywhere. Add a clear branded ring for KEYBOARD users
+   only (:focus-visible never triggers on mouse/touch, so the look is
+   unchanged for pointer users). Inputs already show a border-color
+   focus state, so this targets buttons/links/tabs/focusable controls. */
+a:focus-visible,
+button:focus-visible,
+[role="button"]:focus-visible,
+[tabindex]:focus-visible,
+.mbn-item:focus-visible,
+.sb-item:focus-visible,
+.adm-tab:focus-visible, .lb-tab:focus-visible, .split-tab:focus-visible,
+.sp-tab:focus-visible, .ptab:focus-visible, .cr-filter:focus-visible,
+.pshop-flt:focus-visible, .water-add-btn:focus-visible{
+  outline:3px solid #7c3aed !important;
+  outline-offset:2px !important;
+  border-radius:6px;
+}
+input:focus-visible, select:focus-visible, textarea:focus-visible{
+  outline:2px solid rgba(124,58,237,.6) !important;
+  outline-offset:1px !important;
+}
+
+/* ── Fix #10: Mobile tap targets too small (<40px tall) ──
+   Many buttons/tabs/filter chips were ~25-35px tall — below the ~44px
+   comfortable touch size. Give them a minimum tap height and center
+   their content. Mobile only, so desktop density is unchanged. */
+@media(max-width:600px){
+  .pshop-flt, .pshop-card-btn, .water-add-btn, .cr-filter,
+  .lb-tab, .gbtn, .ph-upload-btn, .lb-refresh, .sp-tab, .ptab,
+  .split-tab, .fst, .pv-log-row button, .bsm{
+    min-height:40px !important;
+    display:inline-flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+  }
+  .lb-refresh{ min-width:40px !important; }
+}
 </style>
 
 </body>
