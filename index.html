@@ -165,34 +165,36 @@
 <meta name="indexnow-key" content="royalfitnessclubrfc2024indexnow">
 <!-- Open Search for browser address-bar search integration -->
 <link rel="search" type="application/opensearchdescription+xml" title="Royal Fitness Club" href="/opensearch.xml">
-<!-- ═══ Google Tag Manager — replace GTM-XXXXXXXX with your container ID ═══ -->
-<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-XXXXXXXX');</script>
-<!-- ═══ Google Analytics 4 — replace G-XXXXXXXXXX with your Measurement ID ═══ -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+<!-- ═══ Analytics (Google Tag Manager / GA4 / Meta Pixel) ═══
+     Set real IDs below to enable. While they're still placeholders the
+     scripts are a no-op — no failing network requests on every page load. -->
 <script>
 window.dataLayer=window.dataLayer||[];
 function gtag(){dataLayer.push(arguments);}
-gtag('js',new Date());
-gtag('config','G-XXXXXXXXXX',{
-  page_title:'Royal Fitness Club',
-  page_location:window.location.href,
-  send_page_view:true,
-  currency:'INR',
-  country:'IN'
-});
-/* Track key conversions */
+(function(){
+  var GTM='GTM-XXXXXXXX';        // ← your Google Tag Manager container ID
+  var GA4='G-XXXXXXXXXX';        // ← your GA4 Measurement ID
+  var FBP='YOUR_PIXEL_ID';       // ← your Meta (Facebook) Pixel ID
+  var real=function(v){ return v && !/X{4}|YOUR_/.test(v); };
+  if(real(GTM)){
+    (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer',GTM);
+  }
+  if(real(GA4)){
+    var g=document.createElement('script');g.async=true;g.src='https://www.googletagmanager.com/gtag/js?id='+GA4;document.head.appendChild(g);
+    gtag('js',new Date());
+    gtag('config',GA4,{page_title:'Royal Fitness Club',page_location:window.location.href,send_page_view:true,currency:'INR',country:'IN'});
+  }
+  if(real(FBP)){
+    !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init',FBP);fbq('track','PageView');
+  }
+})();
+/* Track key conversions (safe no-ops until analytics IDs are configured) */
 window._trackEvent=function(action,category,label,value){
   if(typeof gtag==='function') gtag('event',action,{event_category:category,event_label:label,value:value,currency:'INR'});
   if(typeof fbq==='function') fbq('track','Purchase',{content_name:label,value:value,currency:'INR'});
 };
 </script>
-<!-- ═══ Facebook Pixel — replace YOUR_PIXEL_ID with your Meta Pixel ID ═══ -->
-<script>
-!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
-fbq('init','YOUR_PIXEL_ID');
-fbq('track','PageView');
-</script>
-<noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=YOUR_PIXEL_ID&ev=PageView&noscript=1" alt=""></noscript>
 <style>
 :root{--red:#7C3AED;--orange:#8B5CF6;--gold:#5B21B6;--green:#059669;--blue:#3B82F6;--dark:#F5F3FF;--card:#FFFFFF;--card2:#F3F0FF;--border:rgba(109,40,217,.15);--muted:#475569;--text:#0F0A1A;--violet:#7C3AED;--violet-dark:#5B21B6;--violet-light:#8B5CF6;--violet-pale:#EDE9FE;
   /* Gradients */
@@ -5050,7 +5052,7 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
             <!-- BioDigital launcher card — opens full interactive model in browser tab -->
             <!-- Muscular anatomy image with transparent bg + body composition overlay -->
             <div id="anatomy-img-wrap">
-              <img id="anatomy-img" src="icons/anatomy_muscles.jpg" alt="Human Muscular System — Royal Fitness Club">
+              <img id="anatomy-img" loading="lazy" src="icons/anatomy_muscles.jpg" alt="Human Muscular System — Royal Fitness Club">
 
               <!-- Data overlay badges — shown after Beast Score calculation -->
               <div id="bio-overlay" style="display:none;position:absolute;inset:0;pointer-events:none;">
