@@ -21647,5 +21647,160 @@ function renderMeditation(){
 })();
 </script>
 
+<!-- ════════════════════════════════════════════════════════════
+     UI/UX POLISH LAYER — lightweight transitions & micro-interactions
+     Pure CSS + one-shot IntersectionObserver + delegated ripple.
+     No render loops, no canvas. Honors prefers-reduced-motion.
+     ════════════════════════════════════════════════════════════ -->
+<style id="rfc-ux-polish">
+@media (prefers-reduced-motion: no-preference){
+
+  /* ---- Screen enter animation ---- */
+  @keyframes rfcScreenIn{
+    from{opacity:0;transform:translateY(14px);}
+    to{opacity:1;transform:translateY(0);}
+  }
+  .sb-active-screen.sb-screen-first,
+  #screen-dashboard.sc-active{
+    animation:rfcScreenIn .42s cubic-bezier(.22,.61,.36,1) both;
+  }
+
+  /* ---- Cards: smooth hover lift + reveal-on-scroll ---- */
+  .rcard,.toolcard{
+    transition:transform .28s cubic-bezier(.22,.61,.36,1),
+               box-shadow .28s ease,
+               border-color .28s ease;
+    will-change:transform;
+  }
+  @media (hover:hover){
+    .rcard:hover,.toolcard:hover{
+      transform:translateY(-4px);
+      box-shadow:0 18px 40px rgba(109,40,217,.16),0 0 0 1px rgba(124,58,237,.14);
+      border-color:rgba(124,58,237,.35);
+    }
+  }
+  .rfc-reveal{opacity:0;transform:translateY(22px);}
+  .rfc-reveal.rfc-in{
+    opacity:1;transform:none;
+    transition:opacity .55s ease,transform .55s cubic-bezier(.22,.61,.36,1);
+  }
+
+  /* ---- Buttons: press feedback + sheen ---- */
+  .btn,.btn-premium,.btn-gold,.btn-sm,.btn-outline{
+    transition:transform .16s ease,box-shadow .22s ease,
+               background-color .22s ease,border-color .22s ease,color .22s ease;
+  }
+  @media (hover:hover){
+    .btn:hover,.btn-sm:hover{transform:translateY(-2px);}
+  }
+  .btn:active,.btn-premium:active,.btn-gold:active,.btn-sm:active{
+    transform:translateY(1px) scale(.985);
+  }
+
+  /* ---- Tabs: animated active state ---- */
+  .tab,.tab-btn,.split-tab,.sp-tab,.ptab,.lb-tab,.mtab,.fst,.rm-phase-tab{
+    transition:color .2s ease,background-color .25s ease,
+               border-color .25s ease,transform .15s ease;
+  }
+  .tab.active,.tab-btn.active,.split-tab.active,.sp-tab.active,
+  .ptab.active,.lb-tab.active{transform:translateY(-1px);}
+
+  /* ---- Mobile bottom-nav: bouncy active icon ---- */
+  .mbn-item{transition:transform .18s ease,opacity .18s ease;}
+  .mbn-icon{transition:transform .3s cubic-bezier(.34,1.56,.64,1),filter .25s ease;display:inline-block;}
+  .mbn-item.mbn-active .mbn-icon{transform:translateY(-3px) scale(1.18);}
+  .mbn-item:active{transform:scale(.9);}
+
+  /* ---- Modals: gentle scale-in ---- */
+  @keyframes rfcModalIn{from{opacity:0;transform:scale(.94) translateY(10px);}to{opacity:1;transform:none;}}
+  @keyframes rfcOverlayIn{from{opacity:0;}to{opacity:1;}}
+  .modal-overlay,.modal-box{animation:rfcOverlayIn .25s ease both;}
+  .modal-card,.modal-box>.modal-card,.modal-box{animation:rfcModalIn .32s cubic-bezier(.22,.61,.36,1) both;}
+
+  /* ---- Click ripple ---- */
+  .rfc-ripple{
+    position:absolute;border-radius:50%;pointer-events:none;
+    transform:scale(0);background:rgba(255,255,255,.45);
+    animation:rfcRipple .6s ease-out forwards;mix-blend-mode:screen;
+  }
+  @keyframes rfcRipple{to{transform:scale(2.6);opacity:0;}}
+
+  /* ---- Inputs: focus glow ---- */
+  input:focus,select:focus,textarea:focus{
+    transition:box-shadow .2s ease,border-color .2s ease;
+    box-shadow:0 0 0 3px rgba(124,58,237,.18);
+  }
+}
+</style>
+<script>
+(function(){
+  'use strict';
+  if(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  /* ---- One-shot scroll reveal for cards ---- */
+  function initReveal(){
+    if(!('IntersectionObserver' in window)) return;
+    var io=new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){
+          e.target.classList.add('rfc-in');
+          io.unobserve(e.target);
+        }
+      });
+    },{rootMargin:'0px 0px -8% 0px',threshold:.08});
+    function scan(){
+      var cards=document.querySelectorAll('.rcard:not(.rfc-reveal),.toolcard:not(.rfc-reveal)');
+      var i=0;
+      cards.forEach(function(c){
+        c.classList.add('rfc-reveal');
+        // light stagger via inline delay, capped so it never feels laggy
+        c.style.transitionDelay=Math.min(i*40,240)+'ms';
+        io.observe(c);
+        i++;
+      });
+      // Safety net: if a card is still hidden after 1.2s (e.g. observer
+      // never fired because it sits in an off-screen but display:block
+      // container), force-reveal it so nothing can get stuck invisible.
+      setTimeout(function(){
+        document.querySelectorAll('.rfc-reveal:not(.rfc-in)').forEach(function(c){
+          var r=c.getBoundingClientRect();
+          if(r.top < window.innerHeight + 600) c.classList.add('rfc-in');
+        });
+      },1200);
+    }
+    scan();
+    // re-scan when screens change (new cards become visible)
+    if(typeof window.switchScreen==='function'){
+      var _o=window.switchScreen;
+      window.switchScreen=function(n,e){ _o(n,e); setTimeout(scan,60); };
+    }
+  }
+
+  /* ---- Delegated click ripple ---- */
+  function initRipple(){
+    document.addEventListener('click',function(ev){
+      var t=ev.target.closest('.btn,.btn-premium,.btn-gold,.btn-sm,.btn-outline,.mbn-item');
+      if(!t) return;
+      var cs=window.getComputedStyle(t);
+      if(cs.position==='static') t.style.position='relative';
+      if(cs.overflow!=='hidden') t.style.overflow='hidden';
+      var r=t.getBoundingClientRect();
+      var size=Math.max(r.width,r.height);
+      var s=document.createElement('span');
+      s.className='rfc-ripple';
+      s.style.width=s.style.height=size+'px';
+      s.style.left=(ev.clientX-r.left-size/2)+'px';
+      s.style.top=(ev.clientY-r.top-size/2)+'px';
+      t.appendChild(s);
+      setTimeout(function(){ s.remove(); },620);
+    },{passive:true});
+  }
+
+  function boot(){ initReveal(); initRipple(); }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',boot);
+  else boot();
+})();
+</script>
+
 </body>
 </html>
