@@ -21834,6 +21834,15 @@ function renderMeditation(){
 /* ── Fix #4: Minor low-contrast hero subtitles ── */
 .hero .hsub{ color:#d9d4e8 !important; }
 .pshop-hero-sub{ color:rgba(255,255,255,.92) !important; }
+
+/* ── Fix #5: Floating ADMIN pill clipped the username ──
+   #admin-ctrl-bar is position:fixed at the top-right corner (~130px
+   wide) and sat over the nav's right cluster, clipping the user pill
+   ("Aman Sha…"). Reserve that space on desktop so the right-aligned
+   nav content stops before the admin pill. Mobile is left as-is. */
+@media(min-width:901px){
+  body.is-admin-session > nav{ padding-right:154px !important; }
+}
 </style>
 
 </body>
