@@ -194,7 +194,7 @@ fbq('track','PageView');
 </script>
 <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=YOUR_PIXEL_ID&ev=PageView&noscript=1" alt=""></noscript>
 <style>
-:root{--red:#7C3AED;--orange:#8B5CF6;--gold:#5B21B6;--green:#059669;--blue:#3B82F6;--dark:#F5F3FF;--card:#FFFFFF;--card2:#F3F0FF;--border:rgba(109,40,217,.15);--muted:#64748B;--text:#0F0A1A;--violet:#7C3AED;--violet-dark:#5B21B6;--violet-light:#8B5CF6;--violet-pale:#EDE9FE;
+:root{--red:#7C3AED;--orange:#8B5CF6;--gold:#5B21B6;--green:#059669;--blue:#3B82F6;--dark:#F5F3FF;--card:#FFFFFF;--card2:#F3F0FF;--border:rgba(109,40,217,.15);--muted:#475569;--text:#0F0A1A;--violet:#7C3AED;--violet-dark:#5B21B6;--violet-light:#8B5CF6;--violet-pale:#EDE9FE;
   /* Gradients */
   --pro:linear-gradient(135deg,#7C3AED,#5B21B6);
   --fire:linear-gradient(135deg,#7C3AED,#8B5CF6);
@@ -802,8 +802,8 @@ section::before{content:'';position:absolute;inset:0;background:linear-gradient(
 .pfeats{list-style:none;display:flex;flex-direction:column;gap:0;margin-bottom:18px;}
 .pfeats li{display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid var(--border);font-size:13px;}
 .pfeats li:last-child{border-bottom:none;}
-.fi{flex-shrink:0;font-size:13px;}.fi.r{color:var(--red);}.fi.g{color:var(--gold);}.fi.m{color:#888;}
-.flocked{color:#888;}
+.fi{flex-shrink:0;font-size:13px;}.fi.r{color:var(--red);}.fi.g{color:var(--gold);}.fi.m{color:#5e5e5e;}
+.flocked{color:#5e5e5e;}
 .promobox{background:rgba(255,208,0,.07);border:1px solid rgba(255,208,0,.18);border-radius:5px;padding:11px 15px;margin-bottom:14px;display:flex;align-items:center;gap:10px;}
 .ptimer2{font-family:'Bebas Neue',sans-serif;font-size:24px;color:var(--gold);letter-spacing:3px;}
 #calculator{background:var(--card2);}
@@ -1150,7 +1150,7 @@ section::before{content:'';position:absolute;inset:0;background:linear-gradient(
 .promo-item .promo-pill.gold{background:linear-gradient(135deg,var(--gold),var(--orange));color:#000;}
 .promo-item .promo-sep{color:rgba(232,0,29,.4);font-size:18px;padding:0 6px;}
 .promo-bar-close{position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;color:#444;font-size:16px;cursor:pointer;z-index:2;line-height:1;transition:color .2s;}
-.promo-bar-close:hover{color:#888;}
+.promo-bar-close:hover{color:#5e5e5e;}
 @keyframes promoScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 
 /* ── DUAL FEATURE MARQUEE ── */
@@ -1168,7 +1168,7 @@ section::before{content:'';position:absolute;inset:0;background:linear-gradient(
 @keyframes mqRev{0%{transform:translateX(-50%)}100%{transform:translateX(0)}}
 .rfc-mq-item{display:flex;align-items:center;gap:8px;padding:0 24px;white-space:nowrap;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:#4a4a4a;}
 .rfc-mq-item .mq-icon{font-size:15px;}
-.rfc-mq-item.lit{color:#888;}
+.rfc-mq-item.lit{color:#5e5e5e;}
 .rfc-mq-item .mq-dot{width:3px;height:3px;border-radius:50%;background:var(--red);flex-shrink:0;margin-left:8px;}
 
 /* ── SOCIAL PROOF TICKER ── */
@@ -1180,7 +1180,7 @@ section::before{content:'';position:absolute;inset:0;background:linear-gradient(
 .rfc-st-track:hover{animation-play-state:paused;}
 .rfc-st-item{display:flex;align-items:center;gap:10px;padding:0 36px;white-space:nowrap;}
 .rfc-st-avatar{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--red),var(--orange));display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;font-family:'Bebas Neue',sans-serif;flex-shrink:0;}
-.rfc-st-text{font-family:'Barlow',sans-serif;font-size:12px;color:#888;line-height:1;}
+.rfc-st-text{font-family:'Barlow',sans-serif;font-size:12px;color:#5e5e5e;line-height:1;}
 .rfc-st-text strong{color:var(--text);font-weight:600;}
 .rfc-st-stars{color:var(--gold);font-size:10px;letter-spacing:1px;}
 .rfc-st-divider{color:#222;padding:0 4px;font-size:16px;}
@@ -1229,18 +1229,18 @@ section::before{content:'';position:absolute;inset:0;background:linear-gradient(
 .rfc-ub-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(36px,5vw,58px);line-height:.88;letter-spacing:2px;color:#fff;}
 .rfc-ub-title em{font-style:normal;color:var(--gold);}
 .rfc-ub-features{display:flex;flex-direction:column;gap:7px;}
-.rfc-ub-feat{display:flex;align-items:center;gap:8px;font-family:'Barlow',sans-serif;font-size:13px;color:#888;}
+.rfc-ub-feat{display:flex;align-items:center;gap:8px;font-family:'Barlow',sans-serif;font-size:13px;color:#5e5e5e;}
 .rfc-ub-feat::before{content:'✓';color:var(--red);font-weight:700;font-size:13px;flex-shrink:0;}
 .rfc-ub-right{display:flex;flex-direction:column;align-items:center;gap:16px;flex-shrink:0;}
 .rfc-ub-price{text-align:center;}
 .rfc-ub-price-from{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#555;margin-bottom:4px;}
 .rfc-ub-price-num{font-family:'Bebas Neue',sans-serif;font-size:72px;line-height:1;color:var(--gold);}
 .rfc-ub-price-mo{font-family:'Barlow Condensed',sans-serif;font-size:14px;color:#555;letter-spacing:2px;}
-.rfc-ub-price-old{font-family:'Barlow Condensed',sans-serif;font-size:13px;color:#999;text-decoration:line-through;}
+.rfc-ub-price-old{font-family:'Barlow Condensed',sans-serif;font-size:13px;color:#5e5e5e;text-decoration:line-through;}
 .rfc-ub-cta{display:flex;flex-direction:column;gap:8px;align-items:center;}
 .rfc-ub-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:linear-gradient(135deg,var(--red),var(--orange));color:#fff;font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:3px;padding:16px 44px;border-radius:3px;border:none;cursor:pointer;box-shadow:0 12px 40px rgba(232,0,29,.45);transition:all .25s;}
 .rfc-ub-btn:hover{transform:translateY(-2px);box-shadow:0 16px 50px rgba(232,0,29,.6);}
-.rfc-ub-note{font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#aaa;}
+.rfc-ub-note{font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#666c78;}
 
 /* ── COUNTER STRIP ── */
 .rfc-counter-strip{background:var(--card2);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:28px 20px;}
@@ -1296,7 +1296,7 @@ section::before{content:'';position:absolute;inset:0;background:linear-gradient(
 .sp-card-muscle{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;}
 .sp-card-meta{display:flex;justify-content:space-between;align-items:center;}
 .sp-card-sets{font-size:11px;font-weight:700;color:#7C3AED;background:rgba(124,58,237,0.08);padding:3px 8px;border-radius:6px;}
-.sp-card-tip{font-size:10px;color:#9CA3AF;margin-top:5px;line-height:1.4;display:none;}
+.sp-card-tip{font-size:10px;color:#5b6472;margin-top:5px;line-height:1.4;display:none;}
 .sp-card.open .sp-card-tip{display:block;}
 .sp-card-tag{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#fff;padding:2px 7px;border-radius:4px;}
 .wkex-no-img{width:100%;aspect-ratio:3/2;display:flex;align-items:center;justify-content:center;font-size:32px;background:rgba(232,0,29,.07);}
@@ -1321,7 +1321,7 @@ section::before{content:'';position:absolute;inset:0;background:linear-gradient(
 .toolcard .tcv{font-family:'Bebas Neue',sans-serif;font-size:30px;color:var(--red);line-height:1;}
 .toolcard .tcv.gold{color:var(--gold);}.toolcard .tcv.green{color:var(--green);}.toolcard .tcv.blue{color:var(--blue);}.toolcard .tcv.orange{color:var(--orange);}
 .toolcard .tcl{font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-top:5px;}
-.toolcard .tcsub{font-size:9px;color:#888;margin-top:3px;}
+.toolcard .tcsub{font-size:9px;color:#5e5e5e;margin-top:3px;}
 /* physio */
 .physio-tabs{display:flex;gap:6px;flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:4px;margin-top:28px;margin-bottom:18px;}
 .physio-tabs::-webkit-scrollbar{display:none;}
@@ -2003,7 +2003,7 @@ body.sb-open #screen-dashboard .dash-wrap{padding-top:calc(78px + env(safe-area-
 .elite-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:var(--pro);}
 .elite-price-row{display:flex;align-items:baseline;justify-content:center;gap:10px;margin-bottom:6px;}
 .elite-price{font-family:'Bebas Neue',sans-serif;font-size:72px;line-height:1;color:var(--gold);}
-.elite-price-old{font-size:24px;color:#888;text-decoration:line-through;}
+.elite-price-old{font-size:24px;color:#5e5e5e;text-decoration:line-through;}
 .elite-per{text-align:center;font-size:13px;color:var(--muted);margin-bottom:8px;}
 .elite-guarantee{text-align:center;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.25);border-radius:8px;padding:12px;margin:20px 0;font-size:13px;color:var(--green);font-weight:600;}
 .elite-feats{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:24px 0;}
@@ -2422,7 +2422,7 @@ body{font-size:16px;}
 .food-card:hover{border-color:var(--red);}
 .food-card.selected{border-color:var(--red);background:rgba(232,0,29,0.08);}
 .food-card-name{font-size:11px;font-weight:600;margin-bottom:3px;color:var(--text);line-height:1.3;}
-.food-card-macro{font-size:10px;color:#888;}
+.food-card-macro{font-size:10px;color:#5e5e5e;}
 .food-sel-btn-row{display:flex;gap:8px;margin:10px 0;flex-wrap:wrap;}
 .btn-sm{background:var(--red);color:#fff;border:none;padding:6px 14px;border-radius:4px;cursor:pointer;font-size:12px;font-weight:600;}
 .btn-sm.btn-outline{background:transparent;border:1px solid var(--border);color:var(--muted);}
@@ -2566,10 +2566,10 @@ body{font-size:16px;}
 .pdf-book-edition{font-size:8px;color:rgba(255,255,255,0.65);letter-spacing:2px;text-transform:uppercase;border-top:1px solid rgba(255,208,0,0.3);padding-top:6px;}
 .pdf-book-author{font-size:9px;color:rgba(255,208,0,0.75);font-style:italic;}
 .pdf-book-badge{position:absolute;top:-10px;right:-10px;background:#ffd000;color:#000;font-size:9px;font-weight:900;padding:4px 8px;border-radius:20px;letter-spacing:1px;box-shadow:0 2px 8px rgba(0,0,0,0.4);}
-.pdf-pages-tag{font-size:11px;color:#888;text-align:center;}
+.pdf-pages-tag{font-size:11px;color:#5e5e5e;text-align:center;}
 .pdf-rating-row{display:flex;align-items:center;gap:6px;justify-content:center;}
 .pdf-rating-stars{font-size:14px;letter-spacing:1px;}
-.pdf-rating-cnt{font-size:11px;color:#888;}
+.pdf-rating-cnt{font-size:11px;color:#5e5e5e;}
 .pdf-info{display:flex;flex-direction:column;gap:20px;}
 .pdf-what-inside h3{font-size:13px;letter-spacing:2px;color:var(--red);text-transform:uppercase;margin-bottom:12px;font-weight:700;}
 .pdf-chap-list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:7px;}
@@ -2578,7 +2578,7 @@ body{font-size:16px;}
 .pdf-orig-price{font-size:14px;color:#666;text-decoration:line-through;}
 .pdf-price{font-size:44px;font-weight:900;color:var(--red);letter-spacing:-1px;line-height:1;}
 .pdf-discount-tag{display:inline-block;background:#ffd000;color:#000;font-size:10px;font-weight:900;padding:3px 8px;border-radius:3px;letter-spacing:1px;margin-top:2px;}
-.pdf-price-note{font-size:11px;color:#888;margin-bottom:4px;}
+.pdf-price-note{font-size:11px;color:#5e5e5e;margin-bottom:4px;}
 .pdf-buy-btn{background:var(--red);color:#fff;border:none;padding:14px 28px;font-size:16px;font-weight:900;letter-spacing:2px;border-radius:5px;cursor:pointer;width:100%;transition:opacity .15s;box-shadow:0 4px 20px rgba(232,0,29,.3);}
 .pdf-buy-btn:hover{opacity:.88;}
 .pdf-download-btn{background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff;border:none;padding:14px 28px;font-size:16px;font-weight:900;letter-spacing:2px;border-radius:5px;cursor:pointer;width:100%;text-align:center;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:8px;}
@@ -2589,21 +2589,21 @@ body{font-size:16px;}
 .pdf-review{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:16px 18px;}
 .pdf-rev-stars{font-size:14px;margin-bottom:8px;}
 .pdf-rev-text{font-size:13px;color:#c8c8c8;line-height:1.6;font-style:italic;margin-bottom:10px;}
-.pdf-rev-name{font-size:11px;color:#888;font-weight:600;}
+.pdf-rev-name{font-size:11px;color:#5e5e5e;font-weight:600;}
 .pdf-faq-section{margin-top:48px;}
 .pdf-faq-section h3{font-size:13px;letter-spacing:2px;color:var(--red);text-transform:uppercase;margin-bottom:18px;font-weight:700;}
 .faq-item{background:var(--card);border:1px solid var(--border);border-radius:6px;margin-bottom:8px;overflow:hidden;cursor:pointer;}
 .faq-q{padding:14px 18px;font-size:13px;font-weight:600;color:var(--text);display:flex;justify-content:space-between;align-items:center;user-select:none;}
-.faq-q::after{content:'▼';font-size:10px;color:#888;transition:transform .2s;}
+.faq-q::after{content:'▼';font-size:10px;color:#5e5e5e;transition:transform .2s;}
 .faq-item.open .faq-q::after{transform:rotate(180deg);}
 .faq-a{max-height:0;overflow:hidden;transition:max-height .3s,padding .3s;}
 .faq-item.open .faq-a{max-height:220px;padding:0 18px 14px;}
-.faq-a p{font-size:13px;color:#b0b0b0;line-height:1.7;margin:0;}
+.faq-a p{font-size:13px;color:#5f6672;line-height:1.7;margin:0;}
 /* PDF Store — Enhanced sections */
 .pdf-stats-bar{display:flex;gap:20px;justify-content:center;flex-wrap:wrap;margin:28px 0;padding:20px 16px;background:var(--card);border:1px solid var(--border);border-radius:10px;}
 .pdf-stat{text-align:center;}
 .pdf-stat-num{font-family:'Bebas Neue',sans-serif;font-size:36px;color:var(--gold);line-height:1;}
-.pdf-stat-lbl{font-size:9px;letter-spacing:2px;color:#888;text-transform:uppercase;margin-top:2px;}
+.pdf-stat-lbl{font-size:9px;letter-spacing:2px;color:#5e5e5e;text-transform:uppercase;margin-top:2px;}
 .pdf-bonus-section{margin-top:48px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:28px 24px;}
 .pdf-bonus-tag{display:inline-block;background:var(--fire);color:#fff;font-size:9px;font-weight:900;letter-spacing:2px;padding:4px 10px;border-radius:4px;margin-bottom:8px;}
 .pdf-bonus-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:18px;margin-top:18px;}
@@ -2628,13 +2628,13 @@ body{font-size:16px;}
 @media(max-width:600px){.pdf-guarantee-box{flex-direction:column;padding:20px;text-align:center;}}
 .pdf-guarantee-icon{font-size:52px;flex-shrink:0;}
 .pdf-guarantee-text h4{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px;color:#22c55e;margin-bottom:6px;}
-.pdf-guarantee-text p{font-size:12px;color:#b0b0b0;line-height:1.7;margin:0;}
+.pdf-guarantee-text p{font-size:12px;color:#5f6672;line-height:1.7;margin:0;}
 .pdf-trust-row{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:10px;}
-.pdf-trust-badge{display:flex;align-items:center;gap:4px;font-size:10px;color:#888;}
+.pdf-trust-badge{display:flex;align-items:center;gap:4px;font-size:10px;color:#5e5e5e;}
 .pdf-final-cta{margin-top:52px;text-align:center;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:44px 24px;}
 .pdf-sticky-bar{display:none;position:fixed;bottom:0;left:0;right:0;z-index:999;background:var(--card);border-top:2px solid var(--border);padding:10px 16px;align-items:center;gap:12px;box-shadow:0 -4px 20px rgba(232,0,29,.12);}
 @media(max-width:760px){.pdf-sticky-bar.show{display:flex;}}
-.pdf-sticky-orig{font-size:11px;color:#888;text-decoration:line-through;}
+.pdf-sticky-orig{font-size:11px;color:#5e5e5e;text-decoration:line-through;}
 .pdf-sticky-now{font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--gold);line-height:1;}
 /* Fitness & Mindset blue book cover */
 .pdf-book-fm .pdf-book-cover{background:linear-gradient(145deg,#00050d 0%,#003080 45%,#0066cc 100%)!important;}
@@ -2985,7 +2985,7 @@ img{loading:lazy;}
 .pcc-sub{font-size:10px;color:#6b7280;line-height:1.4;flex:1;}
 .pcc-price-row{display:flex;align-items:baseline;gap:7px;margin-top:2px;}
 .pcc-price{font-family:'Bebas Neue',sans-serif;font-size:24px;color:#b87dff;line-height:1;}
-.pcc-orig{font-size:11px;color:#9ca3af;text-decoration:line-through;}
+.pcc-orig{font-size:11px;color:#5b6472;text-decoration:line-through;}
 .pcc-off{font-size:9px;background:#7c3aed;color:#fff;padding:1px 5px;border-radius:2px;letter-spacing:1px;}
 .pcc-buy{width:100%;background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;border:none;border-radius:6px;padding:9px 8px;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:opacity .15s,transform .15s;margin-top:4px;}
 .pcc-buy:hover{opacity:.88;transform:translateY(-1px);}
@@ -2996,7 +2996,7 @@ img{loading:lazy;}
 .pcc-stars{display:flex;align-items:center;gap:4px;}
 .pcc-star-icons{color:#f59e0b;font-size:11px;letter-spacing:.5px;line-height:1;}
 .pcc-star-num{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;color:#1e1b4b;}
-.pcc-star-cnt{font-size:10px;color:#9ca3af;}
+.pcc-star-cnt{font-size:10px;color:#5b6472;}
 /* hotness badge (BESTSELLER / HOT) */
 .pcc-hot{display:inline-block;font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;letter-spacing:1.5px;padding:2px 8px;border-radius:3px;background:linear-gradient(135deg,#f59e0b,#ef4444);color:#fff;text-transform:uppercase;width:fit-content;margin-bottom:2px;}
 /* All Products stats bar */
@@ -3004,7 +3004,7 @@ img{loading:lazy;}
 .pdf-allstat{flex:1;text-align:center;padding:14px 8px;border-right:1px solid #e2d4f8;}
 .pdf-allstat:last-child{border-right:none;}
 .pdf-allstat-n{font-family:'Bebas Neue',sans-serif;font-size:26px;color:#7c3aed;line-height:1;}
-.pdf-allstat-l{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#9ca3af;margin-top:2px;}
+.pdf-allstat-l{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#5b6472;margin-top:2px;}
 /* Filter bar */
 .pdf-cat-filter{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:20px;justify-content:center;}
 .pcf{background:#fff;border:1.5px solid #e2d4f8;color:#6b7280;padding:5px 14px;border-radius:100px;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all .15s;}
@@ -3748,7 +3748,7 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
   <img src="icons/icon-180x180.png" alt="" style="width:44px;height:44px;border-radius:10px;flex-shrink:0;">
   <div style="flex:1;min-width:0;">
     <div style="font-family:'Bebas Neue',sans-serif;font-size:17px;color:#fff;letter-spacing:.5px;">Install Royal Fitness Club</div>
-    <div style="font-size:12px;color:#aaa;margin-top:2px;">Tap <strong style="color:#e8001d;">Share</strong> <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#e8001d" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;display:inline;"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg> then <strong style="color:#e8001d;">Add to Home Screen</strong></div>
+    <div style="font-size:12px;color:#666c78;margin-top:2px;">Tap <strong style="color:#e8001d;">Share</strong> <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#e8001d" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;display:inline;"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg> then <strong style="color:#e8001d;">Add to Home Screen</strong></div>
   </div>
   <button onclick="dismissIOSBanner()" style="background:none;border:none;color:#666;font-size:20px;cursor:pointer;padding:4px;flex-shrink:0;line-height:1;">✕</button>
 </div>
@@ -5030,7 +5030,7 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
         <div id="emptyst2" class="emptyst">
           <div class="emico">🏋️</div>
           <div class="emtxt" id="emptyst2-msg">Run the calculator to get your plan</div>
-          <div style="font-size:12px;color:#888;">Your Royal Transformation Plan will appear here</div>
+          <div style="font-size:12px;color:#5e5e5e;">Your Royal Transformation Plan will appear here</div>
         </div>
         <div id="rescont" style="flex-direction:column;gap:14px;">
           <div class="rcard"><div class="rctitle">Body Metrics</div>
@@ -5189,11 +5189,11 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
         </label>
       </div>
     </div>
-    <div id="mealfreq-note" style="font-size:12px;color:#b0b0b0;margin-bottom:12px;">Calories split evenly across your chosen meals.</div>
+    <div id="mealfreq-note" style="font-size:12px;color:#5f6672;margin-bottom:12px;">Calories split evenly across your chosen meals.</div>
 
     <div class="food-sel-wrap">
       <button class="food-sel-toggle" onclick="toggleFoodSel()">
-        <span>🍽️ Customize Your Foods &nbsp;<span style="font-size:11px;color:#888;font-weight:400;">Select preferred foods or let engine auto-pick</span></span>
+        <span>🍽️ Customize Your Foods &nbsp;<span style="font-size:11px;color:#5e5e5e;font-weight:400;">Select preferred foods or let engine auto-pick</span></span>
         <span id="food-sel-chevron" style="font-size:12px;">▼</span>
       </button>
       <div id="food-sel-panel" style="display:none;">
@@ -6772,7 +6772,7 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
 <!-- Mobile sticky buy bar -->
 <div class="pdf-sticky-bar" id="pdf-sticky-bar">
   <div style="font-size:20px;">📚</div>
-  <div style="flex:1;font-size:11px;color:#ccc;line-height:1.4;font-weight:600;">Royal Guides<br><span style="color:#888;font-weight:400;">from ₹299</span></div>
+  <div style="flex:1;font-size:11px;color:#ccc;line-height:1.4;font-weight:600;">Royal Guides<br><span style="color:#5e5e5e;font-weight:400;">from ₹299</span></div>
   <a class="pdf-buy-btn" style="padding:10px 18px;font-size:12px;width:auto;flex-shrink:0;text-decoration:none;display:flex;align-items:center;" href="#store">VIEW GUIDES ↑</a>
 </div>
 <div class="divider"></div>
@@ -6946,7 +6946,7 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
     </ul>
     <div class="probig"><span class="px-pro">₹499</span><small>/month</small></div>
     <p style="color:var(--muted);font-size:10px;margin-bottom:3px;">🔥 Offer expires in <span id="pmodtime">--:--:--</span></p>
-    <p style="color:#888;font-size:10px;margin-bottom:4px;">Instant access · Cancel anytime</p>
+    <p style="color:#5e5e5e;font-size:10px;margin-bottom:4px;">Instant access · Cancel anytime</p>
     <button class="bpro" onclick="activatePro()">SUBSCRIBE NOW — ₹499/MO 👑</button>
     <div style="text-align:center;font-size:10px;color:rgba(255,255,255,.3);margin-top:6px;">UPI · PhonePe · GPay · Card · Net Banking via Razorpay</div>
   </div>
@@ -6990,7 +6990,7 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
       <div style="text-align:center;font-size:10px;color:rgba(255,255,255,.3);margin:-8px 0 6px;">Secured by Razorpay · UPI / Card / Net Banking</div>
       <button class="belite" style="font-size:14px;background:rgba(212,168,64,.12);border:1px solid rgba(212,168,64,.3);color:#d4a840;" onclick="applyElite()">📋 Apply First — Team Will Contact You</button>
     </div>
-    <p style="color:#888;font-size:11px;margin-top:8px;text-align:center;">Coach WhatsApps you within 24h after payment to begin onboarding.</p>
+    <p style="color:#5e5e5e;font-size:11px;margin-top:8px;text-align:center;">Coach WhatsApps you within 24h after payment to begin onboarding.</p>
   </div>
 </div>
 <div class="toast" id="toast"></div>
@@ -8112,7 +8112,7 @@ function buildSP(tab) {
           <div class="sp-card-muscle" style="color:${ex.color}">${ex.muscle.toUpperCase()}</div>
           <div class="sp-card-meta">
             <div class="sp-card-sets">${ex.sets}</div>
-            <span style="font-size:10px;color:#9CA3AF">Tap for tip ▾</span>
+            <span style="font-size:10px;color:#5b6472">Tap for tip ▾</span>
           </div>
           <div class="sp-card-tip">💡 ${ex.tip}</div>
         </div>
@@ -8553,7 +8553,7 @@ function buildMealPlan(goal,totalCals,macros,diet){
     html+=`<div class="diet-header-bar">
       <h3>🍽️ Your Daily Meal Plan</h3>
       <div class="diet-goal-line">🎯 Goal: <strong>${goalLabel}</strong> • Target: <strong>${totalCals} kcal/day</strong> • Macros: <strong>${macros.prot||Math.round(totalCals*0.30/4)}g P / ${macros.carb||Math.round(totalCals*0.40/4)}g C / ${macros.fat||Math.round(totalCals*0.30/9)}g F</strong></div>
-      <div style="font-size:12px;color:#b0b0b0;margin-top:4px;">${dietLabel} • ${freq} meals/day${inclSal?' • Daily salad included':''}</div>
+      <div style="font-size:12px;color:#5f6672;margin-top:4px;">${dietLabel} • ${freq} meals/day${inclSal?' • Daily salad included':''}</div>
     </div>`;
     // Salad section (always shown if toggled, fixed daily)
     if(inclSal){
@@ -9346,7 +9346,7 @@ Use my referral code *${code}* → Get ₹50 wallet bonus! 🎁`;
 }
 
 // ── PDF ──
-function savePDF(){if(!user){toast('Please log in first!','gold');forceLogin();return;}if(!isPro){openModal('promodal');return;}if(!lastRes){toast('Please calculate your plan first!','gold');return;}if(window.AnalyticsService)window.AnalyticsService.trackEvent('pdf_exported').catch(()=>{});const _meas=JSON.parse(localStorage.getItem('bm_meas')||'[]');const _measHTML=_meas.length?`<h2>Measurement History</h2><table><tr><th>Date</th><th>Waist</th><th>Chest</th><th>Arms</th><th>Hips</th><th>Thigh</th></tr>${_meas.slice().reverse().map(m=>`<tr><td>${m.date}</td><td>${m.waist||'—'}</td><td>${m.chest||'—'}</td><td>${m.arms||'—'}</td><td>${m.hips||'—'}</td><td>${m.thigh||'—'}</td></tr>`).join('')}</table>`:'';const r=lastRes;const w=window.open('','_blank');w.document.write(`<!DOCTYPE html><html><head><title>Royal Fitness Club Report</title><style>body{font-family:sans-serif;margin:0;color:#111;}.hdr{background:#e8001d;color:#fff;padding:26px 34px;}.hdr h1{font-size:30px;letter-spacing:4px;margin:0;}.content{padding:26px 34px;}h2{color:#e8001d;font-size:17px;border-bottom:2px solid #e8001d;padding-bottom:6px;margin:22px 0 12px;}table{width:100%;border-collapse:collapse;margin-bottom:14px;}th{background:#e8001d;color:#fff;padding:8px 11px;text-align:left;font-size:12px;}td{padding:8px 11px;border-bottom:1px solid #eee;font-size:13px;}.strat{background:#fafafa;border-left:4px solid #e8001d;padding:13px;border-radius:4px;font-size:13px;line-height:1.7;margin:9px 0;}.score{font-size:52px;font-weight:900;color:#e8001d;text-align:center;padding:14px;}.sg{display:grid;grid-template-columns:1fr 1fr;gap:9px;}.si{background:#f5f5f5;padding:9px;border-radius:4px;font-size:12px;}.content{position:relative;z-index:1;}#pdfwm{position:fixed;inset:0;z-index:0;overflow:hidden;display:flex;flex-wrap:wrap;align-content:center;justify-content:center;gap:50px 70px;transform:rotate(-30deg) scale(1.4);opacity:.05;pointer-events:none;}#pdfwm span{font-size:26px;letter-spacing:4px;color:#e8001d;font-weight:900;white-space:nowrap;}.pdffoot{position:fixed;bottom:8px;left:0;right:0;text-align:center;font-size:10px;color:#aaa;z-index:2;}@media print{button{display:none;}#pdfwm{position:fixed;}}</style></head><body><div id="pdfwm"><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span></div><div class="pdffoot">© Royal Fitness Club — royal-fitness-club-7adc1.web.app</div><div class="hdr"><h1>ROYAL FITNESS CLUB</h1><p>Transformation Report — ${new Date().toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'})}</p><p>User: ${user?.name||''} | Goal: ${r.goal.toUpperCase()}</p></div><div class="content"><h2>Royal Score</h2><div class="score">${r.score}/100 — ${scoreLbl(r.score)}</div><h2>Body Metrics</h2><table><tr><th>Metric</th><th>Value</th></tr><tr><td>BMI</td><td>${r.bmi.toFixed(1)} — ${bmiClass(r.bmi)}</td></tr><tr><td>BMR</td><td>${Math.round(r.bmr)} kcal/day</td></tr><tr><td>TDEE</td><td>${Math.round(r.tdee)} kcal/day</td></tr><tr><td>Target Calories</td><td>${r.targetCals} kcal/day</td></tr><tr><td>Daily Water</td><td>${r.water}L</td></tr><tr><td>Body Fat %</td><td>${r.bf.toFixed(1)}% — ${r.bfc}</td></tr><tr><td>Lean Mass</td><td>${(r.weight*(1-r.bf/100)).toFixed(1)}kg</td></tr><tr><td>Muscle Mass (est)</td><td>${(r.weight*(1-r.bf/100)*0.85).toFixed(1)}kg</td></tr></table><h2>Macros</h2><table><tr><th>Macro</th><th>Target</th><th>Calories</th></tr><tr><td>Protein</td><td>${r.macros.prot}g</td><td>${r.macros.prot*4}</td></tr><tr><td>Carbs</td><td>${r.macros.carb}g</td><td>${r.macros.carb*4}</td></tr><tr><td>Fats</td><td>${r.macros.fat}g</td><td>${r.macros.fat*9}</td></tr></table><h2>Strategy</h2><div class="strat">${getStrat(r.goal,r.bmi)}</div><h2>Workout</h2><div class="strat">${getWrk(r.goal)}</div><h2>Supplements</h2><div class="sg">${getSupps(r.goal,r.diet,r.whey,r.health).map(s=>`<div class="si"><strong>${s.n}</strong><br>${s.d}</div>`).join('')}</div>${getHealthNote(r.health)?`<h2>Health Notes</h2><div class="strat">${getHealthNote(r.health)}</div>`:''}<h2>Royal Score Factors</h2><div class="strat">Recovery: ${pdScores.recovery||"not logged"}/100 · Posture: ${pdScores.posture||"not assessed"}/100 · Mobility: ${pdScores.mobility||"not assessed"}/100</div><h2>7-Day Workout (${currentSplit.toUpperCase()})</h2>${(WK[currentSplit]||WK.ppl).map((d,i)=>`<div class="strat"><strong>Day ${i+1} — ${d.t}</strong><br>${d.ex}</div>`).join('')}${_measHTML}</div><div style="text-align:center;padding:18px;"><button onclick="window.print()" style="background:#e8001d;color:#fff;border:none;padding:11px 32px;font-size:14px;cursor:pointer;border-radius:4px;">🖨️ Print / Save PDF</button></div></body></html>`);w.document.close();}
+function savePDF(){if(!user){toast('Please log in first!','gold');forceLogin();return;}if(!isPro){openModal('promodal');return;}if(!lastRes){toast('Please calculate your plan first!','gold');return;}if(window.AnalyticsService)window.AnalyticsService.trackEvent('pdf_exported').catch(()=>{});const _meas=JSON.parse(localStorage.getItem('bm_meas')||'[]');const _measHTML=_meas.length?`<h2>Measurement History</h2><table><tr><th>Date</th><th>Waist</th><th>Chest</th><th>Arms</th><th>Hips</th><th>Thigh</th></tr>${_meas.slice().reverse().map(m=>`<tr><td>${m.date}</td><td>${m.waist||'—'}</td><td>${m.chest||'—'}</td><td>${m.arms||'—'}</td><td>${m.hips||'—'}</td><td>${m.thigh||'—'}</td></tr>`).join('')}</table>`:'';const r=lastRes;const w=window.open('','_blank');w.document.write(`<!DOCTYPE html><html><head><title>Royal Fitness Club Report</title><style>body{font-family:sans-serif;margin:0;color:#111;}.hdr{background:#e8001d;color:#fff;padding:26px 34px;}.hdr h1{font-size:30px;letter-spacing:4px;margin:0;}.content{padding:26px 34px;}h2{color:#e8001d;font-size:17px;border-bottom:2px solid #e8001d;padding-bottom:6px;margin:22px 0 12px;}table{width:100%;border-collapse:collapse;margin-bottom:14px;}th{background:#e8001d;color:#fff;padding:8px 11px;text-align:left;font-size:12px;}td{padding:8px 11px;border-bottom:1px solid #eee;font-size:13px;}.strat{background:#fafafa;border-left:4px solid #e8001d;padding:13px;border-radius:4px;font-size:13px;line-height:1.7;margin:9px 0;}.score{font-size:52px;font-weight:900;color:#e8001d;text-align:center;padding:14px;}.sg{display:grid;grid-template-columns:1fr 1fr;gap:9px;}.si{background:#f5f5f5;padding:9px;border-radius:4px;font-size:12px;}.content{position:relative;z-index:1;}#pdfwm{position:fixed;inset:0;z-index:0;overflow:hidden;display:flex;flex-wrap:wrap;align-content:center;justify-content:center;gap:50px 70px;transform:rotate(-30deg) scale(1.4);opacity:.05;pointer-events:none;}#pdfwm span{font-size:26px;letter-spacing:4px;color:#e8001d;font-weight:900;white-space:nowrap;}.pdffoot{position:fixed;bottom:8px;left:0;right:0;text-align:center;font-size:10px;color:#666c78;z-index:2;}@media print{button{display:none;}#pdfwm{position:fixed;}}</style></head><body><div id="pdfwm"><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span><span>ROYAL FITNESS CLUB</span></div><div class="pdffoot">© Royal Fitness Club — royal-fitness-club-7adc1.web.app</div><div class="hdr"><h1>ROYAL FITNESS CLUB</h1><p>Transformation Report — ${new Date().toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'})}</p><p>User: ${user?.name||''} | Goal: ${r.goal.toUpperCase()}</p></div><div class="content"><h2>Royal Score</h2><div class="score">${r.score}/100 — ${scoreLbl(r.score)}</div><h2>Body Metrics</h2><table><tr><th>Metric</th><th>Value</th></tr><tr><td>BMI</td><td>${r.bmi.toFixed(1)} — ${bmiClass(r.bmi)}</td></tr><tr><td>BMR</td><td>${Math.round(r.bmr)} kcal/day</td></tr><tr><td>TDEE</td><td>${Math.round(r.tdee)} kcal/day</td></tr><tr><td>Target Calories</td><td>${r.targetCals} kcal/day</td></tr><tr><td>Daily Water</td><td>${r.water}L</td></tr><tr><td>Body Fat %</td><td>${r.bf.toFixed(1)}% — ${r.bfc}</td></tr><tr><td>Lean Mass</td><td>${(r.weight*(1-r.bf/100)).toFixed(1)}kg</td></tr><tr><td>Muscle Mass (est)</td><td>${(r.weight*(1-r.bf/100)*0.85).toFixed(1)}kg</td></tr></table><h2>Macros</h2><table><tr><th>Macro</th><th>Target</th><th>Calories</th></tr><tr><td>Protein</td><td>${r.macros.prot}g</td><td>${r.macros.prot*4}</td></tr><tr><td>Carbs</td><td>${r.macros.carb}g</td><td>${r.macros.carb*4}</td></tr><tr><td>Fats</td><td>${r.macros.fat}g</td><td>${r.macros.fat*9}</td></tr></table><h2>Strategy</h2><div class="strat">${getStrat(r.goal,r.bmi)}</div><h2>Workout</h2><div class="strat">${getWrk(r.goal)}</div><h2>Supplements</h2><div class="sg">${getSupps(r.goal,r.diet,r.whey,r.health).map(s=>`<div class="si"><strong>${s.n}</strong><br>${s.d}</div>`).join('')}</div>${getHealthNote(r.health)?`<h2>Health Notes</h2><div class="strat">${getHealthNote(r.health)}</div>`:''}<h2>Royal Score Factors</h2><div class="strat">Recovery: ${pdScores.recovery||"not logged"}/100 · Posture: ${pdScores.posture||"not assessed"}/100 · Mobility: ${pdScores.mobility||"not assessed"}/100</div><h2>7-Day Workout (${currentSplit.toUpperCase()})</h2>${(WK[currentSplit]||WK.ppl).map((d,i)=>`<div class="strat"><strong>Day ${i+1} — ${d.t}</strong><br>${d.ex}</div>`).join('')}${_measHTML}</div><div style="text-align:center;padding:18px;"><button onclick="window.print()" style="background:#e8001d;color:#fff;border:none;padding:11px 32px;font-size:14px;cursor:pointer;border-radius:4px;">🖨️ Print / Save PDF</button></div></body></html>`);w.document.close();}
 
 // ── PRO TRACKER ──
 let pd={streak:0,lastCI:null,wk:0,hy:0,weights:[]};
@@ -18348,11 +18348,11 @@ document.addEventListener('change', function(e) {
 .xp-level-badge { display: flex; align-items: center; gap: 8px; }
 .xp-level-icon { font-size: 28px; line-height: 1; }
 .xp-level-name { font-size: 15px; font-weight: 800; color: #0F0A1A; letter-spacing: .5px; }
-.xp-level-sub  { font-size: 10px; color: #9CA3AF; letter-spacing: 1px; text-transform: uppercase; margin-top: 1px; }
+.xp-level-sub  { font-size: 10px; color:#5b6472; letter-spacing: 1px; text-transform: uppercase; margin-top: 1px; }
 .xp-total-badge { background: linear-gradient(135deg,#7C3AED,#6D28D9); color:#fff; font-size:11px; font-weight:700; padding:4px 10px; border-radius:20px; letter-spacing:.3px; }
 .xp-bar-track { height: 8px; background: rgba(124,58,237,.12); border-radius: 8px; overflow: hidden; }
 .xp-bar-fill  { height: 100%; background: linear-gradient(90deg,#7C3AED,#a855f7); border-radius: 8px; transition: width .8s cubic-bezier(.34,1.56,.64,1); }
-.xp-bar-labels { display: flex; justify-content: space-between; margin-top: 5px; font-size: 10px; color: #9CA3AF; }
+.xp-bar-labels { display: flex; justify-content: space-between; margin-top: 5px; font-size: 10px; color:#5b6472; }
 .xp-actions-row { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
 .xp-action-chip { display: flex; align-items: center; gap: 4px; background: rgba(124,58,237,.08); border: 1px solid rgba(124,58,237,.2); border-radius: 20px; padding: 3px 9px; font-size: 10px; color: #7C3AED; font-weight: 600; }
 
@@ -18402,12 +18402,12 @@ document.addEventListener('change', function(e) {
 #notif-prompt .np-btns { display: flex; gap: 8px; }
 #notif-prompt .np-allow { flex:1; background: linear-gradient(135deg,#7C3AED,#6D28D9); color:#fff; border:none; border-radius: 12px; padding: 12px; font-size: 13px; font-weight: 700; cursor: pointer; letter-spacing: .3px; }
 #notif-prompt .np-later { padding: 12px 16px; background: rgba(124,58,237,.06); border: 1px solid rgba(124,58,237,.2); border-radius: 12px; font-size: 12px; color: #7C3AED; cursor: pointer; font-weight: 600; white-space: nowrap; }
-#notif-prompt .np-close { position: absolute; top: 12px; right: 14px; font-size: 18px; color: #9CA3AF; cursor: pointer; background: none; border: none; line-height: 1; }
+#notif-prompt .np-close { position: absolute; top: 12px; right: 14px; font-size: 18px; color:#5b6472; cursor: pointer; background: none; border: none; line-height: 1; }
 
 /* ── NOTIFICATION SETTINGS TOGGLE (in profile/settings) ── */
 .notif-toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 14px 0; border-bottom: 1px solid rgba(124,58,237,.08); }
 .notif-toggle-label { font-size: 13px; font-weight: 600; color: #0F0A1A; }
-.notif-toggle-sub { font-size: 11px; color: #9CA3AF; margin-top: 2px; }
+.notif-toggle-sub { font-size: 11px; color:#5b6472; margin-top: 2px; }
 .notif-toggle { position:relative; width:44px; height:24px; }
 .notif-toggle input { opacity:0; width:0; height:0; }
 .notif-slider { position:absolute; inset:0; background:#D1D5DB; border-radius:24px; cursor:pointer; transition:.3s; }
@@ -18689,7 +18689,7 @@ document.addEventListener('change', function(e) {
 .yoga-card-name{font-size:13px;font-weight:700;color:var(--text);margin-bottom:2px;}
 .yoga-card-sanskrit{font-size:10px;color:var(--violet);margin-bottom:6px;font-style:italic;}
 .yoga-card-benefit{font-size:10px;color:var(--muted);line-height:1.5;}
-.yoga-card-dur{font-size:9px;color:rgba(124,58,237,.7);margin-top:6px;font-weight:600;letter-spacing:.5px;}
+.yoga-card-dur{font-size:9px;color:#6d28d9;margin-top:6px;font-weight:600;letter-spacing:.5px;}
 /* Yoga detail modal */
 .yoga-detail{background:var(--card2);border:1px solid var(--border);border-radius:14px;padding:20px;margin:0 20px 20px;display:none;}
 .yoga-detail.open{display:block;}
@@ -20028,8 +20028,8 @@ document.addEventListener('change', function(e) {
 .sp-name{font-size:12px;font-weight:700;color:#0f0a1a;}
 .sp-action{font-size:11px;color:#374151;line-height:1.4;}
 .sp-action strong{color:#7c3aed;}
-.sp-time{font-size:10px;color:#9ca3af;margin-top:2px;}
-.sp-close{background:none;border:none;cursor:pointer;color:#9ca3af;font-size:12px;padding:0 0 0 6px;flex-shrink:0;line-height:1;}
+.sp-time{font-size:10px;color:#5b6472;margin-top:2px;}
+.sp-close{background:none;border:none;cursor:pointer;color:#5b6472;font-size:12px;padding:0 0 0 6px;flex-shrink:0;line-height:1;}
 .sp-close:hover{color:#374151;}
 @media(max-width:400px){#sp-notif{max-width:calc(100vw - 32px);}}
 
@@ -20038,7 +20038,7 @@ document.addEventListener('change', function(e) {
 #exit-overlay.show{display:flex;}
 #exit-modal{background:#fff;border-radius:20px;padding:36px 32px;max-width:480px;width:100%;position:relative;box-shadow:0 24px 80px rgba(0,0,0,.3);text-align:center;animation:exitSlideIn .35s cubic-bezier(.4,0,.2,1);}
 @keyframes exitSlideIn{from{transform:scale(.92) translateY(-20px);opacity:0;}to{transform:scale(1) translateY(0);opacity:1;}}
-.exit-close{position:absolute;top:14px;right:16px;background:none;border:none;font-size:20px;cursor:pointer;color:#9ca3af;line-height:1;}
+.exit-close{position:absolute;top:14px;right:16px;background:none;border:none;font-size:20px;cursor:pointer;color:#5b6472;line-height:1;}
 .exit-close:hover{color:#374151;}
 .exit-badge{display:inline-block;background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:2px;padding:5px 16px;border-radius:20px;margin-bottom:16px;}
 .exit-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(26px,5vw,38px);line-height:1.1;color:#0f0a1a;margin-bottom:10px;}
@@ -20050,8 +20050,8 @@ document.addEventListener('change', function(e) {
 .exit-input:focus{border-color:#7c3aed;}
 .exit-btn{width:100%;background:linear-gradient(135deg,#7c3aed,#a855f7);color:#fff;border:none;border-radius:10px;padding:14px;font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;cursor:pointer;margin-bottom:10px;transition:opacity .2s;}
 .exit-btn:hover{opacity:.9;}
-.exit-trust{font-size:11px;color:#9ca3af;margin-bottom:12px;}
-.exit-skip{background:none;border:none;color:#9ca3af;font-size:11px;cursor:pointer;text-decoration:underline;}
+.exit-trust{font-size:11px;color:#5b6472;margin-bottom:12px;}
+.exit-skip{background:none;border:none;color:#5b6472;font-size:11px;cursor:pointer;text-decoration:underline;}
 .exit-skip:hover{color:#6b7280;}
 @media(max-width:500px){#exit-modal{padding:28px 20px;}}
 
