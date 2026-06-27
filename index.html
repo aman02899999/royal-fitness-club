@@ -21948,11 +21948,32 @@ input:focus-visible, select:focus-visible, textarea:focus-visible{
 (function(){
   'use strict';
   var NATIVE={BUTTON:1,A:1,INPUT:1,SELECT:1,TEXTAREA:1,LABEL:1,SUMMARY:1};
+  // Does the control already expose an accessible name? (aria/title or >=2 real letters)
+  function hasName(el){
+    if(el.getAttribute('aria-label')||el.getAttribute('aria-labelledby')||el.getAttribute('title'))return true;
+    var t=(el.textContent||'').replace(/[\s‐-―−×✕✖←-⇿⌀-➿️‍]|[\u{1F000}-\u{1FAFF}]/gu,'').trim();
+    return t.length>=2;
+  }
+  // Infer a sensible label for clearly icon-only controls; null if unsure.
+  function inferLabel(el){
+    var cls=String(el.className&&el.className.baseVal!==undefined?el.className.baseVal:(el.className||''));
+    var oc=(el.getAttribute('onclick')||'')+' '+cls;
+    var txt=(el.textContent||'').trim();
+    if(/close/i.test(oc)||/\bmclose\b/.test(cls)||/^[✕✖×╳]$/.test(txt)) return 'Close';
+    if(txt==='+'||txt==='＋') return 'Increase';
+    if(txt==='−'||txt==='-'||txt==='–'||txt==='—') return 'Decrease';
+    if(el.id==='sb-av'||/\bsb-user-av\b/.test(cls)) return 'View profile';
+    if(/refresh|reload/i.test(oc)||/[↻⟳↺⟲]/.test(txt)) return 'Refresh';
+    return null;
+  }
   function enhance(){
     var els=document.querySelectorAll('[onclick]:not([data-kb]),[role="button"]:not([data-kb])');
     for(var i=0;i<els.length;i++){
       var el=els[i];
       el.setAttribute('data-kb','1');
+      // a) accessible name for icon-only controls (incl. native close buttons)
+      if(!hasName(el)){ var lab=inferLabel(el); if(lab) el.setAttribute('aria-label',lab); }
+      // b) keyboard focusability — non-native elements only
       if(NATIVE[el.tagName]) continue;
       if(el.hasAttribute('tabindex')) continue;
       if(el.closest('[contenteditable="true"]')) continue;
