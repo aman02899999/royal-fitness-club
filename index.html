@@ -21943,5 +21943,47 @@ input:focus-visible, select:focus-visible, textarea:focus-visible{
   box-shadow:0 16px 48px rgba(0,0,0,.5), 0 0 0 1px rgba(245,158,11,.3) !important; }
 </style>
 
+<!-- Keyboard accessibility shim (WCAG 2.1.1) -->
+<script>
+(function(){
+  'use strict';
+  var NATIVE={BUTTON:1,A:1,INPUT:1,SELECT:1,TEXTAREA:1,LABEL:1,SUMMARY:1};
+  function enhance(){
+    var els=document.querySelectorAll('[onclick]:not([data-kb]),[role="button"]:not([data-kb])');
+    for(var i=0;i<els.length;i++){
+      var el=els[i];
+      el.setAttribute('data-kb','1');
+      if(NATIVE[el.tagName]) continue;
+      if(el.hasAttribute('tabindex')) continue;
+      if(el.closest('[contenteditable="true"]')) continue;
+      if(el.querySelector('button,a[href],input,select,textarea,[tabindex]')) continue;
+      el.setAttribute('tabindex','0');
+      if(!el.hasAttribute('role')) el.setAttribute('role','button');
+    }
+  }
+  document.addEventListener('keydown',function(e){
+    if(e.key!=='Enter' && e.key!==' ' && e.key!=='Spacebar') return;
+    var el=e.target;
+    if(!el || NATIVE[el.tagName] || el.isContentEditable) return;
+    if(el.getAttribute('tabindex')!=='0') return;
+    if(!el.hasAttribute('onclick') && el.getAttribute('role')!=='button') return;
+    e.preventDefault();
+    el.click();
+  }, true);
+  var _t=null;
+  function debounced(){ if(_t) return; _t=setTimeout(function(){ _t=null; enhance(); }, 600); }
+  function boot(){
+    enhance();
+    if(typeof window.switchScreen==='function'){
+      var o=window.switchScreen;
+      window.switchScreen=function(n,e){ o(n,e); setTimeout(enhance,180); };
+    }
+    try{ new MutationObserver(debounced).observe(document.body,{childList:true,subtree:true}); }catch(_){}
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',boot);
+  else boot();
+})();
+</script>
+
 </body>
 </html>
