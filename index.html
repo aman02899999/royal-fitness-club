@@ -195,6 +195,28 @@ window._trackEvent=function(action,category,label,value){
   if(typeof fbq==='function') fbq('track','Purchase',{content_name:label,value:value,currency:'INR'});
 };
 </script>
+<!-- ═══ localStorage self-heal — runs before app scripts ═══
+     Corrupt/partial values for JSON-valued keys would throw uncaught from the
+     many JSON.parse(getItem('x')||'…') sites (the ||fallback only guards null,
+     not invalid JSON) and break init. Drop any known-JSON key whose value
+     won't parse, so the app falls back to "no data" instead of crashing. -->
+<script>
+(function(){
+  'use strict';
+  var EXACT=['bm_user','bm_inp','bm_hist','bm_meas','bm_last_result','bm_elite','bm_pd','bm_scores','bm_sub','bm_wklogs','bm_progress_photos','bm_roadmap_prefs','rfc_admin_pdfs','rfc_admin_plans','rfc_challenges','rfc_nav_control','rfc_progress_photos','rfc_redeem_reqs','rfc_referrals','rfc_site_settings','rfc_streak_data','rfc_week_xp','rfc_wod_library'];
+  var PREFIX=['bm_refs_','rfc_blood_reports_','rfc_ch_joined_','rfc_ch_prog_','rfc_cprog_','rfc_purchased_','rfc_userplan_','rfc_workouts_'];
+  try{
+    var keys=[]; for(var i=0;i<localStorage.length;i++){ keys.push(localStorage.key(i)); }
+    keys.forEach(function(k){
+      if(!k) return;
+      if(EXACT.indexOf(k)<0 && !PREFIX.some(function(p){return k.indexOf(p)===0;})) return;
+      var v=localStorage.getItem(k);
+      if(v==null || v==='') return;
+      try{ JSON.parse(v); }catch(e){ try{ localStorage.removeItem(k); }catch(_){} }
+    });
+  }catch(e){}
+})();
+</script>
 <style>
 :root{--red:#7C3AED;--orange:#8B5CF6;--gold:#5B21B6;--green:#059669;--blue:#3B82F6;--dark:#F5F3FF;--card:#FFFFFF;--card2:#F3F0FF;--border:rgba(109,40,217,.15);--muted:#475569;--text:#0F0A1A;--violet:#7C3AED;--violet-dark:#5B21B6;--violet-light:#8B5CF6;--violet-pale:#EDE9FE;
   /* Gradients */
