@@ -22304,5 +22304,156 @@ input:focus-visible, select:focus-visible, textarea:focus-visible{
 })();
 </script>
 
+<!-- ════════════════════════════════════════════════════════════
+     ACCESS CONTROL — login / Pro / RFC membership gating
+     Logged-out users can SEE every section but a lock overlay stops them
+     operating it. Free (Google) users get the basic tools; Pro (₹499/mo)
+     and active RFC members get everything (incl. Blood Analyser); expired
+     members are locked out with a rejoin offer. Reuses the existing login
+     and upgrade modals; the sidebar/nav stay usable so users are never
+     trapped. Non-blocking by design (overlay only).
+     ════════════════════════════════════════════════════════════ -->
+<style id="rfc-gate-style">
+  .rfc-gate{position:absolute;inset:0;z-index:60;display:flex;align-items:flex-start;justify-content:center;
+    padding:48px 18px;background:rgba(245,243,255,.72);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);overflow:auto;}
+  .rfc-gate-card{background:var(--card);border:1px solid var(--border);border-radius:18px;max-width:420px;width:100%;
+    padding:26px 24px;text-align:center;box-shadow:0 24px 70px rgba(109,40,217,.18);}
+  .rfc-gate-icon{font-size:40px;line-height:1;}
+  .rfc-gate-title{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:1px;color:var(--text);margin:10px 0 4px;}
+  .rfc-gate-sub{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:16px;}
+  .rfc-gate-btns{display:flex;flex-direction:column;gap:9px;margin-bottom:16px;}
+  .rfc-gate-btns button{padding:12px 16px;border-radius:10px;border:none;font-weight:800;font-size:13px;cursor:pointer;letter-spacing:.5px;}
+  .rfc-gate-primary{background:var(--fire);color:#fff;}
+  .rfc-gate-secondary{background:rgba(124,58,237,.08);color:var(--violet);border:1px solid var(--border)!important;}
+  .rfc-gate-google{background:#fff;color:#111;border:1px solid #dadce0!important;display:flex;align-items:center;justify-content:center;gap:8px;}
+  .rfc-join{background:linear-gradient(160deg,#1b1024,#120a1c);border:1px solid rgba(124,58,237,.4);border-radius:14px;padding:16px;text-align:left;margin-top:4px;}
+  .rfc-join h4{color:#fbbf24;font-size:13px;margin:0 0 8px;letter-spacing:.5px;}
+  .rfc-join ul{margin:0;padding-left:18px;}
+  .rfc-join li{color:#e7defc;font-size:12px;line-height:1.85;}
+  .rfc-join .rfc-join-cta{margin-top:12px;width:100%;padding:11px;border:none;border-radius:9px;background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#1a0f00;font-weight:800;font-size:12.5px;cursor:pointer;letter-spacing:1px;}
+</style>
+<script>
+(function(){
+  'use strict';
+  function U(){ try{ return (typeof user!=='undefined')?user:null; }catch(e){ return null; } }
+  function PRO(){ try{ return (typeof isPro!=='undefined')&&isPro; }catch(e){ return false; } }
+  function isAdmin(){ try{ return typeof isAdminUser==='function' && isAdminUser(); }catch(e){ return false; } }
+
+  // Screens that need PRO / active RFC membership. Everything else needs only
+  // a login; the three "browse" screens are viewable while logged out.
+  var PRO_SCREENS   = {bloodai:1, ayurveda:1, physio:1, transform:1, roadmap:1, meditation:1};
+  var BROWSE_SCREENS= {dashboard:1, plans:1, courses:1};
+
+  function tier(){
+    var u=U();
+    if(!u) return 'out';
+    if(isAdmin()) return 'admin';
+    var now=Date.now();
+    if(u.membershipExpiry){
+      var exp=new Date(u.membershipExpiry).getTime();
+      if(!isNaN(exp) && exp<now) return 'expired';
+      if(u.gymMember || u.userType==='member') return 'member';
+    }
+    if(PRO() || (u.plan && /pro|elite/i.test(u.plan))){
+      var sub=null; try{ sub=JSON.parse(localStorage.getItem('bm_sub')||'null'); }catch(e){}
+      if(sub && sub.nextBilling){ var nb=new Date(sub.nextBilling).getTime(); if(!isNaN(nb)&&nb<now) return 'expired'; }
+      return 'pro';
+    }
+    return 'free';
+  }
+  window.rfcTier = tier;
+
+  function joinBlock(){
+    return '<div class="rfc-join"><h4>🏆 Join Royal Fitness Club — get everything FREE</h4>'
+      +'<ul><li>✅ Full app access — every tool, unlocked</li>'
+      +'<li>🩸 Blood Analyser + 40-marker reports</li>'
+      +'<li>🥗 Personalised meal &amp; training plans</li>'
+      +'<li>🎁 Member welcome gift + exclusive offers</li>'
+      +'<li>👑 Priority coaching &amp; community challenges</li></ul>'
+      +'<button class="rfc-join-cta" onclick="rfcJoinRFC()">JOIN ROYAL FITNESS CLUB →</button></div>';
+  }
+  window.rfcJoinRFC = function(){
+    rfcRemoveGate();
+    if(typeof switchAuthTab==='function') switchAuthTab('register'); // GYM CODE tab
+    if(typeof forceLogin==='function') forceLogin();
+    else if(typeof switchScreen==='function') switchScreen('plans');
+  };
+
+  function gateContent(kind){
+    if(kind==='login'){
+      return '<div class="rfc-gate-icon">🔒</div>'
+        +'<div class="rfc-gate-title">Sign in to use this</div>'
+        +'<div class="rfc-gate-sub">You can browse the app, but you need an account to use the tools. It\'s free with Google.</div>'
+        +'<div class="rfc-gate-btns">'
+        +'<button class="rfc-gate-google" onclick="rfcGateGoogle()"><span>🔵</span> Continue with Google — Free</button>'
+        +'<button class="rfc-gate-secondary" onclick="rfcGateLogin()">Log in with email</button>'
+        +'</div>'+joinBlock();
+    }
+    if(kind==='pro'){
+      var price = (window.CURRENCIES && window.currentCurrency && CURRENCIES[currentCurrency]) ? (CURRENCIES[currentCurrency].sym+CURRENCIES[currentCurrency].pro) : '₹499';
+      return '<div class="rfc-gate-icon">👑</div>'
+        +'<div class="rfc-gate-title">This is a Pro feature</div>'
+        +'<div class="rfc-gate-sub">The Blood Analyser and premium health tools are part of <strong>Royal Pro</strong> — '+price+'/month. Or join Royal Fitness Club to get everything free.</div>'
+        +'<div class="rfc-gate-btns">'
+        +'<button class="rfc-gate-primary" onclick="rfcGateUpgrade()">⚡ Upgrade to Pro — '+price+'/mo</button>'
+        +'<button class="rfc-gate-secondary" onclick="switchScreen(\'plans\')">See all plans</button>'
+        +'</div>'+joinBlock();
+    }
+    // expired
+    return '<div class="rfc-gate-icon">⌛</div>'
+      +'<div class="rfc-gate-title">Your membership has expired</div>'
+      +'<div class="rfc-gate-sub">Renew to keep your full access, or rejoin Royal Fitness Club for everything free — plus a welcome gift.</div>'
+      +'<div class="rfc-gate-btns">'
+      +'<button class="rfc-gate-primary" onclick="rfcGateUpgrade()">🔄 Renew Royal Pro</button>'
+      +'<button class="rfc-gate-secondary" onclick="switchScreen(\'plans\')">See plans</button>'
+      +'</div>'+joinBlock();
+  }
+  window.rfcGateGoogle  = function(){ rfcRemoveGate(); if(typeof switchAuthTab==='function') switchAuthTab('google'); if(typeof forceLogin==='function') forceLogin(); };
+  window.rfcGateLogin   = function(){ rfcRemoveGate(); if(typeof switchAuthTab==='function') switchAuthTab('login'); if(typeof forceLogin==='function') forceLogin(); };
+  window.rfcGateUpgrade = function(){ rfcRemoveGate(); if(typeof openModal==='function') openModal('promodal'); };
+
+  function activeSection(){
+    return document.querySelector('.sb-active-screen.sb-screen-first')
+        || document.querySelector('.sb-active-screen')
+        || (document.querySelector('#screen-dashboard.sc-active') ? document.getElementById('screen-dashboard') : null)
+        || document.querySelector('.hero');
+  }
+  function rfcRemoveGate(){ var g=document.getElementById('rfc-gate-overlay'); if(g&&g.parentNode) g.parentNode.removeChild(g); }
+  window.rfcRemoveGate = rfcRemoveGate;
+
+  // Decide if the current screen is blocked for this tier; show/hide overlay.
+  window.rfcApplyGate = function(name){
+    rfcRemoveGate();
+    if(!name) return;
+    var t=tier();
+    if(t==='admin') return;                       // admins: full access
+    var kind=null;
+    if(t==='expired'){ if(!BROWSE_SCREENS[name]) kind='expired'; }
+    else if(t==='out'){ if(!BROWSE_SCREENS[name]) kind='login'; }
+    else if(PRO_SCREENS[name] && t==='free'){ kind='pro'; }   // logged-in free user hits a pro screen
+    if(!kind) return;
+    var sec=activeSection(); if(!sec) return;
+    var cs=getComputedStyle(sec); if(cs.position==='static') sec.style.position='relative';
+    var ov=document.createElement('div');
+    ov.id='rfc-gate-overlay'; ov.className='rfc-gate';
+    ov.innerHTML='<div class="rfc-gate-card">'+gateContent(kind)+'</div>';
+    sec.appendChild(ov);
+  };
+
+  function hook(){
+    if(typeof window.switchScreen==='function'){
+      var o=window.switchScreen;
+      window.switchScreen=function(n,e){ o(n,e); setTimeout(function(){ try{ window.rfcApplyGate(n); }catch(_){} }, 80); };
+    }
+    // Re-evaluate the gate after login/logout updates the user.
+    if(typeof window.applyUser==='function'){
+      var au=window.applyUser;
+      window.applyUser=function(){ var r=au.apply(this,arguments); try{ var a=document.querySelector('.sb-active-screen.sb-screen-first, #screen-dashboard.sc-active'); window.rfcApplyGate(a?(a.getAttribute('data-screen')|| (a.id==='screen-dashboard'?'dashboard':'')):''); }catch(_){} return r; };
+    }
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',hook); else hook();
+})();
+</script>
+
 </body>
 </html>
