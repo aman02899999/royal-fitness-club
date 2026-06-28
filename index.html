@@ -14040,7 +14040,9 @@ function adminAddCourse() {
 }
 
 function admSaveCourse() {
-  const id = document.getElementById('adm-edit-id').value;
+  // Empty when adding → generate a unique id (else every new course gets id=''
+  // and the next add overwrites it). Edit keeps the existing id.
+  const id = document.getElementById('adm-edit-id').value || ('course_'+Date.now());
   const name = document.getElementById('adm-edit-name').value.trim();
   if (!name) { toast('Course name is required.','gold'); return; }
   const price = parseInt(document.getElementById('adm-edit-price').value) || 0;
@@ -15544,7 +15546,9 @@ function admOpenPlanModal(planId) {
 function admClosePlanModal() { document.getElementById('adm-plan-modal').classList.remove('open'); }
 
 function admSavePlan() {
-  const id = document.getElementById('adm-plan-edit-id').value;
+  // Empty when adding → generate a unique id (else every new plan gets id=''
+  // and the next add overwrites it). Edit keeps the existing id.
+  const id = document.getElementById('adm-plan-edit-id').value || ('plan_'+Date.now());
   const name = document.getElementById('adm-plan-name').value.trim();
   if (!name) { toast('Plan name is required.','gold'); return; }
   const price = parseInt(document.getElementById('adm-plan-price').value) || 0;
