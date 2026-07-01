@@ -172,9 +172,9 @@
 window.dataLayer=window.dataLayer||[];
 function gtag(){dataLayer.push(arguments);}
 (function(){
-  var GTM='GTM-XXXXXXXX';        // ← your Google Tag Manager container ID
-  var GA4='G-XXXXXXXXXX';        // ← your GA4 Measurement ID
-  var FBP='YOUR_PIXEL_ID';       // ← your Meta (Facebook) Pixel ID
+  var GTM='GTM-XXXXXXXX';        // ← your Google Tag Manager container ID (optional)
+  var GA4='G-T2XRQFKLRE';        // ← GA4 Measurement ID (from this project's Firebase config)
+  var FBP='YOUR_PIXEL_ID';       // ← your Meta (Facebook) Pixel ID (optional)
   var real=function(v){ return v && !/X{4}|YOUR_/.test(v); };
   if(real(GTM)){
     (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer',GTM);
