@@ -1536,6 +1536,10 @@ section::before{content:'';position:absolute;inset:0;background:linear-gradient(
 #sb-toggle{position:fixed;top:calc(14px + env(safe-area-inset-top,0px));left:252px;z-index:1100;background:var(--card);border:1px solid var(--border);border-radius:4px;width:28px;height:28px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:13px;transition:left .28s cubic-bezier(.4,0,.2,1);color:var(--muted);}
 #sb-toggle:hover{color:var(--text);border-color:var(--red);}
 #sb-toggle.collapsed{left:10px;}
+/* On desktop the sidebar is permanent (always visible, content shifted right),
+   so the collapse toggle is redundant and just looks like a stray second menu —
+   hide it. On mobile (≤900px) it stays as the only way to open the nav drawer. */
+@media(min-width:901px){#sb-toggle{display:none!important;}}
 /* Overlay for mobile */
 #rfc-sb-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:490;}
 #rfc-sb-overlay.show{display:block;}
