@@ -3670,7 +3670,14 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
   try{
     firebase.initializeApp({
       apiKey:"AIzaSyD6AQun59-EJCgA7qzxMxBJj9BmKsWZrPw",
-      authDomain:"royal-fitness-club-7adc1.firebaseapp.com",
+      // authDomain is the app's OWN hosting origin (…web.app), NOT the default
+      // …firebaseapp.com. The app is served from web.app, so a firebaseapp.com
+      // authDomain made the Google sign-in handshake CROSS-ORIGIN — modern
+      // browsers block that session handoff via third-party-storage
+      // partitioning, so the account got created but the app never received the
+      // login. Firebase Hosting serves the /__/auth/ handler on web.app too, so
+      // pointing authDomain here makes the whole flow same-origin and reliable.
+      authDomain:"royal-fitness-club-7adc1.web.app",
       projectId:"royal-fitness-club-7adc1",
       storageBucket:"royal-fitness-club-7adc1.firebasestorage.app",
       messagingSenderId:"116269953135",
@@ -7147,9 +7154,7 @@ function initUser(){
       setTimeout(function(){
         if(!user && sessionStorage.getItem('rfc_goto_dash')){
           sessionStorage.removeItem('rfc_goto_dash');
-          toast('✅ Your account is ready! Please sign in with your email & password to continue.','gold');
-          if(typeof switchAuthTab==='function') switchAuthTab('login');
-          forceLogin();
+          showAccountReadyModal();
         }
       }, 3500);
     }
@@ -7264,6 +7269,42 @@ function initUser(){
 
 function forceLogin(){document.body.style.overflow='hidden';openModal('loginmodal');}
 function closeLoginModal(){document.body.style.overflow='';closeModal('loginmodal');}
+
+// Centered, persistent notice shown only if a sign-in attempt could not
+// establish a session in this browser. Stays on screen until the user taps
+// "Try Again" (re-runs the sign-in) or closes it — no auto-dismiss — so it's
+// easy to read. Wording works for Google and email sign-ins alike.
+function showAccountReadyModal(){
+  if(document.getElementById('rfc-acct-ready')) return;
+  const ov=document.createElement('div');
+  ov.id='rfc-acct-ready';
+  ov.setAttribute('role','dialog');
+  ov.setAttribute('aria-modal','true');
+  ov.style.cssText='position:fixed;inset:0;z-index:100000;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(6,4,16,.82);backdrop-filter:blur(4px);';
+  const card=document.createElement('div');
+  card.style.cssText='max-width:400px;width:100%;background:linear-gradient(160deg,#1b1030,#120a22);border:1px solid rgba(139,92,246,.45);border-radius:20px;padding:30px 26px;text-align:center;box-shadow:0 24px 70px rgba(0,0,0,.6);color:#fff;font-family:inherit;';
+  const h=document.createElement('div');
+  h.style.cssText='font-size:44px;line-height:1;margin-bottom:12px;';
+  h.textContent='✅';
+  const t=document.createElement('div');
+  t.style.cssText='font-size:20px;font-weight:800;margin-bottom:10px;';
+  t.textContent='Your account is ready!';
+  const p=document.createElement('div');
+  p.style.cssText='font-size:14.5px;line-height:1.55;color:#d6cbf0;margin-bottom:22px;';
+  p.textContent='Your sign-in didn’t complete on this browser. Tap “Try Again” to sign in — you should go straight into your dashboard. If it still doesn’t, please try Chrome or turn off any private/incognito mode.';
+  const btn=document.createElement('button');
+  btn.style.cssText='width:100%;padding:14px;border:none;border-radius:12px;font-size:15px;font-weight:800;cursor:pointer;background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#1a0f00;margin-bottom:10px;';
+  btn.textContent='🔄 Try Again';
+  btn.onclick=function(){ ov.remove(); document.body.style.overflow=''; if(typeof switchAuthTab==='function') switchAuthTab('google'); forceLogin(); };
+  const close=document.createElement('button');
+  close.style.cssText='width:100%;padding:11px;border:1px solid rgba(255,255,255,.18);border-radius:12px;font-size:13.5px;font-weight:700;cursor:pointer;background:transparent;color:#bcaee0;';
+  close.textContent='Close';
+  close.onclick=function(){ ov.remove(); document.body.style.overflow=''; };
+  card.appendChild(h);card.appendChild(t);card.appendChild(p);card.appendChild(btn);card.appendChild(close);
+  ov.appendChild(card);
+  document.body.appendChild(ov);
+  document.body.style.overflow='hidden';
+}
 
 function showMembershipGate(type,expDate){
   const gate=$('gym-gate');
