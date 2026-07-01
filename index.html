@@ -7140,11 +7140,17 @@ function initUser(){
   // Handle redirect sign-in result (primary Google flow returns here)
   firebase.auth().getRedirectResult().then(function(result){
     if(result&&result.user){
-      // Success via redirect — onAuthStateChanged will fire and call applyUser()
+      // Success via redirect — onAuthStateChanged will fire and call applyUser().
+      // Clear the pending-signin flag NOW so the safety-net timer below can't
+      // fire while the (possibly slow) Firestore profile load finishes.
+      try{ sessionStorage.removeItem('rfc_goto_dash'); }catch(_){}
       toast('Welcome to Royal Fitness Club! 🎉','green');
     }
   }).catch(function(err){
-    if(err.code&&err.code!=='auth/no-auth-event'){
+    // Only surface an error if the user is genuinely NOT signed in. A benign/
+    // transient getRedirectResult rejection must never show "try again" when the
+    // login actually succeeded (onAuthStateChanged already has the user).
+    if(err.code&&err.code!=='auth/no-auth-event'&&!firebase.auth().currentUser){
       toast(err.message||'Google sign-in failed. Try again.','gold');
     }
   });
@@ -7156,9 +7162,15 @@ function initUser(){
   try{
     if(sessionStorage.getItem('rfc_goto_dash')){
       setTimeout(function(){
-        if(!user && sessionStorage.getItem('rfc_goto_dash')){
+        // Fire ONLY if truly not signed in — check both the app's `user` and
+        // Firebase's own currentUser so a slow-but-successful login never
+        // triggers this notice.
+        var signedIn = user || (typeof firebase!=='undefined' && firebase.auth && firebase.auth().currentUser);
+        if(!signedIn && sessionStorage.getItem('rfc_goto_dash')){
           sessionStorage.removeItem('rfc_goto_dash');
           showAccountReadyModal();
+        }else{
+          try{ sessionStorage.removeItem('rfc_goto_dash'); }catch(_){}
         }
       }, 3500);
     }
