@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Royal Fitness Club — Promo Poster</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-font-smoothing:antialiased; }
+  :root{
+    --v1:#7C3AED; --v2:#5B21B6; --v3:#8B5CF6; --gold:#fbbf24; --gold2:#f59e0b;
+    --ink:#0e0a18; --card:rgba(255,255,255,.06); --line:rgba(255,255,255,.12);
+  }
+  html,body{ font-family:'Segoe UI',Roboto,Helvetica,Arial,sans-serif; }
+  .poster{
+    width:1080px; min-height:1620px; position:relative; overflow:hidden;
+    background:
+      radial-gradient(1100px 600px at 80% -5%, rgba(139,92,246,.45), transparent 60%),
+      radial-gradient(900px 700px at -10% 30%, rgba(91,33,182,.5), transparent 60%),
+      radial-gradient(800px 600px at 120% 90%, rgba(251,191,36,.18), transparent 55%),
+      linear-gradient(160deg,#160d24 0%, #0e0a18 55%, #1a0f2e 100%);
+    color:#fff; padding:64px 60px 56px;
+  }
+  /* faint grid texture */
+  .poster::before{ content:''; position:absolute; inset:0;
+    background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);
+    background-size:54px 54px; pointer-events:none; }
+  .wrap{ position:relative; z-index:2; }
+
+  /* ── Brand row ── */
+  .brand{ display:flex; align-items:center; gap:16px; margin-bottom:30px; }
+  .logo{ width:64px; height:64px; border-radius:16px; display:flex; align-items:center; justify-content:center;
+    font-weight:900; font-size:22px; letter-spacing:1px; background:linear-gradient(135deg,var(--v1),var(--v2)); box-shadow:0 10px 30px rgba(124,58,237,.5); }
+  .brand b{ font-size:26px; font-weight:800; letter-spacing:3px; }
+  .brand span{ display:block; font-size:12px; letter-spacing:5px; color:#cbb9f5; font-weight:700; }
+
+  /* ── Headline ── */
+  .kicker{ display:inline-block; font-size:13px; letter-spacing:4px; font-weight:800; color:#1a0f00;
+    background:linear-gradient(135deg,var(--gold),var(--gold2)); padding:7px 16px; border-radius:100px; margin-bottom:20px; }
+  h1{ font-size:78px; line-height:.98; font-weight:900; letter-spacing:-1px; margin-bottom:14px; }
+  h1 .grad{ background:linear-gradient(120deg,#c4b5fd,#fbbf24); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .lead{ font-size:20px; line-height:1.5; color:#d9d0f0; max-width:760px; margin-bottom:34px; }
+
+  /* ── Feature grid ── */
+  .grid{ display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:30px; }
+  .feat{ background:var(--card); border:1px solid var(--line); border-radius:16px; padding:16px 18px; display:flex; gap:13px; align-items:flex-start; backdrop-filter:blur(6px); }
+  .feat .ic{ font-size:26px; line-height:1; flex-shrink:0; }
+  .feat .ft{ font-size:17px; font-weight:800; margin-bottom:2px; letter-spacing:.2px; }
+  .feat .fs{ font-size:13px; color:#bcaee0; line-height:1.4; }
+  .feat.hot{ border-color:rgba(251,191,36,.5); background:linear-gradient(135deg,rgba(251,191,36,.12),rgba(124,58,237,.08)); }
+
+  /* ── Benefits strip ── */
+  .benefits{ display:flex; flex-wrap:wrap; gap:10px; margin-bottom:32px; }
+  .benefits .b{ font-size:13.5px; font-weight:700; color:#efeaff; background:rgba(124,58,237,.18); border:1px solid rgba(139,92,246,.4); padding:8px 14px; border-radius:100px; }
+
+  /* ── Pricing ── */
+  .pricing{ display:grid; grid-template-columns:1fr 1fr 1.2fr; gap:14px; margin-bottom:30px; }
+  .plan{ border-radius:18px; padding:20px 18px; text-align:center; border:1px solid var(--line); background:var(--card); }
+  .plan .pn{ font-size:13px; letter-spacing:2px; font-weight:800; color:#cbb9f5; text-transform:uppercase; }
+  .plan .pp{ font-size:34px; font-weight:900; margin:6px 0 2px; }
+  .plan .pp small{ font-size:14px; font-weight:700; color:#bcaee0; }
+  .plan .pd{ font-size:12.5px; color:#bcaee0; line-height:1.4; }
+  .plan.elite{ background:linear-gradient(160deg,#241433,#160d24); border:1.5px solid var(--gold); position:relative; }
+  .plan.elite .pn{ color:var(--gold); }
+  .plan.elite .tagtop{ position:absolute; top:-12px; left:50%; transform:translateX(-50%); background:linear-gradient(135deg,var(--gold),var(--gold2)); color:#1a0f00; font-size:11px; font-weight:900; letter-spacing:1px; padding:4px 12px; border-radius:100px; white-space:nowrap; }
+
+  /* ── CTA ── */
+  .cta{ background:linear-gradient(135deg,var(--gold),var(--gold2)); border-radius:20px; padding:26px 28px; display:flex; align-items:center; justify-content:space-between; gap:20px; box-shadow:0 18px 50px rgba(245,158,11,.35); }
+  .cta .ct1{ font-size:30px; font-weight:900; color:#1a0f00; line-height:1.05; }
+  .cta .ct2{ font-size:15px; font-weight:700; color:#3a2600; margin-top:6px; }
+  .cta .arrow{ font-size:44px; font-weight:900; color:#1a0f00; }
+
+  .foot{ text-align:center; margin-top:26px; font-size:14px; letter-spacing:2px; color:#a892d8; font-weight:700; }
+  .foot b{ color:#fff; }
+</style>
+</head>
+<body>
+<div class="poster">
+ <div class="wrap">
+
+  <div class="brand">
+    <div class="logo">RFC</div>
+    <div><b>ROYAL FITNESS CLUB</b><span>ROYAL FITNESS ECOSYSTEM</span></div>
+  </div>
+
+  <div class="kicker">🇮🇳 INDIA'S #1 ALL-IN-ONE FITNESS APP</div>
+  <h1>YOUR ENTIRE<br>FITNESS JOURNEY<br><span class="grad">IN ONE APP.</span></h1>
+  <p class="lead">Smart meal plans, blood-report analysis, expert courses, training, Ayurveda &amp; recovery — built for Indians, backed by science, all in one place.</p>
+
+  <div class="grid">
+    <div class="feat hot"><div class="ic">🩸</div><div><div class="ft">Blood Report Analyser</div><div class="fs">Upload your lab PDF — 40+ biomarkers checked, with fixes, remedies &amp; progress tracking.</div></div></div>
+    <div class="feat hot"><div class="ic">📊</div><div><div class="ft">Beast Score &amp; Body Analysis</div><div class="fs">BMI, body-fat, BMR, TDEE, FFMI &amp; a personalised health score in seconds.</div></div></div>
+    <div class="feat"><div class="ic">🥗</div><div><div class="ft">Smart Indian Meal Plans</div><div class="fs">Veg, non-veg, keto &amp; eggetarian — macro-perfect, 200+ Indian foods.</div></div></div>
+    <div class="feat"><div class="ic">🏋️</div><div><div class="ft">Workouts &amp; 12-Week Roadmap</div><div class="fs">Personalised training splits and a step-by-step transformation path.</div></div></div>
+    <div class="feat"><div class="ic">🌿</div><div><div class="ft">Ayurveda &amp; Recovery Hub</div><div class="fs">Natural remedies, physio, mobility, yoga &amp; meditation library.</div></div></div>
+    <div class="feat"><div class="ic">🎓</div><div><div class="ft">RFC Academy + PDF Store</div><div class="fs">10 science-based courses &amp; 22+ expert guides to master fitness.</div></div></div>
+    <div class="feat"><div class="ic">🏆</div><div><div class="ft">Challenges &amp; Leaderboard</div><div class="fs">Compete on Tiger Score, win real prizes, earn badges &amp; XP.</div></div></div>
+    <div class="feat"><div class="ic">💰</div><div><div class="ft">Wallet &amp; Referrals</div><div class="fs">Earn ₹100 per friend who joins — redeem straight to UPI.</div></div></div>
+  </div>
+
+  <div class="benefits">
+    <span class="b">📈 Track real progress</span>
+    <span class="b">🇮🇳 Made for India</span>
+    <span class="b">🔬 Science-backed</span>
+    <span class="b">📱 Installable PWA · works offline</span>
+    <span class="b">🔒 Private — your data stays yours</span>
+  </div>
+
+  <div class="pricing">
+    <div class="plan"><div class="pn">Free</div><div class="pp">₹0</div><div class="pd">Sign in with Google &amp; start with the core tools.</div></div>
+    <div class="plan"><div class="pn">Royal Pro</div><div class="pp">₹499<small>/mo</small></div><div class="pd">Blood Analyser + every premium tool, unlocked.</div></div>
+    <div class="plan elite"><div class="tagtop">★ BEST VALUE ★</div><div class="pn">RFC Member</div><div class="pp">FREE<small> access</small></div><div class="pd">Join the club &amp; get the ENTIRE app free + a welcome gift.</div></div>
+  </div>
+
+  <div class="cta">
+    <div><div class="ct1">JOIN ROYAL FITNESS CLUB</div><div class="ct2">Get everything FREE · Welcome gift · Priority coaching &amp; offers 🎁</div></div>
+    <div class="arrow">→</div>
+  </div>
+
+  <div class="foot">🔥 Join <b>5,000+</b> members transforming today · <b>royal-fitness-club.web.app</b></div>
+
+ </div>
+</div>
+</body>
+</html>
