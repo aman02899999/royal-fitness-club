@@ -172,9 +172,9 @@
 window.dataLayer=window.dataLayer||[];
 function gtag(){dataLayer.push(arguments);}
 (function(){
-  var GTM='GTM-XXXXXXXX';        // ← your Google Tag Manager container ID
-  var GA4='G-XXXXXXXXXX';        // ← your GA4 Measurement ID
-  var FBP='YOUR_PIXEL_ID';       // ← your Meta (Facebook) Pixel ID
+  var GTM='GTM-XXXXXXXX';        // ← your Google Tag Manager container ID (optional)
+  var GA4='G-T2XRQFKLRE';        // ← GA4 Measurement ID (from this project's Firebase config)
+  var FBP='YOUR_PIXEL_ID';       // ← your Meta (Facebook) Pixel ID (optional)
   var real=function(v){ return v && !/X{4}|YOUR_/.test(v); };
   if(real(GTM)){
     (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer',GTM);
@@ -7137,6 +7137,9 @@ function initUser(){
       toast(err.message||'Google sign-in failed. Try again.','gold');
     }
   });
+  // Persist the session across reloads/tabs (default on web, set explicitly so a
+  // popup sign-in reliably survives the return to the app).
+  try{ firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(function(){}); }catch(_){}
   firebase.auth().onAuthStateChanged(async function(fbUser){
     if(fbUser){
       // Admin bypass — always grant full access without gym-membership gate
@@ -7207,8 +7210,30 @@ function initUser(){
             renderCourses();
           }).catch(()=>{});
       }catch(err){
-        console.error('Auth state error:',err);
-        setTimeout(forceLogin,1600);
+        // Firestore unavailable (rules deny / DB not provisioned / network) must
+        // NOT bounce a successfully-authenticated user back to the login screen.
+        // Sign-in already succeeded — log them in from the Firebase Auth object
+        // with a minimal free profile, then retry the cloud profile in the
+        // background. (Previously this called forceLogin(), which silently
+        // re-showed the login modal with no error — the "popup works but the
+        // page still asks me to log in, no message" bug.)
+        console.error('Auth profile load failed — using auth-only fallback:',err);
+        const _dn=fbUser.displayName||(fbUser.email?fbUser.email.split('@')[0]:'Member');
+        user={uid:fbUser.uid,name:_dn,email:fbUser.email||'',phone:'',role:fbUser.email===ADMIN_EMAIL?'admin':'member',plan:'free',gymMember:false,userType:'outsider',joinDate:null,membershipExpiry:null,memberCode:null,since:new Date().toISOString(),last:new Date().toISOString()};
+        isPro=fbUser.email===ADMIN_EMAIL;
+        try{localStorage.setItem('bm_user',JSON.stringify(user));localStorage.setItem('bm_pro',isPro?'true':'false');}catch(_){}
+        applyUser();
+        if(user.role==='admin')showAdminLink();
+        initPDFStore();
+        // Best-effort background retry so the profile lands once Firestore recovers
+        setTimeout(function(){
+          try{
+            firebase.firestore().collection('users').doc(fbUser.uid).set({
+              name:_dn,email:fbUser.email||'',role:user.role,gymMember:false,userType:'outsider',
+              status:'active',plan:'free',lastLogin:firebase.firestore.FieldValue.serverTimestamp()
+            },{merge:true}).catch(function(){});
+          }catch(_){}
+        },4000);
       }
     }else{
       const hadUser=!!user;
