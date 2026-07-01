@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=430,initial-scale=1">
+<title>RFC Reel 3 — 10 Features in 10 Seconds</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;700;900&display=swap');
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{width:430px;height:932px;overflow:hidden;background:#0a0a0a;}
+.reel{width:430px;height:932px;position:relative;overflow:hidden;font-family:'Inter',sans-serif;}
+
+.bg{position:absolute;inset:0;background:#080808;z-index:0;}
+.bg-lines{position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 60px,rgba(232,0,29,.04) 60px,rgba(232,0,29,.04) 61px);z-index:1;}
+
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+@keyframes slideUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+@keyframes pop{from{opacity:0;transform:scale(0.5) rotate(-10deg);}to{opacity:1;transform:scale(1) rotate(0deg);}}
+@keyframes bang{0%{opacity:0;transform:scale(1.4);}100%{opacity:1;transform:scale(1);}}
+
+/* HOOK SLIDE */
+.hook{position:absolute;inset:0;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;animation:hfade 3.5s .2s forwards;}
+@keyframes hfade{0%{opacity:0;}10%{opacity:1;}80%{opacity:1;}100%{opacity:0;}}
+.hook-num{font-family:'Bebas Neue',sans-serif;font-size:120px;color:#e8001d;line-height:1;text-shadow:0 0 60px rgba(232,0,29,.6);opacity:0;animation:bang .4s .5s forwards;}
+.hook-text{font-family:'Bebas Neue',sans-serif;font-size:36px;color:#fff;letter-spacing:4px;text-align:center;opacity:0;animation:slideUp .4s .8s forwards;}
+.hook-sub{font-size:14px;color:rgba(255,255,255,.4);letter-spacing:2px;margin-top:8px;opacity:0;animation:slideUp .4s 1.1s forwards;}
+
+/* FEATURE CARDS — rapid fire */
+.feat-slide{position:absolute;inset:0;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.feat-card{width:340px;border-radius:24px;padding:32px 28px;text-align:center;opacity:0;}
+
+/* Each feature gets 1.3s on screen */
+#f1 .feat-card{background:linear-gradient(135deg,#1a0a00,#2d1200);border:1px solid rgba(245,158,11,.3);animation:fcard 1.3s 3.5s both;}
+#f2 .feat-card{background:linear-gradient(135deg,#0a001a,#150030);border:1px solid rgba(139,92,246,.3);animation:fcard 1.3s 4.8s both;}
+#f3 .feat-card{background:linear-gradient(135deg,#001a00,#003300);border:1px solid rgba(34,197,94,.3);animation:fcard 1.3s 6.1s both;}
+#f4 .feat-card{background:linear-gradient(135deg,#1a0000,#330000);border:1px solid rgba(232,0,29,.3);animation:fcard 1.3s 7.4s both;}
+#f5 .feat-card{background:linear-gradient(135deg,#0a0a1a,#001133);border:1px solid rgba(59,130,246,.3);animation:fcard 1.3s 8.7s both;}
+#f6 .feat-card{background:linear-gradient(135deg,#1a0a00,#331500);border:1px solid rgba(249,115,22,.3);animation:fcard 1.3s 10.0s both;}
+#f7 .feat-card{background:linear-gradient(135deg,#001a0a,#002618);border:1px solid rgba(20,184,166,.3);animation:fcard 1.3s 11.3s both;}
+#f8 .feat-card{background:linear-gradient(135deg,#1a001a,#2d0033);border:1px solid rgba(168,85,247,.3);animation:fcard 1.3s 12.6s both;}
+#f9 .feat-card{background:linear-gradient(135deg,#001a1a,#003333);border:1px solid rgba(6,182,212,.3);animation:fcard 1.3s 13.9s both;}
+#f10 .feat-card{background:linear-gradient(135deg,#0a0a00,#1a1a00);border:1px solid rgba(234,179,8,.3);animation:fcard 1.3s 15.2s both;}
+
+@keyframes fcard{
+  0%{opacity:0;transform:scale(0.85) translateY(30px);}
+  12%{opacity:1;transform:scale(1) translateY(0);}
+  75%{opacity:1;transform:scale(1) translateY(0);}
+  100%{opacity:0;transform:scale(1.05) translateY(-20px);}
+}
+
+.feat-num{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:3px;margin-bottom:10px;opacity:.6;}
+.feat-emoji{font-size:64px;display:block;margin-bottom:12px;}
+.feat-name{font-family:'Bebas Neue',sans-serif;font-size:34px;color:#fff;letter-spacing:2px;line-height:1.1;}
+.feat-desc{font-size:14px;color:rgba(255,255,255,.5);margin-top:10px;line-height:1.5;}
+
+/* FINALE */
+.finale{position:absolute;inset:0;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 28px;animation:ffade 6s 16.5s forwards;}
+@keyframes ffade{0%{opacity:0;}8%{opacity:1;}85%{opacity:1;}100%{opacity:0;}}
+.fin-title{font-family:'Bebas Neue',sans-serif;font-size:48px;color:#fff;text-align:center;letter-spacing:3px;line-height:1.1;opacity:0;animation:slideUp .5s 16.8s forwards;}
+.fin-title .red{color:#e8001d;}
+.fin-sub{font-size:15px;color:rgba(255,255,255,.5);text-align:center;margin-top:10px;line-height:1.6;opacity:0;animation:slideUp .4s 17.3s forwards;}
+.fin-badge{display:flex;gap:12px;margin-top:24px;opacity:0;animation:slideUp .4s 17.8s forwards;}
+.fbadge{padding:10px 18px;border-radius:30px;font-size:12px;font-weight:700;letter-spacing:1px;}
+.fbadge.r{background:rgba(232,0,29,.2);border:1px solid rgba(232,0,29,.5);color:#ff4444;}
+.fbadge.g{background:rgba(34,197,94,.15);border:1px solid rgba(34,197,94,.4);color:#22c55e;}
+.fin-url{background:linear-gradient(135deg,#e8001d,#b00010);color:#fff;padding:16px 40px;border-radius:50px;font-size:14px;font-weight:700;letter-spacing:1px;margin-top:28px;box-shadow:0 8px 24px rgba(232,0,29,.45);opacity:0;animation:pop .5s 18.4s forwards;}
+.fin-note{font-size:11px;color:rgba(255,255,255,.3);margin-top:14px;opacity:0;animation:fadeIn .4s 18.9s forwards;}
+
+.counter{position:absolute;top:28px;right:24px;z-index:20;}
+.counter-num{font-family:'Bebas Neue',sans-serif;font-size:20px;color:rgba(255,255,255,.3);letter-spacing:1px;}
+
+.progress{position:absolute;bottom:0;left:0;height:4px;background:linear-gradient(90deg,#e8001d,#f59e0b,#22c55e);z-index:20;animation:prog 22.5s linear forwards;}
+@keyframes prog{from{width:0;}to{width:100%;}}
+.wm{position:absolute;bottom:28px;left:0;right:0;text-align:center;font-size:11px;color:rgba(255,255,255,.2);letter-spacing:2px;z-index:20;}
+</style>
+</head>
+<body>
+<div class="reel">
+  <div class="bg"></div>
+  <div class="bg-lines"></div>
+
+  <!-- HOOK -->
+  <div class="hook">
+    <div class="hook-num">10</div>
+    <div class="hook-text">FEATURES · ONE APP</div>
+    <div class="hook-sub">FREE FOR RFC MEMBERS</div>
+  </div>
+
+  <!-- FEATURE 1 -->
+  <div class="feat-slide" id="f1">
+    <div class="feat-card">
+      <div class="feat-num" style="color:#f59e0b;">01 / 10</div>
+      <span class="feat-emoji">⚡</span>
+      <div class="feat-name" style="color:#f59e0b;">BEAST SCORE</div>
+      <div class="feat-desc">BMI · BMR · TDEE · Body Fat %<br>Your complete body analysis in seconds</div>
+    </div>
+  </div>
+
+  <!-- FEATURE 2 -->
+  <div class="feat-slide" id="f2">
+    <div class="feat-card">
+      <div class="feat-num" style="color:#a78bfa;">02 / 10</div>
+      <span class="feat-emoji">🏋️</span>
+      <div class="feat-name" style="color:#a78bfa;">WORKOUT LOGGER</div>
+      <div class="feat-desc">Every set · Every rep · Every PR<br>Track your strength journey over time</div>
+    </div>
+  </div>
+
+  <!-- FEATURE 3 -->
+  <div class="feat-slide" id="f3">
+    <div class="feat-card">
+      <div class="feat-num" style="color:#22c55e;">03 / 10</div>
+      <span class="feat-emoji">🥗</span>
+      <div class="feat-name" style="color:#22c55e;">INDIAN MEAL PLANS</div>
+      <div class="feat-desc">7-day plans · 50+ Indian foods<br>Macros calculated for your exact goal</div>
+    </div>
+  </div>
+
+  <!-- FEATURE 4 -->
+  <div class="feat-slide" id="f4">
+    <div class="feat-card">
+      <div class="feat-num" style="color:#ef4444;">04 / 10</div>
+      <span class="feat-emoji">🩸</span>
+      <div class="feat-name" style="color:#ef4444;">BLOOD ANALYSER</div>
+      <div class="feat-desc">20+ biomarkers · No doctor needed<br>Understand your health in full detail</div>
+    </div>
+  </div>
+
+  <!-- FEATURE 5 -->
+  <div class="feat-slide" id="f5">
+    <div class="feat-card">
+      <div class="feat-num" style="color:#60a5fa;">05 / 10</div>
+      <span class="feat-emoji">🏆</span>
+      <div class="feat-name" style="color:#60a5fa;">TIGER LEADERBOARD</div>
+      <div class="feat-desc">Compete India-wide every month<br>Top 3 win ₹15,000 supplement stack</div>
+    </div>
+  </div>
+
+  <!-- FEATURE 6 -->
+  <div class="feat-slide" id="f6">
+    <div class="feat-card">
+      <div class="feat-num" style="color:#fb923c;">06 / 10</div>
+      <span class="feat-emoji">⚔️</span>
+      <div class="feat-name" style="color:#fb923c;">CHALLENGES</div>
+      <div class="feat-desc">Paid fitness competitions · Real prizes<br>Beat the best athletes across India</div>
+    </div>
+  </div>
+
+  <!-- FEATURE 7 -->
+  <div class="feat-slide" id="f7">
+    <div class="feat-card">
+      <div class="feat-num" style="color:#2dd4bf;">07 / 10</div>
+      <span class="feat-emoji">📚</span>
+      <div class="feat-name" style="color:#2dd4bf;">108+ PDF GUIDES</div>
+      <div class="feat-desc">Anabolic science · Fat loss · Nutrition<br>Expert knowledge — all downloadable free</div>
+    </div>
+  </div>
+
+  <!-- FEATURE 8 -->
+  <div class="feat-slide" id="f8">
+    <div class="feat-card">
+      <div class="feat-num" style="color:#c084fc;">08 / 10</div>
+      <span class="feat-emoji">🎓</span>
+      <div class="feat-name" style="color:#c084fc;">RFC ACADEMY</div>
+      <div class="feat-desc">10 science-based courses · 99% OFF<br>From gym newbie to pharma expert</div>
+    </div>
+  </div>
+
+  <!-- FEATURE 9 -->
+  <div class="feat-slide" id="f9">
+    <div class="feat-card">
+      <div class="feat-num" style="color:#22d3ee;">09 / 10</div>
+      <span class="feat-emoji">🧘</span>
+      <div class="feat-name" style="color:#22d3ee;">YOGA & MEDITATION</div>
+      <div class="feat-desc">Recovery · Mobility · Mindset<br>Train body AND mind for elite performance</div>
+    </div>
+  </div>
+
+  <!-- FEATURE 10 -->
+  <div class="feat-slide" id="f10">
+    <div class="feat-card">
+      <div class="feat-num" style="color:#eab308;">10 / 10</div>
+      <span class="feat-emoji">📸</span>
+      <div class="feat-name" style="color:#eab308;">PROGRESS PHOTOS</div>
+      <div class="feat-desc">Before & after uploads · Streak calendar<br>See your transformation in real time</div>
+    </div>
+  </div>
+
+  <!-- FINALE -->
+  <div class="finale">
+    <div class="fin-title">ALL THIS.<br><span class="red">FREE</span> FOR YOU.</div>
+    <div class="fin-sub">Royal Fitness Club members get full PRO access.<br>3 months membership = everything unlocked.</div>
+    <div class="fin-badge">
+      <div class="fbadge r">₹499/month value</div>
+      <div class="fbadge g">FREE for members</div>
+    </div>
+    <div class="fin-url">🔥 Visit royal-fitness-club-7adc1.web.app</div>
+    <div class="fin-note">Sign in with Google · Instant access · No payment</div>
+  </div>
+
+  <div class="progress"></div>
+  <div class="wm">ROYAL FITNESS CLUB</div>
+</div>
+</body>
+</html>

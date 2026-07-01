@@ -1,8 +1,10 @@
-const CACHE = 'rfc-v61';
+const CACHE = 'rfc-v64';
 const STATIC = [
   '/',
   '/index.html',
   '/admin.html',
+  '/landing.html',
+  '/offline.html',
   '/404.html',
   '/manifest.json',
   '/icons/icon-192x192.png',
@@ -62,23 +64,53 @@ self.addEventListener('push', e => {
 });
 
 self.addEventListener('fetch', e => {
-  // Only intercept same-origin GET requests; skip Firebase/Razorpay API calls
   const url = new URL(e.request.url);
   if (e.request.method !== 'GET') return;
   if (url.hostname.includes('firebase') || url.hostname.includes('razorpay') ||
-      url.hostname.includes('googleapis') || url.hostname.includes('gstatic')) return;
+      url.hostname.includes('googleapis') || url.hostname.includes('gstatic') ||
+      url.hostname.includes('fontawesome') || url.hostname.includes('fonts.g')) return;
 
-  e.respondWith(
-    caches.match(e.request).then(cached => {
-      if (cached) return cached;
-      return fetch(e.request).then(res => {
-        // Cache same-origin HTML/JS/CSS/images
-        if (res.ok && url.origin === self.location.origin) {
+  const isNavigation = e.request.mode === 'navigate' || e.request.destination === 'document';
+
+  // ── HTML / navigation → NETWORK-FIRST ──
+  // Serving the page cache-first meant returning users kept an old
+  // index.html until the cache version changed. Network-first delivers
+  // the latest app on every visit, with cache/offline fallback when down.
+  // Only cache final, same-origin, non-redirected 200s — a cached redirect
+  // replayed for a navigation throws ("redirected response used for navigation").
+  const cacheable = res => res && res.ok && !res.redirected &&
+    res.type === 'basic' && url.origin === self.location.origin;
+
+  if (isNavigation) {
+    e.respondWith(
+      fetch(e.request).then(res => {
+        if (cacheable(res)) {
           const clone = res.clone();
-          caches.open(CACHE).then(c => c.put(e.request, clone));
+          caches.open(CACHE).then(c => c.put(e.request, clone)).catch(() => {});
         }
         return res;
-      }).catch(() => cached);
+      }).catch(() =>
+        caches.match(e.request)
+          .then(c => c || caches.match('/index.html'))
+          .then(c => c || caches.match('/offline.html'))
+          .then(c => c || new Response('<h1>Offline</h1>', { status: 503, headers: { 'Content-Type': 'text/html' } }))
+      )
+    );
+    return;
+  }
+
+  // ── Static assets → STALE-WHILE-REVALIDATE ──
+  // Fast from cache, refreshed in the background so updates self-propagate.
+  e.respondWith(
+    caches.match(e.request).then(cached => {
+      const network = fetch(e.request).then(res => {
+        if (cacheable(res)) {
+          const clone = res.clone();
+          caches.open(CACHE).then(c => c.put(e.request, clone)).catch(() => {});
+        }
+        return res;
+      }).catch(() => cached || new Response('', { status: 503, statusText: 'Offline' }));
+      return cached || network;
     })
   );
 });

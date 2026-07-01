@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=430,initial-scale=1">
+<title>RFC Reel 1 — Your Beast Ecosystem</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;700;900&display=swap');
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{width:430px;height:932px;overflow:hidden;background:#0a0a0a;}
+.reel{width:430px;height:932px;position:relative;overflow:hidden;font-family:'Inter',sans-serif;}
+
+/* BG */
+.bg{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,#1a0005 0%,#0a0a0a 70%);z-index:0;}
+.bg-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(232,0,29,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(232,0,29,.06) 1px,transparent 1px);background-size:40px 40px;z-index:1;}
+.red-glow{position:absolute;width:500px;height:500px;background:radial-gradient(circle,rgba(232,0,29,.25) 0%,transparent 70%);top:-150px;left:-50px;z-index:1;animation:pulse 4s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:.6;transform:scale(1);}50%{opacity:1;transform:scale(1.1);}}
+
+/* SLIDES */
+.slide{position:absolute;inset:0;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;pointer-events:none;}
+.slide.active{pointer-events:all;}
+
+/* SLIDE 1 — HOOK */
+#s1{animation:s1-anim 4s 0.3s forwards;}
+@keyframes s1-anim{0%{opacity:0;}10%{opacity:1;}85%{opacity:1;}100%{opacity:0;}}
+.hook-line{font-size:28px;font-weight:900;color:#fff;text-align:center;line-height:1.3;opacity:0;animation:slideUp .6s .6s forwards;}
+.hook-line span{color:#e8001d;}
+@keyframes slideUp{from{opacity:0;transform:translateY(30px);}to{opacity:1;transform:translateY(0);}}
+
+/* SLIDE 2 — LOGO */
+#s2{animation:s2-anim 3.5s 4s forwards;}
+@keyframes s2-anim{0%{opacity:0;}15%{opacity:1;}85%{opacity:1;}100%{opacity:0;}}
+.logo-badge{width:90px;height:90px;background:linear-gradient(135deg,#e8001d,#7c0010);border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:42px;box-shadow:0 0 40px rgba(232,0,29,.6);opacity:0;animation:pop .5s 4.3s forwards;}
+@keyframes pop{from{opacity:0;transform:scale(0.5);}to{opacity:1;transform:scale(1);}}
+.brand-name{font-family:'Bebas Neue',sans-serif;font-size:46px;color:#fff;letter-spacing:4px;margin-top:14px;opacity:0;animation:slideUp .5s 4.8s forwards;}
+.brand-sub{font-size:13px;color:rgba(255,255,255,.5);letter-spacing:3px;text-transform:uppercase;margin-top:6px;opacity:0;animation:slideUp .5s 5.1s forwards;}
+.india-badge{background:linear-gradient(135deg,#e8001d,#ff6b35);padding:8px 20px;border-radius:30px;font-size:12px;font-weight:700;color:#fff;letter-spacing:2px;margin-top:18px;opacity:0;animation:slideUp .5s 5.4s forwards;}
+
+/* SLIDE 3 — FEATURES */
+#s3{animation:s3-anim 12s 7.2s forwards;padding:40px 30px;}
+@keyframes s3-anim{0%{opacity:0;}5%{opacity:1;}92%{opacity:1;}100%{opacity:0;}}
+.feat-title{font-family:'Bebas Neue',sans-serif;font-size:32px;color:#e8001d;letter-spacing:3px;margin-bottom:20px;opacity:0;animation:slideUp .4s 7.5s forwards;}
+.feat-grid{display:flex;flex-direction:column;gap:10px;width:100%;}
+.feat-item{display:flex;align-items:center;gap:14px;background:rgba(255,255,255,.04);border:1px solid rgba(232,0,29,.2);border-radius:14px;padding:14px 18px;opacity:0;transform:translateX(-30px);}
+.feat-item:nth-child(1){animation:featin .4s 7.8s forwards;}
+.feat-item:nth-child(2){animation:featin .4s 8.2s forwards;}
+.feat-item:nth-child(3){animation:featin .4s 8.6s forwards;}
+.feat-item:nth-child(4){animation:featin .4s 9.0s forwards;}
+.feat-item:nth-child(5){animation:featin .4s 9.4s forwards;}
+.feat-item:nth-child(6){animation:featin .4s 9.8s forwards;}
+.feat-item:nth-child(7){animation:featin .4s 10.2s forwards;}
+@keyframes featin{from{opacity:0;transform:translateX(-30px);}to{opacity:1;transform:translateX(0);}}
+.feat-icon{font-size:28px;flex-shrink:0;}
+.feat-text{}
+.feat-name{font-size:15px;font-weight:700;color:#fff;}
+.feat-desc{font-size:11px;color:rgba(255,255,255,.45);margin-top:2px;}
+
+/* SLIDE 4 — CTA */
+#s4{animation:s4-anim 5s 19s forwards;}
+@keyframes s4-anim{0%{opacity:0;}15%{opacity:1;}85%{opacity:1;}100%{opacity:0;}}
+.gift-icon{font-size:70px;opacity:0;animation:pop .5s 19.3s forwards;}
+.cta-head{font-family:'Bebas Neue',sans-serif;font-size:38px;color:#fff;text-align:center;letter-spacing:2px;margin-top:10px;opacity:0;animation:slideUp .4s 19.8s forwards;}
+.cta-head span{color:#e8001d;}
+.cta-sub{font-size:14px;color:rgba(255,255,255,.6);text-align:center;margin-top:8px;line-height:1.5;opacity:0;animation:slideUp .4s 20.2s forwards;}
+.cta-box{background:linear-gradient(135deg,rgba(232,0,29,.15),rgba(232,0,29,.05));border:1px solid rgba(232,0,29,.4);border-radius:16px;padding:18px 28px;margin-top:20px;text-align:center;opacity:0;animation:slideUp .5s 20.6s forwards;}
+.cta-free{font-family:'Bebas Neue',sans-serif;font-size:28px;color:#22c55e;letter-spacing:2px;}
+.cta-detail{font-size:12px;color:rgba(255,255,255,.5);margin-top:4px;}
+.cta-url{background:#e8001d;color:#fff;padding:14px 32px;border-radius:50px;font-size:13px;font-weight:700;letter-spacing:1px;margin-top:22px;display:inline-block;opacity:0;animation:slideUp .4s 21.2s forwards;box-shadow:0 6px 20px rgba(232,0,29,.4);}
+
+/* PROGRESS BAR */
+.progress{position:absolute;bottom:0;left:0;height:3px;background:#e8001d;z-index:20;animation:progress-anim 24s linear forwards;}
+@keyframes progress-anim{from{width:0;}to{width:100%;}}
+
+/* WATERMARK */
+.wm{position:absolute;bottom:28px;left:0;right:0;text-align:center;font-size:11px;color:rgba(255,255,255,.25);letter-spacing:2px;z-index:20;}
+</style>
+</head>
+<body>
+<div class="reel">
+  <div class="bg"></div>
+  <div class="bg-grid"></div>
+  <div class="red-glow"></div>
+
+  <!-- SLIDE 1: HOOK -->
+  <div class="slide" id="s1">
+    <p class="hook-line" style="animation-delay:.6s">Your gym gave you<br>more than <span>weights...</span></p>
+  </div>
+
+  <!-- SLIDE 2: LOGO -->
+  <div class="slide" id="s2">
+    <div class="logo-badge">🐯</div>
+    <div class="brand-name">ROYAL FITNESS</div>
+    <div class="brand-sub">Beast Ecosystem</div>
+    <div class="india-badge">🇮🇳 INDIA'S #1 FITNESS APP</div>
+  </div>
+
+  <!-- SLIDE 3: FEATURES -->
+  <div class="slide" id="s3">
+    <div class="feat-title">WHAT YOU GET</div>
+    <div class="feat-grid">
+      <div class="feat-item"><span class="feat-icon">⚡</span><div class="feat-text"><div class="feat-name">Beast Score Calculator</div><div class="feat-desc">BMI, BMR, TDEE, body fat % & fitness score</div></div></div>
+      <div class="feat-item"><span class="feat-icon">🩸</span><div class="feat-text"><div class="feat-name">Blood Report Analyser</div><div class="feat-desc">20+ biomarkers decoded instantly</div></div></div>
+      <div class="feat-item"><span class="feat-icon">🏋️</span><div class="feat-text"><div class="feat-name">Workout Logger</div><div class="feat-desc">Track every set, rep & personal record</div></div></div>
+      <div class="feat-item"><span class="feat-icon">🥗</span><div class="feat-text"><div class="feat-name">Indian Meal Plans</div><div class="feat-desc">7-day plans with 50+ Indian foods</div></div></div>
+      <div class="feat-item"><span class="feat-icon">🏆</span><div class="feat-text"><div class="feat-name">Tiger Leaderboard</div><div class="feat-desc">Compete India-wide · Win ₹15,000 monthly</div></div></div>
+      <div class="feat-item"><span class="feat-icon">📚</span><div class="feat-text"><div class="feat-name">108+ Expert PDF Guides</div><div class="feat-desc">Download free · Anabolic, fat loss, nutrition</div></div></div>
+      <div class="feat-item"><span class="feat-icon">🎓</span><div class="feat-text"><div class="feat-name">RFC Academy — 10 Courses</div><div class="feat-desc">From beginner to pharma science expert</div></div></div>
+    </div>
+  </div>
+
+  <!-- SLIDE 4: CTA -->
+  <div class="slide" id="s4">
+    <div class="gift-icon">🎁</div>
+    <div class="cta-head">FREE FOR<br><span>RFC MEMBERS</span></div>
+    <div class="cta-sub">3 months membership = Full PRO unlocked<br>Worth ₹499/month — yours at zero cost</div>
+    <div class="cta-box">
+      <div class="cta-free">✓ INSTANT ACCESS</div>
+      <div class="cta-detail">Sign in with Google · No payment needed</div>
+    </div>
+    <div class="cta-url">royal-fitness-club-7adc1.web.app</div>
+  </div>
+
+  <div class="progress"></div>
+  <div class="wm">ROYAL FITNESS CLUB</div>
+</div>
+</body>
+</html>

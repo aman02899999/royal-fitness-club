@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>RFC — Refer & Earn Reel</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:#0a0a0a;width:430px;height:932px;overflow:hidden;font-family:'Inter',system-ui,sans-serif;position:relative;}
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;600;700;900&display=swap');
+
+/* SLIDES */
+.slide{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;
+  padding:48px 32px;opacity:0;pointer-events:none;}
+.slide.active{opacity:1;pointer-events:all;}
+
+/* ── SLIDE 1 — HOOK ──────────────────────────────────────────────── */
+#s1{background:linear-gradient(160deg,#0a0a0a 0%,#1a0000 60%,#0a0a0a 100%);}
+.hook-badge{background:rgba(232,0,29,.15);border:1px solid rgba(232,0,29,.4);
+  border-radius:20px;padding:6px 16px;font-size:11px;font-weight:700;letter-spacing:2px;
+  color:#e8001d;text-transform:uppercase;margin-bottom:24px;
+  animation:fadeDown .6s .3s both;}
+.hook-tiger{font-size:72px;line-height:1;margin-bottom:16px;
+  animation:popIn .5s .5s both;}
+.hook-h1{font-family:'Bebas Neue',sans-serif;font-size:56px;line-height:1.05;
+  color:#fff;text-align:center;letter-spacing:2px;
+  animation:fadeUp .5s .7s both;}
+.hook-h1 span{color:#f59e0b;}
+.hook-sub{font-size:15px;color:rgba(255,255,255,.6);text-align:center;line-height:1.6;
+  margin-top:14px;max-width:320px;
+  animation:fadeUp .5s .9s both;}
+.hook-coins{display:flex;gap:10px;margin-top:28px;
+  animation:fadeUp .5s 1.1s both;}
+.coin{width:58px;height:58px;background:radial-gradient(circle at 35% 35%,#ffd700,#b8860b);
+  border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:26px;box-shadow:0 4px 20px rgba(255,215,0,.35);}
+.coin:nth-child(2){animation-delay:.1s;transform:scale(1.1);}
+.coin:nth-child(3){animation-delay:.2s;}
+
+/* ── SLIDE 2 — HOW IT WORKS ─────────────────────────────────────── */
+#s2{background:linear-gradient(160deg,#0a0a0a,#0d1a0d);}
+.s2-title{font-family:'Bebas Neue',sans-serif;font-size:40px;letter-spacing:3px;
+  color:#fff;text-align:center;margin-bottom:32px;
+  animation:fadeDown .5s .2s both;}
+.s2-title span{color:#22c55e;}
+.step{display:flex;align-items:flex-start;gap:16px;margin-bottom:20px;
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);
+  border-radius:14px;padding:16px 18px;}
+.step:nth-child(2){animation:slideRight .5s .3s both;}
+.step:nth-child(3){animation:slideRight .5s .5s both;}
+.step:nth-child(4){animation:slideRight .5s .7s both;}
+.step-num{width:36px;height:36px;border-radius:50%;background:rgba(232,0,29,.2);
+  border:2px solid rgba(232,0,29,.5);display:flex;align-items:center;justify-content:center;
+  font-family:'Bebas Neue',sans-serif;font-size:20px;color:#e8001d;flex-shrink:0;}
+.step-body{flex:1;}
+.step-title{font-size:14px;font-weight:700;color:#fff;margin-bottom:3px;}
+.step-sub{font-size:12px;color:rgba(255,255,255,.5);line-height:1.5;}
+.step-amt{font-family:'Bebas Neue',sans-serif;font-size:22px;color:#22c55e;margin-left:auto;flex-shrink:0;}
+
+/* ── SLIDE 3 — EARNINGS PROOF ───────────────────────────────────── */
+#s3{background:linear-gradient(160deg,#0a0a0a,#0a0a1a);}
+.wallet-card{background:linear-gradient(135deg,rgba(245,158,11,.12),rgba(232,0,29,.08));
+  border:1px solid rgba(245,158,11,.25);border-radius:20px;padding:24px;
+  width:100%;max-width:360px;margin:0 auto;
+  animation:popIn .5s .3s both;}
+.wallet-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;
+  color:rgba(255,255,255,.45);margin-bottom:6px;}
+.wallet-bal{font-family:'Bebas Neue',sans-serif;font-size:64px;color:#f59e0b;
+  line-height:1;}
+.wallet-txns{margin-top:16px;display:flex;flex-direction:column;gap:8px;}
+.wtx{display:flex;justify-content:space-between;align-items:center;
+  padding:10px 14px;background:rgba(255,255,255,.04);border-radius:10px;
+  border:1px solid rgba(255,255,255,.06);}
+.wtx:nth-child(1){animation:slideRight .4s .5s both;}
+.wtx:nth-child(2){animation:slideRight .4s .7s both;}
+.wtx:nth-child(3){animation:slideRight .4s .9s both;}
+.wtx-desc{font-size:12px;color:rgba(255,255,255,.7);}
+.wtx-amt{font-size:14px;font-weight:700;color:#22c55e;}
+.s3-title{font-family:'Bebas Neue',sans-serif;font-size:38px;letter-spacing:2px;
+  color:#fff;text-align:center;margin-bottom:20px;
+  animation:fadeDown .5s .2s both;}
+.s3-title span{color:#f59e0b;}
+
+/* ── SLIDE 4 — LEADERBOARD REFERRALS ───────────────────────────── */
+#s4{background:linear-gradient(160deg,#0a0a0a,#1a0a00);}
+.s4-title{font-family:'Bebas Neue',sans-serif;font-size:36px;letter-spacing:2px;
+  color:#fff;text-align:center;margin-bottom:6px;
+  animation:fadeDown .5s .2s both;}
+.s4-sub{font-size:13px;color:rgba(255,255,255,.5);text-align:center;margin-bottom:24px;
+  animation:fadeDown .4s .4s both;}
+.lb-rows{width:100%;max-width:360px;}
+.lbr{display:flex;align-items:center;gap:12px;padding:12px 16px;
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);
+  border-radius:12px;margin-bottom:8px;}
+.lbr:nth-child(1){border-color:rgba(245,158,11,.3);background:rgba(245,158,11,.07);animation:slideRight .4s .3s both;}
+.lbr:nth-child(2){animation:slideRight .4s .5s both;}
+.lbr:nth-child(3){animation:slideRight .4s .7s both;}
+.lbr:nth-child(4){animation:slideRight .4s .9s both;}
+.lbr-medal{font-size:20px;width:28px;text-align:center;}
+.lbr-name{flex:1;font-size:13px;font-weight:600;color:#fff;}
+.lbr-refs{font-size:11px;color:rgba(255,255,255,.5);}
+.lbr-earn{font-family:'Bebas Neue',sans-serif;font-size:18px;color:#22c55e;}
+.s4-note{font-size:11px;color:rgba(255,255,255,.35);text-align:center;margin-top:14px;
+  animation:fadeUp .4s 1.1s both;}
+.plus-sign{color:#e8001d;font-weight:700;}
+
+/* ── SLIDE 5 — CTA ──────────────────────────────────────────────── */
+#s5{background:radial-gradient(ellipse at 50% 60%,rgba(232,0,29,.2) 0%,#0a0a0a 70%);}
+.cta-tiger{font-size:80px;margin-bottom:8px;animation:popIn .5s .2s both;}
+.cta-h1{font-family:'Bebas Neue',sans-serif;font-size:52px;letter-spacing:3px;
+  color:#fff;text-align:center;line-height:1.1;margin-bottom:12px;
+  animation:fadeUp .5s .4s both;}
+.cta-h1 span{color:#f59e0b;}
+.cta-steps{display:flex;flex-direction:column;gap:10px;width:100%;max-width:340px;
+  margin:20px 0;}
+.cta-step{display:flex;align-items:center;gap:14px;background:rgba(255,255,255,.05);
+  border-radius:10px;padding:12px 16px;}
+.cta-step:nth-child(1){animation:slideRight .4s .5s both;}
+.cta-step:nth-child(2){animation:slideRight .4s .7s both;}
+.cta-step:nth-child(3){animation:slideRight .4s .9s both;}
+.cta-step-ico{font-size:22px;width:32px;text-align:center;}
+.cta-step-txt{font-size:13px;color:rgba(255,255,255,.8);}
+.cta-url{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;
+  color:#e8001d;margin-top:20px;text-align:center;
+  animation:fadeUp .5s 1.1s both;}
+.cta-url span{color:rgba(255,255,255,.4);}
+.cta-free{font-size:13px;color:rgba(255,255,255,.4);margin-top:8px;
+  animation:fadeUp .4s 1.3s both;}
+
+/* PROGRESS DOTS */
+.dots{position:absolute;bottom:22px;left:50%;transform:translateX(-50%);
+  display:flex;gap:6px;z-index:10;}
+.dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.25);transition:all .3s;}
+.dot.on{background:#e8001d;width:20px;border-radius:3px;}
+
+/* ANIMATIONS */
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+@keyframes fadeDown{from{opacity:0;transform:translateY(-20px);}to{opacity:1;transform:translateY(0);}}
+@keyframes slideRight{from{opacity:0;transform:translateX(-24px);}to{opacity:1;transform:translateX(0);}}
+@keyframes popIn{from{opacity:0;transform:scale(.7);}to{opacity:1;transform:scale(1);}}
+@keyframes countUp{from{opacity:0;}to{opacity:1;}}
+
+/* Floating coins animation */
+.float-coin{position:absolute;font-size:22px;animation:floatUp linear infinite;opacity:0;}
+@keyframes floatUp{0%{opacity:0;transform:translateY(0) rotate(0deg);}10%{opacity:.7;}80%{opacity:.3;}100%{opacity:0;transform:translateY(-800px) rotate(360deg);}}
+</style>
+</head>
+<body>
+
+<!-- Slide 1: Hook -->
+<div class="slide active" id="s1">
+  <div class="hook-badge">💰 Royal Fitness Club</div>
+  <div class="hook-tiger">🐯</div>
+  <div class="hook-h1">Train Hard.<br>Share More.<br><span>Earn Real Cash.</span></div>
+  <div class="hook-sub">RFC members earn money just by inviting friends. No selling. No investment.</div>
+  <div class="hook-coins">
+    <div class="coin">💰</div>
+    <div class="coin">💎</div>
+    <div class="coin">🏆</div>
+  </div>
+</div>
+
+<!-- Slide 2: How it Works -->
+<div class="slide" id="s2">
+  <div class="s2-title">HOW TO <span>EARN</span></div>
+  <div style="width:100%;max-width:360px;">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <div class="step-title">Sign Up Free at RFC App</div>
+        <div class="step-sub">Google sign-in → Wallet screen → Your referral code appears instantly</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <div class="step-title">Share Your Code on WhatsApp</div>
+        <div class="step-sub">One tap → Full message auto-composed → Send to friends/family</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <div class="step-title">Friend Signs Up With Your Code</div>
+        <div class="step-sub">They get ₹50 welcome bonus. You get…</div>
+      </div>
+      <div class="step-amt">₹100</div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <div class="step-title">Friend Upgrades to PRO</div>
+        <div class="step-sub">You get an additional purchase bonus!</div>
+      </div>
+      <div class="step-amt" style="color:#f59e0b;">+₹200</div>
+    </div>
+  </div>
+</div>
+
+<!-- Slide 3: Wallet proof -->
+<div class="slide" id="s3">
+  <div class="s3-title">YOUR TIGER <span>WALLET</span></div>
+  <div class="wallet-card">
+    <div class="wallet-label">Available Balance</div>
+    <div class="wallet-bal" id="walbal">₹0</div>
+    <div style="font-size:11px;color:rgba(255,255,255,.4);margin-top:4px;">Redeem to UPI / PhonePe anytime</div>
+    <div class="wallet-txns">
+      <div class="wtx">
+        <div>
+          <div class="wtx-desc">🤝 Referral — Priya K. joined</div>
+          <div style="font-size:10px;color:rgba(255,255,255,.3);">2 Jun 2025</div>
+        </div>
+        <div class="wtx-amt">+₹100</div>
+      </div>
+      <div class="wtx">
+        <div>
+          <div class="wtx-desc">⚡ Purchase bonus — Priya went PRO</div>
+          <div style="font-size:10px;color:rgba(255,255,255,.3);">4 Jun 2025</div>
+        </div>
+        <div class="wtx-amt">+₹200</div>
+      </div>
+      <div class="wtx">
+        <div>
+          <div class="wtx-desc">🤝 Referral — Rohit M. joined</div>
+          <div style="font-size:10px;color:rgba(255,255,255,.3);">10 Jun 2025</div>
+        </div>
+        <div class="wtx-amt">+₹100</div>
+      </div>
+    </div>
+  </div>
+  <div style="font-size:12px;color:rgba(255,255,255,.35);margin-top:18px;text-align:center;">Min ₹500 to redeem · Processed within 48h</div>
+</div>
+
+<!-- Slide 4: Leaderboard Referrals -->
+<div class="slide" id="s4">
+  <div class="s4-title">TOP REFERRERS THIS MONTH</div>
+  <div class="s4-sub">The most Beast members in your pack 🐯</div>
+  <div class="lb-rows">
+    <div class="lbr">
+      <div class="lbr-medal">🥇</div>
+      <div>
+        <div class="lbr-name">Vikram T. · Mumbai</div>
+        <div class="lbr-refs">12 referrals this month</div>
+      </div>
+      <div class="lbr-earn">₹1,800</div>
+    </div>
+    <div class="lbr">
+      <div class="lbr-medal">🥈</div>
+      <div>
+        <div class="lbr-name">Ananya K. · Delhi</div>
+        <div class="lbr-refs">9 referrals this month</div>
+      </div>
+      <div class="lbr-earn">₹1,500</div>
+    </div>
+    <div class="lbr">
+      <div class="lbr-medal">🥉</div>
+      <div>
+        <div class="lbr-name">Deepika R. · Pune</div>
+        <div class="lbr-refs">7 referrals this month</div>
+      </div>
+      <div class="lbr-earn">₹1,050</div>
+    </div>
+    <div class="lbr">
+      <div class="lbr-medal">4️⃣</div>
+      <div>
+        <div class="lbr-name">Arjun S. · Bangalore</div>
+        <div class="lbr-refs">5 referrals this month</div>
+      </div>
+      <div class="lbr-earn">₹700</div>
+    </div>
+  </div>
+  <div class="s4-note">Earn ₹100 per signup <span class="plus-sign">+</span> ₹200 when they go PRO — no limit on referrals</div>
+</div>
+
+<!-- Slide 5: CTA -->
+<div class="slide" id="s5">
+  <div class="cta-tiger">🐯</div>
+  <div class="cta-h1">START<br>EARNING<br><span>TODAY</span></div>
+  <div class="cta-steps">
+    <div class="cta-step">
+      <div class="cta-step-ico">1️⃣</div>
+      <div class="cta-step-txt">Sign up FREE — takes 30 seconds</div>
+    </div>
+    <div class="cta-step">
+      <div class="cta-step-ico">2️⃣</div>
+      <div class="cta-step-txt">Go to Wallet — get your code</div>
+    </div>
+    <div class="cta-step">
+      <div class="cta-step-ico">3️⃣</div>
+      <div class="cta-step-txt">Share on WhatsApp — earn ₹100</div>
+    </div>
+  </div>
+  <div class="cta-url">royal-fitness-club-7adc1.web.app</div>
+  <div class="cta-free">Free to join · No selling · Real UPI payouts 💸</div>
+</div>
+
+<!-- Progress Dots -->
+<div class="dots">
+  <div class="dot on" data-i="0"></div>
+  <div class="dot" data-i="1"></div>
+  <div class="dot" data-i="2"></div>
+  <div class="dot" data-i="3"></div>
+  <div class="dot" data-i="4"></div>
+</div>
+
+<script>
+// Floating coins for slide 1
+(function spawnCoins(){
+  const coins=['💰','💵','🪙','💎'];
+  function spawn(){
+    const c=document.createElement('div');
+    c.className='float-coin';
+    c.textContent=coins[Math.floor(Math.random()*coins.length)];
+    c.style.left=Math.random()*400+'px';
+    c.style.bottom='-30px';
+    c.style.animationDuration=(4+Math.random()*5)+'s';
+    c.style.animationDelay=(Math.random()*2)+'s';
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),10000);
+  }
+  setInterval(spawn, 600);
+})();
+
+// Wallet count-up on slide 3
+function countUp(el, target, dur){
+  let start=0, ts=null;
+  function frame(t){
+    if(!ts)ts=t;
+    const p=Math.min((t-ts)/dur,1);
+    const v=Math.round(p*target);
+    el.textContent='₹'+v.toLocaleString('en-IN');
+    if(p<1)requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+}
+
+// Slide auto-advance
+var slides=document.querySelectorAll('.slide');
+var dots=document.querySelectorAll('.dot');
+var current=0;
+var timer=null;
+
+function goTo(idx){
+  slides[current].classList.remove('active');
+  dots[current].classList.remove('on');
+  current=idx%slides.length;
+  slides[current].classList.add('active');
+  dots[current].classList.add('on');
+  if(current===2){
+    // Trigger wallet count-up
+    setTimeout(()=>countUp(document.getElementById('walbal'),400,1200),300);
+  }
+}
+
+function startTimer(){
+  clearInterval(timer);
+  timer=setInterval(()=>goTo(current+1),5000);
+}
+
+document.body.addEventListener('click',function(){
+  goTo(current+1);
+  startTimer();
+});
+
+startTimer();
+</script>
+</body>
+</html>

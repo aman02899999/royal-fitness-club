@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>You're Offline — Royal Fitness Club</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:#0a0a0a;color:#fff;font-family:Inter,system-ui,sans-serif;
+  min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;}
+.card{max-width:360px;text-align:center;}
+.logo{font-size:56px;margin-bottom:20px;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{transform:scale(1);}50%{transform:scale(1.08);}}
+h1{font-size:26px;font-weight:900;letter-spacing:1px;margin-bottom:10px;}
+h1 span{color:#e8001d;}
+p{font-size:14px;color:rgba(255,255,255,.55);line-height:1.7;margin-bottom:28px;}
+.btn{display:inline-block;padding:14px 32px;background:#e8001d;color:#fff;border:none;
+  border-radius:12px;font-size:14px;font-weight:700;letter-spacing:1px;cursor:pointer;
+  text-decoration:none;transition:opacity .2s;}
+.btn:hover{opacity:.85;}
+.tip{margin-top:24px;font-size:12px;color:rgba(255,255,255,.3);line-height:1.6;}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="logo">🐯</div>
+  <h1>You're <span>Offline</span></h1>
+  <p>No internet connection right now. Your cached app data is still available — tap below to open what's saved on your device.</p>
+  <a class="btn" href="/">Open Saved App</a>
+  <p class="tip">Once you're back online the app will sync automatically.<br>Your workout logs &amp; progress are stored locally.</p>
+</div>
+<script>
+window.addEventListener('online', function(){ window.location.href = '/'; });
+</script>
+</body>
+</html>
