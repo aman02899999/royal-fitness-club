@@ -51,6 +51,18 @@ jobs:
       - name: Verify credentials
         run: firebase projects:list
 
+      # The APK is served from our own hosting (/royal-fitness-club.apk) so the
+      # GitHub repo can stay private. Pull the latest build from the release so
+      # this full-site deploy keeps it published.
+      - name: Fetch latest Android APK from release
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release download android-latest -p royal-fitness-club.apk -O royal-fitness-club.apk --repo ${{ github.repository }} && \
+            echo "APK fetched: $(du -sh royal-fitness-club.apk | cut -f1)" || \
+            echo "::warning::No android-latest release asset found — site deploys without the APK"
+
       - name: Deploy Hosting
         run: firebase deploy --only hosting --project royal-fitness-club-7adc1
 

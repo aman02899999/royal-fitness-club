@@ -3,62 +3,156 @@
     "site": "royal-fitness-club-7adc1",
     "public": ".",
     "ignore": [
-      "firebase.json", "**/.*", "**/node_modules/**", "*.py",
-      "posters/**", "scripts/**", "functions/**", "android/**", "www/**",
-      "reel-frames/**", "reel60-frames/**", "marketing/**",
-      "**/*.mp4", "HD-poster-*.png", "STORY-*.png", "poster-*.html", "poster-*.png",
-      "story-*.html", "posters.html", "member-posters.html", "marketing-poster.html",
-      "promo-*.html", "rfc-academy-kit.html", "reel*.html", "docs.html",
-      "Royal_Fitness_Club_Master_Guide.pdf", "Royal_Fitness_Club_User_Guide.pdf",
-      "*.md", "package.json", "package-lock.json", "capacitor.config.json",
-      "capture-screens.js", "make-poster.js", "record-reel*.js", "test-login.js",
-      "firestore.rules", "firestore.indexes.json", "storage.rules"
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**",
+      "*.py",
+      "posters/**",
+      "scripts/**",
+      "functions/**",
+      "android/**",
+      "www/**",
+      "reel-frames/**",
+      "reel60-frames/**",
+      "marketing/**",
+      "**/*.mp4",
+      "HD-poster-*.png",
+      "STORY-*.png",
+      "poster-*.html",
+      "poster-*.png",
+      "story-*.html",
+      "posters.html",
+      "member-posters.html",
+      "marketing-poster.html",
+      "promo-*.html",
+      "rfc-academy-kit.html",
+      "reel*.html",
+      "docs.html",
+      "Royal_Fitness_Club_Master_Guide.pdf",
+      "Royal_Fitness_Club_User_Guide.pdf",
+      "*.md",
+      "package.json",
+      "package-lock.json",
+      "capacitor.config.json",
+      "capture-screens.js",
+      "make-poster.js",
+      "record-reel*.js",
+      "test-login.js",
+      "firestore.rules",
+      "firestore.indexes.json",
+      "storage.rules"
     ],
     "rewrites": [
-      { "source": "/admin", "destination": "/admin.html" }
+      {
+        "source": "/admin",
+        "destination": "/admin.html"
+      }
     ],
     "cleanUrls": true,
     "trailingSlash": false,
     "headers": [
       {
+        "source": "/royal-fitness-club.apk",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "public, max-age=300"
+          },
+          {
+            "key": "Content-Disposition",
+            "value": "attachment; filename=royal-fitness-club.apk"
+          }
+        ]
+      },
+      {
         "source": "/index.html",
         "headers": [
-          { "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" },
-          { "key": "Pragma", "value": "no-cache" }
+          {
+            "key": "Cache-Control",
+            "value": "no-cache, no-store, must-revalidate"
+          },
+          {
+            "key": "Pragma",
+            "value": "no-cache"
+          }
         ]
       },
       {
         "source": "/sw.js",
         "headers": [
-          { "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" },
-          { "key": "Service-Worker-Allowed", "value": "/" }
+          {
+            "key": "Cache-Control",
+            "value": "no-cache, no-store, must-revalidate"
+          },
+          {
+            "key": "Service-Worker-Allowed",
+            "value": "/"
+          }
         ]
       },
       {
         "source": "/manifest.json",
-        "headers": [{ "key": "Cache-Control", "value": "public, max-age=86400" }]
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "public, max-age=86400"
+          }
+        ]
       },
       {
         "source": "/icons/**",
-        "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }]
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "public, max-age=31536000, immutable"
+          }
+        ]
       },
       {
         "source": "/thumbnails/**",
-        "headers": [{ "key": "Cache-Control", "value": "public, max-age=604800" }]
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "public, max-age=604800"
+          }
+        ]
       },
       {
         "source": "**/*.js",
-        "headers": [{ "key": "Cache-Control", "value": "public, max-age=86400" }]
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "public, max-age=86400"
+          }
+        ]
       },
       {
         "source": "**",
         "headers": [
-          { "key": "X-Content-Type-Options", "value": "nosniff" },
-          { "key": "X-Frame-Options", "value": "SAMEORIGIN" },
-          { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
-          { "key": "Strict-Transport-Security", "value": "max-age=31536000; includeSubDomains; preload" },
-          { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=(self)" },
-          { "key": "X-DNS-Prefetch-Control", "value": "on" }
+          {
+            "key": "X-Content-Type-Options",
+            "value": "nosniff"
+          },
+          {
+            "key": "X-Frame-Options",
+            "value": "SAMEORIGIN"
+          },
+          {
+            "key": "Referrer-Policy",
+            "value": "strict-origin-when-cross-origin"
+          },
+          {
+            "key": "Strict-Transport-Security",
+            "value": "max-age=31536000; includeSubDomains; preload"
+          },
+          {
+            "key": "Permissions-Policy",
+            "value": "camera=(), microphone=(), geolocation=(self)"
+          },
+          {
+            "key": "X-DNS-Prefetch-Control",
+            "value": "on"
+          }
         ]
       }
     ]
