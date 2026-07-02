@@ -1,10 +1,10 @@
 apply plugin: 'com.android.application'
 
 android {
-    namespace = "com.royalfitnessclub.app"
+    namespace = "com.apex.app"
     compileSdk = rootProject.ext.compileSdkVersion
     defaultConfig {
-        applicationId "com.royalfitnessclub.app"
+        applicationId "com.apex.app"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         // CI passes RFC_VERSION_CODE (GitHub run number) so each published APK
