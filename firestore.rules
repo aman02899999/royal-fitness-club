@@ -26,23 +26,42 @@ service cloud.firestore {
     // Updates are restricted — plan, role, and membershipExpiry cannot be changed by the user,
     // except a paid plan upgrade (lastPaymentId must be present and non-empty).
     match /users/{uid} {
+      // Paid upgrade: plan is a known paid tier AND a NEW payment id is set.
+      // Only in this case may plan / expiryDate move forward.
+      function paidUpgrade() {
+        return request.resource.data.plan in ['royal_pro', 'royal_elite']
+          && request.resource.data.get('lastPaymentId', '') != ''
+          && request.resource.data.lastPaymentId != resource.data.get('lastPaymentId', '');
+      }
       allow read: if request.auth != null && request.auth.uid == uid;
+      // Gym-member self-registration (with membership code)
       allow create: if request.auth != null && request.auth.uid == uid
         && request.resource.data.get('role', 'member') == 'member'
         && request.resource.data.get('gymMember', false) == true
         && request.resource.data.get('memberCode', '') != '';
+      // Outsider (Google/email) self-signup — free plan only, no gym flags.
+      // createdAt anchors the 1-month free trial and can never change after.
+      allow create: if request.auth != null && request.auth.uid == uid
+        && request.resource.data.get('role', 'member') == 'member'
+        && request.resource.data.get('gymMember', true) == false
+        && request.resource.data.get('plan', '') == 'free'
+        && request.resource.data.get('membershipExpiry', null) == null;
       allow update: if request.auth != null && request.auth.uid == uid
         && request.resource.data.get('role', 'member') == resource.data.get('role', 'member')
         && request.resource.data.get('membershipExpiry', null) == resource.data.get('membershipExpiry', null)
+        // trial + membership anchors are immutable for the user
+        && request.resource.data.get('createdAt', null) == resource.data.get('createdAt', null)
+        && request.resource.data.get('gymMember', false) == resource.data.get('gymMember', false)
+        && request.resource.data.get('joinDate', null) == resource.data.get('joinDate', null)
+        // pro expiry can only move with a real new payment
+        && (request.resource.data.get('expiryDate', null) == resource.data.get('expiryDate', null)
+            || paidUpgrade())
         && (
           // No plan change — general profile update
           request.resource.data.get('plan', 'free') == resource.data.get('plan', 'free')
           // Downgrade to free allowed
           || request.resource.data.get('plan', 'free') == 'free'
-          // Paid upgrade: plan is a known paid tier AND lastPaymentId is being set
-          || (request.resource.data.plan in ['royal_pro', 'royal_elite']
-              && request.resource.data.get('lastPaymentId', '') != ''
-              && request.resource.data.lastPaymentId != resource.data.get('lastPaymentId', ''))
+          || paidUpgrade()
         );
       allow read, write: if isAdmin();
 
