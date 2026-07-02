@@ -1,4 +1,4 @@
-const CACHE = 'rfc-v71';
+const CACHE = 'rfc-v72';
 const STATIC = [
   '/',
   '/index.html',
@@ -66,6 +66,7 @@ self.addEventListener('push', e => {
 self.addEventListener('fetch', e => {
   const url = new URL(e.request.url);
   if (e.request.method !== 'GET') return;
+  if (url.pathname.endsWith('.apk')) return; // APK: straight download, never cached
   if (url.hostname.includes('firebase') || url.hostname.includes('razorpay') ||
       url.hostname.includes('googleapis') || url.hostname.includes('gstatic') ||
       url.hostname.includes('fontawesome') || url.hostname.includes('fonts.g')) return;
