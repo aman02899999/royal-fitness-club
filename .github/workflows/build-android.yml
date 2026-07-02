@@ -126,6 +126,10 @@ jobs:
           **Requirements:** Android 7.0+ · ~25MB
           **Build:** ${{ github.sha }} · **Size:** $SIZE"
           if gh release view android-latest --repo ${{ github.repository }} > /dev/null 2>&1; then
+            # A leftover DRAFT (from the old delete/recreate race) is still
+            # resolvable by tag name — publish it first so the tag exists and
+            # the release is publicly downloadable.
+            gh release edit android-latest --draft=false --prerelease --repo ${{ github.repository }} || true
             gh release upload android-latest royal-fitness-club.apk --clobber --repo ${{ github.repository }}
             gh release edit android-latest --notes "$NOTES" --repo ${{ github.repository }}
             echo "✅ Existing release updated"
