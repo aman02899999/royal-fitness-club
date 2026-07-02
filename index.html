@@ -218,6 +218,7 @@ window._trackEvent=function(action,category,label,value){
 })();
 </script>
 <style>
+:root{--rfc-sat:max(env(safe-area-inset-top,0px),var(--safe-area-inset-top,0px));--rfc-sab:max(env(safe-area-inset-bottom,0px),var(--safe-area-inset-bottom,0px));}
 :root{--red:#7C3AED;--orange:#8B5CF6;--gold:#5B21B6;--green:#059669;--blue:#3B82F6;--dark:#F5F3FF;--card:#FFFFFF;--card2:#F3F0FF;--border:rgba(109,40,217,.15);--muted:#475569;--text:#0F0A1A;--violet:#7C3AED;--violet-dark:#5B21B6;--violet-light:#8B5CF6;--violet-pale:#EDE9FE;
   /* Gradients */
   --pro:linear-gradient(135deg,#7C3AED,#5B21B6);
@@ -710,7 +711,7 @@ body::after{content:'';position:fixed;top:-100px;right:200px;width:400px;height:
 #ptcl{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
 .pt{position:absolute;border-radius:50%;animation:pfloat linear infinite;opacity:0;}
 @keyframes pfloat{0%{transform:translateY(100vh);opacity:0;}10%{opacity:.8;}90%{opacity:.4;}100%{transform:translateY(-5vh);opacity:0;}}
-nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 28px;padding-top:env(safe-area-inset-top,0px);height:calc(54px + env(safe-area-inset-top,0px));background:rgba(250,248,245,.97);border-bottom:1px solid rgba(109,40,217,.12);backdrop-filter:blur(24px);box-shadow:0 1px 30px rgba(124,58,237,.07),0 1px 0 rgba(124,58,237,.05);}
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 28px;padding-top:var(--rfc-sat);height:calc(54px + var(--rfc-sat));background:rgba(250,248,245,.97);border-bottom:1px solid rgba(109,40,217,.12);backdrop-filter:blur(24px);box-shadow:0 1px 30px rgba(124,58,237,.07),0 1px 0 rgba(124,58,237,.05);}
 .nlogo{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:3px;background:var(--fire);-webkit-background-clip:text;-webkit-text-fill-color:transparent;cursor:pointer;}
 .nlinks{display:flex;gap:22px;align-items:center;}
 .nlinks a{font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);text-decoration:none;transition:color .2s;}
@@ -1490,7 +1491,7 @@ section::before{content:'';position:absolute;inset:0;background:linear-gradient(
   box-shadow:4px 0 40px rgba(124,58,237,.08);
 }
 #rfc-sidebar.sb-collapsed{transform:translateX(-240px);}
-.sb-brand{padding:20px 18px 16px;padding-top:calc(20px + env(safe-area-inset-top,0px));border-bottom:1px solid rgba(109,40,217,.12);flex-shrink:0;}
+.sb-brand{padding:20px 18px 16px;padding-top:calc(20px + var(--rfc-sat));border-bottom:1px solid rgba(109,40,217,.12);flex-shrink:0;}
 .sb-logo-row{display:flex;align-items:center;gap:10px;}
 .sb-logo-mark{width:36px;height:36px;border-radius:4px;background:var(--red);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:#fff;flex-shrink:0;}
 .sb-logo-text{font-family:'Playfair Display',serif;font-size:15px;font-weight:700;letter-spacing:0.5px;color:var(--text);}
@@ -1533,7 +1534,7 @@ section::before{content:'';position:absolute;inset:0;background:linear-gradient(
 .android-dl-sub{font-size:12px;color:var(--muted);margin-top:2px;}
 .android-dl-btn{flex-shrink:0;background:#22c55e;color:#000;border:none;border-radius:8px;padding:10px 16px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:1px;cursor:pointer;white-space:nowrap;}
 /* Collapsed toggle button */
-#sb-toggle{position:fixed;top:calc(14px + env(safe-area-inset-top,0px));left:252px;z-index:1100;background:var(--card);border:1px solid var(--border);border-radius:4px;width:28px;height:28px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:13px;transition:left .28s cubic-bezier(.4,0,.2,1);color:var(--muted);}
+#sb-toggle{position:fixed;top:calc(14px + var(--rfc-sat));left:252px;z-index:1100;background:var(--card);border:1px solid var(--border);border-radius:4px;width:28px;height:28px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:13px;transition:left .28s cubic-bezier(.4,0,.2,1);color:var(--muted);}
 #sb-toggle:hover{color:var(--text);border-color:var(--red);}
 #sb-toggle.collapsed{left:10px;}
 /* On desktop the sidebar is permanent (always visible, content shifted right),
@@ -1642,8 +1643,8 @@ body.sb-open > *:not(#rfc-sidebar):not(#sb-toggle):not(#rfc-sb-overlay){
 /* Sections shown as SaaS screens: reduce nav-era top padding */
 body.sb-open section.sb-active-screen{padding-top:24px!important;}
 /* First visible section / dashboard clears the fixed 54px top header */
-body.sb-open .sb-screen-first{padding-top:calc(54px + env(safe-area-inset-top,0px))!important;}
-body.sb-open #screen-dashboard .dash-wrap{padding-top:calc(78px + env(safe-area-inset-top,0px));}
+body.sb-open .sb-screen-first{padding-top:calc(54px + var(--rfc-sat))!important;}
+body.sb-open #screen-dashboard .dash-wrap{padding-top:calc(78px + var(--rfc-sat));}
 
 /* Injected screen title bar */
 .sb-page-hdr{
@@ -2221,7 +2222,7 @@ body{font-size:16px;}
 @media(max-width:768px){
   /* Nav */
   .hamburger{display:flex;}
-  .nlinks{display:none;position:fixed;top:calc(54px + env(safe-area-inset-top,0px));left:0;right:0;background:rgba(250,248,245,.98);border-bottom:1px solid var(--border);backdrop-filter:blur(20px);flex-direction:column;padding:16px 20px 20px;gap:0;z-index:999;}
+  .nlinks{display:none;position:fixed;top:calc(54px + var(--rfc-sat));left:0;right:0;background:rgba(250,248,245,.98);border-bottom:1px solid var(--border);backdrop-filter:blur(20px);flex-direction:column;padding:16px 20px 20px;gap:0;z-index:999;}
   .nlinks.open{display:flex;}
   .nlinks a{padding:13px 0;border-bottom:1px solid var(--border);font-size:14px;letter-spacing:2px;color:#0F0A1A;display:block;}
   .nlinks a:last-of-type{border-bottom:none;}
@@ -3297,7 +3298,7 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
   display:none;position:fixed;bottom:0;left:0;right:0;z-index:600;
   background:rgba(250,248,245,.98);
   border-top:1px solid rgba(109,40,217,.12);
-  padding-bottom:env(safe-area-inset-bottom,0px);
+  padding-bottom:var(--rfc-sab);
   backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
 }
 #mob-btm-nav .mbn-grid{display:grid;grid-template-columns:repeat(6,1fr);}
@@ -3321,14 +3322,14 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
   #mob-btm-nav{display:block;}
 
   /* Body padding so content isn't hidden under bottom nav */
-  body{padding-bottom:calc(64px + env(safe-area-inset-bottom,0px));}
+  body{padding-bottom:calc(64px + var(--rfc-sab));}
 
   /* Sidebar on mobile = full overlay, no content shift */
   body.sb-open>*:not(#rfc-sidebar):not(#sb-toggle):not(#rfc-sb-overlay){margin-left:0!important;}
 
   /* Bigger, more prominent hamburger */
   #sb-toggle{
-    top:10px;left:10px;width:40px;height:40px;font-size:17px;
+    top:calc(10px + var(--rfc-sat));left:10px;width:40px;height:40px;font-size:17px;
     background:rgba(15,15,28,.9);border-color:rgba(255,255,255,.12);border-radius:9px;
     box-shadow:0 2px 12px rgba(0,0,0,.5);
   }
@@ -3338,15 +3339,15 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
   /* All screen wrappers — tight padding */
   .sc-wrap{padding:12px 14px 12px!important;}
   .dash-wrap{padding:12px 14px 12px!important;}
-  body.sb-open #screen-dashboard .dash-wrap{padding-top:calc(72px + env(safe-area-inset-top,0px))!important;}
-  body.sb-open section.sb-active-screen{padding-top:calc(56px + env(safe-area-inset-top,0px))!important;}
-  body.sb-open .sb-screen-first{padding-top:calc(56px + env(safe-area-inset-top,0px))!important;}
+  body.sb-open #screen-dashboard .dash-wrap{padding-top:calc(72px + var(--rfc-sat))!important;}
+  body.sb-open section.sb-active-screen{padding-top:calc(56px + var(--rfc-sat))!important;}
+  body.sb-open .sb-screen-first{padding-top:calc(56px + var(--rfc-sat))!important;}
 
   /* Inline section padding overrides (many sections use style="padding:60px 20px") */
   section[style*="padding:60px"],section[style*="padding: 60px"]{padding:28px 16px!important;}
 
   /* Page header bar */
-  .sb-page-hdr{padding:10px 14px;top:calc(50px + env(safe-area-inset-top,0px));}
+  .sb-page-hdr{padding:10px 14px;top:calc(50px + var(--rfc-sat));}
   .sb-page-hdr-title{font-size:17px;}
   .sb-page-hdr-sub{font-size:10px;}
 
@@ -3521,11 +3522,11 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
   #ntimer{font-size:11px!important;}
 
   /* Top nav height reduce — more content space */
-  nav{height:calc(48px + env(safe-area-inset-top,0px))!important;}
-  body.sb-open section.sb-active-screen{padding-top:calc(48px + env(safe-area-inset-top,0px))!important;}
-  body.sb-open .sb-screen-first{padding-top:calc(48px + env(safe-area-inset-top,0px))!important;}
-  body.sb-open #screen-dashboard .dash-wrap{padding-top:calc(60px + env(safe-area-inset-top,0px))!important;}
-  .sb-page-hdr{top:calc(48px + env(safe-area-inset-top,0px))!important;}
+  nav{height:calc(48px + var(--rfc-sat))!important;}
+  body.sb-open section.sb-active-screen{padding-top:calc(48px + var(--rfc-sat))!important;}
+  body.sb-open .sb-screen-first{padding-top:calc(48px + var(--rfc-sat))!important;}
+  body.sb-open #screen-dashboard .dash-wrap{padding-top:calc(60px + var(--rfc-sat))!important;}
+  .sb-page-hdr{top:calc(48px + var(--rfc-sat))!important;}
 
   /* Workout check-in button — full width on mobile */
   .ch-join-btn,.bfire[style*="width:100%"]{padding:13px 20px!important;}
@@ -7283,7 +7284,26 @@ function initUser(){
   });
 }
 
-function forceLogin(){document.body.style.overflow='hidden';openModal('loginmodal');}
+function forceLogin(){
+  document.body.style.overflow='hidden';
+  openModal('loginmodal');
+  // In the Android app, hide the GOOGLE tab (OAuth can't run in a WebView)
+  // and show a one-line hint for members who signed up with Google.
+  try{
+    if(isNativeApp()){
+      const gt=$('tab-google');if(gt)gt.style.display='none';
+      const gp=$('auth-google-panel');if(gp&&gp.style.display!=='none'){gp.style.display='none';switchAuthTab('login');}
+      const lp=$('auth-login-panel');
+      if(lp&&!document.getElementById('rfc-native-note')){
+        const n=document.createElement('div');
+        n.id='rfc-native-note';
+        n.style.cssText='margin-top:10px;padding:10px 12px;background:rgba(124,58,237,.06);border:1px solid rgba(109,40,217,.15);border-radius:8px;font-size:11.5px;color:var(--muted);line-height:1.6;';
+        n.innerHTML='📱 <strong style="color:var(--text);">Using the app?</strong> Sign in with email &amp; password. Joined with <strong>Google</strong>? Tap "Forgot password?" once to set a password — it\'s the same account.';
+        lp.appendChild(n);
+      }
+    }
+  }catch(_){}
+}
 function closeLoginModal(){document.body.style.overflow='';closeModal('loginmodal');}
 
 // Centered, persistent notice shown only if a sign-in attempt could not
@@ -7513,6 +7533,13 @@ function loginUser(){loginWithFirebase();}
 // ── GOOGLE SIGN-IN (outsiders / digital members) ──
 var _googleSignInBusy = false;
 async function signInWithGoogle(){
+  if(isNativeApp()){
+    // Redirect-based Google OAuth can't complete inside the app WebView —
+    // the flow bounces to the external browser and the auth state is lost.
+    switchAuthTab('login');
+    toast('In the app, please sign in with your email & password. Joined with Google? Tap "Forgot password?" once to set a password — same account.','gold');
+    return;
+  }
   if(typeof firebase==='undefined'){toast('⭐ Service loading… please try again in a moment.','gold');return;}
   if(_googleSignInBusy) return;
   _googleSignInBusy = true;
@@ -7551,8 +7578,25 @@ async function signInWithGoogle(){
   }
 }
 
+// ── NATIVE APP DETECTION ──
+// True inside the Android APK (Capacitor WebView). The APK appends
+// "RFCAndroidApp" to the UA; Capacitor's bridge object and the WebView "wv"
+// token are fallbacks for older installed builds.
+function isNativeApp(){
+  try{
+    if(navigator.userAgent.indexOf('RFCAndroidApp')!==-1) return true;
+    if(window.Capacitor&&window.Capacitor.isNativePlatform&&window.Capacitor.isNativePlatform()) return true;
+    return /\bwv\b/.test(navigator.userAgent)&&/Android/.test(navigator.userAgent);
+  }catch(_){return false;}
+}
+
 // ── AUTH TAB SWITCH ──
 function switchAuthTab(tab){
+  // Google's OAuth pages can't run inside an app WebView (the sign-in state
+  // gets stranded between the WebView and the external browser — "missing
+  // initial state"). In the Android app, route every Google entry point to
+  // email/password login instead.
+  if(tab==='google'&&isNativeApp())tab='login';
   const panels={login:$('auth-login-panel'),google:$('auth-google-panel'),register:$('auth-register-panel')};
   const tabs={login:$('tab-login'),google:$('tab-google'),register:$('tab-register')};
   Object.values(panels).forEach(p=>{if(p)p.style.display='none';});

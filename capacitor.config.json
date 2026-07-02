@@ -1,5 +1,5 @@
 {
-  "appId": "com.royalfitnessclub.app",
+  "appId": "com.apex.app",
   "appName": "Royal Fitness Club",
   "webDir": "www",
   "bundledWebRuntime": false,
@@ -10,7 +10,8 @@
   "android": {
     "allowMixedContent": false,
     "backgroundColor": "#FAF8F5",
-    "minWebViewVersion": 60
+    "minWebViewVersion": 60,
+    "appendUserAgent": "RFCAndroidApp"
   },
   "plugins": {
     "SplashScreen": {
