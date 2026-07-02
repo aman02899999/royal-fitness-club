@@ -108,49 +108,35 @@ jobs:
           path: android/app/build/outputs/final/royal-fitness-club.apk
           retention-days: 30
 
-      - name: Delete existing android-latest release (if exists)
-        continue-on-error: true
+      # Create-or-update the android-latest release ATOMICALLY with gh.
+      # (The old delete-then-recreate pattern raced GitHub's async tag
+      # deletion and could leave the new release as an invisible DRAFT with
+      # an "untagged-" URL — which is exactly a "release not found" for
+      # downloads. Upload --clobber keeps the URL stable with no gap.)
+      - name: Publish APK to android-latest release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release delete android-latest --yes --repo ${{ github.repository }} 2>/dev/null || true
-          git push origin :refs/tags/android-latest 2>/dev/null || true
+          cp android/app/build/outputs/final/royal-fitness-club.apk ./royal-fitness-club.apk
+          SIZE=$(du -sh royal-fitness-club.apk | cut -f1)
+          NOTES="## 📱 Royal Fitness Club — Android App
 
-      - name: Create GitHub Release with APK
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: android-latest
-          name: "Royal Fitness Club — Android App (Latest)"
-          prerelease: true
-          generate_release_notes: false
-          body: |
-            ## 📱 Royal Fitness Club — Android App
+          Download \`royal-fitness-club.apk\` below, open it on your Android phone, allow install from unknown sources if prompted, and install.
 
-            **Download and install the latest Royal Fitness Club APK on your Android device.**
-
-            ### How to Install
-            1. Download `royal-fitness-club.apk` below
-            2. On your Android phone: go to **Settings → Security → Unknown Sources** (or **Install Unknown Apps**) and allow your browser
-            3. Open the downloaded file and tap **Install**
-            4. Launch **Royal Fitness Club** from your home screen
-
-            ### Requirements
-            - Android 7.0 (API 24) or higher
-            - ~20MB free space
-
-            ### Features
-            - ✅ Full fitness SaaS platform — meal plans, workout programmes, Beast Score
-            - ✅ Tiger Score leaderboard & challenges
-            - ✅ AI-powered blood report analysis
-            - ✅ Knowledge Store with 100+ PDF guides
-            - ✅ Admin panel for gym owners
-            - ✅ Works offline (cached content)
-            - ✅ Push notifications ready
-
-            > **Note:** This is a debug build. A signed release build requires a keystore (see `release-android.yml`).
-
-            **Build:** ${{ github.sha }} · **Size:** ${{ steps.apk_info.outputs.size }}
-          files: android/app/build/outputs/final/royal-fitness-club.apk
+          **Requirements:** Android 7.0+ · ~25MB
+          **Build:** ${{ github.sha }} · **Size:** $SIZE"
+          if gh release view android-latest --repo ${{ github.repository }} > /dev/null 2>&1; then
+            gh release upload android-latest royal-fitness-club.apk --clobber --repo ${{ github.repository }}
+            gh release edit android-latest --notes "$NOTES" --repo ${{ github.repository }}
+            echo "✅ Existing release updated"
+          else
+            gh release create android-latest royal-fitness-club.apk \
+              --title "Royal Fitness Club — Android App (Latest)" \
+              --notes "$NOTES" --prerelease --target ${{ github.sha }} \
+              --repo ${{ github.repository }}
+            echo "✅ Release created"
+          fi
+          gh release view android-latest --repo ${{ github.repository }} --json isDraft,assets -q '.isDraft' | grep -q false || { echo "::error::Release is a draft!"; exit 1; }
 
       # Also publish the APK on our own hosting (/royal-fitness-club.apk) so
       # downloads work even with a private repo. Deploys the full site from
