@@ -1,0 +1,114 @@
+name: Build Android APK
+
+# Builds the Capacitor Android shell and publishes it to the GitHub release
+# tagged `android-latest` — the exact URL the in-app "Download Android APK"
+# buttons point at:
+#   https://github.com/aman02899999/royal-fitness-club/releases/download/android-latest/royal-fitness-club.apk
+#
+# The APK is a thin WebView shell that loads the live site
+# (https://royal-fitness-club-7adc1.web.app), so it only needs rebuilding when
+# the native project or Capacitor config changes — web updates ship instantly
+# without an APK rebuild.
+#
+# Signing:
+#   - If the ANDROID_KEYSTORE_B64 (+ passwords) secrets are configured, a
+#     properly signed release APK is built — stable signature, so every new
+#     APK installs as an update over the previous one.
+#   - Otherwise a debug-signed APK is built. Still installable on any phone,
+#     but the debug key is per-runner, so users may need to uninstall the old
+#     app before installing a newer build. Add the secrets to fix that:
+#       ANDROID_KEYSTORE_B64      base64 of a .jks keystore
+#       ANDROID_KEYSTORE_PASSWORD keystore password
+#       ANDROID_KEY_ALIAS         key alias
+#       ANDROID_KEY_PASSWORD      key password
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'android/**'
+      - 'capacitor.config.json'
+      - '.github/workflows/android-apk.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write   # needed to create/update the release
+
+jobs:
+  build-apk:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: Set up Gradle cache
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Decide build type
+        id: mode
+        run: |
+          if [ -n "${{ secrets.ANDROID_KEYSTORE_B64 }}" ]; then
+            echo "type=release" >> "$GITHUB_OUTPUT"
+            echo "Building SIGNED RELEASE APK"
+          else
+            echo "type=debug" >> "$GITHUB_OUTPUT"
+            echo "::warning::No ANDROID_KEYSTORE_B64 secret — building debug-signed APK. Users may need to uninstall before updating. Add a keystore secret for stable update signatures."
+          fi
+
+      - name: Restore keystore (release only)
+        if: steps.mode.outputs.type == 'release'
+        run: echo "${{ secrets.ANDROID_KEYSTORE_B64 }}" | base64 -d > android/app/rfc-release-key.jks
+
+      - name: Build APK
+        working-directory: android
+        env:
+          RFC_VERSION_CODE: ${{ github.run_number }}
+          RFC_VERSION_NAME: '1.0.${{ github.run_number }}'
+        run: |
+          chmod +x gradlew
+          if [ "${{ steps.mode.outputs.type }}" = "release" ]; then
+            ./gradlew assembleRelease --no-daemon \
+              -Pandroid.injected.signing.store.file="$PWD/app/rfc-release-key.jks" \
+              -Pandroid.injected.signing.store.password="${{ secrets.ANDROID_KEYSTORE_PASSWORD }}" \
+              -Pandroid.injected.signing.key.alias="${{ secrets.ANDROID_KEY_ALIAS }}" \
+              -Pandroid.injected.signing.key.password="${{ secrets.ANDROID_KEY_PASSWORD }}"
+            cp app/build/outputs/apk/release/app-release.apk ../royal-fitness-club.apk
+          else
+            ./gradlew assembleDebug --no-daemon
+            cp app/build/outputs/apk/debug/app-debug.apk ../royal-fitness-club.apk
+          fi
+
+      - name: Sanity-check APK
+        run: |
+          ls -la royal-fitness-club.apk
+          size=$(stat -c%s royal-fitness-club.apk)
+          if [ "$size" -lt 1000000 ]; then
+            echo "::error::APK suspiciously small (${size} bytes) — build likely broken"
+            exit 1
+          fi
+
+      - name: Publish to android-latest release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: android-latest
+          name: 'Royal Fitness Club — Android APK'
+          body: |
+            Latest Android build of Royal Fitness Club (build ${{ github.run_number }}, ${{ steps.mode.outputs.type }}-signed).
+
+            **Install:** download `royal-fitness-club.apk` on your Android phone, open it, and allow "install from unknown sources" if prompted.
+
+            The app loads the live site, so app content updates automatically — you only need a new APK when this release is updated.
+          files: royal-fitness-club.apk
+          make_latest: false
+
+      - name: Upload build artifact (fallback)
+        uses: actions/upload-artifact@v4
+        with:
+          name: royal-fitness-club-apk
+          path: royal-fitness-club.apk
+          retention-days: 30
