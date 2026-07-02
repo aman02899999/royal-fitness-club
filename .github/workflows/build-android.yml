@@ -66,23 +66,37 @@ jobs:
             echo "⚠️ GOOGLE_SERVICES_JSON secret not set — skipping native Firebase config"
           fi
 
-      - name: Build Debug APK
+      - name: Build APK (signed release if keystore secrets set, else debug)
         env:
           RFC_VERSION_CODE: ${{ github.run_number }}
           RFC_VERSION_NAME: '1.0.${{ github.run_number }}'
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+          STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: |
           cd android
-          ./gradlew assembleDebug --no-daemon --stacktrace
-
-      - name: Rename APK
-        run: |
-          cp android/app/build/outputs/apk/debug/app-debug.apk \
-             android/app/build/outputs/apk/debug/royal-fitness-club.apk
+          if [ -n "$KEYSTORE_BASE64" ]; then
+            echo "🔐 Keystore secrets found — building SIGNED RELEASE APK (stable signature; Google sign-in fingerprint stays valid)"
+            printf '%s' "$KEYSTORE_BASE64" | base64 -d > app/rfc-release-key.jks
+            ./gradlew assembleRelease --no-daemon --stacktrace \
+              -Pandroid.injected.signing.store.file="$PWD/app/rfc-release-key.jks" \
+              -Pandroid.injected.signing.store.password="$STORE_PASSWORD" \
+              -Pandroid.injected.signing.key.alias="$KEY_ALIAS" \
+              -Pandroid.injected.signing.key.password="$KEY_PASSWORD"
+            mkdir -p app/build/outputs/final
+            cp app/build/outputs/apk/release/app-release.apk app/build/outputs/final/royal-fitness-club.apk
+          else
+            echo "⚠️ No KEYSTORE_BASE64 secret — building debug APK (signature changes each build; native Google sign-in will NOT work without the registered release fingerprint)"
+            ./gradlew assembleDebug --no-daemon --stacktrace
+            mkdir -p app/build/outputs/final
+            cp app/build/outputs/apk/debug/app-debug.apk app/build/outputs/final/royal-fitness-club.apk
+          fi
 
       - name: Get APK info
         id: apk_info
         run: |
-          APK="android/app/build/outputs/apk/debug/royal-fitness-club.apk"
+          APK="android/app/build/outputs/final/royal-fitness-club.apk"
           SIZE=$(du -sh "$APK" | cut -f1)
           echo "size=$SIZE" >> $GITHUB_OUTPUT
           echo "✅ APK ready: $SIZE"
@@ -90,8 +104,8 @@ jobs:
       - name: Upload APK as artifact
         uses: actions/upload-artifact@v4
         with:
-          name: royal-fitness-club-debug-apk
-          path: android/app/build/outputs/apk/debug/royal-fitness-club.apk
+          name: royal-fitness-club-apk
+          path: android/app/build/outputs/final/royal-fitness-club.apk
           retention-days: 30
 
       - name: Delete existing android-latest release (if exists)
@@ -136,4 +150,4 @@ jobs:
             > **Note:** This is a debug build. A signed release build requires a keystore (see `release-android.yml`).
 
             **Build:** ${{ github.sha }} · **Size:** ${{ steps.apk_info.outputs.size }}
-          files: android/app/build/outputs/apk/debug/royal-fitness-club.apk
+          files: android/app/build/outputs/final/royal-fitness-club.apk

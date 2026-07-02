@@ -25,6 +25,12 @@
       "spinnerColor": "#7C3AED",
       "splashFullScreen": true,
       "splashImmersive": true
+    },
+    "FirebaseAuthentication": {
+      "skipNativeAuth": false,
+      "providers": [
+        "google.com"
+      ]
     }
   }
 }
