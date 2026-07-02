@@ -4792,7 +4792,7 @@ h4{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;lett
           </div>
         </div>
         <div style="font-size:11px;color:var(--muted);background:rgba(124,58,237,.04);border-radius:6px;padding:8px 12px;margin-bottom:12px;line-height:1.7;">
-          💡 Share your code · Earn <strong style="color:#ffd000;">₹100</strong> per signup · Min ₹500 to redeem via UPI
+          💡 Share your code · Earn <strong style="color:#ffd000;">₹80</strong> per signup · Min ₹500 to redeem via UPI
         </div>
         <!-- Wallet share link -->
         <button class="bsm" style="width:100%;margin-bottom:12px;background:#25D366;color:#fff;border-color:#1da851;" onclick="shareReferralWhatsApp()">📲 Share on WhatsApp</button>
@@ -9575,7 +9575,7 @@ function shareScoreWhatsApp(){
 Get your FREE Beast Score 👇
 🔗 https://royal-fitness-club-7adc1.web.app
 
-Use my referral code *${code}* → Get ₹50 wallet bonus! 🎁`;
+Use my referral code *${code}* → Get ₹20 wallet bonus! 🎁`;
   window.open('https://wa.me/?text='+encodeURIComponent(msg),'_blank');
   closeModal('sharemodal');
 }
@@ -11714,7 +11714,7 @@ function shareReferralWhatsApp(){
 
 Hey! *${senderName}* is inviting you to join India's most complete gym fitness app — *FREE!*
 
-🎁 *USE THIS REFERRAL CODE & GET ₹50 BONUS:*
+🎁 *USE THIS REFERRAL CODE & GET ₹20 BONUS:*
 
 \`\`\`${code}\`\`\`
 
@@ -11751,7 +11751,7 @@ Hey! *${senderName}* is inviting you to join India's most complete gym fitness a
 ━━━━━━━━━━━━━━━━━━━━━━━━
 ⚡ Step 1: Open link above
 ⚡ Step 2: Sign in with Google
-⚡ Step 3: Enter code *${code}* → Get ₹50 wallet bonus instantly!
+⚡ Step 3: Enter code *${code}* → Get ₹20 wallet bonus instantly!
 
 Start your transformation today 🔥👑`;
   window.open('https://wa.me/?text='+encodeURIComponent(msg),'_blank');
@@ -11785,68 +11785,99 @@ async function requestRedeem(){
   toast('💸 Payout request submitted for ₹'+amount,'gold');
 }
 
-// Called after registration when referral code was used
+// Referral rewards: referrer earns ₹80 when a friend registers with their
+// code; the new member earns a ₹20 welcome bonus. (Referrer earns ₹200 more
+// if the friend later goes PRO — see creditReferrerPurchaseBonus.)
+var REF_BONUS_REFERRER=80, REF_BONUS_NEWUSER=20, REF_BONUS_PURCHASE=200;
+
+// Called ONCE after registration when a referral code was used.
+// Anti-abuse: the wallet credit and the one-way signupBonusPaid flag are
+// committed in a single atomic batch — Firestore rules only allow the +₹80
+// third-party credit when that same batch flips the flag false→true, so the
+// credit cannot be replayed from the console or repeated across devices.
 async function creditReferrer(refCode){
   if(!refCode)return;
-  // Track event locally
-  const refs=JSON.parse(localStorage.getItem('rfc_referrals')||'[]');
-  refs.unshift({id:Date.now(),refCode,newUser:user?.name||'',newUserEmail:user?.email||'',date:new Date().toISOString(),credited:false,amount:100});
-  localStorage.setItem('rfc_referrals',JSON.stringify(refs));
+  refCode=String(refCode).trim().toUpperCase();
+  if(!refCode)return;
 
   const newUserName=user?.name||'New member';
   const today=new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'});
+  let credited=false;
 
   // ── Firestore cross-device credit (primary path) ───────────────────
   if(typeof firebase!=='undefined'&&user){
     try{
       const db=firebase.firestore();
+      // 0. Never pay twice — the referral event doc is one-per-new-user
+      const existing=await db.collection('referrals').doc(user.uid).get();
+      if(existing.exists&&existing.data().signupBonusPaid)return;
       // 1. Look up referrer UID from ref_codes collection
       const snap=await db.collection('ref_codes').doc(refCode).get();
       if(snap.exists){
         const referrerUid=snap.data().uid;
+        // No self-referral
         if(referrerUid&&referrerUid!==user.uid){
-          // 2. Write referral event
-          await db.collection('referrals').doc(user.uid).set({
-            refCode,referrerUid,newUserName,newUserEmail:user.email||'',
-            joined:firebase.firestore.FieldValue.serverTimestamp(),
-            signupBonusPaid:false,purchaseBonusPaid:false
-          },{merge:true});
-          // 3. Credit referrer's Firestore wallet (+₹100 for signup)
+          // 2. Write referral event (create-once; paid flags start false)
+          if(!existing.exists){
+            await db.collection('referrals').doc(user.uid).set({
+              refCode,referrerUid,newUserName,newUserEmail:user.email||'',
+              joined:firebase.firestore.FieldValue.serverTimestamp(),
+              signupBonusPaid:false,purchaseBonusPaid:false
+            });
+          }
+          // 3+4. ATOMIC batch: +₹80 to referrer's wallet AND flip the
+          // one-way paid flag. Rules verify both together (getAfter).
           const refWalletRef=db.collection('wallets').doc(referrerUid);
-          await db.runTransaction(async tx=>{
-            const doc=await tx.get(refWalletRef);
-            const current=doc.exists?doc.data():{balance:0,transactions:[]};
-            const txns=(current.transactions||[]);
-            txns.unshift({id:Date.now(),type:'referral',amount:100,desc:`Referral — ${newUserName} joined`,date:today});
-            tx.set(refWalletRef,{balance:(current.balance||0)+100,transactions:txns.slice(0,50),updatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});
-          });
-          // 4. Mark referral event credited
-          await db.collection('referrals').doc(user.uid).update({signupBonusPaid:true,signupBonusPaidAt:firebase.firestore.FieldValue.serverTimestamp()});
-          // 5. Increment ref count on referrer's user doc
+          const wSnap=await refWalletRef.get();
+          const txn={id:Date.now(),type:'referral',amount:REF_BONUS_REFERRER,desc:`Referral — ${newUserName} joined`,date:today};
+          const batch=db.batch();
+          if(wSnap.exists){
+            batch.update(refWalletRef,{
+              balance:firebase.firestore.FieldValue.increment(REF_BONUS_REFERRER),
+              transactions:firebase.firestore.FieldValue.arrayUnion(txn),
+              updatedAt:firebase.firestore.FieldValue.serverTimestamp()
+            });
+          }else{
+            batch.set(refWalletRef,{balance:REF_BONUS_REFERRER,transactions:[txn],updatedAt:firebase.firestore.FieldValue.serverTimestamp()});
+          }
+          batch.update(db.collection('referrals').doc(user.uid),{signupBonusPaid:true,signupBonusPaidAt:firebase.firestore.FieldValue.serverTimestamp()});
+          await batch.commit();
+          credited=true;
+          // 5. Increment ref count on referrer's user doc (best effort)
           db.collection('users').doc(referrerUid).update({refCount:firebase.firestore.FieldValue.increment(1)}).catch(()=>{});
         }
       }
     }catch(fsErr){console.warn('[creditReferrer] Firestore credit error:',fsErr.message);}
   }
 
-  // ── LocalStorage same-device fallback ─────────────────────────────
-  const ownerKey=Object.keys(localStorage).find(k=>k.startsWith('rfc_refcode_')&&localStorage.getItem(k)===refCode);
-  if(ownerKey){
-    const ownerUid=ownerKey.replace('rfc_refcode_','');
-    const ownerWalletKey=`rfc_wallet_${ownerUid}_data`;
-    const ow=JSON.parse(localStorage.getItem(ownerWalletKey)||'{"balance":0,"transactions":[]}');
-    ow.balance=(ow.balance||0)+100;
-    ow.transactions.unshift({id:Date.now(),type:'referral',amount:100,desc:`Referral bonus — ${newUserName} joined`,date:today});
-    localStorage.setItem(ownerWalletKey,JSON.stringify(ow));
-    const cntKey=`rfc_ref_count_${ownerUid}`;
-    localStorage.setItem(cntKey,String((parseInt(localStorage.getItem(cntKey)||'0')+1)));
+  // Track event locally (admin same-device view)
+  const refs=JSON.parse(localStorage.getItem('rfc_referrals')||'[]');
+  refs.unshift({id:Date.now(),refCode,newUser:user?.name||'',newUserEmail:user?.email||'',date:new Date().toISOString(),credited,amount:REF_BONUS_REFERRER});
+  localStorage.setItem('rfc_referrals',JSON.stringify(refs));
+
+  // ── LocalStorage same-device fallback (only if cloud credit failed) ──
+  if(!credited){
+    const ownerKey=Object.keys(localStorage).find(k=>k.startsWith('rfc_refcode_')&&localStorage.getItem(k)===refCode);
+    if(ownerKey){
+      const ownerUid=ownerKey.replace('rfc_refcode_','');
+      if(user&&ownerUid===user.uid)return; // no self-referral
+      const ownerWalletKey=`rfc_wallet_${ownerUid}_data`;
+      const ow=JSON.parse(localStorage.getItem(ownerWalletKey)||'{"balance":0,"transactions":[]}');
+      ow.balance=(ow.balance||0)+REF_BONUS_REFERRER;
+      ow.transactions.unshift({id:Date.now(),type:'referral',amount:REF_BONUS_REFERRER,desc:`Referral bonus — ${newUserName} joined`,date:today});
+      localStorage.setItem(ownerWalletKey,JSON.stringify(ow));
+      const cntKey=`rfc_ref_count_${ownerUid}`;
+      localStorage.setItem(cntKey,String((parseInt(localStorage.getItem(cntKey)||'0')+1)));
+    }
   }
 
-  // ── Welcome bonus for new registrant (+₹50) ───────────────────────
-  setTimeout(()=>walletCredit(50,'Welcome bonus — new member!','signup_bonus'),500);
+  // ── Welcome bonus for the new registrant (+₹20) ───────────────────
+  setTimeout(()=>walletCredit(REF_BONUS_NEWUSER,'Welcome bonus — registered with a referral code! 🎁','signup_bonus'),500);
 }
 
-// Called after a referred user completes their first plan purchase — gives referrer ₹200 bonus
+// Called after a referred user completes their first plan purchase — gives
+// referrer ₹200. Same atomic credit+flag batch as the signup bonus, so it
+// can only ever pay once per referred member.
 async function creditReferrerPurchaseBonus(newUserUid){
   if(typeof firebase==='undefined')return;
   try{
@@ -11857,19 +11888,25 @@ async function creditReferrerPurchaseBonus(newUserUid){
     if(!referrerUid)return;
     const today=new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'});
     const refWalletRef=db.collection('wallets').doc(referrerUid);
-    await db.runTransaction(async tx=>{
-      const doc=await tx.get(refWalletRef);
-      const current=doc.exists?doc.data():{balance:0,transactions:[]};
-      const txns=(current.transactions||[]);
-      txns.unshift({id:Date.now(),type:'referral_purchase',amount:200,desc:`Purchase bonus — referred member went PRO!`,date:today});
-      tx.set(refWalletRef,{balance:(current.balance||0)+200,transactions:txns.slice(0,50),updatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});
-    });
-    await db.collection('referrals').doc(newUserUid).update({purchaseBonusPaid:true,purchaseBonusPaidAt:firebase.firestore.FieldValue.serverTimestamp()});
+    const wSnap=await refWalletRef.get();
+    const txn={id:Date.now(),type:'referral_purchase',amount:REF_BONUS_PURCHASE,desc:'Purchase bonus — referred member went PRO!',date:today};
+    const batch=db.batch();
+    if(wSnap.exists){
+      batch.update(refWalletRef,{
+        balance:firebase.firestore.FieldValue.increment(REF_BONUS_PURCHASE),
+        transactions:firebase.firestore.FieldValue.arrayUnion(txn),
+        updatedAt:firebase.firestore.FieldValue.serverTimestamp()
+      });
+    }else{
+      batch.set(refWalletRef,{balance:REF_BONUS_PURCHASE,transactions:[txn],updatedAt:firebase.firestore.FieldValue.serverTimestamp()});
+    }
+    batch.update(db.collection('referrals').doc(newUserUid),{purchaseBonusPaid:true,purchaseBonusPaidAt:firebase.firestore.FieldValue.serverTimestamp()});
+    await batch.commit();
     // Update same-device wallet too
     const ownerWalletKey=`rfc_wallet_${referrerUid}_data`;
     const ow=JSON.parse(localStorage.getItem(ownerWalletKey)||'{"balance":0,"transactions":[]}');
-    ow.balance=(ow.balance||0)+200;
-    ow.transactions.unshift({id:Date.now(),type:'referral_purchase',amount:200,desc:'Purchase bonus — referred member went PRO!',date:today});
+    ow.balance=(ow.balance||0)+REF_BONUS_PURCHASE;
+    ow.transactions.unshift(txn);
     localStorage.setItem(ownerWalletKey,JSON.stringify(ow));
   }catch(e){console.warn('[creditReferrerPurchaseBonus]',e.message);}
 }
@@ -15040,9 +15077,30 @@ async function adminLoadRedeemRequests(){
         </div>
         <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--gold);">₹${r.amount}</div>
         <span style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;${r.status==='pending'?'background:rgba(251,191,36,.15);color:#fbbf24;border:1px solid rgba(251,191,36,.3);':r.status==='paid'?'background:rgba(34,197,94,.12);color:#22c55e;border:1px solid rgba(34,197,94,.3);':'background:rgba(248,113,113,.12);color:#f87171;border:1px solid rgba(248,113,113,.3);'}">${(r.status||'pending').toUpperCase()}</span>
-        ${r.status==='pending'?`<button class="bsm" style="font-size:10px;padding:5px 10px;background:rgba(34,197,94,.12);border-color:rgba(34,197,94,.3);color:#22c55e;" onclick="adminMarkRedeemPaid('${r.id||r.fsId}','${r.fsId||''}')">✅ Mark Paid</button>`:''}
+        ${r.status==='pending'?`<button class="bsm" style="font-size:10px;padding:5px 10px;" onclick="adminVerifyReferralEarnings('${r.uid||''}',${r.amount||0})">🔍 Verify</button><button class="bsm" style="font-size:10px;padding:5px 10px;background:rgba(34,197,94,.12);border-color:rgba(34,197,94,.3);color:#22c55e;" onclick="adminMarkRedeemPaid('${r.id||r.fsId}','${r.fsId||''}')">✅ Mark Paid</button>`:''}
       </div>`).join('');
   }catch(e){if(listEl)listEl.innerHTML='<div style="font-size:12px;color:#f87171;">Error loading: '+e.message+'</div>';}
+}
+
+// Fraud check before paying out: compare the requested amount against what
+// this user has VERIFIABLY earned from referrals (referrals docs are only
+// writable under the hardened rules, so they are the trustworthy ledger).
+async function adminVerifyReferralEarnings(uid, requested){
+  if(!uid){toast('No UID on this request — old/local entry. Verify manually.','gold');return;}
+  if(typeof firebase==='undefined'){toast('Firebase not available','gold');return;}
+  try{
+    const db=firebase.firestore();
+    const snap=await db.collection('referrals').where('referrerUid','==',uid).get();
+    let signups=0,purchases=0;
+    snap.forEach(d=>{const r=d.data();if(r.signupBonusPaid)signups++;if(r.purchaseBonusPaid)purchases++;});
+    const earned=signups*80+purchases*200;
+    const wDoc=await db.collection('wallets').doc(uid).get();
+    const cloudBal=wDoc.exists?(wDoc.data().balance||0):0;
+    const ok=requested<=earned+100; // +100 headroom for daily-login bonuses
+    toast((ok?'✅ LOOKS LEGIT':'⚠️ CHECK BEFORE PAYING')+
+      ' — verified referral earnings ₹'+earned+' ('+signups+' signups, '+purchases+' PRO), cloud wallet ₹'+cloudBal+', requested ₹'+requested+'.',
+      ok?'green':'red');
+  }catch(e){toast('Verify failed: '+e.message,'gold');}
 }
 
 async function adminMarkRedeemPaid(localId, fsId){
@@ -16901,6 +16959,8 @@ function obStep3Next() {
   _obData.weight = w;
   var tw = parseFloat(document.getElementById('ob-target-weight').value);
   if (tw && tw >= 30 && tw <= 300) _obData.targetWeight = tw;
+  var rc = (document.getElementById('ob-refcode')||{}).value||'';
+  _obData.refCode = rc.trim().toUpperCase()||null;
   obGoTo(4);
 }
 
@@ -16975,6 +17035,11 @@ function obRunCalculation() {
   var plan = Object.assign({}, d, { ts: Date.now() });
   localStorage.setItem('rfc_userplan_' + user.uid, JSON.stringify(plan));
   localStorage.setItem('rfc_onboarded_' + user.uid, '1');
+  // Referral code entered during onboarding (Google signups don't pass
+  // through registerWithCode) — pay the referrer ₹80 / new member ₹20.
+  if (d.refCode && typeof creditReferrer === 'function') {
+    try { creditReferrer(d.refCode); } catch(e) {}
+  }
   // Show result step
   setTimeout(function() { obShowResult(); }, 300);
 }
@@ -19296,6 +19361,10 @@ document.addEventListener('change', function(e) {
       <div class="ob-field">
         <label class="ob-label">Target weight (kg) <span style="font-size:10px;color:var(--muted);">optional</span></label>
         <input class="ob-input" id="ob-target-weight" type="number" min="30" max="300" placeholder="e.g. 68">
+      </div>
+      <div class="ob-field">
+        <label class="ob-label">Referral code <span style="font-size:10px;color:var(--muted);">optional — you get ₹20, your friend gets ₹80</span></label>
+        <input class="ob-input" id="ob-refcode" type="text" placeholder="e.g. RFC-A3K9P2" autocomplete="off" style="text-transform:uppercase;letter-spacing:2px;">
       </div>
       <button class="ob-btn" onclick="obStep3Next()">NEXT →</button>
     </div>

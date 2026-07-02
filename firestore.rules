@@ -201,9 +201,10 @@ service cloud.firestore {
     }
 
     // referrals/{newUserUid} - referral event per new member
-    // Owner can read their own record; create allowed on signup.
-    // Updates (marking bonuses paid) require the referrer or admin —
-    // enforced by only allowing the referrerUid field to be unchanged.
+    // Owner can read their own record; create allowed on signup (one doc per
+    // new user, keyed by their uid — a user can never create a second one).
+    // The paid flags are ONE-WAY: once true they can never be reset to false,
+    // which is what makes the wallet credit below unrepeatable.
     match /referrals/{uid} {
       allow read: if request.auth != null
         && (request.auth.uid == uid
@@ -212,25 +213,62 @@ service cloud.firestore {
       allow create: if request.auth != null && request.auth.uid == uid
         && request.resource.data.get('purchaseBonusPaid', false) == false
         && request.resource.data.get('signupBonusPaid', false) == false;
-      // Any auth user can update to mark bonus paid; referrer UID + code must not change
       allow update: if request.auth != null
         && request.resource.data.referrerUid == resource.data.referrerUid
-        && request.resource.data.refCode == resource.data.refCode;
+        && request.resource.data.refCode == resource.data.refCode
+        // one-way flags: true can never go back to false (blocks replay)
+        && !(resource.data.get('signupBonusPaid', false) == true
+             && request.resource.data.get('signupBonusPaid', false) == false)
+        && !(resource.data.get('purchaseBonusPaid', false) == true
+             && request.resource.data.get('purchaseBonusPaid', false) == false);
       allow delete: if isAdmin();
     }
 
     // wallets/{uid} - Tiger wallet balances (cross-device sync)
-    // Owner reads their own wallet.
-    // Owner can write their own wallet (for debits / login bonus / local sync).
-    // Other authenticated users may only CREDIT this wallet (referral bonuses):
-    //   balance must not decrease and at most one new transaction entry is added.
+    // Owner: reads freely; debits freely; CREDITS capped at +20 per write
+    // (daily login +5, referral welcome +20) so a user cannot inflate their
+    // own cloud balance from the console.
+    // Third parties: ONLY the referred member may credit THEIR referrer,
+    // with the exact bonus amount, and only in the same atomic batch that
+    // flips the corresponding one-way paid flag on their referral doc —
+    // so each bonus can be paid exactly once, ever.
     match /wallets/{uid} {
+      function payerRef() {
+        return get(/databases/$(database)/documents/referrals/$(request.auth.uid)).data;
+      }
+      function payerRefAfter() {
+        return getAfter(/databases/$(database)/documents/referrals/$(request.auth.uid)).data;
+      }
       allow read: if request.auth != null && request.auth.uid == uid;
-      allow write: if request.auth != null && request.auth.uid == uid;
-      allow update: if request.auth != null
-        && request.auth.uid != uid
-        && request.resource.data.balance >= resource.data.balance
-        && request.resource.data.transactions.size() <= resource.data.transactions.size() + 1;
+      // Owner writes (small client-side bonuses / debits)
+      allow create: if request.auth != null && request.auth.uid == uid
+        && request.resource.data.get('balance', 0) <= 20;
+      allow update: if request.auth != null && request.auth.uid == uid
+        && request.resource.data.get('balance', 0) <= resource.data.get('balance', 0) + 20;
+      // Referral credits from the referred member
+      allow create: if request.auth != null && request.auth.uid != uid
+        && payerRef().referrerUid == uid
+        && (
+          (request.resource.data.get('balance', 0) == 80
+            && payerRef().get('signupBonusPaid', false) == false
+            && payerRefAfter().signupBonusPaid == true)
+          ||
+          (request.resource.data.get('balance', 0) == 200
+            && payerRef().get('purchaseBonusPaid', false) == false
+            && payerRefAfter().purchaseBonusPaid == true)
+        );
+      allow update: if request.auth != null && request.auth.uid != uid
+        && payerRef().referrerUid == uid
+        && request.resource.data.transactions.size() <= resource.data.transactions.size() + 1
+        && (
+          (request.resource.data.get('balance', 0) == resource.data.get('balance', 0) + 80
+            && payerRef().get('signupBonusPaid', false) == false
+            && payerRefAfter().signupBonusPaid == true)
+          ||
+          (request.resource.data.get('balance', 0) == resource.data.get('balance', 0) + 200
+            && payerRef().get('purchaseBonusPaid', false) == false
+            && payerRefAfter().purchaseBonusPaid == true)
+        );
       allow read, write: if isAdmin();
     }
 
