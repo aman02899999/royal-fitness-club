@@ -12,6 +12,7 @@
     "update:app": "cp index.html www/index.html && cp manifest.json www/manifest.json && cp sw.js www/sw.js && cp -r icons www/icons && cp -r src www/src 2>/dev/null; cap sync android"
   },
   "dependencies": {
+    "@capacitor-firebase/authentication": "^8.3.0",
     "@capacitor/android": "^8.4.0",
     "@capacitor/cli": "^8.4.0",
     "@capacitor/core": "^8.4.0"

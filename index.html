@@ -7287,18 +7287,21 @@ function initUser(){
 function forceLogin(){
   document.body.style.overflow='hidden';
   openModal('loginmodal');
-  // In the Android app, hide the GOOGLE tab (OAuth can't run in a WebView)
-  // and show a one-line hint for members who signed up with Google.
+  // In the Android app WITHOUT the native auth plugin (old APK builds), hide
+  // the GOOGLE tab (WebView OAuth can't work) and hint members who signed up
+  // with Google. New builds have the native plugin — GOOGLE tab stays.
   try{
-    if(isNativeApp()){
+    if(isNativeApp()&&!nativeGoogleAvailable()){
       const gt=$('tab-google');if(gt)gt.style.display='none';
       const gp=$('auth-google-panel');if(gp&&gp.style.display!=='none'){gp.style.display='none';switchAuthTab('login');}
+      const lw=document.querySelector('#auth-login-panel .mwarn');
+      if(lw)lw.innerHTML='⚡ Sign in with your email &amp; password.';
       const lp=$('auth-login-panel');
       if(lp&&!document.getElementById('rfc-native-note')){
         const n=document.createElement('div');
         n.id='rfc-native-note';
         n.style.cssText='margin-top:10px;padding:10px 12px;background:rgba(124,58,237,.06);border:1px solid rgba(109,40,217,.15);border-radius:8px;font-size:11.5px;color:var(--muted);line-height:1.6;';
-        n.innerHTML='📱 <strong style="color:var(--text);">Using the app?</strong> Sign in with email &amp; password. Joined with <strong>Google</strong>? Tap "Forgot password?" once to set a password — it\'s the same account.';
+        n.innerHTML='📱 <strong style="color:var(--text);">Using the app?</strong> Update to the latest APK to get Google sign-in, or sign in with email &amp; password. Joined with <strong>Google</strong>? Tap "Forgot password?" once to set a password — it\'s the same account.';
         lp.appendChild(n);
       }
     }
@@ -7531,16 +7534,48 @@ async function loginWithFirebase(){
 function loginUser(){loginWithFirebase();}
 
 // ── GOOGLE SIGN-IN (outsiders / digital members) ──
+// In the Android app, Google sign-in runs through the native
+// @capacitor-firebase/authentication plugin (Credential Manager account
+// picker) and the resulting ID token is bridged into the web Firebase SDK.
+// Browser/web keeps the redirect flow.
+function nativeGoogleAvailable(){
+  try{return !!(window.Capacitor&&window.Capacitor.Plugins&&window.Capacitor.Plugins.FirebaseAuthentication);}catch(_){return false;}
+}
+async function signInWithGoogleNative(){
+  const btn=document.querySelector('.google-signin-btn');
+  const _btnHTML=btn?btn.innerHTML:'';
+  if(btn){btn.disabled=true;btn.textContent='Opening Google…';}
+  try{
+    sessionStorage.setItem('rfc_goto_dash','1');
+    const result=await window.Capacitor.Plugins.FirebaseAuthentication.signInWithGoogle();
+    const idToken=result&&result.credential&&result.credential.idToken;
+    if(!idToken)throw new Error('No ID token from native sign-in');
+    const cred=firebase.auth.GoogleAuthProvider.credential(idToken,result.credential.accessToken||null);
+    await firebase.auth().signInWithCredential(cred);
+    // onAuthStateChanged → applyUser() takes it from here (modal close + dashboard)
+  }catch(err){
+    sessionStorage.removeItem('rfc_goto_dash');
+    const m=(err&&(err.message||err.code)||'')+'';
+    if(/cancel|dismiss|13:|16:/i.test(m)){/* user closed the picker — stay quiet */}
+    else{
+      console.error('[native google]',err);
+      switchAuthTab('login');
+      toast('Google sign-in isn\'t available in the app right now. Sign in with email & password — joined with Google? Tap "Forgot password?" once to set one.','gold');
+    }
+  }finally{
+    if(btn){btn.disabled=false;btn.innerHTML=_btnHTML||'Sign in with Google';}
+  }
+}
 var _googleSignInBusy = false;
 async function signInWithGoogle(){
+  if(typeof firebase==='undefined'){toast('⭐ Service loading… please try again in a moment.','gold');return;}
   if(isNativeApp()){
-    // Redirect-based Google OAuth can't complete inside the app WebView —
-    // the flow bounces to the external browser and the auth state is lost.
+    if(nativeGoogleAvailable()){await signInWithGoogleNative();return;}
+    // Old APK build without the native plugin — WebView OAuth can't work.
     switchAuthTab('login');
-    toast('In the app, please sign in with your email & password. Joined with Google? Tap "Forgot password?" once to set a password — same account.','gold');
+    toast('Please update the app (re-download the APK), or sign in with your email & password. Joined with Google? Tap "Forgot password?" once to set a password — same account.','gold');
     return;
   }
-  if(typeof firebase==='undefined'){toast('⭐ Service loading… please try again in a moment.','gold');return;}
   if(_googleSignInBusy) return;
   _googleSignInBusy = true;
   const btn=document.querySelector('.google-signin-btn');
@@ -7592,11 +7627,10 @@ function isNativeApp(){
 
 // ── AUTH TAB SWITCH ──
 function switchAuthTab(tab){
-  // Google's OAuth pages can't run inside an app WebView (the sign-in state
-  // gets stranded between the WebView and the external browser — "missing
-  // initial state"). In the Android app, route every Google entry point to
-  // email/password login instead.
-  if(tab==='google'&&isNativeApp())tab='login';
+  // In the Android app WITHOUT the native auth plugin (old APK builds),
+  // Google OAuth can't run in the WebView — route those entry points to
+  // email/password login. With the plugin, the GOOGLE tab works natively.
+  if(tab==='google'&&isNativeApp()&&!nativeGoogleAvailable())tab='login';
   const panels={login:$('auth-login-panel'),google:$('auth-google-panel'),register:$('auth-register-panel')};
   const tabs={login:$('tab-login'),google:$('tab-google'),register:$('tab-register')};
   Object.values(panels).forEach(p=>{if(p)p.style.display='none';});
