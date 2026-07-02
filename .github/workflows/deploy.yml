@@ -68,4 +68,8 @@ jobs:
       # Upgrade at: Firebase Console > Spark → Blaze
       - name: Deploy Functions (requires Blaze plan)
         continue-on-error: true
-        run: firebase deploy --only functions --project royal-fitness-club-7adc1
+        run: |
+          if ! firebase deploy --only functions --project royal-fitness-club-7adc1; then
+            echo "::warning title=Cloud Functions NOT deployed::Payment verification, Razorpay webhook, and subscription-expiry sweep are INACTIVE. Most common fix: grant the CI service account the 'Service Account User' role on royal-fitness-club-7adc1@appspot.gserviceaccount.com at https://console.cloud.google.com/iam-admin/iam?project=royal-fitness-club-7adc1 - also ensure the Blaze plan is enabled and the RAZORPAY_* secrets are set (firebase functions:secrets:set)."
+            exit 1
+          fi

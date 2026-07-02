@@ -1,14 +1,16 @@
 apply plugin: 'com.android.application'
 
 android {
-    namespace = "com.apex.app"
+    namespace = "com.royalfitnessclub.app"
     compileSdk = rootProject.ext.compileSdkVersion
     defaultConfig {
-        applicationId "com.apex.app"
+        applicationId "com.royalfitnessclub.app"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
+        // CI passes RFC_VERSION_CODE (GitHub run number) so each published APK
+        // is an installable update over the previous one; local builds default to 1.
+        versionCode (System.getenv("RFC_VERSION_CODE") ?: "1").toInteger()
+        versionName (System.getenv("RFC_VERSION_NAME") ?: "1.0")
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.

@@ -2,7 +2,18 @@
   "hosting": {
     "site": "royal-fitness-club-7adc1",
     "public": ".",
-    "ignore": ["firebase.json", "**/.*", "**/node_modules/**", "src/**", "README.md", "*.py", "generated_pdfs/**", "posters/**", "scripts/**", "functions/**"],
+    "ignore": [
+      "firebase.json", "**/.*", "**/node_modules/**", "*.py",
+      "posters/**", "scripts/**", "functions/**", "android/**", "www/**",
+      "reel-frames/**", "reel60-frames/**", "marketing/**",
+      "**/*.mp4", "HD-poster-*.png", "STORY-*.png", "poster-*.html", "poster-*.png",
+      "story-*.html", "posters.html", "member-posters.html", "marketing-poster.html",
+      "promo-*.html", "rfc-academy-kit.html", "reel*.html", "docs.html",
+      "Royal_Fitness_Club_Master_Guide.pdf", "Royal_Fitness_Club_User_Guide.pdf",
+      "*.md", "package.json", "package-lock.json", "capacitor.config.json",
+      "capture-screens.js", "make-poster.js", "record-reel*.js", "test-login.js",
+      "firestore.rules", "firestore.indexes.json", "storage.rules"
+    ],
     "rewrites": [
       { "source": "/admin", "destination": "/admin.html" }
     ],

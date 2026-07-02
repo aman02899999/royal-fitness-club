@@ -5,6 +5,7 @@ Allow: /admin.html
 Allow: /manifest.json
 Allow: /icons/
 Disallow: /generated_pdfs/
+Disallow: /course_pdfs/
 Disallow: /functions/
 Disallow: /src/
 Disallow: /scripts/
